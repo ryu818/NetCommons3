@@ -1,0 +1,18 @@
+.nc_base {
+	background-color: #ffffff;
+	margin:50px auto;
+	border: 1px solid #efefef;
+	display:table;
+	padding:10px;
+	border-radius: 5px;
+	box-shadow: 0 1px 2px rgba(72, 76, 80, 0.25), 0 1px 1px rgba(255, 255, 255, 0.5) inset;
+}
+
+.nc_base_title {
+	padding: 5px 20px;
+	background-color: #c6e9ff;
+	border-radius: 5px;
+}
+
+.nc_base_content {
+}

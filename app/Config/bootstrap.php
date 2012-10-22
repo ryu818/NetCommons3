@@ -2,7 +2,7 @@
 /**
  * This file is loaded automatically by the app/webroot/index.php file after core.php
  *
- * This file should load/create any application wide configuration settings, such as 
+ * This file should load/create any application wide configuration settings, such as
  * Caching, Logging, loading additional configuration files.
  *
  * You should also use this file to include any files that provide global functions/constants
@@ -25,7 +25,7 @@
 
 /*
  * NC用
-*/
+ */
 require 'defines.inc.php';
 
 /**
@@ -147,7 +147,7 @@ Cache::config('default', array('engine' => 'File'));
  * CakePlugin::load('DebugKit'); //Loads a single plugin named DebugKit
  *
  */
-
+// CakePlugin::load('DebugKit');
 
 /**
  * You can attach event listeners to the request lifecyle as Dispatcher Filter . By Default CakePHP bundles two filters:
@@ -166,7 +166,7 @@ Cache::config('default', array('engine' => 'File'));
  * ));
  */
 Configure::write('Dispatcher.filters', array(
-	'AssetDispatcher',
+	'MyAssetDispatcher',
 	'CacheDispatcher'
 ));
 
@@ -193,8 +193,52 @@ if (file_exists(dirname(__FILE__) . DS . NC_VERSION_FILE)) {
 }
 
 if (!defined('PEAR')) {
-	// PEAR定数が定義されていなければ定義する。
-	define('PEAR', VENDORS . 'pear'.DS);
+    // PEAR定数が定義されていなければ定義する。
+    define('PEAR', VENDORS . 'pear'.DS);
 }
 // include_path に pearのライブラリパスを追加
 set_include_path(PEAR . PATH_SEPARATOR . get_include_path());
+
+App::build(array(
+	'Model'                     => array(CUSTOM . 'Model' . DS, APP . 'Model' . DS),
+	'Model/Behavior'            => array(CUSTOM . 'Model' . DS . 'Behavior' . DS, APP . 'Model' . DS . 'Behavior' . DS),
+	'Model/Datasource'          => array(CUSTOM . 'Model' . DS . 'Datasource' . DS, APP.'Model' . DS . 'Datasource' . DS),
+	//'Model/Datasource/Database' => array('/path/to/databases', '/next/path/to/database'),
+	//'Model/Datasource/Session'  => array('/path/to/sessions', '/next/path/to/sessions'),
+	'Controller'                => array(CUSTOM . 'Controller' . DS, APP . 'Controller' . DS),
+	'Controller/Component'      => array(CUSTOM . 'Controller' . DS . 'Component' . DS, APP . 'Controller' . DS . 'Component' . DS),
+	//'Controller/Component/Auth' => array('/path/to/auths', '/next/path/to/auths'),
+	//'Controller/Component/Acl'  => array('/path/to/acls', '/next/path/to/acls'),
+	'View'                      => array(CUSTOM . 'View' . DS, APP . 'View' . DS),
+	'View/Helper'               => array(CUSTOM . 'View' . DS . 'Helper' . DS, APP . 'View' . DS . 'Helper' . DS),
+	//'Console'                   => array('/path/to/consoles', '/next/path/to/consoles'),
+	//'Console/Command'           => array('/path/to/commands', '/next/path/to/commands'),
+	//'Console/Command/Task'      => array('/path/to/tasks', '/next/path/to/tasks'),
+	//'Lib'                       => array('/path/to/libs', '/next/path/to/libs'),
+	'Locale'                    => array(CUSTOM . 'Locale' . DS, APP . 'Locale' . DS),
+	'Vendor'                    => array(CUSTOM . 'Vendor' . DS, APP . 'Vendor' . DS),
+	'Plugin'                    => array(CUSTOM . 'Plugin' . DS, APP . 'Plugin' . DS),
+));
+// ブロック用テーマ
+App::build(array(
+	'Frame'                    => array(CUSTOM . 'Frame' . DS, APP . 'Frame' . DS),
+), App::RESET);
+
+CakePlugin::loadAll();	// Loads all plugins at once
+
+Configure::write('Session', array(
+	'defaults' => 'database',
+	'handler' => array(
+        'model' => 'Session'
+    )
+	/*'ini' => Array(
+        'session.cookie_lifetime' => 2580000,
+        'session.gc_maxlifetime' => 2580000,
+        'session.gc_probability' => 1,
+        'session.gc_divisor' => 100
+    )*/
+));
+
+// エラーの場合、layoutを強制的にdefaultに戻すため
+App::import('Lib', 'AppExceptionRenderer');
+Configure::write('Exception.renderer', 'AppExceptionRenderer');

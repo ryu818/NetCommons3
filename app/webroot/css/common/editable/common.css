@@ -1,0 +1,245 @@
+/* 共通 */
+body {
+    color:#000000;
+    font:13px/1.231 "メイリオ", Meiryo, "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", "ＭＳ Ｐゴシック", "Lucida Grande", "Lucida Sans Unicode", Arial, Verdana, sans-serif;*font-size:small;*font:x-small;
+	line-height: 1.6;
+    letter-spacing: 0;
+}
+
+input, textarea {
+    font-family: "メイリオ", Meiryo, "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", "ＭＳ Ｐゴシック", "Lucida Grande", "Lucida Sans Unicode", Arial, Verdana, sans-serif;
+}
+
+.require {
+	color:#ff0000;
+}
+.errorstr {
+	color:#ff0000;
+}
+
+/* 引用 */
+blockquote.quote {
+	border-left:2px solid #cccccc;
+	padding-left:5px;
+	margin : 3px 0px 3px 25px;
+}
+
+/* クリック不可リンクラベル色 */
+.disable_lbl {
+	color:#aca899;
+}
+
+/* hr */
+div.hr {
+	border-top:1px solid #CCCCCC;
+	border-left:none;
+	border-right:none;
+	border-bottom:none;
+	margin-top:5px;
+	margin-bottom:5px;
+}
+
+/* メッセージ関連 */
+div.message {
+	/*clear: both;*/
+	color: #333333;
+	font-size:116%;
+	/*margin: 0 0 1em 0;*/
+	background: #ffffff;
+	padding: 10px;
+	text-align:center;
+	border-style:solid;
+	border-color:#efefef;
+	border-width:0 0 1px 0;
+}
+
+.nc_message {}
+
+div.error-message {
+	color:#ff0000;
+	background: url(../../common/img/main/alert.gif) no-repeat 5px center #FFD9D9;
+	padding:5px 0 5px 25px;
+	margin:2px 0;
+	clear: both;
+}
+div.info-message {
+	color:#0000ff;
+	background-color:#d9e0ff;
+	padding:5px 0 5px 25px;
+	margin:2px 0;
+	clear: both;
+}
+
+div.error-hmessage {
+	color:#ff0000;
+	background-color: #ffd9d9;
+	text-align:center;
+	padding:10px;
+	margin:5px 0;
+	clear: both;
+	border-radius:3px;
+}
+
+div.info-hmessage {
+	color:#0000ff;
+	background-color:#d9e0ff;
+	text-align:center;
+	padding:10px;
+	margin:5px 0;
+	clear: both;
+	border-radius:3px;
+}
+
+/*
+ * a
+ */
+a,a:link {
+	color:#04419a;
+}
+a:hover {
+	color:#0000ff;
+}
+a:visited,a:active {
+	color:#551a8b;
+}
+
+a.link,a.link:link {
+	color:#04419a;
+	text-decoration:none;
+}
+a.link:visited {
+	color:#04419a;
+	text-decoration:none;
+}
+a.link:hover {
+	color:#0000ff;
+	text-decoration:none;
+}
+a.link:active {
+	color:#04419a;
+	text-decoration:none;
+}
+
+a.syslink,a.syslink:link {
+	color:#5c9084;
+	text-decoration:none;
+}
+a.syslink:visited {
+	color:#1f704c;
+	text-decoration:none;
+}
+a.syslink:hover {
+	color:#006400;
+	text-decoration:none;
+}
+a.syslink:active {
+	color:#5c9084;
+	text-decoration:none;
+}
+
+div.top_description {
+	padding:5px;
+}
+.note {
+    background-color: #F3F3F3;
+}
+
+/* highlight */
+.highlight {
+	background-color:#E9F2FB !important;
+	color:#4e62a9 !important;
+}
+
+a.hover_highlight,a.hover_highlight:link {
+	text-decoration:none;
+}
+a.hover_highlight:visited {
+	text-decoration:none;
+}
+a.hover_highlight:hover {
+	color:#4e62a9;
+	background-color:#e9f2fb;
+	text-decoration:none;
+}
+a.hover_highlight:active {
+	text-decoration:none;
+}
+/* ボタン - 共通 */
+.common_btn {
+	-moz-border-radius : 4px 4px 4px 4px;
+	border-radius : 4px 4px 4px 4px;
+	background:url("../../img/common/btn_bg.gif") repeat-x scroll left top #FFFFFF;
+	border:1px solid #CCCCCC;
+	color:#686868;
+	font-weight:bold;
+	margin:5px 0 0;
+	padding:8px 20px 4px;
+	text-shadow:0 -1px 0 #CCCCCC;
+	width:100px;
+	cursor:pointer;
+}
+
+.common_btn:hover {
+	background:url("../../img/common/btn_bg_hover.gif") repeat-x scroll left top #FFFFFF;
+}
+
+.common_btn_disable {
+	color:#CCCCCC;
+}
+
+.common_btn_disable:hover {
+	background:url("../../img/common/btn_bg.gif") repeat-x scroll left top #FFFFFF;
+}
+.btn-bottom {
+	margin-top:5px;
+	text-align:center;
+}
+
+input.lined_btn {
+	margin-left:5px;
+}
+
+input.btn-width {
+	padding:0.2em;
+	width:75px;
+}
+input.btn-padding {
+	padding:0.2em;
+}
+
+input.input_btn {
+	margin: 0 2px;
+	background: url(../../img/common/input_btn.gif) no-repeat;
+	width:103px;
+	height:29px;
+	font-size:12px;
+	border:0 none;
+	cursor: pointer;
+}
+
+/* Form  */
+fieldset.form input[type="text"], fieldset.form input[type="password"], fieldset.form textarea,.text,.dropdown {
+	border:1px solid #aaaaaa;
+    padding: 4px 2px;
+    background: #ffffff;
+    border-radius: 3px;
+    box-shadow: 0 13px 13px rgba(0,0,0,0.03) inset, 1px 1px 1px #ffffff;
+
+    /* IE */
+    filter:progid:DXImageTransform.Microsoft.gradient
+        (startColorstr=#fff4f4f4,endColorstr=#ffffffff);
+    zoom: 1;
+}
+fieldset.form input:focus[type="text"], fieldset.form input:focus[type="password"], fieldset.form textarea:focus,.text:focus,.dropdown:focus {
+	border: 1px solid #56b4ef;
+	box-shadow: 0 13px 13px rgba(82,168, 236,0.03) inset,0 0 8px 0 rgba(82,168, 236, 0.6);
+
+	/* IE */
+    filter:progid:DXImageTransform.Microsoft.gradient
+        (startColorstr=#fff0f9ff,endColorstr=#ffffffff);
+}
+
+/* jquery plugin */
+.ui-dialog .ui-dialog-titlebar {
+	padding:0.1em 1em;
+}

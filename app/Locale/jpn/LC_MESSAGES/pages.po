@@ -1,0 +1,4 @@
+msgid  	"Setting mode on"
+msgstr 	"セッティングモード"
+msgid  	"Setting mode off"
+msgstr 	"セッティング終了"

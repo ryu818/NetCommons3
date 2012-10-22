@@ -1,0 +1,408 @@
+msgid  	"Ok"
+msgstr 	"決定"
+msgid  	"Cancel"
+msgstr 	"キャンセル"
+
+msgid  	"Reset"
+msgstr 	"リセット"
+
+msgid  	"Edit"
+msgstr 	"編集"
+msgid  	"Quit"
+msgstr 	"編集終了"
+msgid  	"Delete"
+msgstr 	"削除"
+msgid  	"Operation"
+msgstr 	"操作"
+
+msgid  	"Hide header"
+msgstr 	"ヘッダー非表示"
+msgid  	"Show header"
+msgstr 	"ヘッダー表示"
+
+msgid  	"Preview"
+msgstr 	"プレビュー"
+
+msgid  	"Search"
+msgstr 	"検索"
+
+msgid  	"Close"
+msgstr 	"閉じる"
+
+msgid  	"Continue"
+msgstr 	"続けて登録"
+
+msgid  	"On"
+msgstr 	"表示中"
+msgid  	"Off"
+msgstr 	"非表示"
+
+msgid  	"Show"
+msgstr 	"表示"
+msgid  	"Hide"
+msgstr 	"非表示"
+
+msgid  	"Public"
+msgstr 	"公開"
+msgid  	"Private"
+msgstr 	"非公開"
+msgid  	"Private content"
+msgstr 	"コンテンツ非公開"
+
+msgid  	"Yes"
+msgstr 	"はい"
+msgid  	"No"
+msgstr 	"いいえ"
+
+msgid  	"Deleting %s. <br />Are you sure to proceed?"
+msgstr 	"%sを削除します。<br />よろしいですか？"
+
+msgid  	"Detail setting"
+msgstr 	"詳細設定"
+
+msgid  	"Date"
+msgstr 	"日付"
+
+msgid  	"Date-time"
+msgstr 	"日時"
+
+msgid  	"Published Date"
+msgstr 	"公開日時"
+msgid  	"Private time"
+msgstr 	"非公開日時"
+
+msgid  	"Manage"
+msgstr 	"管理"
+
+msgid  	"Content not found."
+msgstr 	"指定したコンテンツは、存在しません。"
+
+msgid  	"Page not found."
+msgstr 	"指定したページは、存在しません。"
+
+msgid  	"Moved Permanently."
+msgstr 	"指定したコンテンツは移動しました。移動先へ遷移します。"
+
+msgid  	"Display module is not available."
+msgstr 	"表示しようとしているモジュールはご利用できません。"
+
+msgid  	"Login"
+msgstr 	"ログイン"
+msgid  	"Login ID"
+msgstr 	"ログインID"
+msgid  	"Password"
+msgstr 	"パスワード"
+
+msgid  	"Block"
+msgstr 	"ブロック"
+
+msgid  	"Save my info?"
+msgstr 	"保存する"
+
+msgid  	"Incorrect Login.Again, please enter."
+msgstr 	"ログインに失敗しました。再度、入力してください。"
+
+msgid  	"Forbidden permission to access the page."
+msgstr 	"あなたはその場所にアクセスする権限がありません。"
+
+msgid  	"Forbidden permission to access the block."
+msgstr 	"あなたはそのブロックにアクセスする権限がありません。"
+
+msgid  	"This module can not be placed."
+msgstr 	"該当モジュールは、配置不可能なモジュールです。"
+
+msgid  	"No Content."
+msgstr 	"コンテンツ元が削除されています。"
+
+msgid  	"Please be sure to input."
+msgstr 	"必ず入力してください。"
+msgid  	"Please input %s."
+msgstr 	"%sは必須です。"
+msgid  	"The input must be a number."
+msgstr 	"数値を入力してください。"
+msgid  	"The input must be a number bigger than %d and less than %d."
+msgstr 	"%d～%dまでの数値を入力してください。"
+msgid  	"The input must be a boolean."
+msgstr 	"ブール値を入力してください。"
+msgid  	"The input must be up to %s characters."
+msgstr 	"%d文字までで入力してください。"
+msgid  	"The input must be at least %s characters."
+msgstr 	"%d文字以上で入力ください"
+msgid  	"The input must be more than %d and less than %d characters."
+msgstr 	"半角%d文字から半角%d文字までです。"
+msgid  	"Please input the correct date."
+msgstr 	"正しい日付を入力して下さい。"
+msgid  	"Please input the alphanumeric characters or symbols."
+msgstr 	"半角英数字または記号で入力してください。"
+msgid  	"Unauthorized pattern for %s."
+msgstr 	"%sの書式が不正です。"
+msgid  	"The contents of %s is already in use."
+msgstr 	"この%sの内容は既に使用されています。"
+msgid  	"%s in the past can not be input."
+msgstr 	"過去の%sは入力できません。"
+
+msgid  	"Unauthorized request.<br />Please reload the page."
+msgstr 	"不正なリクエストの可能性があります。<br />再度、実行してください。"
+
+msgid  	"Authority Error!  You do not have the privilege to access this page."
+msgstr 	"権限が不正です。画面を表示、または、登録処理を実行できませんでした。"
+
+msgid  	"It contains an invalid string."
+msgstr 	"不正な文字列が含まれています。"
+msgid  	"The same name is already in use.Please choose another one."
+msgstr 	"同名の名称が同じ階層に存在しています。"
+
+msgid  	"Failed to send the mail."
+msgstr 	"メールの送信に失敗しました。"
+
+msgid  	"*"
+msgstr 	"*"
+
+msgid  	"Drag &amp; drop to move."
+msgstr 	"ドラッグ＆ドロップで移動できます。"
+
+
+
+##DB関連
+msgid  	"Has been successfully registered."
+msgstr 	"正常に登録しました。"
+msgid  	"Failed to obtain the database, (%s)."
+msgstr 	"DBの取得に失敗しました(%s)"
+msgid  	"Failed to register the database, (%s)."
+msgstr 	"DBの登録に失敗しました(%s)"
+msgid  	"Failed to update the database, (%s)."
+msgstr 	"DBの更新に失敗しました(%s)"
+msgid  	"Failed to delete the database, (%s)."
+msgstr 	"DBの削除に失敗しました(%s)"
+
+msgid  	"Block style"
+msgstr 	"ブロックスタイル"
+
+
+msgid  	"Pages menu"
+msgstr 	"ページメニュー"
+msgid  	"Pages style"
+msgstr 	"ページスタイル"
+msgid  	"Admin menu"
+msgstr 	"管理"
+msgid  	"End admin menu"
+msgstr 	"管理終了"
+msgid  	"Message"
+msgstr 	"メッセージ"
+msgid  	"Logout"
+msgstr 	"ログアウト"
+msgid  	"You are already logged in."
+msgstr 	"ログインしています。"
+msgid  	"You are now logged out."
+msgstr 	"ログアウトしました。"
+msgid  	"Back"
+msgstr 	"戻る"
+msgid  	"Select module"
+msgstr 	"モジュール追加"
+msgid  	"Next&gt;&gt;"
+msgstr 	"次へ&gt;&gt;"
+msgid  	"&lt;&lt;Back"
+msgstr 	"&lt;&lt;前へ"
+msgid  	"&gt;&gt;"
+msgstr 	"&gt;&gt;"
+msgid  	"&nbsp;&nbsp;|&nbsp;&nbsp;"
+msgstr 	"&nbsp;&nbsp;|&nbsp;&nbsp;"
+
+msgid  	"Room name"
+msgstr 	"ルーム名称"
+
+msgid  	"Page name"
+msgstr 	"ページ名称"
+
+msgid  	"Community name"
+msgstr 	"コミュニティ名称"
+
+msgid  	"Control panel"
+msgstr 	"コントロールパネル"
+
+msgid  	"New module"
+msgstr 	"新規モジュール"
+
+msgid  	"Grouping"
+msgstr 	"グループ化"
+msgid  	"Cancel grouping"
+msgstr 	"グループ化解除"
+
+msgid  	"The page will be automatically reloaded.If otherwise, please click <a href="%s">here</a>."
+msgstr 	"ページが自動的に更新されない場合は<a href="%s">こちら</a>をクリックしてください。"
+
+msgid  	"Publishing setting"
+msgstr 	"公開設定"
+
+msgid  	"Template"
+msgstr 	"テンプレート"
+
+msgid  	"Open for all members"
+msgstr 	"すべての会員をデフォルトで参加させる"
+
+msgid  	"Public room"
+msgstr 	"パブリック"
+msgid  	"Myportal"
+msgstr 	"マイポータル"
+msgid  	"Private room"
+msgstr 	"マイルーム"
+msgid  	"Community"
+msgstr 	"コミュニティ"
+msgid  	"Myportal of %s"
+msgstr 	"%sのマイポータル"
+msgid  	"Private room of %s"
+msgstr 	"%sのマイルーム"
+
+msgid  	"Permalink"
+msgstr 	"固定リンク"
+
+msgid  	"Participation user"
+msgstr 	"参加会員"
+
+msgid  	"Administrator"
+msgstr 	"管理者"
+msgid  	"Room Manager"
+msgstr 	"主担"
+msgid  	"Moderator"
+msgstr 	"モデレータ"
+msgid  	"Common User"
+msgstr 	"一般"
+msgid  	"Guest"
+msgstr 	"ゲスト"
+
+msgid  	"Non members"
+msgstr 	"不参加"
+msgid  	"Participation authority"
+msgstr 	"参加権限"
+
+msgid  	"Select All"
+msgstr 	"全選択"
+
+msgid  	"Release All"
+msgstr 	"全解除"
+
+msgid  	"Add&gt;&gt;"
+msgstr 	"追加&gt;&gt;"
+
+msgid  	"&lt;&lt;Delete"
+msgstr 	"&lt;&lt;削除"
+
+msgid  	"Automatic"
+msgstr 	"自動"
+
+msgid  	"Japanese"
+msgstr 	"日本語"
+
+msgid  	"English"
+msgstr 	"English"
+
+msgid  	"Not specified"
+msgstr 	"指定なし"
+
+msgid  	"Home"
+msgstr 	"ホーム"
+
+msgid  	"Browsing history"
+msgstr 	"閲覧履歴"
+
+# アップロード関連
+msgid  	"Has been successfully uploaded."
+msgstr 	"アップロードに成功しました。"
+
+msgid  	"Specify the file."
+msgstr 	"ファイルを指定してください。"
+
+msgid  	"Only BMP,GIF,JPEG,PNG files are allowed as image files."
+msgstr 	"BMP,GIF,JPEG,PNGファイルのいずれかを指定してください。"
+
+msgid  	"Invalid MimeType."
+msgstr 	"拡張子に対応したMimeTypeではありません。拡張子を適切に変更して下さい。"
+
+msgid  	"Invalid extension."
+msgstr 	"無効の拡張子です。"
+
+msgid  	"File width must be smaller than %u."
+msgstr 	"ファイルの広さが大きすぎます。%u pixelまでにしてください。"
+
+msgid  	"File height must be smaller than %u."
+msgstr 	"ファイルの高さが大きすぎます。%u pixelまでにしてください。"
+
+msgid  	"File size too large. Max %u byte."
+msgstr 	"ファイルサイズが大きすぎます。%s Byteまでにしてください。"
+
+msgid  	"The uploaded file is too big! It exceeds the upload_max_filesize defined in php.ini."
+msgstr 	"アップロードされたファイルは、php.ini の upload_max_filesize ディレクティブの値を超えています。"
+
+msgid  	"The uploaded file is too big! It exceeds the MAX_FILE_SIZE defined in HTML form."
+msgstr 	"アップロードされたファイルは、htmlフォームで指定された max_file_size を超えています。"
+
+msgid  	"Only partially uploaded."
+msgstr 	"アップロードされたファイルは一部のみしかアップロードされていません。"
+
+msgid  	"Failed uploading file."
+msgstr 	"ファイルのアップロードに失敗しました。"
+
+msgid  	"Filename rejected."
+msgstr 	"アップロード不可のファイル形式です。"
+
+msgid  	"Total file size uploaded to the room, %s, exceeded the limit.<br />The limit is %sByte(%sByte left)."
+msgstr 	"%sルームにアップロードしたファイルサイズの合計が大きすぎます<br />合計%sbyte(残り:%sbyte)までしか使用できません。"
+
+msgid  	"Total file size exceeded the limit.<br />Only %sByte left."
+msgstr 	"ファイルサイズの合計が大きすぎます<br />あと%sbyteまでしか使用できません。"
+
+msgid  	"Search for the members"
+msgstr 	"対象会員の絞込み"
+
+##日時フォーマット
+msgid  	"Y-m-d"
+msgstr 	"Y/m/d"
+
+msgid  	"y-m-d"
+msgstr 	"y/m/d"
+
+msgid  	"g:ia"
+msgstr 	"g:ia"
+
+#msgid  "H:i:s"
+#msgstr "H:i:s"
+
+msgid  	"H:i"
+msgstr 	"H:i"
+
+msgid  	"Y-m-d H:i:s"
+msgstr 	"Y/m/d H:i:s"
+
+msgid  	"Y-m-d H:i"
+msgstr 	"Y/m/d H:i"
+
+msgid  	"y-m-d H:i:s"
+msgstr 	"y/m/d H:i:s"
+
+## 新規カラム追加
+msgid  	"Leftcolumn"
+msgstr 	"左カラム"
+msgid  	"Rightcolumn"
+msgstr 	"右カラム"
+msgid  	"Headercolumn"
+msgstr 	"ヘッダーカラム"
+msgid  	"Footercolumn"
+msgstr 	"フッターカラム"
+
+msgid  	"add_new_leftcolumn"
+msgstr 	"左カラム編集"
+msgid  	"add_new_rightcolumn"
+msgstr 	"右カラム編集"
+msgid  	"add_new_headercolumn"
+msgstr 	"ヘッダーカラム編集"
+msgid  	"add_new_footercolumn"
+msgstr 	"フッターカラム編集"
+
+msgid  	"Confirm"
+msgstr 	"登録確認"
+
+msgid  	"[Hold down the Ctrl-key (Windows) / Command-key (Macintosh) while click for multiple selections.]"
+msgstr 	"【WindowsはCtrl+クリック、MacはCommand+クリックで複数選択できます】"
+
+msgid  	"This session will timeout in 1 minutes. <br />Refresh by clicking on some link or button.<br />If you are editing some content, you\'d better save it as a local file. Otherwise, it will be lost."
+msgstr 	"セッションのタイムアウトまであと一分です。<br />リンク等で再描画してください。<br />現在作業中の内容をローカルに保存することをお勧めします。"

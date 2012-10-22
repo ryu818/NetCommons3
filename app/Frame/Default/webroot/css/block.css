@@ -1,0 +1,14 @@
+.th_default .th_default_title {
+	/*padding:5px;*/
+	padding:10px;
+	font-size:116%;
+	height:1.1em;
+	font-weight:bold;
+	white-space:nowrap;
+}
+.th_default .th_default_content {
+	padding:5px 10px;
+}
+.th_default a.hover_highlight:hover {
+	text-decoration:none;
+}

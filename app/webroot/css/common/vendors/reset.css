@@ -1,0 +1,76 @@
+/*
+Copyright (c) 2010, Yahoo! Inc. All rights reserved.
+Code licensed under the BSD License:
+http://developer.yahoo.com/yui/license.html
+version: 3.1.0
+build: 2026
+*/
+html{color:#000;}body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td{margin:0;padding:0;}table{border-collapse:collapse;border-spacing:0;}fieldset,img{border:0;}address,caption,cite,code,dfn,em,strong,th,var{font-style:normal;font-weight:normal;}caption,th{text-align:left;}h1,h2,h3,h4,h5,h6{font-size:100%;font-weight:normal;}q:before,q:after{content:'';}abbr,acronym{border:0;font-variant:normal;}sup{vertical-align:text-top;}sub{vertical-align:text-bottom;}input,textarea,select{font-family:inherit;font-size:inherit;font-weight:inherit;}input,textarea,select{*font-size:100%;}legend{color:#000;}
+
+/*
+Yahoo UI Library Font-size Adjustment
+Usage : http://developer.yahoo.com/yui/3/cssfonts/
+		px  %
+		10  77%
+		11  85%
+		12  93%
+		13  100%
+		14  108%
+		15  116%
+		16  123.1%
+		17  131%
+		18  138.5%
+		19  146.5%
+		20  153.9%
+		21  161.6%
+		22  167%
+		23  174%
+		24  182%
+		25  189%
+		26  197%
+*/
+body {font:13px/1.231 arial,helvetica,clean,sans-serif;*font-size:small;*font:x-small;}table {font-size:inherit;font:100%;}pre,code,kbd,samp,tt{font-family:monospace;*font-size:108%;line-height:100%;}
+/* By 再定義 R.Masukawa */
+li,blockquote {
+	margin:0 0 0 20px;
+}
+ul li {
+	list-style: disc outside none;
+}
+
+/* HTML5 elements */
+/*
+header,
+hgroup,
+footer,
+section,
+article,
+aside,
+menu,
+nav,
+figure,
+figcaption,
+summary,
+details,
+audio,
+canvas,
+embed,
+video {background:transparent;outline:0;margin:0;padding:0;}
+
+
+command,
+datalist,
+details,
+keygen,
+mark,
+meter,
+output {background:transparent;outline:0;margin:0;padding:0;}
+
+progress,
+time,
+figcaption {font-style:normal;font-family:inherit;font-size:inherit;font-weight:inherit;}
+
+r,
+rp,
+rt {font-style:normal;font-family:inherit;font-size:inherit;font-weight:inherit;}
+*/

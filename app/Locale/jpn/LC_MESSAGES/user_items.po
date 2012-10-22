@@ -1,0 +1,87 @@
+## users項目名
+msgid  	"ID"
+msgstr 	"ログインID"
+
+msgid  	"Password"
+msgstr 	"パスワード"
+
+msgid  	"Name"
+msgstr 	"氏名"
+
+msgid  	"Handle"
+msgstr 	"ハンドル"
+
+msgid  	"E-mail"
+msgstr 	"eメール"
+
+msgid  	"Mobile mail"
+msgstr 	"携帯メール"
+
+msgid  	"TimeZone"
+msgstr 	"タイムゾーン"
+
+msgid  	"Language"
+msgstr 	"言語"
+
+msgid  	"Avatar"
+msgstr 	"アバター"
+
+msgid  	"Authority"
+msgstr 	"権限"
+
+msgid  	"Status"
+msgstr 	"状態"
+
+msgid  	"Link Identifier"
+msgstr 	"リンク識別子"
+
+msgid  	"Created"
+msgstr 	"作成日時"
+
+msgid  	"Creator"
+msgstr 	"作成者"
+
+msgid  	"Modified"
+msgstr 	"更新日時"
+
+msgid  	"Modifier"
+msgstr 	"更新者"
+
+msgid  	"Password has been changed"
+msgstr 	"パスワード変更日時"
+
+msgid  	"Last login"
+msgstr 	"最終ログイン日時"
+
+msgid  	"Previous login"
+msgstr 	"前回ログイン日時"
+
+msgid  	"Sex"
+msgstr 	"性別"
+
+msgid  	"Male"
+msgstr 	"男"
+
+msgid  	"Female"
+msgstr 	"女"
+
+msgid  	"Profile"
+msgstr 	"プロフィール"
+
+msgid  	"Admin"
+msgstr 	"管理"
+
+msgid  	"Please choose at least 4 characters string. No space or special character is allowed."
+msgstr 	"4文字以上の英数字または記号を入力"
+
+msgid  	"active"
+msgstr 	"利用可能"
+
+msgid  	"nonactive"
+msgstr 	"利用不可"
+
+msgid  	"waiting"
+msgstr 	"承認待ち"
+
+msgid  	"not yet logged-in"
+msgstr 	"承認済み"

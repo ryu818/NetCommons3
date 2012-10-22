@@ -1,0 +1,8 @@
+msgid  	"New group"
+msgstr 	"新規グループ"
+
+msgid  	"Because of the possibility of inconsistency happening, update will not be executed. <br /> Please redraw and update again."
+msgstr 	"不整合が発生する可能性があるため、更新を行いませんでした。<br/>再描画後、再度、実行してください。"
+
+msgid  	"More than this, can not be grouped complex."
+msgstr 	"これ以上、複雑なグループ化はできません。"

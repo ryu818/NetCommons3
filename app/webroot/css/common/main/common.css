@@ -1,0 +1,447 @@
+/* 共通 */
+/* for IE6 */
+* html body {
+    font-family: "ＭＳ Ｐゴシック", "MS PGothic", Sans-Serif;
+}
+* html input, * html textarea {
+    font-family: "ＭＳ Ｐゴシック", "MS PGothic", Sans-Serif;
+}
+
+/* 共通クラス */
+.none {
+	display:none !important;
+}
+
+.top {
+	vertical-align: top !important;
+}
+.bottom {
+	vertical-align: bottom !important;
+}
+
+.float-left {
+	float:left !important;
+}
+
+.float-right {
+	float:right !important;
+}
+
+.clear {
+	clear : both !important;
+}
+.clearfix:after {
+	content: ".";
+	display: block !important;
+	clear: both !important;
+	height: 0 !important;
+	visibility: hidden !important;
+}
+
+.align-left {
+	text-align:left !important;
+}
+
+.align-center {
+	text-align:center !important;
+}
+
+.align-right {
+	text-align:right !important;
+}
+
+.widthmax {
+	width:100%;
+}
+
+.visible-hide {
+	visibility:hidden;
+}
+.display-block {
+	display:block;
+}
+.display-none {
+	display:none;
+}
+
+.display-inline {
+	display:inline;
+}
+
+.relative {
+	position:relative;
+}
+
+.absolute {
+	position:absolute;
+}
+
+.pointer_cursor {
+	cursor:pointer !important;
+}
+.move_cursor {
+	cursor:move !important;
+}
+
+.nowrap {
+	white-space:nowrap !important;
+}
+
+.bold {
+	font-weight:bold !important;
+}
+
+.clearfix {
+	min-height: 1px !important;
+}
+
+* html .clearfix {
+	height: 1px !important;
+}
+
+/* ブロック関連  */
+.table {
+	display:table;
+}
+.table_row {
+	display:table-row;
+}
+
+.table_cell {
+	display:table-cell;
+}
+
+
+/* ダイアログ - 共通 */
+.nc_toggledialog {
+	background-color: #fcfcfc;
+	border-color:#CCCCCC #ACA899 #ACA899 #CCCCCC;
+	border-style:solid;
+	border-width:1px;
+	position:absolute;
+	line-height: 1.3;
+	/*border: 1px solid #ababab;*/
+	z-index:1;
+	padding:8px;
+}
+
+/* リストボックス - 共通 */
+a.listbox {
+	display: block;
+	height: 19px;
+	background: url('../../img/plugins/nc_wysiwyg/panel/btn.gif') repeat-x 0 -280px;
+	border-width: 1px 0;
+	border-style: solid;
+	border-color: #ABABAB;
+	cursor: pointer;
+	margin-right:5px;
+	text-decoration:none;
+	position:relative;
+}
+a.listbox:hover { background-position: 0 -301px; }
+
+a span.listbtn {
+	right: 4px;
+	top: 7px;
+	height: 6px;
+	background: url('../../img/plugins/nc_wysiwyg/panel/arrow.gif') no-repeat 0 0;
+	position: absolute;
+	width:9px;
+}
+a span.listcontent {
+	margin: 0 -1px;
+	position: relative;
+	display:block;
+	border-width: 0 1px;
+	border-style: solid;
+	border-color: #ABABAB;
+	height: 15px;
+	overflow: hidden;
+	font-size : 12px;
+	padding:2px 5px;
+	color: #333333;
+}
+a span.listcontent * {
+	font-size : 12px !important;
+	padding : 0;
+	margin : 0;
+}
+div.listmenu {
+	position:absolute;
+	display:none;
+	line-height: 1.3;
+	z-index:1;
+	/*background-color:#FFFFFF;*/
+	border-radius:2px;
+	box-shadow:0 3px 3px rgba(0, 0, 0, 0.3);
+	background:none repeat scroll 0 0 #FFFFFF;
+	border:1px solid #EFEFEF;
+}
+div.listmenu ul.listmenu_outer {
+	display: block;
+	/* background-color:#FFFFFF; */
+	/* border: 1px solid #ABABAB; */
+}
+
+div.listmenu ul.listmenu_outer li {
+	list-style: none;
+	padding : 0;
+	margin : 0;
+	width:100%;
+	text-align: left;
+}
+
+div.listmenu ul.listmenu_outer li a {
+	display:block;
+	padding:2px 5px;
+	overflow:hidden;
+	cursor: pointer;
+	border-style: solid;
+	border-width: 1px 0;
+	border-color: #FFFFFF;
+	text-decoration:none;
+	color:#333333;
+	background-color:#FFFFFF;
+	white-space:nowrap;
+}
+
+div.listmenu ul.listmenu_outer li a:hover, div.listmenu ul.listmenu_outer li a.active {
+	background-color: #FFF7D3;
+	border-style: dotted;
+	border-width: 1px 0;
+	border-color: #666665;
+}
+
+div.listmenu_histories a {
+	width:180px;
+}
+div.listmenu_languages a {
+	width:100px;
+}
+
+/* 時間 */
+input.nc_date {
+    width: 80px !important;
+}
+input.nc_time {
+    width: 60px !important;
+}
+
+/* モーダル */
+#nc_modal {
+	top:0;
+	left:0;
+	position:absolute;
+}
+/*
+div.selectlist{
+	float:left;
+	text-align:center;
+	padding:10px 0;
+}
+select.selectlist {
+	width:180px;
+	height:250px;
+	margin:5px;
+}
+.selectlist_title {
+	font-weight:bold;
+	padding:5px;
+}
+.selectlist_btn {
+	float:left;
+	text-align:center;
+	width:90px;
+	padding:150px 0 0;
+}
+*/
+
+/* WYSIWYG:IE+Ajaxの場合、一度目が正常に表示されないため */
+textarea.nc_wysiwyg {
+	width:520px;
+}
+
+.outer {
+	padding:0.7em;
+}
+
+/* アイコン画像 */
+img.icon {
+	vertical-align:middle;
+}
+
+/* 矢印 */
+.nc_arrow {
+    border-color: #565656 transparent transparent;
+    border-right: 3px dashed transparent;
+    border-style: solid dashed dashed;
+    border-width: 4px 4px 0;
+    display: inline-block;
+    font-size: 0;
+    height: 0;
+    left: 0;
+    line-height: 0;
+    padding-top: 1px;
+    position: relative;
+    top: -1px;
+    width: 0;
+}
+
+.nc_arrow_up {
+    border-color: #565656 transparent;
+    border-width: 0 4px 4px;
+    border-style: solid;
+	display: inline-block;
+    font-size: 0;
+    height: 0;
+    left: 0px;
+    line-height: 0;
+    padding-top: 1px;
+    position: relative;
+    top: -4px;
+    width: 0;
+}
+
+/* ページ移動 */
+ul.nc_pager {
+	list-style-type: none;
+	margin: 0 0 1em;
+	padding: 0;
+}
+
+ul.nc_pager li {
+    /* font-size: 13px; */
+    display: inline;
+    line-height: 0;
+    margin: 0;
+    padding: 0;
+}
+
+ul.nc_pager a, ul.nc_pager a:visited, ul.nc_pager a:hover, ul.nc_pager span.nc_pager_current,ul.nc_pager span.nc_pager_dots {
+    /* background: url() no-repeat scroll left top transparent; */
+    width: 25px;
+    color: #777777;
+    display: block;
+    float: left;
+    line-height: 25px;
+    margin: 0 3px 0 0;
+    padding: 0;
+    text-align: center;
+    border-radius:3px;
+    border: 1px solid #CCCCCC;
+    text-decoration: none;
+}
+
+ul.nc_pager span.nc_pager_current {
+    /* background: url("") no-repeat scroll left top transparent; */
+    background-color:#7E9693;
+    color: #FFFFFF;
+}
+
+/* 編集画面リスト */
+ul.lists {
+	margin:0;
+	padding:0;
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+	float:left;
+}
+ul.lists li {
+	margin:0;
+	list-style-type: none;
+	clear: both;
+	/*border-top: 1px solid #D0D0D1;*/
+}
+
+ul.lists li dl {
+	clear: both;
+    /*content: ".";*/
+    display: block;
+    height: 0;
+}
+
+ul.lists li dl dt {
+	float: left;
+    padding: 10px;
+    width : 100px;
+
+}
+
+ul.lists li dl dd {
+	float: left;
+    overflow: hidden;
+    padding: 10px;
+    /*width : 200px;*/
+}
+
+/** Debugging **/
+table.nc-log {
+	background: #ffffff;
+	width:100%;
+	clear: both;
+}
+.nc-log td {
+	vertical-align:top;
+	border:1px solid #cccccc;
+	padding: 4px 8px;
+	text-align: left;
+	font-family: Monaco, Consolas, "Courier New", monospaced;
+}
+.nc-log td.nc-php-log {
+	background-color:#fff5d5;
+}
+.nc-log td.nc-log-child-url {
+	background-color:#fff5d5;
+	padding-left:30px;
+}
+div#nc-fatal_error {
+	background-color:#ff0000;
+	color:#ffffff;
+}
+.nc-log caption {
+	color:#000000;
+	background-color:#efefef;
+}
+pre.cake-debug {
+	background: #ffcc00;
+	line-height: 140%;
+	margin-top: 0.5em;
+	overflow: auto;
+	position: relative;
+}
+p.nc-log-post,p.nc-log-get {
+	font-weight:bold;
+	padding: 3px 10px;
+	background-color: #ffffff;
+	border: 1px solid #cccccc;
+	margin: 5px 0 5px 10px;
+}
+td.nc-log-save {
+	background-color: #d5ffe6;
+}
+.cake-error {
+	background-color: #fc9595;
+	padding:10px;
+}
+.cake-stack-trace {
+	background-color: #ffd5d5;
+	padding:6px;
+}
+.cake-code-dump {
+	border: 1px solid #fc9595;
+	padding:6px;
+	margin:6px;
+}
+.cake-context {
+	border: 1px solid #fc9595;
+	padding:6px;
+	margin:6px;
+}
+.stack-trace {
+	padding:6px;
+}
+.nc-log-second {
+	font-weight:bold;
+	color:#0000ff;
+}

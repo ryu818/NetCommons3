@@ -1,0 +1,11 @@
+#UserLoginId, #UserPassword {
+	width:15em;
+}
+.login_save_my_info {
+	white-space:nowrap;
+	padding: 5px 0;
+}
+
+.login_base {
+	padding:20px 150px;
+}

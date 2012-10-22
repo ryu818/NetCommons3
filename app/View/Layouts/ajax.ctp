@@ -16,4 +16,10 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 ?>
+<?php
+if(isset($this->request->query['_pjax']) && $this->request->is('ajax')) {
+	echo($this->element('Pages/title'));
+}
+?>
 <?php echo $this->fetch('content'); ?>
+<?php echo $this->element('sql_dump'); ?>

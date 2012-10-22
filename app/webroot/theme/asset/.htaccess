@@ -1,0 +1,9 @@
+<FilesMatch "\.js\.gz$">
+    ForceType application/x-javascript
+    AddEncoding x-gzip .gz
+</FilesMatch>
+
+<FilesMatch "\.css\.gz$">
+    ForceType text/css
+    AddEncoding x-gzip .gz
+</FilesMatch>

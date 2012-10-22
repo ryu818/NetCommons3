@@ -1,37 +1,41 @@
-<?php
-/**
- *
- * PHP 5
- *
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
- *
- * Licensed under The MIT License
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @package       Cake.View.Layouts
- * @since         CakePHP(tm) v 0.10.0.1076
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
- */
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
 <?php echo $this->Html->charset(); ?>
-<title><?php echo $page_title; ?></title>
-
+<title><?php echo h($page_title); ?></title>
+<?php
+if(method_exists($this->Html,'fetchScript')) {
+	echo($this->element('Pages/include_header'));
+} else {
+	echo($this->element('Pages/include_header_error'));
+}
+?>
+<?php echo $this->Html->css('redirect/', null, array('inline' => true, 'data-title' => 'Redirect')); ?>
 <?php if (Configure::read('debug') == 0) { ?>
-<meta http-equiv="Refresh" content="<?php echo $pause; ?>;url=<?php echo $url; ?>"/>
+<meta http-equiv="Refresh" content="<?php echo $pause; ?>;url=<?php echo $url; ?>">
 <?php } ?>
-<style><!--
-P { text-align:center; font:bold 1.1em sans-serif }
-A { color:#444; text-decoration:none }
-A:HOVER { text-decoration: underline; color:#44E }
---></style>
 </head>
-<body>
-<p><a href="<?php echo $url; ?>"><?php echo $message; ?></a></p>
+<body class="nc_redirect_body">
+	<ul class="nc_redirect">
+		<li class="nc_redirect_text">
+			<?php echo($message); ?>
+		</li>
+		<li class="nc_redirect_subtext">
+			<?php echo(sprintf($sub_message, h($url))); ?>
+		</li>
+		<?php if(isset($error_id_str) && $error_id_str != ''): ?>
+			<li class="nc_redirect_subtext">
+				(error:<?php echo($error_id_str); ?>)
+			</li>
+		<?php endif; ?>
+	</ul>
+<?php
+if(Configure::read('debug') == _OFF) {
+	echo "<script>".
+	"setTimeout(function(){var location_str = '".h($url)."';location.href=location_str.replace(/&amp;/ig,\"&\");}, ".$pause."*1000);".
+	"</script>";
+}
+?>
+<?php echo $this->element('sql_dump'); ?>
 </body>
 </html>

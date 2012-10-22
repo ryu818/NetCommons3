@@ -1,22 +1,16 @@
 <?php
 /**
- * Static content controller.
+ * PagesControllerクラス
  *
- * This file will render views from views/pages/
+ * <pre>
+ * ページ表示用コントローラ
+ * </pre>
  *
- * PHP 5
- *
- * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
- * Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
- *
- * Licensed under The MIT License
- * Redistributions of files must retain the above copyright notice.
- *
- * @copyright     Copyright 2005-2012, Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link          http://cakephp.org CakePHP(tm) Project
- * @package       app.Controller
- * @since         CakePHP(tm) v 0.2.9
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @copyright     Copyright 2012, NetCommons Project
+ * @package       App.Controller
+ * @author        Noriko Arai,Ryuji Masukawa
+ * @since         v 3.0.0.0
+ * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 
 App::uses('AppController', 'Controller');
@@ -39,37 +33,28 @@ class PagesController extends AppController {
 	public $name = 'Pages';
 
 /**
- * This controller does not use a model
+ * Model name
  *
  * @var array
  */
-	public $uses = array();
+	public $uses = array('Page','Block');
 
 /**
- * Displays a view
+ * page_id配列
  *
- * @param mixed What page to display
- * @return void
+ * @var array
  */
-	public function display() {
-		$path = func_get_args();
+	public $page_id_arr = null;
 
-		$count = count($path);
-		if (!$count) {
-			$this->redirect('/');
-		}
-		$page = $subpage = $title_for_layout = null;
+	public function index() {
+		$user = $this->Auth->user();
+		$blocks = $this->Block->findByPageIds($this->page_id_arr, intval($user['id']));
+		$pages = $this->Page->findByIds($this->page_id_arr, intval($user['id']));
 
-		if (!empty($path[0])) {
-			$page = $path[0];
-		}
-		if (!empty($path[1])) {
-			$subpage = $path[1];
-		}
-		if (!empty($path[$count - 1])) {
-			$title_for_layout = Inflector::humanize($path[$count - 1]);
-		}
-		$this->set(compact('page', 'subpage', 'title_for_layout'));
-		$this->render(implode('/', $path));
+		$this->set("blocks", $blocks);
+		$this->set("pages", $pages);
+		$this->set("page_id_arr", $this->page_id_arr);
+
+		//$this->render('responsive');
 	}
 }

@@ -1,0 +1,16 @@
+/* Theme */
+.th_default_blue {
+	background:url("../../frame/default/img/blue/back.gif") repeat-x scroll left top #ffffff;
+	border:1px solid #92d0dd;
+}
+
+/* highlight */
+.th_default_blue .highlight{
+	background-color:#e8f5f8;
+	color:#3ba6bd;
+}
+
+.th_default_blue a.hover_highlight:hover {
+	background-color:#e8f5f8;
+	color:#3ba6bd;
+}
