@@ -1,0 +1,13 @@
+<?php
+define("NC_DRIVER", '{default_driver}');
+define("NC_PERSISTENT", {default_persistent});
+define("NC_HOST", '{default_host}');
+define("NC_LOGIN", '{default_login}');
+define("NC_PASSWORD", '{default_password}');
+define("NC_DATABASE", '{default_database}');
+define("NC_PREFIX", '{default_prefix}');
+define("NC_ENCODING", 'utf8');
+Configure::write('Security.salt', '{default_salt}');
+Configure::write('Security.cipherSeed', '{default_cipherSeed}');
+
+define("NC_INSTALLED", false);

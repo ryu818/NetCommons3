@@ -23,6 +23,11 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 
+/*
+ * NC用
+*/
+require 'defines.inc.php';
+
 /**
  * Cache Engine Configuration
  * Default settings provided below
@@ -179,3 +184,17 @@ CakeLog::config('error', array(
 	'types' => array('warning', 'error', 'critical', 'alert', 'emergency'),
 	'file' => 'error',
 ));
+
+if (file_exists(dirname(__FILE__) . DS . NC_INSTALL_INC_FILE)) {
+	include_once dirname(__FILE__) . DS . NC_INSTALL_INC_FILE;
+}
+if (file_exists(dirname(__FILE__) . DS . NC_VERSION_FILE)) {
+	include_once dirname(__FILE__) . DS . NC_VERSION_FILE;
+}
+
+if (!defined('PEAR')) {
+	// PEAR定数が定義されていなければ定義する。
+	define('PEAR', VENDORS . 'pear'.DS);
+}
+// include_path に pearのライブラリパスを追加
+set_include_path(PEAR . PATH_SEPARATOR . get_include_path());
