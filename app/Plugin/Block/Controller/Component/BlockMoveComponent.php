@@ -95,19 +95,6 @@ class BlockMoveComponent extends Component {
 			}
 		}
 
-		//移動先より大きな列+1
-		$buf_block = $block;
-		$buf_block['Block']['parent_id'] = $parent_id;
-		$buf_block['Block']['col_num'] = $col_num;
-		if($insert_page) {
-			$buf_block['Block']['page_id'] = $insert_page['Page']['id'];
-		}
-
-		$result = $this->_controller->BlockOperation->incrementColNum($buf_block);
-		if(!$result) {
-			return false;
-		}
-
 		//UpdateCol
 		if($parent_id == 0) {
 			$root_id = $block['Block']['id'];
@@ -166,7 +153,20 @@ class BlockMoveComponent extends Component {
 
 		//グループ化した空ブロック削除処理
 		if($pre_count_row_num == 1) {
-			$this->delGroupingBlock($pre_parent_id);
+			$this->delGroupingBlock($pre_parent_id, $id);
+		}
+
+		//移動先より大きな列+1
+		$buf_block = $block;
+		$buf_block['Block']['parent_id'] = $parent_id;
+		$buf_block['Block']['col_num'] = $col_num;
+		if($insert_page) {
+			$buf_block['Block']['page_id'] = $insert_page['Page']['id'];
+		}
+		
+		$result = $this->_controller->BlockOperation->incrementColNum($buf_block);
+		if(!$result) {
+			return false;
 		}
 		return true;
 	}
@@ -208,20 +208,6 @@ class BlockMoveComponent extends Component {
 			if(!$result) {
 				return false;
 			}
-		}
-
-		//前詰め処理（移動先)
-		$buf_block = $block;
-		$buf_block['Block']['parent_id'] = $parent_id;
-		$buf_block['Block']['col_num'] = $col_num;
-		$buf_block['Block']['row_num'] = $row_num - 1;
-		if($insert_page) {
-			$buf_block['Block']['page_id'] = $insert_page['Page']['id'];
-		}
-		$result = $this->_controller->BlockOperation->incrementRowNum($buf_block);
-
-		if(!$result) {
-			return false;
 		}
 
 		//UpdateRow
@@ -309,7 +295,21 @@ class BlockMoveComponent extends Component {
 
 		//グループ化した空ブロック削除処理
 		if($pre_count_row_num == 1) {
-			$this->delGroupingBlock($pre_parent_id);
+			$this->delGroupingBlock($pre_parent_id, $id);
+		}
+
+		//前詰め処理（移動先)
+		$buf_block = $block;
+		$buf_block['Block']['parent_id'] = $parent_id;
+		$buf_block['Block']['col_num'] = $col_num;
+		$buf_block['Block']['row_num'] = $row_num - 1;
+		if($insert_page) {
+			$buf_block['Block']['page_id'] = $insert_page['Page']['id'];
+		}
+		$result = $this->_controller->BlockOperation->incrementRowNum($buf_block);
+		
+		if(!$result) {
+			return false;
 		}
 
 		return true;
@@ -377,11 +377,14 @@ class BlockMoveComponent extends Component {
 
 /**
  * グループ化した空ブロック削除処理
+ * 
+ * @param integer $parent_id
+ * @param integer $block_id	操作対象block_id
  *
  * @return boolean true or false
  * @access	private
  */
-	public function delGroupingBlock($parent_id)
+	public function delGroupingBlock($parent_id, $block_id = null)
 	{
 		$block = $this->_controller->Block->findById($parent_id);
 		if(!empty($block)) {
@@ -398,6 +401,10 @@ class BlockMoveComponent extends Component {
 			    //削除処理
 				$this->_controller->Content->delete($block['Block']['content_id']);
 			    $this->_controller->Block->delete($parent_id);
+			    if($block_id) {
+			    	// 操作対象block_idがあれば、更新対象にしない
+			    	$block['Block']['id'] = $block_id;
+			    }
 			    //前詰め処理(移動元)
 			    $result = $this->_controller->BlockOperation->decrementRowNum($block);
 				if(!$result) {
@@ -414,7 +421,7 @@ class BlockMoveComponent extends Component {
 				}
 			    //再帰処理
 			    if($block['Block']['parent_id'] != 0) {
-				    $result = $this->delGroupingBlock($block['Block']['parent_id']);
+				    $result = $this->delGroupingBlock($block['Block']['parent_id'], $block_id);
 				    if(!$result) {
 						return false;
 					}

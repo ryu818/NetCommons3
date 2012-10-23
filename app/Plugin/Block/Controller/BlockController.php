@@ -92,26 +92,32 @@ class BlockController extends BlockAppController {
 	public function insert_row() {
 		$user_id = $this->Auth->user('id');
 		$insert_page = null;
+		$block = $this->request->params['block'];
+		$page = $this->request->params['page'];
+		$page_id = $page['Page']['id'];
+		$show_count = $this->request->data['show_count'];
 
 		if(isset($this->request->data['insert_page_id'])) {
 			$insert_page = $this->Page->findByIds(intval($request->data['insert_page_id']), $user_id);
 			if(!$insert_page || $insert_page['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
-				$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), null, 'insert_cell.001', '403');
+				$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), null, 'insert_row.001', '403');
 			}
 		}
 
 		if(!$this->BlockMove->validatorRequest($this->request, $insert_page)) {
 			// Error
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'insert_cell.002', '400');
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'insert_row.002', '400');
 			return;
 		}
 
-		// TODO: ShowCountのチェック
+		if(!$page || $page['Page']['show_count'] != $show_count) {
+			$this->flash(__d('block', 'Because of the possibility of inconsistency happening, update will not be executed. <br /> Please redraw and update again.'), null, 'insert_row.003', '400');
+			return;
+		}
 
 		// TODO: ShowCountのチェック(insert_page_id)
 
-		$block = $this->request->params['block'];
-		$page = $this->request->params['page'];
+		
 
 		$ret = $this->BlockMove->InsertRow($block, $this->request->data['parent_id'], $this->request->data['col_num'], $this->request->data['row_num'], $page, $insert_page);
 		if(!$ret) {
@@ -119,7 +125,12 @@ class BlockController extends BlockAppController {
 			return;
 		}
 
-		// TODO: 表示カウント++
+		// 表示カウント++
+		$this->Page->id = $page_id;
+		if(!$this->Page->saveField('show_count', intval($show_count) + 1)) {
+			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'insert_row.006', '400');
+			return;
+		}
 
 		$this->render("/Commons/true");
 	}
@@ -133,6 +144,10 @@ class BlockController extends BlockAppController {
 	public function insert_cell() {
 		$user_id = $this->Auth->user('id');
 		$insert_page = null;
+		$block = $this->request->params['block'];
+		$page = $this->request->params['page'];
+		$page_id = $page['Page']['id'];
+		$show_count = $this->request->data['show_count'];
 
 		if(isset($this->request->data['insert_page_id'])) {
 			$insert_page = $this->Page->findByIds(intval($request->data['insert_page_id']), $user_id);
@@ -147,12 +162,12 @@ class BlockController extends BlockAppController {
 			return;
 		}
 
-		// TODO: ShowCountのチェック
+		if(!$page || $page['Page']['show_count'] != $show_count) {
+			$this->flash(__d('block', 'Because of the possibility of inconsistency happening, update will not be executed. <br /> Please redraw and update again.'), null, 'insert_cell.003', '400');
+			return;
+		}
 
 		// TODO: ShowCountのチェック(insert_page_id)
-
-		$block = $this->request->params['block'];
-		$page = $this->request->params['page'];
 
 		$ret = $this->BlockMove->InsertCell($block,  $this->request->data['parent_id'], $this->request->data['col_num'], $this->request->data['row_num'], $page, $insert_page);
 		if(!$ret) {
@@ -160,7 +175,12 @@ class BlockController extends BlockAppController {
 			return;
 		}
 
-		// TODO: 表示カウント++
+		// 表示カウント++
+		$this->Page->id = $page_id;
+		if(!$this->Page->saveField('show_count', intval($show_count) + 1)) {
+			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'insert_cell.006', '400');
+			return;
+		}
 
 		$this->render("/Commons/true");
 	}

@@ -140,7 +140,7 @@
 						var left_offset = parseInt(offset.left, 10);
 						var params = new Object();
 
-						/*
+/* TODO:他カラムへの移動
 						if(t.insertAction == "insert_column") {
 							// 他カラムへの移動
 							var input_page_id = $('#' + t.insert.attr('id') + '_main_page_id');
@@ -161,7 +161,8 @@
 							}
 
 							t.insertAction = "insert_row";
-						}*/
+						}
+*/
 
 						var dur = Math.sqrt((Math.abs(top_offset^2)+Math.abs(left_offset^2))*0.015)*100;
 						block.css("position", "absolute").css("zIndex", $.Common.blockZIndex);
@@ -410,7 +411,6 @@
 					        	}
 							}
 							insert = t.currentBlocks[0];
-
 							if (!t._cloneStyle(insert, direction, force)) {
 								;
 				        	} else if(direction == "left") {
@@ -454,9 +454,7 @@
 	        		InsertCell(0, 'left', insert_columns);
 				} else {
 					//右に新列追加
-					//index = insert_columns[0].cells.length;
-					index = insert_columns.children().length - 1;
-					InsertCell(index, 'right', insert_columns);
+					InsertCell(-1, 'right', insert_columns);
 				}
 			}
 			return t.insert;
@@ -498,8 +496,12 @@
 			function InsertCell(index, direction, insert_columns){
 				var div = t.blockDummy;
 				var column = div.parent();
-				div.css('display', 'none').appendTo(insert_columns);	//退避
+				div.css('display', 'none').appendTo($(document.body));	//退避
 				delMoveEl(column);
+				if(index == -1) {
+					// 一番右
+					index = insert_columns.children().length - 1;
+				}
 				var insert_column = insert_columns.children(':eq('+index+')');
 				var new_column = $('<div></div>').addClass(insert_column.attr('class'));
 
@@ -807,7 +809,6 @@
 		},
 
 		delBlock: function( block_id ) {
-			console.log(block_id);
 			var t = this, all_delete = 0, params = new Object(), show_count_el = null;
 			var block = $('#_' + block_id);
 
