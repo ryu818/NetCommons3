@@ -7867,15 +7867,16 @@ jQuery.extend({
 		// Uppercase the type
 		s.type = s.type.toUpperCase();
 
-// Add source Ryuji.M add token
-		var nc_token = $("#nc_token");
-		if(s.type == 'POST' && s.data !== null && s.data !== undefined && nc_token.get(0)) {
-			if(s.data != '') {
-				s.data += '&';
-			}
-			s.data += 'nc_token=' + nc_token.val();
-		}
-// Add source End
+// Add Start Ryuji.M add token
+// TODO:tokenチェックは現状、未実装のため一時コメント
+//		var nc_token = $("#nc_token");
+//		if(s.type == 'POST' && s.data !== null && s.data !== undefined && nc_token.get(0)) {
+//			if(s.data != '') {
+//				s.data += '&';
+//			}
+//			s.data += 'nc_token=' + nc_token.val();
+//		}
+// Add End
 
 		// Determine if request has content
 		s.hasContent = !rnoContent.test( s.type );
