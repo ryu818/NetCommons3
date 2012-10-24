@@ -56,7 +56,8 @@ class AnnouncementOperationsComponent extends Object {
  */
 	public function delete($content) {
 		if(isset($content['Content'])) {
-			if(!$this->Htmlarea->deleteByMasterId($content['Content']['master_id'])) {
+			$condition = array('Htmlarea.master_id' => $content['Content']['master_id']);
+			if(!$this->Htmlarea->deleteAll($condition)) {
 				return false;
 			}
 		}
