@@ -130,8 +130,8 @@ class UsersController extends AppController {
                 //$this->Session->renew();
 
 				// 最終ログイン日時更新
+				$bufUser['User'] = $user;
 				$this->User->updLastLogin($bufUser);
-
 				//ログインできた、リダイレクトする
 				$this->Auth->loginRedirect = $this->Common->redirectStartpage($configs);
 				return $this->redirect($this->Auth->redirect());

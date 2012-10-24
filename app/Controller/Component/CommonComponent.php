@@ -52,7 +52,7 @@ class CommonComponent extends Component {
 				'findFields' => array(
 									'id', 'login_id', 'handle', 'username', 'authority_id',
 									'permalink', 'myportal_page_id', 'private_page_id', 'avatar',
-									'lang', 'timezone_offset', 'email', 'mobile_email',
+									'lang', 'timezone_offset', 'email', 'mobile_email', 'last_login',
 									'Authority.hierarchy', 'Authority.myportal_use_flag', 'Authority.private_use_flag',
 									'Authority.public_createroom_flag', 'Authority.group_createroom_flag', 'Authority.myportal_createroom_flag',
 									'Authority.private_createroom_flag', 'Authority.allow_htmltag_flag', 'Authority.allow_layout_flag',
