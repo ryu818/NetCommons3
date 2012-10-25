@@ -18,6 +18,109 @@ class BlockController extends BlockAppController {
 	public $uses = array('Block.BlockOperation');
 
 /**
+ * ブロック追加
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	function add_block() {
+		$user_id = $this->Auth->user('id');
+		$page_id = $this->request->data['page_id'];
+		$module_id = $this->request->data['module_id'];
+		$show_count = $this->request->data['show_count'];
+		$page = $this->Page->findByIds(intval($page_id), $user_id);
+		
+		if(!$page || $page['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
+			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), null, 'add_block.001', '403');
+			return;
+		}
+		
+		if($page['Page']['show_count'] != $show_count) {
+			$this->flash(__d('block', 'Because of the possibility of inconsistency happening, update will not be executed. <br /> Please redraw and update again.'), null, 'add_block.002', '400');
+			return;
+		}
+		
+		$module = $this->Module->findById($module_id);
+		if(!$module) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'add_block.003', '400');
+			return;
+		}
+	
+		// TODO: そのmoduleが該当ルームに貼れるかどうかのチェックが必要。
+		// グループ化ブロック（ショートカット）ならば、該当グループ内のmoduleのチェックが必要。
+		// はりつけたあと、表示されませんで終わらす方法も？？？
+		
+		$ins_content['Content'] = array(
+				'module_id' => $module['Module']['id'],
+				'title' => $module['Module']['module_name'],
+				'is_master' => _ON,
+				'room_id' => $page['Page']['room_id'],
+				'accept_flag' => NC_ACCEPT_FLAG_ON,
+				'url' => ''
+		);
+		$ins_ret = $this->Content->save($ins_content);
+		if(!$ins_ret) {
+			$this->flash(__('Failed to insert the database, (%s).', 'contents'), null, 'add_block.004', '400');
+			return;
+		}
+		$last_content_id = $this->Content->id;
+		
+		if(!isset($ins_content['Content']['master_id'])) {
+			if(!$this->Content->saveField('master_id', $last_content_id)) {
+				$this->flash(__('Failed to update the database, (%s).', 'contents'), null, 'add_block.005', '400');
+				return;
+			}
+		}
+		
+		$ins_block = array();
+		$ins_block = $this->BlockOperation->defaultBlock($ins_block);
+		$ins_block['Block'] = array_merge($ins_block['Block'], array(
+				'page_id' => $page['Page']['id'],
+				'module_id' => $module['Module']['id'],
+				'content_id' => $last_content_id,
+				'controller_action' => $module['Module']['controller_action'],
+				'theme_name' => '',
+				'root_id' => 0,
+				'parent_id' => 0,
+				'thread_num' => 0,
+				'col_num' => 1,
+				'row_num' => 1
+		));
+		
+		$ins_ret = $this->Block->save($ins_block);
+		if(!$ins_ret) {
+			$this->flash(__('Failed to insert the database, (%s).', 'blocks'), null, 'add_block.006', '400');
+			return;
+		}
+		
+		//root_idを再セット
+		$last_id = $this->Block->id;
+		if(!$this->Block->saveField('root_id', $last_id)) {
+			$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_block.007', '400');
+			return;
+		}
+		
+		$ins_ret['Block']['id'] = $this->Block->id;
+		$ins_ret['Block']['root_id'] = $this->Block->id;
+		$ins_ret['Block']['row_num'] = 0;
+		$inc_ret = $this->BlockOperation->incrementRowNum($ins_ret);
+		if(!$inc_ret) {
+			$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_block.008', '400');
+			return;
+		}
+		
+		// 表示カウント++
+		$this->Page->id = $page_id;
+		if(!$this->Page->saveField('show_count', intval($show_count) + 1)) {
+			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'add_block.009', '400');
+			return;
+		}
+	
+		echo ($this->requestAction('/active-blocks/'.$last_id.'/'.$module['Module']['edit_controller_action'], array('return')));
+		$this->render("/Commons/empty");
+	}
+
+/**
  * ブロック削除
  * @param   void
  * @return  void
@@ -101,6 +204,7 @@ class BlockController extends BlockAppController {
 			$insert_page = $this->Page->findByIds(intval($request->data['insert_page_id']), $user_id);
 			if(!$insert_page || $insert_page['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
 				$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), null, 'insert_row.001', '403');
+				return;
 			}
 		}
 
@@ -153,6 +257,7 @@ class BlockController extends BlockAppController {
 			$insert_page = $this->Page->findByIds(intval($request->data['insert_page_id']), $user_id);
 			if(!$insert_page || $insert_page['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
 				$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), null, 'insert_cell.001', '403');
+				return;
 			}
 		}
 

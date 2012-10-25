@@ -1,4 +1,10 @@
 /* Setting Mode */
+.nc_add_block_outer {
+	padding: 5px 10px;
+}
+.nc_add_block {
+	width: 200px;
+}
 
 .nc_block_dummy {
 	border:2px dotted #ffd700 !important;

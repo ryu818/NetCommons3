@@ -8,6 +8,16 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 ;(function($) {
+	$(document).ready(function(){
+		$(".nc_add_block").chosen().change( function(e){
+			var module_id = $(this).val();
+			if(module_id != 0) {
+				$.PagesBlock.addBlock($(this), module_id);
+				$('option:first', $(this)).prop('selected', true);
+			}
+			$(this).trigger("liszt:updated");
+		} );
+	});
 	$(document).click(function(event){
 		var t = $.PagesBlock, target = $(event.target);
 		if(target.get(0).tagName && target.get(0).tagName.toLowerCase() == "html") return;
@@ -500,9 +510,9 @@
 				delMoveEl(column);
 				if(index == -1) {
 					// 一番右
-					index = insert_columns.children().length - 1;
+					index = insert_columns.children('.nc_column').length - 1;
 				}
-				var insert_column = insert_columns.children(':eq('+index+')');
+				var insert_column = insert_columns.children('.nc_column:eq('+index+')');
 				var new_column = $('<div></div>').addClass(insert_column.attr('class'));
 
 				if(direction == 'left') {
@@ -532,7 +542,7 @@
 			t.columnPos[now_parent_id] = Array();
 			t.blocksPos[now_parent_id] = Array();
 
-			columns_els = columns.children();
+			columns_els = columns.children('.nc_column');
 			for (var i = 0, col_len = columns_els.length; i < col_len; i++) {
 				column = $(columns_els[i]);
 				t.columnPos[now_parent_id][i] = new Object();
@@ -610,7 +620,7 @@
 				child_els = parent_el.children();
 				if(child_els.length == 1) {
 					columns = parent_el.parents(".nc_columns:first");
-					columns_len = columns.children().length;
+					columns_len = columns.children('.nc_column').length;
 
 					group_parent = columns.parents(".nc_group:first");
 					target_remove = parent_el;	//chk.parent();
@@ -639,9 +649,9 @@
 			var columnList = Array();
 			var count_column = 0;
 
-			var block_els = current_columns.children();	//$(' > .nc_column', current_columns);
+			var block_els = current_columns.children('.nc_column');	//$(' > .nc_column', current_columns);
 			var buf_block = block;
-			//current_columns.children().each(function(k, column) {
+			//current_columns.children('.nc_column').each(function(k, column) {
 			block_els.each(function(k, column) {
 				if(column == current_column.get(0)) {
 					//既存列追加処理
@@ -807,7 +817,32 @@
 			event.preventDefault();
 			event.stopPropagation();
 		},
+		addBlock: function( sel_el, module_id ) {
+			var t = this, params = new Object(), show_count_el = null;
+			
+			var page_el = $(sel_el).parents('.add_modules:first').next('[data-page]');	// header footer
+			if(!page_el.get(0)) {
+				// left center right
+				page_el = $(sel_el).parents('[data-page]:first');
+			}
+			params['show_count'] = page_el.attr('data-show-count');
+			params['page_id'] = page_el.attr('data-page');
+			params['module_id'] = module_id;
 
+			$.post($._base_url + 'active-blocks/block/add_block',
+					params,
+					function(res){
+						var first_column = $(".nc_column:first", page_el);
+						var buf_block = first_column.children(":first");
+						if(buf_block.get(0)) {
+							buf_block.before(res);
+						} else {
+							first_column.html(res);
+						}
+						page_el.attr('data-show-count', ++params['show_count']);
+					}
+			);
+		},
 		delBlock: function( block_id ) {
 			var t = this, all_delete = 0, params = new Object(), show_count_el = null;
 			var block = $('#_' + block_id);

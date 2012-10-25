@@ -3,34 +3,7 @@
 // 同ディレクトリのindex.ctpと同等の処理になるため共通化するべき
 	$nc_user = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 	$nc_mode = $this->Session->read(NC_SYSTEM_KEY.'.'.'mode');
-	$colspan = (isset($blocks[$page_id_arr[2]]) || $nc_mode == NC_BLOCK_MODE) ? 2 : 1;
-	$colspan = (isset($blocks[$page_id_arr[3]]) || $nc_mode == NC_BLOCK_MODE) ? $colspan+1 : $colspan;
 
-	$centercolumn_id = null;
-	$headercolumn_id = null;
-	$leftcolumn_id = null;
-	$rightcolumn_id = null;
-	$footercolumn_id = null;
-	if($nc_mode == NC_BLOCK_MODE && isset($pages[$page_id_arr[0]]['Authority']['hierarchy']) && $pages[$page_id_arr[0]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
-		// centercolumn
-		$centercolumn_id = 'centercolumn_main';
-	}
-	if($nc_mode == NC_BLOCK_MODE && isset($pages[$page_id_arr[1]]['Authority']['hierarchy']) && $pages[$page_id_arr[1]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
-		// headercolumn
-		$headercolumn_id = 'headercolumn_main';
-	}
-	if($nc_mode == NC_BLOCK_MODE && isset($pages[$page_id_arr[2]]['Authority']['hierarchy']) && $pages[$page_id_arr[2]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
-		// leftcolumn
-		$leftcolumn_id = 'leftcolumn_main';
-	}
-	if($nc_mode == NC_BLOCK_MODE && isset($pages[$page_id_arr[3]]['Authority']['hierarchy']) && $pages[$page_id_arr[3]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
-		// rightcolumn
-		$rightcolumn_id = 'rightcolumn_main';
-	}
-	if($nc_mode == NC_BLOCK_MODE && isset($pages[$page_id_arr[4]]['Authority']['hierarchy']) && $pages[$page_id_arr[4]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
-		// footercolumn
-		$footercolumn_id = 'footercolumn_main';
-	}
 	if(isset($page_id_arr[1]) && $page_id_arr[1] != 0 && (isset($blocks[$page_id_arr[1]]) || $nc_mode == NC_BLOCK_MODE)) {
 		// headercolumn
 		$headercolumn_str = $this->element('Pages/column', array('blocks' => isset($blocks[$page_id_arr[1]]) ? $blocks[$page_id_arr[1]] : null, 'page' => $pages[$page_id_arr[1]], 'parent_id' => 0, 'attr' => 'data-column-top="1"'));

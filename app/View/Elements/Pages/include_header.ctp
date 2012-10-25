@@ -17,7 +17,7 @@
 $this->Html->css(array('Default.page.css', 'Default.gray/page'), null, array('frame' => true));
 
 	echo "\n".$this->fetch('meta');
-	$common_js = array('jquery/', 'plugins/jquery.pjax.js', 'common/');
+	$common_js = array('jquery/', 'plugins/jquery.pjax.js', 'plugins/chosen.jquery.js', 'common/');
 	if($this->params['controller'] == 'pages') {
 		$common_js[] = 'pages/common/';
 	}
@@ -48,8 +48,7 @@ echo '	$._block_type = \''.$this->params['block_type'].'\';'."\n";
 	//echo $this->fetch('script');
 	//echo $scripts_for_layout;
 
-	echo $this->Html->css(array(), null, array('inline' => true, 'data-title' => 'Common'));
-	$common_css = array('common/vendors/', 'common/main/', 'jquery/base/', 'common/editable/common');
+	$common_css = array('common/vendors/', 'common/main/', 'jquery/base/', 'common/editable/common', 'plugins/chosen.css', );
 	if($this->params['controller'] == 'pages') {
 		$common_css[] = 'pages/common/';
 	}

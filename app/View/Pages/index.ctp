@@ -2,34 +2,7 @@
 // TODO:php部分はcontrollerで行ったほうがよい個所もある
 	$nc_user = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 	$nc_mode = $this->Session->read(NC_SYSTEM_KEY.'.'.'mode');
-	$colspan = (isset($blocks[$page_id_arr[2]]) || $nc_mode == NC_BLOCK_MODE) ? 2 : 1;
-	$colspan = (isset($blocks[$page_id_arr[3]]) || $nc_mode == NC_BLOCK_MODE) ? $colspan+1 : $colspan;
 
-	$centercolumn_id = null;
-	$headercolumn_id = null;
-	$leftcolumn_id = null;
-	$rightcolumn_id = null;
-	$footercolumn_id = null;
-	if($nc_mode == NC_BLOCK_MODE && isset($pages[$page_id_arr[0]]['Authority']['hierarchy']) && $pages[$page_id_arr[0]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
-		// centercolumn
-		$centercolumn_id = 'centercolumn_main';
-	}
-	if($nc_mode == NC_BLOCK_MODE && isset($pages[$page_id_arr[1]]['Authority']['hierarchy']) && $pages[$page_id_arr[1]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
-		// headercolumn
-		$headercolumn_id = 'headercolumn_main';
-	}
-	if($nc_mode == NC_BLOCK_MODE && isset($pages[$page_id_arr[2]]['Authority']['hierarchy']) && $pages[$page_id_arr[2]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
-		// leftcolumn
-		$leftcolumn_id = 'leftcolumn_main';
-	}
-	if($nc_mode == NC_BLOCK_MODE && isset($pages[$page_id_arr[3]]['Authority']['hierarchy']) && $pages[$page_id_arr[3]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
-		// rightcolumn
-		$rightcolumn_id = 'rightcolumn_main';
-	}
-	if($nc_mode == NC_BLOCK_MODE && isset($pages[$page_id_arr[4]]['Authority']['hierarchy']) && $pages[$page_id_arr[4]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
-		// footercolumn
-		$footercolumn_id = 'footercolumn_main';
-	}
 	if(isset($page_id_arr[1]) && $page_id_arr[1] != 0 && (isset($blocks[$page_id_arr[1]]) || $nc_mode == NC_BLOCK_MODE)) {
 		// headercolumn
 		$headercolumn_str = $this->element('Pages/column', array('blocks' => isset($blocks[$page_id_arr[1]]) ? $blocks[$page_id_arr[1]] : null, 'page' => $pages[$page_id_arr[1]], 'parent_id' => 0));
@@ -120,6 +93,11 @@
 <div id="container">
 	<div id="main_container" class="table"<?php if($style != ''): ?> style="<?php echo($style); ?>"<?php endif; ?>>
 	<?php if(isset($headercolumn_str)): ?>
+	<?php if($nc_mode == NC_BLOCK_MODE && isset($pages[$page_id_arr[1]]) && $pages[$page_id_arr[1]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF): ?>
+	<div class="add_modules table_row">
+		<?php echo($this->element('Pages/add_block', array('add_modules' => $add_modules[$pages[$page_id_arr[1]]['Page']['room_id']]))); ?>
+	</div>
+	<?php endif; ?>
 	<header id="headercolumn" class="nc_columns table_row"<?php if($header_style != ''): ?> style="<?php echo($header_style); ?>"<?php endif; ?> data-page='<?php echo($page_id_arr[1]); ?>' data-columns='top' data-show-count='<?php echo($pages[$page_id_arr[1]]['Page']['show_count']); ?>'>
 		<?php echo($headercolumn_str); ?>
 	</header>
@@ -127,18 +105,33 @@
 	<div class="table">
 		<?php if(isset($leftcolumn_str)): ?>
 		<div id="leftcolumn" class="nc_columns table_cell"<?php if($left_style != ''): ?> style="<?php echo($left_style); ?>"<?php endif; ?> data-page='<?php echo($page_id_arr[2]); ?>' data-columns='top' data-show-count='<?php echo($pages[$page_id_arr[2]]['Page']['show_count']); ?>'>
-			<?php if(isset($blocks[$page_id_arr[1]]) || $nc_mode == NC_BLOCK_MODE): ?>
+			<?php if($nc_mode == NC_BLOCK_MODE && isset($pages[$page_id_arr[2]]) && $pages[$page_id_arr[2]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF): ?>
+			<div class="table_row">
+				<?php echo($this->element('Pages/add_block', array('add_modules' => $add_modules[$pages[$page_id_arr[2]]['Page']['room_id']]))); ?>
+			</div>
+			<?php endif; ?>
+			<?php if(isset($blocks[$page_id_arr[2]]) || $nc_mode == NC_BLOCK_MODE): ?>
 				<?php echo($leftcolumn_str); ?>
 			<?php endif; ?>
 		</div>
 		<?php endif; ?>
 		<div id="centercolumn" class="nc_columns table_cell" data-columns='top' data-page='<?php echo($page_id_arr[0]); ?>' data-show-count='<?php echo($pages[$page_id_arr[0]]['Page']['show_count']); ?>'>
+			<?php if($nc_mode == NC_BLOCK_MODE && isset($pages[$page_id_arr[0]]) && $pages[$page_id_arr[0]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF): ?>
+			<div class="table_row">
+				<?php echo($this->element('Pages/add_block', array('add_modules' => $add_modules[$pages[$page_id_arr[0]]['Page']['room_id']]))); ?>
+			</div>
+			<?php endif; ?>
 			<?php if(isset($centercolumn_str)): ?>
 				<?php echo($centercolumn_str); ?>
 			<?php endif; ?>
 		</div>
 		<?php if(isset($rightcolumn_str)): ?>
 		<div id="rightcolumn" class="nc_columns table_cell"<?php if($right_style != ''): ?> style="<?php echo($right_style); ?>"<?php endif; ?> data-page='<?php echo($page_id_arr[3]); ?>' data-columns='top' data-show-count='<?php echo($pages[$page_id_arr[3]]['Page']['show_count']); ?>'>
+			<?php if($nc_mode == NC_BLOCK_MODE && isset($pages[$page_id_arr[3]]) && $pages[$page_id_arr[3]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF): ?>
+			<div class="table_row">
+				<?php echo($this->element('Pages/add_block', array('add_modules' => $add_modules[$pages[$page_id_arr[3]]['Page']['room_id']]))); ?>
+			</div>
+			<?php endif; ?>
 			<?php if(isset($blocks[$page_id_arr[3]]) || $nc_mode == NC_BLOCK_MODE): ?>
 				<?php echo($rightcolumn_str); ?>
 			<?php endif; ?>
@@ -146,6 +139,11 @@
 		<?php endif; ?>
 	</div>
 	<?php if(isset($footercolumn_str)): ?>
+	<?php if($nc_mode == NC_BLOCK_MODE && isset($pages[$page_id_arr[4]]) && $pages[$page_id_arr[4]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF): ?>
+		<div class="add_modules table_row">
+			<?php echo($this->element('Pages/add_block', array('add_modules' => $add_modules[$pages[$page_id_arr[4]]['Page']['room_id']]))); ?>
+		</div>
+	<?php endif; ?>
 	<footer id="footercolumn" class="nc_columns table_row"<?php if($footer_style != ''): ?> style="<?php echo($footer_style); ?>"<?php endif; ?> data-page='<?php echo($page_id_arr[4]); ?>' data-columns='top' data-show-count='<?php echo($pages[$page_id_arr[4]]['Page']['show_count']); ?>'>
 		<?php echo($footercolumn_str); ?>
 	</footer>

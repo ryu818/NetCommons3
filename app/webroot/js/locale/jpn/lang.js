@@ -4,7 +4,8 @@ $._lang['common'] = {
 	'Deleting %s. <br />Are you sure to proceed?' : '%sを削除します。<br />よろしいですか？',
 	'Login' : 'ログイン',
 	//'pagestat' : '{total} 件中 {from} から {to} まで表示',
-	'Processing, please wait ...' : 'ロード中･･･'
+	'Processing, please wait ...' : 'ロード中･･･',
+	'No results match' : '結果が一致しません。'
 }
 
 // TODO:下記のキー名称は、英語に書き直す。

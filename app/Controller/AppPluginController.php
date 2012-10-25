@@ -41,9 +41,14 @@ class AppPluginController extends AppController
 	public function beforeRender()
 	{
 		parent::beforeRender();
-
-		$this->set('block_id', $this->request->params['block_id']);
-		$this->set('id', '_'.$this->request->params['block_id']);
+		
+		if(isset($this->request->params['block_id'])) {
+			$this->set('block_id', $this->request->params['block_id']);
+			$this->set('id', '_'.$this->request->params['block_id']);
+		} else if(isset($this->request->params['module_id'])) {
+			$this->set('block_id', $this->request->params['module_id']);
+			$this->set('id', '_'.$this->request->params['module_id']);
+		}
 		if(isset($this->request->params['block'])) {
 			$this->set('block', $this->request->params['block']);
 		}

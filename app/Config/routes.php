@@ -95,6 +95,33 @@
 	        	'block_id' => '[0-9]+'
 	    	) + $match
 		);
+		
+		/* block_idが指定なしにplugin表示 */
+		Router::connect(
+			':permalink/active-blocks/:plugin',
+			array('action' => 'index', 'block_type' => 'active-blocks'),
+			array(
+				'permalink' => '.*'
+			) + $match
+		);
+		
+		Router::connect(
+			':permalink/active-blocks/:plugin/:controller',
+			array('block_type' => 'active-blocks'),
+			array(
+			'routeClass' => 'MyCakeRoute',
+				'permalink' => '.*'
+			) + $match
+		);
+		
+		Router::connect(
+			':permalink/active-blocks/:plugin/:controller/:action/*',
+			array('block_type' => 'active-blocks'),
+			array(
+			'routeClass' => 'MyCakeRoute',
+				'permalink' => '.*'
+			) + $match
+		);
 	}
 
 	Router::connect(
