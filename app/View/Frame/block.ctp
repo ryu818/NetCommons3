@@ -39,14 +39,14 @@ $pos = strpos($block['Block']['theme_name'], '.');
 $parent_class_name = null;
 if($pos !== false) {
 	$parent_class_name = substr($block['Block']['theme_name'], 0, $pos);
-	$theme_name = array($parent_class_name.'.block.css', $block['Block']['theme_name'].'/block.css');
+	$theme_name = array($parent_class_name.'.block', $block['Block']['theme_name'].'/block');
 	$parent_class_name = 'th_' . Inflector::underscore($parent_class_name);
 } else {
-	$theme_name = $block['Block']['theme_name'].'.block.css';
+	$theme_name = $block['Block']['theme_name'].'.block';
 }
 $block['Block']['theme_name'] = 'th_' . str_replace('.', '_', Inflector::underscore($block['Block']['theme_name']));	// th_(frame_name)_(color_dir)
 ?>
-<div id="<?php echo($id); ?>" class="<?php echo($class_name); ?>"<?php echo($block['Block']['margin_style']); ?> data-block='<?php echo($block['Block']['id']); ?>'<?php echo($attr); ?>>
+<div id="<?php echo($id); ?>" class="<?php echo($class_name); ?>"<?php echo($block['Block']['margin_style']); ?> data-block='<?php echo($block['Block']['id']); ?>' data-action='<?php echo($block['Block']['controller_action']); ?>'<?php echo($attr); ?>>
 	<div class="<?php if(isset($parent_class_name)): ?><?php echo($parent_class_name.' '); ?><?php endif; ?><?php echo($block['Block']['theme_name']); ?> nc_frame table"<?php echo($block['Block']['style']); ?>>
 		<?php /* ブロックヘッダー */ ?>
 		<?php if($nc_mode == NC_BLOCK_MODE && $hierarchy >= NC_AUTH_MIN_CHIEF): ?>
@@ -54,13 +54,14 @@ $block['Block']['theme_name'] = 'th_' . str_replace('.', '_', Inflector::undersc
 		<?php endif; ?>
 		<section>
 		<?php
-		//TODO: 固定 frame' => 'default'
+		//TODO: 固定 frame' => 'default' 固定値の意味から再度、調査する必要あり
 		echo($this->element('index', array('title' => $this->element('Frame/block_title', array('block' => $block, 'parent_class_name' => $parent_class_name)), 'content' => $this->element('Frame/block_content', array('block' => $block, 'parent_class_name' => $parent_class_name))), array('frame' => 'default')));
 		?>
 		</section>
 		<?php if($nc_mode == NC_BLOCK_MODE && $hierarchy >= NC_AUTH_MIN_CHIEF): ?>
 			<?php echo($this->element('Frame/block_footer')); ?>
 		<?php endif; ?>
+		<?php /* echoしてないため、テーマのCSSはAjaxで表示する際は読み込まれない。 */ ?>
 		<?php $this->Html->css($theme_name, null, array('frame' => true)); ?>
 	</div>
 	<?php if($nc_mode == NC_BLOCK_MODE && $hierarchy >= NC_AUTH_MIN_CHIEF): ?>

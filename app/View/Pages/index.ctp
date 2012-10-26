@@ -94,7 +94,7 @@
 	<div id="main_container" class="table"<?php if($style != ''): ?> style="<?php echo($style); ?>"<?php endif; ?>>
 	<?php if(isset($headercolumn_str)): ?>
 	<?php if($nc_mode == NC_BLOCK_MODE && isset($pages[$page_id_arr[1]]) && $pages[$page_id_arr[1]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF): ?>
-	<div class="add_modules table_row">
+	<div class="nc_ table_row" data-add-columns='headercolumn'>
 		<?php echo($this->element('Pages/add_block', array('add_modules' => $add_modules[$pages[$page_id_arr[1]]['Page']['room_id']]))); ?>
 	</div>
 	<?php endif; ?>
@@ -140,7 +140,7 @@
 	</div>
 	<?php if(isset($footercolumn_str)): ?>
 	<?php if($nc_mode == NC_BLOCK_MODE && isset($pages[$page_id_arr[4]]) && $pages[$page_id_arr[4]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF): ?>
-		<div class="add_modules table_row">
+		<div class="table_row" data-add-columns='footercolumn'>
 			<?php echo($this->element('Pages/add_block', array('add_modules' => $add_modules[$pages[$page_id_arr[4]]['Page']['room_id']]))); ?>
 		</div>
 	<?php endif; ?>

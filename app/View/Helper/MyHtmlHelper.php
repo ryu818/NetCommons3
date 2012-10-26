@@ -22,6 +22,22 @@ class MyHtmlHelper extends HtmlHelper {
  */
 	protected $__instance = null;
 
+/**
+ * block_id
+ *
+ * @var integer
+ * @access protected
+ */
+	protected $__block_id = null;
+
+/**
+ * block_type
+ *
+ * @var string
+ * @access protected
+ */
+	protected $__block_type = null;
+
 	public function __construct(View $View, $settings = array()) {
 		parent::__construct($View, $settings);
 		static $instance;
@@ -36,6 +52,9 @@ class MyHtmlHelper extends HtmlHelper {
         $this->_tags['javascriptstart'] = '<script>';
         $this->_tags['javascriptlink'] = '<script src="%s"%s></script>';
         $this->_tags['css'] = '<link rel="%s" type="text/css" href="%s" %s>';
+        
+        $this->__block_id = $View->get('block_id');
+        $this->__block_type = $View->get('block_type');
 	}
 
 	public function css($path, $rel = null, $options = array()) {
@@ -52,6 +71,46 @@ class MyHtmlHelper extends HtmlHelper {
 
 	public function fetchCss($name, $attributes = null) {
 		return $this->__instance->fetchCss($name, $attributes);
+	}
+	
+/**
+ * Finds URL for specified action.
+ *
+ * Returns a URL pointing at the provided parameters.
+ *
+ * <pre>
+ * 	ブロック用にtopid, controller_action名称からurl取得(urlメソッドの簡易バージョン)
+ * </pre>
+ *
+ * @param string $id top_id
+ * @param string $controller_action
+ * @param boolean $full If true, the full base URL will be prepended to the result
+ * @return string  Full translated URL with base path.
+ * @link http://book.cakephp.org/2.0/en/views/helpers.html
+ */
+	public function urlBlock($id, $controller_action, $full = false) {
+		$url = '/'. $this->__block_type . '/' . $this->__block_id . '/' . $controller_action . '/#' . $id;
+		return h(Router::url($url, $full));
+	}
+
+/**
+ * Creates an HTML link.
+ *
+ * <pre>
+ * 	ブロック用にtopid, controller_action名称からurl取得(linkメソッドの簡易バージョン)
+ * </pre>
+ * 
+ * @param string $title The content to be wrapped by <a> tags.
+ * @param string $id top_id
+ * @param string $controller_action
+ * @param array $options Array of HTML attributes.
+ * @param string $confirmMessage JavaScript confirmation message.
+ * @return string An `<a />` element.
+ * @link http://book.cakephp.org/2.0/en/core-libraries/helpers/html.html#HtmlHelper::link
+ */
+	public function linkBlock($title, $id, $controller_action, $options = array(), $confirmMessage = false) {
+		$url = '/'. $this->__block_type . '/' . $this->__block_id . '/' . $controller_action . '/#' . $id;
+		return $this->link($title, $url, $options, $confirmMessage);
 	}
 }
 

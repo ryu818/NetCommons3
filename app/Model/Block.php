@@ -262,7 +262,7 @@ class Block extends AppModel
 			'Block.*',
 			'Page.space_type',
 			'Content.id','Content.module_id','Content.title','Content.is_master','Content.master_id','Content.room_id','Content.accept_flag','Content.url',
-			'Module.id','Module.edit_controller_action','Module.dir_name','Module.content_has_one',
+			'Module.id','Module.controller_action','Module.edit_controller_action','Module.dir_name','Module.content_has_one',
 			'Authority.id','Authority.hierarchy'
 		);
 	}

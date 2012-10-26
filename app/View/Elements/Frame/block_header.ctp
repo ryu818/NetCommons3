@@ -16,6 +16,15 @@ if($page['Page']['room_id'] != $block['Content']['room_id']) {
 		$all_delete = _OFF;
 	}
 }
+if($is_edit) {
+	$title =  __('Quit');
+	$controller_action = $block['Module']['controller_action'];
+	$edit_class_name = "nc_block_header_setting_end_icon";
+} else {
+	$title = __('Edit');
+	$controller_action = $block['Module']['edit_controller_action'];
+	$edit_class_name = "nc_block_header_setting_icon";
+}
 ?>
 <div class="nc_block_mode">
 	<div id="nc_block_move<?php echo($id); ?>" class="nc_block_move">
@@ -26,9 +35,15 @@ if($page['Page']['room_id'] != $block['Content']['room_id']) {
 			<?php echo($block['Block']['title']); ?>
 		</span>
 		<ul class="nc_block_toolbox">
-			<li class="nc_block_header_setting_icon">
-				<a href="#" title="<?php echo(__('Edit'));?>" class="link">
-				</a>
+			<li class="<?php echo($edit_class_name); ?>">
+				<?php echo $this->Html->link('', '/'.$block_type.'/'.$block_id.'/'.$controller_action.'/#'.$id, 
+					array(
+						'title' => $title, 
+						'class' => 'link ', 
+						'data-pjax' => '#'.$id,
+						'onclick' => ''
+					)
+				); ?>
 			</li>
 			<li class="nc_block_header_list_icon">
 				<a href="#" title="<?php echo(__('Operation'));?>" class="link">

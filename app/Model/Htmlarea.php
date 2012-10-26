@@ -11,4 +11,31 @@
 class Htmlarea extends AppModel
 {
 	public $name = 'Htmlarea';
+	
+	public $validate = array();
+	
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
+		$this->validate = array(
+				'content' => array(
+						'notEmpty'  => array(
+								'rule' => array('notEmpty'),
+								'last' => true,
+								'message' => __('Please be sure to input.',true)
+						),
+						'maxLength' => array(
+								'rule' => array('maxLength', NC_VALIDATOR_TEXTAREA_LEN),
+								'message' => sprintf(__('The input must be up to %s characters.',true), NC_VALIDATOR_TEXTAREA_LEN)
+						)
+				)
+		);
+	}
+	
+	public function beforeValidate($options = array()) {
+		if(preg_match('/^\s*<div><\/div>\s*$/iu', $this->data['Htmlarea']['content']) || preg_match('/^\s*<br\s*\/?>\s*$/iu', $this->data['Htmlarea']['content'])) {
+			$this->data['Htmlarea']['content'] = "";
+		}
+		//$this->data['Htmlarea']['content'] = $this->cleanHTML($this->data['Htmlarea']['content']);
+		return true;
+	}
 }

@@ -75,10 +75,14 @@ class MyCakeRoute extends CakeRoute {
 
 // Add Start Ryuji.M
 // Conrtollerがあるかどうか判断し、なければ、Actionとする。
+// コントローラ名は常にpluginName + controllerにて判断する。
+// 例：active-blocks/(block_id)/announcement/edit
+//     -> Plugin/AnnouncementEditController.phpがあれば、AnnouncementEditController->indexメソッドへ
+//     -> なければ、Plugin/AnnouncementController.php->editメソッドへ
 		if(isset($route['controller'])) {
 			$pluginName = Inflector::camelize($route['plugin']);
-			$controller = Inflector::camelize($route['controller']);
-			$file_path = App::pluginPath($pluginName) . $controller.'Controller.php';
+			$controller = $pluginName . Inflector::camelize($route['controller']);
+			$file_path = App::pluginPath($pluginName) . 'Controller' . DS .$controller.'Controller.php';
 			if (!file_exists($file_path)) {
 				$buf_action = isset($route['action']) ? $route['action'] : null;
 				$route['action'] = $route['controller'];
@@ -90,6 +94,8 @@ class MyCakeRoute extends CakeRoute {
 						$route['_args_'] = $buf_action;
 					}
 				}
+			} else {
+				$route['controller'] = $controller;
 			}
 		}
 // Add End Ryuji.M

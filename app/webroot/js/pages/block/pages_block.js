@@ -45,6 +45,9 @@
 
 			if(block_move.get(0) && !block.hasClass('ui-draggable') && $('#container').get(0)) {
 				block_move.click(function(e){
+					if (e.target.tagName.toUpperCase() === 'A') {
+						return;
+					}
 					var blockChild = block.children('.nc_frame:first');
 					// グルーピング
 					if(!blockChild.hasClass('nc_select_group')) {
@@ -263,7 +266,7 @@
 					move_column = $('#'+v + '_main_move');
 					if(move_column.get(0)) {
 						move_column.removeClass('nc_move_space_hover');
-						if($._nc['common'].within(move_column, x, y)) {
+						if($.Common.within(move_column, x, y)) {
 							// 他カラムへ移動
 							column = $('#' + v.replace(re_cut_move,""));
 							return false;
@@ -819,9 +822,10 @@
 		},
 		addBlock: function( sel_el, module_id ) {
 			var t = this, params = new Object(), show_count_el = null;
-			
-			var page_el = $(sel_el).parents('.add_modules:first').next('[data-page]');	// header footer
-			if(!page_el.get(0)) {
+			var page_el = $(sel_el).parents('[data-add-columns]:first');	// header footer
+			if(page_el.get(0)) {
+				 page_el = $('#' + page_el.attr('data-add-columns'));
+			} else {
 				// left center right
 				page_el = $(sel_el).parents('[data-page]:first');
 			}

@@ -18,6 +18,13 @@
  */
 class AppPluginController extends AppController
 {
+/**
+ * 編集画面か否か（セッティングモードONの場合の上部、編集ボタンをリンク先を変更するため）
+ * Default:false
+ * @var boolean
+ */
+	public $is_edit = false;
+
 	public $viewClass = 'Plugin';
 
 	public $uses = array();
@@ -30,7 +37,6 @@ class AppPluginController extends AppController
 	public function beforeFilter()
 	{
 		parent::beforeFilter();
-		$this->set('content', '');	// 初期化
 	}
 /**
  * モジュール（プラグイン）の表示前処理
@@ -56,5 +62,13 @@ class AppPluginController extends AppController
 			$this->set('page', $this->request->params['page']);
 		}
 		$this->set('block_type', Configure::read(NC_SYSTEM_KEY.'.block_type'));
+		
+		if(isset($this->hierarchy) && $this->hierarchy >= NC_AUTH_MIN_CHIEF) {
+			$this->set('is_chief', _ON);
+		} else {
+			$this->set('is_chief', _OFF);
+		}
+		$this->set('is_edit', $this->is_edit);
+		$this->set('content_id', $this->content_id);
 	}
 }

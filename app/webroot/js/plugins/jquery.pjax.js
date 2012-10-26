@@ -60,7 +60,6 @@ function handleClick(event, container, options) {
   options = optionsFor(container, options)
 
   var link = event.currentTarget
-
 //Edit Start Ryuji.M
 // アンカー以外でもOK
   if (link.tagName.toUpperCase() === 'A') {
@@ -87,19 +86,56 @@ function handleClick(event, container, options) {
   } else if (!options.url || !options.container){
 	  throw "$.fn.pjax or $.pjax.click requires an options.url and options.container"
   }
-//Edit End Ryuji.M
   var defaults = {
-    url: link.href,
+    url: $(link).attr('href'),
     container: $(link).attr('data-pjax'),
     target: link,
     fragment: null
   }
-
-  pjax($.extend({}, defaults, options))
-
+  options = $.extend({}, defaults, options)
+  var url = _convertPluginUrl(options['container'], options['url'])
+  if(url != options['url']) {options['push_url'] = url;}
+  pjax(options)
+  //pjax($.extend({}, defaults, options))
+//Edit End Ryuji.M
   event.preventDefault()
 }
-
+//Add Start Ryuji.M 非対応ブラウザでは、Aタグではないと遷移されないため、修正。
+// TODO:submit時に動作するかどうかは未検証。
+function disableHandleClick(event, container, options) {
+	var link = event.currentTarget
+	var defaults = {
+	    url: $(link).attr('href'),
+	    container: $(link).attr('data-pjax') ? $(link).attr('data-pjax') : container,
+	    target: link,
+	    fragment: null
+	}
+	options = $.extend({}, defaults, options)
+	options['url'] = _convertPluginUrl(options['container'], options['url'])
+	if (link.tagName.toUpperCase() !== 'A') {
+		location.href = options['url'];
+	}
+}
+//もし、ページ表示中で、ブロック一般画面への遷移ならば、ページのリンク先に変換する。
+// /xxxx/blocks/(block_id)/announcement/#_366 => /xxxx/#_366
+function _convertPluginUrl(container, url) {
+	if($('#container').get(0)) {	// container elementがあるかどうかでPage表示中か否かを判断
+		// Page表示中
+		var id = container.attr('id')
+		var block_id = container.attr('data-block');
+		var controller_action = container.attr('data-action');
+		if(id && block_id && controller_action) {
+			var chk_url = $._page_url + 'blocks/' + block_id + '/' + controller_action + '/';
+			if(url == chk_url) {
+				return $._page_url;
+			} else if(url == chk_url + '#' + id) {
+				return $._page_url + '#' + id;
+			}
+		}
+	}
+	return url;
+}
+//Add End Ryuji.M  
 // Public: pjax on form submit handler
 //
 // Exported as $.pjax.submit
@@ -302,8 +338,16 @@ function pjax(options) {
       url.hash = hash
 
       pjax.state.url = url.href
-      window.history.replaceState(pjax.state, container.title, url.href)
-
+//Edit Start Ryuji.M
+//もし、ページ表示中で、ブロック一般画面への遷移ならば、ページのリンク先に変換する。
+// /xxxx/blocks/(block_id)/announcement/#_366 => /xxxx/#_366
+      if(options['push_url']) {
+          window.history.replaceState(pjax.state, container.title, options['push_url'])
+      } else {
+          window.history.replaceState(pjax.state, container.title, url.href)
+      }
+      // window.history.replaceState(pjax.state, container.title, url.href)
+//Edit End Ryuji.M
       var target = $(url.hash)
       if (target.length) $(window).scrollTop(target.offset().top)
     }
@@ -853,8 +897,13 @@ function disable() {
   $.pjax = fallbackPjax
   $.pjax.enable = enable
   $.pjax.disable = $.noop
-  $.pjax.click = $.noop
+//Edit Start Ryuji.M 非対応ブラウザでは、Aタグではないと遷移されないため、修正。
+  $.pjax.click = disableHandleClick
+  //$.pjax.submit = disableHandleSubmit
+  //$.pjax.click = $.noop
+//Edit End Ryuji.M  
   $.pjax.submit = $.noop
+
   $.pjax.reload = window.location.reload
   $(window).unbind('popstate.pjax', onPjaxPopstate)
 }

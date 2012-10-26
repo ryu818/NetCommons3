@@ -52,12 +52,16 @@ class CheckAuthComponent extends Component {
  */
 	public function startup(Controller $controller) {
 		$controller->hierarchy = NC_AUTH_OTHER;	// 初期化
+		$controller->content_id = 0;			// 初期化
 
 		if (isset($controller->request->params['block'])) {
 			// 既に権限チェック済
 			$block = $controller->request->params['block'];
 			if(isset($block) && !is_null($block['Block']['hierarchy'])) {
 				$controller->hierarchy = intval($block['Block']['hierarchy']);
+			}
+			if(isset($block) && !is_null($block['Content']['master_id'])) {
+				$controller->content_id = intval($block['Content']['master_id']);
 			}
 			return;
 		}
@@ -83,6 +87,7 @@ class CheckAuthComponent extends Component {
 		$permalink = $this->formatUrl($permalink);
 
 		$controller->request->offsetSet('permalink', $permalink);
+		$controller->block_id = $block_id;
 
 		if($user_id == 0)
 			$redirect_url = '/users/login';
@@ -135,6 +140,9 @@ class CheckAuthComponent extends Component {
 				$controller->hierarchy = intval($block['Block']['hierarchy']);
 			} else if(!is_null($page['Authority']['hierarchy'])) {
 				$controller->hierarchy = intval($page['Authority']['hierarchy']);
+			}
+			if(isset($block) && !is_null($block['Content']['master_id'])) {
+				$controller->content_id = intval($block['Content']['master_id']);
 			}
 
 			if($plugin_name == '' && $controller_name == 'pages') {

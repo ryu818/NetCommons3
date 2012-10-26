@@ -1,5 +1,5 @@
 /**
- * announcement js
+ * Announcement js
  *
  * @copyright     Copyright 2012, NetCommons Project
  * @package       Plugin.Announcement.webroot.js
@@ -8,15 +8,13 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 ;(function($) {
-	$.fn.Announcement = function(url) {
+	$.fn.Announcement = function(id, is_chief) {
 		var t = this;
-		t.id = t.attr('id');
-		t.block_id = t.attr('data-block');
-
-		if(url) {
-			var content = $('#'+t.id+'_content');
+		var url = $.Common.urlBlock(id, 'announcement/edit');
+		if(is_chief) {
+			var content = $('#'+id+'_content');
 			content.dblclick(function(event) {
-				$.pjax.click(event, t, {'url': url});//'/' + $._block_type +'/' + t.block_id + '/announcement/edit/#' + t.id});
+				$.pjax.click(event, t, {'url': url});
 			}).hover(function() {
 				content.stop(false, true).show("highlight", {}, 2000);
 			}, function(){});
