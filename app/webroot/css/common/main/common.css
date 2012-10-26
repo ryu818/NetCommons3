@@ -110,8 +110,6 @@
 .table_cell {
 	display:table-cell;
 }
-
-
 /* ダイアログ - 共通 */
 .nc_toggledialog {
 	background-color: #fcfcfc;
@@ -218,7 +216,6 @@ div.listmenu_histories a {
 div.listmenu_languages a {
 	width:100px;
 }
-
 /* 時間 */
 input.nc_date {
     width: 80px !important;
@@ -256,9 +253,26 @@ select.selectlist {
 }
 */
 
+/* メッセージ関連 */
+div.error-message {
+	color:#FF0000;
+	background: url(../../img/common/alert.gif) no-repeat 5px center #ffd9D9;
+	padding:5px 0 5px 25px;
+	margin:2px 0;
+	clear: both;
+}
+div.info-message {
+	color:#0000ff;
+	background-color:#d9e0ff;
+	padding:5px 0 5px 25px;
+	margin:2px 0;
+	clear: both;
+}
+
 /* WYSIWYG:IE+Ajaxの場合、一度目が正常に表示されないため */
 textarea.nc_wysiwyg {
 	width:520px;
+	visibility:hidden;
 }
 
 .outer {

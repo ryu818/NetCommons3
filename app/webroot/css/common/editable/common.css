@@ -2,7 +2,7 @@
 body {
     color:#000000;
     font:13px/1.231 "メイリオ", Meiryo, "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", "ＭＳ Ｐゴシック", "Lucida Grande", "Lucida Sans Unicode", Arial, Verdana, sans-serif;*font-size:small;*font:x-small;
-	line-height: 1.6;
+	line-height: 1.5;
     letter-spacing: 0;
 }
 
@@ -31,63 +31,12 @@ blockquote.quote {
 
 /* hr */
 div.hr {
-	border-top:1px solid #CCCCCC;
+	border-top:1px solid #cccccc;
 	border-left:none;
 	border-right:none;
 	border-bottom:none;
 	margin-top:5px;
 	margin-bottom:5px;
-}
-
-/* メッセージ関連 */
-div.message {
-	/*clear: both;*/
-	color: #333333;
-	font-size:116%;
-	/*margin: 0 0 1em 0;*/
-	background: #ffffff;
-	padding: 10px;
-	text-align:center;
-	border-style:solid;
-	border-color:#efefef;
-	border-width:0 0 1px 0;
-}
-
-.nc_message {}
-
-div.error-message {
-	color:#ff0000;
-	background: url(../../common/img/main/alert.gif) no-repeat 5px center #FFD9D9;
-	padding:5px 0 5px 25px;
-	margin:2px 0;
-	clear: both;
-}
-div.info-message {
-	color:#0000ff;
-	background-color:#d9e0ff;
-	padding:5px 0 5px 25px;
-	margin:2px 0;
-	clear: both;
-}
-
-div.error-hmessage {
-	color:#ff0000;
-	background-color: #ffd9d9;
-	text-align:center;
-	padding:10px;
-	margin:5px 0;
-	clear: both;
-	border-radius:3px;
-}
-
-div.info-hmessage {
-	color:#0000ff;
-	background-color:#d9e0ff;
-	text-align:center;
-	padding:10px;
-	margin:5px 0;
-	clear: both;
-	border-radius:3px;
 }
 
 /*
@@ -141,12 +90,12 @@ div.top_description {
 	padding:5px;
 }
 .note {
-    background-color: #F3F3F3;
+    background-color: #f3f3f3;
 }
 
 /* highlight */
 .highlight {
-	background-color:#E9F2FB !important;
+	background-color:#e9f2fb !important;
 	color:#4e62a9 !important;
 }
 
@@ -166,32 +115,31 @@ a.hover_highlight:active {
 }
 /* ボタン - 共通 */
 .common_btn {
-	-moz-border-radius : 4px 4px 4px 4px;
 	border-radius : 4px 4px 4px 4px;
-	background:url("../../img/common/btn_bg.gif") repeat-x scroll left top #FFFFFF;
-	border:1px solid #CCCCCC;
+	background:url("../../img/common/btn_bg.gif") repeat-x scroll left top #ffffff;
+	border:1px solid #cccccc;
 	color:#686868;
 	font-weight:bold;
-	margin:5px 0 0;
-	padding:8px 20px 4px;
-	text-shadow:0 -1px 0 #CCCCCC;
+	margin: 0 5px;
+	padding:8px 10px 4px;
+	text-shadow:0 -1px 0 #cccccc;
 	width:100px;
 	cursor:pointer;
 }
 
 .common_btn:hover {
-	background:url("../../img/common/btn_bg_hover.gif") repeat-x scroll left top #FFFFFF;
+	background:url("../../img/common/btn_bg_hover.gif") repeat-x scroll left top #ffffff;
 }
 
 .common_btn_disable {
-	color:#CCCCCC;
+	color:#cccccc;
 }
 
 .common_btn_disable:hover {
-	background:url("../../img/common/btn_bg.gif") repeat-x scroll left top #FFFFFF;
+	background:url("../../img/common/btn_bg.gif") repeat-x scroll left top #ffffff;
 }
 .btn-bottom {
-	margin-top:5px;
+	margin-top:10px;
 	text-align:center;
 }
 
@@ -205,16 +153,6 @@ input.btn-width {
 }
 input.btn-padding {
 	padding:0.2em;
-}
-
-input.input_btn {
-	margin: 0 2px;
-	background: url(../../img/common/input_btn.gif) no-repeat;
-	width:103px;
-	height:29px;
-	font-size:12px;
-	border:0 none;
-	cursor: pointer;
 }
 
 /* Form  */

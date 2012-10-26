@@ -1,0 +1,44 @@
+form.nc_wysiwyg_insertfile {
+	width:250px;
+}
+
+input.nc_wysiwyg_insertfile_inputfile {
+	width : 174px;
+	margin:5px;
+}
+
+ul.nc_wysiwyg_insertfile_row {
+	width: 210px;
+	padding:0;
+	margin:0;
+}
+
+ul.nc_wysiwyg_insertfile_row li {
+	clear: both;
+	list-style-image:none;
+	list-style-type:none;
+	margin:0;
+	padding:0;
+}
+
+ul.nc_wysiwyg_insertfile_row dt {
+	float:left;
+	clear:left;
+	width: 80px;
+	padding:2px;
+}
+
+ul.nc_wysiwyg_insertfile_row dd {
+	float:left;
+	padding:2px;
+	white-space:nowrap;
+}
+
+.nc_wysiwyg_insertfile_btn {
+	clear : left;
+	text-align : center;
+}
+
+input.nc_wysiwyg_insertfile_title {
+	width:115px;
+}
