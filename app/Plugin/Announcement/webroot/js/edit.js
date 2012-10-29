@@ -19,9 +19,6 @@
 		});
 		var form = $('#form' + id);
 
-		form.submit(function(e) {
-			$.pjax.submit(e, t);
-		});
 		$('input[name="cancel"]', form).click(function(e) {
 			$.pjax.click(e, t, {'url': $.Common.urlBlock(id, 'announcement')});
 		});

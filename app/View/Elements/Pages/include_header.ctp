@@ -41,7 +41,6 @@ echo '	$._page_url = \''.$this->Html->url('/').$pemalink. '\';'."\n";
 //TODO:必要ないかも？
 echo '	$._block_type = \''.$this->params['block_type'].'\';'."\n";
 
-
 echo '	$._nc.nc_wysiwyg = new Object();'."\n";
 echo '	$._nc.nc_wysiwyg[\'allow_attachment\'] = '.(isset($nc_user['allow_attachment']) ? $nc_user['allow_attachment'] : _OFF).';'."\n";
 echo '	$._nc.nc_wysiwyg[\'allow_video\'] = '.(isset($nc_user['allow_video']) ? $nc_user['allow_video'] : _OFF).';'."\n";
@@ -49,6 +48,12 @@ echo '	$._nc.nc_wysiwyg[\'allow_js\'] = '.($nc_user['allow_htmltag_flag'] ? _ON 
 ?>
 	$(function () {
 		$(document).pjax('a[data-pjax]');
+		$(document).on("submit", "form[data-pjax]", function (e) {
+			var top = $($(this).attr("data-pjax"));
+			if(top.get(0)) {
+				$.pjax.submit(e, top);
+			}
+		});
 	});
 </script>
 <?php
