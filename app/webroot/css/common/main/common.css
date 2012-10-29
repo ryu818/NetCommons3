@@ -272,17 +272,15 @@ div.info-message {
 div.message {
 	position: fixed;
 	left: 0;
-	top: 8px;
-	z-index: 989;
+	top: 0;
+	z-index: 991;
 	width:100%;
 	color: #333333;
 	font-size:116%;
 	background: #ffffff;
 	padding: 10px;
 	text-align:center;
-	border-style:solid;
-	border-color:#efefef;
-	border-width:0 0 1px 0;
+	border-bottom: 1px solid #cdcdcd;
 }
 
 /* WYSIWYG:IE+Ajaxの場合、一度目が正常に表示されないため */
