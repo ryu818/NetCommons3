@@ -212,6 +212,75 @@ class AppController extends Controller {
 	}
 
 /**
+ * Redirects to given $url, after turning off $this->autoRender.
+ * Script execution is halted after the redirect.
+ * 
+ * <pre>
+ * ・リダイレクト時にもDEBUG情報を出力するように修正。
+ * ・pjaxならば、header Locationではなく、「X-PJAX-Location」ヘッダーを返し、そのURLを見て、再度、pjaxを呼ぶように修正。
+ * </pre>
+ *
+ * @param string|array $url A string or array-based URL pointing to another location within the app,
+ *     or an absolute URL
+ * @param integer $status Optional HTTP status code (eg: 404)
+ * @param boolean $exit If true, exit() will be called after the redirect
+ * @return mixed void if $exit = false. Terminates script if $exit = true
+ * @link http://book.cakephp.org/2.0/en/controllers.html#Controller::redirect
+ */
+	public function redirect($url, $status = null, $exit = true) {
+		$this->autoRender = false;
+	
+		if (is_array($status)) {
+			extract($status, EXTR_OVERWRITE);
+		}
+		$event = new CakeEvent('Controller.beforeRedirect', $this, array($url, $status, $exit));
+		//TODO: Remove the following line when the events are fully migrated to the CakeEventManager
+		list($event->break, $event->breakOn, $event->collectReturn) = array(true, false, true);
+		$this->getEventManager()->dispatch($event);
+	
+		if ($event->isStopped()) {
+			return;
+		}
+		$response = $event->result;
+		extract($this->_parseBeforeRedirect($response, $url, $status, $exit), EXTR_OVERWRITE);
+	
+		if ($url !== null) {
+// Edit Start Ryuji.M
+			if($this->request->header('X-PJAX')) {
+				if (!$status) {
+					$this->response->statusCode('302');
+				}
+				$this->response->header('X-PJAX-Location', Router::url($url, true));
+			} else {
+				$this->response->header('Location', Router::url($url, true));
+			}
+			//$this->response->header('Location', Router::url($url, true));
+// Edit End Ryuji.M
+		}
+	
+		if (is_string($status)) {
+			$codes = array_flip($this->response->httpCodes());
+			if (isset($codes[$status])) {
+				$status = $codes[$status];
+			}
+		}
+	
+		if ($status) {
+			$this->response->statusCode($status);
+		}
+	
+		if ($exit) {
+// Add Start Ryuji.M
+			if (Configure::read('debug') != 0) {
+				$this->render(false, 'redirect');
+			}
+// Add End Ryuji.M
+			$this->response->send();
+			$this->_stop();
+		}
+	}
+
+/**
  * 実行時間計測用メソッド
  * @param string  $name
  * @return void
