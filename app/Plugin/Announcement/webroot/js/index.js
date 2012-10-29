@@ -9,10 +9,10 @@
  */
 ;(function($) {
 	$.fn.Announcement = function(id, is_chief) {
-		var t = this;
+		var t = this, content;
 		var url = $.Common.urlBlock(id, 'announcement/edit');
 		if(is_chief) {
-			var content = $('#'+id+'_content');
+			content = $('#'+id+'_content');
 			content.dblclick(function(event) {
 				$.pjax.click(event, t, {'url': url});
 			}).hover(function() {

@@ -54,14 +54,11 @@ class AnnouncementEditController extends AnnouncementAppController {
 				'content' => $this->request->data['Htmlarea']['content']
 			);
 			if ($this->Htmlarea->save($data)) {
-				// TODO:Ajaxなので、コメント メッセージの表示手段を調査するべき
-				// $this->Session->setFlash('Your post has been saved.');
+				$this->Session->setFlash(__('Your post has been saved.'));
 				
 				$this->redirect('/blocks/' .$this->block_id. '/announcement/');
 				//$this->redirect(array('block_type' => 'blocks','block_id' => 366, 'controller' => 'announcement', 'action' => 'index'));
-			}// else {
-				//$this->Session->setFlash('Unable to add your post.');
-			//}
+			}
 			$this->set('content', $this->request->data['Htmlarea']['content']);
 			return;
 		}

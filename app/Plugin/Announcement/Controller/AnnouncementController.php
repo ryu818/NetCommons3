@@ -26,14 +26,6 @@ class AnnouncementController extends AnnouncementAppController {
 	public $hierarchy = null;
 
 	public function index() {
-		$ret = $this->Htmlarea->findByContentId($this->content_id);
-		if(!isset($ret['Htmlarea'])) {
-			if($this->hierarchy >= NC_AUTH_MIN_CHIEF) {
-				// 指定したコンテンツは、存在しません。
-				$this->set('content', __('Content not found.'));
-			}
-			return;
-		}
-		$this->set('content', $ret['Htmlarea']['content']);
+		$this->set('htmlarea', $this->Htmlarea->findByContentId($this->content_id, array('content')));
 	}
 }

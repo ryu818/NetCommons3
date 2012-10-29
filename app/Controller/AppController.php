@@ -59,9 +59,10 @@ class AppController extends Controller {
         'Html' => array(
             'className' => 'MyHtml'
         ),
+		'Js',
         'Token',
     );
-    // , 'Timezone', 'Common', 'Token'
+    // , 'Timezone', 'Common',
 
     public $uses = array('Page', 'Block', 'Content', 'Module', 'Language', 'Config', 'Authority', 'User','Passport');
     // , 'User', 'ModulesLink', 'PageStyle', 'PageColumn', 'PageInf', 'SumPageView'

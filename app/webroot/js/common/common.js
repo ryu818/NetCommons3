@@ -71,6 +71,18 @@
  				oHEAD.appendChild(nLink);
  			}
  		},
+ 		
+ 		flash: function(str) {
+ 			var mes = $('#flashMessage');
+ 			if(mes.get(0)) {
+ 				mes.remove();
+ 			}
+ 			mes = $(str).prependTo($("body"));
+ 			mes.delay(2000).animate({top: -1 * mes.outerHeight()}, 500, function() {
+				mes.remove();
+			});
+ 			
+ 		},
 
 		alert: function(str) {
 			str = this._massage(str);

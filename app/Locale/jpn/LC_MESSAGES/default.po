@@ -161,7 +161,11 @@ msgstr 	"*"
 msgid  	"Drag &amp; drop to move."
 msgstr 	"ドラッグ＆ドロップで移動できます。"
 
+msgid  	"Your post has been saved."
+msgstr 	"投稿が保存されました。"
 
+msgid  	"Unable to add your post."
+msgstr 	"記事を追加することができません。"
 
 ##DB関連
 msgid  	"Has been successfully registered."
@@ -193,6 +197,8 @@ msgid  	"Logout"
 msgstr 	"ログアウト"
 msgid  	"You are already logged in."
 msgstr 	"ログインしています。"
+msgid  	"Login."
+msgstr 	"ログインしました。"
 msgid  	"You are now logged out."
 msgstr 	"ログアウトしました。"
 msgid  	"Back"

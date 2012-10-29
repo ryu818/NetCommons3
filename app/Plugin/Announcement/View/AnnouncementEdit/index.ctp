@@ -6,7 +6,7 @@ echo ($this->Html->script(array('Announcement.edit', 'plugins/jquery.nc_wysiwyg.
 echo ($this->Html->css('plugins/jquery.nc_wysiwyg.css'));
 ?>
 <?php echo($this->Form->error('Htmlarea.content')); ?>
-<form id="form<?php echo($id); ?>" method="post" action="<?php echo $this->Html->urlBlock($id, '/announcement/edit'); ?>" data-pjax ="#<?php echo($id); ?>">
+<form id="form<?php echo($id); ?>" method="post" action="<?php echo $this->Html->urlBlock($id, '/announcement/edit'); ?>">
 	<textarea name="data[Htmlarea][content]" id="<?php echo($id); ?>_wysiwyg" class="nc_wysiwyg" rows="15" cols="40">
 		<?php echo($content); ?>
 	</textarea>

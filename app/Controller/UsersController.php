@@ -109,6 +109,7 @@ class UsersController extends AppController {
 			if(!$this->Auth->login()) {
                 $this->Session->setFlash(__('Incorrect Login.Again, please enter.'), 'default', array(), 'auth');
             }
+            $this->Session->setFlash(__('Login.'));
 			$user = $this->Auth->user();//認証済みユーザを取得
 
 			//フォームからのデータの場合
