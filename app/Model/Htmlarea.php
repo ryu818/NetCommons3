@@ -25,7 +25,7 @@ class Htmlarea extends AppModel
 						),
 						'maxLength' => array(
 								'rule' => array('maxLength', NC_VALIDATOR_TEXTAREA_LEN),
-								'message' => sprintf(__('The input must be up to %s characters.',true), NC_VALIDATOR_TEXTAREA_LEN)
+								'message' => __('The input must be up to %s characters.' , NC_VALIDATOR_TEXTAREA_LEN),
 						)
 				)
 		);
