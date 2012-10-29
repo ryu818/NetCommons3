@@ -116,8 +116,9 @@ class BlockController extends BlockAppController {
 			return;
 		}
 	
-		echo ($this->requestAction('/active-blocks/'.$last_id.'/'.$module['Module']['edit_controller_action'], array('return')));
-		$this->render("/Commons/empty");
+		$this->redirect('/active-blocks/'.$last_id.'/'.$module['Module']['edit_controller_action']);
+		//echo ($this->requestAction('/active-blocks/'.$last_id.'/'.$module['Module']['edit_controller_action'], array('return')));
+		//$this->render("/Commons/empty");
 	}
 
 /**
