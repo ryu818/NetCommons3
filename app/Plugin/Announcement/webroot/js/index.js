@@ -8,16 +8,14 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 ;(function($) {
-	$.fn.Announcement = function(id, is_chief) {
+	$.fn.Announcement = function(id) {
 		var t = this, content;
 		var url = $.Common.urlBlock(id, 'announcement/edit');
-		if(is_chief) {
-			content = $('#'+id+'_content');
-			content.dblclick(function(event) {
-				$.pjax.click(event, t, {'url': url});
-			}).hover(function() {
-				content.stop(false, true).show("highlight", {}, 2000);
-			}, function(){});
-		}
+		content = $('#'+id+'_content');
+		content.dblclick(function(event) {
+			$.pjax.click(event, t, {'url': url});
+		}).hover(function() {
+			content.stop(false, true).show("highlight", {}, 2000);
+		}, function(){});
 	}
 })(jQuery);

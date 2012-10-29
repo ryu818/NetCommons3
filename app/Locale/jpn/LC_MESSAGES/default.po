@@ -163,9 +163,18 @@ msgstr 	"ドラッグ＆ドロップで移動できます。"
 
 msgid  	"Your post has been saved."
 msgstr 	"投稿が保存されました。"
-
 msgid  	"Unable to add your post."
 msgstr 	"記事を追加することができません。"
+
+msgid  	"Your post has been updated."
+msgstr 	"投稿が更新されました。"
+msgid  	"Unable to update your post."
+msgstr 	"記事を更新することができません。"
+
+msgid  	"The post with %s has been deleted."
+msgstr 	"%sの投稿は削除されました。"
+msgid  	"Unable to delete your post."
+msgstr 	"記事を削除することができません。"
 
 ##DB関連
 msgid  	"Has been successfully registered."
