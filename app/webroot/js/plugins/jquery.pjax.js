@@ -290,6 +290,9 @@ function pjax(options) {
     if (container.title) document.title = container.title
 //Edit Start Ryuji.M
     context[0].innerHTML = container.contents;
+    if(container.append_elements.length != 0) {
+    	context.append(container.append_elements);
+    }
 
     if(container.top_attributes != null) {
     	// 属性情報更新
@@ -666,7 +669,8 @@ function extractContainer(data, xhr, options) {
     'title':'',
     'contents':'',
     'url':stripPjaxParam(xhr.getResponseHeader('X-PJAX-URL') || options.requestUrl),
-    'top_attributes': null
+    'top_attributes': null,
+    'append_elements': new Array()
   }
   if (/<html/i.test(data)) {
 	var head = data.match(/<head[^>]*>([\s\S.]*)<\/head>/i)[0];
@@ -705,7 +709,11 @@ function extractContainer(data, xhr, options) {
     div.innerHTML = body;
     for (var i = 0; i <= div.childNodes.length - 1; i++) {
       if(div.childNodes[i].nodeType == 1 && div.childNodes[i].tagName.toLowerCase() != 'title') {
-        obj.contents += div.childNodes[i].innerHTML;
+        if(div.childNodes[i].id == options.context.attr('id')) {
+            obj.contents += div.childNodes[i].innerHTML;
+        } else {
+        	obj.append_elements.push(div.childNodes[i]);
+        }
       } else if(div.childNodes[i].nodeType == 3) {
         obj.contents += div.childNodes[i].data;
       }
@@ -714,14 +722,15 @@ function extractContainer(data, xhr, options) {
         obj.top_attributes = new Object();
         var attrs = div.childNodes[i].attributes;
         var child = $(div.childNodes[i]);
-        for (var i = 0; i <= attrs.length - 1; i++) {
-          var a = attrs.item(i);
+        for (var j = 0; j <= attrs.length - 1; j++) {
+          var a = attrs.item(j);
           var name = a.nodeName.toLowerCase();
           var val = child.attr(name);
           obj.top_attributes[name] = val;
     	}
       }
     }
+    
   }
 
   $(div).remove();
