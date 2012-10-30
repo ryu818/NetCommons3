@@ -10,6 +10,9 @@
 				}
 
 				if(!empty($this->params['active_plugin']) && $block['Block']['id'] == $this->params['block_id']) {
+					$title = $this->fetch('title');
+					$title = (isset($title) && $title != '') ? $title : h($block['Block']['title']);
+					$this->assign('title', $title);
 					$active_controller = empty($this->params['active_controller']) ? $block['Block']['controller_action'].'/'.$this->params['active_action'] : $this->params['active_plugin']. '/'. $this->params['active_controller']. '/' . $this->params['active_action'];
 					//$url = 'active-blocks'.'/'.$block['Block']['id'].'/'.$this->params['active_plugin'].'/'.$active_controller.'/';
 					$url = '/active-blocks'.'/'.$block['Block']['id'].'/'.$active_controller;

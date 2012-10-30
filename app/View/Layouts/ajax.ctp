@@ -17,7 +17,7 @@
  */
 ?>
 <?php
-if(isset($this->request->query['_pjax']) && $this->request->is('ajax')) {
+if($this->request->header('X-PJAX') && $this->request->is('ajax')) {
 	echo($this->element('Pages/title'));
 }
 ?>

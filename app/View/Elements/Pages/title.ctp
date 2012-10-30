@@ -1,9 +1,5 @@
 <?php
-//TODO:test
 $title = $this->fetch('title');
-if(!isset($title)) {
-	$title = $title_for_layout;
-}
 if($title != '') {
 	$title .= NC_TITLE_SEPARATOR;
 }
