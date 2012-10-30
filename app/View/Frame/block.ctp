@@ -1,5 +1,10 @@
 <?php
 $nc_mode = $this->Session->read(NC_SYSTEM_KEY.'.mode');
+$content = $this->fetch('content');
+if($content == '' && $hierarchy < NC_AUTH_MIN_CHIEF) {
+	// コンテンツが空で、主坦以下の権限ならば、非表示にする。
+	return;
+}
 if($block['Block']['controller_action'] == 'group') {
 	$class_name = 'nc_group';
 	$attr = ' data-columns="group"';
