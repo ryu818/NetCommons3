@@ -265,6 +265,7 @@ function pjax(options) {
       if ( textStatus !== 'abort' ) {
           var url = xhr.getResponseHeader('X-PJAX-Location'); // || pjax.options.url
           if(url) {
+<<<<<<< HEAD
               var re_url = new RegExp("^"+ $.Common.quote($._full_base_url) , 'i');
               var buf_url = url.replace(re_url, '');
               if(url != buf_url) {
@@ -278,6 +279,13 @@ function pjax(options) {
               pjax.options.replace = true;
               var url = _convertPluginUrl(pjax.options.container, pjax.options.url);
               if(url != pjax.options['url']) {pjax.options['push_url'] = url;}
+=======
+              pjax.options.type = 'GET';
+              pjax.options.url = url;
+              pjax.options.data = {};
+              pjax.options.id = pjax.state.id;
+              pjax.options.replace = true;
+>>>>>>> branch 'develop' of git@github.com:ryu818/NetCommons3.git
               $.pjax(pjax.options);
 		      return;
           }
