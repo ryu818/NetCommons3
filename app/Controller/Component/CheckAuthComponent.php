@@ -57,6 +57,9 @@ class CheckAuthComponent extends Component {
 		if (isset($controller->request->params['block'])) {
 			// 既に権限チェック済
 			$block = $controller->request->params['block'];
+			if(isset($block)) {
+				$controller->block_id = intval($block['Block']['id']);
+			}
 			if(isset($block) && !is_null($block['Block']['hierarchy'])) {
 				$controller->hierarchy = intval($block['Block']['hierarchy']);
 			}
