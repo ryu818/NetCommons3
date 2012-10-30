@@ -259,6 +259,31 @@ function pjax(options) {
   }
 
   options.error = function(xhr, textStatus, errorThrown) {
+//Add Start Ryuji.M
+// pjaxならば、header Locationではなく、「X-PJAX-Location」ヘッダーを返し、そのURLを見て、再度、pjaxを呼ぶように修正。
+// リダイレクト前のURLでリダイレクト後の画面が表示されてしまうため。
+      if ( textStatus !== 'abort' ) {
+          var url = xhr.getResponseHeader('X-PJAX-Location'); // || pjax.options.url
+          if(url) {
+              var re_url = new RegExp("^"+ $.Common.quote($._full_base_url) , 'i');
+              var buf_url = url.replace(re_url, '');
+              if(url != buf_url) {
+                  url = $._base_url + buf_url;
+              }
+              var hash_str = pjax.options.url.match(/.*(#.*)/i);
+              pjax.options.type = 'GET';
+              pjax.options.url = url + RegExp.$1;
+              pjax.options.data = {};
+              pjax.options.id = pjax.state.id;
+              pjax.options.replace = true;
+              var url = _convertPluginUrl(pjax.options.container, pjax.options.url);
+              if(url != pjax.options['url']) {pjax.options['push_url'] = url;}
+              $.pjax(pjax.options);
+		      return;
+          }
+      }
+//Add Start Ryuji.M
+	  
     var container = extractContainer("", xhr, options)
 
     var allowed = fire('pjax:error', [xhr, textStatus, errorThrown, options])

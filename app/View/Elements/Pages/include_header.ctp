@@ -33,6 +33,7 @@ echo '	$._debug = '.intval(Configure::read('debug')).";\n";
 echo '	$._lang = new Object();'."\n";
 echo '	$._display_header_menu = '.intval(Configure::read(NC_CONFIG_KEY.'.'.'display_header_menu')).";\n";
 echo '	$._base_url = \''.$this->Html->url('/').'\';'."\n";
+echo '	$._full_base_url = \''.$this->Html->url('/', true).'\';'."\n";
 echo '	$._current_url = \''.rtrim($this->Html->url(), '/'). '/'.'\';'."\n";
 $pemalink = rtrim($this->request->params['permalink'], '/');
 if($pemalink != '')
