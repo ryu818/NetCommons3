@@ -130,6 +130,7 @@
 					revert: function(socketObj) {
 						if(t.currentBlocks[0].hasClass('nc_block_dummy')) {
 					        // revert
+							var column = block.parent();
 							t.blockDummy.remove();
 							t.blockDummy = null;
 							return true;
@@ -578,6 +579,7 @@
 		},
 		_cloneStyle: function(insert, direction, force) {
 			var t = this;
+			var parent = t.blockDummy.parent();
 			if(direction == 'top' || direction == 'bottom') {
 				var next_el = (direction == 'bottom') ? t.currentBlocks[1] : t.currentBlocks[2];
 				if((next_el.get(0) && next_el.attr('id') == insert.attr('id')) || t.currentBlocks[0].attr('id') == insert.attr('id')) {
@@ -601,8 +603,12 @@
 				return true;
 			}
 			t.blockDummy.css('display', 'none');
+			$(t.currentBlocks[0]).before(t.blockDummy);
 			t.currentBlocks[0].addClass('nc_block_dummy');
 			t.insert = t.currentBlocks[0];
+			if(!parent.children(':first').get(0)) {
+				parent.remove();
+			}
 			return false;
 		},
 
