@@ -16,6 +16,9 @@ class BlockController extends BlockAppController {
 
 	public $components = array('Block.BlockMove', 'CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF));
 	public $uses = array('Block.BlockOperation');
+	
+	public $nc_block = array();
+	public $nc_page = array();
 
 /**
  * ブロック追加
@@ -115,10 +118,14 @@ class BlockController extends BlockAppController {
 			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'add_block.009', '400');
 			return;
 		}
-	
-		$this->redirect('/active-blocks/'.$last_id.'/'.$module['Module']['edit_controller_action']);
-		//echo ($this->requestAction('/active-blocks/'.$last_id.'/'.$module['Module']['edit_controller_action'], array('return')));
-		//$this->render("/Commons/empty");
+
+		$params = array('block_id' => $last_id);
+		$controller_arr = explode('_', $module['Module']['edit_controller_action'], 2);
+		$params['plugin'] = $params['controller'] = $controller_arr[0];
+		if(isset($controller_arr[1])) {
+			$params['action'] = $controller_arr[1];
+		}
+		$this->redirect($params);
 	}
 
 /**
@@ -128,8 +135,8 @@ class BlockController extends BlockAppController {
  * @since   v 3.0.0.0
  */
 	public function del_block() {
-		$block = $this->request->params['block'];
-		$page = $this->request->params['page'];
+		$block = $this->nc_block;
+		$page = $this->nc_page;
 		$block_id = $block['Block']['id'];
 		$page_id = $page['Page']['id'];
 		$show_count = $this->request->data['show_count'];
@@ -196,8 +203,8 @@ class BlockController extends BlockAppController {
 	public function insert_row() {
 		$user_id = $this->Auth->user('id');
 		$insert_page = null;
-		$block = $this->request->params['block'];
-		$page = $this->request->params['page'];
+		$block = $this->nc_block;
+		$page = $this->nc_page;
 		$page_id = $page['Page']['id'];
 		$show_count = $this->request->data['show_count'];
 
@@ -249,8 +256,8 @@ class BlockController extends BlockAppController {
 	public function insert_cell() {
 		$user_id = $this->Auth->user('id');
 		$insert_page = null;
-		$block = $this->request->params['block'];
-		$page = $this->request->params['page'];
+		$block = $this->nc_block;
+		$page = $this->nc_page;
 		$page_id = $page['Page']['id'];
 		$show_count = $this->request->data['show_count'];
 
@@ -305,8 +312,8 @@ class BlockController extends BlockAppController {
 			return;
 		}
 
-		$block = $this->request->params['block'];
-		$page = $this->request->params['page'];
+		$block = $this->nc_block;
+		$page = $this->nc_page;
 		$page_id = $page['Page']['id'];
 		$show_count = $this->request->data['show_count'];
 
@@ -502,7 +509,9 @@ class BlockController extends BlockAppController {
 			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'add_group.013', '400');
 			return;
 		}
-		echo ($this->requestAction('/active-blocks/'.$last_id.'/group', array('return')));
+		
+		$params = array('block_id' => $last_id, 'plugin' => 'group', 'controller' => 'group', 'action' => 'index');
+		echo ($this->requestAction($params, array('return')));
 		$this->render("/Commons/empty");
 	}
 /**
@@ -518,8 +527,8 @@ class BlockController extends BlockAppController {
 			return;
 		}
 
-		$block = $this->request->params['block'];
-		$page = $this->request->params['page'];
+		$block = $this->nc_block;
+		$page = $this->nc_page;
 		$page_id = $page['Page']['id'];
 		$show_count = $this->request->data['show_count'];
 

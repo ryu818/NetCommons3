@@ -55,14 +55,12 @@ class AppPluginController extends AppController
 			$this->set('block_id', $this->request->params['module_id']);
 			$this->set('id', '_'.$this->request->params['module_id']);
 		}
-		if(isset($this->request->params['block'])) {
-			$this->set('block', $this->request->params['block']);
+		if(isset($this->nc_block)) {
+			$this->set('block', $this->nc_block);
 		}
-		if(isset($this->request->params['page'])) {
-			$this->set('page', $this->request->params['page']);
+		if(isset($this->nc_page)) {
+			$this->set('page', $this->nc_page);
 		}
-		$this->set('block_type', Configure::read(NC_SYSTEM_KEY.'.block_type'));
-		
 		if(isset($this->hierarchy) && $this->hierarchy >= NC_AUTH_MIN_CHIEF) {
 			$this->set('is_chief', _ON);
 		} else {

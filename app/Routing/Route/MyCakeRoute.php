@@ -29,56 +29,34 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 class MyCakeRoute extends CakeRoute {
-/**
- * Checks to see if the given URL can be parsed by this route.
- * If the route can be parsed an array of parameters will be returned; if not
- * false will be returned. String urls are parsed if they match a routes regular expression.
- *
- * @param string $url The url to attempt to parse.
- * @return mixed Boolean false on failure, otherwise an array or parameters
- */
+	/**
+	 * Checks to see if the given URL can be parsed by this route.
+	 * If the route can be parsed an array of parameters will be returned; if not
+	 * false will be returned. String urls are parsed if they match a routes regular expression.
+	 *
+	 * @param string $url The url to attempt to parse.
+	 * @return mixed Boolean false on failure, otherwise an array or parameters
+	 */
 	public function parse($url) {
-		if (!$this->compiled()) {
-			$this->compile();
-		}
-		if (!preg_match($this->_compiledRoute, $url, $route)) {
+		$route = parent::parse($url);
+		if (!$route) {
 			return false;
 		}
-		foreach ($this->defaults as $key => $val) {
-			$key = (string)$key;
-			if ($key[0] === '[' && preg_match('/^\[(\w+)\]$/', $key, $header)) {
-				if (isset($this->_headerMap[$header[1]])) {
-					$header = $this->_headerMap[$header[1]];
-				} else {
-					$header = 'http_' . $header[1];
-				}
-				$header = strtoupper($header);
-
-				$val = (array)$val;
-				$h = false;
-
-				foreach ($val as $v) {
-					if (env($header) === $v) {
-						$h = true;
-					}
-				}
-				if (!$h) {
-					return false;
-				}
+		//if(isset($route['plugin']) && !isset($route['controller'])) {
+		//	$route['controller'] = $route['plugin'];
+		//}
+		if(isset($route['plugin'])) {
+			$block_type = Configure::read(NC_SYSTEM_KEY.'.block_type');
+			if(!isset($block_type) && isset($route['block_type']) && $route['block_type'] == 'blocks') {
+				return false;
 			}
 		}
-		array_shift($route);
-		$count = count($this->keys);
-		for ($i = 0; $i <= $count; $i++) {
-			unset($route[$i]);
-		}
-
-// Add Start Ryuji.M
-// Conrtollerがあるかどうか判断し、なければ、Actionとする。
-// コントローラ名は常にpluginName + controllerにて判断する。
-// 例：active-blocks/(block_id)/announcement/edit
-//     -> Plugin/AnnouncementEditController.phpがあれば、AnnouncementEditController->indexメソッドへ
-//     -> なければ、Plugin/AnnouncementController.php->editメソッドへ
+		// Add Start Ryuji.M
+		// Conrtollerがあるかどうか判断し、なければ、Actionとする。
+		// コントローラ名は常にpluginName + controllerにて判断する。
+		// 例：active-blocks/(block_id)/announcement/edit
+		//     -> Plugin/AnnouncementEditController.phpがあれば、AnnouncementEditController->indexメソッドへ
+		//     -> なければ、Plugin/AnnouncementController.php->editメソッドへ
 		if(isset($route['controller'])) {
 			$pluginName = Inflector::camelize($route['plugin']);
 			$controller = $pluginName . Inflector::camelize($route['controller']);
@@ -98,50 +76,54 @@ class MyCakeRoute extends CakeRoute {
 				$route['controller'] = $controller;
 			}
 		}
-// Add End Ryuji.M
-
-		$route['pass'] = $route['named'] = array();
-
-		// Assign defaults, set passed args to pass
-		foreach ($this->defaults as $key => $value) {
-			if (isset($route[$key])) {
-				continue;
-			}
-			if (is_integer($key)) {
-				$route['pass'][] = $value;
-				continue;
-			}
-			$route[$key] = $value;
-		}
-
-		foreach ($this->keys as $key) {
-			if (isset($route[$key])) {
-				$route[$key] = rawurldecode($route[$key]);
-			}
-		}
-
-		if (isset($route['_args_'])) {
-			list($pass, $named) = $this->_parseArgs($route['_args_'], $route);
-			$route['pass'] = array_merge($route['pass'], $pass);
-			$route['named'] = $named;
-			unset($route['_args_']);
-		}
-
-		if (isset($route['_trailing_'])) {
-			$route['pass'][] = rawurldecode($route['_trailing_']);
-			unset($route['_trailing_']);
-		}
-
-		// restructure 'pass' key route params
-		if (isset($this->options['pass'])) {
-			$j = count($this->options['pass']);
-			while ($j--) {
-				if (isset($route[$this->options['pass'][$j]])) {
-					array_unshift($route['pass'], $route[$this->options['pass'][$j]]);
-				}
-			}
-		}
+		// Add End Ryuji.M
 		return $route;
 	}
 
+	/**
+	 * Reverse route plugin shortcut urls. If the plugin and controller
+	 * are not the same the match is an auto fail.
+	 *
+	 * @param array $url Array of parameters to convert to a string.
+	 * @return mixed either false or a string url.
+	 */
+	public function match($url) {
+		if(!isset($url['permalink'])) {
+			$permalink = Configure::read(NC_SYSTEM_KEY.'.permalink');
+			if($permalink) {
+				$url['permalink'] = $permalink;
+			} else {
+				$url['permalink'] = '';
+			}
+		}
+		if(isset($url['controller'])) {
+			$controller_arr = explode('_', $url['controller'], 2);
+			if($controller_arr[0] == $url['plugin']) {
+				if(isset($controller_arr[1])) {
+					$url['controller'] = $controller_arr[1];
+				} else {
+					$url['controller'] = '';
+				}
+			}
+		}
+
+		if(isset($url['plugin']) && !isset($url['block_type'])) {
+			$block_type = Configure::read(NC_SYSTEM_KEY.'.block_type');
+			$url['block_type'] = isset($block_type) ? $block_type : 'active-blocks';
+		}
+	
+		if(isset($url['action']) && $url['action'] == 'index') {
+			$url['action'] = '';
+		}
+	
+		//if (isset($url['controller']) && isset($url['plugin']) && $url['plugin'] != $url['controller']) {
+		//	return false;
+		//}
+		$this->defaults['controller'] = $url['controller'];
+
+		$result = parent::match($url);
+		unset($this->defaults['controller']);
+
+		return $result;
+	}
 }

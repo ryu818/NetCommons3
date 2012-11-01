@@ -237,7 +237,7 @@
 								params['parent_id'] = parent_group.attr('data-block');
 							}
 
-							$.post($._base_url + 'active-blocks/' + block_id + '/block/' + t.insertAction,
+							$.post($.Common.urlBlock(block_id, 'block/' + t.insertAction),
 								params,
 								function(res){
 									show_count_el.attr('data-show-count', ++params['show_count']);
@@ -737,8 +737,8 @@
 
 			show_count_el = block.parents('[data-show-count]:first');
 			params['show_count'] = show_count_el.attr('data-show-count');
-
-			$.post($._base_url + 'active-blocks/' + block_id + '/block/add_group',
+			
+			$.post($.Common.urlBlock(block_id, 'block/add_group'),
 				params,
 				function(res){
 					var prev = null;
@@ -799,7 +799,7 @@
 			if (!$.Common.confirm(__d('pages', 'groupCancelConfirm'))) {
 				return false;
 			}
-			$.post($._base_url + 'active-blocks/' + block_id + '/block/cancel_group',
+			$.post($.Common.urlBlock(block_id, 'block/cancel_group'),
 					params,
 					function(res){
 						$.each(t.groups, function() {
@@ -839,7 +839,7 @@
 			params['page_id'] = page_el.attr('data-page');
 			params['module_id'] = module_id;
 
-			$.post($._base_url + 'active-blocks/block/add_block',
+			$.post($.Common.urlBlock(null, 'block/add_block'),
 					params,
 					function(res){
 						var first_column = $(".nc_column:first", page_el);
@@ -865,7 +865,7 @@
 			}
 			params['show_count'] = show_count_el.attr('data-show-count');
 
-			$.post($._base_url + 'active-blocks/' + block_id + '/block/del_block',
+			$.post($.Common.urlBlock(block_id, 'block/del_block'),
 					params,
 					function(res){
 						// 空のグルーピングボックス削除

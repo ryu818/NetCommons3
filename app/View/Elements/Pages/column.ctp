@@ -5,25 +5,38 @@
 	if(isset($blocks[$parent_id])) {
 		foreach ($blocks[$parent_id] as $col => $block_col) {
 			foreach ($block_col as $row => $block) {
+
 				if(empty($block['Block']['hierarchy'])) {
 					$block['Block']['hierarchy'] = NC_AUTH_OTHER;
 				}
-
+				$params = array('block_type' => 'active-blocks', 'block_id' => $block['Block']['id']);
 				if(!empty($this->params['active_plugin']) && $block['Block']['id'] == $this->params['block_id']) {
 					$title = $this->fetch('title');
 					$title = (isset($title) && $title != '') ? $title : h($block['Block']['title']);
 					$this->assign('title', $title);
-					$active_controller = empty($this->params['active_controller']) ? $block['Block']['controller_action'].'/'.$this->params['active_action'] : $this->params['active_plugin']. '/'. $this->params['active_controller']. '/' . $this->params['active_action'];
-					//$url = 'active-blocks'.'/'.$block['Block']['id'].'/'.$this->params['active_plugin'].'/'.$active_controller.'/';
-					$url = '/active-blocks'.'/'.$block['Block']['id'].'/'.$active_controller;
+
+					$params['plugin'] = $this->params['active_plugin'];
+					$params['controller'] = empty($this->params['active_controller']) ? $params['plugin'] : $this->params['active_controller'];
+					$params['action'] = empty($this->params['active_action']) ? '' : $this->params['active_action'];
 				} else {
-					$url = '/active-blocks'.'/'.$block['Block']['id'].'/'.$block['Block']['controller_action'].'/';
+					$controller_arr = explode('_', $block['Block']['controller_action'], 2);
+					$params['plugin'] = $params['controller'] = $controller_arr[0];
+					if(isset($controller_arr[1])) {
+						$params['action'] = $controller_arr[1];
+					}
 				}
+
+				Configure::write(NC_SYSTEM_KEY.'.block', $block);
+				Configure::write(NC_SYSTEM_KEY.'.page' , $page);
 				if($block['Block']['controller_action'] == "group") {
-					$c = trim($this->requestAction($url, array('block' => $block, 'page' => $page, 'blocks' => $blocks, 'return')));
+					Configure::write(NC_SYSTEM_KEY.'.blocks', $blocks);
+					$c = trim($this->requestAction($params, array('return')));
 				} else {
-					$c = trim($this->requestAction($url, array('block' => $block, 'page' => $page, 'return')));
+					//$url = '/active-blocks'.'/'.$block['Block']['id'].'/'.$block['Block']['controller_action'].'/';
+					$c = trim($this->requestAction($params, array('return')));
+
 				}
+
 				if(preg_match(NC_DOCTYPE_STR, $c)) {
 					// モジュール内部にエラー等、DOCTYPEから出力するものあり
 					exit;

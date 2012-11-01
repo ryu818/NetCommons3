@@ -14,13 +14,13 @@
 
 		var wysiwyg = $('#'+id+'_wysiwyg').nc_wysiwyg({
 			'focus'    : true,
-			'image'    : $.Common.urlBlock(id, 'announcement/image'),
-			'file'     : $.Common.urlBlock(id, 'announcement/file'),
+			'image'    : $.Common.urlBlock(block_id, 'announcement/image'),
+			'file'     : $.Common.urlBlock(block_id, 'announcement/file'),
 		});
 		var form = $('#form' + id);
 
 		$('input[name="cancel"]', form).click(function(e) {
-			$.pjax.click(e, t, {'url': $.Common.urlBlock(id, 'announcement')});
+			$.pjax.click(e, t, {'url': $.Common.urlBlock(block_id, 'announcement')});
 		});
 	}
 })(jQuery);

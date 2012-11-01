@@ -6,9 +6,9 @@ echo ($this->Html->script(array('Announcement.edit', 'plugins/jquery.nc_wysiwyg.
 echo ($this->Html->css('plugins/jquery.nc_wysiwyg.css'));
 ?>
 <?php echo($this->Form->error('Htmlarea.content')); ?>
-<form id="form<?php echo($id); ?>" method="post" action="<?php echo $this->Html->urlBlock($id, '/announcement/edit'); ?>" data-pjax="#<?php echo($id); ?>">
+<form id="form<?php echo($id); ?>" name="form<?php echo($id); ?>" method="post" action="<?php echo $this->Html->url(array('plugin' => 'announcement', 'controller' => 'announcement_edit','block_id' => $block_id)); ?>" data-pjax="#<?php echo($id); ?>">
 	<textarea name="data[Htmlarea][content]" id="<?php echo($id); ?>_wysiwyg" class="nc_wysiwyg" rows="15" cols="40">
-		<?php echo($content); ?>
+		<?php echo ($htmlarea['Htmlarea']['content']);?>
 	</textarea>
 	<div class="btn-bottom">
 		<input type="submit" class="common_btn" name="ok" value="<?php echo( __('Ok')); ?>" />

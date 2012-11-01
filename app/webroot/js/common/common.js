@@ -11,9 +11,12 @@
 	$.Common ={
 		zIndex : 2000,
 		blockZIndex : 1000,
-		// topid,controller_action名称からurl取得
-		urlBlock : function(id, controller_action) {
-			var block_id = $('#' + id).attr('data-block');
+		// block_id,controller_action名称からurl取得
+		urlBlock : function(block_id, controller_action) {
+			if(!block_id) {
+				return $._page_url + $._block_type + '/' + controller_action;
+			}
+			var id = '_' + block_id;
 			return $._page_url + $._block_type + '/' + block_id + '/' + controller_action + '/#' + id;
 		},
 		// javascript動的ロード

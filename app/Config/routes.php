@@ -38,136 +38,155 @@
  * @since         CakePHP(tm) v 0.2.9
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-	Router::connect(
-    	'/users/:action/*',
-		array('controller' => 'users')
-	);
+/**
+ * Load all plugin routes.  See the CakePlugin documentation on
+ * how to customize the loading of plugin routes.
+ */
+CakePlugin::routes();
+$prefixes = Router::prefixes();
 
-	Router::connect(
-    	'/controls/*',
-		array('controller' => 'controls')
-	);
+Router::connect(
+	'/users/:action/*',
+	array('controller' => 'users')
+);
 
-	if ($plugins = CakePlugin::loaded()) {
+Router::connect(
+	'/controls/*',
+	array('controller' => 'controls')
+);
 
-		foreach ($plugins as $key => $value) {
-			$plugins[$key] = Inflector::underscore($value);
-		}
-		$pluginPattern = implode('|', $plugins);
-		$match = array('plugin' => $pluginPattern);
-
-		Router::connect(
-	    	':permalink/active-blocks/:block_id',
-			array('controller' => 'pages', 'action' => 'index', 'plugin_name' => '', 'block_type' => 'active-blocks'),
-			array(
-				'permalink' => '.*',
-	        	'block_id' => '[0-9]+'
-	    	) + $match
-		);
-
-		Router::connect(
-	    	':permalink/active-blocks/:block_id/:plugin',
-			array('action' => 'index', 'block_type' => 'active-blocks'),
-			array(
-	        	'permalink' => '.*',
-	        	'block_id' => '[0-9]+'
-	    	) + $match
-		);
-
-		//App::import('Routing/Route', 'MyCakeRoute');
-		App::uses('MyCakeRoute', 'Routing/Route');
-
-		Router::connect(
-	    	':permalink/active-blocks/:block_id/:plugin/:controller',
-			array('block_type' => 'active-blocks'),
-			array(
-			'routeClass' => 'MyCakeRoute',
-	        	'permalink' => '.*',
-	        	'block_id' => '[0-9]+'
-	    	) + $match
-		);
-		Router::connect(
-	    	':permalink/active-blocks/:block_id/:plugin/:controller/:action/*',
-			array('block_type' => 'active-blocks'),
-			array(
-			'routeClass' => 'MyCakeRoute',
-	        	'permalink' => '.*',
-	        	'block_id' => '[0-9]+'
-	    	) + $match
-		);
-		
-		/* block_idが指定なしにplugin表示 */
-		Router::connect(
-			':permalink/active-blocks/:plugin',
-			array('action' => 'index', 'block_type' => 'active-blocks'),
-			array(
-				'permalink' => '.*'
-			) + $match
-		);
-		
-		Router::connect(
-			':permalink/active-blocks/:plugin/:controller',
-			array('block_type' => 'active-blocks'),
-			array(
-			'routeClass' => 'MyCakeRoute',
-				'permalink' => '.*'
-			) + $match
-		);
-		
-		Router::connect(
-			':permalink/active-blocks/:plugin/:controller/:action/*',
-			array('block_type' => 'active-blocks'),
-			array(
-			'routeClass' => 'MyCakeRoute',
-				'permalink' => '.*'
-			) + $match
-		);
+if ($plugins = CakePlugin::loaded()) {
+	App::uses('MyCakeRoute', 'Routing/Route');
+	foreach ($plugins as $key => $value) {
+		$plugins[$key] = Inflector::underscore($value);
 	}
+	$pluginPattern = implode('|', $plugins);
+	$match = array('plugin' => $pluginPattern);
+	$pluginParams = array('routeClass' => 'MyCakeRoute', 'plugin' => $pluginPattern);
+
+	/*foreach ($prefixes as $prefix) {
+		$params = array('prefix' => $prefix, $prefix => true);
+	$indexParams = $params + array('action' => 'index');
+	Router::connect("/{$prefix}/:plugin", $indexParams, $pluginParams);
+	Router::connect("/{$prefix}/:plugin/:controller", $indexParams, $match);
+	Router::connect("/{$prefix}/:plugin/:controller/:action/*", $params, $match);
+	}
+	Router::connect('/:plugin', array('action' => 'index'), $pluginParams);
+	Router::connect('/:plugin/:controller', array('action' => 'index'), $match);
+	Router::connect('/:plugin/:controller/:action/*', array(), $match);*/
+
 
 	Router::connect(
-    	':permalink:column/blocks/:block_id:active_plugin:active_controller:active_action/*',
-		array('controller' => 'pages', 'action' => 'index', 'block_type' => 'blocks'),
+		':permalink/:block_type/:block_id/:plugin/:controller/:action/*',
+		array(),
 		array(
-        	'permalink' => '.*',
-			'column' => '(\/headercolumn|\/leftcolumn|\/centercolumn|\/rightcolumn|\/footercolumn)?',
+			'permalink' => '.*',
 			'block_id' => '[0-9]+',
-        	'active_plugin' => '\/?[^\/]*',
-			'active_controller' => '\/?[^\/]*',
-			'active_action' => '\/?[^\/]*'
-    	)
+			'block_type' => 'blocks|active-blocks',
+		) + $pluginParams
 	);
+
+	Router::connect(
+		':permalink/:block_type/:block_id/:plugin/:controller',
+		array(),
+		array(
+			'permalink' => '.*',
+			'block_id' => '[0-9]+',
+			'block_type' => 'blocks|active-blocks',
+		) + $pluginParams
+	);
+
+	Router::connect(
+		':permalink/:block_type/:block_id/:plugin',
+		array(),
+		array(
+			'permalink' => '.*',
+			'block_id' => '[0-9]+',
+			'block_type' => 'blocks|active-blocks',
+		) + $pluginParams
+	);
+
+	/* block_idが指定なしにplugin表示 */
+	Router::connect(
+		':permalink/:block_type/:plugin/:controller/:action/*',
+		array(),
+		array(
+			'permalink' => '.*',
+			'block_type' => 'blocks|active-blocks',
+		) + $pluginParams
+	);
+	
+	Router::connect(
+		':permalink/:block_type/:plugin/:controller',
+		array(),
+		array(
+			'permalink' => '.*',
+			'block_type' => 'blocks|active-blocks',
+		) + $pluginParams
+	);
+	
+	Router::connect(
+		':permalink/:block_type/:plugin',
+		array(),
+		array(
+			'permalink' => '.*',
+			'block_type' => 'blocks|active-blocks',
+		) + $pluginParams
+	);
+}
+/*
+ foreach ($prefixes as $prefix) {
+$params = array('prefix' => $prefix, $prefix => true);
+$indexParams = $params + array('action' => 'index');
+Router::connect("/{$prefix}/:controller", $indexParams);
+Router::connect("/{$prefix}/:controller/:action/*", $params);
+}
+Router::connect('/:controller', array('action' => 'index'));
+Router::connect('/:controller/:action/*');
+*/
+
+Router::connect(
+':permalink:column/blocks/:block_id:active_plugin:active_controller:active_action/*',
+	array('controller' => 'pages', 'action' => 'index'),
+	array(
+		'permalink' => '.*',
+		'column' => '(\/headercolumn|\/leftcolumn|\/centercolumn|\/rightcolumn|\/footercolumn)?',
+		'block_id' => '[0-9]+',
+		'active_plugin' => '\/?[^\/]*',
+		'active_controller' => '\/?[^\/]*',
+		'active_action' => '\/?[^\/]*'
+	)
+);
 
 /**
  * Here, we are connecting '/' (base path) to controller called 'Pages',
  * its action called 'display', and we pass a param to select the view file
  * to use (in this case, /app/View/Pages/home.ctp)...
- */
-	//Router::connect('/', array('controller' => 'pages', 'action' => 'display', 'home'));
-	Router::connect(
-		'/:permalink',
-		array('controller' => 'pages', 'action' => 'index', 'block_type' => 'blocks'),
-		array(
-        	'permalink' => '.*'
-    	)
-	);
-	Router::connect(
-		'/',
-		array('controller' => 'pages', 'action' => 'index', 'permalink' => '', 'block_type' => 'blocks')
-	);
+*/
+//Router::connect('/', array('controller' => 'pages', 'action' => 'display', 'home'));
+Router::connect(
+	'/:permalink',
+	array('controller' => 'pages', 'action' => 'index'),
+	array(
+		'permalink' => '.*'
+	)
+);
 
-/**
- * ...and connect the rest of 'Pages' controller's urls.
- */
-	//Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
+Router::connect(
+	'/',
+	array('controller' => 'pages', 'action' => 'index')
+);
 
-/**
- * Load all plugin routes.  See the CakePlugin documentation on
- * how to customize the loading of plugin routes.
- */
-	CakePlugin::routes();
+$namedConfig = Router::namedConfig();
+if ($namedConfig['rules'] === false) {
+	Router::connectNamed(true);
+}
+
+unset($namedConfig, $params, $indexParams, $prefix, $prefixes, $pluginParams, $match,
+		$pluginPattern, $plugins, $key, $value);
 
 /**
  * Load the CakePHP default routes. Remove this if you do not want to use
  * the built-in default routes.
  */
-	require CAKE . 'Config' . DS . 'routes.php';
+//require CAKE . 'Config' . DS . 'routes.php';

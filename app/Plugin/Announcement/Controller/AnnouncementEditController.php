@@ -46,6 +46,23 @@ class AnnouncementEditController extends AnnouncementAppController {
  * @since   v 3.0.0.0
  */
 	public function index() {
+		$htmlarea = $this->Htmlarea->findByContentId($this->content_id);
+		if ($this->request->is('post')) {
+			$data = array(
+				'id' => isset($htmlarea['Htmlarea']['id']) ? $htmlarea['Htmlarea']['id'] : null,
+				'content_id' => $this->content_id,
+				'content' => $this->request->data['Htmlarea']['content']
+			);
+			if ($this->Htmlarea->save($data)) {
+				$this->Session->setFlash(__('Your post has been saved.'));
+				$this->redirect(array('plugin' => 'announcement', 'controller' => 'announcement', 'block_id' => $this->block_id, '#' => $this->id));
+			}
+			$htmlarea['Htmlarea'] = $data;
+		}
+
+		$this->set('htmlarea', $htmlarea);
+		
+		/*
 		$ret = $this->Htmlarea->findByContentId($this->content_id);
 		if ($this->request->is('post')) {
 			$data = array(
@@ -55,9 +72,7 @@ class AnnouncementEditController extends AnnouncementAppController {
 			);
 			if ($this->Htmlarea->save($data)) {
 				$this->Session->setFlash(__('Your post has been saved.'));
-				
-				$this->redirect('/blocks/' .$this->block_id. '/announcement/');
-				//$this->redirect(array('block_type' => 'blocks','block_id' => 366, 'controller' => 'announcement', 'action' => 'index'));
+				$this->redirect(array('plugin' => 'announcement', 'controller' => 'announcement', 'block_id' => $this->block_id, '#' => $this->id));
 			}
 			$this->set('content', $this->request->data['Htmlarea']['content']);
 			return;
@@ -65,6 +80,6 @@ class AnnouncementEditController extends AnnouncementAppController {
 		if(!isset($ret['Htmlarea'])) {
 			return;
 		}
-		$this->set('content', $ret['Htmlarea']['content']);
+		$this->set('content', $ret['Htmlarea']['content']);*/
 	}
 }

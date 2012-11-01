@@ -47,9 +47,6 @@ class BlockMoveComponent extends Component {
 		$request->data['insert_page_id'] = isset($request->data['insert_page_id']) ? $request->data['insert_page_id'] : null;
 		$request->data['insert_show_count'] = isset($request->data['insert_show_count']) ? $request->data['insert_show_count'] : null;
 
-		//$block = $request->params['block'];
-		//$page = $request->params['page'];
-
 		// TODO:ショートカットの別のルームへの移動は許さない。
 		// 但し、ショートカット先コンテンツルームも主坦であれば可能とする
 		// cake13 validatorContent参照

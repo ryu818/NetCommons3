@@ -51,25 +51,15 @@ class CheckAuthComponent extends Component {
  * @since   v 3.0.0.0
  */
 	public function startup(Controller $controller) {
-		$controller->hierarchy = NC_AUTH_OTHER;	// 初期化
-		$controller->content_id = 0;			// 初期化
+		
+		$this->_setControllerPrams($controller);
 
-		if (isset($controller->request->params['block'])) {
+		if (isset($controller->nc_block['Block'])) {
 			// 既に権限チェック済
-			$block = $controller->request->params['block'];
-			if(isset($block)) {
-				$controller->block_id = intval($block['Block']['id']);
-			}
-			if(isset($block) && !is_null($block['Block']['hierarchy'])) {
-				$controller->hierarchy = intval($block['Block']['hierarchy']);
-			}
-			if(isset($block) && !is_null($block['Content']['master_id'])) {
-				$controller->content_id = intval($block['Content']['master_id']);
-			}
 			return;
 		}
 
-		$controller->set('title_for_layout',  '');
+		//$controller->set('title_for_layout',  '');
 		$user = $this->Auth->user();//認証済みユーザを取得
 		$user_id = isset($user['id']) ? intval($user['id']) : 0;
 		$lang = $this->Session->read(NC_CONFIG_KEY.'.'.'language');
@@ -79,24 +69,24 @@ class CheckAuthComponent extends Component {
 		$url = $controller->request->url;
 
 		$permalink = isset($controller->request->params['permalink']) ? $controller->request->params['permalink'] : '';
-		$block_type = isset($controller->request->params['block_type']) ? $controller->request->params['block_type'] : '';
 
 		$block_id = isset($controller->request->params['block_id']) ? intval($controller->request->params['block_id']) : 0;
 
 		$plugin_name = $controller->request->params['plugin'];
 		$controller_name = $controller->request->params['controller'];
 		$action_name = $controller->request->params['action'];
-
+		
 		$permalink = $this->formatUrl($permalink);
 
-		$controller->request->offsetSet('permalink', $permalink);
+		Configure::write(NC_SYSTEM_KEY.'.permalink', $permalink);
+		$controller->id = '_'. $block_id;
 		$controller->block_id = $block_id;
 
 		if($user_id == 0)
 			$redirect_url = '/users/login';
 		else
 			$redirect_url = null;
-
+		
 		if(!preg_match($this->prohibitionURL, $url)) {
 			if($block_id > 0) {
 				$block = $this->_getBlock($controller, $block_id, $user_id);
@@ -112,15 +102,15 @@ class CheckAuthComponent extends Component {
 					$controller->flash(__('Page not found.'), $redirect_url, 'CheckAuth.002', '404');
 					return ;
 				}
-				$controller->request->offsetSet('page', $active_page);
+				$controller->nc_page = $active_page;
 
 				//
 				// title
 				//
-				if(isset($block['Block']['title'])) {
-					// TODO:Module.module_nameも考慮するべき？
-					$controller->set('title_for_layout',  $block['Block']['title']);
-				}
+				//if(isset($block['Block']['title'])) {
+				//	// TODO:Module.module_nameも考慮するべき？
+				//	$controller->set('title_for_layout',  $block['Block']['title']);
+				//}
 			}
 
 			$page = $this->_getPage($controller, $permalink, $user_id, $lang);
@@ -168,7 +158,6 @@ class CheckAuthComponent extends Component {
 					$controller->flash(__('Content not found.'), '', 'CheckAuth.006', 404);
 					return ;
 				}
-				var_dump($block);var_dump($module);
 				if($block && $block['Block']['module_id'] != $module['Module']['id']) {
 					// block_idから取得するpluginと、plugin_nameから取得したpluginの名前が一致しない。
 					$controller->flash(__('Unauthorized request.<br />Please reload the page.'), '', 'CheckAuth.005', '400');
@@ -190,6 +179,11 @@ class CheckAuthComponent extends Component {
 			// TODO:ログインに遷移する場合、以下を記述
 			//$controller->Auth->deny();
 		}
+		
+		if($controller->request->header('X-NC-PAGE') || ($controller->request->params['plugin'] == '' && $controller->request->params['controller'] == 'pages')) {
+			Configure::write(NC_SYSTEM_KEY.'.block_type', 'blocks');
+		}
+		
 
 		/*
 		 * Setting Mode
@@ -221,7 +215,7 @@ class CheckAuthComponent extends Component {
  * @return  array($module_id, $system_flag) エラーの場合、false
  * @since   v 3.0.0.0
  */
-	protected function _getModule(Controller $controller, $plugin_name, $authority_id) {
+	/*protected function _getModule(Controller $controller, $plugin_name, $authority_id) {
 		$modules = array();
 		if(isset($controller->request->params['modules'])) {
 			$modules =  $controller->request->params['modules'];
@@ -242,7 +236,7 @@ class CheckAuthComponent extends Component {
 		$controller->request->offsetSet('modules', $modules);
 
 		return $module;
-	}
+	}*/
 
 /**
  * Page取得
@@ -340,7 +334,6 @@ class CheckAuthComponent extends Component {
 			return false;
 		}
 		$page = $controller->Page->afterFindIds($page);
-		//$controller->request->offsetSet('page', $page);
 		return $page;
 	}
 
@@ -357,14 +350,11 @@ class CheckAuthComponent extends Component {
  * @since   v 3.0.0.0
  */
 	protected function _getBlock(Controller $controller, $block_id, $user_id) {
-		//if(isset($controller->request->params['block'])) {
-		//	return $controller->request->params['block'];
-		//}
 		$block =  $controller->Block->findByUserId($block_id, $user_id);
 		if(!isset($block)) {
 			return false;
 		}
-		$controller->request->offsetSet('block', $block);
+		$controller->nc_block = $block;
 		return $block;
 	}
 
@@ -389,5 +379,39 @@ class CheckAuthComponent extends Component {
 		}
 
 		return $url;
+	}
+	
+	protected function _setControllerPrams(Controller $controller) {
+		$blocks = Configure::read(NC_SYSTEM_KEY.'.blocks');
+		$block = Configure::read(NC_SYSTEM_KEY.'.block');
+		$page = Configure::read(NC_SYSTEM_KEY.'.page');
+
+		$controller->hierarchy = NC_AUTH_OTHER;	// 初期化
+		$controller->content_id = 0;			// 初期化
+
+		if(isset($blocks)) {
+			$controller->nc_blocks = $blocks;
+			Configure::delete(NC_SYSTEM_KEY.'.blocks');
+		}
+
+		if(isset($block)) {
+			$controller->nc_block = $block;
+			Configure::delete(NC_SYSTEM_KEY.'.block');
+			
+			$controller->id = '_'.intval($block['Block']['id']);
+			$controller->block_id = intval($block['Block']['id']);
+
+			if(!is_null($block['Block']['hierarchy'])) {
+				$controller->hierarchy = intval($block['Block']['hierarchy']);
+			}
+			if(!is_null($block['Content']['master_id'])) {
+				$controller->content_id = intval($block['Content']['master_id']);
+			}
+		}
+
+		if(isset($page)) {
+			$controller->nc_page = $page;
+			Configure::delete(NC_SYSTEM_KEY.'.page');
+		}
 	}
 }

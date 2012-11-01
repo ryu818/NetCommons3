@@ -27,6 +27,14 @@ $this->Html->css(array('Default.page', 'Default.gray/page'), null, array('frame'
 ?>
 <script>
 <?php
+if($this->params['plugin'] == '' && $this->params['controller'] == 'pages') {
+	echo '	$.ajaxSetup({headers: {"X-NC-PAGE":"true"}});'."\n";
+	//TODO:必要ないかも？
+	echo '	$._block_type = \'blocks\';'."\n";
+} else {
+	//TODO:必要ないかも？
+	echo '	$._block_type = \'active-blocks\';'."\n";
+}
 echo '	$._nc = Array();'."\n";
 echo '	$._mode = '.$nc_mode.";\n";
 echo '	$._debug = '.intval(Configure::read('debug')).";\n";
@@ -35,12 +43,11 @@ echo '	$._display_header_menu = '.intval(Configure::read(NC_CONFIG_KEY.'.'.'disp
 echo '	$._base_url = \''.$this->Html->url('/').'\';'."\n";
 echo '	$._full_base_url = \''.$this->Html->url('/', true).'\';'."\n";
 echo '	$._current_url = \''.rtrim($this->Html->url(), '/'). '/'.'\';'."\n";
-$pemalink = rtrim($this->request->params['permalink'], '/');
+$pemalink = rtrim(Configure::read(NC_SYSTEM_KEY.'.permalink'), '/');
 if($pemalink != '')
 	$pemalink .= '/';
 echo '	$._page_url = \''.$this->Html->url('/').$pemalink. '\';'."\n";
-//TODO:必要ないかも？
-echo '	$._block_type = \''.$this->params['block_type'].'\';'."\n";
+
 
 echo '	$._nc.nc_wysiwyg = new Object();'."\n";
 echo '	$._nc.nc_wysiwyg[\'allow_attachment\'] = '.(isset($nc_user['allow_attachment']) ? $nc_user['allow_attachment'] : _OFF).';'."\n";

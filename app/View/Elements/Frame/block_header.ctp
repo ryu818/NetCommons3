@@ -36,7 +36,7 @@ if($is_edit) {
 		</span>
 		<ul class="nc_block_toolbox">
 			<li class="<?php echo($edit_class_name); ?>">
-				<?php echo $this->Html->link('', '/'.$block_type.'/'.$block_id.'/'.$controller_action.'/#'.$id, 
+				<?php echo $this->Html->link('', array('block_id' => $block_id, 'plugin' => $controller_action, 'controller' => $controller_action, '#' => $id),
 					array(
 						'title' => $title, 
 						'class' => 'link ', 

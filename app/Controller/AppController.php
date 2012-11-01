@@ -75,12 +75,8 @@ class AppController extends Controller {
     public function beforeFilter()
 	{
 		$this->_setExecuteTimes();
-
 		parent::beforeFilter();
 
-		if(!isset($this->request->params['requested']) && isset($this->request->params['block_type'])) {
-			Configure::write(NC_SYSTEM_KEY.'.block_type', $this->request->params['block_type']);
-		}
 		if ($this->request->is('ajax')) {
 			$this->layout = 'ajax';
 			$plugin_name = isset($this->request->params['plugin']) ? $this->request->params['plugin'] :
@@ -91,7 +87,7 @@ class AppController extends Controller {
 				if($replace_url != $this->request->here) {
 					$replace_url = preg_replace('%^'.$this->request->webroot.'%i', '', $replace_url);
 					echo $this->requestAction($replace_url, array('bare' => false, 'return'));
-					exit;
+					$this->_stop();
 				}
 			}
 		}
@@ -144,6 +140,7 @@ class AppController extends Controller {
 	public function beforeRender()
 	{
 		parent::beforeRender();
+
 		$this->set('hierarchy', $this->hierarchy);
 	}
 
