@@ -1095,6 +1095,10 @@
             this.id = 'nc_wysiwyg' + $(el).attr('id');
             var newX = qel.width() || el.clientWidth;
             var newY = qel.height() || el.clientHeight;
+            if($(el).parent().hasClass('nc_wysiwyg_outer')) {
+            	// 初期処理終了済
+            	return;
+            }
 
             if ( el.nodeName.toLowerCase() == 'textarea' ) {
 				this.original = el;
