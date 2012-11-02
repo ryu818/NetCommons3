@@ -27,6 +27,7 @@
 // the options object.
 //
 // Returns the jQuery object
+// TODO:お知らせ編集->決定->戻る->戻る->進む->進むでお知らせの元の画面に戻るはずが、遷移しない。現状、対処しない。
 function fnPjax(selector, container, options) {
   var context = this
   return this.on('click.pjax', selector, function(event) {
@@ -125,10 +126,10 @@ function _convertPluginUrl(container, url) {
 		var block_id = container.attr('data-block');
 		var controller_action = container.attr('data-action');
 		if(id && block_id && controller_action) {
-			var chk_url = $._page_url + 'blocks/' + block_id + '/' + controller_action + '/';
-			if(url == chk_url) {
+			var chk_url = $._page_url + 'blocks/' + block_id + '/' + controller_action;
+			if(url == chk_url || url == chk_url + '/') {
 				return $._page_url;
-			} else if(url == chk_url + '#' + id) {
+			} else if(url == chk_url + '#' + id || url == chk_url + '/#' + id) {
 				return $._page_url + '#' + id;
 			}
 		}
@@ -412,17 +413,17 @@ function pjax(options) {
 
   if (xhr.readyState > 0) {
     if (options.push && !options.replace) {
-      // Cache current container element before replacing it
 //Edit Start Ryuji.M
-// 全elementのイベント捜査しているため、画面によっては重くなる可能性あり
-// highlight等のeffectが実行中に履歴をとってしまうため、戻るボタンで、highlightされた状態で戻ってしまう。
-      $('*', context).stop(false, true);
-      cachePush(pjax.state.id, context[0].innerHTML, context.attr('id'))
+// ・javascriptが動作しない状態で履歴が戻ってしまう。
+// ・highlight等のeffectが実行中に履歴をとってしまうため、戻るボタンで、highlightされた状態で戻ってしまう。
+      //$('*', context).stop(false, true);
+      cachePush(pjax.state.id, stripPjaxParam(context.attr('data-url')) + '#'+context.attr('id'), context.attr('id'))
+      // Cache current container element before replacing it
       //cachePush(pjax.state.id, context.clone().contents())
 //Edit End Ryuji.M
       window.history.pushState(null, "", stripPjaxParam(options.requestUrl))
     }
-
+//Add Start Ryuji.M
     fire('pjax:start', [xhr, options])
     fire('pjax:send', [xhr, options])
   }
@@ -460,13 +461,70 @@ function locationReplace(url) {
 // You probably shouldn't use pjax on pages with other pushState
 // stuff yet.
 function onPjaxPopstate(event) {
+// Edit Start Ryuji.M
+// pjaxを再度読んで、forward,backを実装。
+// 再度、Ajaxを呼び出すため負荷はかかるが、javascriptを正常に実行するためにやむなく実装。
   var state = event.state
 
   if (state && state.container) {
-// Add Start Ryuji.M
-	var con_id = cacheMappingId[state.id]
-	state.container = $('#'+ con_id) || state.container
-// Add End Ryuji.M
+	var container = $(state.container)						// 1つ前に実行したブロック
+	var chg_container_id = '#' + cacheMappingId[state.id];
+	var chg_container = $(chg_container_id);				// 変更したブロック
+	var chg_url = cacheMapping[state.id];					// 変更する前のURL
+	var re = new RegExp(/([^\?]*)\/active-blocks\/(.+)/i);
+
+	if (container.length && chg_container.length) {
+		if (pjax.state) {
+			// Since state ids always increase, we can deduce the history
+			// direction from the previous state.
+			var direction = pjax.state.id < state.id ? 'forward' : 'back'
+	
+			// Cache current container before replacement and inform the
+			// cache which direction the history shifted.
+			var url = chg_container.attr('data-url');
+			if($._block_type == 'blocks') {
+				if(url.match(re)) {
+					url = RegExp.$1 + '/blocks/' + RegExp.$2;
+				}
+			}
+			cachePop(direction, pjax.state.id, stripPjaxParam(url), cacheMappingId[state.id])	// + chg_container_id
+			//cachePop(direction, pjax.state.id, container.attr('data-url'), container.attr('id'))
+		}
+		var popstateEvent = $.Event('pjax:popstate', {
+			state: state,
+			direction: direction
+		})
+		chg_container.trigger(popstateEvent)
+
+		if($._block_type == 'blocks') {
+			if(chg_url.match(re)) {
+				chg_url = RegExp.$1 + '/blocks/' + RegExp.$2;
+			}
+		}
+		var options = {
+			id: state.id,
+			url: stripPjaxParam(chg_url),	// state.url
+			push_url: (direction == 'back') ? state.url : stripPjaxParam(chg_url),	// 追加
+			container: chg_container,	//container
+			push: false,	//true,
+			fragment: state.fragment,
+			timeout: state.timeout,
+			scrollTo: false
+		}
+		//pjax.state.id = state_id;
+
+		pjax(options)
+		// Force reflow/relayout before the browser tries to restore the
+		// scroll position.
+		chg_container[0].offsetHeight
+	} else {
+		locationReplace(location.href)
+	}
+  }
+  
+  /*var state = event.state
+
+  if (state && state.container) {
     var container = $(state.container)
     if (container.length) {
       var contents = cacheMapping[state.id]
@@ -478,10 +536,7 @@ function onPjaxPopstate(event) {
 
         // Cache current container before replacement and inform the
         // cache which direction the history shifted.
-// Edit Start Ryuji.M
-        cachePop(direction, pjax.state.id, container[0].innerHTML, con_id)
-        // cachePop(direction, pjax.state.id, container.clone().contents())
-// Edit End Ryuji.M
+        cachePop(direction, pjax.state.id, container.clone().contents())
       }
 
       var popstateEvent = $.Event('pjax:popstate', {
@@ -504,19 +559,7 @@ function onPjaxPopstate(event) {
         container.trigger('pjax:start', [null, options])
 
         if (state.title) document.title = state.title
-//Edit Start Ryuji.M
-        container[0].innerHTML = contents;
-        $.each($(contents), function(){
-        	if(this.nodeType == 1 && this.tagName.toLowerCase() == 'script') {
-    			if($(this).attr('src')) {
-    				context.append($(this));
-    			} else {
-    				eval(this.innerHTML);
-    			}
-        	}
-        });
-    	//container.html(contents)
-//Edit End Ryuji.M
+        container.html(contents)
         pjax.state = state
 
         container.trigger('pjax:end', [null, options])
@@ -530,7 +573,8 @@ function onPjaxPopstate(event) {
     } else {
       locationReplace(location.href)
     }
-  }
+  }*/
+//Edit End Ryuji.M
 }
 
 // Fallback version of main pjax function for browsers that don't
@@ -824,8 +868,9 @@ function extractContainer(data, xhr, options) {
 var cacheMapping      = {}
 var cacheForwardStack = []
 var cacheBackStack    = []
-// Edit Start Ryuji.M
-var cacheMappingId    = {}
+//Add Start Ryuji.M
+var cacheMappingId      = {}
+//Add Start Ryuji.M
 
 // Push previous state id and container contents into the history
 // cache. Should be called in conjunction with `pushState` to save the
@@ -835,7 +880,7 @@ var cacheMappingId    = {}
 // value - DOM Element to cache
 //
 // Returns nothing.
-//con_id追加 Ryuji.M
+//Edit Ryuji.M con_idを追加
 function cachePush(id, value, con_id) {
   cacheMapping[id] = value
   cacheMappingId[id] = con_id
@@ -844,14 +889,16 @@ function cachePush(id, value, con_id) {
   // Remove all entires in forward history stack after pushing
   // a new page.
   while (cacheForwardStack.length) {
-    delete cacheMapping[cacheForwardStack.shift()]
-    delete cacheMappingId[cacheForwardStack.shift()]
+    var s = cacheForwardStack.shift();
+    delete cacheMapping[s]
+    delete cacheMappingId[s]
   }
 
   // Trim back history stack to max cache length.
   while (cacheBackStack.length > pjax.defaults.maxCacheLength) {
-    delete cacheMapping[cacheBackStack.shift()]
-    delete cacheMappingId[cacheBackStack.shift()]
+    var s = cacheBackStack.shift();
+    delete cacheMapping[s]
+    delete cacheMappingId[s]
   }
 }
 
@@ -864,7 +911,7 @@ function cachePush(id, value, con_id) {
 // value     - DOM Element to cache
 //
 // Returns nothing.
-//con_id追加 Ryuji.M
+//Edit Ryuji.M con_idを追加
 function cachePop(direction, id, value, con_id) {
   var pushStack, popStack
   cacheMapping[id] = value
@@ -880,11 +927,10 @@ function cachePop(direction, id, value, con_id) {
 
   pushStack.push(id)
   if (id = popStack.pop()) {
-    delete cacheMapping[id]
-    delete cacheMappingId[id]
+    //delete cacheMapping[id]
+    //delete cacheMappingId[id]
   }
 }
-//Edit End Ryuji.M
 
 // Install pjax functions on $.pjax to enable pushState behavior.
 //
