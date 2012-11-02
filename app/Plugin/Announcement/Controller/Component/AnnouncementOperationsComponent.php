@@ -56,7 +56,7 @@ class AnnouncementOperationsComponent extends Object {
  */
 	public function delete($content) {
 		if(isset($content['Content'])) {
-			$condition = array('Htmlarea.master_id' => $content['Content']['master_id']);
+			$condition = array('Htmlarea.content_id' => $content['Content']['master_id']);
 			if(!$this->Htmlarea->deleteAll($condition)) {
 				return false;
 			}
@@ -95,7 +95,7 @@ class AnnouncementOperationsComponent extends Object {
 		$htmlarea = $this->Htmlarea->findByMasterId($from_block['Content']['master_id']);
 		if(isset($htmlarea['Htmlarea'])) {
 			unset($htmlarea['Htmlarea']['id']);
-			$htmlarea['Htmlarea']['master_id'] = $to_block['Content']['master_id'];
+			$htmlarea['Htmlarea']['content_id'] = $to_block['Content']['master_id'];
 			if(!$this->Htmlarea->save($htmlarea, false)) {
 				return false;
 			}

@@ -151,7 +151,7 @@ Router::connect(
 	array(
 		'permalink' => '.*',
 		'column' => '(\/headercolumn|\/leftcolumn|\/centercolumn|\/rightcolumn|\/footercolumn)?',
-		'block_id' => '[0-9]+',
+		'block_id' => '[0-9]*',
 		'active_plugin' => '\/?[^\/]*',
 		'active_controller' => '\/?[^\/]*',
 		'active_action' => '\/?[^\/]*'
