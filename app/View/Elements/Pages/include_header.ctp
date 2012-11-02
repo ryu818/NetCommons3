@@ -16,7 +16,7 @@
 $this->Html->css(array('Default.page', 'Default.gray/page'), null, array('frame' => true));
 
 	echo "\n".$this->fetch('meta');
-	$common_js = array('jquery/', 'plugins/jquery.pjax.js', 'plugins/chosen.jquery.js', 'common/');
+	$common_js = array('jquery/', 'plugins/jquery.pjax.js', 'plugins/chosen.jquery.js', 'plugins/jquery.powertip.js', 'common/');
 	if($this->params['controller'] == 'pages') {
 		$common_js[] = 'pages/common/';
 	}
@@ -62,6 +62,11 @@ echo '	$._nc.nc_wysiwyg[\'allow_js\'] = '.($nc_user['allow_htmltag_flag'] ? _ON 
 				$.pjax.submit(e, top);
 			}
 		});
+		var options = {'followMouse':true};
+		$('a.nc_tooltip').powerTip(options);
+		$(document).on('ajaxComplete','',function(){
+			$('a.nc_tooltip', this).powerTip(options);
+		});
 	});
 </script>
 <?php
@@ -72,7 +77,7 @@ echo '	$._nc.nc_wysiwyg[\'allow_js\'] = '.($nc_user['allow_htmltag_flag'] ? _ON 
 	//echo $this->fetch('script');
 	//echo $scripts_for_layout;
 
-	$common_css = array('common/vendors/', 'common/main/', 'jquery/base/', 'common/editable/common', 'plugins/chosen.css', );
+	$common_css = array('common/vendors/', 'common/main/', 'jquery/base/', 'common/editable/common', 'plugins/chosen.css', 'plugins/jquery.powertip.css', );
 	if($this->params['controller'] == 'pages') {
 		$common_css[] = 'pages/common/';
 	}

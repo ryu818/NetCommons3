@@ -10,8 +10,6 @@ $._lang['common'] = {
 
 // TODO:下記のキー名称は、英語に書き直す。
 $._lang['pages'] = {
-	tooltipBlockMode: 'ブロック編集モードへ移行します。ブロックの追加、編集、削除、リサイズを行うことができます。',
-	tooltipEndBlockMode: 'ブロック編集モードを終了します。',
 	//tooltipPageMenuBtn: 'ページ、コミュニティの一覧表示・編集を行うメニューを表示します。',
 	tooltipPageStyleBtn: 'ページの最小の広さ、高さ、テーマの変更、レイアウト、ページメタ情報を変更できます。',
 	adminMenuBtn: 'サイト管理画面へ遷移します。',
