@@ -75,8 +75,14 @@
 			if (!dataPowertip && !dataTarget && !dataElem && title) {
 				$this.data('powertip', title);
 				$this.removeAttr('title');
+			} 
+// Add Start Ryuji.M
+// titleとdata-powertip属性があれば、足して表示する。
+			else if (dataPowertip && !dataTarget && !dataElem && title) {
+				$this.data('powertip', '<dl><dt class="powerTipTitle">' + title + '</dt><dd>' + dataPowertip + '</dd></dl>');
+				$this.removeAttr('title');
 			}
-
+// Add End Ryuji.M
 			// create hover controllers for each element
 			$this.data(
 				'displayController',

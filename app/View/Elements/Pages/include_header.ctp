@@ -63,9 +63,9 @@ echo '	$._nc.nc_wysiwyg[\'allow_js\'] = '.($nc_user['allow_htmltag_flag'] ? _ON 
 			}
 		});
 		var options = {'followMouse':true};
-		$('a.nc_tooltip').powerTip(options);
+		$('.nc_tooltip').powerTip(options);
 		$(document).on('ajaxComplete','',function(){
-			$('a.nc_tooltip', this).powerTip(options);
+			$('.nc_tooltip', this).powerTip(options);
 		});
 	});
 </script>

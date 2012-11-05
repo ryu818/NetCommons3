@@ -12,10 +12,7 @@ $._lang['common'] = {
 $._lang['pages'] = {
 	//tooltipPageMenuBtn: 'ページ、コミュニティの一覧表示・編集を行うメニューを表示します。',
 	tooltipPageStyleBtn: 'ページの最小の広さ、高さ、テーマの変更、レイアウト、ページメタ情報を変更できます。',
-	adminMenuBtn: 'サイト管理画面へ遷移します。',
 	pmMenuBtn: 'プライベートメッセージを表示します。',
-	groupDesc:'選択されたブロック同士を、１つにまとめることができます。<br />横にブロックを並べたり、ブロックを一まとまりにしたい場合、用います。',
-	groupCancelDesc:'選択されたグループ化ブロックを解除します。',
 	groupConfirm:'選択されたブロックを、グループ化します。<br />よろしいですか？',
 	groupCancelConfirm:'選択されたグループを解除します。<br />よろしいですか？',
 	groupCancelErr:'グループ化されたブロックが選択されていません。',

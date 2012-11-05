@@ -3,12 +3,12 @@ $nc_user = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 $nc_mode = $this->Session->read(NC_SYSTEM_KEY.'.'.'mode');
 if($nc_mode == NC_BLOCK_MODE){
 	$setting = __d('pages', 'Setting mode off');
-	$tooltip_setting = __d('pages', 'I move to block editing mode. You can add a block, edit, delete, and resize.');
+	$tooltip_setting = __d('pages', 'I exit edit mode block.');
 	$setting_class = 'nc_hmenu_setting_end_btn';
 	$setting_mode = NC_GENERAL_MODE;
 } else {
 	$setting = __d('pages', 'Setting mode on');
-	$tooltip_setting = __d('pages', 'I exit edit mode block.');
+	$tooltip_setting = __d('pages', 'I move to block editing mode. You can add a block, edit, delete, and resize.');
 	$setting_class = 'nc_hmenu_setting_btn';
 	$setting_mode = NC_BLOCK_MODE;
 }

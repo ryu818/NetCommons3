@@ -243,6 +243,13 @@ msgstr 	"グループ化"
 msgid  	"Cancel grouping"
 msgstr 	"グループ化解除"
 
+msgid  	"To the Site Management screen."
+msgstr 	"サイト管理画面へ遷移します。"
+msgid  	"You can be combined into one, the selected block together.If you can arrange the blocks to the next, I want to one cohesive block, I used."
+msgstr 	"選択されたブロック同士を、１つにまとめることができます。<br />横にブロックを並べたり、ブロックを一まとまりにしたい場合、用います。"
+msgid  	"I unblock the selected grouping."
+msgstr 	"選択されたグループ化ブロックを解除します。	"
+
 msgid  	"The page will be automatically reloaded.If otherwise, please click <a href="%s">here</a>."
 msgstr 	"ページが自動的に更新されない場合は<a href="%s">こちら</a>をクリックしてください。"
 
