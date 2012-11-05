@@ -18,7 +18,11 @@ $._lang['pages'] = {
 	groupCancelErr:'グループ化されたブロックが選択されていません。',
 	resizeSep:'×',
 	'Delete block': 'ブロック削除',
-	'I completely delete it.': '完全に削除する。'
+	'I completely delete it.': '完全に削除する。',
+	'Add a new column:[%s]': '新規列追加：[%s]',
+	'Move to the top of the [%s]': '[%s]の上に移動',
+	'Move to the bottom of the [%s]': '[%s]の下に移動',
+	'Thread:[%s]': '深さ：[%s]',
 }
 
 $._lang['nc_wysiwyg'] = {

@@ -309,16 +309,36 @@
 				return true;
 			}
 			return false;
+		},
+		// %sのみ変換
+		sprintf: function() {
+			var str = arguments[0];
+			if(str == undefined || str == null) {
+				return str;
+			}
+			for (i = 1; i < arguments.length; i++) {
+				str = str.replace(/%s/, arguments[i]);
+			}
+			return str;
 		}
 	};
 	/* グローバル関数 */
 	__ = function(name) {
+		var r = [], ret;
 		if(name == undefined) {
 			return $._lang['common'];
 		}
-		return ($._lang['common'][name]) ? $._lang['common'][name] : name;
+		ret = ($._lang['common'][name]) ? $._lang['common'][name] : name;
+		if(arguments.length > 2) {
+			r.push.apply(r, arguments);
+			r.shift();
+			r[0] = ret;
+			ret = $.Common.sprintf.apply(this, r);
+		}
+		return ret;
 	};
 	__d = function(key, name) {
+		var r = [], ret;
 		if(typeof key != 'string') {
 			var buf_key = null;
 			$.each(key, function() {
@@ -331,11 +351,20 @@
 			if(name == undefined) {
 				return buf_key;
 			}
-			return (buf_key[name]) ? buf_key[name] : name;
+			ret = (buf_key[name]) ? buf_key[name] : name;
 		}
-		if(name == undefined) {
-			return $._lang[key];
+		if(!ret) {
+			if(name == undefined) {
+				return $._lang[key];
+			}
+			ret = ($._lang[key][name]) ? $._lang[key][name] : name;
 		}
-		return ($._lang[key][name]) ? $._lang[key][name] : name;
+		if(arguments.length > 2) {
+			r.push.apply(r, arguments);
+			r.shift();
+			r[0] = ret;
+			ret = $.Common.sprintf.apply(this, r);
+		}
+		return ret;
 	};
 })(jQuery);

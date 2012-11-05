@@ -10,6 +10,21 @@
 	border:2px dotted #ffd700 !important;
 }
 
+.nc_block_move_desc {
+	border-color:#c9c9c9 #ededed #ededed #c9c9c9;
+	border-style:solid;
+	border-width:1px;
+	color:#000;
+	background-color:#ffffff;
+	position:absolute;
+	top:35px;
+	left:5px;
+	padding:10px;
+	z-index:3;
+	display:none;
+	font-size:93%;
+}
+
 .nc_block_mode {
 	position: relative;
 	display:none;

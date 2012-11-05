@@ -31,7 +31,7 @@ if($is_edit) {
 		<a href="#" title="<?php echo(__('Hide header'));?>" class="nc_block_header_display">
 			<span class="nc_arrow_up"></span>
 		</a>
-		<span class="nc_block_header_page_name">
+		<span id="nc_block_header_page_name<?php echo($id); ?>" class="nc_block_header_page_name">
 			<?php echo($block['Block']['title']); ?>
 		</span>
 		<ul class="nc_block_toolbox">

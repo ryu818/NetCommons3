@@ -42,6 +42,7 @@
 		initBlock: function(id) {
 			var t = this;
 			var block = $('#' + id),block_move = $("#nc_block_move" + id);
+			var block_move_desc= null;
 
 			if(block_move.get(0) && !block.hasClass('ui-draggable') && $('#container').get(0)) {
 				block_move.click(function(e){
@@ -122,12 +123,16 @@
 							width: blockChild.outerWidth()  + "px",
 							height: blockChild.outerHeight() + "px"
 						});
+						
+						block_move_desc = $('<div></div>').addClass('nc_block_move_desc');
+						$(ui.helper).append(block_move_desc);
 					},
 					drag:function(event, ui){
 						//t.searchInsertBlock(t.columnsPos, [event.pageX, event.pageY], 0, 0);
-						t.searchInsertBlock(t.columnsPos, [event.pageX, event.pageY], 0, 0);
+						t.searchInsertBlock(t.columnsPos, [event.pageX, event.pageY], 0, 0, block_move_desc);
 					},
 					revert: function(socketObj) {
+						block_move_desc.remove();
 						if(t.currentBlocks[0].hasClass('nc_block_dummy')) {
 					        // revert
 							var column = block.parent();
@@ -252,12 +257,12 @@
 		//
 		//移動挿入先検索
 		//
-		searchInsertBlock: function(columnsPos, pointer, now_thread_num, now_parent_id) {
+		searchInsertBlock: function(columnsPos, pointer, now_thread_num, now_parent_id, block_move_desc) {
 			var t = this, insert_columns, insert_column, el_left, el_right, block, position;
 			var x = pointer[0],y = pointer[1], insert, direction, force, next_parent_id;
 
 			var ex1, ex2, ey1, ey2, direction, offset, index, parent, buf_insert_column;
-			var is_x, is_y, buf_is_x,prev_column;
+			var is_x, is_y, buf_is_x,prev_column, cell_index;
 
 /*TODO:他カラムへの移動
 			var column = false , re_cut_move = new RegExp("_move$", "i");
@@ -328,7 +333,7 @@
 								if(t.currentBlocks[0].get(0) != insert.get(0) &&
 										t.blocksPos[now_parent_id][i][j]['group_flag']) {
 	   				 				next_parent_id = insert.attr("id");
-	   				 				insert = t.searchInsertBlock(t.blocksPos[now_parent_id][i][j], pointer, now_thread_num + 1, next_parent_id);
+	   				 				insert = t.searchInsertBlock(t.blocksPos[now_parent_id][i][j], pointer, now_thread_num + 1, next_parent_id, block_move_desc);
 									if(insert) {
 										break;
 									}
@@ -351,25 +356,30 @@
 									direction = "top";
 								}
 								if(!t._cloneStyle(insert, direction)) {
+									showMoveDesc(block_move_desc, "");
 									break;
 								}
 
 								switch (direction) {
 									case "left":
 										//insert_columnsの左に新列追加
-										InsertCell(i, direction, insert_columns);
+										cell_index = InsertCell(i, direction, insert_columns);
+										showMoveDesc(block_move_desc, direction, now_thread_num, cell_index);
 										break;
 									case "right":
 										//insert_columnsの右に新列追加
-										InsertCell(i, direction, insert_columns);
+										cell_index = InsertCell(i, direction, insert_columns);
+										showMoveDesc(block_move_desc, direction, now_thread_num, cell_index);
 										break;
 									case "top":
 										//insert_columnsの上に追加
 										InsertBeforeEl(insert);
+										showMoveDesc(block_move_desc, direction, now_thread_num, insert);
 										break;
 									case "bottom":
 										//insert_columnsの下に追加
 										InsertAfterEl(insert);
+										showMoveDesc(block_move_desc, direction, now_thread_num, insert);
 										break;
 								}
 								break;
@@ -382,6 +392,9 @@
 								if(t._cloneStyle(position, 'top')) {
 									insert = position;
 									InsertBeforeEl(insert);
+									showMoveDesc(block_move_desc, 'top', now_thread_num, insert);
+								} else {
+									showMoveDesc(block_move_desc, "");
 								}
 
 							} else {
@@ -390,8 +403,10 @@
 									if(t._cloneStyle(block, 'bottom')) {
 										insert = block;
 										InsertAfterEl(insert);
+										showMoveDesc(block_move_desc, 'bottom', now_thread_num, insert);
+									} else {
+										showMoveDesc(block_move_desc, "");
 									}
-
 								}
 							}
 						}
@@ -426,13 +441,15 @@
 							}
 							insert = t.currentBlocks[0];
 							if (!t._cloneStyle(insert, direction, force)) {
-								;
+								showMoveDesc(block_move_desc, "");
 				        	} else if(direction == "left") {
 								// left
-				        		InsertCell(i, 'left', insert_columns);
+				        		cell_index = InsertCell(i, 'left', insert_columns);
+				        		showMoveDesc(block_move_desc, 'left', now_thread_num, cell_index);
 							} else {
 								// right
-								InsertCell(i, 'right', insert_columns);
+								cell_index = InsertCell(i, 'right', insert_columns);
+								showMoveDesc(block_move_desc, 'right', now_thread_num, cell_index);
 							}
 						}
 						break;
@@ -462,13 +479,15 @@
 
 	        	if(!t._cloneStyle(insert, direction, force)) {
 	        		//キャンセル
-	        		;
+	        		showMoveDesc(block_move_desc, "");
 	        	} else if(direction == "left") {
 					//左に新列追加
-	        		InsertCell(0, 'left', insert_columns);
+	        		cell_index = InsertCell(0, 'left', insert_columns);
+	        		showMoveDesc(block_move_desc, 'left', now_thread_num, cell_index);
 				} else {
 					//右に新列追加
-					InsertCell(-1, 'right', insert_columns);
+					cell_index = InsertCell(-1, 'right', insert_columns);
+					showMoveDesc(block_move_desc, 'right', now_thread_num, cell_index);
 				}
 			}
 			return t.insert;
@@ -529,11 +548,39 @@
 
 				//DB登録用
 				t.insertAction = "insert_cell";
+				return index;
 			}
 			//移動元要素削除
 			function delMoveEl(column) {
 				if(!column.children(':first').get(0)) {
 					column.remove();
+				}
+			}
+			// 移動用説明文表示
+			function showMoveDesc(block_move_desc, direction, thread_num, block) {
+				var b_id, title, value = '';
+				if(direction == '') {
+					block_move_desc.css('display', 'none');
+				} else {
+					if(direction == 'left' || direction == 'right') {
+						block++;
+						if(direction == 'right') {
+							block = ++block;
+						}
+						value = __d('pages', 'Add a new column:[%s]', block);
+					} else {
+						b_id = block.attr('id');
+						title = $('#nc_block_header_page_name' + b_id).html();
+						if(direction == 'top') {
+							value = __d('pages', 'Move to the top of the [%s]', title);
+						} else {
+							value = __d('pages', 'Move to the bottom of the [%s]', title);
+						}
+					}
+					if(thread_num != 0) {
+						value += '<br />' + __d('pages', 'Thread:[%s]', thread_num);
+					}
+					block_move_desc.html(value).css('display', 'block');
 				}
 			}
 		},
