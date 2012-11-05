@@ -17,13 +17,15 @@ class Passport extends AppModel
 /**
  * 自動ログインパスポートキー削除
  * @param   array  $user
+ * @param   string $cookiePassport
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function passportDelete($user) {
+	public function passportDelete($user, $cookiePassport) {
         if(isset($user)) {
         	$condition = array(
-        		'Passport.user_id' => $user['id']
+        		'Passport.user_id' => $user['id'],
+        		'Passport.passport' => $cookiePassport
         	);
         	$this->deleteAll($condition);
         }

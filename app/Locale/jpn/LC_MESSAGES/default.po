@@ -428,3 +428,6 @@ msgstr 	"【WindowsはCtrl+クリック、MacはCommand+クリックで複数選
 
 msgid  	"This session will timeout in 1 minutes. <br />Refresh by clicking on some link or button.<br />If you are editing some content, you\'d better save it as a local file. Otherwise, it will be lost."
 msgstr 	"セッションのタイムアウトまであと一分です。<br />リンク等で再描画してください。<br />現在作業中の内容をローカルに保存することをお勧めします。"
+
+msgid  	"The automatic login."
+msgstr 	"自動ログインしています。"

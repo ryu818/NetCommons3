@@ -77,8 +77,13 @@ class CommonComponent extends Component {
 			if(isset($cookiePassport['passport'])){
 				//クッキーに記録したパスポートでログインしてみる
 				$deadline = gmdate(NC_DB_DATE_FORMAT, strtotime("-".$configs['autologin_expires']));
-				$options=array('conditions'=>array('Passport.passport'=>$cookiePassport['passport'],'Passport.modified >'=>" $deadline"));
+				$options=array('conditions' => array('Passport.passport'=>$cookiePassport['passport'],'Passport.modified >'=>" $deadline"));
 				$passport = $this->_controller->Passport->find("first",$options);
+				// 100回に一度の確率で、有効期限がきれたパスポートの削除処理を行う。
+				if(rand(0, 100) == 0) {
+					$del_conditions = array('Passport.passport'=>$cookiePassport['passport'],'Passport.modified <='=>" $deadline");
+					$this->_controller->Passport->deleteAll($del_conditions);
+				}
 				if($passport){
 					//該当するパスポートが見つかった
 					$conditions = array(
@@ -103,35 +108,38 @@ class CommonComponent extends Component {
 							//ログインできたので、クッキーを更新してリダイレクトする
 							$this->passportWrite($user, $passport, $configs);
 
-							// $this->Auth->loginRedirect = $this->Common->redirectStartpage($this->configs);
-							// $this->flash(__('The automatic login.'), $this->Auth->redirect());
+							$this->_controller->Auth->loginRedirect = $this->redirectStartpage($this->configs);
+							$this->_controller->flash(__('The automatic login.'), $this->_controller->Auth->redirect());
+							return true;
 						}
 					}
 				}
 			}
 		}
+		return false;
 	}
 
 /**
  * 自動ログインパスポートキー削除
  * @param   array  $user
- * @param   array  $config
+ * @param   array  $configs
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function passportDelete($user) {
+	public function passportDelete($user, $configs = array()) {
 		$configs = isset($configs['autologin_cookie_name']) ? $configs : Configure::read(NC_CONFIG_KEY);
 		$this->Cookie->name = $configs['autologin_cookie_name'];
+		$cookiePassport = $this->Cookie->Read('User');
 
         $this->Cookie->delete('User');
-        $this->_controller->Passport->passportDelete($user);
+        $this->_controller->Passport->passportDelete($user, $cookiePassport);
     }
 
 /**
  * 自動ログインパスポートキー書き込み
  * @param   array  $user
  * @param   array  $passport
- * @param   array  $config
+ * @param   array  $configs
  * @return  void
  * @since   v 3.0.0.0
  */

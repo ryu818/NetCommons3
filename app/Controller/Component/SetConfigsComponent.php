@@ -100,8 +100,7 @@ class SetConfigsComponent extends Component {
 		// ******************************************************************************************
 		// 自動ログイン
 		// ******************************************************************************************
-		if(!$user) {
-			$this->Common->autoLogin($configs);
+		if(!$user && $this->Common->autoLogin($configs)) {
 			$user = $this->Auth->user();//認証済みユーザを取得
 			$user_id = isset($user['id']) ? intval($user['id']) : 0;
 		}
