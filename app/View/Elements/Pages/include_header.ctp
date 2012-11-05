@@ -13,7 +13,10 @@
 	$locale = Configure::read('locale');
 
 // TODO:test
-$this->Html->css(array('Default.page', 'Default.gray/page'), null, array('frame' => true));
+// $this->Html->css(array('Default.page', 'Default.gray/page'), null, array('frame' => true));
+if (!empty($page_style['file'])) {
+	echo '<link href="theme/asset/'.$page_style['file'].'" rel="stylesheet "type="text/css">';
+}
 
 	echo "\n".$this->fetch('meta');
 	$common_js = array('jquery/', 'plugins/jquery.pjax.js', 'plugins/chosen.jquery.js', 'plugins/jquery.powertip.js', 'common/');
@@ -22,6 +25,10 @@ $this->Html->css(array('Default.page', 'Default.gray/page'), null, array('frame'
 	}
 	if($nc_mode == NC_BLOCK_MODE) {
 		$common_js[] = 'pages/block/';
+		//$common_js[] = 'pages/style/';
+	}
+	if ($nc_user != '0') {
+		$common_js[] = 'pages/main/';
 	}
 	echo "\n".$this->Html->script($common_js, array('inline' => true, 'data-title' => 'Common'));
 ?>

@@ -33,6 +33,13 @@ if($nc_mode == NC_BLOCK_MODE){
 				<?php endif; ?>
 			</li>
 			<?php if(!empty($nc_user['id']) && $hierarchy >= NC_AUTH_MIN_CHIEF): ?>
+			<?php /* ページスタイル */ ?>
+			<?php /* TODO class名等を見直す */ ?>
+			<li class="nc_hmenu_li nc_hmenu_pagestyle_li">
+				<?php //if(!empty($nc_user['id'])): ?>
+					<?php echo $this->Html->link(__('PageStyle'), '/blocks/pageinfo/style', array('id' => 'nc_pages_style_link', 'aria-haspopup' => 'true')); ?>
+				<?php //endif; ?>
+			</li>
 			<li class="nc_hmenu_li nc_hmenu_setting_m">
 				<a class="nc_tooltip" title="<?php echo(h($setting)); ?>" data-powertip="<?php echo(h($tooltip_setting)); ?>" href="<?php echo(rtrim($this->Html->url(), '/').'/?setting_mode='.$setting_mode); ?>">
 					<span class="<?php echo($setting_class); ?>"></span>
