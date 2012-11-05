@@ -81,7 +81,6 @@ class AppController extends Controller {
 			$this->layout = 'ajax';
 			$plugin_name = isset($this->request->params['plugin']) ? $this->request->params['plugin'] :
 				(isset($this->request->params['active_plugin']) ? $this->request->params['active_plugin'] : '');
-			@error_log($plugin_name."\n", 3, LOGS . '/export.txt');
 			if($plugin_name != '') {
 				// ajaxの場合、blocksのリンクが含まれていれば、active-blocksに置換する。
 				$replace_url = preg_replace('/(.*)\/blocks\/([0-9]*)/i', '$1/active-blocks/$2', $this->request->here);
