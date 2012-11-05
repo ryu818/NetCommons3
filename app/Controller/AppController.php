@@ -86,7 +86,7 @@ class AppController extends Controller {
 				$replace_url = preg_replace('/(.*)\/blocks\/([0-9]*)/i', '$1/active-blocks/$2', $this->request->here);
 				if($replace_url != $this->request->here) {
 					$replace_url = preg_replace('%^'.$this->request->webroot.'%i', '', $replace_url);
-					echo $this->requestAction($replace_url, array('bare' => false, 'return'));
+					echo $this->requestAction($replace_url, array('return'));
 					$this->_stop();
 				}
 			}

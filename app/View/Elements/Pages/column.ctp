@@ -18,22 +18,28 @@
 					$params['plugin'] = $this->params['active_plugin'];
 					$params['controller'] = empty($this->params['active_controller']) ? $params['plugin'] : $this->params['active_controller'];
 					$params['action'] = empty($this->params['active_action']) ? '' : $this->params['active_action'];
+					if ($this->params->is('post')) {
+						$requestActionParam = array('data' => $this->params['data'], 'query' => $this->params['query'], 'return');
+					} else {
+						$requestActionParam = array('query' => $this->params['query'], 'return');
+					}
 				} else {
 					$controller_arr = explode('_', $block['Block']['controller_action'], 2);
 					$params['plugin'] = $params['controller'] = $controller_arr[0];
 					if(isset($controller_arr[1])) {
 						$params['action'] = $controller_arr[1];
 					}
+					$requestActionParam = array('return');
 				}
 
 				Configure::write(NC_SYSTEM_KEY.'.block', $block);
 				Configure::write(NC_SYSTEM_KEY.'.page' , $page);
 				if($block['Block']['controller_action'] == "group") {
 					Configure::write(NC_SYSTEM_KEY.'.blocks', $blocks);
-					$c = trim($this->requestAction($params, array('return')));
+					$c = trim($this->requestAction($params, $requestActionParam));
 				} else {
 					//$url = '/active-blocks'.'/'.$block['Block']['id'].'/'.$block['Block']['controller_action'].'/';
-					$c = trim($this->requestAction($params, array('return')));
+					$c = trim($this->requestAction($params, $requestActionParam));
 
 				}
 
