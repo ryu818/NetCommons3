@@ -21,10 +21,28 @@ if($nc_mode == NC_BLOCK_MODE){
 					<span class="nc_hmenu_logo"></span>
 				</a>
 			</li>
+			<li class="nc_hmenu_li">
+				<?php /* パンくずリスト */ ?>
+				<div class="nc_pages_menu_path">
+						ホーム(TODO:test) > ページ1 > ページ3 > ページ4 > ページ5
+				</div>
+			</li>
+			<li class="nc_hmenu_li">
+				ページメニュー
+				
+			</li>
+			<li class="nc_hmenu_li">
+				<?php echo $this->Html->link(__('PageStyle'), '/blocks/pageinfo/style', array('id' => 'nc_pages_style_link', 'aria-haspopup' => 'true')); ?>
+			</li>
 		</ul>
 	</div>
 	<div id="nc_hmenu_r">
 		<ul class="nc_hmenu_ul">
+			<li class="nc_hmenu_li">
+				<a class="nc_tooltip" title="<?php echo(__('To the Site Management screen.')); ?>" href="#">
+					<?php echo(__('Admin menu')); ?>
+				</a>
+			</li>
 			<li class="nc_hmenu_li">
 				<?php if(empty($nc_user['id'])): ?>
 					<?php echo $this->Html->link(__('Login'), '/users/login', array('id' => 'nc_login', 'aria-haspopup' => 'true')); ?>

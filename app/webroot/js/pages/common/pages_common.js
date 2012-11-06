@@ -29,7 +29,7 @@
 					}, 500);
 				} else {
 					hover = false;
-					hmenu.stop(true, false).animate({top: '-32px'}, 50, function(){
+					hmenu.stop(true, false).animate({top: '-40px'}, 50, function(){
 						nc_hmenu_arrow.removeClass('nc_arrow_up');
 					});
 				}
@@ -43,7 +43,7 @@
 		nc_hmenu_arrow.click(function(e){
 			if(nc_hmenu_arrow.hasClass('nc_arrow_up')) {
 				hover = false;
-				hmenu.stop(true, false).animate({top: '-32px'}, 50, function(){
+				hmenu.stop(true, false).animate({top: '-40px'}, 50, function(){
 					nc_hmenu_arrow.removeClass('nc_arrow_up');
 				});
 			} else {
@@ -64,22 +64,8 @@
 	// ページ共通
 	$.PagesCommon ={
 		showLogin: function(e, url) {
-			var nc_login_dialog = $('#nc_login_dialog');
-			if(nc_login_dialog.get(0)) {
-				nc_login_dialog.dialog('open');
-				return;
-			}
-			$.get(url,
-				function(res){
-					var dialog_el = $('<div id=nc_login_dialog></div>').appendTo($(document.body));
-					dialog_el.html(res);
-
-					$(dialog_el).dialog({
-						title: __('Login'),
-						zIndex: ++$.Common.zIndex
-					});
-				}
-			);
+			e.preventDefault();
+			$.Common.showDialog('nc_login_dialog', {'url' : url}, {'title' : __('Login')});
 		}
 	}
 })(jQuery);
