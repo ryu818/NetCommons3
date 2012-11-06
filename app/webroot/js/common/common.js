@@ -124,6 +124,27 @@
 		        return '\\' + $0;
 		    });
 		},
+		/* ダイアログ表示用 */
+		showDialog: function(id, ajax_options, dialog_options) {
+			var dialog = $('#' + id);
+			var ajax_defaults = {
+				success : function(res) {
+					var dialog_el = $('<div id='+ id +'></div>').appendTo($(document.body));
+					dialog_el.html(res);
+					dialog_el.dialog(dialog_options);
+				}
+			}, dialog_defaults = {
+				zIndex: ++$.Common.zIndex
+			};
+			ajax_options = $.extend({}, ajax_defaults, ajax_options),
+				dialog_options = $.extend({}, dialog_defaults, dialog_options);
+
+			if(dialog.get(0)) {
+				dialog.dialog('open');
+				return;
+			}
+			$.ajax(ajax_options);
+		},
 		showConfirm: function(target, title, confirm, callback, cancel_callback, input_label) {
 			var pos = $(target).offset();
 			var dialog_el = $('#nc_mes_dialog');

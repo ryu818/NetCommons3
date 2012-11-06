@@ -64,22 +64,8 @@
 	// ページ共通
 	$.PagesCommon ={
 		showLogin: function(e, url) {
-			var nc_login_dialog = $('#nc_login_dialog');
-			if(nc_login_dialog.get(0)) {
-				nc_login_dialog.dialog('open');
-				return;
-			}
-			$.get(url,
-				function(res){
-					var dialog_el = $('<div id=nc_login_dialog></div>').appendTo($(document.body));
-					dialog_el.html(res);
-
-					$(dialog_el).dialog({
-						title: __('Login'),
-						zIndex: ++$.Common.zIndex
-					});
-				}
-			);
+			e.preventDefault();
+			$.Common.showDialog('nc_login_dialog', {'url' : url}, {'title' : __('Login')});
 		}
 	}
 })(jQuery);
