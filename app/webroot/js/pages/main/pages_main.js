@@ -26,8 +26,7 @@
 					var dialog_el = $('<div id=nc_page_style_dialog></div>').appendTo($(document.body));
 					dialog_el.html(res);
 					$(dialog_el).dialog({
-						// TODO 変数化する
-						title: 'ページ設定',
+						title: __d('pages', 'Page setting'),
 						zIndex: ++$.Common.zIndex,
 						modal: true
 					});

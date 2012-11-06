@@ -93,8 +93,8 @@ msgstr 	"ログインID"
 msgid  	"Password"
 msgstr 	"パスワード"
 
-msgid  	"PageStyle"
-msgstr 	"ページスタイル"
+msgid  	"Page setting"
+msgstr 	"ページ設定"
 
 msgid  	"Block"
 msgstr 	"ブロック"
