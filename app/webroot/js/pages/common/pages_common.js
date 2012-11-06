@@ -29,7 +29,7 @@
 					}, 500);
 				} else {
 					hover = false;
-					hmenu.stop(true, false).animate({top: '-32px'}, 50, function(){
+					hmenu.stop(true, false).animate({top: '-40px'}, 50, function(){
 						nc_hmenu_arrow.removeClass('nc_arrow_up');
 					});
 				}
@@ -43,7 +43,7 @@
 		nc_hmenu_arrow.click(function(e){
 			if(nc_hmenu_arrow.hasClass('nc_arrow_up')) {
 				hover = false;
-				hmenu.stop(true, false).animate({top: '-32px'}, 50, function(){
+				hmenu.stop(true, false).animate({top: '-40px'}, 50, function(){
 					nc_hmenu_arrow.removeClass('nc_arrow_up');
 				});
 			} else {

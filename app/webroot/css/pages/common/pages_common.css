@@ -4,10 +4,10 @@
 
 /* headermenu */
 #nc_hmenu {
-   font-size:13px;
+	font-size:13px;
 
 	left: 0;
-	top: -32px;
+	top: -40px;
 	background-color: #ffffff;
 
     border-bottom: 1px solid #cdcdcd;
@@ -36,17 +36,20 @@
 
 .nc_hmenu_arrow {
 	text-align:center;
-	top:26px;
+	top:40px;
 	position: relative;
+	z-index:992;
 }
 
 .nc_hmenu_ul li.nc_hmenu_li {
+	display: inline-block;
+    vertical-align: top;
 	border-left: 1px solid #ffffff;
 	border-right: 1px solid #e8e8e8;
-    float: left;
     line-height: 40px;
-    margin: 0;
-    list-style: none outside none;
+	list-style: none outside none;
+    margin:0 -3px;
+    padding:0 5px;
 }
 #nc_hmenu li.nc_hmenu_li a {
     color: #222222;
@@ -60,8 +63,22 @@
     position: absolute;
     top: 0;
     white-space: nowrap;
-    z-index: 1000;
+    z-index: 991;
     padding-left:10px;
+/* Firefox */
+    background-image: -moz-linear-gradient(center top , #ffffff, #f8f8f8);
+/* Webkit */
+    background: -webkit-gradient(
+        linear,
+        center top,
+        center bottom,
+        from(#ffffff),
+        to(#f8f8f8)
+        );
+/* IE */
+    filter:progid:DXImageTransform.Microsoft.gradient
+        (startColorstr=#ffffffff,endColorstr=#fff8f8f8);
+    zoom: 1;
 }
 #nc_hmenu_l {
     left: 0;
@@ -89,7 +106,7 @@
     display: block;
     padding: 0 5px;
     position: relative;
-    z-index: 1000;
+    z-index: 991;
 }*/
 
 .nc_hmenu_more {
@@ -102,19 +119,19 @@
     display: block;
     padding: 0 5px;
     position: relative;
-    z-index: 1000;
+    z-index: 991;
 	padding: 1px;
 }*/
-#nc_hmenu li.nc_hmenu_logo_li,#nc_hmenu li.nc_hmenu_setting_m {
+#nc_hmenu li.nc_hmenu_setting_m {
    border-right: none;
 }
 #nc_hmenu li.nc_hmenu_logo_li a {
-   padding: 5px 0 0 10px;
+   padding: 5px;
    height: auto;
 }
 
 #nc_hmenu li.nc_hmenu_setting_m a {
-   padding: 9px 4px 0;
+   padding: 9px 4px;
    height: auto;
 }
 
@@ -147,18 +164,15 @@
 	background:transparent url("../../img/dialogs/hmenu/setting_h_end_over.gif") no-repeat left top;
 }
 
-/*
 #nc_hmenu .nc_pages_menu_path {
-	margin:4px 5px 0 0;
-	float:left;
+	margin:7px 5px;
 	background-color:#ffffff;
 	padding:1px 5px;
-	border:1px solid #96969D;
-	//width:580px;
-	max-width:580px;
-	width:98%;
+	border:1px solid #96969d;
+	width:200px;
+	/*max-width:580px;*/
 	overflow:hidden;
 	font-size:12px;
 	line-height: 1.8;
 	border-radius:2px;
-}*/
+}
