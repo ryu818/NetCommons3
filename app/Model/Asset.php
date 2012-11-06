@@ -22,6 +22,7 @@ App::uses('File', 'Utility');
 class Asset extends AppModel
 {
 	public $name = 'Asset';
+	public $actsAs = array('Asset');
 /**
  * URLからJs、Cssファイルのデータを読み込み
  *

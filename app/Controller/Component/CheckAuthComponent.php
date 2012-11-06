@@ -175,6 +175,7 @@ class CheckAuthComponent extends Component {
 				// ページ内のカラムページのリストをセット
 				$controller->page_id_arr = $page_id_arr;
 			}
+			$controller->page_id = $page['Page']['id'];
 
 			// TODO:ログインに遷移する場合、以下を記述
 			//$controller->Auth->deny();

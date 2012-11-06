@@ -37,7 +37,14 @@ class PagesController extends AppController {
  *
  * @var array
  */
-	public $uses = array('ModulesLink');
+	public $uses = array('ModulesLink', 'PageStyle');
+
+/**
+ * 中央カラムのpage_id
+ *
+ * @var int
+ */
+	public $page_id = null;
 
 /**
  * page_id配列
@@ -58,7 +65,11 @@ class PagesController extends AppController {
 		$blocks = $this->Block->findByPageIds($this->page_id_arr, intval($user['id']));
 		$pages = $this->Page->findByIds($this->page_id_arr, intval($user['id']));
 		$authority_id = isset($user['authority_id']) ? $user['authority_id'] : 0;
-		
+
+		// ページスタイル情報を取得
+		// TODO ノードを基に取得
+		$page_style = $this->PageStyle->findByStylePageId($this->page_id);
+
 		$add_modules = array();
 		if($mode == NC_BLOCK_MODE) {
 			// 追加モジュールリスト取得
@@ -76,6 +87,7 @@ class PagesController extends AppController {
 		$this->set("blocks", $blocks);
 		$this->set("pages", $pages);
 		$this->set("page_id_arr", $this->page_id_arr);
+		$this->set('page_style', $page_style['PageStyle']);
 		$this->set("add_modules", $add_modules);
 
 		//$this->render('responsive');
