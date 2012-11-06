@@ -93,9 +93,6 @@ msgstr 	"ログインID"
 msgid  	"Password"
 msgstr 	"パスワード"
 
-msgid  	"Page setting"
-msgstr 	"ページ設定"
-
 msgid  	"Block"
 msgstr 	"ブロック"
 
@@ -197,8 +194,8 @@ msgstr 	"ブロックスタイル"
 
 msgid  	"Pages menu"
 msgstr 	"ページメニュー"
-msgid  	"Pages style"
-msgstr 	"ページスタイル"
+msgid  	"Page setting"
+msgstr 	"ページ設定"
 msgid  	"Admin menu"
 msgstr 	"管理"
 msgid  	"End admin menu"
