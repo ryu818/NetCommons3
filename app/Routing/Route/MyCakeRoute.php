@@ -59,7 +59,11 @@ class MyCakeRoute extends CakeRoute {
 		//     -> なければ、Plugin/AnnouncementController.php->editメソッドへ
 		if(isset($route['controller'])) {
 			$pluginName = Inflector::camelize($route['plugin']);
-			$controller = $pluginName . Inflector::camelize($route['controller']);
+			if($route['plugin'] == $route['controller']) {
+				$controller = Inflector::camelize($route['controller']);
+			} else {
+				$controller = $pluginName . Inflector::camelize($route['controller']);
+			}
 			$file_path = App::pluginPath($pluginName) . 'Controller' . DS .$controller.'Controller.php';
 			if (!file_exists($file_path)) {
 				$buf_action = isset($route['action']) ? $route['action'] : null;
