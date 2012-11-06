@@ -1,6 +1,6 @@
 <?php
 /**
- * PageinfoControllerクラス
+ * PagesettingControllerクラス
  *
  * <pre>
  * ページ情報表示・編集用コントローラ
@@ -12,7 +12,7 @@
  * @since         v 3.0.0.0
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
-class PageinfoController extends PageinfoAppController {
+class PagesettingController extends PagesettingAppController {
 	/**
 	 * page_id
 	 * @var integer
@@ -56,7 +56,6 @@ class PageinfoController extends PageinfoAppController {
 				'file' => $file
 			);
 			$this->PageStyle->save($data);
-// 			$this->redirect(array('plugin' => 'pageinfo', 'controller' => 'pageinfo', 'action' => 'style'));
 		}
 
 		$this->set('page', $page['Page']);

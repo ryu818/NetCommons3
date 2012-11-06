@@ -12,11 +12,11 @@
 	$nc_mode = intval($this->Session->read(NC_SYSTEM_KEY.'.'.'mode'));
 	$locale = Configure::read('locale');
 
-// TODO:test
-// $this->Html->css(array('Default.page', 'Default.gray/page'), null, array('frame' => true));
-if (!empty($page_style['file'])) {
-	echo '<link href="theme/asset/'.$page_style['file'].'" rel="stylesheet "type="text/css">';
-}
+	// TODO:test
+	//$this->Html->css(array('Default.page', 'Default.gray/page'), null, array('frame' => true));
+	if (!empty($page_style['file'])) {
+		echo '<link href="theme/asset/'.$page_style['file'].'" rel="stylesheet "type="text/css">';
+	}
 
 	echo "\n".$this->fetch('meta');
 	$common_js = array('jquery/', 'plugins/jquery.pjax.js', 'plugins/chosen.jquery.js', 'plugins/jquery.powertip.js', 'common/');

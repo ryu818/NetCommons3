@@ -1,6 +1,6 @@
 <?php
 /**
- * PageinfoAppControllerクラス
+ * PagesettingAppControllerクラス
  *
  * @copyright     Copyright 2012, NetCommons Project
  * @package       App.Controller
@@ -9,7 +9,7 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 App::uses('AppPluginController', 'Controller');
-class PageinfoAppController extends AppPluginController {
+class PagesettingAppController extends AppPluginController {
 	/**
 	 * Model name
 	 *
