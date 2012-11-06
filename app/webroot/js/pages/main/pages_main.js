@@ -9,29 +9,12 @@
  */
 ;(function($) {
 	$(document).ready(function(){
-		// ページスタイル
-		var nc_pages_style_link = $('#nc_pages_style_link');
-		var url = nc_pages_style_link.attr('href');
-		nc_pages_style_link.click(function(e){$.PagesMain.showPageStyleLink(e, url);return false});
-	});
+		var page_setting = $('#page_setting');
+		var url = page_setting.attr('href');		page_setting.click(function(e){$.PagesMain.showPageSetting(e, url);return false;});	});
+
 	$.PagesMain ={
-		showPageStyleLink: function(e, url) {
-			var nc_page_style_dialog = $('#nc_page_style_dialog');
-			if (nc_page_style_dialog.get(0)) {
-				nc_page_style_dialog.dialog('open');
-				return;
-			}
-			$.get(url,
-				function(res) {
-					var dialog_el = $('<div id=nc_page_style_dialog></div>').appendTo($(document.body));
-					dialog_el.html(res);
-					$(dialog_el).dialog({
-						title: __d('pages', 'Page setting'),
-						zIndex: ++$.Common.zIndex,
-						modal: true
-					});
-				}
-			);
-		}
-	}
+		showPageSetting: function(e, url) {
+			e.preventDefault();
+			$.Common.showDialog('page_setting_dialog', {'url' : url}, {'title' : __('Page setting')});		}
+	}
 })(jQuery);
