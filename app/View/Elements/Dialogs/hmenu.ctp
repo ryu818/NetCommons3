@@ -13,30 +13,26 @@ if($nc_mode == NC_BLOCK_MODE){
 	$setting_mode = NC_BLOCK_MODE;
 }
 ?>
-<div id="nc_hmenu">
-	<div id="nc_hmenu_l">
-		<ul class="nc_hmenu_ul">
+<div id="nc_hmenu" class="nc_popup_color">
+	<div id="nc_hmenu_l" class="nc_popup_color">
+		<ul class="nc_hmenu_ul ">
 			<li class="nc_hmenu_li nc_hmenu_logo_li">
 				<a title="NetCommons" href="<?php echo($this->Html->url()); ?>">
 					<span class="nc_hmenu_logo"></span>
 				</a>
 			</li>
 			<li class="nc_hmenu_li">
-				<?php /* パンくずリスト */ ?>
+				<?php /* TODO:未作成 パンくずリスト */ ?>
 				<div class="nc_pages_menu_path">
 						ホーム(TODO:test) > ページ1 > ページ3 > ページ4 > ページ5
 				</div>
 			</li>
 			<li class="nc_hmenu_li">
-				ページメニュー
-				
-			</li>
-			<li class="nc_hmenu_li">
-				<?php echo $this->Html->link(__('PageStyle'), '/blocks/pageinfo/style', array('id' => 'nc_pages_style_link', 'aria-haspopup' => 'true')); ?>
+				<?php echo $this->Html->link(__('Pages setting'), array('plugin' => 'page', 'controller' => 'page'), array('id' => 'nc_pages_setting', 'aria-haspopup' => 'true')); ?>
 			</li>
 		</ul>
 	</div>
-	<div id="nc_hmenu_r">
+	<div id="nc_hmenu_r" class="nc_popup_color">
 		<ul class="nc_hmenu_ul">
 			<li class="nc_hmenu_li">
 				<a class="nc_tooltip" title="<?php echo(__('To the Site Management screen.')); ?>" href="#">
@@ -45,19 +41,12 @@ if($nc_mode == NC_BLOCK_MODE){
 			</li>
 			<li class="nc_hmenu_li">
 				<?php if(empty($nc_user['id'])): ?>
-					<?php echo $this->Html->link(__('Login'), '/users/login', array('id' => 'nc_login', 'aria-haspopup' => 'true')); ?>
+					<?php echo $this->Html->link(__('Login'), array('controller' => 'users', 'action' => 'login'), array('id' => 'nc_login', 'aria-haspopup' => 'true')); ?>
 				<?php else: ?>
-					<?php echo $this->Html->link(__('Logout'), '/users/logout'); ?>
+					<?php echo $this->Html->link(__('Logout'), array('controller' => 'users', 'action' => 'logout')); ?>
 				<?php endif; ?>
 			</li>
 			<?php if(!empty($nc_user['id']) && $hierarchy >= NC_AUTH_MIN_CHIEF): ?>
-			<?php /* ページスタイル */ ?>
-			<?php /* TODO class名等を見直す */ ?>
-			<li class="nc_hmenu_li nc_hmenu_pagestyle_li">
-				<?php //if(!empty($nc_user['id'])): ?>
-					<?php echo $this->Html->link(__('PageStyle'), '/blocks/pageinfo/style', array('id' => 'nc_pages_style_link', 'aria-haspopup' => 'true')); ?>
-				<?php //endif; ?>
-			</li>
 			<li class="nc_hmenu_li nc_hmenu_setting_m">
 				<a class="nc_tooltip" title="<?php echo(h($setting)); ?>" data-powertip="<?php echo(h($tooltip_setting)); ?>" href="<?php echo(rtrim($this->Html->url(), '/').'/?setting_mode='.$setting_mode); ?>">
 					<span class="<?php echo($setting_class); ?>"></span>

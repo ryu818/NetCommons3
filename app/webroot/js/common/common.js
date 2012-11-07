@@ -11,6 +11,49 @@
 	$.Common ={
 		zIndex : 2000,
 		blockZIndex : 1000,
+		// data-ajax属性の値をtargetとしてhrefタグのURLを用いてAjaxでデータを取得する。
+		// data-ajax-replace属性ならば、targetと入れ替える。
+		getAjax : function(e, a) {
+			var target = a.attr("data-ajax");
+			var replace_target = a.attr("data-ajax-replace");
+			var url = a.attr('href');
+			if(url == '#') {
+				return;
+			}
+			
+			$.get(url, function(res){
+				if(target) {
+					$(target).html(res);
+				} else {
+					$(replace_target).replaceWith(res);
+				}
+			});
+			e.preventDefault();
+		},
+		postAjax : function(e, frm) {
+			var data_pjax,target,replace_target, top, url, data;
+			target_pjax = frm.attr("data-pjax");
+			target = frm.attr("data-ajax");
+			replace_target = frm.attr("data-ajax-replace");
+			if(target_pjax) {
+				// pjax
+				top = $(target_pjax);
+				if(top.get(0)) {
+					$.pjax.submit(e, top);
+				}
+			} else {
+				url = frm.attr('action');
+				data = frm.serializeArray();
+				$.post(url, data, function(res){
+					if(target) {
+						$(target).html(res);
+					} else {
+						$(replace_target).replaceWith(res);
+					}
+				});
+			}
+			e.preventDefault();
+		},
 		// block_id,controller_action名称からurl取得
 		urlBlock : function(block_id, controller_action) {
 			if(!block_id) {

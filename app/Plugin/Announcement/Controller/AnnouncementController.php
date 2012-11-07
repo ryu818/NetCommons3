@@ -20,7 +20,7 @@ class AnnouncementController extends AnnouncementAppController {
 	public $content_id = null;
 
 /**
- * content_id
+ * hierarchy
  * @var integer
  */
 	public $hierarchy = null;

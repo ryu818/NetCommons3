@@ -13,7 +13,7 @@
 	$locale = Configure::read('locale');
 
 // TODO:test
-// $this->Html->css(array('Default.page', 'Default.gray/page'), null, array('frame' => true));
+$this->Html->css(array('Default.page', 'Default.gray/page'), null, array('frame' => true));
 if (!empty($page_style['file'])) {
 	echo '<link href="theme/asset/'.$page_style['file'].'" rel="stylesheet "type="text/css">';
 }
@@ -63,12 +63,13 @@ echo '	$._nc.nc_wysiwyg[\'allow_js\'] = '.($nc_user['allow_htmltag_flag'] ? _ON 
 ?>
 	$(function () {
 		$(document).pjax('a[data-pjax]');
-		$(document).on("submit", "form[data-pjax]", function (e) {
-			var top = $($(this).attr("data-pjax"));
-			if(top.get(0)) {
-				$.pjax.submit(e, top);
-			}
+		$(document).on("submit", "form[data-pjax],form[data-ajax],form[data-ajax-replace]", function (e) {
+			$.Common.postAjax(e, $(this));
 		});
+		$(document).on("click", "a[data-ajax],a[data-ajax-replace]", function (e) {
+			$.Common.getAjax(e, $(this));
+		});
+
 		var options = {'followMouse':true};
 		$('.nc_tooltip').powerTip(options);
 		$(document).on('ajaxComplete','',function(){
@@ -85,9 +86,9 @@ echo '	$._nc.nc_wysiwyg[\'allow_js\'] = '.($nc_user['allow_htmltag_flag'] ? _ON 
 	//echo $scripts_for_layout;
 
 	$common_css = array('common/vendors/', 'common/main/', 'jquery/base/', 'common/editable/common', 'plugins/chosen.css', 'plugins/jquery.powertip.css', );
-	if($this->params['controller'] == 'pages') {
+	//if($this->params['controller'] == 'pages') {	// TODO:system_flagがOFFの場合にincludeするように後に修正。
 		$common_css[] = 'pages/common/';
-	}
+	//}
 	if($nc_mode == NC_BLOCK_MODE) {
 		$common_css[] = 'pages/block/';
 	}

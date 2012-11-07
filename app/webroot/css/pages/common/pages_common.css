@@ -5,11 +5,8 @@
 /* headermenu */
 #nc_hmenu {
 	font-size:13px;
-
 	left: 0;
 	top: -40px;
-	background-color: #ffffff;
-
     border-bottom: 1px solid #cdcdcd;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     height: 40px;
@@ -17,7 +14,10 @@
     text-shadow: 0 1px #ffffff;
     width: 100%;
     z-index: 990;
+}
 
+.nc_popup_color {
+	background-color: #ffffff;
 /* Firefox */
     background-image: -moz-linear-gradient(center top , #ffffff, #f8f8f8);
 /* Webkit */
@@ -65,20 +65,6 @@
     white-space: nowrap;
     z-index: 991;
     padding-left:10px;
-/* Firefox */
-    background-image: -moz-linear-gradient(center top , #ffffff, #f8f8f8);
-/* Webkit */
-    background: -webkit-gradient(
-        linear,
-        center top,
-        center bottom,
-        from(#ffffff),
-        to(#f8f8f8)
-        );
-/* IE */
-    filter:progid:DXImageTransform.Microsoft.gradient
-        (startColorstr=#ffffffff,endColorstr=#fff8f8f8);
-    zoom: 1;
 }
 #nc_hmenu_l {
     left: 0;

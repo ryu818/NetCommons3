@@ -298,4 +298,32 @@ class User extends AppModel
 		}
 		return true;
     }
+
+/**
+ *
+ * マイポータル、マイルームのページ情報から、その会員情報を取得する。
+ * マイポータル、マイルーム以外ならば'' エラーならばfalse
+ * @param   array $page
+ * @param   array $login_user
+ * @return  mixed '' or false or $user
+ * @since   v 3.0.0.0
+ */
+    public function currentUser($page, $login_user = null) {
+    	$user = array();
+    	if($page['Page']['space_type'] != NC_SPACE_TYPE_MYPORTAL && $page['Page']['space_type'] != NC_SPACE_TYPE_PRIVATE) {
+    		return '';
+    	}
+    
+    	$buf_permalink_arr = explode('/', $page['Page']['permalink']);
+    	if(!isset($login_user['permalink']) || $buf_permalink_arr[0] != $login_user['permalink']) {
+    		$conditions = array('permalink' => $buf_permalink_arr[0]);
+    		$user = $this->find( 'first', array('conditions' => $conditions, 'recursive' => -1) );
+    	} else {
+    		$user['User'] = $login_user;
+    	}
+    	if(!isset($user['User']))
+    		return false;
+    
+    	return $user;
+    }
 }

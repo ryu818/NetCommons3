@@ -1,0 +1,72 @@
+#nc_pages_setting_dialog {
+	top: 40px;
+	background-color: #ffffff;
+	border-top: 1px solid #cdcdcd;
+    border-right: 1px solid #cdcdcd;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    z-index: 989;
+    min-height: 100%;
+	height: auto !important;
+	height: 100%;
+}
+
+.nc_pages_setting_arrow_outer {
+	cursor:pointer;
+	padding:2px;
+	width:5px;
+	border-left: 1px solid #efefef;
+}
+
+.nc_pages_setting_title {
+	line-height: 40px;
+	border-left:1px solid #96969d;
+	border-right: 1px solid #cdcdcd;
+	
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    height: 40px;
+    text-shadow: 0 1px #ffffff;
+    padding: 0 10px;
+}
+
+.nc_pages_setting_icon {
+	width: 35px;
+	border-right: 1px solid #cdcdcd;
+	vertical-align:top;
+}
+
+#nc_pages_setting_content {
+	background-color:#ffffff;
+	padding:10px;
+	border:1px solid #96969d;
+	margin:0;
+	overflow: auto;
+	min-width:200px;
+}
+
+
+.nc_pages_setting_icon a {
+	width24px;
+	height:24px;
+	display:block;
+}
+
+.nc_pages_menu_icon {
+	background: url(../../page/img/pages_menu.png) no-repeat center center;
+}
+
+.nc_pages_history_icon {
+	background: url(../../page/img/pages_history.png) no-repeat center center;
+}
+.nc_page_metas_icon {
+	background: url(../../page/img/page_metas.png) no-repeat center center;
+}
+.nc_page_styles_icon {
+	background: url(../../page/img/page_styles.png) no-repeat center center;
+}
+.nc_page_themes_icon {
+	background: url(../../page/img/page_themes.png) no-repeat center center;
+}
+.nc_page_layouts_icon {
+	background: url(../../page/img/page_layouts.png) no-repeat center center;
+}

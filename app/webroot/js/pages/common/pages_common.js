@@ -57,8 +57,15 @@
 
 		// ログイン
 		var nc_login = $('#nc_login');
-		var url = nc_login.attr('href');
-		nc_login.click(function(e){$.PagesCommon.showLogin(e, url);return false;});
+		nc_login.click(function(e){
+			var url = nc_login.attr('href');
+			$.PagesCommon.showLogin(e, url);
+		});
+		var nc_pages_setting = $('#nc_pages_setting');
+		nc_pages_setting.click(function(e){
+			var url = nc_pages_setting.attr('href');
+			$.PagesCommon.showPageMenu(e, url);
+		});
 	});
 
 	// ページ共通
@@ -66,6 +73,29 @@
 		showLogin: function(e, url) {
 			e.preventDefault();
 			$.Common.showDialog('nc_login_dialog', {'url' : url}, {'title' : __('Login')});
+		},
+		showPageMenu: function(e, url) {
+			var id = 'nc_pages_setting_dialog_outer', w, h;
+			e.preventDefault();
+			var dialog_outer_el = $('#' + id);
+			var dialog_el = dialog_outer_el.children(':first');
+			if(dialog_outer_el.get(0)) {
+				w = dialog_el.outerWidth();
+				$('.nc_pages_setting_arrow', dialog_el).addClass('nc_arrow_right').removeClass('nc_arrow_left');
+				dialog_el.animate({'left': '-' + w + 'px'}, 500, function() {
+					dialog_outer_el.remove();
+				});
+			} else {
+				$.get(url,function(res) {
+					dialog_outer_el = $('<div id="' + id + '" style="visibility:hidden;"></div>').appendTo($(document.body));
+					dialog_outer_el.html(res);
+					dialog_el = dialog_outer_el.children(':first');
+					w = dialog_el.outerWidth();
+					dialog_el.css({'left' :  '-' + w + 'px'});
+					dialog_outer_el.css('visibility','visible');
+					dialog_el.animate({'left': 0}, 500);
+				});
+			}
 		}
 	}
 })(jQuery);

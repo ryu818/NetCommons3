@@ -1,0 +1,16 @@
+msgid  	"Pages menu"
+msgstr 	"ページメニュー"
+msgid  	"Pages history"
+msgstr 	"ページ閲覧履歴"
+msgid  	"Page info"
+msgstr 	"ページ情報"
+msgid  	"Page theme"
+msgstr 	"ページテーマ"
+msgid  	"Page style"
+msgstr 	"ページスタイル"
+msgid  	"Page layout"
+msgstr 	"ページレイアウト"
+
+## ページメニュー
+msgid  	"(Private)"
+msgstr 	"(非公開)"
