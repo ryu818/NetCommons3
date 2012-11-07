@@ -22,7 +22,7 @@ App::uses('File', 'Utility');
 class Asset extends AppModel
 {
 	public $name = 'Asset';
-	public $actsAs = array('Asset');
+	public $actsAs = array('File');
 /**
  * URLからJs、Cssファイルのデータを読み込み
  *
@@ -49,7 +49,7 @@ class Asset extends AppModel
 
 	protected function _afterFind($results, $options) {
 		$rets = array();
-		$root_path = Configure::read('App.www_root') . 'theme' . DS . 'asset' . DS;
+		$root_path = $this->_getPath();
 
 		foreach ($results as $key => $val) {
 			//$url = $val['Asset']['url'];
@@ -151,7 +151,7 @@ class Asset extends AppModel
 	}
 
 	protected function _createAsetFile($hash, $content, $ext = 'js') {
-		$path = Configure::read('App.www_root') . 'theme' . DS . 'asset' . DS;
+		$path = $this->_getPath();
 		$file_path = $this->_getAsetFile($hash, $ext);
 		if(file_exists($path . $file_path)) {
 			return $file_path;
@@ -168,7 +168,7 @@ class Asset extends AppModel
 	}
 
 	protected function _deleteAsetFile($file_name) {
-		$path = Configure::read('App.www_root') . 'theme' . DS . 'asset' . DS;
+		$path = $this->_getPath();
 		$file = new File($path . $file_name);
 		if ($file->delete()) {
 			$gzfile = new File($path . $file_name.'.gz');
@@ -179,6 +179,11 @@ class Asset extends AppModel
 	protected function _getAsetFile($hash, $ext = 'js') {
 		$file = "application-" . $hash . '.' . $ext;
 		return $file;
+	}
+
+	protected function _getPath() {
+		$path = Configure::read('App.www_root') . 'theme' . DS . 'asset' . DS;
+		return $path;
 	}
 
 /**
