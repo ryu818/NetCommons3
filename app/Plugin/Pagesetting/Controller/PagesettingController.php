@@ -14,6 +14,13 @@
  */
 class PagesettingController extends PagesettingAppController {
 	/**
+	 * Model name
+	 *
+	 * @var array
+	 */
+	public $uses = array('PageStyle');
+
+	/**
 	 * page_id
 	 * @var integer
 	 */
@@ -40,14 +47,18 @@ class PagesettingController extends PagesettingAppController {
 		$page = $this->Page->findById($this->page_id);
 		// TODO ノードを基にスタイル情報を取得
 		$page_style = $this->PageStyle->findByStylePageId($this->page_id);
+
 		if ($this->request->is('post')) {
-			// webroot/theme/asset下にCSSファイルを生成
 			$content = 'body {'.
 					'color: '.$this->request['data']['color'].';'.
 					'background-color: '.$this->request['data']['bgcolor'].';'.
 					'}';
-			$ext = 'css';
-			$file = $this->Asset->createFile($content, $ext);
+			// 既存のCSSファイルを削除
+			if (!empty($page_style['PageStyle']['file'])) {
+				$this->PageStyle->deleteCssFile($page_style['PageStyle']['file']);
+			}
+			// webroot/theme/page_styles/下にCSSファイルを生成
+			$file = $this->PageStyle->createCssFile($content);
 			$data = array(
 				'id' => (isset($page_style['PageStyle']['id'])) ? $page_style['PageStyle']['id'] : null,
 				'style_page_id' => $this->page_id,

@@ -1,0 +1,4 @@
+<FilesMatch "\.css\.gz$">
+    ForceType text/css
+    AddEncoding x-gzip .gz
+</FilesMatch>

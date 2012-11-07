@@ -15,6 +15,6 @@
 	$.PagesMain ={
 		showPageSetting: function(e, url) {
 			e.preventDefault();
-			$.Common.showDialog('page_setting_dialog', {'url' : url}, {'title' : __('Page setting')});		}
+			$.Common.showDialog('page_setting_dialog', {'url' : url}, {'title' : __d('pages', 'Page setting')});		}
 	}
 })(jQuery);
