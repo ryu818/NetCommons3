@@ -1,6 +1,6 @@
 <?php
 /**
- * PagesettingControllerクラス
+ * PageSettingControllerクラス
  *
  * <pre>
  * ページ情報表示・編集用コントローラ
@@ -12,7 +12,7 @@
  * @since         v 3.0.0.0
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
-class PagesettingController extends PagesettingAppController {
+class PageSettingController extends PageAppController {
 	/**
 	 * Model name
 	 *

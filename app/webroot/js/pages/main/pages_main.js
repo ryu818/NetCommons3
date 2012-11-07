@@ -1,5 +1,5 @@
 /**
- * ページ - メタ情報、テーマ、スタイル設定 js
+ * ページ - メタ情報、テーマ、レウアウト、スタイル設定 js
  *
  * @copyright     Copyright 2012, NetCommons Project
  * @package       webroot.js.main
