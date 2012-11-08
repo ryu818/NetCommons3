@@ -42,7 +42,7 @@ class PageController extends PageAppController {
 		$login_user = $this->Auth->user();
 		$user_id = $login_user['id'];
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
-		
+
 		// カレント会員取得
 		$center_page = Configure::read(NC_SYSTEM_KEY.'.'.'Center_Page');
 		$current_user = $this->User->currentUser($center_page, $login_user);
@@ -52,7 +52,7 @@ class PageController extends PageAppController {
 		} else if($current_user === '') {
 			$current_user = array('User' => $login_user);
 		}
-		
+
 		$fetch_params = array(
 			'active_page_id' => $this->page_id
 		);
@@ -65,7 +65,7 @@ class PageController extends PageAppController {
 			);
 		}*/
 		$pages = $this->Page->findMenu('all', $user_id, NC_SPACE_TYPE_PUBLIC, $current_user, $params, null, $fetch_params);
-		
+
 		$private_pages = $this->Page->findMenu('all', $user_id, array(NC_SPACE_TYPE_MYPORTAL, NC_SPACE_TYPE_PRIVATE), $current_user, $params, null, $fetch_params);
 		if(isset($private_pages[NC_SPACE_TYPE_MYPORTAL])) {
 			$pages[NC_SPACE_TYPE_MYPORTAL] = $private_pages[NC_SPACE_TYPE_MYPORTAL];
