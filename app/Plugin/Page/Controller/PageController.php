@@ -25,6 +25,13 @@ class PageController extends PageAppController {
  */
 	public $hierarchy = null;
 
+	/**
+	 * Model name
+	 *
+	 * @var array
+	 */
+	public $uses = array('PageStyle');
+
 /**
  * ページメニュー表示
  * @param   void
@@ -100,10 +107,38 @@ class PageController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function style() {
+		// ページ情報を取得
+		$page = $this->Page->findById($this->page_id);
+		// TODO ノードを基にスタイル情報を取得
+		$page_style = $this->PageStyle->findByStylePageId($this->page_id);
+
 		if ($this->request->is('post')) {
-			// TODO:test
-			//$this->request->data['PageStyle']['test']
+			$color = $this->request->data['PageStyle']['color'];
+			$bgcolor = $this->request->data['PageStyle']['background-color'];
+			$content = 'body {'.
+					'color: '.$color.' !important;'.
+					'background-color: '.$bgcolor.' !important;'.
+					'}';
+			// 既存のCSSファイルを削除
+			if (!empty($page_style['PageStyle']['file'])) {
+				$this->PageStyle->deleteCssFile($page_style['PageStyle']['file']);
+			}
+			// webroot/theme/page_styles/下にCSSファイルを生成
+			$file = $this->PageStyle->createCssFile($content);
+			$data = array(
+					'id' => (isset($page_style['PageStyle']['id'])) ? $page_style['PageStyle']['id'] : null,
+					'style_page_id' => $this->page_id,
+					'color' => $color,
+					'bgcolor' => $bgcolor,
+					'file' => $file
+			);
+			$this->PageStyle->save($data);
+			// スタイル情報を再取得
+			// TODO 他に良い方法がないか検討
+			$page_style = $this->PageStyle->findByStylePageId($this->page_id);
 		}
+		$this->set('page', $page['Page']);
+		$this->set('page_style', $page_style['PageStyle']);
 		$this->render('index');
 	}
 
