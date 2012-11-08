@@ -11,22 +11,42 @@
 	$.Common ={
 		zIndex : 2000,
 		blockZIndex : 1000,
+		// 
 		// data-ajax属性の値をtargetとしてhrefタグのURLを用いてAjaxでデータを取得する。
 		// data-ajax-replace属性ならば、targetと入れ替える。
+		// 
+		// カスタムイベント ajax:
+		// ajax:before - Ajaxリクエスト前に呼ばれる。falseを返せば処理を中断する。
+		// ajax:beforeSuccess - Ajaxリクエスト直後に呼ばれる。falseを返せば処理を中断する。
+		// ajax:success - Ajaxリクエスト後の処理が終了した時点で呼ばれる。
+		// 例：$('form:first', this).on('ajax:beforeSuccess', function(e, res) { 
+		//	       e.preventDefault();
+		//     });
+		//
+		//
 		getAjax : function(e, a) {
 			var target = a.attr("data-ajax");
 			var replace_target = a.attr("data-ajax-replace");
 			var url = a.attr('href');
+			
+			if (!$.Common.fire('ajax:before', [url], a)) {
+				return false
+			}
+			
 			if(url == '#') {
 				return;
 			}
 			
-			$.get(url, function(res){
+			$.get(url, function(res, status, xhr){
+				if (!$.Common.fire('ajax:beforeSuccess', [res, status, xhr], a)) {
+					return false
+				}
 				if(target) {
 					$(target).html(res);
 				} else {
 					$(replace_target).replaceWith(res);
 				}
+				$.Common.fire('ajax:success', [res, status, xhr], a);
 			});
 			e.preventDefault();
 		},
@@ -35,6 +55,7 @@
 			target_pjax = frm.attr("data-pjax");
 			target = frm.attr("data-ajax");
 			replace_target = frm.attr("data-ajax-replace");
+
 			if(target_pjax) {
 				// pjax
 				top = $(target_pjax);
@@ -44,15 +65,28 @@
 			} else {
 				url = frm.attr('action');
 				data = frm.serializeArray();
-				$.post(url, data, function(res){
+				if (!$.Common.fire('ajax:before', [url, data], frm)) {
+					return false
+				}
+				$.post(url, data, function(res, status, xhr){
+					if (!$.Common.fire('ajax:beforeSuccess', [res, status, xhr], frm)) {
+						return false
+					}
 					if(target) {
 						$(target).html(res);
 					} else {
 						$(replace_target).replaceWith(res);
 					}
+					$.Common.fire('ajax:success', [res, status, xhr], frm);
 				});
 			}
 			e.preventDefault();
+		},
+
+		fire : function(type, args, content) {
+			var event = $.Event(type);	// , { relatedTarget: target }
+			content.trigger(event, args);
+			return !event.isDefaultPrevented();
 		},
 		// block_id,controller_action名称からurl取得
 		urlBlock : function(block_id, controller_action) {
