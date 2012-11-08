@@ -1,0 +1,36 @@
+/* ページメニュー */
+.nc_page_nonpublic {
+	color:#fe8d9e;
+}
+
+.nc_page_handle {
+	border-radius: 3px 3px 3px 3px;
+    display: block;
+    font-weight: bold;
+    margin: 4px 0;
+    padding: 5px 10px;
+}
+
+.nc_page_handle_public {
+	border: 1px solid #cdcdcd;
+	background-color: #f9f9f9;
+}
+
+.nc_page_handle_myportal {
+	border: 1px solid #88bae5;
+	background-color: #f1f3fc;
+}
+
+.nc_page_handle_private {
+	border: 1px solid #c7e588;
+	background-color: #f4fcf1;
+}
+
+.nc_page_handle_community {
+	border: 1px solid #f9f1fc;
+	background-color: #a688e5;
+}
+.nc_page_handle_active {
+	border: 1px solid #ffd46e;
+	background-color: #fdffee;
+}

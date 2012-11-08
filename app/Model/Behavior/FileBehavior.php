@@ -12,7 +12,7 @@ App::uses('File', 'Utility');
 
 class FileBehavior extends ModelBehavior {
 
-	var $gz_extension = '.gz';
+	private $gz_extension = '.gz';
 
 	public function createFile(Model $Model, $path, $file_name, $content, $gz_flag) {
 		$file_path = $path . $file_name;

@@ -81,6 +81,114 @@ class Page extends AppModel
 		return $pages;
 	}
 
+	/**
+	 * ページメニューのリストを取得
+	 *
+	 * @param string    $type all or count or list
+	 * @param integer   $login_user_id ログイン会員ID
+	 * @param integer   $space_type
+	 * @param array     $current_user
+	 * @param array     $params
+	 * @param function  $fetchcallback callback関数 default メニュー形式
+	 *                                     $pages[space_type][root_sequence][thread_num][parent_id][display_sequence] = Page
+	 * @param array     $fetch_params callback関数 parameter
+	 * @param integer   $admin_hierarchy
+	 * @return array
+	 * @since   v 3.0.0.0
+	 */
+	public function findMenu($type, $login_user_id, $space_type = NC_SPACE_TYPE_PUBLIC, $current_user = null, $params = null, $fetchcallback = null, $fetch_params = null, $admin_hierarchy = null) {
+		//$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
+		$space_type_flag = true;
+		if(is_array($space_type)) {
+			foreach($space_type as $buf_space_type) {
+				if($buf_space_type != NC_SPACE_TYPE_PUBLIC && $buf_space_type != NC_SPACE_TYPE_GROUP) {
+					$space_type_flag = false;
+					break;
+				}
+			}
+		}
+		if($space_type == NC_SPACE_TYPE_PUBLIC || $space_type == NC_SPACE_TYPE_GROUP || (is_array($space_type) && $space_type_flag)) {
+			$conditions = array(
+					'Page.space_type' => $space_type,
+					'Page.position_flag' => _ON,
+					'Page.root_sequence !=' => 0
+					//'Page.lang' => array('', $lang)
+			);
+		} else {
+			$conditions = array(
+					//'Page.space_type' => array(NC_SPACE_TYPE_MYPORTAL, NC_SPACE_TYPE_PRIVATE),
+					'Page.position_flag' => _ON,
+					'Page.display_flag !=' => NC_DISPLAY_FLAG_DISABLE,
+					'Page.root_sequence !=' => 0
+					//'Page.lang' => array('', $lang)
+			);
+			if($login_user_id != $current_user['User']['id'] || $space_type == NC_SPACE_TYPE_MYPORTAL) {
+				// マイルームを表示しない。
+				$conditions['Page.room_id'] = $current_user['User']['myportal_page_id'];
+			} else if($space_type == NC_SPACE_TYPE_PRIVATE) {
+				// マイルームのみ
+				$conditions['Page.room_id'] = $current_user['User']['private_page_id'];
+			} else {
+				$conditions['Page.room_id'] = array($current_user['User']['myportal_page_id'], $current_user['User']['private_page_id']);
+			}
+		}
+		if(!isset($params['conditions'])) {
+			$params['conditions'] = $conditions;
+		} else {
+			$params['conditions'] = array_merge($conditions, $params['conditions']);
+		}
+	
+		if($type != 'count' && !isset($params['order'])) {
+			$params['order'] = array(
+					'Page.space_type' => "ASC",
+					'Page.root_sequence' => "ASC",
+					'Page.thread_num' => "ASC",
+					'Page.display_sequence' => "ASC"
+			);
+		}
+	
+		if($type == 'count') {
+			unset($params['fields']);
+		} else if(empty($login_user_id)) {
+			if(!isset($params['fields'])) {
+				$params['fields'] = array('Page.*');
+			}
+		} else {
+			if(!isset($params['fields'])) {
+				$params['fields'] = $this->_getFieldsArray();
+			}
+			if(!isset($params['joins'])) {
+				$join_type = ($admin_hierarchy < NC_AUTH_MIN_ADMIN && ($space_type == NC_SPACE_TYPE_PUBLIC || $space_type == NC_SPACE_TYPE_GROUP)) ? 'INNER' : 'LEFT';
+				$params['joins'] = $this->_getJoinsArray($login_user_id, $join_type);
+			}
+		}
+	
+		/*if((isset($params['limit']) || isset($params['page'])) && $space_type == NC_SPACE_TYPE_GROUP &&
+				!isset($params['conditions']['Page.display_sequence'])) {
+			// ページメニュー：グループルーム編集モード
+			$top_params = $params;
+			$top_params['fields'] = array('Page.root_sequence');
+			$top_params['conditions']['Page.display_sequence'] = 0;
+			$top_results = $this->find('list', $top_params);
+			if(count($top_results) == 0) {
+				return $top_results;
+			}
+			$params['conditions']['Page.root_sequence'] = $top_results;
+			//$params['conditions']['Page.room_id'] = $top_results;
+			unset($params['limit']);
+			unset($params['page']);
+		}*/
+	
+		if($fetchcallback === "" || ($fetchcallback === null && $type == 'count')) {
+			$results = $this->find($type, $params);
+		} else if(!is_null($fetchcallback)) {
+			$results = call_user_func_array($fetchcallback, array($this->find($type, $params), $fetch_params));
+		} else {
+			$results = $this->afterFindMenu($this->find($type, $params), $fetch_params);
+		}
+		return $results;
+	}
+
 /**
  * Pageモデル共通Fields文
  * @param   void

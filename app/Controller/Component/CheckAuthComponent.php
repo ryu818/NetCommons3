@@ -164,6 +164,32 @@ class CheckAuthComponent extends Component {
 					return ;
 				}
 			}*/
+			// TODO:test センターカラム以外のpege_idも入ってくる可能性あるため、修正予定。
+			$center_page = $page;
+			
+			$current_user = $controller->User->currentUser($center_page, $user);
+			if($current_user === '') {
+				$current_user = array('User' => $user);
+			}
+			if(isset($current_user['User'])) {
+				$myportal_name = __('Myportal of %s', $current_user['User']['handle']);
+				$private_name = __('Private room of %s', $current_user['User']['handle']);
+				if( $center_page['Page']['display_sequence'] == 1 ) {
+					if($center_page['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
+						$page['Page']['page_name'] = $myportal_name;
+						$center_page['Page']['page_name'] = $myportal_name;
+					} else if($center_page['Page']['space_type'] == NC_SPACE_TYPE_PRIVATE) {
+						$page['Page']['page_name'] = $private_name;
+						$center_page['Page']['page_name'] = $private_name;
+					}
+				}
+				Configure::write(NC_AUTH_KEY.'.'.'myportal_name', $myportal_name);
+				Configure::write(NC_AUTH_KEY.'.'.'private_name', $private_name);
+			}
+			
+			
+			$controller->page_id = intval($page['Page']['id']);
+			Configure::write(NC_SYSTEM_KEY.'.'.'Center_Page', $center_page);
 
 			//TODO:test
 			/*

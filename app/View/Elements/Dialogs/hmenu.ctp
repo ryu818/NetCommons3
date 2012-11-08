@@ -13,32 +13,26 @@ if($nc_mode == NC_BLOCK_MODE){
 	$setting_mode = NC_BLOCK_MODE;
 }
 ?>
-<div id="nc_hmenu">
-	<div id="nc_hmenu_l">
-		<ul class="nc_hmenu_ul">
+<div id="nc_hmenu" class="nc_popup_color">
+	<div id="nc_hmenu_l" class="nc_popup_color">
+		<ul class="nc_hmenu_ul ">
 			<li class="nc_hmenu_li nc_hmenu_logo_li">
 				<a title="NetCommons" href="<?php echo($this->Html->url()); ?>">
 					<span class="nc_hmenu_logo"></span>
 				</a>
 			</li>
 			<li class="nc_hmenu_li">
-				<?php /* パンくずリスト */ ?>
+				<?php /* TODO:未作成 パンくずリスト */ ?>
 				<div class="nc_pages_menu_path">
 						ホーム(TODO:test) > ページ1 > ページ3 > ページ4 > ページ5
 				</div>
 			</li>
 			<li class="nc_hmenu_li">
-				ページメニュー
-				
+				<?php echo $this->Html->link(__('Pages setting'), array('plugin' => 'page', 'controller' => 'page'), array('id' => 'nc_pages_setting', 'aria-haspopup' => 'true')); ?>
 			</li>
-			<?php if(!empty($nc_user['id']) && $hierarchy >= NC_AUTH_MIN_CHIEF): ?>
-			<li class="nc_hmenu_li">
-				<?php echo $this->Html->link(__('Page setting'), array('plugin'=>'page', 'controller'=>'page_setting', 'action'=>'style'), array('id' => 'page_setting', 'aria-haspopup' => 'true')); ?>
-			</li>
-			<?php endif; ?>
 		</ul>
 	</div>
-	<div id="nc_hmenu_r">
+	<div id="nc_hmenu_r" class="nc_popup_color">
 		<ul class="nc_hmenu_ul">
 			<li class="nc_hmenu_li">
 				<a class="nc_tooltip" title="<?php echo(__('To the Site Management screen.')); ?>" href="#">
@@ -47,9 +41,9 @@ if($nc_mode == NC_BLOCK_MODE){
 			</li>
 			<li class="nc_hmenu_li">
 				<?php if(empty($nc_user['id'])): ?>
-					<?php echo $this->Html->link(__('Login'), '/users/login', array('id' => 'nc_login', 'aria-haspopup' => 'true')); ?>
+					<?php echo $this->Html->link(__('Login'), array('controller' => 'users', 'action' => 'login'), array('id' => 'nc_login', 'aria-haspopup' => 'true')); ?>
 				<?php else: ?>
-					<?php echo $this->Html->link(__('Logout'), '/users/logout'); ?>
+					<?php echo $this->Html->link(__('Logout'), array('controller' => 'users', 'action' => 'logout')); ?>
 				<?php endif; ?>
 			</li>
 			<?php if(!empty($nc_user['id']) && $hierarchy >= NC_AUTH_MIN_CHIEF): ?>

@@ -325,7 +325,11 @@
 					if (tipElement.data('followMouse') || tipElement.data('mouseOnToPopup')) {
 						// check activeHover in case the mouse cursor entered
 						// the tooltip during the fadeOut and close cycle
-						if (session.activeHover) {
+// Edit Start Ryuji.M
+// FireFox 16.0.2でエラーが表示されたため
+						if (session.activeHover && session.activeHover.data('displayController')) {
+						//if (session.activeHover) {
+// Edit End Ryuji.M
 							session.activeHover.data('displayController').cancel();
 						}
 					}
