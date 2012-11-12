@@ -38,7 +38,7 @@
 	text-align:center;
 	top:40px;
 	position: relative;
-	z-index:992;
+	z-index:992;height:0px;
 }
 
 .nc_hmenu_ul li.nc_hmenu_li {
