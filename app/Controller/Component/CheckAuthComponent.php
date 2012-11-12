@@ -309,15 +309,15 @@ class CheckAuthComponent extends Component {
 				),
 				'joins' => array(
 	                                     array("type" => "LEFT",
-	                                           "table" => "pages_users_links",
-	                                           "alias" => "PagesUsersLink",
-	                                           "conditions" => "`Page`.`room_id`=`PagesUsersLink`.`room_id`".
-	                                     		" AND `PagesUsersLink`.`user_id` =".$user_id
+	                                           "table" => "page_user_links",
+	                                           "alias" => "PageUserLink",
+	                                           "conditions" => "`Page`.`room_id`=`PageUserLink`.`room_id`".
+	                                     		" AND `PageUserLink`.`user_id` =".$user_id
 	                                          ),
 	                                     array("type" => "LEFT",
 	                                           "table" => "authorities",
 	                                           "alias" => "Authority",
-	                                           "conditions" => "`Authority`.id``=`PagesUsersLink`.`authority_id`"
+	                                           "conditions" => "`Authority`.id``=`PageUserLink`.`authority_id`"
 	                                          )
 	                            )
 			);

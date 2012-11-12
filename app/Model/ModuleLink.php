@@ -1,6 +1,6 @@
 <?php
 /**
- * ModulesLinkモデル
+ * ModuleLinkモデル
  *
  * <pre>
  *  モジュールの追加リストの表示
@@ -12,9 +12,9 @@
  * @since         v 3.0.0.0
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
-class ModulesLink extends AppModel
+class ModuleLink extends AppModel
 {
-    var $name = 'ModulesLink';
+    var $name = 'ModuleLink';
 
     public $belongsTo = array(
         'Module' => array(
@@ -31,7 +31,7 @@ class ModulesLink extends AppModel
  * @return  array   $block
  * @since   v 3.0.0.0
  */
-	public function findModuleslinks($room_id, $authority_id, $space_type) {
+	public function findModulelinks($room_id, $authority_id, $space_type) {
 		if(is_array($room_id)) {
 			$room_id[] = 0;
 		} else if($room_id != 0) {
@@ -44,18 +44,18 @@ class ModulesLink extends AppModel
 		}
 		$conditions = array (
 			'Module.disposition_flag' => _ON,
-			'ModulesLink.room_id' => $room_id,
-			'ModulesLink.authority_id' => $authority_id,
-			'ModulesLink.space_type' => $space_type
+			'ModuleLink.room_id' => $room_id,
+			'ModuleLink.authority_id' => $authority_id,
+			'ModuleLink.space_type' => $space_type
 		);
 
 		$order = array('Module.display_sequence' => 'ASC');
 		$params = array(
 						'fields' => array(
-							'ModulesLink.room_id',
-							'ModulesLink.authority_id',
-							'ModulesLink.space_type',
-							'ModulesLink.module_id',
+							'ModuleLink.room_id',
+							'ModuleLink.authority_id',
+							'ModuleLink.space_type',
+							'ModuleLink.module_id',
 							'Module.dir_name',
 							'Module.module_icon'
 						),
@@ -63,9 +63,9 @@ class ModulesLink extends AppModel
 						'order' => $order
 		);
 
-		$modules_links = $this->find('all', $params);
+		$module_links = $this->find('all', $params);
 
-		return $modules_links;
+		return $module_links;
 	}
 
 /**
@@ -88,7 +88,7 @@ class ModulesLink extends AppModel
 			// 1.みているroom_idのデータ(ルーム)
 			// 2.みているspace_type, authority_id(会員権限)のデータ(マイポータル、マイルーム)
 			// 3.みているspace_type(パブリック、マイポータル、マイルーム、コミュニティ、デフォルト)
-			$val['ModulesLink']['module_name'] = __('New module');
+			$val['ModuleLink']['module_name'] = __('New module');
 			$file_path = App::pluginPath($val['Module']['dir_name']) . 'Locale'. '/' . $locale. '/'. NC_MODINFO_FILENAME;
 			if (file_exists($file_path)) {
 	 	        $modinfo_ini = parse_ini_file($file_path);
@@ -97,14 +97,14 @@ class ModulesLink extends AppModel
 	 	        }
 	       	}
 
-	       	if( $val['ModulesLink']['room_id'] > 0 ) {
-	       		$ret_room_id[$val['ModulesLink']['module_id']] = $val;
-	       	} else if($val['ModulesLink']['authority_id'] > 0 && $val['ModulesLink']['space_type'] > 0) {
-	       		$ret_space_authority_id[$val['ModulesLink']['module_id']] = $val;
-	       	} else if($val['ModulesLink']['authority_id'] > 0) {
-	       		$ret_authority_id[$val['ModulesLink']['module_id']] = $val;
+	       	if( $val['ModuleLink']['room_id'] > 0 ) {
+	       		$ret_room_id[$val['ModuleLink']['module_id']] = $val;
+	       	} else if($val['ModuleLink']['authority_id'] > 0 && $val['ModuleLink']['space_type'] > 0) {
+	       		$ret_space_authority_id[$val['ModuleLink']['module_id']] = $val;
+	       	} else if($val['ModuleLink']['authority_id'] > 0) {
+	       		$ret_authority_id[$val['ModuleLink']['module_id']] = $val;
 	       	} else {
-	       		$ret_space_type[$val['ModulesLink']['module_id']] = $val;
+	       		$ret_space_type[$val['ModuleLink']['module_id']] = $val;
 	       	}
 		}
 		if(count($ret_room_id) > 0)

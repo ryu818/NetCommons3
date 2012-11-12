@@ -38,6 +38,20 @@
  * @since         CakePHP(tm) v 0.2.9
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
+if(defined('NC_INSTALLED') && NC_INSTALLED == false) {
+	Configure::write('Session', array(
+		'defaults' => 'php'
+	));
+	//Configure::write('Session.start', false);
+	Router::connect('/', array('plugin' => 'install' ,'controller' => 'install'));
+	Router::connect(
+	'/install/:action/*',
+	array('plugin' => 'install' ,'controller' => 'install')
+	);
+
+	Router::connect('/*', array('plugin' => 'install' ,'controller' => 'install' , 'action' => 'index'));
+	return;
+}
 /**
  * Load all plugin routes.  See the CakePlugin documentation on
  * how to customize the loading of plugin routes.

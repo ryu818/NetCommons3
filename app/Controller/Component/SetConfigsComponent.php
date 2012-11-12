@@ -79,17 +79,17 @@ class SetConfigsComponent extends Component {
 			'fields' => array(
 								'Config.name',
 								'Config.value',
-								'ConfigsLang.value'
+								'ConfigLang.value'
 			),
 			'conditions' => $conditions,
 			'joins' => array(
 				array(
 						"type" => "LEFT",
-						"table" => "configs_langs",
-						"alias" => "ConfigsLang",
+						"table" => "config_langs",
+						"alias" => "ConfigLang",
 						"conditions" => array(
-							"`ConfigsLang`.`config_id`=`Config`.`id`",
-							"`ConfigsLang`.`lang`" => $lang
+							"`ConfigLang`.`config_id`=`Config`.`id`",
+							"`ConfigLang`.`lang`" => $lang
 						)
 				),
 			)

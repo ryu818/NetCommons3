@@ -156,7 +156,7 @@ input.btn-padding {
 }
 
 /* Form  */
-fieldset.form input[type="text"], fieldset.form input[type="password"], fieldset.form textarea,.text,.dropdown {
+fieldset.form input[type="text"], fieldset.form input[type="password"], fieldset.form textarea,input.text,.dropdown {
 	border:1px solid #aaaaaa;
     padding: 4px 2px;
     background: #ffffff;
@@ -168,7 +168,7 @@ fieldset.form input[type="text"], fieldset.form input[type="password"], fieldset
         (startColorstr=#fff4f4f4,endColorstr=#ffffffff);
     zoom: 1;
 }
-fieldset.form input:focus[type="text"], fieldset.form input:focus[type="password"], fieldset.form textarea:focus,.text:focus,.dropdown:focus {
+fieldset.form input:focus[type="text"], fieldset.form input:focus[type="password"], fieldset.form textarea:focus,input.text:focus,.dropdown:focus {
 	border: 1px solid #56b4ef;
 	box-shadow: 0 13px 13px rgba(82,168, 236,0.03) inset,0 0 8px 0 rgba(82,168, 236, 0.6);
 

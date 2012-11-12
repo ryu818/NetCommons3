@@ -8,6 +8,10 @@ define('CUSTOM_DIR', 'custom');
 if (!defined('CUSTOM')) {
 	define('CUSTOM', ROOT . DS . CUSTOM_DIR . DS);
 }
+/**
+ * ディレクトリ定義
+ */
+define('NC_UPLOADS_DIR',      ROOT. '/uploads/');
 
 define('NC_MODINFO_FILENAME',     'modinfo.ini');
 
