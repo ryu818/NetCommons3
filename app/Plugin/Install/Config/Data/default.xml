@@ -2679,7 +2679,7 @@ e-mail：{X-EMAIL}
         <column name="duplicate_flag">1</column>
         <column name="minlength">4</column>
         <column name="maxlength">50</column>
-        <column name="regexp">^[a-zA-Z0-9\_\-\&lt;\&gt;\,\.\$\%\#\@\!\\\'\&quot;]+$</column>
+        <column name="regexp">/^[a-zA-Z0-9\_\-\&lt;\&gt;\,\.\$\%\#\@\!\\\'\&quot;]+$/</column>
         <column name="define_flag">1</column>
         <column name="display_flag">1</column>
         <column name="allow_public_flag">0</column>
@@ -2707,7 +2707,7 @@ e-mail：{X-EMAIL}
         <column name="duplicate_flag">0</column>
         <column name="minlength">4</column>
         <column name="maxlength">50</column>
-        <column name="regexp">^[a-zA-Z0-9\_\-\&lt;\&gt;\,\.\$\%\#\@\!\\\'\&quot;]+$</column>
+        <column name="regexp">/^[a-zA-Z0-9\_\-\&lt;\&gt;\,\.\$\%\#\@\!\\\'\&quot;]+$/</column>
         <column name="define_flag">1</column>
         <column name="display_flag">1</column>
         <column name="allow_public_flag">0</column>
