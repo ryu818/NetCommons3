@@ -61,25 +61,5 @@ class AnnouncementEditController extends AnnouncementAppController {
 		}
 
 		$this->set('htmlarea', $htmlarea);
-		
-		/*
-		$ret = $this->Htmlarea->findByContentId($this->content_id);
-		if ($this->request->is('post')) {
-			$data = array(
-				'id' => isset($ret['Htmlarea']['id']) ? $ret['Htmlarea']['id'] : null,
-				'content_id' => $this->content_id,
-				'content' => $this->request->data['Htmlarea']['content']
-			);
-			if ($this->Htmlarea->save($data)) {
-				$this->Session->setFlash(__('Your post has been saved.'));
-				$this->redirect(array('plugin' => 'announcement', 'controller' => 'announcement', 'block_id' => $this->block_id, '#' => $this->id));
-			}
-			$this->set('content', $this->request->data['Htmlarea']['content']);
-			return;
-		}
-		if(!isset($ret['Htmlarea'])) {
-			return;
-		}
-		$this->set('content', $ret['Htmlarea']['content']);*/
 	}
 }

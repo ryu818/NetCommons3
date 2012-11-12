@@ -31,4 +31,67 @@ App::uses('Helper', 'View');
  * @package       app.View.Helper
  */
 class AppHelper extends Helper {
+/**
+ * Generates a DOM ID for the selected element, if one is not set.
+ * Uses the current View::entity() settings to generate a CamelCased id attribute.
+ *
+ * @param array|string $options Either an array of html attributes to add $id into, or a string
+ *   with a view entity path to get a domId for.
+ * @param string $id The name of the 'id' attribute.
+ * @return mixed If $options was an array, an array will be returned with $id set.  If a string
+ *   was supplied, a string will be returned.
+ * @todo Refactor this method to not have as many input/output options.
+ */
+	public function domId($options = null, $id = 'id') {
+		if (is_array($options) && array_key_exists($id, $options) && $options[$id] === null) {
+			unset($options[$id]);
+			return $options;
+		} elseif (!is_array($options) && $options !== null) {
+			$this->setEntity($options);
+			return $this->domId();
+		}
+		
+		$entity = $this->entity();
+		$model = array_shift($entity);
+		$dom = $model . join('', array_map(array('Inflector', 'camelize'), $entity));
+		if(isset($this->_View->viewVars['id'])) {
+			$dom .= $this->_View->viewVars['id'];
+		}
+		if (is_array($options) && !array_key_exists($id, $options)) {
+			$options[$id] = $dom;
+		} elseif ($options === null) {
+			return $dom;
+		}
+		return $options;
+	}
+
+/**
+ * Finds URL for specified action.
+ *
+ * Returns a URL pointing at the provided parameters.
+ *
+ * @param string|array $url Either a relative string url like `/products/view/23` or
+ *    an array of url parameters.  Using an array for urls will allow you to leverage
+ *    the reverse routing features of CakePHP.
+ * @param boolean $full If true, the full base URL will be prepended to the result
+ * @return string  Full translated URL with base path.
+ * @link http://book.cakephp.org/2.0/en/views/helpers.html
+ */
+	public function url($url = null, $full = false) {
+		if (empty($url)) {
+			$block_type = Configure::read(NC_SYSTEM_KEY.'.block_type');
+			if(isset($block_type) && $block_type == 'blocks') {
+				$here = $this->request->here;
+				$here = preg_replace('/(.*)\/active-blocks\/([0-9]*)/i', '$1/blocks/$2', $here);
+			
+				$url = isset($here) ? $here : '/';
+			}
+				
+			if ($full && defined('FULL_BASE_URL')) {
+				$url = FULL_BASE_URL . $url;
+			}
+			return $url;
+		}
+		return parent::url($url, $full);
+	}
 }

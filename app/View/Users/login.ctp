@@ -8,6 +8,12 @@ if (!$this->request->is('ajax')) {
 ?>
 <?php echo $this->Session->flash('auth'); ?>
 <?php echo $this->Form->create('User');?>
+<?php
+$this->Form->inputDefaults(array(
+	'label' => false,
+	'div' => false
+));
+?>
 <fieldset class="form<?php echo($class); ?>">
 	<ul class="lists">
 		<li>
@@ -18,7 +24,7 @@ if (!$this->request->is('ajax')) {
 					</label>
 				</dt>
 				<dd>
-					<input type="text" id="UserLoginId" name="data[User][login_id]" value="<?php if(isset($this->data['User']['login_id'])){ echo($this->data['User']['login_id']); } ?>" />
+					<?php echo $this->Form->input('login_id', array('type' => 'text', 'value' => (isset($this->data['User']['login_id']) ? $this->data['User']['login_id'] : ''))); ?>
 				</dd>
 			</dl>
 		</li>
@@ -30,11 +36,12 @@ if (!$this->request->is('ajax')) {
 					</label>
 				</dt>
 				<dd>
-					<input type="password" id="UserPassword" name="data[User][password]" value="<?php if(isset($this->data['User']['password'])){ echo($this->data['User']['password']); } ?>" />
+					<?php echo $this->Form->input('password', array('value' => (isset($this->data['User']['password']) ? $this->data['User']['password'] : ''))); ?>
 					<?php if($autologin_use == NC_AUTOLOGIN_ON): ?>
 					<div class="login_save_my_info">
 						<label for="login_save_my_info">
-							<input type="checkbox" id="login_save_my_info" value="1" name="data[User][login_save_my_info]" />&nbsp;<?php echo(__('Save my info?')); ?>
+							<?php echo $this->Form->input('login_save_my_info', array('type' => 'checkbox', 'value' => _ON, 'id' => 'login_save_my_info')); ?>
+							&nbsp;<?php echo(__('Save my info?')); ?>
 						</label>
 					</div>
 					<?php endif; ?>
@@ -42,8 +49,8 @@ if (!$this->request->is('ajax')) {
 			</dl>
 		</li>
 	</ul>
-	<p>
-		<input type="submit" value="<?php echo(__('Login')); ?>" name="login" class="common_btn" />
+	<p class="align-right">
+		<?php echo $this->Form->button(__('Login'), array('name' => 'login', 'class' => 'common_btn')); ?>
 	</p>
 </fieldset>
 <?php echo $this->Form->end();?>

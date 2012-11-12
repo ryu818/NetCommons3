@@ -6,7 +6,7 @@ body {
     letter-spacing: 0;
 }
 
-input, textarea {
+button, input, textarea {
     font-family: "メイリオ", Meiryo, "Hiragino Kaku Gothic Pro", "ヒラギノ角ゴ Pro W3", "ＭＳ Ｐゴシック", "Lucida Grande", "Lucida Sans Unicode", Arial, Verdana, sans-serif;
 }
 
@@ -138,21 +138,9 @@ a.hover_highlight:active {
 .common_btn_disable:hover {
 	background:url("../../img/common/btn_bg.gif") repeat-x scroll left top #ffffff;
 }
-.btn-bottom {
+.submit,.btn-bottom {
 	margin-top:10px;
 	text-align:center;
-}
-
-input.lined_btn {
-	margin-left:5px;
-}
-
-input.btn-width {
-	padding:0.2em;
-	width:75px;
-}
-input.btn-padding {
-	padding:0.2em;
 }
 
 /* Form  */

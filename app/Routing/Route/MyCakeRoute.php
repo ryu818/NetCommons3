@@ -130,4 +130,55 @@ class MyCakeRoute extends CakeRoute {
 
 		return $result;
 	}
+	
+/**
+ * Finds URL for specified action.
+ *
+ * Returns an URL pointing to a combination of controller and action. Param
+ * $url can be:
+ *
+ * - Empty - the method will find address to actual controller/action.
+ * - '/' - the method will find base URL of application.
+ * - A combination of controller/action - the method will find url for it.
+ *
+ * There are a few 'special' parameters that can change the final URL string that is generated
+ *
+ * - `base` - Set to false to remove the base path from the generated url. If your application
+ *   is not in the root directory, this can be used to generate urls that are 'cake relative'.
+ *   cake relative urls are required when using requestAction.
+ * - `?` - Takes an array of query string parameters
+ * - `#` - Allows you to set url hash fragments.
+ * - `full_base` - If true the `FULL_BASE_URL` constant will be prepended to generated urls.
+ *
+ * @param string|array $url Cake-relative URL, like "/products/edit/92" or "/presidents/elect/4"
+ *   or an array specifying any of the following: 'controller', 'action',
+ *   and/or 'plugin', in addition to named arguments (keyed array elements),
+ *   and standard URL arguments (indexed array elements)
+ * @param bool|array $full If (bool) true, the full base URL will be prepended to the result.
+ *   If an array accepts the following keys
+ *    - escape - used when making urls embedded in html escapes query string '&'
+ *    - full - if true the full base URL will be prepended.
+ * @return string Full translated URL with base path.
+ */
+	public static function url($url = null, $full = false) {
+		//
+		// block_typeをページ表示中ならば、block になるように修正
+		//
+		var_dump($url);
+		if (empty($url)) {var_dump("EEEEEEEEEEEEEEEEE");
+			$block_type = Configure::read(NC_SYSTEM_KEY.'.block_type');
+			if(isset($block_type) && $block_type == 'blocks') {
+				$request = self::$_requests[count(self::$_requests) - 1];
+				$here = $request->here;
+				$here = preg_replace('/(.*)\/active-blocks\/([0-9]*)/i', '$1/blocks/$2', $here);
+				
+				$url = isset($here) ? $here : '/';
+			}
+			
+			if ($full && defined('FULL_BASE_URL')) {
+				$url = FULL_BASE_URL . $url;
+			}
+		}
+		return parent::url($url, $full);
+	}
 }
