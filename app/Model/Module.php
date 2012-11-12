@@ -33,20 +33,20 @@ class Module extends AppModel
 			$module_params = array(
 				'fields' => array(
 												'Module.*',
-												'ModulesLink.hierarchy'
+												'ModuleLink.hierarchy'
 							),
 				'joins' => array(
 	                                     array("type" => "INNER",
-	                                           "table" => "modules_links",
-	                                           "alias" => "ModulesLink",
+	                                           "table" => "module_links",
+	                                           "alias" => "ModuleLink",
 	                                           "conditions" => array(
-													"`ModulesLink`.`module_id`=`Module`.`id`",
-	                                     			"`ModulesLink`.`authority_id`" => array(0, intval($authority_id))
+													"`ModuleLink`.`module_id`=`Module`.`id`",
+	                                     			"`ModuleLink`.`authority_id`" => array(0, intval($authority_id))
 	                                     		)
 	                                          ),
 	                                         ),
 				'conditions' => array('Module.dir_name' => $dir_name),
-	            'order' => array('ModulesLink.authority_id' => "DESC")
+	            'order' => array('ModuleLink.authority_id' => "DESC")
 			);
 		}
 		$module = $this->find('first', $module_params);
@@ -103,8 +103,8 @@ class Module extends AppModel
 	       		$result['Module']['temp_name'] = $result['Module']['ini']['temp_name'];
 	       	}
 
-			//if(isset($result['ModulesLink']['hierarchy'])) {
-	       	//	$result['Module']['hierarchy'] = $result['ModulesLink']['hierarchy'];
+			//if(isset($result['ModuleLink']['hierarchy'])) {
+	       	//	$result['Module']['hierarchy'] = $result['ModuleLink']['hierarchy'];
 	       	//}
 
 			$ret[] = $result;

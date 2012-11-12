@@ -281,15 +281,15 @@ class Block extends AppModel
 				"conditions" => "`Block`.`content_id`=`Content`.`id`"
 			),
 			array("type" => "LEFT",
-				"table" => "pages_users_links",
-				"alias" => "PagesUsersLink",
-				"conditions" => "`Content`.`room_id`=`PagesUsersLink`.`room_id`".
-				" AND `PagesUsersLink`.`user_id` =".intval($user_id)
+				"table" => "page_user_links",
+				"alias" => "PageUserLink",
+				"conditions" => "`Content`.`room_id`=`PageUserLink`.`room_id`".
+				" AND `PageUserLink`.`user_id` =".intval($user_id)
 			),
 			array("type" => "LEFT",
 				"table" => "authorities",
 				"alias" => "Authority",
-				"conditions" => "`Authority`.id``=`PagesUsersLink`.`authority_id`"
+				"conditions" => "`Authority`.id``=`PageUserLink`.`authority_id`"
 			),
 			array("type" => "LEFT",
 				"table" => "pages",

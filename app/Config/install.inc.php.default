@@ -1,5 +1,5 @@
 <?php
-define("NC_DRIVER", '{default_driver}');
+define("NC_DATASOURCE", '{default_datasource}');
 define("NC_PERSISTENT", {default_persistent});
 define("NC_HOST", '{default_host}');
 define("NC_LOGIN", '{default_login}');

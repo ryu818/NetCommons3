@@ -70,8 +70,9 @@ class User extends AppModel
 
 			// 必須チェック
 			if($item['Item']['require_flag'] == _ON) {
-				if($item['Item']['tag_name'] != 'password' || empty($this->data[$this->alias]['id'])) {
+				//if($item['Item']['tag_name'] != 'password' || empty($this->data[$this->alias]['id'])) {
 					// パスワードで編集ならば必須としない
+					// TODO:インストールでは、パスワードで編集であっても必須チェックをしなければならないため、一時コメントアウト。
 					$this->validate[$item['Item']['tag_name']]['notEmpty'] = array(
 						'rule' => array('notEmpty'),
 						'last' => true,
@@ -79,21 +80,21 @@ class User extends AppModel
 						'allowEmpty' => false,
 						'message' => __('Please input %s.', __d('user_items', $item['Item']['item_name'])),
 					);
-				}
+				//}
 			}
 
 			// 重複チェック
 			if($item['Item']['duplicate_flag'] == _ON) {
 				if($item['Item']['type'] == NC_ITEM_TYPE_EMAIL || $item['Item']['type'] == NC_ITEM_TYPE_MOBILE_EMAIL) {
-					$this->validate[$item['Item']['tag_name']]['_duplicateEmail'] = array(
-						'rule' => array('_duplicateEmail'),
+					$this->validate[$item['Item']['tag_name']]['duplicateEmail'] = array(
+						'rule' => array('duplicateEmail'),
 						//'last' => false,
 						'allowEmpty' => true,
 						'message' => __('The contents of %s is already in use.', __d('user_items', $item['Item']['item_name'])),
 					);
 				} else {
-					$this->validate[$item['Item']['tag_name']]['_duplicate'] = array(
-						'rule' => array('_duplicate'),
+					$this->validate[$item['Item']['tag_name']]['duplicate'] = array(
+						'rule' => array('duplicate'),
 						//'last' => false,
 						'allowEmpty' => true,
 						'message' => __('The contents of %s is already in use.', __d('user_items', $item['Item']['item_name'])),
@@ -158,7 +159,7 @@ class User extends AppModel
 			// permalinkチェック
 			if($item['Item']['tag_name'] == 'permalink') {
 				$this->validate[$item['Item']['tag_name']]['invalidPermalink'] = array(
-					'rule' => array('_invalidPermalink'),
+					'rule' => array('invalidPermalink'),
 					'last' => true,
 					'message' => __('It contains an invalid string.')
 				);
@@ -191,7 +192,7 @@ class User extends AppModel
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	protected function _duplicate($data) {
+	public function duplicate($data) {
 		if(!empty($this->data[$this->alias]['id']))
 			$data['id !='] = $this->data[$this->alias]['id'];
 
@@ -208,7 +209,7 @@ class User extends AppModel
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	protected function _duplicateEmail($data) {
+	public function duplicateEmail($data) {
 		$values = array_values($data);
 
 		$conditions['or'] = array(
@@ -234,7 +235,7 @@ class User extends AppModel
  * @return boolean
  * @since   v 3.0.0.0
  */
-	protected function _invalidPermalink($data) {
+	public function invalidPermalink($data) {
 		if($data['permalink'] == '') {
 			return true;
 		}

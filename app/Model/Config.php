@@ -12,9 +12,9 @@ class Config extends AppModel
 {
 	public $name = 'Config';
 	/*public $hasOne = array(
-		'ConfigsLang' => array(
-			'className' => 'ConfigsLang',
-			'conditions' => array('ConfigsLang.lang'  => 'en'),
+		'ConfigLang' => array(
+			'className' => 'ConfigLang',
+			'conditions' => array('ConfigLang.lang'  => 'en'),
 			'foreignKey' => 'config_id'
 		)
 	);*/
@@ -30,31 +30,31 @@ class Config extends AppModel
 			 isset($results[0]['Config']['name']) && isset($results[0]['Config']['value'])) {
 			// key = value
 			foreach ($results as $key => $result) {
-				if(isset($result['ConfigsLang']['value']) && !is_null($result['ConfigsLang']['value'])) {
-					$result['Config']['value'] = $result['ConfigsLang']['value'];
+				if(isset($result['ConfigLang']['value']) && !is_null($result['ConfigLang']['value'])) {
+					$result['Config']['value'] = $result['ConfigLang']['value'];
 				}
-				if(isset($result['ConfigsLang']['id']) && !is_null($result['ConfigsLang']['id'])) {
-					$result['Config']['configs_lang_id'] = $result['ConfigsLang']['id'];
+				if(isset($result['ConfigLang']['id']) && !is_null($result['ConfigLang']['id'])) {
+					$result['Config']['configs_lang_id'] = $result['ConfigLang']['id'];
 				}
 				$ret[$result['Config']['name']] = $result['Config']['value'];
 			}
 		} else if(isset($results[0]['Config']['module_id']) && $results[0]['Config']['module_id'] != 0) {
 			foreach ($results as $key => $result) {
-				if(isset($result['ConfigsLang']['value']) && !is_null($result['ConfigsLang']['value'])) {
-					$result['Config']['value'] = $result['ConfigsLang']['value'];
+				if(isset($result['ConfigLang']['value']) && !is_null($result['ConfigLang']['value'])) {
+					$result['Config']['value'] = $result['ConfigLang']['value'];
 				}
-				if(isset($result['ConfigsLang']['id']) && !is_null($result['ConfigsLang']['id'])) {
-					$result['Config']['configs_lang_id'] = $result['ConfigsLang']['id'];
+				if(isset($result['ConfigLang']['id']) && !is_null($result['ConfigLang']['id'])) {
+					$result['Config']['configs_lang_id'] = $result['ConfigLang']['id'];
 				}
 				$ret[$result['Config']['module_id']][$result['Config']['name']] = $result['Config'];
 			}
 		} else {
 			foreach ($results as $key => $result) {
-				if(isset($result['ConfigsLang']['value']) && !is_null($result['ConfigsLang']['value'])) {
-					$result['Config']['value'] = $result['ConfigsLang']['value'];
+				if(isset($result['ConfigLang']['value']) && !is_null($result['ConfigLang']['value'])) {
+					$result['Config']['value'] = $result['ConfigLang']['value'];
 				}
-				if(isset($result['ConfigsLang']['id']) && !is_null($result['ConfigsLang']['id'])) {
-					$result['Config']['configs_lang_id'] = $result['ConfigsLang']['id'];
+				if(isset($result['ConfigLang']['id']) && !is_null($result['ConfigLang']['id'])) {
+					$result['Config']['configs_lang_id'] = $result['ConfigLang']['id'];
 				}
 				$ret[$result['Config']['name']] = $result['Config'];
 			}

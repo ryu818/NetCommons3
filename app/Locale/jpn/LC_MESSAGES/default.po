@@ -195,7 +195,6 @@ msgid  	"Block style"
 msgstr 	"ブロックスタイル"
 
 
-
 msgid  	"Pages setting"
 msgstr 	"ページ設定"
 msgid  	"Admin menu"

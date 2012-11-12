@@ -60,7 +60,7 @@
 class DATABASE_CONFIG {
 
 	public $default = array(
-		'datasource' => NC_DRIVER,
+		'datasource' => NC_DATASOURCE,
 		'persistent' => NC_PERSISTENT,
 		'host' => NC_HOST,
 		'login' => NC_LOGIN,
@@ -71,7 +71,7 @@ class DATABASE_CONFIG {
 	);
 
 	public $test = array(
-		'datasource' => NC_DRIVER,
+		'datasource' => NC_DATASOURCE,
 		'persistent' => NC_PERSISTENT,
 		'host' => NC_HOST,
 		'login' => NC_LOGIN,

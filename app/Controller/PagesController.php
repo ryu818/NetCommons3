@@ -37,7 +37,7 @@ class PagesController extends AppController {
  *
  * @var array
  */
-	public $uses = array('ModulesLink', 'PageStyle');
+	public $uses = array('ModuleLink', 'PageStyle');
 
 /**
  * 中央カラムのpage_id
@@ -80,7 +80,7 @@ class PagesController extends AppController {
 					continue;
 				}
 
-				$add_modules[$room_id] = $this->ModulesLink->findModuleslinks($room_id, $authority_id, $space_type);
+				$add_modules[$room_id] = $this->ModuleLink->findModulelinks($room_id, $authority_id, $space_type);
 			}
 		}
 
