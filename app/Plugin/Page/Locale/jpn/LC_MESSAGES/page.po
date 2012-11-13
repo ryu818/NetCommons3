@@ -37,5 +37,3 @@ msgid  	"Font color:"
 msgstr 	"文字色："
 msgid  	"Background color:"
 msgstr 	"背景色："
-
-ページの最小の広さ、高さ、テーマの変更、レイアウト、ページメタ情報を変更できます。
