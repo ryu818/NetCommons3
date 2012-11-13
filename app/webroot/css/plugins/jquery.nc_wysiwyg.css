@@ -209,21 +209,26 @@ div.nc_wysiwyg_outer ul.statusbar li:hover, div.nc_wysiwyg_outer ul.statusbar li
 }
 
 /* resize */
-div.nc_wysiwyg_outer ul.statusbar li.resize {
+div.nc_wysiwyg_outer div.resize {
 	position: relative;
-	bottom: -6px;
-	left:8px;
-	background: url('../../img/plugins/nc_wysiwyg/panel/statusbar_resize.gif') no-repeat right top;
+	
+	
 	border: 0 none;
 	margin:0;
 	padding:0;
 }
-div.nc_wysiwyg_outer ul.statusbar li.resize a {
+div.nc_wysiwyg_outer div.resize a {
 	width: 15px;
 	height: 20px;
 	cursor: se-resize;
 	text-decoration:none;
+	background: url('../../img/plugins/nc_wysiwyg/panel/statusbar_resize.gif') no-repeat right top;
+	display:block;
+	position: absolute;
+	bottom: 0;
+	right:-5px;
 }
+
 
 /* path */
 div.nc_wysiwyg_outer ul.statusbar li.path {

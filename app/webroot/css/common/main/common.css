@@ -180,6 +180,7 @@ div.message {
 /* WYSIWYG:IE+Ajaxの場合、一度目が正常に表示されないため */
 textarea.nc_wysiwyg {
 	width:520px;
+	height:320px;
 	visibility:hidden;
 }
 

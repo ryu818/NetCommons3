@@ -1733,16 +1733,6 @@ IEで、iframe中のbodyのborderがつくから削除していると
 
 			// resizeメニュー
 			this.appendResize("resize");
-
-
-			// 固定値
-			// 広さを広げた場合にresizeの位置がずれるため
-			var s_w = this.editor.width() - 520;
-			if(s_w > 0) {
-				$('#path_'+ this.id).css({
-					width      : 295 + s_w + 'px'
-				});
-			}
 		},
 
 		appendResize : function(className) {
@@ -1752,8 +1742,8 @@ IEで、iframe中のbodyのborderがつくから削除していると
 				s_w += parseInt($(s_li).outerWidth() || 0);
 			});
 			var resize = $('<a></a>');
-			var li = $('<li></li>').append( resize ).addClass(className)
-			.appendTo( this.statusbar );
+			var li = $('<div></div>').append( resize ).addClass(className)
+			.appendTo( this.el );
             //.css('left', parseInt(this.editor.outerWidth() || 0) - s_w - img_w  + 'px')
             //.appendTo( this.statusbar );
 

@@ -12,14 +12,14 @@
 		var t = this;
 		var block_id = $('#' + id).attr('data-block');
 
-		var wysiwyg = $('#'+id+'_wysiwyg').nc_wysiwyg({
+		var wysiwyg = $('#HtmlareaContent'+id).nc_wysiwyg({
 			'focus'    : true,
 			'image'    : $.Common.urlBlock(block_id, 'announcement/image'),
 			'file'     : $.Common.urlBlock(block_id, 'announcement/file'),
 		});
-		var form = $('#form' + id);
+		var form = $('#Form' + id);
 
-		$('input[name="cancel"]', form).click(function(e) {
+		$('button[name="cancel"]', form).click(function(e) {
 			$.pjax.click(e, t, {'url': $.Common.urlBlock(block_id, 'announcement')});
 		});
 	}

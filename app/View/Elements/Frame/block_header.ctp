@@ -36,12 +36,18 @@ if($is_edit) {
 		</span>
 		<ul class="nc_block_toolbox">
 			<li class="<?php echo($edit_class_name); ?>">
-				<?php echo $this->Html->link('', array('block_id' => $block_id, 'plugin' => $controller_action, 'controller' => $controller_action, '#' => $id),
+				<?php 
+				$controller_arr = explode('/', $controller_action, 2);
+				$plugin = $controller = $controller_arr[0];
+				$action = null;
+				if(isset($controller_arr[1])) {
+					$action = $controller_arr[1];
+				}
+				echo $this->Html->link('', array('block_id' => $block_id, 'plugin' => $plugin, 'controller' => $controller, 'action' => $action, '#' => $id),
 					array(
 						'title' => $title, 
 						'class' => 'link ', 
-						'data-pjax' => '#'.$id,
-						'onclick' => ''
+						'data-pjax' => '#'.$id
 					)
 				); ?>
 			</li>

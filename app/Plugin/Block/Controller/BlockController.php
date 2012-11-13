@@ -120,7 +120,7 @@ class BlockController extends BlockAppController {
 		}
 
 		$params = array('block_id' => $last_id);
-		$controller_arr = explode('_', $module['Module']['edit_controller_action'], 2);
+		$controller_arr = explode('/', $module['Module']['edit_controller_action'], 2);
 		$params['plugin'] = $params['controller'] = $controller_arr[0];
 		if(isset($controller_arr[1])) {
 			$params['action'] = $controller_arr[1];
