@@ -14,3 +14,9 @@ msgstr 	"ページレイアウト"
 ## ページメニュー
 msgid  	"(Private)"
 msgstr 	"(非公開)"
+
+## ページスタイル
+msgid  	"Font color:"
+msgstr 	"文字色："
+msgid  	"Background color:"
+msgstr 	"背景色："

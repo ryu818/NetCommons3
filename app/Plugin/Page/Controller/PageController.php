@@ -113,12 +113,7 @@ class PageController extends PageAppController {
 		$page_style = $this->PageStyle->findByStylePageId($this->page_id);
 
 		if ($this->request->is('post')) {
-			$color = $this->request->data['PageStyle']['color'];
-			$bgcolor = $this->request->data['PageStyle']['background-color'];
-			$content = 'body {'.
-					'color: '.$color.' !important;'.
-					'background-color: '.$bgcolor.' !important;'.
-					'}';
+			$content = (isset($this->request->data['css'])) ? $this->request->data['css'] : '' ;
 			// 既存のCSSファイルを削除
 			if (!empty($page_style['PageStyle']['file'])) {
 				$this->PageStyle->deleteCssFile($page_style['PageStyle']['file']);
@@ -128,8 +123,6 @@ class PageController extends PageAppController {
 			$data = array(
 					'id' => (isset($page_style['PageStyle']['id'])) ? $page_style['PageStyle']['id'] : null,
 					'style_page_id' => $this->page_id,
-					'color' => $color,
-					'bgcolor' => $bgcolor,
 					'file' => $file
 			);
 			$this->PageStyle->save($data);
@@ -137,6 +130,9 @@ class PageController extends PageAppController {
 			// TODO 他に良い方法がないか検討
 			$page_style = $this->PageStyle->findByStylePageId($this->page_id);
 		}
+
+		$file_content = file_get_contents($this->PageStyle->getPath().$page_style['PageStyle']['file']);
+		$this->set('file_content', $file_content);		
 		$this->set('page', $page['Page']);
 		$this->set('page_style', $page_style['PageStyle']);
 		$this->render('index');
