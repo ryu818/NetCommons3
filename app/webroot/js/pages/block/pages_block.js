@@ -8,7 +8,8 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 ;(function($) {
-	$(document).ready(function(){
+	$(function(){
+	//$(document).ready(function(){
 		$(".nc_add_block").chosen().change( function(e){
 			var module_id = $(this).val();
 			if(module_id != 0) {

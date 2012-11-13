@@ -10,8 +10,27 @@
 ;(function($) {
 	$.fn.Page = function() {
 		var dialog_el = $(this);
-		var content = $('#nc_pages_setting_content');
 		resizeWindow(dialog_el);
+		
+		$('#nc_pages_setting_arrow_outer').click(function(event){
+			var arrow_outer = $(this);
+			var arrow = arrow_outer.children(':first');
+			var arrow_w = parseInt(arrow_outer.outerWidth());
+			var w = parseInt(dialog_el.outerWidth()) - arrow_w;
+
+			if(arrow.hasClass('nc_arrow_left')) {
+				dialog_el.stop(true, false).animate({left: '-' + w + 'px'}, 500, function(){
+					arrow.addClass('nc_arrow_right');
+					arrow.removeClass('nc_arrow_left');
+				});
+			} else {
+				dialog_el.stop(true, false).animate({left:'0'}, 500, function() {
+					arrow.addClass('nc_arrow_left');
+					arrow.removeClass('nc_arrow_right');
+				});
+			}
+			return false;
+		});
 	}
 
 /**
@@ -21,17 +40,24 @@
 	function resizeWindow(dialog_el) {
 		var content, content_h = 0, offset= -37;
 		var h = $(window).height();
-		dialog_el.children().css('height', h + 'px');
+		content = $('.nc_pages_setting_content', dialog_el);
+		var marginTop = isNaN(parseInt(content.css('marginTop'))) ? 0 : parseInt(content.css('marginTop'));
+		var marginBottom = isNaN(parseInt(content.css('marginBottom'))) ? 0 : parseInt(content.css('marginBottom'));
+		var paddingTop = isNaN(parseInt(content.css('paddingTop'))) ? 0 : parseInt(content.css('paddingTop'));
+		var paddingBottom = isNaN(parseInt(content.css('paddingBottom'))) ? 0 : parseInt(content.css('paddingBottom'));
+		var dialog_top = 40;
+
+		dialog_el.children().css('height' , h + 'px');
+
 		$('.nc_pages_setting_arrow', dialog_el).css('top', h/2 - 10 + 'px');
-		
-		content = $('#nc_pages_setting_content');
-		
-		$.each(content.parent().children(), function() {
-			if($(this).get(0) != content.get(0)) {
-				content_h += parseInt($(this).outerHeight());
-			}
-		});
-		content.css('height', h + offset - content_h - parseInt(dialog_el.css('top'))  - parseInt(content.css('marginTop')) - parseInt(content.css('marginBottom')) - parseInt(content.css('paddingTop')) - parseInt(content.css('paddingBottom')));
+
+		var els = $('[data-pages-header]', dialog_el);
+		for (var i = 0,len = els.length; i < len; i++) {
+			content_h += parseInt($(els[i]).outerHeight());
+		}
+
+		content.css('height', h + offset - parseInt(content_h)  - dialog_top - marginTop - marginBottom - paddingTop - paddingBottom);
+
 	}
 /**
  * ウィンドウサイズ　ボックスリサイズ処理

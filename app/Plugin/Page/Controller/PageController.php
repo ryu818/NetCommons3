@@ -81,12 +81,12 @@ class PageController extends PageAppController {
 	}
 	
 /**
- * ページ履歴表示
+ * よく見るページ表示
  * @param   void
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function history() {
+	public function favorite() {
 		$this->render('index');
 	}
 
