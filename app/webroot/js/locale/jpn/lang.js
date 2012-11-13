@@ -10,8 +10,6 @@ $._lang['common'] = {
 
 // TODO:下記のキー名称は、英語に書き直す。
 $._lang['pages'] = {
-	//tooltipPageMenuBtn: 'ページ、コミュニティの一覧表示・編集を行うメニューを表示します。',
-	tooltipPageStyleBtn: 'ページの最小の広さ、高さ、テーマの変更、レイアウト、ページメタ情報を変更できます。',
 	pmMenuBtn: 'プライベートメッセージを表示します。',
 	groupConfirm:'選択されたブロックを、グループ化します。<br />よろしいですか？',
 	groupCancelConfirm:'選択されたグループを解除します。<br />よろしいですか？',

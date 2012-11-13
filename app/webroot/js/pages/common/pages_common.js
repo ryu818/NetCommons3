@@ -8,7 +8,8 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 ;(function($) {
-	$(document).ready(function(){
+	$(function(){
+	//$(document).ready(function(){
 		// ヘッダーメニュー
 		var hover = false ;
 		var hmenu = $("#nc_hmenu");
@@ -64,7 +65,7 @@
 		var nc_pages_setting = $('#nc_pages_setting');
 		nc_pages_setting.click(function(e){
 			var url = nc_pages_setting.attr('href');
-			$.PagesCommon.showPageMenu(e, url);
+			$.PagesCommon.showPageSetting(e, url);
 		});
 	});
 
@@ -74,7 +75,7 @@
 			e.preventDefault();
 			$.Common.showDialog('nc_login_dialog', {'url' : url}, {'title' : __('Login')});
 		},
-		showPageMenu: function(e, url) {
+		showPageSetting: function(e, url) {
 			var id = 'nc_pages_setting_dialog_outer', w, h;
 			e.preventDefault();
 			var dialog_outer_el = $('#' + id);

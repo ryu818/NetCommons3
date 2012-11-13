@@ -9,6 +9,9 @@
  */
 ;(function($) {
 	$.fn.PageMenu = function() {
+
+		$('#nc_pages_menu_tab').tabs();
+		
 		$(this).nestable();
 	}
 })(jQuery);
