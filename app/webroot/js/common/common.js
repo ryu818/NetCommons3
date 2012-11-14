@@ -355,7 +355,7 @@
 					return "transparent";
 				}
 			}
-			var rgb = el.style[p_name];	//$(el).css(p_name);
+			var rgb = $(el).css(p_name);
 			if(rgb == undefined || rgb == null) {
 				return "transparent";
 			} else if (rgb.match("^rgb") && rgb != "transparent" && rgb.substr(0, 1) != "#") {

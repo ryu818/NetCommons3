@@ -15,7 +15,7 @@
 // TODO:test
 $this->Html->css(array('Default.page', 'Default.gray/page'), null, array('frame' => true));
 if (!empty($page_style['file'])) {
-	echo '<link href="theme/asset/'.$page_style['file'].'" rel="stylesheet "type="text/css">';
+	echo '<link href="theme/page_styles/'.$page_style['file'].'" rel="stylesheet "type="text/css">';
 }
 
 	echo "\n".$this->fetch('meta');

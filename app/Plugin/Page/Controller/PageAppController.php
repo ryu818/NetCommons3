@@ -1,6 +1,6 @@
 <?php
 /**
- * AnnouncementAppControllerクラス
+ * PageAppControllerクラス
  *
  * @copyright     Copyright 2012, NetCommons Project
  * @package       App.Controller
