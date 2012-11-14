@@ -1,7 +1,7 @@
 msgid  	"Pages menu"
 msgstr 	"ページメニュー"
 msgid  	"Displays the menu for displaying and editing the page list, the community."
-msgstr 	"ページ、コミュニティの一覧表示・編集を行うメニューを表示します。"
+msgstr 	"ページ、コミュニティの一覧表示・追加・編集を行うメニューを表示します。"
 msgid  	"Pages favorite"
 msgstr 	"よく見るページ"
 msgid  	"I display the list of pages that oneself looks at well."
@@ -24,10 +24,29 @@ msgid  	"I can switch the display and non-display of up, down, left, or right co
 msgstr 	"上下左右カラムの表示・非表示の切替ができます。"
 
 ## ページメニュー
-msgid  	"Page"
-msgstr 	"ページ"
-msgid  	"Community"
-msgstr 	"コミュニティ"
+msgid  	"Switching on page editor"
+msgstr 	"ページ編集切替"
+msgid  	"I can add pages, community, edit, and delete."
+msgstr 	"ページ、コミュニティの追加、編集、削除ができます。"
+msgid  	"Exit page editor"
+msgstr 	"ページ編集終了"
+
+msgid  	"Page list"
+msgstr 	"ページ一覧"
+msgid  	"Participation community"
+msgstr 	"参加コミュニティ一覧"
+
+msgid  	"Add page"
+msgstr 	"ページ追加"
+
+msgid  	"Create community"
+msgstr 	"コミュニティ作成"
 
 msgid  	"(Private)"
 msgstr 	"(非公開)"
+
+## ページスタイル
+msgid  	"Font color:"
+msgstr 	"文字色："
+msgid  	"Background color:"
+msgstr 	"背景色："

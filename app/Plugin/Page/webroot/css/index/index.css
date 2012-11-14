@@ -3,6 +3,30 @@
 	color:#fe8d9e;
 }
 
+.nc_pages_menu_edit_btn {
+	display: block;
+    padding: 10px;
+    position: absolute;
+    right: 10px;
+    top: 0;
+    width: 21px;
+}
+
+.nc_pages_menu_add_btn:hover {
+	background-image: url(../../img/icons/base/add_file_hover.gif);
+	color: #56b4ef !important;
+}
+
+.nc_pages_menu_add_btn {
+	background: url(../../img/icons/base/add_file.gif) no-repeat 10px center;
+
+	padding: 5px 30px;
+	border-left:1px solid #e8e8e8;
+	border-right: 1px solid #e8e8e8;
+	color: #222222 !important;
+	font-weight:bold;
+}
+
 .nc_page_handle {
 	border-radius: 3px 3px 3px 3px;
     display: block;
@@ -27,8 +51,8 @@
 }
 
 .nc_page_handle_community {
-	border: 1px solid #f9f1fc;
-	background-color: #a688e5;
+	border: 1px solid #a688e5;
+	background-color: #f9f1fc;
 }
 .nc_page_handle_active {
 	border: 1px solid #ffd46e;

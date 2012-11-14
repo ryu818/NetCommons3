@@ -29,6 +29,14 @@
     padding: 0 10px;
 }
 
+.nc_pages_setting_menu {
+	border-color:#e8e8e8 #cdcdcd #e8e8e8 #96969d;
+	border-width: 1px;
+	border-style:solid;
+	height: 30px;
+	line-height: 30px;
+}
+
 .nc_pages_setting_icon {
 	width: 35px;
 	border-right: 1px solid #cdcdcd;

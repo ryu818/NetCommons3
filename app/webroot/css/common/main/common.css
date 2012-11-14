@@ -281,14 +281,14 @@ ul.nc_pager a, ul.nc_pager a:visited, ul.nc_pager a:hover, ul.nc_pager span.nc_p
     padding: 0;
     text-align: center;
     border-radius:3px;
-    border: 1px solid #CCCCCC;
+    border: 1px solid #cccccc;
     text-decoration: none;
 }
 
 ul.nc_pager span.nc_pager_current {
     /* background: url("") no-repeat scroll left top transparent; */
-    background-color:#7E9693;
-    color: #FFFFFF;
+    background-color:#7e9693;
+    color: #ffffff;
 }
 
 /* 編集画面リスト */
@@ -304,7 +304,7 @@ ul.lists li {
 	margin:0;
 	list-style-type: none;
 	clear: both;
-	/*border-top: 1px solid #D0D0D1;*/
+	/*border-top: 1px solid #d0d0d1;*/
 }
 
 ul.lists li dl {
