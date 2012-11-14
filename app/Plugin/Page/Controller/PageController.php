@@ -25,13 +25,6 @@ class PageController extends PageAppController {
  */
 	public $hierarchy = null;
 
-	/**
-	 * Model name
-	 *
-	 * @var array
-	 */
-	public $uses = array('PageStyle');
-
 /**
  * ページメニュー表示
  * @param   void

@@ -66,7 +66,7 @@ class AppController extends Controller {
     );
     // , 'Timezone', 'Common',
 
-    public $uses = array('Page', 'Block', 'Content', 'Module', 'Language', 'Config', 'Authority', 'User','Passport');
+    public $uses = array('Page', 'Block', 'Content', 'Module', 'Language', 'Config', 'Authority', 'User', 'Passport', 'PageStyle');
     // , 'User', 'ModuleLink', 'PageStyle', 'PageColumn', 'PageInf', 'SumPageView'
 /**
  * 実行前処理
