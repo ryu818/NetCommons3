@@ -66,8 +66,8 @@ class AppController extends Controller {
     );
     // , 'Timezone', 'Common',
 
-    public $uses = array('Page', 'Block', 'Content', 'Module', 'Language', 'Config', 'Authority', 'User', 'Passport', 'PageStyle');
-    // , 'User', 'ModuleLink', 'PageStyle', 'PageColumn', 'PageInf', 'SumPageView'
+    public $uses = array('Page', 'Block', 'Content', 'Module', 'Language', 'Config', 'Authority', 'User', 'Passport', 'PageStyle', 'ModuleLink', 'ModuleSystemLink');
+    // , 'User', 'PageStyle', 'PageColumn', 'PageInf', 'SumPageView'
 /**
  * 実行前処理
  * @param   void
@@ -125,7 +125,9 @@ class AppController extends Controller {
 		);
 		$configs = $this->Config->find('all', $params);
 		Configure::write(NC_CONFIG_KEY.'.'.'config_language', $configs['language']);
+		Configure::write('Session.cookieTimeout', 0);
     	Configure::write('Session.timeout', intval($configs['session_gc_maxlifetime']));
+    	
     	Configure::write('Session.cookie', $configs['session_name']);
 
     	if(!$configs['is_closed_site']) {

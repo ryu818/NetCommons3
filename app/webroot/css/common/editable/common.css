@@ -139,7 +139,7 @@ a.hover_highlight:active {
 	background:url("../../img/common/btn_bg.gif") repeat-x scroll left top #ffffff;
 }
 .submit,.btn-bottom {
-	margin-top:10px;
+	margin:5px 0;
 	text-align:center;
 }
 

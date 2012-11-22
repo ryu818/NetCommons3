@@ -20,35 +20,13 @@ class Module extends AppModel
 /**
  * Moduleの値取得
  * @param  string  $dir_name
- * @param  integer $authority_id
  * @return array $module
  */
-	public function findByDirname($dir_name, $authority_id = null) {
-		if($authority_id == null) {
-			$module_params = array(
-				//'fields' => array('Module.*'),
-				'conditions' => array('Module.dir_name' => $dir_name)
-			);
-		} else {
-			$module_params = array(
-				'fields' => array(
-												'Module.*',
-												'ModuleLink.hierarchy'
-							),
-				'joins' => array(
-	                                     array("type" => "INNER",
-	                                           "table" => "module_links",
-	                                           "alias" => "ModuleLink",
-	                                           "conditions" => array(
-													"`ModuleLink`.`module_id`=`Module`.`id`",
-	                                     			"`ModuleLink`.`authority_id`" => array(0, intval($authority_id))
-	                                     		)
-	                                          ),
-	                                         ),
-				'conditions' => array('Module.dir_name' => $dir_name),
-	            'order' => array('ModuleLink.authority_id' => "DESC")
-			);
-		}
+	public function findByDirname($dir_name) {
+		$module_params = array(
+			//'fields' => array('Module.*'),
+			'conditions' => array('Module.dir_name' => $dir_name)
+		);
 		$module = $this->find('first', $module_params);
 		if(empty($module['Module'])) {
 			return false;

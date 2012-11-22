@@ -12,7 +12,7 @@
 		var dialog_el = $(this);
 		resizeWindow(dialog_el);
 		
-		$('#nc_pages_setting_arrow_outer').click(function(event){
+		$('#nc-pages-setting-arrow-outer').click(function(event){
 			var arrow_outer = $(this);
 			var arrow = arrow_outer.children(':first');
 			var arrow_w = parseInt(arrow_outer.outerWidth());
@@ -40,7 +40,7 @@
 	function resizeWindow(dialog_el) {
 		var content, content_h = 0, offset= -37;
 		var h = $(window).height();
-		content = $('.nc_pages_setting_content', dialog_el);
+		content = $('.nc-pages-setting-content', dialog_el);
 		var marginTop = isNaN(parseInt(content.css('marginTop'))) ? 0 : parseInt(content.css('marginTop'));
 		var marginBottom = isNaN(parseInt(content.css('marginBottom'))) ? 0 : parseInt(content.css('marginBottom'));
 		var paddingTop = isNaN(parseInt(content.css('paddingTop'))) ? 0 : parseInt(content.css('paddingTop'));
@@ -49,7 +49,7 @@
 
 		dialog_el.children().css('height' , h + 'px');
 
-		$('.nc_pages_setting_arrow', dialog_el).css('top', h/2 - 10 + 'px');
+		$('.nc-pages-setting-arrow', dialog_el).css('top', h/2 - 10 + 'px');
 
 		var els = $('[data-pages-header]', dialog_el);
 		for (var i = 0,len = els.length; i < len; i++) {
@@ -64,6 +64,6 @@
  * window.event
  */
 	$(window).resize(function() {
-		resizeWindow($('#nc_pages_setting_dialog'));
+		resizeWindow($('#nc-pages-setting-dialog'));
 	});
 })(jQuery);

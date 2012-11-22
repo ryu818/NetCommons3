@@ -30,7 +30,7 @@
 .clear {
 	clear : both !important;
 }
-.clearfix:after {
+.clearfix:after, .lists:after {
 	content: ".";
 	display: block !important;
 	clear: both !important;
@@ -111,10 +111,10 @@
 	display:table-cell;
 }
 /* 時間 */
-input.nc_date {
+input.nc-date {
     width: 80px !important;
 }
-input.nc_time {
+input.nc-time {
     width: 60px !important;
 }
 
@@ -199,14 +199,15 @@ img.icon {
     border-right: 3px dashed transparent;
     border-style: solid dashed dashed;
     border-width: 4px 4px 0;
-    display: inline-block;
+    text-align: center;
+    margin:0 auto;
     font-size: 0;
     height: 0;
     left: 0;
     line-height: 0;
     padding-top: 1px;
     position: relative;
-    top: -1px;
+    top: 1px;
     width: 0;
 }
 
@@ -214,14 +215,15 @@ img.icon {
     border-color: #565656 transparent;
     border-width: 0 4px 4px;
     border-style: solid;
-	display: inline-block;
+	text-align: center;
+	margin:0 auto;
     font-size: 0;
     height: 0;
-    left: 0px;
+    left: 0;
     line-height: 0;
     padding-top: 1px;
     position: relative;
-    top: -4px;
+    top: -1px;
     width: 0;
 }
 
@@ -298,7 +300,6 @@ ul.lists {
 	list-style-image:none;
 	list-style-position:outside;
 	list-style-type:none;
-	float:left;
 }
 ul.lists li {
 	margin:0;

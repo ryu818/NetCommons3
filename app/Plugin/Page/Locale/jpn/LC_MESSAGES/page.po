@@ -45,6 +45,26 @@ msgstr 	"コミュニティ作成"
 msgid  	"(Private)"
 msgstr 	"(非公開)"
 
+msgid  	"To public"
+msgstr 	"公開にする"
+msgid  	"To private"
+msgstr 	"非公開にする"
+
+msgid  	"Delete page"
+msgstr 	"ページ削除"
+msgid  	"Other operation"
+msgstr 	"その他操作"
+msgid  	"Allocation of authority"
+msgstr 	"権限の割り当て"
+msgid  	"Modules to use"
+msgstr 	"モジュールの利用許可"
+
+## ページ追加・編集
+msgid  	"New page"
+msgstr 	"新規ページ"
+msgid  	"New community"
+msgstr 	"新規コミュニティ"
+
 ## ページスタイル
 msgid  	"Font color:"
 msgstr 	"文字色："

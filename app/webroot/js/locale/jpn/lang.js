@@ -21,6 +21,8 @@ $._lang['pages'] = {
 	'Move to the top of the [%s]': '[%s]の上に移動',
 	'Move to the bottom of the [%s]': '[%s]の下に移動',
 	'Thread:[%s]': '深さ：[%s]',
+	'Open': '開く',
+	'Close': '閉じる'
 }
 
 $._lang['nc_wysiwyg'] = {

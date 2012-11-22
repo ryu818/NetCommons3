@@ -7,15 +7,15 @@
 			}
 
 		?>
-		<?php $class = $this->element('index/init_page', array('menu' => $menu)); ?>
+		<?php $class = $this->element('index/init_page', array('menu' => $menu, 'is_edit' => _OFF)); ?>
 		<?php $next_thread_num = $menu['thread_num']+1; ?>
-		<li class="dd-item">
-			<div class="nc_page_handle <?php echo($class); ?><?php if(!empty($page_id) && $page_id == $menu['id']): ?> nc_page_handle_active<?php endif; ?>">
+		<li class="dd-item" data-id="<?php echo(h($menu['id'])); ?>">
+			<div class="pages-menu-handle <?php echo($class); ?>">
 			<a href="<?php echo($this->webroot); ?><?php echo($menu['permalink']); ?>" title="<?php echo(h($menu['page_name'])); ?>">
 				<?php echo(h($menu['page_name'])); ?>
 			</a>
 			<?php if($menu['display_flag'] == NC_DISPLAY_FLAG_OFF): ?>
-				<span class="nc_page_nonpublic"><?php echo(__d('page', '(Private)')); ?></span>
+				<span class="pages-menu-nonpublic"><?php echo(__d('page', '(Private)')); ?></span>
 			<?php endif; ?>
 			</div>
 			<?php if(!empty($pages[$space_type][$root_sequence][$next_thread_num][$menu['id']])): ?>

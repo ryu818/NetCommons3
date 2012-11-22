@@ -133,7 +133,7 @@ class PageBehavior extends ModelBehavior {
 		$pages = array();
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		$active_page_id = isset($fetch_params['active_page_id']) ? $fetch_params['active_page_id'] : null;
-	
+
 		if(!empty($active_page_id)) {
 			$buf_pages = array();
 			foreach ($results as $key => $val) {
@@ -150,7 +150,7 @@ class PageBehavior extends ModelBehavior {
 				}
 			}
 		}
-	
+
 		$active_lang = null;
 		$active_room_id = null;
 		//$parent_id_arr = array();
@@ -165,7 +165,7 @@ class PageBehavior extends ModelBehavior {
 				// 現在の言語でTopNodeがある場合、他の言語は表示しない。
 				continue;
 			}
-	
+
 			if(isset($permalink_arr[$val[$Model->alias]['space_type']][$val[$Model->alias]['permalink']])) {
 				continue;
 			} else if($val[$Model->alias]['lang'] == $lang) {
@@ -174,26 +174,26 @@ class PageBehavior extends ModelBehavior {
 					$val[$Model->alias]['display_sequence'] != 0 && ($active_lang === '' || $active_lang == 'en')) {
 				continue;
 			}
-	
+
 			$val[$Model->alias] = $this->updDisplayFlag($Model, $val[$Model->alias]);
-	
+
 			//if($val[$Model->alias]['thread_num'] >= 2 && !isset($parent_id_arr[$val[$Model->alias]['parent_id']])) {
 			//	// 親がなし
 			//	continue;
 			//}
-	
+
 			if($val[$Model->alias]['display_sequence'] != 0 && $active_room_id != $val[$Model->alias]['room_id']) {
 				$active_lang = $val[$Model->alias]['lang'];
 				$active_room_id = $val[$Model->alias]['room_id'];
 			}
-	
+
 			if(!empty($active_page_id)) {
 				if(!empty($active_id_arr[$val[$Model->alias]['id']])) {
 					$val[$Model->alias]['active'] = true;
 				} else {
 					$val[$Model->alias]['active'] = false;
 				}
-	
+
 				if(isset($active_id_arr[$val[$Model->alias]['parent_id']]) || $val[$Model->alias]['thread_num'] <= 1) {	// || $val[$Model->alias]['thread_num'] <= 2
 					$val[$Model->alias]['show'] = true;
 				} else {
@@ -206,9 +206,9 @@ class PageBehavior extends ModelBehavior {
 			} else {
 				$val[$Model->alias]['hierarchy'] = $val['Authority']['hierarchy'];
 			}
-	
+
 			$val[$Model->alias]['visibility_flag'] = empty($val['Menu']['visibility_flag']) ? _ON : $val['Menu']['visibility_flag'];
-	
+
 			$val[$Model->alias]['permalink'] = $this->getPermalink($Model, $val[$Model->alias]['permalink'], $val[$Model->alias]['space_type']);
 			$val[$Model->alias] = $this->setPageName($Model, $val[$Model->alias]);
 			$pages[$val[$Model->alias]['space_type']][$val[$Model->alias]['root_sequence']][$val[$Model->alias]['thread_num']][$val[$Model->alias]['parent_id']][$val[$Model->alias]['display_sequence']] = $val[$Model->alias];
@@ -228,20 +228,32 @@ class PageBehavior extends ModelBehavior {
  */
 	public function updDisplayFlag(Model $Model, $val) {
 		$d = gmdate("Y-m-d H:i:s");
-	
-		// 公開日付・非公開日時
-		if(!empty($val['display_date']) && $val['display_flag'] != NC_DISPLAY_FLAG_DISABLE &&
-				strtotime($val['display_date']) <= strtotime($d)) {
-			$val['display_flag'] = ($val['display_flag']) ? NC_DISPLAY_FLAG_OFF : NC_DISPLAY_FLAG_ON;
+
+		// 公開日時
+		if(!empty($val['display_from_date']) && $val['display_flag'] != NC_DISPLAY_FLAG_DISABLE &&
+				strtotime($val['display_from_date']) <= strtotime($d)) {
+			$val['display_flag'] = NC_DISPLAY_FLAG_ON;
 			$data[$Model->alias] = array(
 					'id' => $val['id'],
 					'display_flag' => $val['display_flag'],
-					'display_date' => null
+					'display_from_date' => null
 			);
 			$Model->create();
-			$ret = $Model->save($data, true, array('display_flag', 'display_date'));
+			$ret = $Model->save($data, true, array('display_flag', 'display_from_date'));
 		}
-	
+
+		if(!empty($val['display_to_date']) && $val['display_flag'] != NC_DISPLAY_FLAG_DISABLE &&
+				strtotime($val['display_to_date']) <= strtotime($d)) {
+			$val['display_flag'] = NC_DISPLAY_FLAG_OFF;
+			$data[$Model->alias] = array(
+					'id' => $val['id'],
+					'display_flag' => $val['display_flag'],
+					'display_to_date' => null
+			);
+			$Model->create();
+			$ret = $Model->save($data, true, array('display_flag', 'display_to_date'));
+		}
+
 		return $val;
 	}
 }

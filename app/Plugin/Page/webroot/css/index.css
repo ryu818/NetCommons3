@@ -1,4 +1,4 @@
-#nc_pages_setting_dialog {
+#nc-pages-setting-dialog {
 	top: 40px;
 	background-color: #ffffff;
 	border-top: 1px solid #cdcdcd;
@@ -11,25 +11,25 @@
 	height: 100%;
 }
 
-#nc_pages_setting_arrow_outer {
+#nc-pages-setting-arrow-outer {
 	cursor:pointer;
 	padding:2px;
 	width:5px;
 	border-left: 1px solid #efefef;
 }
 
-.nc_pages_setting_title {
+.nc-pages-setting-title {
 	line-height: 40px;
 	border-left:1px solid #96969d;
 	border-right: 1px solid #cdcdcd;
-	
+
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     height: 40px;
     text-shadow: 0 1px #ffffff;
     padding: 0 10px;
 }
 
-.nc_pages_setting_menu {
+.nc-pages-setting-menu {
 	border-color:#e8e8e8 #cdcdcd #e8e8e8 #96969d;
 	border-width: 1px;
 	border-style:solid;
@@ -37,13 +37,7 @@
 	line-height: 30px;
 }
 
-.nc_pages_setting_icon {
-	width: 35px;
-	border-right: 1px solid #cdcdcd;
-	vertical-align:top;
-}
-
-.nc_pages_setting_content {
+.nc-pages-setting-content {
 	background-color:#ffffff;
 	padding:10px;
 	border:1px solid #96969d;
@@ -51,48 +45,49 @@
 	overflow: auto;
 	min-width:200px;
 }
-
-.nc_pages_setting_icon {
+.nc-pages-setting-icon {
+	width: 35px;
+	border-right: 1px solid #cdcdcd;
+	vertical-align:top;
 	padding-top: 5px;
 }
-.nc_pages_setting_icon a {
-	width24px;
+.nc-pages-setting-icon a {
 	height:24px;
 	display:block;
 }
-.nc_pages_menu_icon:hover,.nc_pages_menu_icon_on {
+.nc-pages-menu-icon:hover,.nc-pages-menu-icon-on {
 	background: url(../../page/img/pages_menu_on.png) no-repeat center center;
 }
-.nc_pages_favorite_icon:hover, .nc_pages_favorite_icon_on {
+.nc-pages-favorite-icon:hover, .nc-pages-favorite-icon-on {
 	background: url(../../page/img/pages_favorite_on.png) no-repeat center center;
 }
-.nc_page_metas_icon:hover, .nc_page_metas_icon_on {
+.nc-page-metas-icon:hover, .nc-page-metas-icon-on {
 	background: url(../../page/img/page_metas_on.png) no-repeat center center;
 }
-.nc_page_styles_icon:hover, .nc_page_styles_icon_on {
+.nc-page-styles-icon:hover, .nc-page-styles-icon-on {
 	background: url(../../page/img/page_styles_on.png) no-repeat center center;
 }
-.nc_page_themes_icon:hover, .nc_page_themes_icon_on {
+.nc-page-themes-icon:hover, .nc-page-themes-icon-on {
 	background: url(../../page/img/page_themes_on.png) no-repeat center center;
 }
-.nc_page_layouts_icon:hover, .nc_page_layouts_icon_on {
+.nc-page-layouts-icon:hover, .nc-page-layouts-icon-on {
 	background: url(../../page/img/page_layouts_on.png) no-repeat center center;
 }
-.nc_pages_menu_icon {
+.nc-pages-menu-icon {
 	background: url(../../page/img/pages_menu.png) no-repeat center center;
 }
-.nc_pages_favorite_icon {
+.nc-pages-favorite-icon {
 	background: url(../../page/img/pages_favorite.png) no-repeat center center;
 }
-.nc_page_metas_icon {
+.nc-page-metas-icon {
 	background: url(../../page/img/page_metas.png) no-repeat center center;
 }
-.nc_page_styles_icon {
+.nc-page-styles-icon {
 	background: url(../../page/img/page_styles.png) no-repeat center center;
 }
-.nc_page_themes_icon {
+.nc-page-themes-icon {
 	background: url(../../page/img/page_themes.png) no-repeat center center;
 }
-.nc_page_layouts_icon {
+.nc-page-layouts-icon {
 	background: url(../../page/img/page_layouts.png) no-repeat center center;
 }

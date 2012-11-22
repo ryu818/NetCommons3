@@ -2,51 +2,37 @@
  * Nestable jQuery Plugin - Copyright (c) 2012 David Bushell - http://dbushell.com/
  * Dual-licensed under the BSD or MIT licenses
  */
+/**
+ * IE8以降ならびに、移動のロジックを全面的に見直し。
+ * draggableのUIを用いるように修正。(touchイベントには非対応)
+ *
+ * @copyright     Copyright 2012, NetCommons Project
+ * @package       webroot.js.main
+ * @author        Noriko Arai,Ryuji Masukawa
+ * @since         v 3.0.0.0
+ */
 ;(function($, window, document, undefined)
 {
-    var hasTouch = 'ontouchstart' in window;
-
-    /**
-     * Detect CSS pointer-events property
-     * events are normally disabled on the dragging element to avoid conflicts
-     * https://github.com/ausi/Feature-detection-technique-for-pointer-events/blob/master/modernizr-pointerevents.js
-     */
-    var hasPointerEvents = (function()
-    {
-        var el    = document.createElement('div'),
-            docEl = document.documentElement;
-        if (!('pointerEvents' in el.style)) {
-            return false;
-        }
-        el.style.pointerEvents = 'auto';
-        el.style.pointerEvents = 'x';
-        docEl.appendChild(el);
-        var supports = window.getComputedStyle && window.getComputedStyle(el, '').pointerEvents === 'auto';
-        docEl.removeChild(el);
-        return !!supports;
-    })();
-
-    var eStart  = hasTouch ? 'touchstart'  : 'mousedown',
-        eMove   = hasTouch ? 'touchmove'   : 'mousemove',
-        eEnd    = hasTouch ? 'touchend'    : 'mouseup';
-        eCancel = hasTouch ? 'touchcancel' : 'mouseup';
-
     var defaults = {
-            listNodeName    : 'ol',
-            itemNodeName    : 'li',
-            rootClass       : 'dd',
-            listClass       : 'dd-list',
-            itemClass       : 'dd-item',
-            dragClass       : 'dd-dragel',
-            handleClass     : 'dd-handle',
-            collapsedClass  : 'dd-collapsed',
-            placeClass      : 'dd-placeholder',
-            emptyClass      : 'dd-empty',
-            expandBtnHTML   : '<button data-action="expand" type="button">Expand</button>',
-            collapseBtnHTML : '<button data-action="collapse" type="button">Collapse</button>',
-            group           : 0,
-            maxDepth        : 5,
-            threshold       : 20
+            listNodeName      : 'ol',
+            itemNodeName      : 'li',
+            listClass         : 'dd-list',
+            itemClass         : 'dd-item',
+            handleClass       : 'dd-handle',
+            collapsedClass    : 'dd-collapsed',
+            contentClass      : 'dd-handle',			// Add Ryuji.M
+            singleHandleClass : '',						// Add Ryuji.M
+            active            : '',	    				// Add Ryuji.M
+            activeItemClass   : 'dd-active',	    	// Add Ryuji.M
+            placeClass        : 'dd-placeholder',		// Add Ryuji.M
+            placeUpClass      : 'dd-placeholder-up',	// Add Ryuji.M
+            placeDownClass    : 'dd-placeholder-down',	// Add Ryuji.M
+            containment       : null,					// Add Ryuji.M
+            isInner           : true,					// Add Ryuji.M
+            emptyClass        : 'dd-empty',
+            expandBtnHTML     : '<button title="' + __d('pages', 'Open') + '" data-action="expand" type="button">Expand</button>',
+            collapseBtnHTML   : '<button title="' + __d('pages', 'Close') + '"data-action="collapse" type="button">Collapse</button>',
+            group             : ''
         };
 
     function Plugin(element, options)
@@ -54,7 +40,17 @@
         this.w  = $(window);
         this.el = $(element);
         this.options = $.extend({}, defaults, options);
-        this.init();
+// Edit Start Ryuji.M IE8でAjaxを用いて画面を表示した場合、CSSの描画が終わった後にjavascriptが実行されずにCSSが適用されなくなる場合があるため修正。
+		if ( !window.DOMParser ) {
+        	var t = this;
+        	setTimeout(function(){
+        		t.init();
+        	}, 0);
+        } else {
+        	this.init();
+        }
+        //this.init();
+// Edit End Ryuji.M
     }
 
     Plugin.prototype = {
@@ -65,18 +61,15 @@
 
             list.reset();
 
-            list.el.data('nestable-group', this.options.group);
-
-            list.placeEl = $('<div class="' + list.options.placeClass + '"/>');
+            list.placeEl = $('<div><div class="nc_arrow_up"></div></div>');
+            $.Common.zIndex++;
 
             $.each(this.el.find(list.options.itemNodeName), function(k, el) {
                 list.setParent($(el));
+                list.addEvent($(el));
             });
 
             list.el.on('click', 'button', function(e) {
-                if (list.dragEl || (!hasTouch && e.button !== 0)) {
-                    return;
-                }
                 var target = $(e.currentTarget),
                     action = target.data('action'),
                     item   = target.parent(list.options.itemNodeName);
@@ -87,49 +80,40 @@
                     list.expandItem(item);
                 }
             });
-
-            var onStartEvent = function(e)
-            {
-                var handle = $(e.target);
-                if (!handle.hasClass(list.options.handleClass)) {
-                    handle = handle.parents('.' + list.options.handleClass).first();
-                }
-                if (!handle.length || list.dragEl || (!hasTouch && e.button !== 0) || (hasTouch && e.touches.length !== 1)) {
-                    return;
-                }
-                e.preventDefault();
-                list.dragStart(hasTouch ? e.touches[0] : e);
-            };
-
-            var onMoveEvent = function(e)
-            {
-                if (list.dragEl) {
-                    e.preventDefault();
-                    list.dragMove(hasTouch ? e.touches[0] : e);
-                }
-            };
-
-            var onEndEvent = function(e)
-            {
-                if (list.dragEl) {
-                    e.preventDefault();
-                    list.dragStop(hasTouch ? e.touches[0] : e);
-                }
-            };
-
-            if (hasTouch) {
-                list.el[0].addEventListener(eStart, onStartEvent, false);
-                window.addEventListener(eMove, onMoveEvent, false);
-                window.addEventListener(eEnd, onEndEvent, false);
-                window.addEventListener(eCancel, onEndEvent, false);
-            } else {
-                list.el.on(eStart, onStartEvent);
-                list.w.on(eMove, onMoveEvent);
-                list.w.on(eEnd, onEndEvent);
-            }
-
         },
 
+        addEvent: function(el) {
+        	var list = this;
+        	list.setParent($(el));
+            var handle = $('.' + list.options.handleClass, el);
+
+            if(handle.get(0)) {
+            	$(el).draggable({
+					opacity  : 0.5,    //ドラッグ時の不透明度
+					//distance:3,
+					handle: handle,
+					scroll:true,
+					containment:list.options.containment,
+					revert: true,
+					//helper : 'clone',
+					start : function(e, ui){
+						list.dragStart(e, ui);
+					},
+					drag : function(e, ui){
+						var o = $(this).data('draggable').options;
+						list.dragMove(e, ui, o);
+					},
+					stop : function(e, ui){
+						var o = $(this).data('draggable').options;
+						if(!o.revert) {
+							list.dragStop(e);
+						}
+					},
+					zIndex:++$.Common.zIndex
+				});
+			}
+        },
+/*
         serialize: function()
         {
             var data,
@@ -159,34 +143,12 @@
         {
             return this.serialize();
         },
-
+*/
         reset: function()
         {
-            this.mouse = {
-                offsetX   : 0,
-                offsetY   : 0,
-                startX    : 0,
-                startY    : 0,
-                lastX     : 0,
-                lastY     : 0,
-                nowX      : 0,
-                nowY      : 0,
-                distX     : 0,
-                distY     : 0,
-                dirAx     : 0,
-                dirX      : 0,
-                dirY      : 0,
-                lastDirX  : 0,
-                lastDirY  : 0,
-                distAxX   : 0,
-                distAxY   : 0
-            };
-            this.moving     = false;
             this.dragEl     = null;
-            this.dragRootEl = null;
-            this.dragDepth  = 0;
-            this.hasNewRoot = false;
-            this.pointEl    = null;
+            this.dropEl       = null;
+            this.dragPosition = null;
         },
 
         expandItem: function(li)
@@ -224,11 +186,35 @@
             });
         },
 
-        setParent: function(li)
+        setParent: function(li, chg_active)
         {
+        	var id = li.data("id");
+        	//var child = li.children('.'+ this.options.contentClass);
+        	var child = $('.'+ this.options.contentClass, li);
+        	chg_active = (typeof chg_active == 'undefined') ? true : chg_active;
+        	if(chg_active) {
+	        	if(this.options.active == id) {
+	        		child.addClass(this.options.activeItemClass);
+	        	} else {
+	        		child.removeClass(this.options.activeItemClass);
+	        	}
+        	}
+
             if (li.children(this.options.listNodeName).length) {
-                li.prepend($(this.options.expandBtnHTML));
-                li.prepend($(this.options.collapseBtnHTML));
+            	if(li.children('[data-action="expand"]').length == 0) {
+					li.prepend($(this.options.expandBtnHTML));
+					li.prepend($(this.options.collapseBtnHTML));
+				}
+
+				if (this.options.singleHandleClass)
+                	child.removeClass(this.options.singleHandleClass);
+
+            } else {
+            	li.children('[data-action="expand"]').remove();
+            	li.children('[data-action="collapse"]').remove();
+            	if(this.options.singleHandleClass) {
+             		child.addClass(this.options.singleHandleClass);
+            	}
             }
             li.children('[data-action="expand"]').hide();
         },
@@ -240,226 +226,183 @@
             li.children(this.options.listNodeName).remove();
         },
 
-        dragStart: function(e)
+        dragStart: function(e, ui)
         {
-            var mouse    = this.mouse,
-                target   = $(e.target),
-                dragItem = target.parents(this.options.itemNodeName).first();
+        	//var list = this;
+        	var dragItem = $(e.target);
+        	this.dragEl = dragItem;
 
-            this.placeEl.css('height', dragItem.height());
+        	//var offset = dragItem.position();
+        	var offset = dragItem.offset();
+        	this.placeEl.css({
+        		'position' : 'absolute',
+        		'z-index' : dragItem.css('zIndex') - 1
+        	});
+        	$(document.body).append(this.placeEl);
+        	//dragItem.before(this.placeEl);
 
-            mouse.offsetX = e.offsetX !== undefined ? e.offsetX : e.pageX - target.offset().left;
-            mouse.offsetY = e.offsetY !== undefined ? e.offsetY : e.pageY - target.offset().top;
-            mouse.startX = mouse.lastX = e.pageX;
-            mouse.startY = mouse.lastY = e.pageY;
 
-            this.dragRootEl = this.el;
+            var offset = this.placeEl.position();
+            var content = $('.'+ this.options.contentClass + ':first', dragItem);
+            //content.css("margin" , 0);
 
-            this.dragEl = $(document.createElement(this.options.listNodeName)).addClass(this.options.listClass + ' ' + this.options.dragClass);
-            this.dragEl.css('width', dragItem.width());
-
-            // fix for zepto.js
-            //dragItem.after(this.placeEl).detach().appendTo(this.dragEl);
-            dragItem.after(this.placeEl);
-            dragItem[0].parentNode.removeChild(dragItem[0]);
-            dragItem.appendTo(this.dragEl);
-
-            $(document.body).append(this.dragEl);
-            this.dragEl.css({
-                'left' : e.pageX - mouse.offsetX,
-                'top'  : e.pageY - mouse.offsetY
-            });
-            // total depth of dragging item
-            var i, depth,
-                items = this.dragEl.find(this.options.itemNodeName);
-            for (i = 0; i < items.length; i++) {
-                depth = $(items[i]).parents(this.options.listNodeName).length;
-                if (depth > this.dragDepth) {
-                    this.dragDepth = depth;
-                }
-            }
         },
 
         dragStop: function(e)
         {
-            // fix for zepto.js
-            //this.placeEl.replaceWith(this.dragEl.children(this.options.itemNodeName + ':first').detach());
-            var el = this.dragEl.children(this.options.itemNodeName).first();
-            el[0].parentNode.removeChild(el[0]);
-            this.placeEl.replaceWith(el);
+        	var t = this;
+        	$('.' + t.options.placeClass, this.el).removeClass(t.options.placeClass);
+        	t.placeEl.remove();
+        	var ret = $.Common.fire('change',[t.dragEl.data('id'), t.dropEl.data('id'), t.dragPosition], t.el);
+        	if(ret === true) {
+        		t.success();
+        	} else if(ret === false) {
+        		t.error();
+        	}
 
-            this.dragEl.remove();
-            this.el.trigger('change');
-            if (this.hasNewRoot) {
-                this.dragRootEl.trigger('change');
-            }
-            this.reset();
+        	return ret;
         },
 
-        dragMove: function(e)
+        dragMove: function(e, ui, o)
         {
-            var list, parent, prev, next, depth,
-                opt   = this.options,
-                mouse = this.mouse;
+        	var parent, t = this, child, offset, h,
+        		opt   = this.options,
+        		dragItem = $(e.target),
+        		content = $('.'+ this.options.contentClass + ':first', dragItem);
+        	o.revert = true;
 
-            this.dragEl.css({
-                'left' : e.pageX - mouse.offsetX,
-                'top'  : e.pageY - mouse.offsetY
-            });
+        	$.each(this.el.find('.'+ opt.contentClass), function(k, el) {
+        		offset = $(el).offset();
+        		if(content.get(0) != el && $.Common.within($(el), e.pageX, e.pageY)) {
+        			parent = $(el).parents(opt.itemNodeName+':first');
+        			var sequence = parent.data("dd-sequence");
+					h = $(el).outerHeight();
+        			if (!opt.isInner || sequence == 'top-bottom-only') {
+                    	if(offset.top + h/2 >= e.pageY) {
+							insert_pos = "top";
+						} else {
+							insert_pos = "bottom";
+						}
+					} else if(sequence == 'inner-only') {
+						insert_pos = "inner";
+					} else if(sequence == 'top-only') {
+						insert_pos = "top";
+					} else if(sequence == 'bottom-only') {
+						insert_pos = "bottom";
+                    } else {
+			        	if(offset.top + h/3 >= e.pageY) {
+							insert_pos = "top";
+						} else if(offset.top + (h/3)*2 >= e.pageY) {
+							insert_pos = "inner";
+						} else {
+							insert_pos = "bottom";
+						}
+					}
 
-            // mouse position last events
-            mouse.lastX = mouse.nowX;
-            mouse.lastY = mouse.nowY;
-            // mouse position this events
-            mouse.nowX  = e.pageX;
-            mouse.nowY  = e.pageY;
-            // distance mouse moved between events
-            mouse.distX = mouse.nowX - mouse.lastX;
-            mouse.distY = mouse.nowY - mouse.lastY;
-            // direction mouse was moving
-            mouse.lastDirX = mouse.dirX;
-            mouse.lastDirY = mouse.dirY;
-            // direction mouse is now moving (on both axis)
-            mouse.dirX = mouse.distX === 0 ? 0 : mouse.distX > 0 ? 1 : -1;
-            mouse.dirY = mouse.distY === 0 ? 0 : mouse.distY > 0 ? 1 : -1;
-            // axis mouse is now moving on
-            var newAx   = Math.abs(mouse.distX) > Math.abs(mouse.distY) ? 1 : 0;
 
-            // do nothing on first move
-            if (!mouse.moving) {
-                mouse.dirAx  = newAx;
-                mouse.moving = true;
-                return;
-            }
+					if(insert_pos == "inner") {
+						t.placeEl.css({
+			        		'display' : 'none'
+			        	});
+			        	$(el).addClass(t.options.placeClass);
+					} else {
+						$(el).removeClass(t.options.placeClass);
+        				child = t.placeEl.children(':first');
+			        	if(insert_pos == "top") {
+			        		t.placeEl.addClass(t.options.placeUpClass);
+			        		t.placeEl.removeClass(t.options.placeDownClass);
+			        		if(child.hasClass('nc_arrow')) {
+				        		child.addClass('nc_arrow_up');
+				        		child.removeClass('nc_arrow');
+				        	}
+			        		t.placeEl.css({
+				        		'top' : offset['top']  - t.placeEl.outerHeight() + 'px'
+				        	});
+			        	} else {
+			        		t.placeEl.removeClass(t.options.placeUpClass);
+			        		t.placeEl.addClass(t.options.placeDownClass);
+			        		if(child.hasClass('nc_arrow_up')) {
+				        		child.removeClass('nc_arrow_up');
+				        		child.addClass('nc_arrow');
+				        	}
+			        		t.placeEl.css({
+				        		'top' : offset['top'] + h + 'px'
+				        	});
+			        	}
+			        	t.placeEl.css({
+			        		'width' : parent.width() + 'px',
+			        		'left' : offset['left'] + 'px',
+			        		'display' : 'block'
+			        	});
+		        	}
+		        	t.dropEl = parent;
+		        	t.dragPosition = insert_pos;
+		        	o.revert = false;
+        		}
+        	});
 
-            // calc distance moved on this axis (and direction)
-            if (mouse.dirAx !== newAx) {
-                mouse.distAxX = 0;
-                mouse.distAxY = 0;
-            } else {
-                mouse.distAxX += Math.abs(mouse.distX);
-                if (mouse.dirX !== 0 && mouse.dirX !== mouse.lastDirX) {
-                    mouse.distAxX = 0;
-                }
-                mouse.distAxY += Math.abs(mouse.distY);
-                if (mouse.dirY !== 0 && mouse.dirY !== mouse.lastDirY) {
-                    mouse.distAxY = 0;
-                }
-            }
-            mouse.dirAx = newAx;
+        	if(o.revert) {
+        		$('.' + t.options.placeClass, this.el).removeClass(t.options.placeClass);
+        		t.placeEl.css({
+			        'display' : 'none'
+				});
+        	}
+        },
 
-            /**
-             * move horizontal
-             */
-            if (mouse.dirAx && mouse.distAxX >= opt.threshold) {
-                // reset move distance on x-axis for new phase
-                mouse.distAxX = 0;
-                prev = this.placeEl.prev(opt.itemNodeName);
-                // increase horizontal level if previous sibling exists and is not collapsed
-                if (mouse.distX > 0 && prev.length && !prev.hasClass(opt.collapsedClass)) {
-                    // cannot increase level when item above is collapsed
-                    list = prev.find(opt.listNodeName).last();
-                    // check if depth limit has reached
-                    depth = this.placeEl.parents(opt.listNodeName).length;
-                    if (depth + this.dragDepth <= opt.maxDepth) {
-                        // create new sub-level if one doesn't exist
-                        if (!list.length) {
-                            list = $('<' + opt.listNodeName + '/>').addClass(opt.listClass);
-                            list.append(this.placeEl);
-                            prev.append(list);
-                            this.setParent(prev);
-                        } else {
-                            // else append to next level up
-                            list = prev.children(opt.listNodeName).last();
-                            list.append(this.placeEl);
-                        }
-                    }
-                }
-                // decrease horizontal level
-                if (mouse.distX < 0) {
-                    // we can't decrease a level if an item preceeds the current one
-                    next = this.placeEl.next(opt.itemNodeName);
-                    if (!next.length) {
-                        parent = this.placeEl.parent();
-                        this.placeEl.parents(opt.itemNodeName).first().after(this.placeEl);
-                        if (!parent.children().length) {
-                            this.unsetParent(parent.parent());
-                        }
-                    }
-                }
-            }
+        success: function()
+        {
+        	var t = this, el;
+        	var parent = t.dragEl.parents(t.options.itemNodeName + ':first');
+        	t.appendList(t.dropEl, t.dragEl, t.dragPosition, false);
 
-            var isEmpty = false;
+            // キャンセル
+            t.dragEl.attr( 'style', 'position: relative;' );
+            el = parent.children(t.options.listNodeName).first();
+            if(el.get(0) && el.children(t.options.itemNodeName).length == 0) {
+            	el.remove();
+            }
+            t.setParent(parent, false);
+			t.reset();
+        },
 
-            // find list item under cursor
-            if (!hasPointerEvents) {
-                this.dragEl[0].style.visibility = 'hidden';
+        appendList: function(li, new_li, position, add_event)
+        {
+        	var t = this, el, ol;
+        	add_event = (add_event == undefined) ? true : add_event;
+        	if(position == 'inner') {
+            	el = li.children(t.options.listNodeName).first();
+            	t.expandItem(li);
+            	if(el.get(0)) {
+            		el.append(new_li);
+            	} else {
+            		ol = $(document.createElement(this.options.listNodeName)).addClass(this.options.listClass).appendTo(li);
+            		ol.append(new_li);
+            		t.setParent(li, false);
+            	}
+            } else if(position == 'top') {
+            	li.before(new_li);
+            } else if(position == 'bottom') {
+            	li.after(new_li);
             }
-            this.pointEl = $(document.elementFromPoint(e.pageX - document.body.scrollLeft, e.pageY - document.body.scrollTop));
-            if (!hasPointerEvents) {
-                this.dragEl[0].style.visibility = 'visible';
-            }
-            if (this.pointEl.hasClass(opt.handleClass)) {
-                this.pointEl = this.pointEl.parent(opt.itemNodeName);
-            }
-            if (this.pointEl.hasClass(opt.emptyClass)) {
-                isEmpty = true;
-            }
-            else if (!this.pointEl.length || !this.pointEl.hasClass(opt.itemClass)) {
-                return;
-            }
+			if(add_event) {
+				t.addEvent(new_li);
+			}
+        },
 
-            // find parent list of item under cursor
-            var pointElRoot = this.pointEl.parents('.' + opt.rootClass).first(),
-                isNewRoot   = this.dragRootEl.data('nestable-id') !== pointElRoot.data('nestable-id');
-
-            /**
-             * move vertical
-             */
-            if (!mouse.dirAx || isNewRoot || isEmpty) {
-                // check if groups match if dragging over new root
-                if (isNewRoot && opt.group !== pointElRoot.data('nestable-group')) {
-                    return;
-                }
-                // check depth limit
-                depth = this.dragDepth - 1 + this.pointEl.parents(opt.listNodeName).length;
-                if (depth > opt.maxDepth) {
-                    return;
-                }
-                var before = e.pageY < (this.pointEl.offset().top + this.pointEl.height() / 2);
-                    parent = this.placeEl.parent();
-                // if empty create new list to replace empty placeholder
-                if (isEmpty) {
-                    list = $(document.createElement(opt.listNodeName)).addClass(opt.listClass);
-                    list.append(this.placeEl);
-                    this.pointEl.replaceWith(list);
-                }
-                else if (before) {
-                    this.pointEl.before(this.placeEl);
-                }
-                else {
-                    this.pointEl.after(this.placeEl);
-                }
-                if (!parent.children().length) {
-                    this.unsetParent(parent.parent());
-                }
-                if (!this.dragRootEl.find(opt.itemNodeName).length) {
-                    this.dragRootEl.append('<div class="' + opt.emptyClass + '"/>');
-                }
-                // parent root list has changed
-                if (isNewRoot) {
-                    this.hasNewRoot = true;
-                    this.dragRootEl = pointElRoot;
-                }
-            }
+        error: function()
+        {
+        	var t = this;
+            // キャンセル
+            t.dragEl.attr( 'style', 'position: relative;' );
+            t.reset();
         }
-
     };
 
     $.fn.nestable = function(params)
     {
         var lists  = this,
-            retval = this;
+            retval = this,
+        arg = arguments;
 
         lists.each(function()
         {
@@ -470,7 +413,12 @@
                 $(this).data("nestable-id", new Date().getTime());
             } else {
                 if (typeof params === 'string' && typeof plugin[params] === 'function') {
-                    retval = plugin[params]();
+                	var r = [];
+					if(arg[1].length >= 1) {
+						retval = plugin[params].apply(plugin, arg[1]);
+					} else {
+                    	retval = plugin[params]();
+					}
                 }
             }
         });

@@ -1,9 +1,89 @@
 /* ページメニュー */
-.nc_page_nonpublic {
+
+/* 一般 */
+.pages-menu-dd-single {
+	padding-left:25px !important;
+}
+
+.pages-menu-list {
+	padding: 8px 0;
+}
+
+.pages-menu-handle-public a {
+	color: #5b7695;
+}
+
+.pages-menu-handle-myportal a {
+	color: #4c80b5;
+}
+
+.pages-menu-handle-private a {
+	color: #61955b;
+}
+
+.pages-menu-handle-community a {
+	color: #715b95;
+}
+
+.pages-menu-top {
+	position: absolute;
+	height: 34px;
+    left: 8px;
+    margin: 0;
+    position: absolute;
+    top: 1px;
+    width: 8px;
+}
+
+.pages-menu-handle {
+	display: block;
+    font-weight: bold;
+    margin: 0;
+    padding: 5px 10px;
+}
+
+.pages-menu-handle-public-top {
+	background-color: #5b7695;
+}
+.pages-menu-handle-myportal-top {
+	background-color: #4c80b5;
+}
+.pages-menu-handle-private-top {
+	background-color: #61955b;
+}
+.pages-menu-handle-community-top {
+	background-color: #715b95;
+}
+
+.pages-menu-nonpublic {
 	color:#fe8d9e;
 }
 
-.nc_pages_menu_edit_btn {
+/* 編集 */
+.pages-menu-edit-content {
+	line-height: 25px;
+	min-width: 235px;
+}
+
+a.pages-menu-display-flag {
+	padding: 0 6px 0 3px;
+	text-decoration : none;
+}
+
+a.pages-menu-edit-title {
+	/*
+	width: 150px; */
+	overflow: hidden;
+	diplay:block;
+	*/
+}
+input.pages-menu-edit-title {
+	font-weight:normal;
+	width:150px;
+}
+
+/* ボタン */
+.pages-menu-edit-btn {
 	display: block;
     padding: 10px;
     position: absolute;
@@ -12,12 +92,12 @@
     width: 21px;
 }
 
-.nc_pages_menu_add_btn:hover {
+#pages-menu-add-btn:hover {
 	background-image: url(../../img/icons/base/add_file_hover.gif);
 	color: #56b4ef !important;
 }
 
-.nc_pages_menu_add_btn {
+#pages-menu-add-btn {
 	background: url(../../img/icons/base/add_file.gif) no-repeat 10px center;
 
 	padding: 5px 30px;
@@ -27,34 +107,80 @@
 	font-weight:bold;
 }
 
-.nc_page_handle {
-	border-radius: 3px 3px 3px 3px;
-    display: block;
-    font-weight: bold;
-    margin: 4px 0;
-    padding: 5px 10px;
+.pages-menu-edit-operation {
+	background-color: #fff;
+    border-color: #ccc;
+    border-radius: 3px 3px 0 0;
+    border-style: solid;
+    border-width: 1px 1px 0;
+    padding: 3px;
+    position: absolute;
+    right: 0;
+    top: -27px;
 }
 
-.nc_page_handle_public {
-	border: 1px solid #cdcdcd;
-	background-color: #f9f9f9;
+.pages-menu-edit-operation a {
+	width:21px;
+	height:21px;
+	display:block;
+	float:left;
+	margin: 0 3px;
+}
+.pages-menu-edit-icon {
+	background-image: url(../../page/img/index/edit.png);
 }
 
-.nc_page_handle_myportal {
-	border: 1px solid #88bae5;
-	background-color: #f1f3fc;
+.pages-menu-delete-icon {
+	background-image: url(../../page/img/index/trash.png);
 }
 
-.nc_page_handle_private {
-	border: 1px solid #c7e588;
-	background-color: #f4fcf1;
+.pages-menu-other-icon {
+	background-image: url(../../page/img/index/list.png);
 }
 
-.nc_page_handle_community {
-	border: 1px solid #a688e5;
-	background-color: #f9f1fc;
+.pages-menu-edit-icon:hover {
+	background-image: url(../../page/img/index/edit_h.png);
 }
-.nc_page_handle_active {
-	border: 1px solid #ffd46e;
-	background-color: #fdffee;
+
+.pages-menu-delete-icon:hover {
+	background-image: url(../../page/img/index/trash_h.png);
+}
+
+.pages-menu-other-icon:hover {
+	background-image: url(../../page/img/index/list_h.png);
+}
+
+/* ページ追加・編集 */
+.pages-menu-edit-view {
+	display: block;
+	margin: 0;
+
+	border: 1px solid #ccc;
+    background: #fafafa;
+    background: -webkit-linear-gradient(top, #fafafa 0%, #eee 100%);
+    background:    -moz-linear-gradient(top, #fafafa 0%, #eee 100%);
+    background:         linear-gradient(top, #fafafa 0%, #eee 100%);
+    -webkit-border-radius: 0 0 3px 3px;
+	border-radius: 0 0 3px 3px;
+    box-sizing: border-box; -moz-box-sizing: border-box;
+    padding: 0;
+    white-space:nowrap;
+
+    position:relative;
+    top: -5px;
+}
+
+.pages-menu-edit-outer {
+	background-color:#fff;
+	border: 1px solid #e8e8e8;
+	padding:5px;
+	margin: 5px;
+}
+
+.pages-menu-edit-outer .lists {
+	min-width:320px;
+}
+
+.pages-menu-edit-outer .lists dt, .pages-menu-edit-outer .lists dd{
+	padding: 3px;
 }

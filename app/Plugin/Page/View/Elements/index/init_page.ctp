@@ -1,12 +1,12 @@
 <?php
 if($menu['space_type'] == NC_SPACE_TYPE_PUBLIC) {
-	$class = 'nc_page_handle_public';
+	$class = 'pages-menu-handle-public';
 } else if($menu['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
-	$class = 'nc_page_handle_myportal';
+	$class = 'pages-menu-handle-myportal';
 } else if($menu['space_type'] == NC_SPACE_TYPE_PRIVATE) {
-	$class = 'nc_page_handle_private';
+	$class = 'pages-menu-handle-private';
 } else {
-	$class = 'nc_page_handle_community';
+	$class = 'pages-menu-handle-community';
 }
 echo $class;
 ?>

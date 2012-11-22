@@ -9,7 +9,7 @@
  */
 ;(function($) {
 	$(document).ready(function(){
-		var style_values = $('[data-pagestyle-name]', '.nc_pages_setting_content');
+		var style_values = $('[data-pagestyle-name]', '.nc-pages-setting-content');
 		// 画面表示時
 		style_values.each(function(){
 			$('#'+this.id).val($.Common.getColorCode(this.dataset.pagestyleSelector, this.dataset.pagestyleName));
@@ -32,7 +32,7 @@
 				$('#page_style_preview_css').remove();
 			}
 			// CSSをPOSTするためhiddenにセット
-			$('<input id="page_style_preview_css" type="hidden" name="data[css]" value="' + css + '" />').appendTo($('[name=pages_style_form]', '.nc_pages_setting_content'));
+			$('<input id="page_style_preview_css" type="hidden" name="data[css]" value="' + css + '" />').appendTo($('[name=pages_style_form]', '.nc-pages-setting-content'));
 			// 非表示テキストエリアの情報を更新
 			$('#page_setting_textarea').val(css);
 		});

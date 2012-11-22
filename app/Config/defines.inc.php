@@ -76,7 +76,7 @@ define('NC_SYSTEM_KEY', 'System');
 
 define('NC_DISPLAY_FLAG_OFF', 0);
 define('NC_DISPLAY_FLAG_ON', 1);
-define('NC_DISPLAY_FLAG_DISABLE', 2);
+define('NC_DISPLAY_FLAG_DISABLE', 2);	// 利用不可
 
 //-----------------community allow_flag-------------------------------------------
 

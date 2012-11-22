@@ -68,8 +68,6 @@ msgstr 	"日時"
 
 msgid  	"Published Date"
 msgstr 	"公開日時"
-msgid  	"Private time"
-msgstr 	"非公開日時"
 
 msgid  	"Manage"
 msgstr 	"管理"

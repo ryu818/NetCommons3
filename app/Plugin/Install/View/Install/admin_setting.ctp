@@ -75,7 +75,7 @@ $this->assign('title', __d('install', 'Admin user setting'));
 </div>
 <script>
 ;(function($) {
-	$(document).ready(function(){
+	$(function(){
 		$('#UserLoginId').focus();
 	});
 })(jQuery);

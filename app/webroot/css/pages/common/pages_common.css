@@ -39,6 +39,7 @@
 	top:40px;
 	position: relative;
 	z-index:992;height:0px;
+	line-height:10px;
 }
 
 .nc_hmenu_ul li.nc_hmenu_li {

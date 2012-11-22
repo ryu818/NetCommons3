@@ -36,6 +36,10 @@ class PageController extends PageAppController {
 		$user_id = $login_user['id'];
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		$is_edit = isset($this->request->query['is_edit']) ? intval($this->request->query['is_edit']) : _OFF;
+		$element_params = array(
+			'page_id' => $this->page_id,
+			'is_edit' => $is_edit
+		);
 
 		// カレント会員取得
 		$center_page = Configure::read(NC_SYSTEM_KEY.'.'.'Center_Page');
@@ -51,13 +55,18 @@ class PageController extends PageAppController {
 			'active_page_id' => $this->page_id
 		);
 		$params = null;
-		/*if($edit_mode) {
+		/*if($is_edit) {
 			$params = array(
 					'conditions' => array(
 							'Page.lang' => array('', $lang)
 					)
 			);
 		}*/
+		if($is_edit) {
+			// 管理系の権限を取得
+			$admin_hierarchy = $this->ModuleSystemLink->findHierarchy(Inflector::camelize($this->request->params['plugin']), $login_user['authority_id']);
+			$element_params['admin_hierarchy'] = $admin_hierarchy;
+		}
 		$pages = $this->Page->findMenu('all', $user_id, NC_SPACE_TYPE_PUBLIC, $current_user, $params, null, $fetch_params);
 
 		$private_pages = $this->Page->findMenu('all', $user_id, array(NC_SPACE_TYPE_MYPORTAL, NC_SPACE_TYPE_PRIVATE), $current_user, $params, null, $fetch_params);
@@ -67,14 +76,10 @@ class PageController extends PageAppController {
 		if(isset($private_pages[NC_SPACE_TYPE_PRIVATE])) {
 			$pages[NC_SPACE_TYPE_PRIVATE] = $private_pages[NC_SPACE_TYPE_PRIVATE];
 		}
-		$element_params = array(
-			'page_id' => $this->page_id,
-			'pages' => $pages,
-			'is_edit' => $is_edit
-		);
+		$element_params['pages'] = $pages;
 		$this->set('element_params', $element_params);
 	}
-	
+
 /**
  * よく見るページ表示
  * @param   void
@@ -127,7 +132,7 @@ class PageController extends PageAppController {
 		}
 
 		$file_content = file_get_contents($this->PageStyle->getPath().$page_style['PageStyle']['file']);
-		$this->set('file_content', $file_content);		
+		$this->set('file_content', $file_content);
 		$this->set('page', $page['Page']);
 		$this->set('page_style', $page_style['PageStyle']);
 		$this->render('index');

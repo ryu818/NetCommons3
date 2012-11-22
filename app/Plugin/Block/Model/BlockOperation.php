@@ -88,7 +88,8 @@ class BlockOperation extends AppModel {
 		$ins_block['Block']['content_id'] = 0;
 		$ins_block['Block']['show_title'] = _ON;
 		$ins_block['Block']['display_flag'] = NC_DISPLAY_FLAG_ON;
-		$ins_block['Block']['display_date'] = null;
+		$ins_block['Block']['display_from_date'] = null;
+		$ins_block['Block']['display_to_date'] = null;
 		$ins_block['Block']['controller_action'] = 'group';
 		$ins_block['Block']['theme_name'] = 'None';
 		$ins_block['Block']['temp_name'] = 'default';
