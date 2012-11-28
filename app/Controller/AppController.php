@@ -81,17 +81,6 @@ class AppController extends Controller {
 
 		if ($this->request->is('ajax')) {
 			$this->layout = 'ajax';
-			$plugin_name = isset($this->request->params['plugin']) ? $this->request->params['plugin'] :
-				(isset($this->request->params['active_plugin']) ? $this->request->params['active_plugin'] : '');
-			if($plugin_name != '') {
-				// ajaxの場合、blocksのリンクが含まれていれば、active-blocksに置換する。
-				$replace_url = preg_replace('/(.*)\/blocks\/([0-9]*)/i', '$1/active-blocks/$2', $this->request->here);
-				if($replace_url != $this->request->here) {
-					$replace_url = preg_replace('%^'.$this->request->webroot.'%i', '', $replace_url);
-					echo $this->requestAction($replace_url, array('return', 'bare' => 0));
-					$this->_stop();
-				}
-			}
 		}
 
 		// ******************************************************************************************
@@ -127,11 +116,25 @@ class AppController extends Controller {
 		Configure::write(NC_CONFIG_KEY.'.'.'config_language', $configs['language']);
 		Configure::write('Session.cookieTimeout', 0);
     	Configure::write('Session.timeout', intval($configs['session_gc_maxlifetime']));
-    	
+
     	Configure::write('Session.cookie', $configs['session_name']);
 
     	if(!$configs['is_closed_site']) {
     		$this->Auth->allow();
+    	}
+
+    	if ($this->request->is('ajax')) {
+    		$plugin_name = isset($this->request->params['plugin']) ? $this->request->params['plugin'] :
+    		(isset($this->request->params['active_plugin']) ? $this->request->params['active_plugin'] : '');
+    		if($plugin_name != '') {
+    			// ajaxの場合、blocksのリンクが含まれていれば、active-blocksに置換する。
+    			$replace_url = preg_replace('/(.*)\/blocks\/([0-9]*)/i', '$1/active-blocks/$2', $this->request->here);
+    			if($replace_url != $this->request->here) {
+    				$replace_url = preg_replace('%^'.$this->request->webroot.'%i', '', $replace_url);
+    				echo $this->requestAction($replace_url, array('return', 'bare' => 0));
+    				$this->_stop();
+    			}
+    		}
     	}
 	}
 
@@ -169,11 +172,10 @@ class AppController extends Controller {
  * @param string  $status           Optional HTTP status code (eg: 404) default: 200
  * @param integer $pause            リダイレクト画面表示時間(秒) default 2秒
  * @param string  $layout			レイアウト名称
- * @param boolean $stop 			処理を終了するかどうか
  * @return void Renders flash layout
  * @link http://book.cakephp.org/2.0/en/controllers.html#Controller::flash
  */
-	public function flash($message, $url, $error_id_str = '', $status = '200', $pause = 2, $layout = 'flash', $exit = true) {
+	public function flash($message, $url, $error_id_str = '', $status = '200', $pause = 2, $layout = 'flash') {
 		$this->autoRender = false;
 
 		///404 Not Found 403 Forbidden 400 Bad Request
@@ -203,19 +205,13 @@ class AppController extends Controller {
 			$this->set('error_id_str', '');
 		}
 		$this->set('sub_message', __('The page will be automatically reloaded.If otherwise, please click <a href="%s">here</a>.'));
-		if($exit) {
-			$this->render(false, $layout);
-			$this->response->send();
-			$this->_stop();
-		} else {
-			$this->render(false, $layout);
-		}
+		$this->render(false, $layout);
 	}
 
 /**
  * Redirects to given $url, after turning off $this->autoRender.
  * Script execution is halted after the redirect.
- * 
+ *
  * <pre>
  * ・リダイレクト時にもDEBUG情報を出力するように修正。
  * ・pjaxならば、header Locationではなく、「X-PJAX-Location」ヘッダーを返し、そのURLを見て、再度、pjaxを呼ぶように修正。
@@ -230,7 +226,7 @@ class AppController extends Controller {
  */
 	public function redirect($url, $status = null, $exit = true) {
 		$this->autoRender = false;
-	
+
 		if (is_array($status)) {
 			extract($status, EXTR_OVERWRITE);
 		}
@@ -238,13 +234,13 @@ class AppController extends Controller {
 		//TODO: Remove the following line when the events are fully migrated to the CakeEventManager
 		list($event->break, $event->breakOn, $event->collectReturn) = array(true, false, true);
 		$this->getEventManager()->dispatch($event);
-	
+
 		if ($event->isStopped()) {
 			return;
 		}
 		$response = $event->result;
 		extract($this->_parseBeforeRedirect($response, $url, $status, $exit), EXTR_OVERWRITE);
-	
+
 		if ($url !== null) {
 // Edit Start Ryuji.M
 			if($this->request->header('X-PJAX')) {
@@ -258,18 +254,18 @@ class AppController extends Controller {
 			//$this->response->header('Location', Router::url($url, true));
 // Edit End Ryuji.M
 		}
-	
+
 		if (is_string($status)) {
 			$codes = array_flip($this->response->httpCodes());
 			if (isset($codes[$status])) {
 				$status = $codes[$status];
 			}
 		}
-	
+
 		if ($status) {
 			$this->response->statusCode($status);
 		}
-	
+
 		if ($exit) {
 // Add Start Ryuji.M
 			if (Configure::read('debug') != 0) {
