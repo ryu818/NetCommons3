@@ -16,7 +16,7 @@
 		content.dblclick(function(event) {
 			$.pjax.click(event, t, {'url': url});
 		}).hover(function() {
-			content.stop(false, true).show("highlight", {}, 2000);
+			content.stop(false, true).effect("highlight", {}, 2000);
 		}, function(){});
 	}
 })(jQuery);
