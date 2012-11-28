@@ -47,7 +47,7 @@ class AppPluginController extends AppController
 	public function beforeRender()
 	{
 		parent::beforeRender();
-		
+
 		if(isset($this->request->params['block_id'])) {
 			$this->set('block_id', $this->request->params['block_id']);
 			$this->set('id', '_'.$this->request->params['block_id']);
@@ -55,10 +55,10 @@ class AppPluginController extends AppController
 			$this->set('block_id', $this->request->params['module_id']);
 			$this->set('id', '_'.$this->request->params['module_id']);
 		}
-		if(isset($this->nc_block)) {
+		if(isset($this->nc_block) && !isset($this->viewVars['block'])) {
 			$this->set('block', $this->nc_block);
 		}
-		if(isset($this->nc_page)) {
+		if(isset($this->nc_page) && !isset($this->viewVars['page'])) {
 			$this->set('page', $this->nc_page);
 		}
 		if(isset($this->hierarchy) && $this->hierarchy >= NC_AUTH_MIN_CHIEF) {
