@@ -47,6 +47,7 @@ if (count($php_logs) > 0):
 	}
 endif;
 if (Configure::read('debug') != 1 && isset($current_urls) && count($current_urls) > 0):
+	$pre_post_str = null;
 	foreach($current_urls as $key => $current_url) {
 		if($key == 0) {
 			$header_log .= '<div><a href="#" onclick="$(this).parents(\'.nc-log:first\').next().toggle();return false;">'.__('Show', true).'</a>';

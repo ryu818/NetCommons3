@@ -115,11 +115,11 @@ class MyCakeRoute extends CakeRoute {
 			$block_type = Configure::read(NC_SYSTEM_KEY.'.block_type');
 			$url['block_type'] = isset($block_type) ? $block_type : 'active-blocks';
 		}
-	
+
 		if(isset($url['action']) && $url['action'] == 'index') {
 			$url['action'] = '';
 		}
-	
+
 		//if (isset($url['controller']) && isset($url['plugin']) && $url['plugin'] != $url['controller']) {
 		//	return false;
 		//}
@@ -130,7 +130,7 @@ class MyCakeRoute extends CakeRoute {
 
 		return $result;
 	}
-	
+
 /**
  * Finds URL for specified action.
  *
@@ -164,17 +164,16 @@ class MyCakeRoute extends CakeRoute {
 		//
 		// block_typeをページ表示中ならば、block になるように修正
 		//
-		var_dump($url);
-		if (empty($url)) {var_dump("EEEEEEEEEEEEEEEEE");
+		if (empty($url)) {
 			$block_type = Configure::read(NC_SYSTEM_KEY.'.block_type');
 			if(isset($block_type) && $block_type == 'blocks') {
 				$request = self::$_requests[count(self::$_requests) - 1];
 				$here = $request->here;
 				$here = preg_replace('/(.*)\/active-blocks\/([0-9]*)/i', '$1/blocks/$2', $here);
-				
+
 				$url = isset($here) ? $here : '/';
 			}
-			
+
 			if ($full && defined('FULL_BASE_URL')) {
 				$url = FULL_BASE_URL . $url;
 			}
