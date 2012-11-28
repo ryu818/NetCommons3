@@ -46,7 +46,15 @@ $.widget( "ui.tooltip", {
 	version: "1.9.2",
 	options: {
 		content: function() {
-			return $( this ).attr( "title" );
+// Edit Start Ryujiu.M
+			var title = $( this ).attr( "title" );
+			var dataTooltip = $( this ).data('tooltip-desc');
+			if (dataTooltip && title) {
+				return '<dl><dt class="ui-tooltip-title">' + title + '</dt><dd>' + dataTooltip + '</dd></dl>';
+			}
+			return title;
+			//return $( this ).attr( "title" );
+// Edit End Ryuji.M
 		},
 		hide: true,
 		// Disabled elements have inconsistent behavior across browsers (#8661)

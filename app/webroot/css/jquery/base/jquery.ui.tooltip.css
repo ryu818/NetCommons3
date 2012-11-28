@@ -18,4 +18,15 @@
 * html .ui-tooltip {
 	background-image: none;
 }
-body .ui-tooltip { border-width: 2px; }
+/* Delete Start Ryuji */
+/* body .ui-tooltip { border-width: 2px; } */
+/* Delete Start Ryuji */
+/* Add Start Ryuji.M */
+.ui-tooltip .ui-tooltip-title {
+	background-color:#eeeeee;
+	padding:4px 8px;
+	margin: 0 0 8px 0;
+	border-radius:2px;
+}
+
+/* Add End Ryuji.M */
