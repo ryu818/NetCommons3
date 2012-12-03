@@ -39,6 +39,13 @@ class PagesController extends AppController {
  */
 	public $uses = array('ModuleLink', 'PageStyle');
 
+	/**
+	 * Component name
+	 *
+	 * @var array
+	 */
+	public $components = array('CheckAuth' => array('chkBlockId' => false));
+
 /**
  * 中央カラムのpage_id
  *
@@ -63,7 +70,7 @@ class PagesController extends AppController {
 		$mode = $this->Session->read(NC_SYSTEM_KEY.'.mode');
 		$user = $this->Auth->user();
 		$blocks = $this->Block->findByPageIds($this->page_id_arr, intval($user['id']));
-		$pages = $this->Page->findByIds($this->page_id_arr, intval($user['id']));
+		$pages = $this->Page->findAuthById($this->page_id_arr, intval($user['id']));
 		$authority_id = isset($user['authority_id']) ? $user['authority_id'] : 0;
 
 		// ページスタイル情報を取得

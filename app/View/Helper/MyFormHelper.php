@@ -10,9 +10,10 @@
  */
 App::uses('FormHelper', 'View/Helper');
 class MyFormHelper extends FormHelper {
+
 	/**
 	 * Returns an HTML FORM element.
-	 * 
+	 *
 	 * ・FormのidをForm+ (top_id)に変換
 	 * ・Formのname属性がなければidと同等のものを設定。
 	 *
@@ -45,5 +46,87 @@ class MyFormHelper extends FormHelper {
 			$options['name'] = $options['id'];
 		}
 		return parent::create($model, $options);
+	}
+
+/**
+ * Returns a formatted error message for given FORM field, NULL if no errors.
+ *
+ * ・オプションを追加。
+ *
+ * ### Options:
+ *  Add Start Ryuji.M
+ * - `popup`      bool   default false ポップアップ表示するかどうか。位置の指定は現状できない。
+ * - `selector`   string default null targetのjquery.selector targetがtext,textareaならば、変更されたら削除。targetがselectならば、change,その他のinputタグならば、click時に削除。
+ * - `close`      bool   default true trueならば×ボタンを付与。
+ *
+ *  Add End
+ * - `escape`  bool  Whether or not to html escape the contents of the error.
+ * - `wrap`  mixed  Whether or not the error message should be wrapped in a div. If a
+ *   string, will be used as the HTML tag to use.
+ * - `class` string  The classname for the error message
+ *
+ * @param string $field A field name, like "Modelname.fieldname"
+ * @param string|array $text Error message as string or array of messages.
+ * If array contains `attributes` key it will be used as options for error container
+ * @param array $options Rendering options for <div /> wrapper tag
+ * @return string If there are errors this method returns an error message, otherwise null.
+ * @link http://book.cakephp.org/2.0/en/core-libraries/helpers/form.html#FormHelper::error
+ */
+	public function error($field, $text = null, $options = array()) {
+		if (is_array($text)) {
+			if (isset($text['attributes']) && is_array($text['attributes'])) {
+				$options = array_merge($options, $text['attributes']);
+				unset($text['attributes']);
+			}
+		}
+		$defaults = array('wrap' => true, 'class' => 'error-message', 'escape' => true, 'popup' => false, 'selector' => '', 'close' => true);
+		$options = array_merge($defaults, $options);
+		$close = $options['close'];
+		$popup = $options['popup'];
+		$selector = $options['selector'];
+		unset($options['close']);
+		unset($options['popup']);
+		unset($options['selector']);
+		$popup_options = array();
+		if($selector) {
+			$uuid = String::uuid();
+			if($popup != true) {
+				$options['id'] = $uuid;
+			} else {
+				$popup_options['id'] = $uuid;
+			}
+		}
+
+		$buf_wrap = $options['wrap'];
+		$options['wrap'] = false;
+
+		$str = parent::error($field, $text, $options);
+		if( !$str ) {
+			return $str;
+		}
+
+		if($close == true) {
+			if($popup == true) {
+				$class = 'popup-message';
+			} else {
+				$class = $options['class'];
+			}
+			$str = '<div class="table_cell">'.$str. '</div><a href="#" class="message-close" role="button" onclick="$(this).parents(\'.'.$class.':first\').remove(); return false;"><span class="ui-icon ui-icon-closethick">close</span></a>' ;
+		}
+		if($buf_wrap !== false) {
+			$tag = is_string($buf_wrap) ? $buf_wrap : 'div';
+			unset($options['wrap']);
+			$options['escape'] = false;
+			$str = $this->Html->tag($tag, $str, $options);
+		}
+
+		if($popup == true) {
+			$str = $this->Html->div('popup-message', $str, $popup_options);
+		}
+		if($selector) {
+			$str .= $this->Html->scriptBlock("$.Common.closeAlert(".$selector.", $('#".$uuid."'));");
+			//$str .= $this->Html->scriptBlock("$.Common.closeAlert('".$this->Js->escape($selector)."', $('#".$uuid."'));");
+		}
+		return $str;
 	}
 }

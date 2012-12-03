@@ -147,7 +147,7 @@ a.hover_highlight:active {
 fieldset.form input[type="text"], fieldset.form input[type="password"], fieldset.form textarea,input.text,.dropdown {
 	border:1px solid #aaaaaa;
     padding: 4px 2px;
-    background: #ffffff;
+    /* background: #ffffff; */
     border-radius: 3px;
     box-shadow: 0 13px 13px rgba(0,0,0,0.03) inset, 1px 1px 1px #ffffff;
 

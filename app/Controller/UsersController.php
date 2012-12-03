@@ -44,7 +44,7 @@ class UsersController extends AppController {
  *
  * @var array
  */
-	public $components = array('Cookie');
+	public $components = array('Cookie', 'CheckAuth' => array('chkBlockId' => false));
 
 /**
  * Config ログイン関連

@@ -10,4 +10,10 @@
  */
 App::uses('AppPluginController', 'Controller');
 class PageAppController extends AppPluginController {
+	/**
+	 * Component name
+	 *
+	 * @var array
+	 */
+	public $components = array('CheckAuth' => array('chkBlockId' => false));
 }

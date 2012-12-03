@@ -82,7 +82,7 @@ class ModuleLink extends AppModel
 		$ret_space_authority_id = array();
 		$ret_space_type = array();
 
-		$locale = Configure::read('locale');
+		$locale = Configure::read(NC_SYSTEM_KEY.'.locale');
 
 		foreach ($results as $key => $val) {
 			// 1.みているroom_idのデータ(ルーム)

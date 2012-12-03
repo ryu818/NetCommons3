@@ -14,7 +14,7 @@ class PageBehavior extends ModelBehavior {
  *
  * @param Model   $Model
  * @param array    $page
- * @param integer  $type
+ * @param integer  $type 0:表示時 1:登録時
  * @return boolean
  * @since   v 3.0.0.0
  */
@@ -126,7 +126,7 @@ class PageBehavior extends ModelBehavior {
  * @param  Model     $Model
  * @param  array     $results
  * @param  array     $fetch_params
- * @return array     $pages['space_type'][$val['root_sequence']['thread_num']['parent_id']['display_sequence']
+ * @return array     $pages['space_type']['thread_num']['parent_id']['display_sequence']
  * @since   v 3.0.0.0
  */
 	public function afterFindMenu(Model $Model, $results, $fetch_params = null) {
@@ -156,8 +156,9 @@ class PageBehavior extends ModelBehavior {
 		//$parent_id_arr = array();
 		$permalink_arr = array();
 		$node_top_arr = array();
+		$parent_display_arr = array();
 		foreach ($results as $key => $val) {
-			if(($val[$Model->alias]['root_sequence'] == 1 || $val[$Model->alias]['display_sequence'] == 1) && $val[$Model->alias]['lang'] == $lang) {
+			if(($val[$Model->alias]['thread_num'] == 1 || $val[$Model->alias]['display_sequence'] == 1) && $val[$Model->alias]['lang'] == $lang) {
 				// NodeTop
 				$node_top_arr[$val[$Model->alias]['space_type']] = true;
 			}
@@ -175,7 +176,22 @@ class PageBehavior extends ModelBehavior {
 				continue;
 			}
 
+			$pre_display_flag = $val[$Model->alias]['display_flag'];
+
+
 			$val[$Model->alias] = $this->updDisplayFlag($Model, $val[$Model->alias]);
+
+			if($pre_display_flag != $val[$Model->alias]['display_flag'] &&
+					($val[$Model->alias]['display_flag'] == _OFF ||
+						($val[$Model->alias]['display_flag'] == _ON && $val[$Model->alias]['display_apply_subpage'] == _ON))) {
+				// 親が非公開ならば、子供が公開になっていても非公開として表示。
+				// 公開日付Toを設定直後に親が非公開、子供が公開で表示されてしまうため
+				// 親が公開で、「下位ページにも適用」のチェックボックスがONの場合も同様。
+				$parent_display_arr[$val[$Model->alias]['id']] = $val[$Model->alias]['display_flag'];
+			}
+			if(isset($parent_display_arr[$val[$Model->alias]['parent_id']])) {
+				$val[$Model->alias]['display_flag'] = $parent_display_arr[$val[$Model->alias]['parent_id']];
+			}
 
 			//if($val[$Model->alias]['thread_num'] >= 2 && !isset($parent_id_arr[$val[$Model->alias]['parent_id']])) {
 			//	// 親がなし
@@ -208,10 +224,9 @@ class PageBehavior extends ModelBehavior {
 			}
 
 			$val[$Model->alias]['visibility_flag'] = empty($val['Menu']['visibility_flag']) ? _ON : $val['Menu']['visibility_flag'];
-
 			$val[$Model->alias]['permalink'] = $this->getPermalink($Model, $val[$Model->alias]['permalink'], $val[$Model->alias]['space_type']);
 			$val[$Model->alias] = $this->setPageName($Model, $val[$Model->alias]);
-			$pages[$val[$Model->alias]['space_type']][$val[$Model->alias]['root_sequence']][$val[$Model->alias]['thread_num']][$val[$Model->alias]['parent_id']][$val[$Model->alias]['display_sequence']] = $val[$Model->alias];
+			$pages[$val[$Model->alias]['space_type']][$val[$Model->alias]['thread_num']][$val[$Model->alias]['parent_id']][$val[$Model->alias]['display_sequence']] = $val[$Model->alias];
 			//$parent_id_arr[$val[$Model->alias]['id']] = $val[$Model->alias]['id'];
 		}
 		return $pages;
@@ -223,7 +238,7 @@ class PageBehavior extends ModelBehavior {
  * @param  Model     $Model
  * @param  array     $results
  * @param  array     $fetch_params
- * @return array     $pages['space_type'][$val['root_sequence']['thread_num']['parent_id']['display_sequence']
+ * @return array     $pages['space_type']['thread_num']['parent_id']['display_sequence']
  * @since   v 3.0.0.0
  */
 	public function updDisplayFlag(Model $Model, $val) {
@@ -232,26 +247,53 @@ class PageBehavior extends ModelBehavior {
 		// 公開日時
 		if(!empty($val['display_from_date']) && $val['display_flag'] != NC_DISPLAY_FLAG_DISABLE &&
 				strtotime($val['display_from_date']) <= strtotime($d)) {
+
+			$page_id_arr = array($val['id']);
+
+			if($val['display_apply_subpage'] == _ON) {
+				$current_page['Page'] = $val;
+				$child_pages = $Model->findChilds('list', $current_page);
+				if(count($child_pages) > 0) {
+					foreach($child_pages as $page_id => $v) {
+						$page_id_arr[] = $page_id;
+					}
+				}
+			}
+
 			$val['display_flag'] = NC_DISPLAY_FLAG_ON;
-			$data[$Model->alias] = array(
-					'id' => $val['id'],
-					'display_flag' => $val['display_flag'],
-					'display_from_date' => null
+
+			$fields = array(
+				'display_flag' => $val['display_flag'],
+				'display_from_date' => null
 			);
-			$Model->create();
-			$ret = $Model->save($data, true, array('display_flag', 'display_from_date'));
+			$conditions = array(
+				'id' => $page_id_arr
+			);
+			$result = $Model->updateAll($fields, $conditions);
 		}
 
 		if(!empty($val['display_to_date']) && $val['display_flag'] != NC_DISPLAY_FLAG_DISABLE &&
 				strtotime($val['display_to_date']) <= strtotime($d)) {
+			// 現在のページ以下のページを取得
+			$current_page['Page'] = $val;
+			$child_pages = $Model->findChilds('list', $current_page);
+			$page_id_arr = array($val['id']);
+			if(count($child_pages) > 0) {
+				foreach($child_pages as $page_id => $v) {
+					$page_id_arr[] = $page_id;
+				}
+			}
+
 			$val['display_flag'] = NC_DISPLAY_FLAG_OFF;
-			$data[$Model->alias] = array(
-					'id' => $val['id'],
-					'display_flag' => $val['display_flag'],
-					'display_to_date' => null
+
+			$fields = array(
+				'display_flag' => $val['display_flag'],
+				'display_to_date' => null
 			);
-			$Model->create();
-			$ret = $Model->save($data, true, array('display_flag', 'display_to_date'));
+			$conditions = array(
+				'id' => $page_id_arr
+			);
+			$result = $Model->updateAll($fields, $conditions);
 		}
 
 		return $val;

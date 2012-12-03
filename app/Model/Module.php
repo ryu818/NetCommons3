@@ -36,7 +36,7 @@ class Module extends AppModel
 
 	public function afterFind($results, $dir_name = '') {
 		$ret = array();
-		$locale = Configure::read('locale');
+		$locale = Configure::read(NC_SYSTEM_KEY.'.locale');
 
 		$single_flag = false;
 		if(isset($results['Module']['dir_name'])) {
@@ -116,7 +116,7 @@ class Module extends AppModel
 	public static function loadModuleName($dir_name, $locale = null) {
 		$module_name = __('New module', true);
 		if(!isset($locale)) {
-			$locale = Configure::read('locale');
+			$locale = Configure::read(NC_SYSTEM_KEY.'.locale');
 		}
 		$file_path = App::pluginPath($dir_name) . 'Locale'. '/' . $locale. '/'. NC_MODINFO_FILENAME;
 		if (file_exists($file_path)) {

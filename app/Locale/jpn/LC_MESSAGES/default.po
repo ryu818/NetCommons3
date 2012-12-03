@@ -69,6 +69,9 @@ msgstr 	"日時"
 msgid  	"Published Date"
 msgstr 	"公開日時"
 
+msgid  	"&nbsp;-&nbsp;"
+msgstr 	"&nbsp;～&nbsp;"
+
 msgid  	"Manage"
 msgstr 	"管理"
 
@@ -386,8 +389,8 @@ msgstr 	"y/m/d"
 msgid  	"g:ia"
 msgstr 	"g:ia"
 
-#msgid  "H:i:s"
-#msgstr "H:i:s"
+msgid  "H:i:s"
+msgstr "H:i:s"
 
 msgid  	"H:i"
 msgstr 	"H:i"

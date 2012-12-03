@@ -65,6 +65,16 @@ msgstr 	"新規ページ"
 msgid  	"New community"
 msgstr 	"新規コミュニティ"
 
+msgid  	"Apply to the subpage."
+msgstr 	"下位ページにも適用"
+
+msgid  	"Because the parent page is closed, I cannot set a public date."
+msgstr 	"親ページが非公開のため、公開日付を設定できません。"
+msgid  	"Because the page is not published, I cannot set a closed date."
+msgstr 	"公開ではないか、公開日付が入力していないため、非公開日付を設定できません。"
+msgid  	"Please input in [publish date < closed date]."
+msgstr 	"[公開日付 < 非公開日付]で入力してください。"
+
 ## ページスタイル
 msgid  	"Font color:"
 msgstr 	"文字色："

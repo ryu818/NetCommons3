@@ -82,6 +82,11 @@ input.pages-menu-edit-title {
 	width:150px;
 }
 
+.pages-menu-error-message {
+	position:absolute;
+	z-index:1;
+}
+
 /* ボタン */
 .pages-menu-edit-btn {
 	display: block;
@@ -178,9 +183,13 @@ input.pages-menu-edit-title {
 }
 
 .pages-menu-edit-outer .lists {
-	min-width:320px;
+	min-width:340px;
 }
 
 .pages-menu-edit-outer .lists dt, .pages-menu-edit-outer .lists dd{
 	padding: 3px;
+}
+
+.pages-menu-edit-display-to-date {
+	padding:8px;
 }

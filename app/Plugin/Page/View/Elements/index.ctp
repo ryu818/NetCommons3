@@ -13,9 +13,11 @@ if(isset($is_edit) && $is_edit == _ON){
 ?>
 <div class="nc-pages-setting-title nc_popup_color clearfix" data-pages-header="true">
 	<?php echo(__d('page', 'Pages menu')); ?>
-	<a class="pages-menu-edit-btn nc_tooltip" title="<?php echo(h($setting)); ?>" data-powertip="<?php echo(h($tooltip_setting)); ?>" href="<?php echo($this->Html->url(array('plugin' => 'page', 'controller' => 'page', 'action' => 'index', '?' => array('is_edit' => !$is_edit)))); ?>" data-ajax-replace="#nc-pages-setting-dialog">
+	<?php if($admin_hierarchy != NC_AUTH_OTHER): ?>
+	<a class="pages-menu-edit-btn nc_tooltip" title="<?php echo(h($setting)); ?>" data-tooltip-desc="<?php echo(h($tooltip_setting)); ?>" href="<?php echo($this->Html->url(array('plugin' => 'page', 'controller' => 'page', 'action' => 'index', '?' => array('is_edit' => !$is_edit)))); ?>" data-ajax-replace="#nc-pages-setting-dialog">
 		<span class="<?php echo($setting_class); ?>"></span>
 	</a>
+	<?php endif; ?>
 </div>
 <?php if($is_edit): ?>
 <div class="nc-pages-setting-menu nc_popup_color" data-pages-header="true">
@@ -41,15 +43,15 @@ if(isset($is_edit) && $is_edit == _ON){
 		<ol class="pages-menu-list dd-list">
 			<?php if(!empty($pages[NC_SPACE_TYPE_PUBLIC])): ?>
 				<?php $parent_id = 1; ?>
-				<?php echo($this->element('index/edit_page', array('pages' => $pages, 'menus' => $pages[NC_SPACE_TYPE_PUBLIC][1][$thread_num][$parent_id], 'space_type' => NC_SPACE_TYPE_PUBLIC, 'page_id' => $page_id, 'root_sequence' => 1, 'admin_hierarchy' => $admin_hierarchy))); ?>
+				<?php echo($this->element('index/edit_page', array('pages' => $pages, 'menus' => $pages[NC_SPACE_TYPE_PUBLIC][$thread_num][$parent_id], 'space_type' => NC_SPACE_TYPE_PUBLIC, 'page_id' => $page_id, 'admin_hierarchy' => $admin_hierarchy))); ?>
 			<?php endif; ?>
 			<?php if(!empty($pages[NC_SPACE_TYPE_MYPORTAL])): ?>
 				<?php $parent_id = 2;?>
-				<?php echo($this->element('index/edit_page', array('pages' => $pages, 'menus' => $pages[NC_SPACE_TYPE_MYPORTAL][1][$thread_num][$parent_id], 'space_type' => NC_SPACE_TYPE_MYPORTAL, 'page_id' => $page_id, 'root_sequence' => 1, 'admin_hierarchy' => $admin_hierarchy))); ?>
+				<?php echo($this->element('index/edit_page', array('pages' => $pages, 'menus' => $pages[NC_SPACE_TYPE_MYPORTAL][$thread_num][$parent_id], 'space_type' => NC_SPACE_TYPE_MYPORTAL, 'page_id' => $page_id, 'admin_hierarchy' => $admin_hierarchy))); ?>
 			<?php endif; ?>
 			<?php if(!empty($pages[NC_SPACE_TYPE_PRIVATE])): ?>
 				<?php $parent_id = 3;?>
-				<?php echo($this->element('index/edit_page', array('pages' => $pages, 'menus' => $pages[NC_SPACE_TYPE_PRIVATE][1][$thread_num][$parent_id], 'space_type' => NC_SPACE_TYPE_PRIVATE, 'page_id' => $page_id, 'root_sequence' => 1, 'admin_hierarchy' => $admin_hierarchy))); ?>
+				<?php echo($this->element('index/edit_page', array('pages' => $pages, 'menus' => $pages[NC_SPACE_TYPE_PRIVATE][$thread_num][$parent_id], 'space_type' => NC_SPACE_TYPE_PRIVATE, 'page_id' => $page_id, 'admin_hierarchy' => $admin_hierarchy))); ?>
 			<?php endif; ?>
 		</ol>
 		<?php else: ?>
@@ -59,16 +61,16 @@ if(isset($is_edit) && $is_edit == _ON){
 		?>
 		<ol class="dd-list">
 			<?php if(!empty($pages[NC_SPACE_TYPE_PUBLIC])): ?>
-				<?php $parent_id = $pages[NC_SPACE_TYPE_PUBLIC][1][1][1][0]['id']; ?>
-				<?php echo($this->element('index/page', array('pages' => $pages, 'menus' => $pages[NC_SPACE_TYPE_PUBLIC][1][$thread_num][$parent_id], 'space_type' => NC_SPACE_TYPE_PUBLIC, 'page_id' => $page_id, 'root_sequence' => 1))); ?>
+				<?php $parent_id = $pages[NC_SPACE_TYPE_PUBLIC][1][1][0]['id']; ?>
+				<?php echo($this->element('index/page', array('pages' => $pages, 'menus' => $pages[NC_SPACE_TYPE_PUBLIC][$thread_num][$parent_id], 'space_type' => NC_SPACE_TYPE_PUBLIC, 'page_id' => $page_id))); ?>
 			<?php endif; ?>
 			<?php if(!empty($pages[NC_SPACE_TYPE_MYPORTAL])): ?>
-				<?php $parent_id = $pages[NC_SPACE_TYPE_MYPORTAL][1][1][2][0]['id'];?>
-				<?php echo($this->element('index/page', array('pages' => $pages, 'menus' => $pages[NC_SPACE_TYPE_MYPORTAL][1][$thread_num][$parent_id], 'space_type' => NC_SPACE_TYPE_MYPORTAL, 'page_id' => $page_id, 'root_sequence' => 1))); ?>
+				<?php $parent_id = $pages[NC_SPACE_TYPE_MYPORTAL][1][2][0]['id'];?>
+				<?php echo($this->element('index/page', array('pages' => $pages, 'menus' => $pages[NC_SPACE_TYPE_MYPORTAL][$thread_num][$parent_id], 'space_type' => NC_SPACE_TYPE_MYPORTAL, 'page_id' => $page_id))); ?>
 			<?php endif; ?>
 			<?php if(!empty($pages[NC_SPACE_TYPE_PRIVATE])): ?>
-				<?php $parent_id = $pages[NC_SPACE_TYPE_PRIVATE][1][1][3][0]['id'];?>
-				<?php echo($this->element('index/page', array('pages' => $pages, 'menus' => $pages[NC_SPACE_TYPE_PRIVATE][1][$thread_num][$parent_id], 'space_type' => NC_SPACE_TYPE_PRIVATE, 'page_id' => $page_id, 'root_sequence' => 1))); ?>
+				<?php $parent_id = $pages[NC_SPACE_TYPE_PRIVATE][1][3][0]['id'];?>
+				<?php echo($this->element('index/page', array('pages' => $pages, 'menus' => $pages[NC_SPACE_TYPE_PRIVATE][$thread_num][$parent_id], 'space_type' => NC_SPACE_TYPE_PRIVATE, 'page_id' => $page_id))); ?>
 			<?php endif; ?>
 		</ol>
 		<?php endif; ?>

@@ -194,6 +194,9 @@ class AppController extends Controller {
 		if(!isset($url) || $url === '') {
 			// 空ならばリファラから自動リダイレクト
 			$url = $this->request->referer();
+			if($url == Router::url('/', true).'users/login' && $this->Auth->user('id')) {
+				$url = Router::url('/');
+			}
 		}
 		$this->set('url', Router::url($url));
 		$this->set('message', $message);

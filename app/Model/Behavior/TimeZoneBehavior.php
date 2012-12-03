@@ -9,6 +9,19 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 class TimeZoneBehavior extends ModelBehavior {
+	/**
+	 * グリニッジ標準の日付を返す
+	 * @param   Model   $Model
+	 * @param   string $format
+	 * @return  string $time
+	 * @since   v 3.0.0.0
+	 */
+	public function nowDate(Model $Model, $format = null) {
+		if($format === null) {
+			$format =  NC_DB_DATE_FORMAT;
+		}
+		return gmdate($format);
+	}
 
 /**
  * 地域のTimeZoneを考慮した日付を返す
@@ -18,17 +31,12 @@ class TimeZoneBehavior extends ModelBehavior {
  * @return  string $time
  * @since   v 3.0.0.0
  */
-	public function date(Model $Model, $time = null, $format = null) {
+	public function date(Model $Model, $time, $format = null) {
 
    		if($format === null) {
-	    	$format =  NC_VALIDATOR_DATE_TIME;
+	    	$format =  NC_DB_DATE_FORMAT;
 		}
-		if ($time === null) {
-	    	return gmdate($format);
-		}
-		if(!preg_match(NC_CHECK_DATETIME, $time)) {
-			return $time;
-		}
+
 		$time = date(NC_VALIDATOR_DATE_TIME, strtotime($time));
 
 		// 登録時サーバのタイムゾーンを引く
@@ -55,4 +63,22 @@ class TimeZoneBehavior extends ModelBehavior {
 
 		return date($format, $int_time);
     }
+
+/**
+ * 過去の日付かどうかチェック
+ *
+ * @param object $Model
+ * @param   array    $data
+ * @return  boolean
+ * @access	public
+ */
+	public function pastDateTime(Model $Model, $data) {
+		$values = array_values($data);
+    	$date_time1 = $values[0];
+    	$date_time = $this->date($Model, $date_time1, NC_VALIDATOR_DATE_TIME);
+    	if(strtotime($date_time) <= strtotime(gmdate(NC_VALIDATOR_DATE_TIME))) {
+			return false;
+		}
+		return true;
+	}
 }

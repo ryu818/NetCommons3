@@ -19,7 +19,7 @@ class User extends AppModel
  *
  * @var array
  */
-	public $actsAs = array('Timezone');
+	public $actsAs = array('TimeZone');
 
 	public $validate = array();
 
@@ -289,7 +289,7 @@ class User extends AppModel
 		$this->create();
 		$this->id = $user[$this->alias]['id'];
 		$user[$this->alias]['previous_login'] = $user[$this->alias]['last_login'];
-		$user[$this->alias]['last_login'] = $this->date();
+		$user[$this->alias]['last_login'] = $this->nowDate();
 		$this->set($user);
 		$fields = array('last_login', 'previous_login');
 
@@ -314,7 +314,7 @@ class User extends AppModel
     	if($page['Page']['space_type'] != NC_SPACE_TYPE_MYPORTAL && $page['Page']['space_type'] != NC_SPACE_TYPE_PRIVATE) {
     		return '';
     	}
-    
+
     	$buf_permalink_arr = explode('/', $page['Page']['permalink']);
     	if(!isset($login_user['permalink']) || $buf_permalink_arr[0] != $login_user['permalink']) {
     		$conditions = array('permalink' => $buf_permalink_arr[0]);
@@ -324,7 +324,7 @@ class User extends AppModel
     	}
     	if(!isset($user['User']))
     		return false;
-    
+
     	return $user;
     }
 }

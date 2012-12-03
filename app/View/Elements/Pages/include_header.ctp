@@ -10,7 +10,7 @@
  */
 	$nc_user = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 	$nc_mode = intval($this->Session->read(NC_SYSTEM_KEY.'.'.'mode'));
-	$locale = Configure::read('locale');
+	$locale = Configure::read(NC_SYSTEM_KEY.'.locale');
 
 // TODO:test
 $this->Html->css(array('Default.page', 'Default.gray/page'), null, array('frame' => true));
@@ -19,7 +19,7 @@ if (!empty($page_style['file'])) {
 }
 
 	echo "\n".$this->fetch('meta');
-	$common_js = array('jquery/', 'plugins/jquery.pjax.js', 'plugins/chosen.jquery.js', 'plugins/jquery.powertip.js', 'common/');
+	$common_js = array('jquery/', 'plugins/jquery.pjax.js', 'plugins/chosen.jquery.js', 'common/');
 	if($this->params['controller'] == 'pages') {
 		$common_js[] = 'pages/common/';
 	}
@@ -70,22 +70,21 @@ echo '	$._nc.nc_wysiwyg[\'allow_js\'] = '.($nc_user['allow_htmltag_flag'] ? _ON 
 			$.Common.getAjax(e, $(this));
 		});
 
-		var options = {'followMouse':true};
-		$('.nc_tooltip').powerTip(options);
-		$(document).on('ajaxComplete','',function(){
-			$('.nc_tooltip', this).powerTip(options);
-		});
+		var options = {items: '.nc_tooltip', track: true};
+		$( document ).tooltip(options);
 	});
 </script>
 <?php
 	echo '<!--[if IE]>'."\n".$this->Html->script('html5/', array('inline' => true, 'data-title' => 'IE')).'<![endif]-->';
-	echo "\n".$this->Html->script('locale/'.$locale.'/', array('inline' => true, 'data-title' => 'Lang'));
+	if($locale) {
+		echo "\n".$this->Html->script(array('locale/'.$locale.'/lang.js', 'locale/'.$locale.'/jquery/ui/jquery.ui.datepicker.js'), array('inline' => true, 'data-title' => 'Lang'));
+	}
 	echo "\n".$this->Html->fetchScript('script', ' data-title="Themes and Plugins" ');
 
 	//echo $this->fetch('script');
 	//echo $scripts_for_layout;
 
-	$common_css = array('common/vendors/', 'common/main/', 'jquery/base/', 'common/editable/common', 'plugins/chosen.css', 'plugins/jquery.powertip.css', );
+	$common_css = array('common/vendors/', 'common/main/', 'jquery/base/', 'common/editable/common', 'plugins/chosen.css', );
 	//if($this->params['controller'] == 'pages') {	// TODO:system_flagがOFFの場合にincludeするように後に修正。
 		$common_css[] = 'pages/common/';
 	//}

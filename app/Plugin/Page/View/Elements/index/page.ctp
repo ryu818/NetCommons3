@@ -10,7 +10,7 @@
 		<?php $class = $this->element('index/init_page', array('menu' => $menu, 'is_edit' => _OFF)); ?>
 		<?php $next_thread_num = $menu['thread_num']+1; ?>
 		<li class="dd-item" data-id="<?php echo(h($menu['id'])); ?>">
-			<div class="pages-menu-handle <?php echo($class); ?>">
+			<div class="pages-menu-handle <?php echo($class); ?><?php if($menu['id'] == $page_id): ?> highlight<?php endif; ?>">
 			<a href="<?php echo($this->webroot); ?><?php echo($menu['permalink']); ?>" title="<?php echo(h($menu['page_name'])); ?>">
 				<?php echo(h($menu['page_name'])); ?>
 			</a>
@@ -18,9 +18,9 @@
 				<span class="pages-menu-nonpublic"><?php echo(__d('page', '(Private)')); ?></span>
 			<?php endif; ?>
 			</div>
-			<?php if(!empty($pages[$space_type][$root_sequence][$next_thread_num][$menu['id']])): ?>
+			<?php if(!empty($pages[$space_type][$next_thread_num][$menu['id']])): ?>
 				<ol class="dd-list">
-					<?php echo($this->element('index/page', array('pages' => $pages, 'menus' => $pages[$space_type][$root_sequence][$next_thread_num][$menu['id']], 'page_id' => $page_id, 'space_type' => $space_type, 'root_sequence' => $root_sequence))); ?>
+					<?php echo($this->element('index/page', array('pages' => $pages, 'menus' => $pages[$space_type][$next_thread_num][$menu['id']], 'page_id' => $page_id, 'space_type' => $space_type))); ?>
 				</ol>
 			<?php endif; ?>
 		</li>

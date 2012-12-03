@@ -160,7 +160,7 @@ class SetConfigsComponent extends Component {
 		App::uses('L10n', 'I18n');
 		$L10n = new L10n();
 		$catalog = $L10n->catalog($configs['language']);
-		Configure::write('locale', $catalog['locale']);
+		Configure::write(NC_SYSTEM_KEY.'.locale', $catalog['locale']);
 
 		// ******************************************************************************************
 		// サイトClose

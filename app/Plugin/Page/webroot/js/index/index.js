@@ -72,13 +72,13 @@
 				// コンテンツクリックイベント
 				$('.pages-menu-edit-content:first', target).click();
 			});
-			// ページ編集
+			// ページ詳細編集画面表示
 			$(tab).on('ajax:before','[data-page-edit-id]',function(e, url) {
 			    var page_id = $(this).data('page-edit-id');
 				var detail = $('#pages-menu-edit-detail-' + page_id);
 				if(detail.css('display') != 'none') {
 					// 既に編集中->非表示
-					detail.slideUp(300);
+					detail.slideUp(300, function() {detail.html('');});
 					return false;
 				} else if(detail.children().length > 0) {
 					detail.slideDown(300);
@@ -99,27 +99,102 @@
 				});
 			});
 
+			// ページ編集
+			$(tab).on('ajax:before','form',function(e, url) {
+				var focus_input = $(':focus', $(e.target));
+				if(focus_input.attr('type') == 'text' && focus_input.attr('name') != "data[Page][page_name]") {
+					// ページ名称以外のtextではsubmitさせない。IE8、9ではOKボタンに遷移しているため、動作しない。
+					return false;
+				}
+				var li = $(this).parent();
+				var a = $('a.pages-menu-edit-title:first', $(this));
+				var input = $('input.pages-menu-edit-title:first', $(this));
+				var page_id = li.data('id');
+				var detail = $('#pages-menu-edit-detail-' + page_id);
+				if(detail.css('display') == 'none' && input.val() == $.trim(a.html()) && !input.hasClass('error-input-message')) {
+					// ページ名称変更なし
+					input.css('display', 'none');
+					a.css('display', '');
+					return false;
+				}
+			}).on('ajax:success','form',function(e, target) {
+				var li = $(this).parent();
+				var page_id = li.data('id');
+				root_menu.nestable('addEvent', [target, page_id]);
+			});
+
+			// ページ公開・非公開
+			$(tab).on('click','.pages-menu-display-flag',function(e) {
+				var li = $(this).parents('li:first');
+				var parentli = li.parents('li:first');
+				if(parentli.get(0)) {
+					var parentDisplay = $('[name=data\\[Page\\]\\[display_flag\\]]:first', parentli);
+					if(parentDisplay.get(0) && parentDisplay.val() == '0') {
+						return false;
+					}
+				}
+
+				var page_id = li.data('id');
+				var setDisplay = null;
+				var url = $.Common.urlBlock(0, 'page/menu/display');
+				e.preventDefault();
+				e.stopPropagation();
+
+				$('[name=data\\[Page\\]\\[display_flag\\]]', li).each(function(){
+					var display = $(this);
+					var a = display.prev(), img = a.children(':first');
+					if(setDisplay == null) {
+						setDisplay = (display.val() == '1') ? 0 : 1;;
+					}
+					display.val(setDisplay);
+					if(img.get(0)) {
+						if(setDisplay == 0) {
+							img.attr('src', img.attr('src').replace("on.gif", "off.gif"));
+						} else {
+							img.attr('src', img.attr('src').replace("off.gif", "on.gif"));
+						}
+					}
+				});
+				$('[name=data\\[Page\\]\\[display_from_date\\]],[name=data\\[Page\\]\\[display_apply_subpage\\]]', li).each(function(){
+					if(setDisplay == 0) {
+						$(this).removeAttr("disabled");
+					} else {
+						$(this).attr("disabled", "disabled");
+					}
+				});
+				$.post(url, {'data[Page][id]': page_id, 'data[Page][display_flag]': setDisplay});
+			});
+
 			// コンテンツクリックイベント
 			$(tab).on('click','.pages-menu-edit-content',function(e) {
 				var content = $(this);
+				active_li = content.parents('li:first');
+
 				e.preventDefault();
 				e.stopPropagation();
 				$('.pages-menu-edit-content', tab).each(function(){
 					$(this).removeClass(options.activeItemClass);
-					$(this).parents('li:first').children('.pages-menu-edit-operation:first').hide();
+					var li = $(this).parents('li:first');
+					if(active_li.get(0) == li.get(0)) {
+						return;
+					}
+					li.children('.pages-menu-edit-operation:first').hide();
 
 					var a = $(this).children('a.pages-menu-edit-title:first');
 					var input = $(this).children('input.pages-menu-edit-title:first');
-					if(input.css('display') != 'none' && input.val() == $.trim(a.html())) {
+					if(input.css('display') != 'none' && $.Common.escapeHTML(input.val()) == $.trim(a.html()) && !input.hasClass('error-input-message')) {
 						input.css('display', 'none');
 						a.css('display', '');
+						//li.children('form:first').submit();
 					}
 				});
-				active_li = content.parents('li:first');
 				content.addClass(options.activeItemClass);
 				active_li.children('.pages-menu-edit-operation:first').show();
 				var a = content.children('a.pages-menu-edit-title:first');
 				var input = content.children('input.pages-menu-edit-title:first');
+				if(!input.get(0)) {
+					return;
+				}
 				input.css('display', '');
 				a.css('display', 'none');
 				if($(e.target).get(0).tagName != 'INPUT') {

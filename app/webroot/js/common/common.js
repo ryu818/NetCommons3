@@ -62,7 +62,12 @@
 						var res_target = $(res);
 						$(replace_target).replaceWith(res_target);
 					}
-					$.Common.fire('ajax:success', [res_target, status, xhr], a);
+					if(a.attr('id')) {
+						var buf_a = $('#' + a.attr('id'));
+					} else {
+						var buf_a = a;
+					}
+					$.Common.fire('ajax:success', [res_target, status, xhr], buf_a);
 				}
  			});
 
@@ -81,7 +86,7 @@
 			} else {
 				url = frm.attr('action');
 				data = frm.serializeArray();
-				var ret = $.Common.fireResult('ajax:before', [url, data], a);
+				var ret = $.Common.fireResult('ajax:before', [url, data], frm);
 				if (!ret) {
 					e.preventDefault();
 					return false
@@ -99,13 +104,9 @@
 				}
 				target = frm.data("ajax");
 				replace_target = frm.data("ajax-replace");
-				type = a.data("ajax-type");
-				if (!$.Common.fire('ajax:before', [url, data], frm)) {
-					e.preventDefault();
-					return false
-				}
+				type = frm.data("ajax-type");
 				$.ajax({
-					type: (type == 'POST' || type == 'post') ? 'POST' : "GET",
+					type: (type == 'GET' || type == 'get') ? 'GET' : "POST",
 					url: url,
 					data: data,
 					success: function(res, status, xhr){
@@ -119,7 +120,12 @@
 							var res_target = $(res);
 							$(replace_target).replaceWith(res_target);
 						}
-						$.Common.fire('ajax:success', [res_target, status, xhr], frm);
+						if(frm.attr('name')) {
+							var buf_frm = $('form[name=' + frm.attr('name') + ']', res_target);
+						} else {
+							var buf_frm = frm;
+						}
+						$.Common.fire('ajax:success', [res_target, status, xhr], buf_frm);
 					}
 	 			});
 			}
@@ -217,6 +223,50 @@
 
  		},
 
+		// ・$this->Form-inputでselector指定した場合のアラート表示をform中のエレメントが変更されたら削除する
+		// ・エラーがおこった最初のエレメントにフォーカスを移動する。
+		// TODO:WYSIWYGには対応していない。
+		closeAlert : function(input, alert) {
+			var t = this, i =0,text
+			$.each( input, function() {
+				var child = $(this), form, focus;
+				if (child.is(':hidden,:button,:submit,:reset,:image') || child.css('display') == 'none') {
+					return;
+				}
+				if(i == 0) {
+					form = child.parents('form:first');
+					if(form.get(0)) {
+						focus = $(':focus', form);
+						if(!focus.get(0)) {
+							if (child.is(':text,:password,textarea')) {
+								child.select();
+							} else {
+								child.focus();
+							}
+						}
+					}
+				}
+				child.addClass('error-input-message');
+				if (child.is(':text,:password,textarea')) {
+					child.bind("keydown focus", function(e){
+						text = child.val();
+					});
+					child.keyup(function(e){
+						var child = $(this);
+						if(child.val() != text) {
+							alert.remove();
+							child.removeClass('error-input-message');
+						}
+					});
+				} else if(child.is(':input')) {
+					child.click(function(e){
+						alert.remove();
+					});
+				}
+				i++;
+			});
+
+		},
 		alert: function(str) {
 			str = this._massage(str);
 			if(str == "") return;
@@ -247,6 +297,10 @@
 
 		unescapeHTML: function(str) {
 			return String(str).replace(/&quot;/g,'"').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&#039;/g, "'").replace(/&nbsp;/g, " ").replace(/&amp;/g,'&');
+		},
+		// jquery selector escape処理
+		escapeSelector: function(str) {
+			return str.replace(/([#;&,\.\+\*\~':"\!\^$\[\]\(\)=>\|])/g, "\\$1");
 		},
 		/* 正規表現のエスケープ */
 		quote: function (str){

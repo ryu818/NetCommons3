@@ -30,9 +30,6 @@ define("_OFF",0);
  * 日付フォーマット
  */
 define('NC_DB_DATE_FORMAT', 'Y-m-d H:i:s');
-define('NC_DEFAULT_TIME', '12:00am');
-define('NC_CHECK_DATETIME', '%^(?:(?:(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(\\/|-|\\.|\\x20)(?:0?2\\1(?:29)))|(?:(?:(?:1[6-9]|[2-9]\\d)?\\d{2})(\\/|-|\\.|\\x20)(?:(?:(?:0?[13578]|1[02])\\2(?:31))|(?:(?:0?[1,3-9]|1[0-2])\\2(29|30))|(?:(?:0?[1-9])|(?:1[0-2]))\\2(?:0?[1-9]|1\\d|2[0-8])))) ((0?[1-9]|1[012])(:[0-5]\d){0,2} ?([AP]M|[ap]m))$|([01]\d|2[0-3])(:[0-5]\d){0,2}$%');
-// 日時チェック用
 define('NC_VALIDATOR_DATE_TIME', "YmdHis");
 
 //-----------------長さチェック用-------------------------------------------
@@ -126,8 +123,7 @@ define('NC_FOOTER_PAGE_ID', 8);
 define('NC_PERMALINK_CONTENT', '(%| |#|<|>|\+|\\\\|\"|\'|&|\?|\.$|=|\/|~|:|;|,|\$|@|^\.|\||\]|\[|\!|\(|\)|\*)');
 define('NC_PERMALINK_PROHIBITION', "/".NC_PERMALINK_CONTENT."/i");
 define('NC_PERMALINK_PROHIBITION_REPLACE', "-");
-define('NC_PERMALINK_DIR_CONTENT', "^(users\/|controls\/|blocks\/|active-blocks\/|img\/)$");
-//define('NC_PERMALINK_DIR_CONTENT', "^(users\/|img\/|theme\/|frame\/|blocks\/|active-blocks\/)$");
+define('NC_PERMALINK_DIR_CONTENT', "^(users\/|controls\/|blocks\/|active-blocks\/|img\/|css\/|js\/|theme\/)$");
 define('NC_PERMALINK_PROHIBITION_DIR_PATTERN', "/".NC_PERMALINK_DIR_CONTENT."/i");
 
 define('NC_SPACE_PUBLIC_PREFIX', '');

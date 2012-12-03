@@ -191,7 +191,7 @@ class CommonComponent extends Component {
 			// パブリック
 			$ret_url = '/';
 		} else {
-			$page = $this->_controller->Page->findByIds($page_id, $user_id);
+			$page = $this->_controller->Page->findAuthById($page_id, $user_id);
     		if($page['Authority']['hierarchy'] != NC_AUTH_OTHER) {
     			if(isset($use_column) && !$page['Authority'][$use_column]) {
     				// マイポータル OR マイルーム使用不可

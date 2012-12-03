@@ -62,13 +62,15 @@ class PageController extends PageAppController {
 					)
 			);
 		}*/
-		if($is_edit) {
-			// 管理系の権限を取得
+		// 管理系の権限を取得
+		if($user_id) {
 			$admin_hierarchy = $this->ModuleSystemLink->findHierarchy(Inflector::camelize($this->request->params['plugin']), $login_user['authority_id']);
-			$element_params['admin_hierarchy'] = $admin_hierarchy;
+		} else {
+			$admin_hierarchy = NC_AUTH_OTHER;
 		}
-		$pages = $this->Page->findMenu('all', $user_id, NC_SPACE_TYPE_PUBLIC, $current_user, $params, null, $fetch_params);
+		$element_params['admin_hierarchy'] = $admin_hierarchy;
 
+		$pages = $this->Page->findMenu('all', $user_id, NC_SPACE_TYPE_PUBLIC, $current_user, $params, null, $fetch_params);
 		$private_pages = $this->Page->findMenu('all', $user_id, array(NC_SPACE_TYPE_MYPORTAL, NC_SPACE_TYPE_PRIVATE), $current_user, $params, null, $fetch_params);
 		if(isset($private_pages[NC_SPACE_TYPE_MYPORTAL])) {
 			$pages[NC_SPACE_TYPE_MYPORTAL] = $private_pages[NC_SPACE_TYPE_MYPORTAL];

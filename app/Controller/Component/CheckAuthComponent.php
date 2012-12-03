@@ -14,6 +14,13 @@
  */
 class CheckAuthComponent extends Component {
 /**
+ * Controller
+ *
+ * @var     object
+ */
+	protected $_controller = null;
+
+/**
  * Other components utilized by Component
  *
  * @var     array
@@ -23,7 +30,7 @@ class CheckAuthComponent extends Component {
 /**
  * 許す権限
  *
- * @var int
+ * @var integer
  * default 誰でも閲覧可
  */
 	public $allowAuth = NC_AUTH_OTHER;
@@ -31,7 +38,7 @@ class CheckAuthComponent extends Component {
 /**
  * 許す会員権限
  *
- * @var int
+ * @var integer
  * default 誰でも閲覧可
  */
 	public $allowUserAuth = NC_AUTH_OTHER;
@@ -44,6 +51,41 @@ class CheckAuthComponent extends Component {
 	public $prohibitionURL = NC_PROHIBITION_URL;
 
 /**
+ * 一般モジュールでblock_idをチェックするかどうか
+ * @var string
+ */
+	public $chkBlockId = true;
+
+/**
+ * pageデータを取得する条件の順番
+ * 取得に失敗した場合、次を行う
+ * @var array
+ * url:URLから取得
+ *      permalink OR
+ *		module(act)/$active_plugin/$active_controller/$block_id OR
+ *		module(act)/$block_id
+ * request:リクエストパラメータのpage_id($requestPageId)から取得
+ */
+	public $checkOrder = array("url", "request");
+
+/**
+ * リクエストのpage_id名称
+ * @var string
+ */
+	public $requestPageId = "page_id";
+
+/**
+ * Start InitComponent for use in the controller
+ *
+ * @param Controller $controller
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function initialize(Controller $controller) {
+		$this->_controller = $controller;
+	}
+
+/**
  * Start CheckAuthComponent for use in the controller
  *
  * @param Controller $controller
@@ -51,8 +93,8 @@ class CheckAuthComponent extends Component {
  * @since   v 3.0.0.0
  */
 	public function startup(Controller $controller) {
-		
-		$this->_setControllerPrams($controller);
+
+		$this->_setControllerParams($controller);
 
 		if (isset($controller->nc_block['Block'])) {
 			// 既に権限チェック済
@@ -61,8 +103,10 @@ class CheckAuthComponent extends Component {
 
 		//$controller->set('title_for_layout',  '');
 		$user = $this->Auth->user();//認証済みユーザを取得
+
 		$user_id = isset($user['id']) ? intval($user['id']) : 0;
 		$lang = $this->Session->read(NC_CONFIG_KEY.'.'.'language');
+		$system_flag = _OFF;
 
 		$authority_id = isset($user['authority_id']) ? intval($user['authority_id']) : NC_AUTH_OTHER;
 
@@ -71,11 +115,15 @@ class CheckAuthComponent extends Component {
 		$permalink = isset($controller->request->params['permalink']) ? $controller->request->params['permalink'] : '';
 
 		$block_id = isset($controller->request->params['block_id']) ? intval($controller->request->params['block_id']) : 0;
+		$data_page_id = !empty($controller->request->data[$this->requestPageId]) ? $controller->request->data[$this->requestPageId] : 0;
+		$named_page_id = !empty($controller->request->named[$this->requestPageId]) ? $controller->request->named[$this->requestPageId] : 0;
+		$url_page_id = !empty($controller->request->query[$this->requestPageId]) ? $controller->request->query[$this->requestPageId] : 0;
+		$page_id = !empty($data_page_id) ? $data_page_id : (!empty($named_page_id) ? $named_page_id : (!empty($url_page_id) ? $url_page_id : 0));
 
 		$plugin_name = $controller->request->params['plugin'];
 		$controller_name = $controller->request->params['controller'];
 		$action_name = $controller->request->params['action'];
-		
+
 		$permalink = $this->formatUrl($permalink);
 
 		Configure::write(NC_SYSTEM_KEY.'.permalink', $permalink);
@@ -86,7 +134,7 @@ class CheckAuthComponent extends Component {
 			$redirect_url = '/users/login';
 		else
 			$redirect_url = null;
-		
+
 		if(!preg_match($this->prohibitionURL, $url)) {
 			if($block_id > 0) {
 				$block = $this->_getBlock($controller, $block_id, $user_id);
@@ -102,7 +150,6 @@ class CheckAuthComponent extends Component {
 					$controller->flash(__('Page not found.'), $redirect_url, 'CheckAuth.002', '404');
 					return ;
 				}
-				$controller->nc_page = $active_page;
 
 				//
 				// title
@@ -113,7 +160,7 @@ class CheckAuthComponent extends Component {
 				//}
 			}
 
-			$page = $this->_getPage($controller, $permalink, $user_id, $lang);
+			$page = $this->_getPage($controller, $permalink, $page_id, $user_id, $lang);
 			if($permalink != '' && isset($active_page) && $active_page['Page']['position_flag'] &&
 				($page === false || $page['Page']['id'] != $active_page['Page']['id'])) {
 				// パーマリンクからのPageとblock_idのはってあるページが一致しなければエラー
@@ -126,6 +173,11 @@ class CheckAuthComponent extends Component {
 			if($page === false) {
 				// ページが存在しない
 				$controller->flash(__('Page not found.'), $redirect_url, 'CheckAuth.004', '404');
+				return ;
+			}
+			if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_DISABLE ||
+					($page['Page']['display_flag'] == NC_DISPLAY_FLAG_OFF && $page['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF)) {
+				$controller->flash(__('Content not found.'), $redirect_url, 'CheckAuth.005', '404');
 				return ;
 			}
 
@@ -166,7 +218,7 @@ class CheckAuthComponent extends Component {
 			}*/
 			// TODO:test センターカラム以外のpege_idも入ってくる可能性あるため、修正予定。
 			$center_page = $page;
-			
+
 			$current_user = $controller->User->currentUser($center_page, $user);
 			if($current_user === '') {
 				$current_user = array('User' => $user);
@@ -186,8 +238,8 @@ class CheckAuthComponent extends Component {
 				Configure::write(NC_AUTH_KEY.'.'.'myportal_name', $myportal_name);
 				Configure::write(NC_AUTH_KEY.'.'.'private_name', $private_name);
 			}
-			
-			
+
+
 			$controller->page_id = intval($page['Page']['id']);
 			Configure::write(NC_SYSTEM_KEY.'.'.'Center_Page', $center_page);
 
@@ -206,11 +258,11 @@ class CheckAuthComponent extends Component {
 			// TODO:ログインに遷移する場合、以下を記述
 			//$controller->Auth->deny();
 		}
-		
+
 		if($controller->request->header('X-NC-PAGE') || ($controller->request->params['plugin'] == '' && $controller->request->params['controller'] == 'pages')) {
 			Configure::write(NC_SYSTEM_KEY.'.block_type', 'blocks');
 		}
-		
+
 
 		/*
 		 * Setting Mode
@@ -231,7 +283,76 @@ class CheckAuthComponent extends Component {
 		} else if($user_id == 0 && !empty($mode)) {
 			$this->Session->delete(NC_SYSTEM_KEY.'.mode');
 		}
+
+		// block_idチェック
+		if($this->chkBlockId) {
+			if((!isset($block_id) || $block_id == 0) && !$system_flag) {
+				$controller->flash(__('Content not found.'), $redirect_url, 'CheckAuth.006', '404');
+				return;
+			}
+		}
+
+		// 権限チェック
+		if(!$this->chkAuth($controller->hierarchy)) {
+			if($user_id == 0) {
+				$this->Session->setFlash(__('Forbidden permission to access the page.'), 'default', array(), 'auth');
+			}
+			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.007', '403');
+			return;
+		}
+
+		// 権限チェック(会員権限)
+		if(!$this->chkUserAuth($user['hierarchy'])) {
+			if($user_id == 0) {
+				$this->Session->setFlash(__('Forbidden permission to access the page.'), 'default', array(), 'auth');
+			}
+			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.008', '403');
+			return;
+		}
 	}
+
+/**
+ * 権限チェック
+ *
+ * @param   integer $hierarchy
+ * @param   integer $allowAuth
+ * @return  boolean
+ * @since   v 3.0.0.0
+ */
+	public function chkAuth($hierarchy, $allowAuth = null) {
+		$allowAuth = ($allowAuth == null) ? $this->allowAuth : $allowAuth;
+		$allowAuth = $this->_getMinAuth($allowAuth);
+		// 共通権限チェック
+		// TODO:マイポータルを非公開に設定した場合は、ここのチェックにも追加する必要あり。
+		if(!empty($page['Page']['space_type']) &&
+				($page['Page']['space_type'] == NC_SPACE_TYPE_PRIVATE ||
+						$page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) &&
+				$hierarchy < NC_AUTH_GUEST) {
+			return false;
+		}
+		if($hierarchy < $allowAuth) {	// $page_id != 0 &&
+			return false;
+		}
+		return true;
+	}
+
+/**
+ * 権限チェック
+ *
+ * @param   integer $hierarchy
+ * @param   integer $allowUserAuth
+ * @return  boolean
+ * @since   v 3.0.0.0
+ */
+	public function chkUserAuth($hierarchy, $allowUserAuth = null) {
+		$allowUserAuth = ($allowUserAuth == null) ? $this->allowUserAuth : $allowUserAuth;
+		$allowUserAuth = $this->_getMinAuth($allowUserAuth);
+		if(intval($hierarchy) < $allowUserAuth) {
+			return false;
+		}
+		return true;
+	}
+
 /**
  * Module取得
  *
@@ -278,23 +399,8 @@ class CheckAuthComponent extends Component {
  * @return  array $page エラーの場合、false
  * @since   v 3.0.0.0
  */
-	protected function _getPage(Controller $controller, $permalink, $user_id, $lang) {
-		$page = array();
-		$space_type = NC_SPACE_TYPE_PUBLIC;
-		if($permalink != '') {
-			if(NC_SPACE_PUBLIC_PREFIX != '' && substr($permalink, 0, strlen(NC_SPACE_PUBLIC_PREFIX) + 1) == NC_SPACE_PUBLIC_PREFIX.'/') {
-				$permalink = substr($permalink, strlen(NC_SPACE_PUBLIC_PREFIX) + 1);
-			} else if(NC_SPACE_MYPORTAL_PREFIX != '' && substr($permalink, 0, strlen(NC_SPACE_MYPORTAL_PREFIX) + 1) == NC_SPACE_MYPORTAL_PREFIX.'/') {
-				$space_type = NC_SPACE_TYPE_MYPORTAL;
-				$permalink = substr($permalink, strlen(NC_SPACE_MYPORTAL_PREFIX) + 1);
-			} else if(NC_SPACE_PRIVATE_PREFIX != '' && substr($permalink, 0, strlen(NC_SPACE_PRIVATE_PREFIX) + 1) == NC_SPACE_PRIVATE_PREFIX.'/') {
-				$space_type = NC_SPACE_TYPE_PRIVATE;
-				$permalink = substr($permalink, strlen(NC_SPACE_PRIVATE_PREFIX) + 1);
-			} else if(NC_SPACE_GROUP_PREFIX != '' && substr($permalink, 0, strlen(NC_SPACE_GROUP_PREFIX) + 1) == NC_SPACE_GROUP_PREFIX.'/') {
-				$space_type = NC_SPACE_TYPE_GROUP;
-				$permalink = substr($permalink, strlen(NC_SPACE_GROUP_PREFIX) + 1);
-			}
-		}
+	protected function _getPage(Controller $controller, $permalink, $page_id, $user_id, $lang) {
+		$page = null;
 		if(empty($user_id)) {
 			$page_params = array(
 				'fields' => array(
@@ -308,59 +414,95 @@ class CheckAuthComponent extends Component {
 									'Authority.hierarchy'
 				),
 				'joins' => array(
-	                                     array("type" => "LEFT",
-	                                           "table" => "page_user_links",
-	                                           "alias" => "PageUserLink",
-	                                           "conditions" => "`Page`.`room_id`=`PageUserLink`.`room_id`".
-	                                     		" AND `PageUserLink`.`user_id` =".$user_id
-	                                          ),
-	                                     array("type" => "LEFT",
-	                                           "table" => "authorities",
-	                                           "alias" => "Authority",
-	                                           "conditions" => "`Authority`.id``=`PageUserLink`.`authority_id`"
-	                                          )
-	                            )
-			);
-		}
-		if($permalink == "") {
-			// トップページ
-			$page_params['conditions'] = array(
-				'Page.permalink' => '',
-				'Page.position_flag' => _ON,
-				'Page.space_type' => $space_type,
-				'Page.display_sequence' => 1,
-				'Page.root_sequence' => 1,
-				'Page.thread_num' => 2
-			);
-		} else {
-			$page_params['conditions'] = array(
-				'Page.permalink' => $permalink,
-				'Page.position_flag' => _ON,
-				'Page.space_type' => $space_type,
-				'Page.display_sequence !=' => 0
+					array(
+						"type" => "LEFT",
+						"table" => "page_user_links",
+						"alias" => "PageUserLink",
+						"conditions" => "`Page`.`room_id`=`PageUserLink`.`room_id`".
+							" AND `PageUserLink`.`user_id` =".$user_id
+						),
+					array(
+							"type" => "LEFT",
+							"table" => "authorities",
+							"alias" => "Authority",
+							"conditions" => "`Authority`.id``=`PageUserLink`.`authority_id`"
+					)
+				)
 			);
 		}
 
-		$pages = $controller->Page->find('all', $page_params);
-		$page = null;
-		if(isset($pages[0])) {
-			$active_lang = null;
-			foreach($pages as $current_page) {
-				if($current_page['Page']['lang'] == $lang) {
-					$page = $current_page;
+		foreach($this->checkOrder as $order) {
+			unset($page_params['conditions']);
+			switch($order) {
+				case "url":
+					$space_type = NC_SPACE_TYPE_PUBLIC;
+					if($permalink != '') {
+						if(NC_SPACE_PUBLIC_PREFIX != '' && substr($permalink, 0, strlen(NC_SPACE_PUBLIC_PREFIX) + 1) == NC_SPACE_PUBLIC_PREFIX.'/') {
+							$permalink = substr($permalink, strlen(NC_SPACE_PUBLIC_PREFIX) + 1);
+						} else if(NC_SPACE_MYPORTAL_PREFIX != '' && substr($permalink, 0, strlen(NC_SPACE_MYPORTAL_PREFIX) + 1) == NC_SPACE_MYPORTAL_PREFIX.'/') {
+							$space_type = NC_SPACE_TYPE_MYPORTAL;
+							$permalink = substr($permalink, strlen(NC_SPACE_MYPORTAL_PREFIX) + 1);
+						} else if(NC_SPACE_PRIVATE_PREFIX != '' && substr($permalink, 0, strlen(NC_SPACE_PRIVATE_PREFIX) + 1) == NC_SPACE_PRIVATE_PREFIX.'/') {
+							$space_type = NC_SPACE_TYPE_PRIVATE;
+							$permalink = substr($permalink, strlen(NC_SPACE_PRIVATE_PREFIX) + 1);
+						} else if(NC_SPACE_GROUP_PREFIX != '' && substr($permalink, 0, strlen(NC_SPACE_GROUP_PREFIX) + 1) == NC_SPACE_GROUP_PREFIX.'/') {
+							$space_type = NC_SPACE_TYPE_GROUP;
+							$permalink = substr($permalink, strlen(NC_SPACE_GROUP_PREFIX) + 1);
+						}
+					}
+					if($permalink == "") {
+						// トップページ
+						$page_params['conditions'] = array(
+							'Page.permalink' => '',
+							'Page.position_flag' => _ON,
+							'Page.space_type' => $space_type,
+							'Page.display_sequence' => 1,
+							'Page.thread_num' => 2
+						);
+					} else {
+						$page_params['conditions'] = array(
+							'Page.permalink' => $permalink,
+							'Page.position_flag' => _ON,
+							'Page.space_type' => $space_type,
+							'Page.display_sequence !=' => 0
+						);
+					}
 					break;
-				} else if(($active_lang === null) ||
-						($active_lang !== '' && $active_lang != 'en')) {
-					// 英語を優先的に表示する
-					$active_lang = $current_page['Page']['lang'];
-					$page = $current_page;
+				case "request":
+					if($page_id == 0) {
+						continue;
+					} else {
+						$page_params['conditions'] = array('Page.id' => $page_id);
+					}
+					break;
+			}
+
+			if(empty($page_params['conditions']))
+				continue;
+
+			$pages = $controller->Page->find('all', $page_params);
+			$page = null;
+			if(isset($pages[0])) {
+				$active_lang = null;
+				foreach($pages as $current_page) {
+					if($current_page['Page']['lang'] == $lang) {
+						$page = $current_page;
+						break;
+					} else if(($active_lang === null) ||
+							($active_lang !== '' && $active_lang != 'en')) {
+						// 英語を優先的に表示する
+						$active_lang = $current_page['Page']['lang'];
+						$page = $current_page;
+					}
 				}
 			}
 		}
+
 		if(!isset($page)) {
 			return false;
 		}
 		$page = $controller->Page->afterFindIds($page);
+		$controller->nc_page = $page;
 		return $page;
 	}
 
@@ -393,22 +535,10 @@ class CheckAuthComponent extends Component {
  * @since   v 3.0.0.0
  */
 	public function formatUrl($url) {
-		$url_len = strlen($url);
-		// 最初の「/」を除去
-		if(substr($url, 0, 1) == "/") {
-			$url = substr($url, 1, $url_len);
-			$url_len = strlen($url);
-		}
-
-		// 最後の「/」を除去
-		if(substr($url, $url_len-1, $url_len) == '/') {
-			$url = substr($url, 0, -1);
-		}
-
-		return $url;
+		return trim($url, '/');
 	}
-	
-	protected function _setControllerPrams(Controller $controller) {
+
+	protected function _setControllerParams(Controller $controller) {
 		$blocks = Configure::read(NC_SYSTEM_KEY.'.blocks');
 		$block = Configure::read(NC_SYSTEM_KEY.'.block');
 		$page = Configure::read(NC_SYSTEM_KEY.'.page');
@@ -424,7 +554,7 @@ class CheckAuthComponent extends Component {
 		if(isset($block)) {
 			$controller->nc_block = $block;
 			Configure::delete(NC_SYSTEM_KEY.'.block');
-			
+
 			$controller->id = '_'.intval($block['Block']['id']);
 			$controller->block_id = intval($block['Block']['id']);
 
@@ -440,5 +570,31 @@ class CheckAuthComponent extends Component {
 			$controller->nc_page = $page;
 			Configure::delete(NC_SYSTEM_KEY.'.page');
 		}
+	}
+
+/**
+ * チェックする権限の最小値を取得
+ *
+ * @param   string $name
+ * @return  string $name
+ * @since   v 3.0.0.0
+ */
+	protected function _getMinAuth($name) {
+		switch($name) {
+			case NC_AUTH_GENERAL:
+				$name = NC_AUTH_MIN_GENERAL;
+				break;
+			case NC_AUTH_MODERATE:
+				$name = NC_AUTH_MIN_MODERATE;
+				break;
+			case NC_AUTH_CHIEF:
+				$name = NC_AUTH_MIN_CHIEF;
+				break;
+			case NC_AUTH_ADMIN:
+				$name = NC_AUTH_MIN_ADMIN;
+				break;
+		}
+
+		return $name;
 	}
 }

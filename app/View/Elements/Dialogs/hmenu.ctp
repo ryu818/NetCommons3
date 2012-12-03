@@ -48,7 +48,7 @@ if($nc_mode == NC_BLOCK_MODE){
 			</li>
 			<?php if(!empty($nc_user['id']) && $hierarchy >= NC_AUTH_MIN_CHIEF): ?>
 			<li class="nc_hmenu_li nc_hmenu_setting_m">
-				<a class="nc_tooltip" title="<?php echo(h($setting)); ?>" data-powertip="<?php echo(h($tooltip_setting)); ?>" href="<?php echo(rtrim($this->Html->url(), '/').'/?setting_mode='.$setting_mode); ?>">
+				<a class="nc_tooltip" title="<?php echo(h($setting)); ?>" data-tooltip-desc="<?php echo(h($tooltip_setting)); ?>" href="<?php echo(rtrim($this->Html->url(), '/').'/?setting_mode='.$setting_mode); ?>">
 					<span class="<?php echo($setting_class); ?>"></span>
 				</a>
 			</li>
