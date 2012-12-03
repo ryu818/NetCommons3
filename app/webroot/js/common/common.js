@@ -27,6 +27,7 @@
 		getAjax : function(e, a) {
 			var target, replace_target, url = a.attr('href'), type;
 			var ret = $.Common.fireResult('ajax:before', [url], a);
+			var data = null;
 			if (!ret) {
 				e.preventDefault();
 				return false
@@ -43,14 +44,22 @@
 			target = a.data("ajax");
 			replace_target = a.data("ajax-replace");
 			type = a.data("ajax-type");
+			type = (type == 'POST' || type == 'post') ? 'POST' : "GET";
 			if(url == '#') {
 				return;
 			}
+			if(type == 'POST') {
+				data = a.data("ajax-data");
+				if($(data).get(0)) {
+					data = $(data).serializeArray();
+				}
+			}
+
 
 			$.ajax({
 				type: (type == 'POST' || type == 'post') ? 'POST' : "GET",
 				url: url,
-				//data: ,
+				data: data,
 				success: function(res, status, xhr){
 					if (!$.Common.fire('ajax:beforeSuccess', [res, status, xhr], a)) {
 						return false
@@ -337,51 +346,7 @@
 			}
 			$.ajax(ajax_options);
 		},
-		showConfirm: function(target, title, confirm, callback, cancel_callback, input_label) {
-			var pos = $(target).offset();
-			var dialog_el = $('#nc_mes_dialog');
-			if(dialog_el.get(0)) {
-				dialog_el.remove();
-			}
 
-			var html = '<div id="nc_mes_dialog" style="display:none;">'+
-					'<div class="nc_confirm_dialog_mes">'+confirm+'</div>';
-			if(input_label) {
-				html += '<label for="nc_confirm_dialog_mes_flag">'+
-							'<input id="nc_confirm_dialog_mes_flag" type="checkbox" name="confirm_dialog_mes_flag" value="1" />&nbsp;'+
-							input_label+
-							'</label>';
-			}
-			html += '<div class="btn-bottom">'+
-						'<input type="button" class="common_btn" name="ok" value="'+__('Ok')+'">&nbsp;&nbsp;&nbsp;'+
-						'<input type="button" class="common_btn" name="cancel" value="'+__('Cancel')+'">'+
-					'</div>'+
-				'</div>';
-			$(html).appendTo($(document.body));
-			dialog_el = $('#nc_mes_dialog');
-
-			$('input[name="ok"]', dialog_el).click(function(event){
-				if(callback) {
-					callback();
-				}
-				dialog_el.dialog('close');
-			});
-			$('input[name="cancel"]', dialog_el).click(function(event){
-				if(cancel_callback) {
-					cancel_callback();
-				}
-				dialog_el.dialog('close');
-			});
-
-			dialog_el.dialog({
-				title: title,
-				resizable: false,
-				width: 320,
-				modal: true,
-				zIndex: ++this.zIndex,
-				position: [pos.left+20 - $(window).scrollLeft() ,pos.top+20 - $(window).scrollTop()],
-			});
-		},
 		/* 色取得一般メソッド */
 		// RBG値から HSL値を取得
 		getHSL : function(r, g, b)
@@ -542,9 +507,9 @@
 			return $._lang['common'];
 		}
 		ret = ($._lang['common'][name]) ? $._lang['common'][name] : name;
-		if(arguments.length > 2) {
+		if(arguments.length >= 2) {
 			r.push.apply(r, arguments);
-			r.shift();
+			//r.shift();
 			r[0] = ret;
 			ret = $.Common.sprintf.apply(this, r);
 		}

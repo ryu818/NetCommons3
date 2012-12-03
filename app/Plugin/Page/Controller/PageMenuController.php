@@ -116,8 +116,6 @@ class PageMenuController extends PageAppController {
 
 /**
  * ページ編集
- * @param   integer   parent page_id or current page_id
- * @param   string    inner or bottom(追加) $type
  * @return  void
  * @since   v 3.0.0.0
  */
@@ -193,23 +191,23 @@ class PageMenuController extends PageAppController {
 				$fieldChildList = array('permalink');
 
 				$child_page['Page']['permalink'] = $upd_permalink;
-				if(!empty($current_page['Page']['display_from_date']) && $current_page['Page']['display_apply_subpage'] == _ON) {
+				if(!empty($display_from_date) && $current_page['Page']['display_apply_subpage'] == _ON) {
 					$child_page['Page']['display_from_date'] = $display_from_date;
 					$fieldChildList['display_from_date'] = true;
 				}
-				if(!empty($current_page['Page']['display_from_date']) && !empty($child_page['Page']['display_from_date']) &&
-						strtotime($child_page['Page']['display_from_date']) < strtotime($current_page['Page']['display_from_date'])) {
+				if(!empty($display_from_date) && !empty($child_page['Page']['display_from_date']) &&
+						strtotime($child_page['Page']['display_from_date']) < strtotime($display_from_date)) {
 					$child_page['Page']['display_from_date'] = $display_from_date;
 					$fieldChildList['display_from_date'] = true;
 				}
-				if(!empty($current_page['Page']['display_to_date'])) {
-					if(empty($child_page['Page']['display_to_date']) || strtotime($child_page['Page']['display_to_date']) > strtotime($current_page['Page']['display_to_date'])) {
+				if(!empty($display_to_date)) {
+					if(empty($child_page['Page']['display_to_date']) || strtotime($child_page['Page']['display_to_date']) > strtotime($display_to_date)) {
 						$child_page['Page']['display_to_date'] = $display_to_date;
 						$fieldChildList['display_to_date'] = true;
 					}
 				}
 				//$this->Page->set($child_page);
-				if(!$this->Page->save($child_page, true, $fieldList)) {
+				if(!$this->Page->save($child_page, true, $fieldChildList)) {
 					$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/edit.003', '400');
 					return;
 				}
@@ -229,7 +227,6 @@ class PageMenuController extends PageAppController {
 		if(isset($input_permalink)) {
 			$current_page['Page']['permalink'] = $input_permalink;
 		}
-		$current_page['Page']['hierarchy'] = $current_page['Authority']['hierarchy'];
 		$this->set('page', $current_page);
 		$this->set('parent_page', $parent_page);
 		$this->set('pages', $thread_pages);
@@ -241,11 +238,10 @@ class PageMenuController extends PageAppController {
 /**
  * ページ詳細設定表示
  * @param   integer   親page_id or カレントpage_id $page_id
- * @param   string    id名postfix $postfix
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function detail($page_id, $postfix = '') {
+	public function detail($page_id) {
 		$user_id = $this->Auth->user('id');
 		$page = $this->Page->findAuthById($page_id, $user_id);
 
@@ -274,8 +270,6 @@ class PageMenuController extends PageAppController {
 
 /**
  * ページ詳細設定表示
- * @param   integer   親page_id or カレントpage_id $page_id
- * @param   string    id名postfix $postfix
  * @return  void
  * @since   v 3.0.0.0
  */
@@ -288,6 +282,10 @@ class PageMenuController extends PageAppController {
 		}
 
 		$current_page = $this->Page->findAuthById($page['Page']['id'], $user_id);
+		if(!isset($current_page['Page'])) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu/display.002', '400');
+			return;
+		}
 
 		// 権限チェック
 		$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $current_page);
@@ -298,7 +296,7 @@ class PageMenuController extends PageAppController {
 		// 更新処理
 		$this->Page->id = $page['Page']['id'];
 		if(!$this->Page->saveField('display_flag', $page['Page']['display_flag'])) {
-			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/display.002', '400');
+			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/display.003', '400');
 			return;
 		}
 
@@ -307,11 +305,60 @@ class PageMenuController extends PageAppController {
 		foreach($child_pages as $key => $child_page) {
 			$this->Page->id = $child_page['Page']['id'];
 			if(!$this->Page->saveField('display_flag', $page['Page']['display_flag'])) {
-				$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/display.003', '400');
+				$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/display.004', '400');
 				return;
 			}
 		}
 
+		// 正常終了
+		$this->autoRender = false;
+	}
+
+/**
+ * ページ削除
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function delete() {
+		$user_id = $this->Auth->user('id');
+		$page = $this->request->data;
+		if(!isset($page['Page']['id'])) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu/delete.001', '400');
+			return;
+		}
+
+		$current_page = $this->Page->findAuthById($page['Page']['id'], $user_id);
+		if(!isset($current_page['Page'])) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu/delete.002', '400');
+			return;
+		}
+		$parent_page = $this->Page->findById($current_page['Page']['parent_id']);
+		if(!isset($parent_page['Page'])) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu/delete.003', '400');
+			return;
+		}
+
+		// 権限チェック
+		$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $current_page);
+		if(!$admin_hierarchy) {
+			return;
+		}
+		// 編集ページ以下のページ取得
+		/*$child_pages = $this->Page->findChilds('all', $current_page, $user_id);
+		$fetch_params = array(
+			'active_page_id' => $current_page['Page']['id']
+		);
+		$thread_pages = $this->Page->afterFindMenu($child_pages, $fetch_params);
+
+		// 各スペースタイプは最低１ページ必要
+		$this->Page->invalidate('Page.page_name', 'エラーメッセージ');
+		$this->set('page', $current_page);
+		$this->set('parent_page', $parent_page);
+		$this->set('pages', $thread_pages);
+		$this->set('admin_hierarchy', $admin_hierarchy);
+		$this->set('is_detail', false);
+		$this->set('is_error', false);
+		$this->render('edit');*/
 		// 正常終了
 		$this->autoRender = false;
 	}

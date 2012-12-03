@@ -74,10 +74,10 @@ class TimeZoneBehavior extends ModelBehavior {
  */
 	public function pastDateTime(Model $Model, $data) {
 		$values = array_values($data);
-    	$date_time1 = $values[0];
-    	$date_time = $this->date($Model, $date_time1, NC_VALIDATOR_DATE_TIME);
+    	$date_time = $values[0];
+    	$date_time = $this->date($Model, $date_time, NC_VALIDATOR_DATE_TIME);
     	if(strtotime($date_time) <= strtotime(gmdate(NC_VALIDATOR_DATE_TIME))) {
-			return false;
+    		return false;
 		}
 		return true;
 	}

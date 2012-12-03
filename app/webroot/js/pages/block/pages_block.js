@@ -124,7 +124,7 @@
 							width: blockChild.outerWidth()  + "px",
 							height: blockChild.outerHeight() + "px"
 						});
-						
+
 						block_move_desc = $('<div></div>').addClass('nc_block_move_desc');
 						$(ui.helper).append(block_move_desc);
 					},
@@ -785,7 +785,7 @@
 
 			show_count_el = block.parents('[data-show-count]:first');
 			params['show_count'] = show_count_el.attr('data-show-count');
-			
+
 			$.post($.Common.urlBlock(block_id, 'block/add_group'),
 				params,
 				function(res){
@@ -866,10 +866,34 @@
 			var t = this;
 
 			var all_delete = (all_delete_flag) ? __d('pages', 'I completely delete it.') : null;
+			var pos = $(event.target).offset();
+			var ok = __('Ok') ,cancel = __('Cancel');
 
-			$.Common.showConfirm(event.target, __d('pages', 'Delete block'),
-					confirm, function(){t.delBlock(block_id);},
-					null, all_delete);
+			if(all_delete) {
+				confirm += '<div><label for="nc_confirm_dialog_mes_flag">'+
+							'<input id="nc_confirm_dialog_mes_flag" type="checkbox" name="confirm_dialog_mes_flag" value="1" />&nbsp;'+
+							all_delete+
+							'</label></div>';
+			}
+			var _buttons = {};
+			_buttons[ok] = function(){
+				t.delBlock(block_id);
+				//$(this).dialog('close');
+				$(this).remove();
+			};
+			_buttons[cancel]  = function(){
+				//$(this).dialog('close');
+				$(this).remove();
+			};
+			$('<div></div>').html(confirm).appendTo($(document.body)).dialog({
+				title: __d('pages', 'Delete block'),
+				resizable: false,
+				height:180,
+				modal: true,
+				buttons: _buttons,
+				zIndex: ++$.Common.zIndex,
+				position: [pos.left+20 - $(window).scrollLeft() ,pos.top+20 - $(window).scrollTop()],
+    		});
 
 			event.preventDefault();
 			event.stopPropagation();
