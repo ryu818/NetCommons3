@@ -260,7 +260,7 @@
 					child.bind("keydown focus", function(e){
 						text = child.val();
 					});
-					child.keyup(function(e){
+					child.bind("keyup change", function(e){
 						var child = $(this);
 						if(child.val() != text) {
 							alert.remove();
