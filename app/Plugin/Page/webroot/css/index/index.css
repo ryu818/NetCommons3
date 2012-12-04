@@ -97,12 +97,12 @@ input.pages-menu-edit-title {
     width: 21px;
 }
 
-#pages-menu-add-btn:hover {
+.pages-menu-add-btn:hover {
 	background-image: url(../../img/icons/base/add_file_hover.gif);
 	color: #56b4ef !important;
 }
 
-#pages-menu-add-btn {
+.pages-menu-add-btn {
 	background: url(../../img/icons/base/add_file.gif) no-repeat 10px center;
 
 	padding: 5px 30px;
@@ -110,6 +110,11 @@ input.pages-menu-edit-title {
 	border-right: 1px solid #e8e8e8;
 	color: #222222 !important;
 	font-weight:bold;
+}
+
+.pages-menu-add-btn-disable,.pages-menu-add-btn-disable:hover {
+	background: url(../../img/icons/base/add_file.gif) no-repeat 10px center !important;
+	color: #cccccc !important;
 }
 
 .pages-menu-edit-operation {
@@ -192,9 +197,4 @@ input.pages-menu-edit-title {
 
 .pages-menu-edit-display-to-date {
 	padding:8px;
-}
-
-/* ページ削除 */
-.pages-menu-all-delete-confirm {
-	color: #0000ff;
 }

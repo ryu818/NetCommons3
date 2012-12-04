@@ -4,7 +4,6 @@
 	$is_chgseq = false;
 	$is_edit = false;
 	$is_edit_detail = false;
-	$is_add = false;
 	$is_delete = false;
 	$is_sel_modules = false;
 	$is_sel_users = false;
@@ -14,11 +13,6 @@
 
 	if($menu['hierarchy'] >= NC_AUTH_MIN_CHIEF){
 		$is_chief = true;
-		$is_add = true;
-	}
-	if($menu['display_sequence'] == 1 && $menu['space_type'] == NC_SPACE_TYPE_GROUP) {
-		// コミュニティのトップページの編集は許さない
-		$is_chief = false;
 	}
 	if($menu['display_sequence'] != 1) {
 		$is_edit_detail = true;
@@ -28,7 +22,7 @@
 	if(($menu['thread_num'] <= 1) ) {
 		$is_top = true;
 	}
-	if($space_type != NC_SPACE_TYPE_GROUP && $menu['thread_num'] <= 1 && $menu['id'] != 0) {
+	if($menu['thread_num'] <= 1) {
 		// コミュニティ以外のTopならば、移動させない。
 		$attr = " data-dd-sequence = \"inner-only\"";
 	} else {
@@ -45,14 +39,14 @@
 		$is_delete = true;
 	}
 
-	if($is_chief && !($space_type == NC_SPACE_TYPE_PUBLIC && $menu['thread_num'] == 1) && $menu['display_sequence'] != 1) {
+	if($is_chief && !($menu['thread_num'] == 1) && $menu['display_sequence'] != 1) {
 		// TopNodeでもなく、各ノードのトップページでなければ。
 		$is_display = true;
 	}
 ?>
 <?php $class = $this->element('index/init_page', array('menu' => $menu, 'is_edit' => _ON)); ?>
 <?php $next_thread_num = $menu['thread_num']+1; ?>
-<li id="pages-menu-edit-item-<?php echo(h($menu['id'])); ?>" class="dd-item dd-drag-item<?php if($menu['thread_num']==1){echo(' '.$class);} ?>" data-id="<?php echo(h($menu['id'])); ?>"<?php echo($attr); ?>>
+<li id="pages-menu-edit-item-<?php echo(h($menu['id'])); ?>" class="dd-item dd-drag-item<?php if($menu['thread_num']==1){echo(' '.$class);} ?>" data-id="<?php echo(h($menu['id'])); ?>" data-is-chief="<?php if($is_chief){echo(_ON);} else {echo(_OFF);} ?>"<?php echo($attr); ?>>
 	<?php if($is_chgseq): ?>
 	<div class="dd-handle dd-drag-handle"></div>
 	<?php elseif($is_top): ?>

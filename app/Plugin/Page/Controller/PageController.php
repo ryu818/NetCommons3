@@ -70,6 +70,23 @@ class PageController extends PageAppController {
 		}
 		$element_params['admin_hierarchy'] = $admin_hierarchy;
 
+		if($is_edit) {
+			// active pageでページ追加をactiveにするかどうか。
+			$is_add = false;
+
+			if($center_page['Page']['thread_num'] <= 1) {
+				if($center_page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
+					$is_add = true;
+				}
+			} else {
+				$parent_page = $this->Page->findAuthById($center_page['Page']['parent_id'], $user_id);
+				if($parent_page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
+					$is_add = true;
+				}
+			}
+			$element_params['is_add'] = $is_add;
+		}
+
 		$pages = $this->Page->findMenu('all', $user_id, NC_SPACE_TYPE_PUBLIC, $current_user, $params, null, $fetch_params);
 		$private_pages = $this->Page->findMenu('all', $user_id, array(NC_SPACE_TYPE_MYPORTAL, NC_SPACE_TYPE_PRIVATE), $current_user, $params, null, $fetch_params);
 		if(isset($private_pages[NC_SPACE_TYPE_MYPORTAL])) {

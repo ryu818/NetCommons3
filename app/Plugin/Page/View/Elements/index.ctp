@@ -22,8 +22,10 @@ if(isset($is_edit) && $is_edit == _ON){
 <?php if($is_edit): ?>
 <div class="nc-pages-setting-menu nc_popup_color" data-pages-header="true">
 	<?php
+	$class_postfix = (!$is_add) ? ' pages-menu-add-btn-disable' : '';
 	echo $this->Html->link(__d('page', 'Add page'), array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'add'),
 		array('title' => __d('page', 'Add page'), 'id' => 'pages-menu-add-btn' ,
+		'class' => 'pages-menu-add-btn'. $class_postfix,
 		'data-ajax-replace' => '#pages-menu-add-temp', 'data-ajax-type' => 'POST'));
 	 ?>
 </div>

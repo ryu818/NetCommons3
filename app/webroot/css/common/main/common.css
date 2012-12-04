@@ -178,15 +178,15 @@ select.selectlist {
 }
 
 .error-message {
-	color:#ff0000;
-	background: url(../../img/common/alert.gif) no-repeat 5px center #ffd9d9;
+	color:#ff0000 !important;
+	background: url(../../img/common/alert.gif) no-repeat 5px center #ffd9d9 !important;
 	padding:5px 0 5px 25px;
 	margin:2px 0;
 	clear: both;
 }
 .info-message {
-	color:#0000ff;
-	background-color:#d9e0ff;
+	color:#0000ff !important;
+	background-color:#d9e0ff !important;
 	padding:5px 0 5px 25px;
 	margin:2px 0;
 	clear: both;

@@ -87,16 +87,23 @@ class PageMenuComponent extends Component {
 	 * @access	public
 	 */
 	public function validatorPageDetail($request, $page = null, $parent_page = null) {
+		if($request->params['action'] != 'detail') {
+			if(!$request->is('post')) {
+				$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.006', '400');
+				return false;
+			}
+		}
 		switch($request->params['action']) {
 			case 'add':
-			case 'edit':
-				if(!$request->is('post')) {
-					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.005', '400');
+				if($page['Page']['thread_num'] == 0) {
+					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.007', '400');
 					return false;
 				}
+				break;
+			case 'edit':
 				if($page['Page']['thread_num'] <= 1) {
 					//Top Nodeの編集は許さない
-					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.006', '400');
+					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.008', '400');
 					return false;
 				}
 				break;
@@ -104,12 +111,12 @@ class PageMenuComponent extends Component {
 				// 親がOFFならば変更を許さない。
 				$parent_page = $this->_controller->Page->findById($page['Page']['parent_id']);
 				if(!isset($parent_page['Page']) || $parent_page['Page']['display_flag'] != NC_DISPLAY_FLAG_ON) {
-					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.007', '400');
+					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.009', '400');
 					return false;
 				}
 				if($page['Page']['thread_num'] <= 1 && $page['Page'] != NC_SPACE_TYPE_GROUP) {
 					//コミュニティ以外のTop Nodeの編集は許さない
-					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.008', '400');
+					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.010', '400');
 					return false;
 				}
 				break;

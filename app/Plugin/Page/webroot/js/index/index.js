@@ -37,6 +37,11 @@
 
 			// ページ追加
 			$('#pages-menu-add-btn').on('ajax:before', function(e, url) {
+				if($(this).hasClass('pages-menu-add-btn-disable')) {
+					// ページ追加不可
+					return false;
+				}
+
 				var ajax_id, page_edit, replace_ajax_id, active, dd_sequence, position;
 				ajax_id = $(this).data('ajax-replace');
 				replace_ajax_id = ajax_id.replace(/^#/, '');
@@ -96,7 +101,7 @@
 							$(this).remove();
 						};
 						params = $.extend({buttons: _sub_buttons}, default_params);
-						$('<div class="pages-menu-all-delete-confirm"></div>').html(__d('pages', 'I can\'t be undone completely removed. <br />Are you sure you want to delete?'))
+						$('<div class="info-message"></div>').html(__d('pages', 'I can\'t be undone completely removed. <br />Are you sure you want to delete?'))
 							.appendTo($(document.body)).dialog(params);
 					} else {
 						dletePage(url, page_id, 0, default_params);
@@ -213,6 +218,22 @@
 			$(tab).on('click','.pages-menu-edit-content',function(e) {
 				var content = $(this);
 				active_li = content.parents('li:first');
+
+				// ページ追加disable
+				var is_chief = active_li.data('is-chief');
+				var dd_sequence = active_li.data('dd-sequence');
+				if(dd_sequence != 'inner-only') {
+					var parent_li = active_li.parents('li');
+					if(parent_li.get(0)) {
+						is_chief = active_li.data('is-chief');
+					}
+				}
+
+				if(!is_chief) {
+					$('#pages-menu-add-btn').addClass('pages-menu-add-btn-disable');
+				} else {
+					$('#pages-menu-add-btn').removeClass('pages-menu-add-btn-disable');
+				}
 
 				e.preventDefault();
 				e.stopPropagation();
