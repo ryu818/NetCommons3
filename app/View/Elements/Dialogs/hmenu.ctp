@@ -17,7 +17,7 @@ if($nc_mode == NC_BLOCK_MODE){
 	<div id="nc_hmenu_l" class="nc_popup_color">
 		<ul class="nc_hmenu_ul ">
 			<li class="nc_hmenu_li nc_hmenu_logo_li">
-				<a title="NetCommons" href="<?php echo($this->Html->url()); ?>">
+				<a title="NetCommons" href="<?php echo($this->Html->url('/')); ?>">
 					<span class="nc_hmenu_logo"></span>
 				</a>
 			</li>

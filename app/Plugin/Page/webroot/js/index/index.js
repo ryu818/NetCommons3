@@ -72,6 +72,50 @@
 				// コンテンツクリックイベント
 				$('.pages-menu-edit-content:first', target).click();
 			});
+
+			// ページ削除
+			$(tab).on('ajax:before','.pages-menu-delete-icon',function(e, url) {
+				var li = $($(e.target).data('ajax-data')),page_id = li.data('id');
+				var a = $('a.pages-menu-edit-title:first', li), title = $.trim(a.html());
+				var ok = __('Ok') ,cancel = __('Cancel');
+				var pos = $(e.target).offset(), _buttons = {}, default_params = {
+					title: __d('pages', 'Delete page'),
+	            	resizable: false,
+	            	// height:180,
+	            	modal: true,
+		            position: [pos.left-150 - $(window).scrollLeft() ,pos.top-50 - $(window).scrollTop()]
+				},params, body;
+				_buttons[ok] = function(){
+					if($('#pages-menu-all-delete').is(':checked')) {
+						var _sub_buttons = {};
+						_sub_buttons[ok] = function(){
+							dletePage(url, page_id, 1, default_params);
+							$(this).remove();
+						};
+						_sub_buttons[cancel] = function(){
+							$(this).remove();
+						};
+						params = $.extend({buttons: _sub_buttons}, default_params);
+						$('<div class="pages-menu-all-delete-confirm"></div>').html(__d('pages', 'I can\'t be undone completely removed. <br />Are you sure you want to delete?'))
+							.appendTo($(document.body)).dialog(params);
+					} else {
+						dletePage(url, page_id, 0, default_params);
+					}
+					$(this).remove();
+				};
+				_buttons[cancel]  = function(){
+					$(this).remove();
+				};
+				params = $.extend({buttons: _buttons}, default_params);
+				body = __('Deleting %s. <br />Are you sure to proceed?', title) + '<div><label for="pages-menu-all-delete">'+
+							'<input id="pages-menu-all-delete" type="checkbox" name="all_delete" value="1" />&nbsp;'+
+							__d('pages', 'I completely delete it.')+
+							'</label></div>';
+
+				$('<div></div>').html(body).appendTo($(document.body)).dialog(params);
+				return false;
+			});
+
 			// ページ詳細編集画面表示
 			$(tab).on('ajax:before','[data-page-edit-id]',function(e, url) {
 			    var page_id = $(this).data('page-edit-id');
@@ -201,6 +245,34 @@
 					input.select();
 				}
 			});
-		}
+		};
+		// ページ削除
+		var dletePage = function(url, page_id, all_delete, default_params) {
+			$.post(url, {'data[Page][id]': page_id, 'all_delete': all_delete},function(res){
+				var re_html = new RegExp("^<script>", 'i');
+				if(!$.trim(res).match(re_html)) {
+					// error
+					var ok = __('Ok');
+					var body = '<div class="error-message">' + res + '</div>';
+					var _buttons = {}, params;
+					_buttons[ok] = function(){
+						$( this ).remove();
+					};
+					params = $.extend({buttons: _buttons}, default_params);
+					$('<div></div>').html(body).dialog(params);
+				} else {
+					// success
+					var li = $('#pages-menu-edit-item-' + page_id);
+					var prev = li.prev(), next = li.prev(), parent = li.parents('li');
+					var active = (prev.get(0)) ? prev : ((next.get(0)) ? next : parent);
+					if(active.get(0)) {
+						$('.pages-menu-edit-content', active).click();
+					}
+					$(res).appendTo($(document.body));
+
+					li.remove();
+				}
+			});
+		};
 	}
 })(jQuery);

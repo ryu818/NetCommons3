@@ -195,6 +195,9 @@
         	var id = li.data("id");
         	var childs = li.children(':not('+ this.options.listNodeName + ')');
         	var child = $('.'+ this.options.contentClass, childs);
+        	if(!child.get(0) && childs.hasClass(this.options.contentClass)) {
+        		child = childs;
+        	}
         	//var child = li.children('.'+ this.options.contentClass);
         	//var child = $('.'+ this.options.contentClass, li);
         	chg_active = (typeof chg_active == 'undefined') ? true : chg_active;
@@ -219,7 +222,7 @@
             	li.children('[data-action="expand"]').remove();
             	li.children('[data-action="collapse"]').remove();
             	if(this.options.singleHandleClass) {
-             		child.addClass(this.options.singleHandleClass);
+            		child.addClass(this.options.singleHandleClass);
             	}
             }
             li.children('[data-action="expand"]').hide();

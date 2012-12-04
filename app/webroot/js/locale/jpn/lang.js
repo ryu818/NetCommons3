@@ -1,5 +1,5 @@
 $._lang['common'] = {
-	'Ok' : '決定',
+	'Ok' : 'Ok',
 	'Cancel' : 'キャンセル',
 	'Deleting %s. <br />Are you sure to proceed?' : '%sを削除します。<br />よろしいですか？',
 	'Login' : 'ログイン',
@@ -15,8 +15,10 @@ $._lang['pages'] = {
 	groupCancelConfirm:'選択されたグループを解除します。<br />よろしいですか？',
 	groupCancelErr:'グループ化されたブロックが選択されていません。',
 	resizeSep:'×',
+	'Delete page': 'ページ削除',
 	'Delete block': 'ブロック削除',
 	'I completely delete it.': '完全に削除する。',
+	'I can\'t be undone completely removed. <br />Are you sure you want to delete?': '完全に削除すると元に戻すことができません。<br />本当に削除しますか？',
 	'Add a new column:[%s]': '新規列追加：[%s]',
 	'Move to the top of the [%s]': '[%s]の上に移動',
 	'Move to the bottom of the [%s]': '[%s]の下に移動',

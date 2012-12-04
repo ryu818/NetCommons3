@@ -322,6 +322,7 @@ class PageMenuController extends PageAppController {
 	public function delete() {
 		$user_id = $this->Auth->user('id');
 		$page = $this->request->data;
+		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		if(!isset($page['Page']['id'])) {
 			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu/delete.001', '400');
 			return;
@@ -332,34 +333,32 @@ class PageMenuController extends PageAppController {
 			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu/delete.002', '400');
 			return;
 		}
-		$parent_page = $this->Page->findById($current_page['Page']['parent_id']);
-		if(!isset($parent_page['Page'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu/delete.003', '400');
-			return;
-		}
 
 		// 権限チェック
 		$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $current_page);
 		if(!$admin_hierarchy) {
 			return;
 		}
-		// 編集ページ以下のページ取得
-		/*$child_pages = $this->Page->findChilds('all', $current_page, $user_id);
-		$fetch_params = array(
-			'active_page_id' => $current_page['Page']['id']
-		);
-		$thread_pages = $this->Page->afterFindMenu($child_pages, $fetch_params);
 
-		// 各スペースタイプは最低１ページ必要
-		$this->Page->invalidate('Page.page_name', 'エラーメッセージ');
-		$this->set('page', $current_page);
-		$this->set('parent_page', $parent_page);
-		$this->set('pages', $thread_pages);
-		$this->set('admin_hierarchy', $admin_hierarchy);
-		$this->set('is_detail', false);
-		$this->set('is_error', false);
-		$this->render('edit');*/
-		// 正常終了
-		$this->autoRender = false;
+		// 編集ページ以下のページ取得
+		$child_pages = $this->Page->findChilds('all', $current_page, $user_id);
+
+		foreach($child_pages as $child_page) {
+			if(!$this->PageMenu->validatorPageDetail($this->request, $child_page)) {
+				return;
+			}
+			// 削除処理
+			if(!$this->Page->deletePage($child_page['Page']['id'], intval($page['all_delete']))) {
+				$this->flash(__('Failed to delete the database, (%s).', 'pages'), null, 'PageMenu/delete.003', '400');
+				return;
+			}
+		}
+		// 削除処理
+		if(!$this->Page->deletePage($current_page['Page']['id'], intval($page['all_delete']), count($child_pages))) {
+			$this->flash(__('Failed to delete the database, (%s).', 'pages'), null, 'PageMenu/delete.004', '400');
+			return;
+		}
+		$this->Session->setFlash(__('Has been successfully deleted.'));
+		$this->render(false, 'ajax');
 	}
 }

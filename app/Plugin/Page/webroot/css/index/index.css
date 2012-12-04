@@ -193,3 +193,8 @@ input.pages-menu-edit-title {
 .pages-menu-edit-display-to-date {
 	padding:8px;
 }
+
+/* ページ削除 */
+.pages-menu-all-delete-confirm {
+	color: #0000ff;
+}

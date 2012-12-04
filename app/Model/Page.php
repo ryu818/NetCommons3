@@ -594,4 +594,229 @@ class Page extends AppModel
 		);
 		return $ret;
 	}
+
+/**
+ * ルーム（ページ）削除処理
+ * @param mixed $id ID of record to delete
+ * @param boolean $all_delete コンテンツもすべて削除するかどうか
+ * @param integer $childs_count
+ * @return boolean True on success
+ * @access	public
+ */
+	public function deletePage($id = null, $all_delete = _OFF, $childs_count = 0) {
+		if (!empty($id)) {
+			$this->id = $id;
+		}
+		$id = $this->id;
+
+		$page = $this->findById($id);
+		if(!$page) {
+			return false;
+		}
+
+		/*
+		 * ブロック削除
+		*/
+		App::uses('Block', 'Model');
+		$Block = new Block();
+		$blocks = $Block->findByPageId($id);
+		if($blocks != false && count($blocks) > 0) {
+			if(isset($blocks['Block'])) {
+				$blocks = array($blocks);
+			}
+			foreach($blocks as $block) {
+				$Block->deleteBlock($block, $all_delete);
+			}
+		}
+
+		if($childs_count > 0) {
+			//前詰め処理
+			if(!$this->decrementDisplaySeq($page, $childs_count + 1)) {
+				return false;
+			}
+		}
+
+		// TODO:page_columns削除
+		// TODO:page_metas削除
+		// TODO:page_styles削除
+		// TODO:page_sum_views削除
+		// TODO:page_columns削除
+		// TODO:page_themes削除
+		// TODO:uploads削除
+		// コミュニティの写真、コミュニティのWYSIWYGの画像も含まれる。
+		// TODO:menu削除
+
+		if($page['Page']['id'] == $page['Page']['room_id']) {
+			// ルーム
+			App::uses('PagesUsersLink', 'Model');
+			$PagesUsersLink = new PagesUsersLink();
+			$conditions = array(
+				"PagesUsersLink.room_id" => $page['Page']['id']
+			);
+			$ret = $PagesUsersLink->deleteAll($conditions);
+			if(!$ret) {
+				return false;
+			}
+
+			App::uses('ModulesLink', 'Model');
+			$ModulesLink = new ModulesLink();
+			$conditions = array(
+				"ModulesLink.room_id" => $page['Page']['id']
+			);
+			$ret = $ModulesLink->deleteAll($conditions);
+			if(!$ret) {
+				return false;
+			}
+
+			if($page['Page']['thread_num'] == 1 && $page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
+				// コミュニティ削除
+				App::uses('Community', 'Model');
+				$Community = new Community();
+				$conditions = array(
+					"Community.room_id" => $page['Page']['id']
+				);
+				$ret = $Community->deleteAll($conditions);
+				if(!$ret) {
+					return false;
+				}
+
+				App::uses('CommunitiesLang', 'Model');
+				$CommunitiesLang = new CommunitiesLang();
+				$conditions = array(
+					"CommunitiesLang.room_id" => $page['Page']['id']
+				);
+				$ret = $CommunitiesLang->deleteAll($conditions);
+				if(!$ret) {
+					return false;
+				}
+
+				App::uses('CommunitiesTag', 'Model');
+				$CommunitiesTag = new CommunitiesTag();
+				$params = array(
+					'fields' => array('CommunitiesTag.tag_id'),
+					'conditions' => array(
+						"CommunitiesTag.room_id" => $page['Page']['id']
+					)
+				);
+
+				$communities_tag_ids = $CommunitiesTag->find('list', $params);
+				if(count($communities_tag_ids) > 0) {
+					$conditions = array(
+						"CommunitiesTag.room_id" => $page['Page']['id']
+					);
+					$ret = $CommunitiesTag->deleteAll($conditions);
+					if(!$ret) {
+						return false;
+					}
+
+					App::uses('Tag', 'Model');
+					$Tag = new Tag();
+					$params = array(
+						'conditions' => array(
+							"Tag.id" => $communities_tag_ids
+						)
+					);
+
+					$tags = $Tag->find('all', $params);
+					foreach($tags as $tag) {
+						if($tag['Tag']['used_number'] <= 1) {
+							// delete
+							$ret = $Tag->delete($tag['Tag']['id']);
+						} else {
+							// update
+							$fields = array('Tag.used_number'=> intval($tag['Tag']['used_number']) - 1);
+							$conditions = array(
+								"Tag.id" => $tag['Tag']['id']
+							);
+							$ret = $Tag->updateAll($fields, $conditions);
+						}
+						if(!$ret) {
+							return false;
+						}
+					}
+				}
+			}
+		}
+
+		// 削除処理
+		$ret = $this->delete($id);
+		if($ret === false) {
+			return $ret;
+		}
+
+		/*
+		 * 削除されたページがConfig.first_startpage_id,second_startpage_id,third_startpage_idならば、更新
+		* (パブリックに更新)
+		*/
+		App::uses('Config', 'Model');
+		$Config = new Config();
+		$conditions = array(
+			'module_id' => 0,
+			'cat_id' => NC_LOGIN_CATID,
+			'name' => array('first_startpage_id','second_startpage_id','third_startpage_id')
+		);
+		$params = array(
+			'fields' => array(
+				'Config.name',
+				'Config.value'
+			),
+			'conditions' => $conditions
+		);
+		$configs = $Config->find('all', $params);
+		$fields = array(
+			'Config.value'=> 0
+		);
+		if($id == $configs['first_startpage_id'] && !$Config->updateAll($fields, array('Config.name' => 'first_startpage_id'))) {
+			return false;
+		}
+		if($id == $configs['second_startpage_id'] && !$Config->updateAll($fields, array('Config.name' => 'second_startpage_id'))) {
+			return false;
+		}
+		if($id == $configs['third_startpage_id'] && !$Config->updateAll($fields, array('Config.name' => 'third_startpage_id'))) {
+			return false;
+		}
+
+		return true;
+	}
+
+/**
+ * display_sequenceデクリメント処理
+ *
+ * @param  array     $page ページテーブル配列
+ * @param  integer   $display_sequence デクリメントする数
+ * @return boolean true or false
+ * @access	public
+ */
+	public function decrementDisplaySeq($page = null,$display_sequence = 1) {
+		$display_sequence = -1*$display_sequence;
+		return $this->_operationDisplaySeq($page, $display_sequence);
+	}
+
+/**
+ * display_sequenceインクリメント処理
+ *
+ * @param  array     $page ページテーブル配列
+ * @param  integer   $display_sequence インクリメントする数
+ * @return boolean true or false
+ * @access	public
+ */
+	public function incrementDisplaySeq($page = null,$display_sequence = 1) {
+		return $this->_operationDisplaySeq($page, $display_sequence);
+	}
+
+	protected function _operationDisplaySeq($page = null,$display_sequence = 1) {
+		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
+		$fields = array('Page.display_sequence'=>'Page.display_sequence+('.$display_sequence.')');
+		$conditions = array(
+				"Page.id !=" => $page['Page']['id'],
+				"Page.root_id" => $page['Page']['root_id'],
+				"Page.position_flag" => $page['Page']['position_flag'],
+				"Page.lang" => array("", $lang),
+				"Page.space_type" => $page['Page']['space_type'],
+				"Page.display_sequence >=" => $page['Page']['display_sequence']
+		);
+		$ret = $this->updateAll($fields, $conditions);
+		return $ret;
+	}
+
 }

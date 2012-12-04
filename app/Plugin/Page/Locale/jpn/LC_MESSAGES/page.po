@@ -75,6 +75,13 @@ msgstr 	"公開ではないか、公開日付が入力していないため、�
 msgid  	"Please input in [publish date < closed date]."
 msgstr 	"[公開日付 < 非公開日付]で入力してください。"
 
+msgid  	"Top of each page is required at least one page. <br />You can't delete."
+msgstr 	"各トップページは最低1ページ必要です。<br />削除できません。"
+msgid  	"If you want to delete the top page, please run after deleting all the pages of this room.<br />You can't delete."
+msgstr 	"トップページを削除する場合、本ルームのページをすべて削除後に実行してください。<br />削除できません。"
+msgid  	"Because the [%s] page is locked, I can\'t be deleted. Please run after unlock the page."
+msgstr 	"[%s]ページがロックされているため、削除できません。ページのロックを解除後に実行してください。"
+
 ## ページスタイル
 msgid  	"Font color:"
 msgstr 	"文字色："

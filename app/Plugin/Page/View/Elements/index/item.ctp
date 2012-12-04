@@ -42,7 +42,9 @@
 
 	if($is_chief && $menu['thread_num'] > 1) {
 		$is_edit = true;
+		$is_delete = true;
 	}
+
 	if($is_chief && !($space_type == NC_SPACE_TYPE_PUBLIC && $menu['thread_num'] == 1) && $menu['display_sequence'] != 1) {
 		// TopNodeでもなく、各ノードのトップページでなければ。
 		$is_display = true;
@@ -127,9 +129,12 @@
 		echo $this->Html->link('', array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'operation'),
 			array('title' => __d('page', 'Other operation'), 'class' => 'pages-menu-other-icon' . ' nc_tooltip',
 			'data-ajax' => '#pages-menu-edit-view-'.$menu['id']));
-		echo $this->Html->link('', array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'delete'),
-			array('title' => __d('page', 'Delete page'), 'class' => 'pages-menu-delete-icon' . ' nc_tooltip',
-			'data-ajax' => '#pages-menu-edit-view-'.$menu['id']));
+
+		if($is_delete) {
+			echo $this->Html->link('', array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'delete'),
+				array('title' => __d('page', 'Delete page'), 'class' => 'pages-menu-delete-icon' . ' nc_tooltip',
+				'data-ajax-replace' => '#pages-menu-edit-item-'.$menu['id'], 'data-ajax-type' => 'POST', 'data-ajax-data' => '#pages-menu-edit-item-' . $menu['id']));
+		}
 	?>
 	</div>
 	<?php endif; ?>
