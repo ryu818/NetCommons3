@@ -8024,7 +8024,7 @@ jQuery.extend({
 		if($._debug != 0) {
 			var re_sys_error = new RegExp("<pre class=\"cake-error\">(.|\n|\r|\t)*<\/pre>", 'i');
 			var re_log = new RegExp("<table class=\"nc-log\">(.|\n|\r|\t)*<\/table>", 'i');
-			var re_fatal = new RegExp("^<br \/>\n<b>(Fatal|Parse) error<\/b>:(.|\n|\r|\t)*<\/b>", 'i');
+			var re_fatal = new RegExp("^(<br \/>)*\n(<b>)*(Fatal|Parse) error(<\/b>)*:(.|\n|\r|\t)*", 'i');
 			var fatal_flag = false, content = '', log, logger_block = '';
 			if(data.match(re_fatal)) {
 				content = "<div id='nc-fatal_error'>"+data+"</div>";
