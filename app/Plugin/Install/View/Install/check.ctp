@@ -85,7 +85,7 @@ $this->assign('title', __d('install', 'Setting Check'));
 				// TODO:GDがなければ警告程度を出力する。installはそのまま続行可能とする？
 
 				// php version
-				if (floatval(phpversion()) >= '5.3' || phpversion() == '5.2.9' || phpversion() == '5.2.8') {
+				if (version_compare(phpversion(), "5.2.8", ">=")) {
 					echo '<p class="success message">' . __d('install', 'PHP version %s >= 5.2.8', phpversion()) . '</p>';
 				} else {
 					$check = false;

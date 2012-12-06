@@ -18,6 +18,11 @@
  * @since         CakePHP(tm) v 0.2.9
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
+// versionチェック
+if (version_compare(phpversion(), "5.2.8", "<")) {
+	echo 'Your PHP version is too old, please upgrade to a newer version. Your version is '.phpversion().', this application requires 5.2.8.';
+	exit;
+}
 /**
  * Use the DS to separate the directories in other defines
  */
