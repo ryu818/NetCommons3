@@ -162,6 +162,7 @@
         <column name="bottommargin">8</column>
         <column name="min_width_size">400</column>
         <column name="min_height_size">0</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -193,6 +194,7 @@
         <column name="bottommargin">8</column>
         <column name="min_width_size">-1</column>
         <column name="min_height_size">0</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -224,6 +226,7 @@
         <column name="bottommargin">8</column>
         <column name="min_width_size">0</column>
         <column name="min_height_size">0</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -255,6 +258,7 @@
         <column name="bottommargin">8</column>
         <column name="min_width_size">217</column>
         <column name="min_height_size">0</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -286,6 +290,7 @@
         <column name="bottommargin">8</column>
         <column name="min_width_size">217</column>
         <column name="min_height_size">0</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -317,6 +322,7 @@
         <column name="bottommargin">8</column>
         <column name="min_width_size">217</column>
         <column name="min_height_size">0</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -348,6 +354,7 @@
         <column name="bottommargin">8</column>
         <column name="min_width_size">0</column>
         <column name="min_height_size">0</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">2012-11-01 11:38:17</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -379,6 +386,7 @@
         <column name="bottommargin">8</column>
         <column name="min_width_size">0</column>
         <column name="min_height_size">0</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">2012-11-01 14:05:46</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -410,6 +418,7 @@
         <column name="bottommargin">8</column>
         <column name="min_width_size">0</column>
         <column name="min_height_size">0</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">2012-11-01 14:12:43</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -441,6 +450,7 @@
         <column name="bottommargin">8</column>
         <column name="min_width_size">0</column>
         <column name="min_height_size">0</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">2012-11-01 14:39:44</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -472,6 +482,7 @@
         <column name="bottommargin">8</column>
         <column name="min_width_size">0</column>
         <column name="min_height_size">0</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">2012-11-01 11:38:17</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -503,6 +514,7 @@
         <column name="bottommargin">8</column>
         <column name="min_width_size">0</column>
         <column name="min_height_size">0</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">2012-11-01 11:38:17</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -534,6 +546,7 @@
         <column name="bottommargin">8</column>
         <column name="min_width_size">0</column>
         <column name="min_height_size">0</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">2012-11-01 11:38:17</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -565,6 +578,7 @@
         <column name="bottommargin">8</column>
         <column name="min_width_size">0</column>
         <column name="min_height_size">0</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">2012-11-01 11:38:17</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -596,10 +610,43 @@
         <column name="bottommargin">8</column>
         <column name="min_width_size">0</column>
         <column name="min_height_size">0</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">2012-11-09 14:56:15</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
         <column name="modified">2012-11-09 14:56:15</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="blocks">
+        <column name="id">420</column>
+        <column name="page_id">21</column>
+        <column name="content_id">258</column>
+        <column name="module_id">1</column>
+        <column name="title">{X-CONTENT}</column>
+        <column name="show_title">1</column>
+        <column name="controller_action">announcement</column>
+        <column name="root_id">420</column>
+        <column name="parent_id">0</column>
+        <column name="thread_num">0</column>
+        <column name="col_num">1</column>
+        <column name="row_num">1</column>
+        <column name="display_flag">1</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="theme_name"></column>
+        <column name="temp_name">default</column>
+        <column name="leftmargin">8</column>
+        <column name="rightmargin">8</column>
+        <column name="topmargin">8</column>
+        <column name="bottommargin">8</column>
+        <column name="min_width_size">0</column>
+        <column name="min_height_size">0</column>
+        <column name="lock_authority_id">0</column>
+        <column name="created">2012-12-06 16:08:11</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">2012-12-06 16:08:11</column>
         <column name="modified_user_id">0</column>
         <column name="modified_user_name"></column>
     </table>
@@ -614,7 +661,7 @@
         <column name="name">sitename</column>
         <column name="type">text</column>
         <column name="title"></column>
-        <column name="value">サイト名未設定</column>
+        <column name="value">テストサイト</column>
         <column name="description"></column>
         <column name="attribute">size=&quot;50&quot;</column>
         <column name="display_sequence">0</column>
@@ -2148,7 +2195,7 @@ We recommend that you change your password after login.</column>
         <column name="id">1</column>
         <column name="config_id">1</column>
         <column name="lang">ja</column>
-        <column name="value">サイト名未設定</column>
+        <column name="value">テストサイト</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -2186,18 +2233,18 @@ We recommend that you change your password after login.</column>
         <column name="lang">ja</column>
         <column name="value">本規約は、当サイトにより提供されるコンテンツの利用条件を定めるものです。以下の利用条件をよくお読みになり、これに同意される場合にのみご登録いただきますようお願いいたします。
 
-当サイトを利用するにあたり、以下に該当する又はその恐れのある行為を行ってはならないものとします。 
+当サイトを利用するにあたり、以下に該当する又はその恐れのある行為を行ってはならないものとします。
 
-・公序良俗に反する行為 
-・法令に違反する行為 
-・犯罪行為及び犯罪行為に結びつく行為 
-・他の利用者、第三者、当サイトの権利を侵害する行為 
-・他の利用者、第三者、当サイトを誹謗、中傷する行為及び名誉・信用を傷つける行為 
-・他の利用者、第三者、当サイトに不利益を与える行為 
-・当サイトの運営を妨害する行為 
-・事実でない情報を発信する行為 
-・プライバシー侵害の恐れのある個人情報の投稿 
-・その他、当サイトが不適当と判断する行為 
+・公序良俗に反する行為
+・法令に違反する行為
+・犯罪行為及び犯罪行為に結びつく行為
+・他の利用者、第三者、当サイトの権利を侵害する行為
+・他の利用者、第三者、当サイトを誹謗、中傷する行為及び名誉・信用を傷つける行為
+・他の利用者、第三者、当サイトに不利益を与える行為
+・当サイトの運営を妨害する行為
+・事実でない情報を発信する行為
+・プライバシー侵害の恐れのある個人情報の投稿
+・その他、当サイトが不適当と判断する行為
 
 【免責】
 
@@ -2309,7 +2356,7 @@ e-mail：{X-EMAIL}
         <column name="config_id">56</column>
         <column name="lang">ja</column>
         <column name="value">{X-SITE_NAME}におけるログイン用パスワードの新規発行リクエストがありました。
-新たにパスワードを発行する場合は下記のリンクをクリックしてください。 
+新たにパスワードを発行する場合は下記のリンクをクリックしてください。
 指定のメールアドレスに新しいパスワードをお送りします。
 
 何かの手違いでこのメールが届いた場合には、ただちにこのメールを削除してください。
@@ -2580,6 +2627,22 @@ e-mail：{X-EMAIL}
         <column name="modified_user_id">0</column>
         <column name="modified_user_name"></column>
     </table>
+    <table name="contents">
+        <column name="id">258</column>
+        <column name="module_id">1</column>
+        <column name="title">お知らせ</column>
+        <column name="is_master">1</column>
+        <column name="master_id">258</column>
+        <column name="room_id">11</column>
+        <column name="accept_flag">1</column>
+        <column name="url"></column>
+        <column name="created">2012-12-06 16:08:11</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">2012-12-06 16:08:11</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
     <!-- テーブル htmlareas -->
     <table name="htmlareas">
         <column name="id">1</column>
@@ -2591,25 +2654,25 @@ e-mail：{X-EMAIL}
 &amp;nbsp;&amp;nbsp;
 &lt;li class=&quot;bold&quot; style=&quot;padding: 10px;&quot;&gt;セッティングモードをONにする&lt;/li&gt;
 &lt;div style=&quot;padding:10px;&quot;&gt;
-	画面上部にマウスカーソルを移動すると表示されるヘッダーメニューの右上にある「
-	&lt;img src=&quot;{NC_WEBROOT}img/dialogs/hmenu/setting_h.gif&quot; alt=&quot;&quot; class=&quot;icon&quot;&gt;
-	セッティングモード」をクリックし、モジュール追加セレクトボックスを表示させる。
+画面上部にマウスカーソルを移動すると表示されるヘッダーメニューの右上にある「
+&lt;img src=&quot;{NC_WEBROOT}img/dialogs/hmenu/setting_h.gif&quot; alt=&quot;&quot; class=&quot;icon&quot;&gt;
+セッティングモード」をクリックし、モジュール追加セレクトボックスを表示させる。
 &lt;/div&gt;
 &lt;li class=&quot;bold&quot; style=&quot;padding: 10px;&quot;&gt;モジュールを編集する。&lt;/li&gt;
 &lt;ol style=&quot;list-style-type: decimal; margin: 5px; padding: 10px;&quot;&gt;
-	&lt;li&gt;新しくモジュールを追加するには、モジュール追加から追加したいモジュールを選択する。手順に従ってモジュールを編集する。&lt;/li&gt;
-	&lt;li&gt;既にあるモジュールを編集するには、編集するモジュールにマウスオーバー時に表示されるスパナアイコンをクリックする。手順に従ってモジュールを編集する。&lt;/li&gt;
+&lt;li&gt;新しくモジュールを追加するには、モジュール追加から追加したいモジュールを選択する。手順に従ってモジュールを編集する。&lt;/li&gt;
+&lt;li&gt;既にあるモジュールを編集するには、編集するモジュールにマウスオーバー時に表示されるスパナアイコンをクリックする。手順に従ってモジュールを編集する。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;li class=&quot;bold&quot; style=&quot;padding: 10px;&quot;&gt;ページを編集する。&lt;/li&gt;
 &lt;ol style=&quot;list-style-type: decimal; margin: 5px; padding: 10px;&quot;&gt;
-	&lt;li&gt;新しくページを追加するには、上部ページメニューの「編集切替」ボタンをクリックし、「ページ追加」を行う。&lt;/li&gt;
-	&lt;li&gt;ページを編集するには、ページメニューの「編集」アイコンをクリックする。&lt;/li&gt;
+&lt;li&gt;新しくページを追加するには、上部ページメニューの「編集切替」ボタンをクリックし、「ページ追加」を行う。&lt;/li&gt;
+&lt;li&gt;ページを編集するには、ページメニューの「編集」アイコンをクリックする。&lt;/li&gt;
 &lt;/ol&gt;
 &lt;li class=&quot;bold&quot; style=&quot;padding: 10px;&quot;&gt;モジュール編集を終了する。&lt;/li&gt;
 &lt;div style=&quot;padding:10px;&quot;&gt;
-	&amp;nbsp;画面右上の「
-	&lt;img src=&quot;{NC_WEBROOT}img/dialogs/hmenu/setting_h_end.gif&quot; class=&quot;icon&quot;&gt;
-	&amp;nbsp;セッティング終了」をクリックする。
+&amp;nbsp;画面右上の「
+&lt;img src=&quot;{NC_WEBROOT}img/dialogs/hmenu/setting_h_end.gif&quot; class=&quot;icon&quot;&gt;
+&amp;nbsp;セッティング終了」をクリックする。
 &lt;/div&gt;
 &lt;/ol&gt;
 &lt;/div&gt;</column>
@@ -2645,11 +2708,11 @@ e-mail：{X-EMAIL}
     <table name="htmlareas">
         <column name="id">4</column>
         <column name="content_id">4</column>
-        <column name="content">左カラム	&lt;br&gt;</column>
+        <column name="content">左カラム2&lt;br&gt;</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
-        <column name="modified">2012-11-01 14:16:16</column>
+        <column name="modified">2012-11-12 18:32:51</column>
         <column name="modified_user_id">0</column>
         <column name="modified_user_name"></column>
     </table>
@@ -2661,6 +2724,17 @@ e-mail：{X-EMAIL}
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
         <column name="modified">2012-11-01 19:13:21</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="htmlareas">
+        <column name="id">51</column>
+        <column name="content_id">258</column>
+        <column name="content">eeeee&lt;br&gt;</column>
+        <column name="created">2012-12-06 16:08:14</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">2012-12-06 17:27:14</column>
         <column name="modified_user_id">0</column>
         <column name="modified_user_name"></column>
     </table>
@@ -2679,7 +2753,7 @@ e-mail：{X-EMAIL}
         <column name="duplicate_flag">1</column>
         <column name="minlength">4</column>
         <column name="maxlength">50</column>
-        <column name="regexp">/^[a-zA-Z0-9\_\-\&lt;\&gt;\,\.\$\%\#\@\!\\\'\&quot;]+$/</column>
+        <column name="regexp">/[a-zA-Z0-9\_\-\&lt;\&gt;\,\.\$\%\#\@\!\\\'\&quot;]/</column>
         <column name="define_flag">1</column>
         <column name="display_flag">1</column>
         <column name="allow_public_flag">0</column>
@@ -2707,7 +2781,7 @@ e-mail：{X-EMAIL}
         <column name="duplicate_flag">0</column>
         <column name="minlength">4</column>
         <column name="maxlength">50</column>
-        <column name="regexp">/^[a-zA-Z0-9\_\-\&lt;\&gt;\,\.\$\%\#\@\!\\\'\&quot;]+$/</column>
+        <column name="regexp">/[a-zA-Z0-9\_\-\&lt;\&gt;\,\.\$\%\#\@\!\\\'\&quot;]/</column>
         <column name="define_flag">1</column>
         <column name="display_flag">1</column>
         <column name="allow_public_flag">0</column>
@@ -4741,7 +4815,6 @@ e-mail：{X-EMAIL}
         <column name="display_sequence">2</column>
         <column name="display_flag">1</column>
     </table>
-    <!-- テーブル menus -->
     <!-- テーブル modules -->
     <table name="modules">
         <column name="id">1</column>
@@ -4752,6 +4825,25 @@ e-mail：{X-EMAIL}
         <column name="controller_action">announcement</column>
         <column name="edit_controller_action">announcement/edit</column>
         <column name="display_sequence">1</column>
+        <column name="module_icon"></column>
+        <column name="temp_name">default</column>
+        <column name="content_has_one">0</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="modules">
+        <column name="id">2</column>
+        <column name="dir_name">Page</column>
+        <column name="version">3.0.0.0</column>
+        <column name="system_flag">1</column>
+        <column name="disposition_flag">0</column>
+        <column name="controller_action">page</column>
+        <column name="edit_controller_action"></column>
+        <column name="display_sequence">0</column>
         <column name="module_icon"></column>
         <column name="temp_name">default</column>
         <column name="content_has_one">0</column>
@@ -4816,13 +4908,72 @@ e-mail：{X-EMAIL}
         <column name="modified_user_name"></column>
     </table>
     <!-- テーブル module_system_links -->
+    <table name="module_system_links">
+        <column name="id">1</column>
+        <column name="authority_id">1</column>
+        <column name="module_id">2</column>
+        <column name="hierarchy">500</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="module_system_links">
+        <column name="id">2</column>
+        <column name="authority_id">2</column>
+        <column name="module_id">2</column>
+        <column name="hierarchy">400</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="module_system_links">
+        <column name="id">3</column>
+        <column name="authority_id">3</column>
+        <column name="module_id">2</column>
+        <column name="hierarchy">300</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="module_system_links">
+        <column name="id">4</column>
+        <column name="authority_id">4</column>
+        <column name="module_id">2</column>
+        <column name="hierarchy">200</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="module_system_links">
+        <column name="id">5</column>
+        <column name="authority_id">5</column>
+        <column name="module_id">2</column>
+        <column name="hierarchy">1</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
     <!-- テーブル pages -->
     <table name="pages">
         <column name="id">1</column>
         <column name="root_id">0</column>
         <column name="parent_id">0</column>
         <column name="thread_num">0</column>
-        <column name="root_sequence">0</column>
         <column name="display_sequence">1</column>
         <column name="page_name">Public room</column>
         <column name="permalink"></column>
@@ -4836,7 +4987,11 @@ e-mail：{X-EMAIL}
         <column name="show_count">0</column>
         <column name="default_entry_flag">0</column>
         <column name="display_flag">1</column>
-        <column name="display_date">NULL</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -4849,7 +5004,6 @@ e-mail：{X-EMAIL}
         <column name="root_id">0</column>
         <column name="parent_id">0</column>
         <column name="thread_num">0</column>
-        <column name="root_sequence">0</column>
         <column name="display_sequence">2</column>
         <column name="page_name">Myportal</column>
         <column name="permalink"></column>
@@ -4863,7 +5017,11 @@ e-mail：{X-EMAIL}
         <column name="show_count">0</column>
         <column name="default_entry_flag">0</column>
         <column name="display_flag">1</column>
-        <column name="display_date">NULL</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -4876,7 +5034,6 @@ e-mail：{X-EMAIL}
         <column name="root_id">0</column>
         <column name="parent_id">0</column>
         <column name="thread_num">0</column>
-        <column name="root_sequence">0</column>
         <column name="display_sequence">3</column>
         <column name="page_name">Private room</column>
         <column name="permalink"></column>
@@ -4890,7 +5047,11 @@ e-mail：{X-EMAIL}
         <column name="show_count">0</column>
         <column name="default_entry_flag">0</column>
         <column name="display_flag">1</column>
-        <column name="display_date">NULL</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -4903,7 +5064,6 @@ e-mail：{X-EMAIL}
         <column name="root_id">0</column>
         <column name="parent_id">0</column>
         <column name="thread_num">0</column>
-        <column name="root_sequence">0</column>
         <column name="display_sequence">4</column>
         <column name="page_name">Community</column>
         <column name="permalink"></column>
@@ -4917,7 +5077,11 @@ e-mail：{X-EMAIL}
         <column name="show_count">0</column>
         <column name="default_entry_flag">0</column>
         <column name="display_flag">1</column>
-        <column name="display_date">NULL</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -4930,7 +5094,6 @@ e-mail：{X-EMAIL}
         <column name="root_id">0</column>
         <column name="parent_id">0</column>
         <column name="thread_num">0</column>
-        <column name="root_sequence">0</column>
         <column name="display_sequence">0</column>
         <column name="page_name">Headercolumn</column>
         <column name="permalink"></column>
@@ -4944,7 +5107,11 @@ e-mail：{X-EMAIL}
         <column name="show_count">2</column>
         <column name="default_entry_flag">1</column>
         <column name="display_flag">1</column>
-        <column name="display_date">NULL</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -4957,7 +5124,6 @@ e-mail：{X-EMAIL}
         <column name="root_id">0</column>
         <column name="parent_id">0</column>
         <column name="thread_num">0</column>
-        <column name="root_sequence">0</column>
         <column name="display_sequence">0</column>
         <column name="page_name">Leftcolumn</column>
         <column name="permalink"></column>
@@ -4971,7 +5137,11 @@ e-mail：{X-EMAIL}
         <column name="show_count">0</column>
         <column name="default_entry_flag">1</column>
         <column name="display_flag">1</column>
-        <column name="display_date">NULL</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -4984,7 +5154,6 @@ e-mail：{X-EMAIL}
         <column name="root_id">0</column>
         <column name="parent_id">0</column>
         <column name="thread_num">0</column>
-        <column name="root_sequence">0</column>
         <column name="display_sequence">0</column>
         <column name="page_name">Rightcolumn</column>
         <column name="permalink"></column>
@@ -4998,7 +5167,11 @@ e-mail：{X-EMAIL}
         <column name="show_count">2</column>
         <column name="default_entry_flag">1</column>
         <column name="display_flag">1</column>
-        <column name="display_date">NULL</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -5011,7 +5184,6 @@ e-mail：{X-EMAIL}
         <column name="root_id">0</column>
         <column name="parent_id">0</column>
         <column name="thread_num">0</column>
-        <column name="root_sequence">0</column>
         <column name="display_sequence">0</column>
         <column name="page_name">Footercolumn</column>
         <column name="permalink"></column>
@@ -5025,7 +5197,11 @@ e-mail：{X-EMAIL}
         <column name="show_count">0</column>
         <column name="default_entry_flag">1</column>
         <column name="display_flag">1</column>
-        <column name="display_date">NULL</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -5038,7 +5214,6 @@ e-mail：{X-EMAIL}
         <column name="root_id">9</column>
         <column name="parent_id">1</column>
         <column name="thread_num">1</column>
-        <column name="root_sequence">1</column>
         <column name="display_sequence">0</column>
         <column name="page_name">Public room</column>
         <column name="permalink"></column>
@@ -5052,7 +5227,11 @@ e-mail：{X-EMAIL}
         <column name="show_count">0</column>
         <column name="default_entry_flag">1</column>
         <column name="display_flag">1</column>
-        <column name="display_date">NULL</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -5065,7 +5244,6 @@ e-mail：{X-EMAIL}
         <column name="root_id">10</column>
         <column name="parent_id">2</column>
         <column name="thread_num">1</column>
-        <column name="root_sequence">1</column>
         <column name="display_sequence">0</column>
         <column name="page_name">Myportal</column>
         <column name="permalink">admin</column>
@@ -5079,7 +5257,11 @@ e-mail：{X-EMAIL}
         <column name="show_count">0</column>
         <column name="default_entry_flag">0</column>
         <column name="display_flag">2</column>
-        <column name="display_date">NULL</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -5092,7 +5274,6 @@ e-mail：{X-EMAIL}
         <column name="root_id">11</column>
         <column name="parent_id">3</column>
         <column name="thread_num">1</column>
-        <column name="root_sequence">1</column>
         <column name="display_sequence">0</column>
         <column name="page_name">Private room</column>
         <column name="permalink">admin</column>
@@ -5106,7 +5287,11 @@ e-mail：{X-EMAIL}
         <column name="show_count">0</column>
         <column name="default_entry_flag">0</column>
         <column name="display_flag">1</column>
-        <column name="display_date">NULL</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -5119,7 +5304,6 @@ e-mail：{X-EMAIL}
         <column name="root_id">9</column>
         <column name="parent_id">9</column>
         <column name="thread_num">2</column>
-        <column name="root_sequence">1</column>
         <column name="display_sequence">1</column>
         <column name="page_name">トップページ</column>
         <column name="permalink"></column>
@@ -5133,7 +5317,11 @@ e-mail：{X-EMAIL}
         <column name="show_count">33</column>
         <column name="default_entry_flag">1</column>
         <column name="display_flag">1</column>
-        <column name="display_date">NULL</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -5146,7 +5334,6 @@ e-mail：{X-EMAIL}
         <column name="root_id">10</column>
         <column name="parent_id">10</column>
         <column name="thread_num">2</column>
-        <column name="root_sequence">1</column>
         <column name="display_sequence">1</column>
         <column name="page_name">Myportal</column>
         <column name="permalink">admin</column>
@@ -5160,7 +5347,11 @@ e-mail：{X-EMAIL}
         <column name="show_count">13</column>
         <column name="default_entry_flag">0</column>
         <column name="display_flag">2</column>
-        <column name="display_date">NULL</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -5173,9 +5364,8 @@ e-mail：{X-EMAIL}
         <column name="root_id">11</column>
         <column name="parent_id">11</column>
         <column name="thread_num">2</column>
-        <column name="root_sequence">1</column>
         <column name="display_sequence">1</column>
-        <column name="page_name">Private room</column>
+        <column name="page_name">adminさんのマイルーム</column>
         <column name="permalink">admin</column>
         <column name="position_flag">1</column>
         <column name="lang"></column>
@@ -5187,7 +5377,11 @@ e-mail：{X-EMAIL}
         <column name="show_count">114</column>
         <column name="default_entry_flag">0</column>
         <column name="display_flag">1</column>
-        <column name="display_date">NULL</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -5196,14 +5390,13 @@ e-mail：{X-EMAIL}
         <column name="modified_user_name">admin</column>
     </table>
     <table name="pages">
-        <column name="id">15</column>
+        <column name="id">24</column>
         <column name="root_id">11</column>
         <column name="parent_id">11</column>
         <column name="thread_num">2</column>
-        <column name="root_sequence">1</column>
-        <column name="display_sequence">2</column>
-        <column name="page_name">ページ1</column>
-        <column name="permalink">admin/page1</column>
+        <column name="display_sequence">3</column>
+        <column name="page_name">新規ページ-4</column>
+        <column name="permalink">admin/新規ページ-4</column>
         <column name="position_flag">1</column>
         <column name="lang"></column>
         <column name="page_inf_id">5</column>
@@ -5214,8 +5407,72 @@ e-mail：{X-EMAIL}
         <column name="show_count">0</column>
         <column name="default_entry_flag">0</column>
         <column name="display_flag">1</column>
-        <column name="display_date">NULL</column>
-        <column name="created">NULL</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="lock_authority_id">0</column>
+        <column name="created">2012-12-05 20:54:59</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">2012-12-06 16:08:11</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="pages">
+        <column name="id">25</column>
+        <column name="root_id">11</column>
+        <column name="parent_id">11</column>
+        <column name="thread_num">2</column>
+        <column name="display_sequence">4</column>
+        <column name="page_name">新規ページ-5</column>
+        <column name="permalink">admin/新規ページ-5</column>
+        <column name="position_flag">1</column>
+        <column name="lang"></column>
+        <column name="page_inf_id">5</column>
+        <column name="page_style_id">3</column>
+        <column name="page_column_id">3</column>
+        <column name="room_id">11</column>
+        <column name="space_type">3</column>
+        <column name="show_count">0</column>
+        <column name="default_entry_flag">0</column>
+        <column name="display_flag">1</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="lock_authority_id">0</column>
+        <column name="created">2012-12-05 20:54:59</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">2012-12-06 16:08:11</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="pages">
+        <column name="id">20</column>
+        <column name="root_id">9</column>
+        <column name="parent_id">9</column>
+        <column name="thread_num">2</column>
+        <column name="display_sequence">2</column>
+        <column name="page_name">新規ページ-5</column>
+        <column name="permalink">新規ページ-5</column>
+        <column name="position_flag">1</column>
+        <column name="lang"></column>
+        <column name="page_inf_id">5</column>
+        <column name="page_style_id">3</column>
+        <column name="page_column_id">3</column>
+        <column name="room_id">9</column>
+        <column name="space_type">1</column>
+        <column name="show_count">0</column>
+        <column name="default_entry_flag">0</column>
+        <column name="display_flag">1</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="lock_authority_id">0</column>
+        <column name="created">2012-12-05 20:54:59</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
         <column name="modified">2012-11-01 20:28:34</column>
@@ -5223,14 +5480,43 @@ e-mail：{X-EMAIL}
         <column name="modified_user_name">admin</column>
     </table>
     <table name="pages">
-        <column name="id">16</column>
+        <column name="id">21</column>
         <column name="root_id">11</column>
-        <column name="parent_id">15</column>
-        <column name="thread_num">3</column>
-        <column name="root_sequence">1</column>
-        <column name="display_sequence">3</column>
-        <column name="page_name">ページ2</column>
-        <column name="permalink">admin/page1/page2</column>
+        <column name="parent_id">11</column>
+        <column name="thread_num">2</column>
+        <column name="display_sequence">2</column>
+        <column name="page_name">新規ページ-6</column>
+        <column name="permalink">admin/新規ページ-6</column>
+        <column name="position_flag">1</column>
+        <column name="lang"></column>
+        <column name="page_inf_id">5</column>
+        <column name="page_style_id">3</column>
+        <column name="page_column_id">3</column>
+        <column name="room_id">11</column>
+        <column name="space_type">3</column>
+        <column name="show_count">1</column>
+        <column name="default_entry_flag">0</column>
+        <column name="display_flag">1</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="lock_authority_id">0</column>
+        <column name="created">2012-12-05 20:54:59</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">2012-12-06 16:08:11</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="pages">
+        <column name="id">23</column>
+        <column name="root_id">11</column>
+        <column name="parent_id">11</column>
+        <column name="thread_num">2</column>
+        <column name="display_sequence">5</column>
+        <column name="page_name">新規ページ-7</column>
+        <column name="permalink">admin/新規ページ-7</column>
         <column name="position_flag">1</column>
         <column name="lang"></column>
         <column name="page_inf_id">5</column>
@@ -5241,8 +5527,12 @@ e-mail：{X-EMAIL}
         <column name="show_count">0</column>
         <column name="default_entry_flag">0</column>
         <column name="display_flag">1</column>
-        <column name="display_date">NULL</column>
-        <column name="created">NULL</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="lock_authority_id">0</column>
+        <column name="created">2012-12-06 15:47:17</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
         <column name="modified">2012-11-01 20:28:34</column>
@@ -5596,8 +5886,8 @@ e-mail：{X-EMAIL}
     <table name="users">
         <column name="id">1</column>
         <column name="login_id">admin</column>
-        <column name="password">dcc83e1524c7e29c73825f0ffcc8fcbf5734f8e8</column>
-        <column name="handle">admin</column>
+        <column name="password">1e9bb14c56e0304d616b2443ffb57166f29825bd</column>
+        <column name="handle">adminさん</column>
         <column name="username">adminさん</column>
         <column name="authority_id">1</column>
         <column name="is_active">1</column>
@@ -5611,12 +5901,12 @@ e-mail：{X-EMAIL}
         <column name="email"></column>
         <column name="mobile_email"></column>
         <column name="password_regist">NULL</column>
-        <column name="last_login">2012-11-09 06:05:21</column>
-        <column name="previous_login">2012-11-09 06:05:00</column>
+        <column name="last_login">2012-12-06 05:43:41</column>
+        <column name="previous_login">2012-12-06 03:18:45</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
-        <column name="modified">2012-11-09 15:05:21</column>
+        <column name="modified">2012-12-06 14:43:41</column>
         <column name="modified_user_id">0</column>
         <column name="modified_user_name"></column>
     </table>

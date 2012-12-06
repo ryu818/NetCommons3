@@ -21,14 +21,14 @@ class InstallController extends Controller {
 	 * @var string
 	 */
 	public $name = 'Install';
-	
+
 	/**
 	 * モデル
 	 *
 	 * @var array
 	 */
 	public $uses = null;
-	
+
 	/**
 	 * コンポーネント
 	 *
@@ -76,7 +76,7 @@ class InstallController extends Controller {
 	public function beforeFilter() {
 		parent::beforeFilter();
 		//$this->disableCache();
-		
+
 		$this->layout = 'install';
 	}
 
@@ -96,9 +96,9 @@ class InstallController extends Controller {
 		$chk_database = isset($this->request->data['chk_database']) ? $this->request->data['chk_database'] : _OFF;
 		$this->set("select_lang" , $select_lang);
 		Configure::write(NC_CONFIG_KEY.'.'.'language', $select_lang);
-		
+
 		$this->defaultConfig['site_name'] = __d('install', 'Undefined site name');
-		
+
 		$sess_config = $this->Session->read('Database.config');
 		if(!isset($this->request->data['Database']) && isset($sess_config)) {
 			$config = $this->Session->read('Database.config');
@@ -109,7 +109,7 @@ class InstallController extends Controller {
 		if (!isset($this->request->data['Database'])) {
 			return $config;
 		}
-		
+
 		//$site_name = '';
 		$required = true;
 		$title_str = '';
@@ -252,7 +252,7 @@ class InstallController extends Controller {
 		} catch (Exception $e) {
 			$connected = false;
 		}
-		
+
 		if (!$connected) {
 			// データベースが存在しない
 			$exists_database = false;
@@ -341,7 +341,7 @@ class InstallController extends Controller {
 				}
 				break;
 		}
-	
+
 		if (!$connection) {
 			$this->Session->setFlash(__d('install', 'Could not connect to database.<br />Please check the database server and its configuration.'), 'default', array('class' => 'header_error'));
 			return false;
@@ -381,7 +381,7 @@ class InstallController extends Controller {
 				//}
 			}
 		}
-	
+
 		switch($datasource) {
 			case 'Database/Mysql':
 			//case 'Database/Mysqli':
@@ -391,14 +391,14 @@ class InstallController extends Controller {
 				// TODO:現状、MYSQL以外、作成失敗
 				return false;
 		}
-	
+
 		if ($result === false) {
 			return false;
 		}
-	
+
 		return true;
 	}
-	
+
 	protected function _query($str, $connection = null) {
 		if(!function_exists('mysqli_query')) {
 			$result = mysqli_query($str, $connection);
@@ -417,7 +417,7 @@ class InstallController extends Controller {
  */
 	public function data() {
 		ini_set("memory_limit", "32M");
-	
+
 		$exists_database = true;
 		$config = $this->_check();
 
@@ -436,7 +436,7 @@ class InstallController extends Controller {
 			return;
 		}
 		$this->set("exists_database", $exists_database);
-	
+
 		/*
 		 * テーブル作成
 		*/
@@ -444,12 +444,12 @@ class InstallController extends Controller {
 		//@App::import('Model', 'CakeSchema', false);
 		App::uses('File', 'Utility');
 		App::uses('CakeSchema', 'Model');
-	
+
 		$tables = array();
 		$not_tables = array();
 		$schema = new CakeSchema(array('name'=>'app'));
 		$schema = $schema->load();
-	
+
 		foreach($schema->tables as $table => $fields) {
 			$create = $db->createSchema($schema, $table);
 			if($db->execute($create)) {
@@ -484,7 +484,7 @@ class InstallController extends Controller {
 				}
 			}
 		}
-		
+
 		$this->set("tables", $tables);
 		$this->set("not_tables", $not_tables);
 
@@ -496,9 +496,9 @@ class InstallController extends Controller {
 				XML_UNSERIALIZER_OPTION_ENCODING_SOURCE => "UTF-8"
 		);
 		$unserializer = new XML_Unserializer($options);
-	
+
 		$xml = App::pluginPath('Install') . DS . 'Config' . DS . 'Data' . DS . 'default.xml';	// TODO:default固定
-	
+
 		$result = $unserializer->unserialize($xml, true);
 		//
 		if (empty($result) || PEAR::isError($result)) {
@@ -530,9 +530,9 @@ class InstallController extends Controller {
 					} else {
 						$data = '';
 					}
-					
+
 					$columnType = null;
-					
+
 					//if (is_object($model)) {
 					//	$columnType = $model->getColumnType($column_name);
 					//}
@@ -545,8 +545,8 @@ class InstallController extends Controller {
 					'datas' => implode(', ', $datas)
 				);
 				extract($query);
-	
-	
+
+
 				$sql = "INSERT INTO {$table} ({$fields}) VALUES ({$datas})";
 				if(!$db->execute($sql)) {
 					$this->set("failure_datas", true);
@@ -555,7 +555,7 @@ class InstallController extends Controller {
 				}
 			}
 		}
-	
+
 		// install.inc.php書き込み
 		copy(APP . 'Config' . DS . 'install.inc.php.default', APP . 'Config' . DS . NC_INSTALL_INC_FILE);
 		$file = new File(APP . 'Config' . DS . NC_INSTALL_INC_FILE, true);
@@ -565,14 +565,14 @@ class InstallController extends Controller {
 		}
 		$config['salt'] = Security::generateAuthKey();
 		$config['cipherSeed'] = mt_rand() . mt_rand();
-	
+
 		foreach ($config AS $configKey => $configValue) {
 			if($configKey == "persistent") {
 				$configValue = ($configValue == true) ? 'true' : 'false';
 			}
 			$content = str_replace('{default_' . $configKey . '}', $configValue, $content);
 		}
-	
+
 		$this->set("failure_install_ini", false);
 		if(!$file->write($content) ) {
 			$this->set("failure_install_ini", true);
@@ -591,7 +591,7 @@ class InstallController extends Controller {
 		App::uses('User', 'Model');
 		$User = new User();
 		$user['User'] = empty($this->request->data['User']) ? null : $this->request->data['User'];
-	
+
 		$config = $this->_check();
 
 		if(isset($user['User'])) {
@@ -600,18 +600,18 @@ class InstallController extends Controller {
 			$User->set($user);
 			//$User->id = NC_SYSTEM_USER_ID;
 			$error = $this->validateErrors($User);
-			
+
 			if(!isset($error['password']) && $user['User']['password'] != $user['User']['confirm_password']) {
 				$User->invalidate('password', __d('install', '%s and %s does not match. Please re-enter.',
 						__d('install', 'Admin Password'),
 						__d('install', 'Confirm Password')));
-	
+	return;
 			}
 			unset($user['User']['confirm_password']);
 			if (!empty($error)) {
 				return;
 			}
-	
+
 			// 更新処理
 			//if (!class_exists('Security')) {
 			//	require LIBS . 'security.php';
@@ -623,7 +623,7 @@ class InstallController extends Controller {
 				$this->Session->setFlash($mes, 'default', array('class' => 'header_error'));
 				return;
 			}
-	
+
 			return $this->redirect(array('action' => 'finish'));
 		}
 		// ----------------------------------------------
@@ -631,17 +631,17 @@ class InstallController extends Controller {
 		// ----------------------------------------------
 		App::uses('Config', 'Model');
 		App::uses('ConfigLang', 'Model');
-	
+
 		$Config = new Config();
 		$ConfigLang = new ConfigLang();
 		$fields = array('Config.value' => '"'.addslashes($config['site_name']).'"');
 		$conditions = array('Config.id' => 1);
 		$retConfig = $Config->updateAll($fields, $conditions);
-	
+
 		$fields = array('ConfigLang.value' => '"'.addslashes($config['site_name']).'"');
 		$conditions = array('ConfigLang.config_id' => 1);
 		$retConfigLang = $ConfigLang->updateAll($fields, $conditions);
-	
+
 		$this->set('user', $user);
 	}
 
@@ -655,20 +655,20 @@ class InstallController extends Controller {
 		$config = $this->_check();
 
 		$install_ini_path = APP . 'Config' . DS . NC_INSTALL_INC_FILE;
-	
+
 		// install.inc.php書き込み
 		// define("NC_INSTALLED", false);をdefine("NC_INSTALLED", true);に更新
 		App::uses('File', 'Utility');
 		$file = new File($install_ini_path, true);
 		$content = $file->read();
 		$content = str_replace('define("NC_INSTALLED", false);', 'define("NC_INSTALLED", true);', $content);
-	
+
 		if(!$file->write($content)) {
 			$mes = __d('install', 'Could not write install.inc.php file.');
 			$this->Session->setFlash($mes, 'default', array('class' => 'header_error'));
 			return;
 		}
-		
+
 		// TODO:後にコメントをはずす
 		//@chmod($install_ini_path, 0444);
 	}

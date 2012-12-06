@@ -38,10 +38,26 @@ $this->assign('title', __d('install', 'Setting Check'));
 
 				// install.inc.php is writable
 				if (is_writable(APP . 'Config' . DS . NC_INSTALL_INC_FILE)) {
-					echo '<p class="success message">' . __d('install', '[%s] is writable.', 'nc/config/install.inc.php') . '</p>';
+					echo '<p class="success message">' . __d('install', '[%s] is writable.', 'app/Config/install.inc.php') . '</p>';
 				} else {
 					$check = false;
-					echo '<p class="error message">' . __d('install', '[%s] is NOT writable.', 'nc/config/install.inc.php') . '</p>';
+					echo '<p class="error message">' . __d('install', '[%s] is NOT writable.', 'app/Config/install.inc.php') . '</p>';
+				}
+
+				// webroot/theme is writable
+				if (is_writable(WWW_ROOT.'theme')) {
+					echo '<p class="success message">' . __d('install', '[%s] is writable.', 'app/webroot/theme')  . '</p>';
+					if (!is_writable(WWW_ROOT.'theme'.DS.'asset')) {
+						$check = false;
+						echo '<p class="error message">' . __d('install', '[%s] is NOT writable.', 'app/webroot/theme/asset')  . '</p>';
+					}
+					if (!is_writable(WWW_ROOT.'theme'.DS.'page_styles')) {
+						$check = false;
+						echo '<p class="error message">' . __d('install', '[%s] is NOT writable.', 'app/webroot/theme/page_styles')  . '</p>';
+					}
+				} else {
+					$check = false;
+					echo '<p class="error message">' . __d('install', '[%s] is NOT writable.', 'app/webroot/theme')  . '</p>';
 				}
 
 				//mimetex
