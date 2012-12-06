@@ -418,6 +418,22 @@ class PageMenuController extends PageAppController {
 			}
 		}
 
+// TODO:test他ルームへの移動はまだ実装していないためエラーを出すように仮実装：後に削除
+if($drag_page['Page']['room_id'] != $drop_page['Page']['room_id']) {
+	$buf_block = $this->Block->find('first', array(
+			'recursive' => -1,
+			'conditions' => array(
+					'Block.page_id' => $drag_page_id_arr
+			)
+	));
+	if(isset($buf_block['Block'])) {
+		echo "TODO:まだブロックがはってあるページにおける他ルームへの移動は実装されていません。移動できませんでした。";
+		$this->render(false, 'ajax');
+		return;
+	}
+}
+// TODO:test End
+
 		$child_drop_pages = $this->Page->findChilds('all', $drop_page, $user_id);
 		//$drop_page = $this->Page->findAuthById($page['DropPage']['id'], $user_id);	// 「移動元の更新」で移動先が更新される場合があるため、再取得
 		$drop_root_id = $drop_page['Page']['root_id'];
