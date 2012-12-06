@@ -250,7 +250,7 @@ class AppController extends Controller {
 				if (!$status) {
 					$this->response->statusCode('302');
 				}
-				$this->response->header('X-PJAX-Location', Router::url($url, true));
+				$this->response->header('X-PJAX-Location', $this->Common->linkEncode(Router::url($url, true)));
 			} else {
 				$this->response->header('Location', Router::url($url, true));
 			}
