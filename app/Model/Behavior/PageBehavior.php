@@ -275,8 +275,10 @@ class PageBehavior extends ModelBehavior {
 		if(!empty($val['display_to_date']) && $val['display_flag'] != NC_DISPLAY_FLAG_DISABLE &&
 				strtotime($val['display_to_date']) <= strtotime($d)) {
 			// 現在のページ以下のページを取得
-			$current_page['Page'] = $val;
-			$child_pages = $Model->findChilds('list', $current_page);
+			if(!isset($child_pages)) {
+				$current_page['Page'] = $val;
+				$child_pages = $Model->findChilds('list', $current_page);
+			}
 			$page_id_arr = array($val['id']);
 			if(count($child_pages) > 0) {
 				foreach($child_pages as $page_id => $v) {

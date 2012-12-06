@@ -257,14 +257,14 @@ class Page extends AppModel
 		if(count($permalink_arr) != $chk_thread_num) {
 			return false;
 		}
-		$permalink = $permalink_arr[$chk_thread_num - 1];
+		$current_permalink = $permalink_arr[$chk_thread_num - 1];
 
-		if(preg_match(NC_PERMALINK_PROHIBITION, $permalink)) {
+		if(preg_match(NC_PERMALINK_PROHIBITION, $current_permalink)) {
 			return false;
 		}
 		$chk_permalink = $this->getPermalink($permalink, $space_type);
 		if(preg_match(NC_PERMALINK_PROHIBITION_DIR_PATTERN, $chk_permalink)) {
-			return false;
+			return __('Unavailable string is used by the system.');
 		}
 		return true;
 	}
@@ -490,9 +490,9 @@ class Page extends AppModel
 
 		if($type != 'count' && !isset($params['order'])) {
 			$params['order'] = array(
-					'Page.space_type' => "ASC",
-					'Page.thread_num' => "ASC",
-					'Page.display_sequence' => "ASC"
+				'Page.space_type' => "ASC",
+				'Page.thread_num' => "ASC",
+				'Page.display_sequence' => "ASC"
 			);
 		}
 
@@ -530,6 +530,19 @@ class Page extends AppModel
 
 		if($fetchcallback === "" || ($fetchcallback === null && $type == 'count')) {
 			$results = $this->find($type, $params);
+			if(isset($fetch_params['active_page_id'])) {
+				$parent_id_arr = array($fetch_params['active_page_id'] => true);
+				if(isset($results['Page'])) {
+					$results = array($results['Page']);
+				}
+				foreach($results as $key => $result) {
+					if(isset($parent_id_arr[$result['Page']['parent_id']])) {
+						$parent_id_arr[$result['Page']['id']] = true;
+					} else {
+						unset($results[$key]);
+					}
+				}
+			}
 		} else if(!is_null($fetchcallback)) {
 			$results = call_user_func_array($fetchcallback, array($this->find($type, $params), $fetch_params));
 		} else {
@@ -554,7 +567,8 @@ class Page extends AppModel
 			'thread_num >' => $current_page['Page']['thread_num'],
 			'lang' => array('', $lang)
 		));
-		return $this->findMenu($type, $login_user_id, $current_page['Page']['space_type'], null, $params, "");
+		$fetch_params = array('active_page_id' => $current_page['Page']['id']);
+		return $this->findMenu($type, $login_user_id, $current_page['Page']['space_type'], null, $params, "", $fetch_params);
 	}
 
 /**
@@ -787,9 +801,9 @@ class Page extends AppModel
  * @return boolean true or false
  * @access	public
  */
-	public function decrementDisplaySeq($page = null,$display_sequence = 1) {
+	public function decrementDisplaySeq($page = null,$display_sequence = 1, $conditions = array()) {
 		$display_sequence = -1*$display_sequence;
-		return $this->_operationDisplaySeq($page, $display_sequence);
+		return $this->_operationDisplaySeq($page, $display_sequence, $conditions);
 	}
 
 /**
@@ -800,21 +814,21 @@ class Page extends AppModel
  * @return boolean true or false
  * @access	public
  */
-	public function incrementDisplaySeq($page = null,$display_sequence = 1) {
-		return $this->_operationDisplaySeq($page, $display_sequence);
+	public function incrementDisplaySeq($page = null,$display_sequence = 1, $conditions = array()) {
+		return $this->_operationDisplaySeq($page, $display_sequence, $conditions);
 	}
 
-	protected function _operationDisplaySeq($page = null,$display_sequence = 1) {
+	protected function _operationDisplaySeq($page = null,$display_sequence = 1, $conditions = array()) {
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		$fields = array('Page.display_sequence'=>'Page.display_sequence+('.$display_sequence.')');
-		$conditions = array(
-				"Page.id !=" => $page['Page']['id'],
-				"Page.root_id" => $page['Page']['root_id'],
-				"Page.position_flag" => $page['Page']['position_flag'],
-				"Page.lang" => array("", $lang),
-				"Page.space_type" => $page['Page']['space_type'],
-				"Page.display_sequence >=" => $page['Page']['display_sequence']
-		);
+		$conditions = array_merge($conditions, array(
+			//"Page.id !=" => $page['Page']['id'],
+			"Page.root_id" => $page['Page']['root_id'],
+			"Page.position_flag" => $page['Page']['position_flag'],
+			"Page.lang" => array("", $lang),
+			"Page.space_type" => $page['Page']['space_type'],
+			"Page.display_sequence >" => $page['Page']['display_sequence']	// >=
+		));
 		$ret = $this->updateAll($fields, $conditions);
 		return $ret;
 	}

@@ -82,6 +82,15 @@ msgstr 	"トップページを削除する場合、本ルームのページを�
 msgid  	"Because the [%s] page is locked, I can\'t be deleted. Please run after unlock the page."
 msgstr 	"[%s]ページがロックされているため、削除できません。ページのロックを解除後に実行してください。"
 
+## ページ表示順変更
+
+msgid  	"You are about to move to [%s]. When you move, block placement will be moved as a shortcut. Are you sure?"
+msgstr 	"[%s]へ移動しようとしてます。移動しますと、配置ブロックはショートカットとして移動されます。よろしいですか？"
+
+msgid  	"You are about to move to [%s]. When you move, block placement will be moved as a shortcut, the assignment of rights will be canceled. Are you sure?"
+msgstr 	"[%s]へ移動しようとしてます。移動しますと、配置ブロックはショートカットとして移動され、権限の割り当てが解除されます。よろしいですか？"
+
+
 ## ページスタイル
 msgid  	"Font color:"
 msgstr 	"文字色："

@@ -28,9 +28,71 @@
 
 		// ページ移動
 		root_menu.nestable(options)
-		.on('change', function(e, page_id, move_page_id, position) {
+		.on('change', function(e, page_id, drop_page_id, position) {
+			if(!page_id) {
+				return;
+			}
 			// 表示順変更
-			return true;
+			var url = $.Common.urlBlock(0, 'page/menu/chgsequence');
+			var data = {'data[Page][id]': page_id, 'data[DropPage][id]': drop_page_id, 'position': position};
+			var ret = null;
+			var li = $('#pages-menu-edit-item-' + drop_page_id);
+			var pos = li.offset(), _buttons = {};
+			var default_params = {
+				resizable: false,
+	            modal: true,
+		        position: [pos.left + 30 - $(window).scrollLeft() ,pos.top + 30 - $(window).scrollTop()]
+			}
+			$.ajax({
+				type: "POST",
+				url: url,
+				data: data,
+				async: false,
+				success: function(res){
+					var re_html = new RegExp("^<script>", 'i');
+					var ok = __('Ok') ,cancel = __('Cancel'), body, params;
+					if(!$.trim(res).match(re_html)) {
+						var re_info_html = new RegExp("^<div class=\"info-message\">", 'i');
+						if($.trim(res).match(re_info_html)) {
+							// confirm
+							_buttons[ok] = function(){
+								data['is_confirm'] = 1;
+								$.ajax({
+									type: "POST",
+									url: url,
+									data: data,
+									// async: false,
+									success: function(res){
+										if($.trim(res).match(re_html)) {
+											chgSequenceSuccess(res, page_id);
+											root_menu.nestable('setStop', [true]);
+										} else {
+											errorDialog(res, default_params);
+											root_menu.nestable('setStop', [false]);
+										}
+									}
+								});
+								$( this ).remove();
+							};
+							_buttons[cancel] = function(){
+								$( this ).remove();
+								root_menu.nestable('setStop', [false]);
+							};
+							params = $.extend({buttons: _buttons}, default_params);
+							$('<div></div>').html(res).dialog(params);
+						} else {
+							// error
+							errorDialog(res, default_params);
+							ret = false;
+						}
+					} else {
+						// success
+						chgSequenceSuccess(res, page_id);
+						ret = true;
+					}
+				}
+ 			});
+ 			return ret;
 		});
 		if(is_edit) {
 			active_li = $('#pages-menu-edit-item-' + active_page_id);
@@ -273,14 +335,7 @@
 				var re_html = new RegExp("^<script>", 'i');
 				if(!$.trim(res).match(re_html)) {
 					// error
-					var ok = __('Ok');
-					var body = '<div class="error-message">' + res + '</div>';
-					var _buttons = {}, params;
-					_buttons[ok] = function(){
-						$( this ).remove();
-					};
-					params = $.extend({buttons: _buttons}, default_params);
-					$('<div></div>').html(body).dialog(params);
+					errorDialog(res, default_params);
 				} else {
 					// success
 					var li = $('#pages-menu-edit-item-' + page_id);
@@ -294,6 +349,25 @@
 					li.remove();
 				}
 			});
+		};
+
+		var chgSequenceSuccess = function(res, page_id) {
+			var detail = $('#pages-menu-edit-detail-' + page_id);
+			if(detail.css('display') != 'none') {
+				// 表示順を変更したときに、詳細部分を閉じる->親と子の（固定リンクが変更されるかもしれないため）
+				detail.slideUp(300, function() {detail.html('');});
+			}
+			$(res).appendTo($(document.body));
+		};
+
+		var errorDialog = function(res, default_params) {
+			var ok = __('Ok');
+			var body = '<div class="error-message">' + res + '</div>', _buttons = {};
+			_buttons[ok] = function(){
+				$( this ).remove();
+			};
+			params = $.extend({buttons: _buttons}, default_params);
+			$('<div></div>').html(body).dialog(params);
 		};
 	}
 })(jQuery);

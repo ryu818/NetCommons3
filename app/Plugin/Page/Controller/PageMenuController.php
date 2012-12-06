@@ -122,7 +122,6 @@ class PageMenuController extends PageAppController {
 	public function edit() {
 		$user_id = $this->Auth->user('id');
 		$page = $this->request->data;
-		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		$current_page = $this->Page->findAuthById($page['Page']['id'], $user_id);
 		$is_detail = false;
 		$is_error = false;
@@ -177,41 +176,11 @@ class PageMenuController extends PageAppController {
 
 		if ($this->Page->validates(array('fieldList' => $fieldList))) {
 			// 子供の更新処理
-			// 現在のpage下のページすべてのpermalink更新処理
-			// display_flagはここでは更新しない。
-			// From公開日付は、親の日付で更新
-			// To公開日付は、子供がセットしていないか、親よりも古い日付でならば、親の日付で更新
-			$display_from_date = $current_page['Page']['display_from_date'];
-			$display_to_date = $current_page['Page']['display_to_date'];
-			foreach($child_pages as $key => $child_page) {
-				$permalink_arr = explode('/', $child_page['Page']['permalink']);
-				$upd_permalink = $current_page['Page']['permalink'] . '/' . $permalink_arr[count($permalink_arr)-1];
-
-				$this->Page->create();
-				$fieldChildList = array('permalink');
-
-				$child_page['Page']['permalink'] = $upd_permalink;
-				if(!empty($display_from_date) && $current_page['Page']['display_apply_subpage'] == _ON) {
-					$child_page['Page']['display_from_date'] = $display_from_date;
-					$fieldChildList['display_from_date'] = true;
-				}
-				if(!empty($display_from_date) && !empty($child_page['Page']['display_from_date']) &&
-						strtotime($child_page['Page']['display_from_date']) < strtotime($display_from_date)) {
-					$child_page['Page']['display_from_date'] = $display_from_date;
-					$fieldChildList['display_from_date'] = true;
-				}
-				if(!empty($display_to_date)) {
-					if(empty($child_page['Page']['display_to_date']) || strtotime($child_page['Page']['display_to_date']) > strtotime($display_to_date)) {
-						$child_page['Page']['display_to_date'] = $display_to_date;
-						$fieldChildList['display_to_date'] = true;
-					}
-				}
-				//$this->Page->set($child_page);
-				if(!$this->Page->save($child_page, true, $fieldChildList)) {
-					$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/edit.003', '400');
-					return;
-				}
+			if(!$this->PageMenu->childsUpdate($child_pages, $current_page)) {
+				$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/edit.003', '400');
+				return;
 			}
+
 			// 登録処理
 			if (!$this->Page->save($page, false, $fieldList)) {
 				$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/edit.004', '400');
@@ -311,7 +280,8 @@ class PageMenuController extends PageAppController {
 		}
 
 		// 正常終了
-		$this->autoRender = false;
+		$this->Session->setFlash(__('Has been successfully registered.'));
+		$this->render(false, 'ajax');
 	}
 
 /**
@@ -322,7 +292,6 @@ class PageMenuController extends PageAppController {
 	public function delete() {
 		$user_id = $this->Auth->user('id');
 		$page = $this->request->data;
-		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		if(!isset($page['Page']['id'])) {
 			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu/delete.001', '400');
 			return;
@@ -347,18 +316,239 @@ class PageMenuController extends PageAppController {
 			if(!$this->PageMenu->validatorPageDetail($this->request, $child_page)) {
 				return;
 			}
-			// 削除処理
+		}
+
+		// 削除処理
+		foreach($child_pages as $child_page) {
 			if(!$this->Page->deletePage($child_page['Page']['id'], intval($page['all_delete']))) {
 				$this->flash(__('Failed to delete the database, (%s).', 'pages'), null, 'PageMenu/delete.003', '400');
 				return;
 			}
 		}
-		// 削除処理
 		if(!$this->Page->deletePage($current_page['Page']['id'], intval($page['all_delete']), count($child_pages))) {
 			$this->flash(__('Failed to delete the database, (%s).', 'pages'), null, 'PageMenu/delete.004', '400');
 			return;
 		}
 		$this->Session->setFlash(__('Has been successfully deleted.'));
+		$this->render(false, 'ajax');
+	}
+
+/**
+ * ページ表示順変更
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function chgsequence() {
+		$user_id = $this->Auth->user('id');
+		$page = $this->request->data;
+		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
+		$position = $this->request->data['position'];
+		$is_confirm = isset($this->request->data['is_confirm']) ? intval($this->request->data['is_confirm']) : _OFF;
+		if(!isset($page['Page']['id']) || !isset($page['DropPage']['id']) || $page['Page']['id'] == $page['DropPage']['id']) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu/chgsequence.001', '400');
+			return;
+		}
+
+		$drag_page = $this->Page->findAuthById($page['Page']['id'], $user_id);
+		$drop_page = $this->Page->findAuthById($page['DropPage']['id'], $user_id);
+		if(!isset($drag_page['Page']) || !isset($drop_page['Page'])) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu/chgsequence.002', '400');
+			return;
+		}
+
+		// 権限チェック
+		$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $drag_page);
+		if(!$admin_hierarchy) {
+			return;
+		}
+
+		// 表示順変更権限チェック
+		$insert_parent_page = $this->PageMenu->validatorMovePage($this->request, $drag_page, $drop_page, $position);
+		if($insert_parent_page === false) {
+			return;
+		}
+
+		if($drop_page['Page']['id'] == $drop_page['Page']['room_id']) {
+			$drop_room_name = $drop_page['Page']['page_name'];
+		} else {
+			$drop_room_name = $insert_parent_page['Page']['page_name'];
+		}
+		$drag_page_id_arr = array($drag_page['Page']['id']);
+		if($drag_page['Page']['id'] == $drag_page['Page']['room_id']) {
+			$drag_room_id_arr = array($drag_page['Page']['id']);
+		}
+		// 移動元ページ以下のページ取得
+		$child_drag_pages = $this->Page->findChilds('all', $drag_page, $user_id);
+		$last_drag_page = $drag_page;
+		foreach($child_drag_pages as $child_page) {
+			if(!$this->PageMenu->validatorPageDetail($this->request, $child_page)) {
+				return;
+			}
+			$drag_page_id_arr[] = $child_page['Page']['id'];
+			if($child_page['Page']['id'] == $child_page['Page']['room_id']) {
+				$drag_room_id_arr = array($child_page['Page']['id']);
+			}
+			$last_drag_page = $child_page;
+		}
+
+		// 確認メッセージ表示
+		if( !$is_confirm && $drag_page['Page']['room_id'] != $drop_page['Page']['room_id']) {
+			// ページの移動で、移動元と移動先がちがうルームであっても、
+			// 移動元が単一ページ（ルームではない）で、ブロックがはっていないならば、
+			// 確認メッセージを出す必要性がない
+			$buf_block = $this->Block->find('first', array(
+				'recursive' => -1,
+				'conditions' => array(
+					'Block.page_id' => $drag_page_id_arr
+				)
+			));
+			if(isset($buf_block['Block'])) {
+				$echo_str = '<div class="info-message">';
+				if(count($drag_room_id_arr) > 0) {
+					// 子グループあり
+					$echo_str .= __d('page', 'You are about to move to [%s]. When you move, block placement will be moved as a shortcut, the assignment of rights will be canceled. Are you sure?', $drop_room_name);
+				} else {
+					// 子グループなし
+					$echo_str .= __d('page', 'You are about to move to [%s]. When you move, block placement will be moved as a shortcut. Are you sure?', $drop_room_name);
+				}
+				$echo_str .= '</div>';
+				echo $echo_str;
+				$this->render(false, 'ajax');
+				return;
+			}
+		}
+
+		$child_drop_pages = $this->Page->findChilds('all', $drop_page, $user_id);
+		//$drop_page = $this->Page->findAuthById($page['DropPage']['id'], $user_id);	// 「移動元の更新」で移動先が更新される場合があるため、再取得
+		$drop_root_id = $drop_page['Page']['root_id'];
+		$drop_thread_num = $drop_page['Page']['thread_num'];
+		$drop_space_type = $drop_page['Page']['space_type'];
+		$drop_parent_id = $drop_page['Page']['parent_id'];
+
+		$drop_room_id = $insert_parent_page['Page']['room_id'];
+		if($position == 'inner' || $position == 'bottom') {
+			// ノード中のもっとも多いdisplay_sequenceのPageを取得
+			$insert_page = $drop_page;
+			if(count($child_drop_pages) > 0) {
+				foreach($child_drop_pages as $child_drop_page) {
+					if(in_array($child_drop_page['Page']['id'], $drag_page_id_arr)) {
+						continue;
+					}
+					if($child_drop_page['Page']['display_sequence'] > $insert_page['Page']['display_sequence']) {
+						$insert_page = $child_drop_page;
+					}
+				}
+			}
+			if($position == 'inner') {
+				$drop_thread_num = $drop_page['Page']['thread_num'] + 1;
+				$drop_parent_id = $drop_page['Page']['id'];
+			}
+			$display_sequence = $insert_page['Page']['display_sequence'] + 1;
+		} else if($position == 'top') {
+			// Dropノードの1つ前のpageを取得
+			$conditions = array(
+					'Page.root_id' => $drop_page['Page']['root_id'],
+					'Page.position_flag' => $drop_page['Page']['position_flag'],
+					'Page.display_sequence' => intval($drop_page['Page']['display_sequence']) - 1,
+					'Page.lang' => array('', $lang)
+			);
+			$insert_page = $this->Page->find('first', array('conditions' => $conditions));
+			$display_sequence = $insert_page['Page']['display_sequence'] + 1;
+		}
+
+		// 登録処理
+		$currentFieldList = array();
+		$permalink_arr = explode('/', $drag_page['Page']['permalink']);
+		if($insert_parent_page['Page']['permalink'] != '') {
+			$drag_page['Page']['permalink'] = $insert_parent_page['Page']['permalink'] . '/' . $permalink_arr[count($permalink_arr)-1];
+			$currentFieldList[] = 'permalink';//"'".$insert_parent_page['Page']['permalink'] . '/' . $permalink_arr[count($permalink_arr)-1]."'";
+		} else {
+			$drag_page['Page']['permalink'] = $permalink_arr[count($permalink_arr)-1];
+			$currentFieldList[] = 'permalink';//"'".$permalink_arr[count($permalink_arr)-1]."'";
+		}
+		if($drop_parent_id != $drag_page['Page']['parent_id']) {
+			$drag_page['Page']['parent_id'] = $drop_parent_id;
+			$currentFieldList[] = 'parent_id'; //$drop_parent_id;
+		}
+
+		$fields = array();
+		if($display_sequence != $drag_page['Page']['display_sequence']) {
+			$fields['Page.display_sequence'] = 'Page.display_sequence+('.($display_sequence - $drag_page['Page']['display_sequence']).')';
+		}
+		if($drop_thread_num != $drag_page['Page']['thread_num']) {
+			$fields['Page.thread_num'] = 'Page.thread_num+('.($drop_thread_num - $drag_page['Page']['thread_num']).')';
+			$drag_page['Page']['thread_num'] = $insert_parent_page['Page']['thread_num'] + 1;	// バリデートで使用するため
+		}
+		if($drop_root_id != $drag_page['Page']['root_id']) {
+			$fields['Page.root_id'] = $drop_root_id;
+		}
+		if($drop_space_type != $drag_page['Page']['space_type']) {
+			$fields['Page.space_type'] = $drop_space_type;
+			$drag_page['Page']['space_type'] = $drop_space_type;	// バリデートで使用するため
+		}
+		if($drop_room_id != $drag_page['Page']['room_id']) {
+			$fields['Page.room_id'] = $drop_room_id;
+		}
+
+		if(!$this->Page->save($drag_page, true, $currentFieldList)) {
+			$error = '';
+			foreach($this->Page->validationErrors as $field => $errors) {
+				if($field == 'permalink') {
+					$error .= __('Permalink'). ':';
+				}
+				$error .= $errors[0];	// 最初の１つめ
+			}
+			echo $error;
+			$this->render(false, 'ajax');
+			return;
+		}
+
+		if(count($fields) > 0) {
+			$conditions = array(
+					'Page.id' => $drag_page_id_arr
+			);
+			$ret = $this->Page->updateAll($fields, $conditions);
+			if(!$ret) {
+				$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/chgsequence.003', '400');
+				return;
+			}
+		}
+
+		// カレント、子供、固定リンク,公開日付の更新
+		if(!$this->PageMenu->childsUpdate($child_drag_pages, $drag_page, $insert_parent_page)) {
+			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/chgsequence.004', '400');
+			return;
+		}
+
+		/*
+		 * 移動元と移動先を更新後、移動ノードを更新
+		 */
+
+		/*
+		 * 移動先を更新
+		 */
+
+		//$display_sequence = $insert_page['Page']['display_sequence'];
+		// インクリメント処理
+		if(!$this->Page->incrementDisplaySeq($insert_page, count($child_drag_pages) + 1, array('not' => array('Page.id' => $drag_page_id_arr)))) {
+			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/chgsequence.006', '400');
+			return;
+		}
+
+		// 移動元 前詰め処理
+		if(!$this->Page->decrementDisplaySeq($last_drag_page, count($child_drag_pages) + 1)) {	//, array('not' => array('Page.id' => $drag_page_id_arr))
+			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/chgsequence.005', '400');
+			return;
+		}
+
+		//
+		// TODO:異なるルームへの移動
+		//
+		if($drop_room_id != $drag_page['Page']['room_id']) {
+			// 未実装
+		}
+
+		$this->Session->setFlash(__('Has been successfully updated.'));
 		$this->render(false, 'ajax');
 	}
 }
