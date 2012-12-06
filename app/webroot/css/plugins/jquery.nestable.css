@@ -162,6 +162,9 @@
 	 border-style: solid;
 	 border-color: #dddfff;
 }
+.dd-placeholder-up div {
+	top: 0;
+}
 .dd-placeholder-down {
 	 background-color:#fff888;
 	 text-align:center;
@@ -171,8 +174,11 @@
 	 border-style: solid;
 	 border-color: #dddfff;
 }
-
+.dd-placeholder-down div {
+	top: 0;
+}
 .dd-drag-item > button[data-action] {
 	height: 25px;
 }
+
 // add end
