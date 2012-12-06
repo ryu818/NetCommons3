@@ -8018,7 +8018,7 @@ jQuery.extend({
 				window.history.pushState(null, "", url);
 			}
 			document.write(data);
-			return data;
+			return false;	//data;
 			//doc_write = true;
 		}
 		if($._debug != 0) {
