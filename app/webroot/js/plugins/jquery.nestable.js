@@ -49,6 +49,7 @@
         } else {
         	this.init();
         }
+        this.ret = null;
         //this.init();
 // Edit End Ryuji.M
     }
@@ -260,10 +261,23 @@
         dragStop: function(e)
         {
         	var t = this;
+        	t.ret = null;
         	$('.' + t.options.placeClass, this.el).removeClass(t.options.placeClass);
         	t.placeEl.remove();
-        	var ret = $.Common.fire('change',[t.dragEl.data('id'), t.dropEl.data('id'), t.dragPosition], t.el);
-        	if(ret === true) {
+        	var ret = $.Common.fireResult('change',[t.dragEl.data('id'), t.dropEl.data('id'), t.dragPosition], t.el);
+        	if(ret === null) {
+        		// wait
+        		var timer = setInterval(function(){
+        			if(t.ret !== null) {
+        				clearInterval(timer);
+        				if(t.ret === true) {
+			        		t.success();
+			        	} else if(t.ret === false) {
+			        		t.error();
+			        	}
+        			}
+        		},500);
+        	} else if(ret === true) {
         		t.success();
         	} else if(ret === false) {
         		t.error();
@@ -396,6 +410,15 @@
 			if(add_event) {
 				t.addEvent(new_li);
 			}
+        },
+
+// Dropした際にダイアログ等でcancelするかどうか確認する場合に、
+// changeイベントでresutn nullをすることで遅延を発生させ、
+// setStopでbooeleanをセットすることで、Drop処理かcancel処理を行う。
+        setStop: function(ret)
+        {
+			var t = this;
+			t.ret = ret;
         },
 
         error: function()
