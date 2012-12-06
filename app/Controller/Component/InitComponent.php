@@ -45,7 +45,7 @@ class InitComponent extends Component {
 			}
 			Configure::write(NC_SYSTEM_KEY.'.global_count', $global_count);
 
-			$current_url = $controller->here;
+			$current_url = rawurldecode($controller->here);
 			$current_urls = Configure::read(NC_SYSTEM_KEY.'.current_urls');
 			if(!isset($current_urls)) {
 				$current_urls = array($current_url);
