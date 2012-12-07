@@ -1,33 +1,33 @@
-.nc_wysiwyg_tablemerge_title {
+.nc-wysiwyg-tablemerge-title {
 	padding : 0 0 6px;
 	white-space:nowrap;
 }
-ul.nc_wysiwyg_tablemerge {
+ul.nc-wysiwyg-tablemerge {
 	margin: 0;
 	padding: 0;width: 200px;
 }
-ul.nc_wysiwyg_tablemerge li {
+ul.nc-wysiwyg-tablemerge li {
 	list-style-type: none;
 }
 
-ul.nc_wysiwyg_tablemerge li dl dt {
+ul.nc-wysiwyg-tablemerge li dl dt {
 	float : left;
 	clear : left;
 	width : 60px;
 	padding: 3px 0 3px 20px;
 }
 
-ul.nc_wysiwyg_tablemerge li dl dd {
+ul.nc-wysiwyg-tablemerge li dl dd {
 	float: left;
 	padding: 3px;
 }
 
-ul.nc_wysiwyg_tablemerge li dl dd input {
+ul.nc-wysiwyg-tablemerge li dl dd input {
 	width: 60px;
 }
 
 
-.nc_wysiwyg_tablemerge_btn {
+.nc-wysiwyg-tablemerge-btn {
 	clear : left;
 	text-align : center;
 	width: 230px;

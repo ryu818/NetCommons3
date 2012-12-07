@@ -86,7 +86,7 @@ a.syslink:active {
 	text-decoration:none;
 }
 
-div.top_description {
+div.top-description {
 	padding:5px;
 }
 .note {
@@ -99,22 +99,22 @@ div.top_description {
 	color:#4e62a9 !important;
 }
 
-a.hover_highlight,a.hover_highlight:link {
+a.hover-highlight,a.hover-highlight:link {
 	text-decoration:none;
 }
-a.hover_highlight:visited {
+a.hover-highlight:visited {
 	text-decoration:none;
 }
-a.hover_highlight:hover {
+a.hover-highlight:hover {
 	color:#4e62a9;
 	background-color:#e9f2fb;
 	text-decoration:none;
 }
-a.hover_highlight:active {
+a.hover-highlight:active {
 	text-decoration:none;
 }
 /* ボタン - 共通 */
-.common_btn {
+.common-btn {
 	border-radius : 4px 4px 4px 4px;
 	background:url("../../img/common/btn_bg.gif") repeat-x scroll left top #ffffff;
 	border:1px solid #cccccc;
@@ -127,15 +127,15 @@ a.hover_highlight:active {
 	cursor:pointer;
 }
 
-.common_btn:hover {
+.common-btn:hover {
 	background:url("../../img/common/btn_bg_hover.gif") repeat-x scroll left top #ffffff;
 }
 
-.common_btn_disable {
+.common-btn_disable {
 	color:#cccccc;
 }
 
-.common_btn_disable:hover {
+.common-btn-disable:hover {
 	background:url("../../img/common/btn_bg.gif") repeat-x scroll left top #ffffff;
 }
 .submit,.btn-bottom {

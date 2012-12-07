@@ -60,7 +60,7 @@
 		dialogs    : {},
 		object     : null,
     	options    : {},
-    	className  : 'nc_toggledialog',
+    	className  : 'nc-toggledialog',
 
     	init : function(o, options)
         {
@@ -102,7 +102,7 @@
 	        }
 
 	       	var options = $.extend({
-	       		id        : 'nc_toggledialog',
+	       		id        : 'nc-toggledialog',
 	       		className : '',
 	            el        : null,
 	            content   : '',

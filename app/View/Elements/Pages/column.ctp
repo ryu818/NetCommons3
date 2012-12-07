@@ -58,7 +58,7 @@
 <?php if((!empty($blocks[$parent_id]) && $exist_flag) || $nc_mode == NC_BLOCK_MODE): ?>
 	<?php if(isset($blocks[$parent_id])): ?>
 		<?php foreach ($blocks[$parent_id] as $col => $block_col): ?>
-		<div<?php if(!empty($id_name)) { echo(' id="'.$id_name.'"');} ?> class="nc_column table_cell<?php if(!empty($class_name)){echo(' '.$class_name);}?>"<?php if(!empty($attr)){echo(' '.$attr);}?>>
+		<div<?php if(!empty($id_name)) { echo(' id="'.$id_name.'"');} ?> class="nc-column table-cell<?php if(!empty($class_name)){echo(' '.$class_name);}?>"<?php if(!empty($attr)){echo(' '.$attr);}?>>
 			<?php foreach ($block_col as $row => $block): ?>
 				<?php /* ブロック */ ?>
 				<?php echo($ret[$col][$row]); ?>
@@ -66,7 +66,7 @@
 		</div>
 		<?php endforeach; ?>
 	<?php else: ?>
-		<div class="nc_column table_cell">
+		<div class="nc-column table-cell">
 		</div>
 	<?php endif; ?>
 <?php endif; ?>

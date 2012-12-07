@@ -4,7 +4,7 @@ if ($this->request->is('post')) {
 	echo '<link href="theme/page_styles/'.$page_style['file'].'" rel="stylesheet "type="text/css">';
 }
 ?>
-<div class="nc-pages-setting-title nc_popup_color" data-pages-header="true">
+<div class="nc-pages-setting-title nc-panel-color" data-pages-header="true">
 	<?php echo(__d('page', 'Page style')); ?>
 </div>
 <div class="nc-pages-setting-content">
@@ -13,7 +13,7 @@ if ($this->request->is('post')) {
 	<form name="pages_style_form" method="post" action="<?php echo $this->Html->url(array('plugin' => 'page','action' => 'style')); ?>" data-ajax-replace="#nc-pages-setting-dialog">
 		<?php echo($this->element('style/textarea', isset($file_content) ? array('file_content'=>$file_content) : array())); ?>
 		<div class="btn-bottom">
-			<input id="pages_style_button" type="submit" class="common_btn" name="ok" value="<?php echo( __('Ok')); ?>" />
+			<input id="pages-style-button" type="submit" class="common-btn" name="ok" value="<?php echo( __('Ok')); ?>" />
 		</div>
 	</form>
 </div>

@@ -1,4 +1,4 @@
-div.nc_wysiwyg_mimetex_preview {
+div.nc-wysiwyg-mimetex-preview {
 	background-color: #ffffff;
 	border: 1px solid #808080;
 	height: 80px;
@@ -6,19 +6,19 @@ div.nc_wysiwyg_mimetex_preview {
 	margin-bottom: 5px;
 }
 
-div.nc_wysiwyg_mimetex_preview_title {
+div.nc-wysiwyg-mimetex-preview-title {
 	white-space:nowrap;
 }
 
-.nc_wysiwyg_mimetex_outer {
+.nc-wysiwyg-mimetex-outer {
 	width:332px;
 }
 
-input.nc_wysiwyg_mimetex_input {
+input.nc-wysiwyg-mimetex-input {
 	width: 230px;
 }
 
-div.nc_wysiwyg_mimetex_dialog_title {
+div.nc-wysiwyg-mimetex-dialog-title {
 	color: #666666;
 	letter-spacing: 2px;
 	margin-bottom: 5px;
@@ -28,7 +28,7 @@ div.nc_wysiwyg_mimetex_dialog_title {
 }
 
 
-.nc_wysiwyg_mimetex_btn {
+.nc-wysiwyg-mimetex-btn {
 	clear : left;
 	text-align : center;
 	width: 325px;

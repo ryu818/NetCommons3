@@ -62,7 +62,7 @@
 
             list.reset();
 
-            list.placeEl = $('<div><div class="nc_arrow_up"></div></div>');
+            list.placeEl = $('<div><div class="nc-arrow-up"></div></div>');
             $.Common.zIndex++;
 
             $.each(this.el.find(list.options.itemNodeName), function(k, el) {
@@ -334,9 +334,9 @@
 			        	if(insert_pos == "top") {
 			        		t.placeEl.addClass(t.options.placeUpClass);
 			        		t.placeEl.removeClass(t.options.placeDownClass);
-			        		if(child.hasClass('nc_arrow')) {
-				        		child.addClass('nc_arrow_up');
-				        		child.removeClass('nc_arrow');
+			        		if(child.hasClass('nc-arrow')) {
+				        		child.addClass('nc-arrow-up');
+				        		child.removeClass('nc-arrow');
 				        	}
 			        		t.placeEl.css({
 				        		'top' : offset['top']  - t.placeEl.outerHeight() + 'px'
@@ -344,9 +344,9 @@
 			        	} else {
 			        		t.placeEl.removeClass(t.options.placeUpClass);
 			        		t.placeEl.addClass(t.options.placeDownClass);
-			        		if(child.hasClass('nc_arrow_up')) {
-				        		child.removeClass('nc_arrow_up');
-				        		child.addClass('nc_arrow');
+			        		if(child.hasClass('nc-arrow-up')) {
+				        		child.removeClass('nc-arrow-up');
+				        		child.addClass('nc-arrow');
 				        	}
 			        		t.placeEl.css({
 				        		'top' : offset['top'] + h + 'px'

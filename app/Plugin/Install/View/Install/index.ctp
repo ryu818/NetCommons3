@@ -5,7 +5,7 @@ $this->assign('title', __d('install', 'Welcome'));
 	<form method="post" action="<?php echo $this->Html->url(array('plugin' => 'install','controller' => 'install','action' => 'introduction')); ?>">
 		<?php echo($this->element('hidden')); ?>
 		<h1><?php echo $this->fetch('title'); ?></h1>
-		<div class="top_description">
+		<div class="top-description">
 			<?php echo(__d('install', 'Choose language to be used for the installation process.')); ?>
 		</div>
 		<div class="align-center">

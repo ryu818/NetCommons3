@@ -1,9 +1,9 @@
-<div class="nc_base">
+<div class="nc-base">
 	<section>
-		<h1 class="nc_base_title">
+		<h1 class="nc-base-title">
 			<?php echo($this->fetch('title')); ?>
 		</h1>
-		<div class="nc_base_content">
+		<div class="nc-base-content">
 			<?php echo($this->fetch('content'));?>
 		</div>
 	</section>

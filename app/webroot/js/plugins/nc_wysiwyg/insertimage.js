@@ -59,7 +59,7 @@
 
 		function init(options) {
 			var frm,pre,outer, front, list, border, float, listWidth, listStyle, img_options;
-			frm = $('<form action="' + options.url + '"class="nc_wysiwyg_insertimage" enctype="multipart/form-data" method="POST"></form>').appendTo( self );
+			frm = $('<form action="' + options.url + '"class="nc-wysiwyg-insertimage" enctype="multipart/form-data" method="POST"></form>').appendTo( self );
 			if((options.img)) {
 				img = $(options.img);
 				img_options = getImgCss(img, options);
@@ -70,14 +70,14 @@
 				img = createImg(options);
 			}
 
-			pre = $('<div class="nc_wysiwyg_insertimage_preview"></div>').appendTo(frm).css({opacity : '0.6'}).css({visibility : 'hidden'});
+			pre = $('<div class="nc-wysiwyg-insertimage-preview"></div>').appendTo(frm).css({opacity : '0.6'}).css({visibility : 'hidden'});
 			if(($.browser.msie && parseInt($.browser.version) < 7)) {
 				pre[0].innerHTML = img[0].outerHTML;
 				img = $("img", pre);
 			} else
 				img.appendTo(pre);
 			if( insert_flag ) {
-				pre.addClass("nc_wysiwyg_insertimage_preview_ins");
+				pre.addClass("nc-wysiwyg-insertimage-preview-ins");
 				pre_size = [0, 0];	// previewサイズ
 				img_size = [0, 0];
 			} else {
@@ -86,23 +86,23 @@
 			}
 
 
-			outer = $('<div class="nc_wysiwyg_insertimage_outer">'+
+			outer = $('<div class="nc-wysiwyg-insertimage-outer">'+
 						'</div>').css({opacity : '0.4'}).appendTo(frm);
 			front = $(_createFrontHtml(options))
 						.css({visibility : 'hidden'})
 						.appendTo(frm);
-			float = $(".nc_wysiwyg_insertimage_float", front);
+			float = $(".nc-wysiwyg-insertimage-float", front);
 			float.append(_createFloat("left", $._base_url + "img/plugins/nc_wysiwyg/dialog/float-left.gif", __d('nc_wysiwyg_insertimage', 'left'), (options.float == 'left') ? true : false, img));
 			float.append(_createFloat("normal", $._base_url + "img/plugins/nc_wysiwyg/dialog/float-normal.gif", __d('nc_wysiwyg_insertimage', 'normal'), (options.float == '' || options.float == 'none') ? true : false, img));
 			float.append(_createFloat("right",$._base_url + "img/plugins/nc_wysiwyg/dialog/float-right.gif", __d('nc_wysiwyg_insertimage', 'right'), (options.float == 'right') ? true : false, img));
 
-			border = $(".nc_wysiwyg_insertimage_border", front);
+			border = $(".nc-wysiwyg-insertimage-border", front);
 			list = _initListMenu('border_width', options.borderWidthList, 'border-bottom:', ' solid;');
-			listWidth = options.wysiwyg.appendListMain(border, list, "nc_wysiwyg_insertimage_border", _borderWidthEvent, [frm, img, options]);
+			listWidth = options.wysiwyg.appendListMain(border, list, "nc-wysiwyg-insertimage-border", _borderWidthEvent, [frm, img, options]);
 			options.wysiwyg.chgList(listWidth, options.borderWidth);
 
 			list = _initListMenu('border_style', options.borderStyleList, 'border-bottom:3px ', ';');
-			listStyle = options.wysiwyg.appendListMain(border, list, "nc_wysiwyg_insertimage_border", _borderStyleEvent, [frm, img, options]);
+			listStyle = options.wysiwyg.appendListMain(border, list, "nc-wysiwyg-insertimage-border", _borderStyleEvent, [frm, img, options]);
 			options.wysiwyg.chgList(listStyle, options.borderStyle);
 
 			_addEvent(frm, img, pre, front, outer);
@@ -123,20 +123,20 @@
 					value = __d(['nc_wysiwyg_insertimage', 'size_select'], key);
 					opt_str += '<option title="' + options.size_select[key][0] + __d('nc_wysiwyg_insertimage', 'product') + options.size_select[key][1] + '" value="' + options.size_select[key][0] + "," + options.size_select[key][1] + '">' + value + '</option>'
 				}
-				return '<div class="nc_wysiwyg_insertimage_front"><ul class="nc_wysiwyg_insertimage_row">' +
+				return '<div class="nc-wysiwyg-insertimage-front"><ul class="nc-wysiwyg-insertimage-row">' +
 								'<li>' +
-									'<div id="nc_wysiwyg_insertimage_select_file">'+
+									'<div id="nc-wysiwyg-insertimage-select-file">'+
 										'<p>' + __d('nc_wysiwyg_insertimage', 'desc_upload') + '</p>' +
 										'<input name="files" type="file" />'+
-										'&nbsp;<a id="nc_wysiwyg_insertimage_select_file_l" href="#">' + __d('nc_wysiwyg_insertimage', 'direct_link') + '</a>'+
+										'&nbsp;<a id="nc-wysiwyg-insertimage-select-file-l" href="#">' + __d('nc_wysiwyg_insertimage', 'direct_link') + '</a>'+
 									'</div>' +
-									'<div id="nc_wysiwyg_insertimage_direct_link">'+
+									'<div id="nc-wysiwyg-insertimage-direct-link">'+
 										'<p>' + __d('nc_wysiwyg_insertimage', 'desc_url') + '</p>' +
 										'<dl>' +
 											'<dt>' + __d('nc_wysiwyg_insertimage', 'img_url') + '</dt>' +
 											'<dd>' +
-												'<input class="nc_wysiwyg_insertimage_text" name="url" type="text" value="'+ options.src +'" />'+
-												'<br /><a id="nc_wysiwyg_insertimage_direct_link_l" href="#">' + __d('nc_wysiwyg_insertimage', 'select_file') + '</a>'+
+												'<input class="nc-wysiwyg-insertimage-text" name="url" type="text" value="'+ options.src +'" />'+
+												'<br /><a id="nc-wysiwyg-insertimage-direct-link-l" href="#">' + __d('nc_wysiwyg_insertimage', 'select_file') + '</a>'+
 											'</dd>' +
 										'</dl>' +
 									'</div>' +
@@ -145,7 +145,7 @@
 									'<dl>' +
 										'<dt>' + __d('nc_wysiwyg_insertimage', 'alt') + '</dt>' +
 										'<dd>' +
-											'<input class="nc_wysiwyg_insertimage_text" name="alt_title" type="text" value="'+ options.alt +'" />' +
+											'<input class="nc-wysiwyg-insertimage-text" name="alt_title" type="text" value="'+ options.alt +'" />' +
 										'</dd>' +
 									'</dl>' +
 								'</li>' +
@@ -153,26 +153,26 @@
 									'<dl>' +
 										'<dt>' + __d('nc_wysiwyg_insertimage', 'size_px') + '</dt>' +
 										'<dd>' +
-											'<div id="nc_wysiwyg_insertimage_upload">' +
-												'<select class="nc_wysiwyg_insertimage_size" name="size">'+ opt_str +'</select>' +
+											'<div id="nc-wysiwyg-insertimage-upload">' +
+												'<select class="nc-wysiwyg-insertimage-size" name="size">'+ opt_str +'</select>' +
 											'</div>' +
-											'<div id="nc_wysiwyg_insertimage_direct">' +
-												'<span id="nc_wysiwyg_insertimage_size_px"><input name="size_w" class="nc_wysiwyg_insertimage_size" type="text" maxlength="4" size="5" value="" />' +
+											'<div id="nc-wysiwyg-insertimage-direct">' +
+												'<span id="nc-wysiwyg-insertimage-size-px"><input name="size_w" class="nc-wysiwyg-insertimage-size" type="text" maxlength="4" size="5" value="" />' +
 												__d('nc_wysiwyg_insertimage', 'product') +
-												'<input name="size_h" class="nc_wysiwyg_insertimage_size" type="text" maxlength="4" size="5" value="" /></span>' +
-												'<span id="nc_wysiwyg_insertimage_size_percent"><input name="size_percent" class="nc_wysiwyg_insertimage_size" type="text" maxlength="3" size="5" value="" /></span>' +
+												'<input name="size_h" class="nc-wysiwyg-insertimage-size" type="text" maxlength="4" size="5" value="" /></span>' +
+												'<span id="nc-wysiwyg-insertimage-size-percent"><input name="size_percent" class="nc-wysiwyg-insertimage-size" type="text" maxlength="3" size="5" value="" /></span>' +
 												'&nbsp;<select class="nc_wysiwyg_insertimage_unit" name="unit"><option value="px">'+ __d('nc_wysiwyg_insertimage', 'px') +'</option><option value="%">'+ __d('nc_wysiwyg_insertimage', 'percent') +'</option></select>' +
-												'<div class="nc_wysiwyg_insertimage_presize"></div>'+
+												'<div class="nc-wysiwyg-insertimage-presize"></div>'+
 											'</div>' +
 										'</dd>' +
 									'</dl>' +
 								'</li>' +
-								((insert_flag) ? '<li class="align-right"><a href="#" id="nc_wysiwyg_insertimage_detail">' + __d('nc_wysiwyg_insertimage', 'detail') + '</a></li>' : '') +
-							'</ul><ul' + ((insert_flag) ? ' style="display:none;"' : '') + ' id="nc_wysiwyg_insertimage_detail_ul" class="nc_wysiwyg_insertimage_row">' +
+								((insert_flag) ? '<li class="align-right"><a href="#" id="nc-wysiwyg-insertimage-detail">' + __d('nc_wysiwyg_insertimage', 'detail') + '</a></li>' : '') +
+							'</ul><ul' + ((insert_flag) ? ' style="display:none;"' : '') + ' id="nc-wysiwyg-insertimage-detail-ul" class="nc-wysiwyg-insertimage-row">' +
 								'<li>' +
 									'<dl>' +
 										'<dt>' + __d('nc_wysiwyg_insertimage', 'float') + '</dt>' +
-										'<dd class="nc_wysiwyg_insertimage_float">' +
+										'<dd class="nc-wysiwyg-insertimage-float">' +
 										'</dd>' +
 									'</dl>' +
 								'</li>' +
@@ -180,23 +180,23 @@
 									'<dl>' +
 										'<dt>' + __d('nc_wysiwyg_insertimage', 'margin_px') + '</dt>' +
 										'<dd>' +
-											'<input name="margin_w" class="nc_wysiwyg_insertimage_size" type="text" maxlength="4" size="5" value="' + options.margin[0] + '" />' +
+											'<input name="margin_w" class="nc-wysiwyg-insertimage-size" type="text" maxlength="4" size="5" value="' + options.margin[0] + '" />' +
 											__d('nc_wysiwyg_insertimage', 'product') +
-											'<input name="margin_h" class="nc_wysiwyg_insertimage_size" type="text" maxlength="4" size="5" value="' + options.margin[1] + '" />' +
+											'<input name="margin_h" class="nc-wysiwyg-insertimage-size" type="text" maxlength="4" size="5" value="' + options.margin[1] + '" />' +
 										'</dd>' +
 									'</dl>' +
 								'</li>' +
 								'<li>' +
 									'<dl>' +
 										'<dt>' + __d('nc_wysiwyg_insertimage', 'border') + '</dt>' +
-										'<dd class="nc_wysiwyg_insertimage_border">' +
+										'<dd class="nc-wysiwyg-insertimage-border">' +
 										'</dd>' +
 									'</dl>' +
 								'</li>' +
 							'</ul>' +
-							'<div class="nc_wysiwyg_insertimage_btn">' +
-								'<input name="ok" type="button" class="common_btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'ok')+'" />' +
-								'<input name="cancel" type="button" class="common_btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'cancel')+'" />' +
+							'<div class="nc-wysiwyg-insertimage-btn">' +
+								'<input name="ok" type="button" class="common-btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'ok')+'" />' +
+								'<input name="cancel" type="button" class="common-btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'cancel')+'" />' +
 							'</div>' +
 							'</div>';
 			}
@@ -204,29 +204,29 @@
 			function _addEvent(frm, img, pre, front, outer) {
 				if(insert_flag) {
 					// 詳細
-					$("#nc_wysiwyg_insertimage_detail").click(function(e){
-						if(pre.hasClass("nc_wysiwyg_insertimage_preview_ins"))
-							pre.removeClass("nc_wysiwyg_insertimage_preview_ins");
+					$("#nc-wysiwyg-insertimage-detail").click(function(e){
+						if(pre.hasClass("nc_wysiwyg-insertimage-preview-ins"))
+							pre.removeClass("nc_wysiwyg-insertimage_preview-ins");
 						else
-							pre.addClass("nc_wysiwyg_insertimage_preview_ins");
-						$('#nc_wysiwyg_insertimage_detail_ul').toggle();
+							pre.addClass("nc-wysiwyg-insertimage-preview-ins");
+						$('#nc-wysiwyg-insertimage-detail-ul').toggle();
 						outer.css({width: front.outerWidth() +'px',  height: front.outerHeight() + 'px'});
 						_moveFront(pre, front, outer)
 						e.preventDefault();
 						return false;
 					});
 					// file選択
-					$("#nc_wysiwyg_insertimage_direct_link").css({display : "none"});
-					$("#nc_wysiwyg_insertimage_direct").css({display : "none"});
+					$("#nc-wysiwyg-insertimage-direct-link").css({display : "none"});
+					$("#nc-wysiwyg-insertimage-direct").css({display : "none"});
 				} else {
 					// URL入力
-					$("#nc_wysiwyg_insertimage_select_file").css({display : "none"});
-					$("#nc_wysiwyg_insertimage_upload").css({display : "none"});
+					$("#nc-wysiwyg-insertimage-select-file").css({display : "none"});
+					$("#nc-wysiwyg-insertimage-upload").css({display : "none"});
 				}
-				$("#nc_wysiwyg_insertimage_direct_link_l").click(function(e){
+				$("#nc-wysiwyg-insertimage-direct-link-l").click(function(e){
 					return _toggleLink(e);
 				});
-				$("#nc_wysiwyg_insertimage_select_file_l").click(function(e){
+				$("#nc-wysiwyg-insertimage-select-file-l").click(function(e){
 					return _toggleLink(e);
 				});
 
@@ -304,11 +304,11 @@
 						});
 						$("[name=size_percent]:first", frm).val(percent);
 
-						$("#nc_wysiwyg_insertimage_size_percent").css("display", "");
-						$("#nc_wysiwyg_insertimage_size_px").css("display", "none");
+						$("#nc-wysiwyg-insertimage-size-percent").css("display", "");
+						$("#nc-wysiwyg-insertimage-size-px").css("display", "none");
 					} else {
-						$("#nc_wysiwyg_insertimage_size_percent").css("display", "none");
-						$("#nc_wysiwyg_insertimage_size_px").css("display", "");
+						$("#nc-wysiwyg-insertimage-size-percent").css("display", "none");
+						$("#nc-wysiwyg-insertimage-size-px").css("display", "");
 					}
 				});
 
@@ -324,7 +324,7 @@
 				});
 
 				$("[name=ok]:first", frm).click(function(e){
-					if($("#nc_wysiwyg_insertimage_direct_link").css("display") == "none") {
+					if($("#nc-wysiwyg-insertimage-direct-link").css("display") == "none") {
 						// アップロード
 						// IE６の場合、iframeをappendした段階で画面が崩れるので修正
 						if(($.browser.msie && parseInt($.browser.version) < 7))
@@ -380,17 +380,17 @@
 				});
 
 				function _toggleLink(e) {
-					if($("#nc_wysiwyg_insertimage_direct_link").css("display") == "none") {
-						$("#nc_wysiwyg_insertimage_direct_link").show();
-						$("#nc_wysiwyg_insertimage_direct").show();
-						$("#nc_wysiwyg_insertimage_select_file").hide();
-						$("#nc_wysiwyg_insertimage_upload").hide();
+					if($("#nc-wysiwyg-insertimage-direct-link").css("display") == "none") {
+						$("#nc_wysiwyg-insertimage-direct-link").show();
+						$("#nc_wysiwyg-insertimage-direct").show();
+						$("#nc_wysiwyg-insertimage-select-file").hide();
+						$("#nc_wysiwyg-insertimage-upload").hide();
 						$("[name=url]:first", frm).focus();
 					} else {
-						$("#nc_wysiwyg_insertimage_direct_link").hide();
-						$("#nc_wysiwyg_insertimage_direct").hide();
-						$("#nc_wysiwyg_insertimage_select_file").show();
-						$("#nc_wysiwyg_insertimage_upload").show();
+						$("#nc_wysiwyg-insertimage-direct-link").hide();
+						$("#nc_wysiwyg-insertimage-direct").hide();
+						$("#nc_wysiwyg-insertimage-select-file").show();
+						$("#nc_wysiwyg-insertimage-upload").show();
 						$("[name=files]:first", frm).focus();
 					}
 					outer.css({width: front.outerWidth() +'px',  height: front.outerHeight() + 'px'});
@@ -431,7 +431,7 @@
 			function _loadAfter(frm, pre, front, outer) {
 				var size_w,size_h;
 				if(!insert_flag)
-					$(".nc_wysiwyg_insertimage_presize", frm).html('(' + img_size[0] + __d('nc_wysiwyg_insertimage', 'product') + img_size[1] + ')');
+					$(".nc-wysiwyg-insertimage-presize", frm).html('(' + img_size[0] + __d('nc_wysiwyg_insertimage', 'product') + img_size[1] + ')');
 
 				if(options.size[0] != "auto" && options.size[0] != "") {
 					img.css({width : options.size[0]});
@@ -452,12 +452,12 @@
 				else
 					$("[name=size_percent]:first", frm).val("100");
 				if(options.unit == "%" && parseInt((size[1] * size_w/size[0]*100)/100) == size_h) {
-					$("#nc_wysiwyg_insertimage_size_percent").css("display", "");
-					$("#nc_wysiwyg_insertimage_size_px").css("display", "none");
+					$("#nc-wysiwyg-insertimage-size-percent").css("display", "");
+					$("#nc-wysiwyg-insertimage-size-px").css("display", "none");
 					$("[name=unit]:first", frm).val("%");
 				} else {
-					$("#nc_wysiwyg_insertimage_size_percent").css("display", "none");
-					$("#nc_wysiwyg_insertimage_size_px").css("display", "");
+					$("#nc-wysiwyg-insertimage-size-percent").css("display", "none");
+					$("#nc-wysiwyg-insertimage-size-px").css("display", "");
 					$("[name=unit]:first", frm).val("px");
 				}
 
@@ -470,7 +470,7 @@
 
 				// リサイズ
 				if(!insert_flag) {
-					var resize = $('<a class="nc_wysiwyg_insertimage_resize"></a>').appendTo(frm);
+					var resize = $('<a class="nc-wysiwyg-insertimage-resize"></a>').appendTo(frm);
 					// リサイズmousedownイベント
 		            resize.mousedown(function(e) {
 		            	var sx = null, sy = null;
@@ -532,7 +532,7 @@
 			}
 
 			function _createFloat(name, src, lang, active, img) {
-				var c = "nc_wysiwyg_insertimage_icon";
+				var c = "nc-wysiwyg-insertimage-icon";
 				return $('<a href="#"><img name="' + name + '"  alt="' + lang + '"  title="' + lang + '" src="' + src + '" class="'+ c + ((active) ? ' active' : '') + '"" /></a>')
 					.click(function(e){
 						var float = $("img", this);

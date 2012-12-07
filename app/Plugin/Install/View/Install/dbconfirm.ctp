@@ -51,7 +51,7 @@ $this->assign('title', __d('install', 'Confirm database settings'));
 			);
 
 		?>
-		<ul class="lists install_lists">
+		<ul class="lists install-lists">
 			<?php foreach($lists as $list): ?>
 			<li>
 				<dl>
@@ -90,7 +90,7 @@ $this->assign('title', __d('install', 'Confirm database settings'));
 			<?php if($failure_database): ?>
 				<?php echo '<p class="error message">' . __d('install', 'Could not create database. Contact the server administrator for details.') . '</p>'; ?>
 			<?php else: ?>
-			<div class="install_create_db">
+			<div class="install-create-db">
 				<?php echo(__d('install', 'The following database was not found on the server:')); ?><span class="bold"><?php echo(h($config['database'])); ?></span>
 				<br />
 				<?php echo(__d('install', 'Attempt to create it?')); ?>

@@ -1,13 +1,13 @@
-div.insertTable_title {
+div.insertTable-title {
 	margin: 5px;
 	text-align: center;
 	white-space:nowrap;
 }
-table.insertTable_dialog {
+table.insertTable-dialog {
 	height: 100px;
 	width: 100px;
 }
-table.insertTable_dialog tr td {
+table.insertTable-dialog tr td {
 	border: 1px solid #cccccc;
 	height: 20px;
 	width: 20px;

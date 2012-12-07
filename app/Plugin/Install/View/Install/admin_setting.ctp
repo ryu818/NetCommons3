@@ -5,7 +5,7 @@ $this->assign('title', __d('install', 'Admin user setting'));
 	<form method="post" action="<?php echo $this->Html->url(array('plugin' => 'install','controller' => 'install','action' => 'admin_setting')); ?>">
 		<?php echo($this->element('hidden')); ?>
 		<h1><?php echo $this->fetch('title'); ?></h1>
-		<div class="top_description">
+		<div class="top-description">
 			<?php __d('install', 'Please choose your site admin&acute;s name and password.'); ?>
 		</div>
 		<?php
@@ -49,7 +49,7 @@ $this->assign('title', __d('install', 'Admin user setting'));
 				),
 			);
 		?>
-		<ul class="lists install_lists">
+		<ul class="lists install-lists">
 			<?php foreach($lists as $list): ?>
 			<li>
 				<dl>
@@ -61,7 +61,7 @@ $this->assign('title', __d('install', 'Admin user setting'));
 					<dd>
 						<?php if(isset($list['value'])){echo($list['value']);} ?>
 						<?php if(isset($list['note'])){echo('<div class="note">'.$list['note'].'</div>');} ?>
-						
+
 					</dd>
 				</dl>
 			</li>

@@ -117,16 +117,16 @@
 	<?php
 		if($is_edit_detail) {
 			echo $this->Html->link('', array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'detail'),
-				array('title' => __('Detail setting'), 'class' => 'pages-menu-edit-icon' . ' nc_tooltip',
+				array('title' => __('Detail setting'), 'class' => 'pages-menu-edit-icon' . ' nc-tooltip',
 				'data-ajax' => '#pages-menu-edit-detail-'.$menu['id'], 'data-page-edit-id' => $menu['id']));
 		}
 		echo $this->Html->link('', array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'operation'),
-			array('title' => __d('page', 'Other operation'), 'class' => 'pages-menu-other-icon' . ' nc_tooltip',
+			array('title' => __d('page', 'Other operation'), 'class' => 'pages-menu-other-icon' . ' nc-tooltip',
 			'data-ajax' => '#pages-menu-edit-view-'.$menu['id']));
 
 		if($is_delete) {
 			echo $this->Html->link('', array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'delete'),
-				array('title' => __d('page', 'Delete page'), 'class' => 'pages-menu-delete-icon' . ' nc_tooltip',
+				array('title' => __d('page', 'Delete page'), 'class' => 'pages-menu-delete-icon' . ' nc-tooltip',
 				'data-ajax-replace' => '#pages-menu-edit-item-'.$menu['id'], 'data-ajax-type' => 'POST', 'data-ajax-data' => '#pages-menu-edit-item-' . $menu['id']));
 		}
 	?>

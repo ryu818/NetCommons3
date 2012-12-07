@@ -40,16 +40,16 @@
 		var listWidth, listStyle;
 		var c = $.Common.getColorCode(options.sel_els[0],"borderTopColor");
 		property = {
-			width			: ($(options.sel_els[0]).attr("_nc_wysiwyg_border_top")) ? "" : $(options.sel_els[0]).css('borderTopWidth'),
-			style			: ($(options.sel_els[0]).attr("_nc_wysiwyg_border_top")) ? "" : $(options.sel_els[0]).css('borderTopStyle'),
-			color			: (c == "transparent" || $(options.sel_els[0]).attr("_nc_wysiwyg_border_top")) ? options.borderColor : c,
+			width			: ($(options.sel_els[0]).attr("data-nc-wysiwyg-border-top")) ? "" : $(options.sel_els[0]).css('borderTopWidth'),
+			style			: ($(options.sel_els[0]).attr("data-nc-wysiwyg-border-top")) ? "" : $(options.sel_els[0]).css('borderTopStyle'),
+			color			: (c == "transparent" || $(options.sel_els[0]).attr("data-nc-wysiwyg-border-top")) ? options.borderColor : c,
 			border          : {Top: true, Right: true, Bottom: true, Left: true}
 		};
 		init();
 
 		showPreview();
 
-		setTimeout(function() { $("#nc_wysiwyg_tableboder_icon_none")[0].focus(); }, 100);
+		setTimeout(function() { $("#nc-wysiwyg-tableboder-icon-none")[0].focus(); }, 100);
 
 
 		return;
@@ -62,38 +62,38 @@
 			var borderColor = property.color;
 
 			div = $('<div style="clear:left;"></div>').appendTo( self );
-			table = $('<ul class="nc_wysiwyg_tableboder"></ul>').appendTo( div );
-			$(table).append('<li class="nc_wysiwyg_tableborder_title"><dl><dt>'+ __d('nc_wysiwyg_tableborder', active_tab) +'</dt>' +
+			table = $('<ul class="nc-wysiwyg-tableboder"></ul>').appendTo( div );
+			$(table).append('<li class="nc-wysiwyg-tableborder-title"><dl><dt>'+ __d('nc_wysiwyg_tableborder', active_tab) +'</dt>' +
 				((active_tab != 'table') ? '<dd>'+ __d('nc_wysiwyg_tableborder', 'separator') + options.pos_title +'</dd>' : '') + '</dl></li>');
 			_createBoderPreview();
 
-			borderwidth = $('<li class="nc_wysiwyg_tableborder_content float-left"></li>').appendTo(table);
+			borderwidth = $('<li class="nc-wysiwyg-tableborder-content float-left"></li>').appendTo(table);
 			list = _initListMenu('border_width', options.borderWidthList, 'border-bottom:', ' solid;');
-			listWidth = options.wysiwyg.appendListMain(borderwidth, list, "nc_wysiwyg_tableborder_border",_borderWidthEvent,[]);
+			listWidth = options.wysiwyg.appendListMain(borderwidth, list, "nc-wysiwyg-tableborder-border",_borderWidthEvent,[]);
 			options.wysiwyg.chgList(listWidth, borderWidth);
 
-			borderstyle = $('<li class="nc_wysiwyg_tableborder_content float-left"></li>').appendTo(table);
+			borderstyle = $('<li class="nc-wysiwyg-tableborder-content float-left"></li>').appendTo(table);
 			list = _initListMenu('border_style', options.borderStyleList, 'border-bottom:3px ', ';');
-			listStyle = options.wysiwyg.appendListMain(borderstyle, list, "nc_wysiwyg_tableborder_border",_borderStyleEvent,[]);
+			listStyle = options.wysiwyg.appendListMain(borderstyle, list, "nc-wysiwyg-tableborder-border",_borderStyleEvent,[]);
 			options.wysiwyg.chgList(listStyle, borderStyle);
 
-			$(table).append('<li id="nc_wysiwyg_tableboder_borderColor" class="nc_wysiwyg_tableborder_content float-left"><dl>'+
+			$(table).append('<li id="nc-wysiwyg-tableboder-borderColor" class="nc-wysiwyg-tableborder-content float-left"><dl>'+
 										'<dt>'+ __d('nc_wysiwyg_tableborder', 'color') + __d('nc_wysiwyg_tableborder', 'separator') + '</dt>'+
 										'<dd>'+
-											'<input type="text" name="bordercolor" class="nc_wysiwyg_tableborder_color_input" value="'+ borderColor +'" maxlength="7"  />'+
-											'<a href="javascript:;" class="nc_wysiwyg_tableborder_color">'+
+											'<input type="text" name="bordercolor" class="nc-wysiwyg-tableborder-color-input" value="'+ borderColor +'" maxlength="7"  />'+
+											'<a href="javascript:;" class="nc-wysiwyg-tableborder-color">'+
 												'<img style="background-color:' + (borderColor ? borderColor : options.borderColor) + ';"' + ' src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/sel_color.gif" title="' + "" + '" alt="' + "" + '" />'+
 											'</a>'+
 										'</dd>'+
 							'</dl></li>');
-			$("#nc_wysiwyg_tableboder_icon_none").click(function(e){
+			$("#nc-wysiwyg-tableboder-icon-none").click(function(e){
 				property.border = {Top: false, Right: false, Bottom: false, Left: false};
 				setPreview("none");
 				e.preventDefault();
 			    return false;
 			});
 
-			$("#nc_wysiwyg_tableboder_icon_outer").click(function(e){
+			$("#nc-wysiwyg-tableboder-icon-outer").click(function(e){
 				property.border = {Top: true, Right: true, Bottom: true, Left: true};
 				_chgList();
 				setPreview();
@@ -101,7 +101,7 @@
 			    return false;
 			});
 
-			$("#nc_wysiwyg_tableboder_icon_top").click(function(e){
+			$("#nc-wysiwyg-tableboder-icon-top").click(function(e){
 				property.border['Top'] = (property.border['Top']) ? false : true;
 				if(property.border['Top'])
 					_chgList();
@@ -110,7 +110,7 @@
 			    return false;
 			});
 
-			$("#nc_wysiwyg_tableboder_icon_bottom").click(function(e){
+			$("#nc-wysiwyg-tableboder-icon-bottom").click(function(e){
 				property.border['Bottom'] = (property.border['Bottom']) ? false : true;
 				if(property.border['Bottom'])
 					_chgList();
@@ -119,7 +119,7 @@
 			    return false;
 			});
 
-			$("#nc_wysiwyg_tableboder_icon_left").click(function(e){
+			$("#nc-wysiwyg-tableboder-icon-left").click(function(e){
 				property.border['Left'] = (property.border['Left']) ? false : true;
 				if(property.border['Left'])
 					_chgList();
@@ -128,7 +128,7 @@
 			    return false;
 			});
 
-			$("#nc_wysiwyg_tableboder_icon_right").click(function(e){
+			$("#nc-wysiwyg-tableboder-icon-right").click(function(e){
 				property.border['Right'] = (property.border['Right']) ? false : true;
 				if(property.border['Right'])
 					_chgList();
@@ -138,7 +138,7 @@
 			});
 
 			// borderカラークリック
-			$(".nc_wysiwyg_tableborder_color", div).click(function(e){
+			$(".nc-wysiwyg-tableborder-color", div).click(function(e){
 				var self = this;
 				var c = $.Common.getColorCode($("img", self)[0], 'backgroundColor');
 				if(c == "transparent")
@@ -151,17 +151,17 @@
 							$(self.previousSibling).val(v);
 							property.color = v;
 							//setPreview();
-							options.wysiwyg.removeDialog("nc_wysiwyg_tableborder_color");
+							options.wysiwyg.removeDialog("nc-wysiwyg-tableborder-color");
 						},
 						cancel_callback  : function(v) {
-							options.wysiwyg.removeDialog("nc_wysiwyg_tableborder_color");
+							options.wysiwyg.removeDialog("nc-wysiwyg-tableborder-color");
 						}
 					};
-					$("#nc_wysiwyg_tableborder_color").nc_colorpicker(opts);
+					$("#nc-wysiwyg-tableborder-color").nc_colorpicker(opts);
 				};
 				var toggle_options = {
-					id        : "nc_wysiwyg_tableborder_color",
-					js        : ['new/plugins/colorpicker.js'],
+					id        : "nc-wysiwyg-tableborder-color",
+					js        : [$._base_url+'js/plugins/jquery.colorpicker.js'],
 					jsname    : ['$.fn.nc_colorpicker'],
 					pos_base  : $(self.previousSibling),
 					style     : {left:"left", top:"outbottom"},
@@ -172,7 +172,7 @@
 			    return false;
 			});
 
-			$(".nc_wysiwyg_tableborder_color_input", div).keyup(function(e){
+			$(".nc-wysiwyg-tableborder-color-input", div).keyup(function(e){
 				var c = $(this).val();
 				if(c.match(/^#[0-9a-f]{6}/i)) {
 					$("img", this.nextSibling).css({'backgroundColor': c});
@@ -180,22 +180,22 @@
 					//setPreview();
 				}
 			}).focus(function(e){
-				options.wysiwyg.removeDialog("nc_wysiwyg_tableborder_color");
+				options.wysiwyg.removeDialog("nc-wysiwyg-tableborder-color");
 			});
 
 			//ok cancel button
-			buttons = $('<div class="nc_wysiwyg_tableborder_btn"></div>').appendTo( self );
-			buttons.append($('<input name="ok" type="button" class="common_btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'ok')+'" />')
+			buttons = $('<div class="nc-wysiwyg-tableborder-btn"></div>').appendTo( self );
+			buttons.append($('<input name="ok" type="button" class="common-btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'ok')+'" />')
 				.click(function(e){
 					_registBorder();
-					options.wysiwyg.removeDialog("nc_wysiwyg_tableborder");
+					options.wysiwyg.removeDialog("nc-wysiwyg-tableborder");
 					e.preventDefault();
 					return false;
 				}));
 
-			buttons.append($('<input name="cancel" type="button" class="common_btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'cancel')+'" />')
+			buttons.append($('<input name="cancel" type="button" class="common-btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'cancel')+'" />')
 				.click(function(e){
-					options.wysiwyg.removeDialog("nc_wysiwyg_tableborder");
+					options.wysiwyg.removeDialog("nc-wysiwyg-tableborder");
 					e.preventDefault();
 			        return false;
 				}));
@@ -213,22 +213,22 @@
 			}
 			function _createBoderPreview(){
 
-					$(table).append('<li class="nc_wysiwyg_tableborder_content float-left"><ul class="nc_wysiwyg_tableborder_align">'+
-										'<li><ul class="nc_wysiwyg_tableboder_icon_l">'+
-											'<li><a href="javascript:;" id="nc_wysiwyg_tableboder_icon_none"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-border-none.gif" title="'+ __d('nc_wysiwyg_tableborder', 'none') +'" alt="'+ __d('nc_wysiwyg_tableborder', 'none') +'" /></a></li>'+
-											'<li><a href="javascript:;" id="nc_wysiwyg_tableboder_icon_outer"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-border-outer.gif" title="'+ __d('nc_wysiwyg_tableborder', 'outer') +'" alt="'+ __d('nc_wysiwyg_tableborder', 'outer') +'" /></a></li>'+
+					$(table).append('<li class="nc-wysiwyg-tableborder-content float-left"><ul class="nc-wysiwyg-tableborder-align">'+
+										'<li><ul class="nc-wysiwyg-tableboder-icon-l">'+
+											'<li><a href="javascript:;" id="nc-wysiwyg-tableboder-icon-none"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-border-none.gif" title="'+ __d('nc_wysiwyg_tableborder', 'none') +'" alt="'+ __d('nc_wysiwyg_tableborder', 'none') +'" /></a></li>'+
+											'<li><a href="javascript:;" id="nc-wysiwyg-tableboder-icon-outer"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-border-outer.gif" title="'+ __d('nc_wysiwyg_tableborder', 'outer') +'" alt="'+ __d('nc_wysiwyg_tableborder', 'outer') +'" /></a></li>'+
 										'</ul></li>'+
-										'<li class="nc_wysiwyg_tableboder_align_clear"><ul class="nc_wysiwyg_tableboder_icon">'+
-											'<li class="nc_wysiwyg_tableborder_preview">' +
-												'<div id="nc_wysiwyg_tableborder_preview">'+
+										'<li class="nc-wysiwyg-tableboder-align-clear"><ul class="nc-wysiwyg-tableboder-icon">'+
+											'<li class="nc-wysiwyg-tableborder-preview">' +
+												'<div id="nc-wysiwyg-tableborder-preview">'+
 												'</div>' +
 											'</li>'+
-											'<li><a href="javascript:;" id="nc_wysiwyg_tableboder_icon_top"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-border-top.gif" title="'+ __d('nc_wysiwyg_tableborder', 'top') +'" alt="'+ __d('nc_wysiwyg_tableborder', 'top') +'" /></a></li>'+
-											'<li><a href="javascript:;" id="nc_wysiwyg_tableboder_icon_bottom"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-border-bottom.gif" title="'+ __d('nc_wysiwyg_tableborder', 'bottom') +'" alt="'+ __d('nc_wysiwyg_tableborder', 'bottom') +'" /></a></li>'+
+											'<li><a href="javascript:;" id="nc-wysiwyg-tableboder-icon-top"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-border-top.gif" title="'+ __d('nc_wysiwyg_tableborder', 'top') +'" alt="'+ __d('nc_wysiwyg_tableborder', 'top') +'" /></a></li>'+
+											'<li><a href="javascript:;" id="nc-wysiwyg-tableboder-icon-bottom"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-border-bottom.gif" title="'+ __d('nc_wysiwyg_tableborder', 'bottom') +'" alt="'+ __d('nc_wysiwyg_tableborder', 'bottom') +'" /></a></li>'+
 										'</ul></li>'+
-										'<li class="nc_wysiwyg_tableboder_align_clear"><ul class="nc_wysiwyg_tableboder_icon_bottom">'+
-											'<li><a href="javascript:;" id="nc_wysiwyg_tableboder_icon_left"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-border-left.gif" title="'+ __d('nc_wysiwyg_tableborder', 'left') +'" alt="'+ __d('nc_wysiwyg_tableborder', 'left') +'" /></a></li>'+
-											'<li><a href="javascript:;" id="nc_wysiwyg_tableboder_icon_right"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-border-right.gif" title="'+ __d('nc_wysiwyg_tableborder', 'right') +'" alt="'+ __d('nc_wysiwyg_tableborder', 'right') +'" /></a></li>'+
+										'<li class="nc-wysiwyg-tableboder-align-clear"><ul class="nc-wysiwyg-tableboder-icon-bottom">'+
+											'<li><a href="javascript:;" id="nc-wysiwyg-tableboder-icon-left"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-border-left.gif" title="'+ __d('nc_wysiwyg_tableborder', 'left') +'" alt="'+ __d('nc_wysiwyg_tableborder', 'left') +'" /></a></li>'+
+											'<li><a href="javascript:;" id="nc-wysiwyg-tableboder-icon-right"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-border-right.gif" title="'+ __d('nc_wysiwyg_tableborder', 'right') +'" alt="'+ __d('nc_wysiwyg_tableborder', 'right') +'" /></a></li>'+
 										'</ul></li>'+
 									'</ul></li>');
 			}
@@ -310,14 +310,14 @@
 				setTimeout(function() { $(options.table_el).show(); }, 100);
 
 				function _regist(el) {
-					var preview = $("#nc_wysiwyg_tableborder_preview");
+					var preview = $("#nc-wysiwyg-tableborder-preview");
 					$.each(['Top','Right','Bottom','Left'], function(k, v) {
 						$(el).css("border"+v, preview.css("border"+ v));
 						if(property.border[v] == false) {
 							$(el).css("border"+v, "1px dotted #666666");
-							$(el).attr("_nc_wysiwyg_border_" + v.toLowerCase(), "1");
+							$(el).attr("data-nc-wysiwyg-border-" + v.toLowerCase(), "1");
 						} else {
-							$(el).removeAttr("_nc_wysiwyg_border_" + v.toLowerCase());
+							$(el).removeAttr("data-nc-wysiwyg-border-" + v.toLowerCase());
 						}
 					});
 				}
@@ -326,7 +326,7 @@
 
 		function setPreview(type) {
 			var width,style,color;
-			var preview = $("#nc_wysiwyg_tableborder_preview");
+			var preview = $("#nc-wysiwyg-tableborder-preview");
 			$.each(['Top','Right','Bottom','Left'], function(k, v) {
 				if(type == undefined || type == v || type == "none") {
 					width = preview.css("border" + v + "Width");
@@ -379,7 +379,7 @@
 			return;
 
 			function _tracePreviewLine(border) {
-				var preview = $("#nc_wysiwyg_tableborder_preview");
+				var preview = $("#nc-wysiwyg-tableborder-preview");
 				if (typeof(border) == 'string') {
 					preview.css("border", border);
 				} else {
@@ -395,9 +395,9 @@
 
 			// tableボーダー0の場合、tableが点線に変わっているため、ダイアログも合わせる
 			function _setTransparentAttrPreviewLine(el, value) {
-				var preview = $("#nc_wysiwyg_tableborder_preview");
+				var preview = $("#nc-wysiwyg-tableborder-preview");
 				$.each(['Top','Right','Bottom','Left'], function(k, v) {
-					if($(el).attr("_nc_wysiwyg_border_" + v.toLowerCase()) && (value == undefined || value == v)) {
+					if($(el).attr("data-nc-wysiwyg-border-" + v.toLowerCase()) && (value == undefined || value == v)) {
 						property.border[v] = false;
 					}
 				});

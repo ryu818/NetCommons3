@@ -13,7 +13,7 @@
 		init();
 
 		$(ok).click(function(){
-			html = $('#nc_wysiwyg_insertvideo_f_video_el').val();
+			html = $('#nc-wysiwyg-insertvideo-f-video-el').val();
 			if (options.callback && inputChecked())
 				options.callback(html);
 		});
@@ -23,7 +23,7 @@
 		});
 
 		// focus：2度目の表示がfocusされないため、timerとする
-		setTimeout(function() { $('#nc_wysiwyg_insertvideo_f_video_el')[0].focus(); }, 100);
+		setTimeout(function() { $('#nc-wysiwyg-insertvideo-f-video-el')[0].focus(); }, 100);
 
 		return;
 
@@ -35,18 +35,18 @@
 			else
 				msg = __d('nc_wysiwyg_insertvideo', 'desc');
 
-			$(self).append('<div class="nc_wysiwyg_insertvideo_dialog_title">'+ __d('nc_wysiwyg_insertvideo', 'dialog_title') +'</div>');
-			div = $('<div><div id="nc_wysiwyg_insertvideo_video_msg">'+ msg +'</div>'+
-					  '<div><textarea id="nc_wysiwyg_insertvideo_f_video_el" cols="20" rows="4"></textarea></div></div>').appendTo(self);
+			$(self).append('<div class="nc-wysiwyg-insertvideo-dialog-title">'+ __d('nc_wysiwyg_insertvideo', 'dialog_title') +'</div>');
+			div = $('<div><div id="nc-wysiwyg-insertvideo-video-msg">'+ msg +'</div>'+
+					  '<div><textarea id="nc-wysiwyg-insertvideo-f-video-el" cols="20" rows="4"></textarea></div></div>').appendTo(self);
 
 			buttons = $('<div class="btn-bottom"></div>').appendTo(div);
 
-			ok = $('<input name="ok" type="button" class="common_btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'ok')+'" />').appendTo(buttons);
-			cancel = $('<input name="cancel" type="button" class="common_btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'cancel')+'" />').appendTo(buttons);
+			ok = $('<input name="ok" type="button" class="common-btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'ok')+'" />').appendTo(buttons);
+			cancel = $('<input name="cancel" type="button" class="common-btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'cancel')+'" />').appendTo(buttons);
 
 			//各ブラウザ毎にwidthの長さを変える
-			px = $('#nc_wysiwyg_insertvideo_f_video_el')[0].clientWidth;
-			$('#nc_wysiwyg_insertvideo_video_msg').css({width : px});
+			px = $('#nc-wysiwyg-insertvideo-f-video-el')[0].clientWidth;
+			$('#nc-wysiwyg-insertvideo-video-msg').css({width : px});
 
 		}
 

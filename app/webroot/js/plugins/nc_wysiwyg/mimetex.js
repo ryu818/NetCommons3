@@ -23,7 +23,7 @@
 			if (inputChecked()) {
 				var texurl = getTexURL(input.val());
 				texurl = texurl.replace(/\'/g, "\\'");
-				$('.nc_wysiwyg_mimetex_preview').css("background","#ffffff url('" + texurl + "') no-repeat");
+				$('.nc-wysiwyg-mimetex-preview').css("background","#ffffff url('" + texurl + "') no-repeat");
 			}
 		});
 
@@ -48,19 +48,19 @@
 			if(options.text != '') {
 				options.text = decodeURI(options.text);
 			}
-			$('<div class="nc_wysiwyg_mimetex_dialog_title">'+ __d('nc_wysiwyg_mimetex', 'dialog_title') +'</div>'+
-			  '<div class="nc_wysiwyg_mimetex_preview_title">'+ __d('nc_wysiwyg', 'preview') +'</div><div class="nc_wysiwyg_mimetex_preview" />').appendTo(self);
+			$('<div class="nc-wysiwyg-mimetex-dialog-title">'+ __d('nc_wysiwyg_mimetex', 'dialog_title') +'</div>'+
+			  '<div class="nc-wysiwyg-mimetex-preview-title">'+ __d('nc_wysiwyg', 'preview') +'</div><div class="nc-wysiwyg-mimetex-preview" />').appendTo(self);
 
-			tex = $('<div class="nc_wysiwyg_mimetex_outer"><div>'+ __d('nc_wysiwyg_mimetex', 'error_mes') +'</div>'+
-					'<input class="nc_wysiwyg_mimetex_input" type="text" name="mimetex" value="'+options.text+'" /></div>').insertAfter('.nc_wysiwyg_mimetex_dialog_title');
-			upload	= $('<div class="nc_wysiwyg_mimetex_btn"></div>').appendTo(self);
+			tex = $('<div class="nc-wysiwyg-mimetex-outer"><div>'+ __d('nc_wysiwyg_mimetex', 'error_mes') +'</div>'+
+					'<input class="nc-wysiwyg-mimetex-input" type="text" name="mimetex" value="'+options.text+'" /></div>').insertAfter('.nc-wysiwyg-mimetex-dialog-title');
+			upload	= $('<div class="nc-wysiwyg-mimetex-btn"></div>').appendTo(self);
 
 			//ボタンの追加
 			preview		= $('<input type="button" value="'+ __d('nc_wysiwyg', 'preview') +'" name="preview" style="margin-left: 5px;" />').appendTo(tex);
-			ok			= $('<input name="ok" type="button" class="common_btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'ok')+'" />').appendTo(upload);
-			cancel		= $('<input name="cancel" type="button" class="common_btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'cancel')+'" />').appendTo(upload);
+			ok			= $('<input name="ok" type="button" class="common-btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'ok')+'" />').appendTo(upload);
+			cancel		= $('<input name="cancel" type="button" class="common-btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'cancel')+'" />').appendTo(upload);
 
-			input = $('.nc_wysiwyg_mimetex_input', tex);
+			input = $('.nc-wysiwyg-mimetex-input', tex);
 
 			// focus：2度目の表示がfocusされないため、timerとする
 			setTimeout(function() { input.focus(); }, 100);

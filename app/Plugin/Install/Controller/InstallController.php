@@ -160,7 +160,7 @@ class InstallController extends Controller {
 		$this->set('config', $config);
 		if($chk_database && $required == false) {
 			$mes = __('Please input %s.', $title_str);
-			$this->Session->setFlash($mes, 'default', array('class' => 'header_error'));
+			$this->Session->setFlash($mes, 'default', array('class' => 'header-error'));
 			return false;
 		}
 		return $config;
@@ -285,7 +285,7 @@ class InstallController extends Controller {
 			@ConnectionManager::create('install', $config);
 		$db = ConnectionManager::getDataSource('install');
 		if (!$db->isConnected()) {
-		$this->Session->setFlash(__d('install', 'Could not connect to database.<br />Please check the database server and its configuration.'), 'default', array('class' => 'header_error'));
+		$this->Session->setFlash(__d('install', 'Could not connect to database.<br />Please check the database server and its configuration.'), 'default', array('class' => 'header-error'));
 		return false;
 		}*/
 		$datasource = $config['datasource'];
@@ -293,7 +293,7 @@ class InstallController extends Controller {
 			case 'Database/Mysql':
 				if(!function_exists('mysql_connect')) {
 					$mes = __d('install', 'Could not connect to database.<br />Call to undefined function %s.', 'mysql_connect()');
-					$this->Session->setFlash($mes, 'default', array('class' => 'header_error'));
+					$this->Session->setFlash($mes, 'default', array('class' => 'header-error'));
 					return false;
 				} else {
 					$connection = @mysql_connect($config['host'] . ':' . $config['port'], $config['login'], $config['password'], true);
@@ -302,7 +302,7 @@ class InstallController extends Controller {
 			/*case 'mysqli':
 				if(!function_exists('mysqli_connect')) {
 					$mes = __d('install', 'Could not connect to database.<br />Call to undefined function %s.', 'mysqli_connect()');
-					$this->Session->setFlash($mes, 'default', array('class' => 'header_error'));
+					$this->Session->setFlash($mes, 'default', array('class' => 'header-error'));
 					return false;
 				} else {
 					//$connection = mysqli_connect($config['host'], $config['login'], $config['password'], $config['database'], $config['port'], $config['socket']);
@@ -314,7 +314,7 @@ class InstallController extends Controller {
 				if(class_exists('PDO') && version_compare ( preg_replace('/[a-z-]/','', phpversion()),'5','>=')) {
 					/* SQLite利用チェック */
 					$mes = __d('install', 'Could not connect to database.<br />Call to undefined function %s.', 'sqlite_open()');
-					$this->Session->setFlash($mes, 'default', array('class' => 'header_error'));
+					$this->Session->setFlash($mes, 'default', array('class' => 'header-error'));
 					return false;
 				} else {
 					$connection = @sqlite_open($config['database']);
@@ -323,7 +323,7 @@ class InstallController extends Controller {
 			case 'Database/Postgres':
 				if(!function_exists('pg_connect')) {
 					$mes = __d('install', 'Could not connect to database.<br />Call to undefined function %s.', 'pg_pconnect()');
-					$this->Session->setFlash($mes, 'default', array('class' => 'header_error'));
+					$this->Session->setFlash($mes, 'default', array('class' => 'header-error'));
 					return false;
 				} else {
 					$conn  = "host='{$config['host']}' port='{$config['port']}' dbname='{$config['database']}' ";
@@ -334,7 +334,7 @@ class InstallController extends Controller {
 			case 'Database/Sqlserver':
 				if(!function_exists('mssql_connect')) {
 					$mes = __d('install', 'Could not connect to database.<br />Call to undefined function %s.', 'mssql_connect()');
-					$this->Session->setFlash($mes, 'default', array('class' => 'header_error'));
+					$this->Session->setFlash($mes, 'default', array('class' => 'header-error'));
 					return false;
 				} else {
 					$connection = @mssql_connect($config['host'] . $port, $config['login'], $config['password'], true);
@@ -343,7 +343,7 @@ class InstallController extends Controller {
 		}
 
 		if (!$connection) {
-			$this->Session->setFlash(__d('install', 'Could not connect to database.<br />Please check the database server and its configuration.'), 'default', array('class' => 'header_error'));
+			$this->Session->setFlash(__d('install', 'Could not connect to database.<br />Please check the database server and its configuration.'), 'default', array('class' => 'header-error'));
 			return false;
 		}
 		return $connection;
@@ -620,7 +620,7 @@ class InstallController extends Controller {
 			App::uses('AuthComponent', 'Controller/Component');
 			if(!$User->save($user, false, array('login_id', 'handle', 'password'))) {
 				$mes = __('Failed to update the database, (%s).', 'users');
-				$this->Session->setFlash($mes, 'default', array('class' => 'header_error'));
+				$this->Session->setFlash($mes, 'default', array('class' => 'header-error'));
 				return;
 			}
 
@@ -665,7 +665,7 @@ class InstallController extends Controller {
 
 		if(!$file->write($content)) {
 			$mes = __d('install', 'Could not write install.inc.php file.');
-			$this->Session->setFlash($mes, 'default', array('class' => 'header_error'));
+			$this->Session->setFlash($mes, 'default', array('class' => 'header-error'));
 			return;
 		}
 

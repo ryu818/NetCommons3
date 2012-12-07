@@ -20,7 +20,7 @@
 
 		}, options);
 
-		var self = this, sm = __d('nc_wysiwyg_smiley'), ul = $('<ul class="nc_wysiwyg_smiley"></ul>'), dialog = null;
+		var self = this, sm = __d('nc_wysiwyg_smiley'), ul = $('<ul class="nc-wysiwyg-smiley"></ul>'), dialog = null;
 
 		init(options);
 

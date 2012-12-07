@@ -5,7 +5,7 @@ $this->assign('title', __d('install', 'Introduction'));
 	<form method="post" action="<?php echo $this->Html->url(array('plugin' => 'install','controller' => 'install','action' => 'check')); ?>">
 		<?php echo($this->element('hidden')); ?>
 		<h1><?php echo $this->fetch('title'); ?></h1>
-		<div class="top_description">
+		<div class="top-description">
 			<?php echo(__d('install', 'introduction description')); ?>
 		</div>
 		<div class="btn-bottom align-right">

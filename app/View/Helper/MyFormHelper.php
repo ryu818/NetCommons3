@@ -111,7 +111,7 @@ class MyFormHelper extends FormHelper {
 			} else {
 				$class = $options['class'];
 			}
-			$str = '<div class="table_cell">'.$str. '</div><a href="#" class="message-close" role="button" onclick="$(this).parents(\'.'.$class.':first\').remove(); return false;"><span class="ui-icon ui-icon-closethick">close</span></a>' ;
+			$str = '<div class="table-cell">'.$str. '</div><a href="#" class="message-close" role="button" onclick="$(this).parents(\'.'.$class.':first\').remove(); return false;"><span class="ui-icon ui-icon-closethick">close</span></a>' ;
 		}
 		if($buf_wrap !== false) {
 			$tag = is_string($buf_wrap) ? $buf_wrap : 'div';

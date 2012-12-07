@@ -99,7 +99,7 @@ $this->assign('title', __d('install', 'General configuration'));
 			);
 
 		?>
-		<ul class="lists install_lists">
+		<ul class="lists install-lists">
 			<?php foreach($lists as $list): ?>
 			<li>
 				<dl>

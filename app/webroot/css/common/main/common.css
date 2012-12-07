@@ -76,10 +76,10 @@
 	position:absolute;
 }
 
-.pointer_cursor {
+.pointer-cursor {
 	cursor:pointer !important;
 }
-.move_cursor {
+.move-cursor {
 	cursor:move !important;
 }
 
@@ -103,11 +103,11 @@
 .table {
 	display:table;
 }
-.table_row {
+.table-row {
 	display:table-row;
 }
 
-.table_cell {
+.table-cell {
 	display:table-cell;
 }
 /* 時間 */
@@ -120,35 +120,6 @@ input.nc-date {
 input.nc-time {
     width: 60px !important;
 }
-
-/* モーダル */
-#nc_modal {
-	top:0;
-	left:0;
-	position:absolute;
-}
-/*
-div.selectlist{
-	float:left;
-	text-align:center;
-	padding:10px 0;
-}
-select.selectlist {
-	width:180px;
-	height:250px;
-	margin:5px;
-}
-.selectlist_title {
-	font-weight:bold;
-	padding:5px;
-}
-.selectlist_btn {
-	float:left;
-	text-align:center;
-	width:90px;
-	padding:150px 0 0;
-}
-*/
 
 /* メッセージ関連 */
 .popup-message {
@@ -213,7 +184,7 @@ div.message {
 }
 
 /* WYSIWYG:IE+Ajaxの場合、一度目が正常に表示されないため */
-textarea.nc_wysiwyg {
+textarea.nc-wysiwyg {
 	width:520px;
 	height:320px;
 	visibility:hidden;
@@ -229,7 +200,7 @@ img.icon {
 }
 
 /* 矢印 */
-.nc_arrow {
+.nc-arrow {
     border-color: #565656 transparent transparent;
     border-right: 3px dashed transparent;
     border-style: solid dashed dashed;
@@ -246,7 +217,7 @@ img.icon {
     width: 0;
 }
 
-.nc_arrow_up {
+.nc-arrow-up {
     border-color: #565656 transparent;
     border-width: 0 4px 4px;
     border-style: solid;
@@ -262,12 +233,12 @@ img.icon {
     width: 0;
 }
 
-.nc_arrow_left {
+.nc-arrow-left {
 	position:relative;
 	top:0;
 	left:0;
 }
-.nc_arrow_left:before{
+.nc-arrow-left:before{
 	content: "";
 	position: absolute;
 	top: 0;
@@ -277,12 +248,12 @@ img.icon {
 	border-right: 5px solid #565656;
 }
 
-.nc_arrow_right {
+.nc-arrow-right {
 	position:relative;
 	top:0;
 	left:0;
 }
-.nc_arrow_right:before{
+.nc-arrow-right:before{
 	content: "";
 	position: absolute;
 	top: 0;
@@ -293,13 +264,13 @@ img.icon {
 }
 
 /* ページ移動 */
-ul.nc_pager {
+ul.nc-pager {
 	list-style-type: none;
 	margin: 0 0 1em;
 	padding: 0;
 }
 
-ul.nc_pager li {
+ul.nc-pager li {
     /* font-size: 13px; */
     display: inline;
     line-height: 0;
@@ -307,7 +278,7 @@ ul.nc_pager li {
     padding: 0;
 }
 
-ul.nc_pager a, ul.nc_pager a:visited, ul.nc_pager a:hover, ul.nc_pager span.nc_pager_current,ul.nc_pager span.nc_pager_dots {
+ul.nc-pager a, ul.nc-pager a:visited, ul.nc-pager a:hover, ul.nc-pager span.nc-pager-current,ul.nc-pager span.nc-pager-dots {
     /* background: url() no-repeat scroll left top transparent; */
     width: 25px;
     color: #777777;
@@ -322,7 +293,7 @@ ul.nc_pager a, ul.nc_pager a:visited, ul.nc_pager a:hover, ul.nc_pager span.nc_p
     text-decoration: none;
 }
 
-ul.nc_pager span.nc_pager_current {
+ul.nc-pager span.nc-pager-current {
     /* background: url("") no-repeat scroll left top transparent; */
     background-color:#7e9693;
     color: #ffffff;
@@ -384,7 +355,7 @@ table.nc-log {
 	background-color:#fff5d5;
 	padding-left:30px;
 }
-div#nc-fatal_error {
+div#nc-fatal-error {
 	background-color:#ff0000;
 	color:#ffffff;
 }

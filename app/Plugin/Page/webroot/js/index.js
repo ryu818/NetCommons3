@@ -11,22 +11,22 @@
 	$.fn.Page = function() {
 		var dialog_el = $(this);
 		resizeWindow(dialog_el);
-		
+
 		$('#nc-pages-setting-arrow-outer').click(function(event){
 			var arrow_outer = $(this);
 			var arrow = arrow_outer.children(':first');
 			var arrow_w = parseInt(arrow_outer.outerWidth());
 			var w = parseInt(dialog_el.outerWidth()) - arrow_w;
 
-			if(arrow.hasClass('nc_arrow_left')) {
+			if(arrow.hasClass('nc-arrow-left')) {
 				dialog_el.stop(true, false).animate({left: '-' + w + 'px'}, 500, function(){
-					arrow.addClass('nc_arrow_right');
-					arrow.removeClass('nc_arrow_left');
+					arrow.addClass('nc-arrow-right');
+					arrow.removeClass('nc-arrow-left');
 				});
 			} else {
 				dialog_el.stop(true, false).animate({left:'0'}, 500, function() {
-					arrow.addClass('nc_arrow_left');
-					arrow.removeClass('nc_arrow_right');
+					arrow.addClass('nc-arrow-left');
+					arrow.removeClass('nc-arrow-right');
 				});
 			}
 			return false;

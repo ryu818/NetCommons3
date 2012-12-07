@@ -1,16 +1,16 @@
 /* Setting Mode */
-.nc_add_block_outer {
+.nc-add-block-outer {
 	padding: 5px 10px;
 }
-.nc_add_block {
+.nc-add-block {
 	width: 200px;
 }
 
-.nc_block_dummy {
+.nc-block-dummy {
 	border:2px dotted #ffd700 !important;
 }
 
-.nc_block_move_desc {
+.nc-block-move-desc {
 	background-color: #fff;
     border-radius: 3px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2) inset, 0 1px 0 rgba(255, 255, 255, 0.4);
@@ -27,26 +27,26 @@
 	font-size:93%;
 }
 
-.nc_block_mode {
+.nc-block-mode {
 	position: relative;
 	display:none;
 }
 
-.nc_block .nc_frame:hover .nc_block_mode, .nc_group .nc_frame:hover > .nc_block_mode {
+.nc-block .nc-frame:hover .nc-block-mode, .nc-group .nc-frame:hover > .nc-block-mode {
 	display:block;
 }
 
-.nc_frame:hover {
+.nc-frame:hover {
 	border-color:#ededed #c9c9c9 #c9c9c9 #ededed !important;
 	border-style:solid !important;
 	border-width:1px !important;
 	box-shadow: 0px 1px 2px 0px #cccccc !important;
 }
-.nc_block .nc_frame:hover {
+.nc-block .nc-frame:hover {
 	background:url("../../img/pages/block/bg_act.gif") repeat scroll left top #ffffff !important;
 }
 
-.nc_block_move {
+.nc-block-move {
 	cursor:move;
 	height:31px;
 	position:absolute;
@@ -55,11 +55,11 @@
 	width:100%;
 }
 
-.nc_block .nc_block_move {
+.nc-block .nc-block-move {
 	background:url("../../img/pages/block/block_dot.gif") repeat-x scroll left center transparent !important;
 }
 
-a.nc_block_header_display {
+a.nc-block-header-display {
 	width:15px;
 	height:15px;
 	padding:2px;
@@ -73,7 +73,7 @@ a.nc_block_header_display {
 	float:left;
 	z-index:2;
 }
-span.nc_block_header_page_name {
+span.nc-block-header-page-name {
 	white-space:nowrap;
 	font-weight:bold;
 	text-align:left;
@@ -82,11 +82,11 @@ span.nc_block_header_page_name {
 	top:6px;
 }
 
-.nc_block span.nc_block_header_page_name {
+.nc-block span.nc-block-header-page-name {
 	background:url("../../img/pages/block/bg_act.gif") repeat scroll left top #ffffff !important;
 }
 
-ul.nc_block_toolbox {
+ul.nc-block-toolbox {
 	width:97px;
 	height:29px;
 	padding:2px 0;
@@ -96,77 +96,77 @@ ul.nc_block_toolbox {
 	z-index:1;
 }
 
-.nc_block ul.nc_block_toolbox {
+.nc-block ul.nc-block-toolbox {
 	background:url("../../img/pages/block/block_toolbox.gif") no-repeat scroll left top transparent !important;
 }
 
-ul.nc_block_toolbox li {
+ul.nc-block-toolbox li {
 	float:left;
 	margin:0;
 	padding:0 0 0 4px;
 	list-style:none outside none;
 }
 
-li.nc_block_header_setting_icon a.link {
+li.nc-block-header-setting-icon a.link {
 	background:url("../../img/pages/block/block_setting.gif") no-repeat scroll left top transparent;
 	width:27px;
 	height:27px;
 	display:block;
 }
-li.nc_block_header_setting_icon a.link:hover {
+li.nc-block-header-setting-icon a.link:hover {
 	background:url("../../img/pages/block/block_setting_over.gif") no-repeat scroll left top transparent;
 }
-li.nc_block_header_setting_end_icon a.link {
+li.nc-block-header-setting-end-icon a.link {
 	background:url("../../img/pages/block/block_setting_over.gif") no-repeat scroll left top transparent;
 	width:27px;
 	height:27px;
 	display:block;
 }
-li.nc_block_header_setting_end_icon a.link:hover {
+li.nc-block-header-setting-end-icon a.link:hover {
 	background:url("../../img/pages/block/block_setting_end_over.gif") no-repeat scroll left top transparent;
 }
-li.nc_block_header_close_icon a.link {
+li.nc-block-header-close-icon a.link {
 	background:url("../../img/pages/block/block_close.gif") no-repeat scroll left top transparent;
 	width:27px;
 	height:27px;
 	display:block;
 }
-li.nc_block_header_close_icon a.link:hover {
+li.nc-block-header-close-icon a.link:hover {
 	background:url("../../img/pages/block/block_close_over.gif") no-repeat scroll left top transparent;
 }
-li.nc_block_header_list_icon a.link {
+li.nc-block-header-list-icon a.link {
 	background:url("../../img/pages/block/block_list.gif") no-repeat scroll left top transparent;
 	width:27px;
 	height:27px;
 	display:block;
 }
-li.nc_block_header_list_icon a.link:hover {
+li.nc-block-header-list-icon a.link:hover {
 	background:url("../../img/pages/block/block_list_over.gif") no-repeat scroll left top transparent;
 }
 
-.nc_group .nc_frame:hover {
+.nc-group .nc-frame:hover {
 	background: transparent url(../../img/pages/block/bg_group_act.gif) repeat scroll left top;
 }
 
-.nc_group .nc_block_move {
+.nc-group .nc-block-move {
 	background:url("../../img/pages/block/group_dot.gif") repeat-x scroll left center transparent;
 }
-.nc_group span.nc_block_header_page_name {
+.nc-group span.nc-block-header-page-name {
 	background:url("../../img/pages/block/bg_group_act.gif") repeat scroll left top #ffffff;
 }
-.nc_group ul.nc_block_toolbox {
+.nc-group ul.nc-block-toolbox {
 	background: transparent url(../../img/pages/block/group_toolbox.gif) no-repeat scroll left top;
 }
 
-.nc_content_group_setting {
+.nc-content-group-setting {
 	padding: 0 0 15px 0;
 }
 
-.nc_block .nc_select_group,.nc_group .nc_select_group {
+.nc-block .nc-select-group,.nc-group .nc-select-group {
 	border:2px solid #ffd700 !important;
 }
 
-#nc_block_group {
+#nc-block-group {
 	text-align:left;
 	/*position: absolute;*/
 	width: auto;
@@ -185,39 +185,39 @@ li.nc_block_header_list_icon a.link:hover {
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 
 }
-#nc_block_group ul {
+#nc-block-group ul {
 	border:1px solid #ffffff;
 	margin:0;
 	padding:3px 3px 3px 2px;
 }
 
-#nc_block_group li {
+#nc-block-group li {
 	border:1px solid #ffffff;
 	display:block;
 	list-style-type:none;
 	margin:3px 0;
 	padding:1px 12px 0 2px;
 }
-#nc_block_group li a, #nc_block_group li a:link {
+#nc-block-group li a, #nc-block-group li a:link {
 	color:#04419a;
 	text-decoration:none;
 }
 
-#nc_block_group li a {
+#nc-block-group li a {
 	white-space:nowrap;
 	width:100%;
 }
 
 /*
-ul.nc_shortcut_toolbox {
+ul.nc-shortcut-toolbox {
 	width:65px;
 }
 
-ul.nc_cancel_toolbox {
+ul.nc-cancel-toolbox {
 	width:30px;
 }
 
-.nc_block_h .nc_block_resize {
+.nc-block-h .nc-block-resize {
 	background: transparent url(../../img/pages/block/block_resize.gif) no-repeat scroll right bottom;
 	height:14px;
 	width:14px;
@@ -229,7 +229,7 @@ ul.nc_cancel_toolbox {
 
 
 
-.nc_group_resize {
+.nc-group-resize {
 	background: transparent url(../../img/pages/block/group_resize.gif) no-repeat scroll right bottom;
 	height:14px;
 	width:14px;

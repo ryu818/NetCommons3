@@ -75,9 +75,9 @@ class Block extends AppModel
 
 		// class name
 		if($val['Block']['controller_action'] == "group"){
-			$val['Block']['class_name'] = "nc_group";
+			$val['Block']['class_name'] = "nc-group";
 		} else{
-			$val['Block']['class_name'] = "nc_block";
+			$val['Block']['class_name'] = "nc-block";
 		}
 
 		if(!isset($val['Block']['theme_name'])) {

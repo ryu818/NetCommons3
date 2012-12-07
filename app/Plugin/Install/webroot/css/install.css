@@ -4,7 +4,7 @@
     min-height: 100%;
 
     line-height:1.5em;
-    
+
 }
 
 #container #header {
@@ -67,7 +67,7 @@
     margin: 1em;
     padding: 1em;
 }
-#container .message_table {
+#container .message-table {
     border: 2px solid #ddd;
     margin: 0.2em;
     padding: 0.2em 1em;
@@ -79,22 +79,22 @@
 }
 #container .error {
     background: none repeat scroll 0 0 #ffecec;
-    border-color: #FF3333;
-    color: #FF0000;
+    border-color: #ff3333;
+    color: #ff0000;
 }
 #container .disabled {
 	background-color: #efefef;
 	color:#fff;
 }
 
-ul.install_lists li dl dt {
+ul.install-lists li dl dt {
 	width:200px;
 }
-ul.install_lists li dl dd {
+ul.install-lists li dl dd {
 	width:410px;
 }
 
-#container .header_error {
+#container .header-error {
 	background: none repeat scroll 0 0 #ffecec;
 	border: 2px solid #ff3333;
 	color: #ff0000;
@@ -102,12 +102,12 @@ ul.install_lists li dl dd {
     padding: 1em;
 }
 
-#container .install_create_db {
+#container .install-create-db {
 	text-align:center;
 	padding:15px;
 }
 
-#container .install_error_mes {
+#container .install-error-mes {
     background-color: #ffd9d9;
     clear: both;
     color: #ff0000;

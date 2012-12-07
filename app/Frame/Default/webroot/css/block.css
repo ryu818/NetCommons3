@@ -1,4 +1,4 @@
-.th_default .th_default_title {
+.th-default .th-default-title {
 	/*padding:5px;*/
 	padding:10px;
 	font-size:116%;
@@ -6,9 +6,9 @@
 	font-weight:bold;
 	white-space:nowrap;
 }
-.th_default .th_default_content {
+.th-default .th-default-content {
 	padding:5px 10px;
 }
-.th_default a.hover_highlight:hover {
+.th-default a.hover-highlight:hover {
 	text-decoration:none;
 }

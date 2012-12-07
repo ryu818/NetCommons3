@@ -79,13 +79,13 @@
 	echo($this->element('Dialogs/hmenu', array('hierarchy' => isset($pages[$page_id_arr[0]]['Authority']['hierarchy']) ? $pages[$page_id_arr[0]]['Authority']['hierarchy'] : NC_AUTH_OTHER)));
 }?>
 <div id="container">
-	<div id="main_container"<?php if($style != ''): ?> style="<?php echo($style); ?>"<?php endif; ?>>
+	<div id="main-container"<?php if($style != ''): ?> style="<?php echo($style); ?>"<?php endif; ?>>
 		<?php if(isset($headercolumn_str)): ?>
-		<header id="headercolumn" class="nc_columns table_row"<?php if($header_style != ''): ?> style="<?php echo($header_style); ?>"<?php endif; ?>>
+		<header id="headercolumn" class="nc-columns table-row"<?php if($header_style != ''): ?> style="<?php echo($header_style); ?>"<?php endif; ?>>
 				<?php echo($headercolumn_str); ?>
 		</header>
 		<?php endif; ?>
-		<div id="centercolumn" class="nc_columns">
+		<div id="centercolumn" class="nc-columns">
 			<?php if(isset($leftcolumn_str)): ?>
 				<?php echo($leftcolumn_str); ?>
 			<?php endif; ?>
@@ -97,7 +97,7 @@
 			<?php endif; ?>
 		</div>
 		<?php if(isset($footercolumn_str)): ?>
-		<footer id="footercolumn" class="nc_columns table_row"<?php if($footer_style != ''): ?> style="<?php echo($footer_style); ?>"<?php endif; ?>>
+		<footer id="footercolumn" class="nc-columns table-row"<?php if($footer_style != ''): ?> style="<?php echo($footer_style); ?>"<?php endif; ?>>
 				<?php echo($footercolumn_str); ?>
 		</footer>
 		<?php endif; ?>
@@ -108,7 +108,7 @@ echo $this->Html->script('plugins/jquery.masonry.js');
 ?>
 <script>
 $(function(){
-	$('#main_container').masonry({
+	$('#main-container').masonry({
       	itemSelector: $('[data-column-top]').children(),	// グループ化したものは一塊として表示　ブロックすべての場合は「[data-block]」
 		columnWidth: 1,
 		isAnimated: true,
@@ -133,7 +133,7 @@ $(function(){
 			var h = $block.outerHeight(true);
 			if($._blocks_size[id]['width'] != w || $._blocks_size[id]['height'] != h) {
 				// サイズ変更あり
-				var centercolumn = $('#main_container');
+				var centercolumn = $('#main-container');
 				centercolumn.masonry( 'reload' );
 
 				$._blocks_size[id]['width'] = w;

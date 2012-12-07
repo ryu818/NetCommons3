@@ -3,24 +3,24 @@
 if(isset($is_edit) && $is_edit == _ON){
 	$setting = __d('page', 'Exit page editor');
 	$tooltip_setting = '';
-	$setting_class = 'nc_hmenu_setting_end_btn';
+	$setting_class = 'nc-hmenu-setting-end-btn';
 } else {
 	$setting = __d('page', 'Switching on page editor');
 	$tooltip_setting = __d('page', 'I can add pages, community, edit, and delete.');
-	$setting_class = 'nc_hmenu_setting_btn';
+	$setting_class = 'nc-hmenu-setting-btn';
 	$is_edit = _OFF;
 }
 ?>
-<div class="nc-pages-setting-title nc_popup_color clearfix" data-pages-header="true">
+<div class="nc-pages-setting-title nc-panel-color clearfix" data-pages-header="true">
 	<?php echo(__d('page', 'Pages menu')); ?>
 	<?php if($admin_hierarchy != NC_AUTH_OTHER): ?>
-	<a class="pages-menu-edit-btn nc_tooltip" title="<?php echo(h($setting)); ?>" data-tooltip-desc="<?php echo(h($tooltip_setting)); ?>" href="<?php echo($this->Html->url(array('plugin' => 'page', 'controller' => 'page', 'action' => 'index', '?' => array('is_edit' => !$is_edit)))); ?>" data-ajax-replace="#nc-pages-setting-dialog">
+	<a class="pages-menu-edit-btn nc-tooltip" title="<?php echo(h($setting)); ?>" data-tooltip-desc="<?php echo(h($tooltip_setting)); ?>" href="<?php echo($this->Html->url(array('plugin' => 'page', 'controller' => 'page', 'action' => 'index', '?' => array('is_edit' => !$is_edit)))); ?>" data-ajax-replace="#nc-pages-setting-dialog">
 		<span class="<?php echo($setting_class); ?>"></span>
 	</a>
 	<?php endif; ?>
 </div>
 <?php if($is_edit): ?>
-<div class="nc-pages-setting-menu nc_popup_color" data-pages-header="true">
+<div class="nc-pages-setting-menu nc-panel-color" data-pages-header="true">
 	<?php
 	$class_postfix = (!$is_add) ? ' pages-menu-add-btn-disable' : '';
 	echo $this->Html->link(__d('page', 'Add page'), array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'add'),

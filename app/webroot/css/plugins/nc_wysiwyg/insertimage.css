@@ -1,9 +1,9 @@
-#nc_wysiwyg_insertimage {
+#nc-wysiwyg-insertimage {
 	padding: 0px;
 	background-color : #ffffff;
 }
 
-div.nc_wysiwyg_insertimage_preview {
+div.nc-wysiwyg-insertimage-preview {
 	background-color : transparent;
 	border-width:1px;
 	border-style:solid;
@@ -14,13 +14,13 @@ div.nc_wysiwyg_insertimage_preview {
 	position : relative;
 }
 
-div.nc_wysiwyg_insertimage_preview_ins {
+div.nc-wysiwyg-insertimage-preview-ins {
 	background-color : transparent;
 	border: 0 none;
 	height:200px;
 }
 
-div.nc_wysiwyg_insertimage_outer {
+div.nc-wysiwyg-insertimage-outer {
 	position : absolute;
 	background-color:#efefef;
 	border-color:#ababab;
@@ -28,21 +28,21 @@ div.nc_wysiwyg_insertimage_outer {
 	border-width:1px;
 }
 
-div.nc_wysiwyg_insertimage_front {
+div.nc-wysiwyg-insertimage-front {
 	position : absolute;
 	padding:5px;
 }
 
-div.nc_wysiwyg_insertimage_front ul {
+div.nc-wysiwyg-insertimage-front ul {
 	padding:0;
 	margin:0;
 }
 
-ul.nc_wysiwyg_insertimage_row {
+ul.nc-wysiwyg-insertimage-row {
 	margin:0;
 	padding:0;
 }
-ul.nc_wysiwyg_insertimage_row li {
+ul.nc-wysiwyg-insertimage-row li {
 	list-style-image:none;
 	list-style-type:none;
 	margin:0;
@@ -50,91 +50,91 @@ ul.nc_wysiwyg_insertimage_row li {
 	clear: left;
 }
 
-ul.nc_wysiwyg_insertimage_row dl {
+ul.nc-wysiwyg-insertimage-row dl {
 	width:18em;
 }
-ul.nc_wysiwyg_insertimage_row dt {
+ul.nc-wysiwyg-insertimage-row dt {
 	float:left;
 	clear: left;
 	width: 7em;
 	padding:2px;
 }
 
-ul.nc_wysiwyg_insertimage_row dd {
+ul.nc-wysiwyg-insertimage-row dd {
 	padding:2px;
 	white-space:nowrap;
 	float:left;
 }
 
-#nc_wysiwyg_insertimage_select_file {
+#nc-wysiwyg-insertimage-select-file {
 	margin:0 0 10px;
 }
 
-#nc_wysiwyg_insertimage_detail {
+#nc-wysiwyg-insertimage-detail {
 	margin:2px;
 }
 
-input.nc_wysiwyg_insertimage_text {
+input.nc-wysiwyg-insertimage-text {
 	width:130px;
 }
 
-div.nc_wysiwyg_insertimage_presize {
+div.nc-wysiwyg-insertimage-presize {
 	text-align:left;
 	color: #03066c;
 	padding: 1px 0 0 15px;
 }
 
-.nc_wysiwyg_insertimage_border {
+.nc-wysiwyg-insertimage-border {
 	width : 100px;
 	height:58px;
 }
 
-a.nc_wysiwyg_insertimage_border {
+a.nc-wysiwyg-insertimage-border {
 	margin: 3px 0 0;
 }
 
-div.nc_wysiwyg_insertimage_border a {
+div.nc-wysiwyg-insertimage-border a {
 	height : 20px;
 }
-div.nc_wysiwyg_insertimage_border div {
+div.nc-wysiwyg-insertimage-border div {
 	height : 10px;
 }
 
-a.nc_wysiwyg_insertimage_border {
+a.nc-wysiwyg-insertimage-border {
 	height : 20px;
 	color: #333333;
 }
 
-a.nc_wysiwyg_insertimage_border div {
+a.nc-wysiwyg-insertimage-border div {
 	height : 7px;
 }
 
-a.nc_wysiwyg_insertimage_border .listcontent {
+a.nc-wysiwyg-insertimage-border .listcontent {
 	padding-right: 17px;
 }
 
-img.nc_wysiwyg_insertimage_icon {
+img.nc-wysiwyg-insertimage-icon {
 	vertical-align: middle;
 	border: 2px solid #f9f9f9;
 	margin:2px;
 }
 
-img.nc_wysiwyg_insertimage_icon.active {
+img.nc-wysiwyg-insertimage-icon.active {
 	border: 2px solid #ffd273;
 }
 
-input.nc_wysiwyg_insertimage_size {
+input.nc-wysiwyg-insertimage-size {
 	width : 36px;
 	text-align : right;
 }
 
-.nc_wysiwyg_insertimage_btn {
+.nc-wysiwyg-insertimage-btn {
 	clear : left;
 	text-align : center;
 }
 
 /* resize */
-a.nc_wysiwyg_insertimage_resize {
+a.nc-wysiwyg-insertimage-resize {
 	position: absolute;
 	right: 0;
 	bottom: 0;

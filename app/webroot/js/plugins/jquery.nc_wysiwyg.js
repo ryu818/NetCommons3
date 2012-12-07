@@ -256,13 +256,13 @@
 											}
 										}
 									  },
-						forecolor_arrow : { visible : true, liClassName : 'nc_wysiwyg_arrow',
+						forecolor_arrow : { visible : true, liClassName : 'nc-wysiwyg-arrow',
 										exec : function(e) {
 											var self = this, event_el = e.target;
 											var c = $.Common.getColorCode($("a.forecolor", this.panel)[0], 'backgroundColor');
 											var callback = function() {self.components.colorpickerCallback.call(self, 'forecolor', c);};
 											var options = {
-												id        : self.id + "_forecolor",
+												id        : self.id + "-forecolor",
 												js        : [$._base_url+'js/plugins/jquery.colorpicker.js'],
 												jsname    : ['$.fn.nc_colorpicker'],
 												callback  : callback
@@ -276,7 +276,7 @@
 													colorcode : c,
 													callback  : function(v) {
 														$("a." + name, self.panel).css({'backgroundColor': v});
-														self.removeDialog(self.id + "_" + name);
+														self.removeDialog(self.id + "-" + name);
 														if(name == 'hilitecolor') {
 															var n = self.applyInlineStyle('span', {style : {backgroundColor : v}});
 														} else {
@@ -287,10 +287,10 @@
 														}
 													},
 													cancel_callback  : function(v) {
-														self.removeDialog(self.id + "_" + name);
+														self.removeDialog(self.id + "-" + name);
 													}
 												};
-												$("#" + self.id + "_" + name).nc_colorpicker(opts);
+												$("#" + self.id + "-" + name).nc_colorpicker(opts);
 
 											}
 										}
@@ -304,13 +304,13 @@
 											}
 										}
 									  },
-		            	hilitecolor_rarrow : { visible : true, liClassName : 'nc_wysiwyg_rarrow',
+		            	hilitecolor_rarrow : { visible : true, liClassName : 'nc-wysiwyg-rarrow',
 										 exec : function(e) {
 											var self = this, event_el = e.target;
 											var c = $.Common.getColorCode($("a.hilitecolor", this.panel)[0], 'backgroundColor');
 											var callback = function() {self.components.colorpickerCallback.call(self, 'hilitecolor', c);};
 											var options = {
-												id        : self.id + "_hilitecolor",
+												id        : self.id + "-hilitecolor",
 												js        : [$._base_url+'js/plugins/jquery.colorpicker.js'],
 												jsname    : ['$.fn.nc_colorpicker'],
 												callback  : callback
@@ -597,7 +597,7 @@
 														if($.browser.msie)
 															self.moveToBookmark(self.bookmark);
 														var table = self.applyInlineStyle(html, null, true);
-														self.removeDialog(self.id + "_inserttable");
+														self.removeDialog(self.id + "-inserttable");
 														if(!table.nextSibling || table.nextSibling.nodeName.toLowerCase() != "br") {
 															$(table).after("<br />");
 														}
@@ -606,10 +606,10 @@
 														self.addUndo();
 													}
 												};
-												$("#" + self.id + "_inserttable").nc_inserttable(e, opts);
+												$("#" + self.id + "-inserttable").nc_inserttable(e, opts);
 											};
 							var options = {
-								id  : self.id + "_inserttable",
+								id  : self.id + "-inserttable",
 								css : [$._base_url+'css/plugins/nc_wysiwyg/inserttable.css'+'?'+$._v],
 								js : [$._base_url+'js/plugins/nc_wysiwyg/inserttable.js'+'?'+$._v],
 								jsname : ['$.fn.nc_inserttable'],
@@ -617,14 +617,14 @@
 							};
 							this.toggleDialog(e, options);
 						}},
-						inserttable_rarrow : { visible : true, liClassName : 'nc_wysiwyg_rarrow',
+						inserttable_rarrow : { visible : true, liClassName : 'nc-wysiwyg-rarrow',
 							eventtags : ['table', 'thead', 'tbody', 'tfoot','tr', 'th', 'td'],
 							event : {contextmenu :function(e, n){
 								var pos = this.editor.position(), sc_pos = ($.browser.msie) ? {top : 0, left: 0} : this.getScrollDoc();
 								var options = {
 									style    : {left: e.pageX + pos['left'] - sc_pos['left'], top : e.pageY + pos['top'] - sc_pos['top']}
 								};
-								this.components.showTableMenu.call(this, $("a.inserttable_rarrow", this.panel), options);
+								this.components.showTableMenu.call(this, $("a.inserttable-rarrow", this.panel), options);
 								e.preventDefault();
 								return false;
 							}},
@@ -637,14 +637,14 @@
 									var self = this, selPos;
 									var selPos = self.getSelectTablePos();
 									options = $.extend({
-										id  : self.id + "_inserttable_rarrow",
+										id  : self.id + "-inserttable-rarrow",
 										css : [$._base_url+'css/plugins/nc_wysiwyg/tablemenu.css'+'?'+$._v],
 										js : [$._base_url+'js/plugins/nc_wysiwyg/tablemenu.js'+'?'+$._v],
 										jsname : ['$.fn.nc_tablemenu'],
-										className : "nc_wysiwyg_tablemenu",
+										className : "nc-wysiwyg-tablemenu",
 										callback : function() {
 											var opt = {table_pos : selPos};
-											$("#" + self.id + "_inserttable_rarrow").nc_tablemenu(self, opt);
+											$("#" + self.id + "-inserttable-rarrow").nc_tablemenu(self, opt);
 										}
 									}, options);
 									this.toggleDialog(o, options);
@@ -678,14 +678,14 @@
 																		if($.browser.msie)
 																			self.moveToBookmark(self.bookmark);
 																		self.applyInlineStyle(html, null, true);
-																		self.removeDialog(self.id + "_smiley");
+																		self.removeDialog(self.id + "-smiley");
 																		self.addUndo();
 																	}
 																};
-																$("#" + self.id + "_smiley").nc_smiley(opts);
+																$("#" + self.id + "-smiley").nc_smiley(opts);
 															};
 											var options = {
-												id  : self.id + "_smiley",
+												id  : self.id + "-smiley",
 												css : [$._base_url+'css/plugins/nc_wysiwyg/smiley.css'+'?'+$._v],
 												js  : [$._base_url+'js/plugins/nc_wysiwyg/smiley.js'+'?'+$._v],
 												jsname  : ['$.fn.nc_smiley'],
@@ -734,7 +734,7 @@
 																			if($.browser.msie)
 																				self.moveToBookmark(self.bookmark);
 																			var tex_el = self.applyInlineStyle(html, null, true);
-																			self.removeDialog(self.id + "_inserttex");
+																			self.removeDialog(self.id + "-inserttex");
 																			if($.browser.safari && n && n.get(0) && n.get(0).nodeName.toLowerCase() == 'img') {
 																				$(tex_el).insertBefore(n);
 																				n.remove();
@@ -743,10 +743,10 @@
 																		},
 																		text : text
 																	};
-																	$("#" + self.id + "_inserttex").nc_mimetex(e, opts);
+																	$("#" + self.id + "-inserttex").nc_mimetex(e, opts);
 																};
 												var options = {
-													id  : self.id + "_inserttex",
+													id  : self.id + "-inserttex",
 													css : [$._base_url+'css/plugins/nc_wysiwyg/mimetex.css'+'?'+$._v],
 													js  : [$._base_url+'js/plugins/nc_wysiwyg/mimetex.js'+'?'+$._v],
 													jsname  : ['$.fn.nc_mimetex'],
@@ -771,7 +771,7 @@
 									   exec : function(e) {
 									   		var self = this;
 									   		var options = {
-									   			id       : self.id + "_createlink",
+									   			id       : self.id + "-createlink",
 												css      : [$._base_url+'css/plugins/nc_wysiwyg/insertlink.css'+'?'+$._v],
 												js       : [$._base_url+'js/plugins/nc_wysiwyg/insertlink.js'+'?'+$._v],
 												jsname    : ['$.fn.nc_insertlink'],
@@ -781,7 +781,7 @@
 										        		callback : function(args) {
 										        			var a, bm, v;
 										        			// リンク挿入
-										        			self.removeDialog(self.id + "_createlink");
+										        			self.removeDialog(self.id + "-createlink");
 										        			self.focus(true);
 										        			bm = self.bookmark;
 											        		if(n.nodeName.toLowerCase() != "img" && (!bm || ($.browser.msie && bm.length == 0) || (!$.browser.msie && bm.start == bm.end))) {
@@ -818,7 +818,7 @@
 										        		},
 										        		cancel_callback : function() {
 										        			// キャンセル
-										        			self.removeDialog(self.id + "_createlink");
+										        			self.removeDialog(self.id + "-createlink");
 										        			//self.focus(true);
 										        			//self.moveToBookmark(bm);
 										        			return true;
@@ -835,7 +835,7 @@
 															target : $(n).attr("target")
 														}, opts);
 													}
-													$("#" + self.id + "_createlink").nc_insertlink(opts);
+													$("#" + self.id + "-createlink").nc_insertlink(opts);
 												}
 											}
 
@@ -875,14 +875,14 @@
 																		spn.parentNode.insertBefore(spn.childNodes[0], spn);
 																		$(spn).remove();
 																		self.checkTargets();
-																		self.removeDialog(self.id + "_insertvideo");
+																		self.removeDialog(self.id + "-insertvideo");
 																		self.addUndo();
 																	}
 																};
-																$("#" + self.id + "_insertvideo").nc_insertvideo(opts);
+																$("#" + self.id + "-insertvideo").nc_insertvideo(opts);
 															};
 											var options = {
-												id  : self.id + "_insertvideo",
+												id  : self.id + "-insertvideo",
 												css : [$._base_url+'css/plugins/nc_wysiwyg/insertvideo.css'+'?'+$._v],
 												js  : [$._base_url+'js/plugins/nc_wysiwyg/insertvideo.js'+'?'+$._v],
 												jsname  : ['$.fn.nc_insertvideo'],
@@ -913,7 +913,7 @@
 												return;
 											}
 											var options = {
-												id       : self.id + "_insertimage",
+												id       : self.id + "-insertimage",
 												css      : [$._base_url+'css/plugins/nc_wysiwyg/insertimage.css'+'?'+$._v],
 												js       : [$._base_url+'js/plugins/nc_wysiwyg/insertimage.js'+'?'+$._v],
 												jsname   : ['$.fn.nc_insertimage'],
@@ -927,7 +927,7 @@
 															if($.browser.msie)
 																self.moveToBookmark(self.bookmark);
 															var img_el = self.applyInlineStyle(html, null, true);
-															self.removeDialog(self.id + "_insertimage");
+															self.removeDialog(self.id + "-insertimage");
 															if($.browser.safari && e_n && e_n.get(0).nodeName.toLowerCase() == 'img') {
 																$(img_el).insertBefore(e_n);
 																e_n.remove();
@@ -936,12 +936,12 @@
 														},
 														cancel_callback : function() {
 										        			// キャンセル
-										        			self.removeDialog(self.id + "_insertimage");
+										        			self.removeDialog(self.id + "-insertimage");
 										        			return true;
 										        		},
 										        		wysiwyg : self
 													};
-													$("#" + self.id + "_insertimage").nc_insertimage(opts);
+													$("#" + self.id + "-insertimage").nc_insertimage(opts);
 												}
 											};
 											//this.toggleDialog(document.body, options);
@@ -950,11 +950,11 @@
 										components : {
 											insertimageDetail : function (e, img) {
 												var self = this,pos, sc_pos;
-												var ins_dialog = $("#" + self.id + "_insertimage");
+												var ins_dialog = $("#" + self.id + "-insertimage");
 												//img = (img == undefined) ? $(e.target) : img;
 												// 詳細表示
 												var options = {
-													id       : self.id + "_insertimage",
+													id       : self.id + "-insertimage",
 													css      : [$._base_url+'css/plugins/nc_wysiwyg/insertimage.css'+'?'+$._v],
 													js       : [$._base_url+'js/plugins/nc_wysiwyg/insertimage.js'+'?'+$._v],
 													jsname   : ['$.fn.nc_insertimage'],
@@ -982,16 +982,16 @@
 											        		},
 											        		cancel_callback : function() {
 											        			// キャンセル
-											        			self.removeDialog(self.id + "_insertimage");
+											        			self.removeDialog(self.id + "-insertimage");
 											        			return true;
 											        		},
 											        		wysiwyg : self
 												        };
-												        $("#" + self.id + "_insertimage").nc_insertimage(opts);
+												        $("#" + self.id + "-insertimage").nc_insertimage(opts);
 													},
 													cancel_callback : function() {
 									        			// キャンセル
-									        			self.removeDialog(self.id + "_insertimage");
+									        			self.removeDialog(self.id + "-insertimage");
 									        			return true;
 									        		}
 												};
@@ -1013,7 +1013,7 @@
 									   exec : function(e) {
 											var self = this;
 											var options = {
-												id       : self.id + "_insertfile",
+												id       : self.id + "-insertfile",
 												css      : [$._base_url+'css/plugins/nc_wysiwyg/insertfile.css'+'?'+$._v],
 												js       : [$._base_url+'js/plugins/nc_wysiwyg/insertfile.js'+'?'+$._v],
 												jsname   : ['$.fn.nc_insertfile'],
@@ -1028,16 +1028,16 @@
 																self.moveToBookmark(self.bookmark);
 															var a = self.applyInlineStyle(html, null, true);
 															self.rangeSelect(a);
-															self.removeDialog(self.id + "_insertfile");
+															self.removeDialog(self.id + "-insertfile");
 															self.addUndo();
 														},
 														cancel_callback : function() {
 										        			// キャンセル
-										        			self.removeDialog(self.id + "_insertfile");
+										        			self.removeDialog(self.id + "-insertfile");
 										        			return true;
 										        		}
 													};
-													$("#" + self.id + "_insertfile").nc_insertfile(opts);
+													$("#" + self.id + "-insertfile").nc_insertfile(opts);
 												}
 											}
 											//this.toggleDialog(document.body, options);
@@ -1068,7 +1068,7 @@
 		editorDoc       : null,
 		currentNode     : null,
 		is_mac          : null,
-		dialog_id       : 'nc_wysiwyg_dialog',
+		dialog_id       : 'nc-wysiwyg-dialog',
 		bookmark        : null,
 		_pendingStyles  : null,
 		_keyhandler     : null,
@@ -1092,17 +1092,17 @@
 
             this.options = options || {};
 
-            this.id = 'nc_wysiwyg' + $(el).attr('id');
+            this.id = 'nc-wysiwyg' + $(el).attr('id');
             var newX = qel.width() || el.clientWidth;
             var newY = qel.height() || el.clientHeight;
-            if($(el).parent().hasClass('nc_wysiwyg_outer')) {
+            if($(el).parent().hasClass('nc-wysiwyg-outer')) {
             	// 初期処理終了済
             	return;
             }
 
             if ( el.nodeName.toLowerCase() == 'textarea' ) {
 				this.original = el;
-				$(el).addClass('nc_wysiwyg');
+				$(el).addClass('nc-wysiwyg');
 
                 if ( newX == 0 && el.cols )
                     newX = ( el.cols * 8 ) + 21;
@@ -1113,7 +1113,7 @@
 				var editor = this.editor = $('<iframe></iframe>').css({
                     height    : ( newY  ).toString() + 'px',
                     width     : ( newX  ).toString() + 'px'
-                }).attr('class', 'nc_wysiwyg').load(function(){
+                }).attr('class', 'nc-wysiwyg').load(function(){
 					if(!self.editorDoc) {
 						self.initialContent = $(self.original).val();
 						self.editorDoc = self.getWin().document;
@@ -1140,7 +1140,7 @@
             this.start_w = newX;
             this.start_h = newY;
 
-            var panel = this.panel = $('<div></div>').addClass('nc_wysiwyg_panels');
+            var panel = this.panel = $('<div></div>').addClass('nc-wysiwyg-panels');
 
 			var statusbar = this.statusbar = $('<ul></ul>').addClass('statusbar');
 
@@ -1148,7 +1148,7 @@
 			 * toolbar作成
              */
             this.appendControls();
-            this.el = $('<div></div>').addClass('nc_wysiwyg_outer')
+            this.el = $('<div></div>').addClass('nc-wysiwyg-outer')
               .append(panel)
               .append( $('<div><!-- --></div>').css({ clear : 'both' }) )
               .append(editor);
@@ -1317,10 +1317,10 @@ IEで、iframe中のbodyのborderがつくから削除していると
 							r = self.getRange();
 							if(r.startContainer && r.startContainer.nextSibling)
 								n = r.startContainer.previousSibling;
-	            			self.editorDoc.execCommand('inserthtml', false, '<br><br id="nc_wysiwygbr">');
+	            			self.editorDoc.execCommand('inserthtml', false, '<br><br id="nc-wysiwygbr">');
 							r = self.getRange();
 	            			en = r.startContainer;
-	            			br = $('#nc_wysiwygbr', self.editorDoc);
+	            			br = $('#nc-wysiwygbr', self.editorDoc);
 	            			if(sn != en || $.browser.opera) {
 		            			r.setStartBefore(br[0]);
 								r.setEndBefore(br[0]);
@@ -1542,7 +1542,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
             ).appendTo( panel );
             self.panel_btns[className] = li;
 
-            var id = this.id + '_btn_' + className;
+            var id = this.id + '-btn-' + className;
             li.attr('id', id);
 
             if(cmd == 'forecolor') {
@@ -1595,7 +1595,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 
         appendControls : function()
         {
-        	var t = this, panel = $('<ul></ul>').addClass('nc_wysiwyg_panel').appendTo( this.panel );
+        	var t = this, panel = $('<ul></ul>').addClass('nc-wysiwyg-panel').appendTo( this.panel );
 
 			for ( var line in this.options.controls ) {
 				// 改行
@@ -1627,7 +1627,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 
 							if(br_flag) {
 								//li.css({ clear : 'both' });
-								var panel = $('<ul></ul>').addClass('nc_wysiwyg_panel').appendTo( this.panel );
+								var panel = $('<ul></ul>').addClass('nc-wysiwyg-panel').appendTo( this.panel );
 								br_flag = false;
 							}
 
@@ -1677,7 +1677,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 							if ( control.collapsedDis ) {
 								li.addClass("collapsedDis").css({opacity : '0.4'});
 							}
-							if ((li.hasClass("nc_wysiwyg_arrow") || li.hasClass("nc_wysiwyg_rarrow")) && ( control.tags || control.css )) {
+							if ((li.hasClass("nc-wysiwyg-arrow") || li.hasClass("nc-wysiwyg-rarrow")) && ( control.tags || control.css )) {
 								li.css({opacity : '0.4'});
 							}
 						}
@@ -1698,14 +1698,14 @@ IEで、iframe中のbodyのborderがつくから削除していると
             var li = $('<li></li>').append(
                 $('<a>' + __d('nc_wysiwyg', lang_key) + '</a>')
             );
-			if(active_flag) li.addClass("nc_wysiwyg_active");
+			if(active_flag) li.addClass("nc-wysiwyg-active");
 			li.mousedown(function() {
 				var pre_mode = self.getMode();
 				var li = $(this);
 				var objs = $('li', li.parent());
 				objs.each(function() {
 					var obj = $(this);
-					(obj[0] == li[0]) ? obj.addClass("nc_wysiwyg_active") : obj.removeClass("nc_wysiwyg_active");
+					(obj[0] == li[0]) ? obj.addClass("nc-wysiwyg-active") : obj.removeClass("nc-wysiwyg-active");
 				});
 				switch (className) {
 					case "edit":
@@ -1729,7 +1729,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 				this.appendModeMenu(modemenu[i], (modemenu[i] == "edit") ? true : false);
 
 			// pathメニュー
-			$('<li>'+__d('nc_wysiwyg', 'path')+'&nbsp;:&nbsp;</li>').addClass('path').appendTo( this.statusbar ).attr('id', 'path_'+ this.id);
+			$('<li>'+__d('nc_wysiwyg', 'path')+'&nbsp;:&nbsp;</li>').addClass('path').appendTo( this.statusbar ).attr('id', 'path-'+ this.id);
 
 			// resizeメニュー
 			this.appendResize("resize");
@@ -1841,7 +1841,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			} else
 				this.setContent(content);
 			this.editor.show();
-			$('#path_'+ this.id).css({visibility : 'visible'});
+			$('#path-'+ this.id).css({visibility : 'visible'});
             $(this.original).hide();
             this.chgDesignMode('on');
 
@@ -1864,7 +1864,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			this.chgModeInit("html");
 			this.saveContent(true);
 			$(this.original).show().css({visibility : 'visible'});
-			$('#path_'+ this.id).css({visibility : 'hidden'});
+			$('#path-'+ this.id).css({visibility : 'hidden'});
             this.editor.hide();
 
             // フォーカスの移動
@@ -1886,7 +1886,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			//this.saveContent();
 			this.editor.show();
             $(this.original).hide();
-            $('#path_'+ this.id).css({visibility : 'hidden'});
+            $('#path-'+ this.id).css({visibility : 'hidden'});
             this.chgDesignMode('off');
 
 			// IEでdesignModeをoffにした場合、iframeが再読み込みされるため
@@ -1910,7 +1910,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 					$("table,td", root).each(function(i, el) {
 						$.each(['Top','Right','Bottom','Left'], function(k, v) {
 							if($(el).css("border" + v + "Width") == "0px" || $(el).css("border" + v + "Style") == "none") {
-								$(el).attr("_nc_wysiwyg_border_" + v.toLowerCase(), "1");
+								$(el).attr("data-nc-wysiwyg-border-" + v.toLowerCase(), "1");
 								$(el).css("border" + v + "Width", "1px");
 								$(el).css("border" + v + "Style", "dotted");
 								$(el).css("border" + v + "Color", "#666666");
@@ -1921,12 +1921,12 @@ IEで、iframe中のbodyのborderがつくから削除していると
 				default :
 					$("table,td", root).each(function(i, el) {
 						$.each(['Top','Right','Bottom','Left'], function(k, v) {
-							if($(el).attr("_nc_wysiwyg_border_" + v.toLowerCase())) {
+							if($(el).attr("data-nc-wysiwyg-border-" + v.toLowerCase())) {
 								$(el).css("border" + v + "Width", "0px");
 								$(el).css("border" + v + "Style", "none");
 								$(el).css("border" + v + "Color", "");
 								if(mode == "html")
-									$(el).removeAttr("_nc_wysiwyg_border_" + v.toLowerCase());
+									$(el).removeAttr("data-nc-wysiwyg-border-" + v.toLowerCase());
 							}
 						});
 					});
@@ -1963,7 +1963,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			var self = this, sep = '&nbsp;&gt;&gt;&nbsp;', a, pa, t=0, nodeN;
 			var spn = document.createElement('span');
 			spn.innerHTML = __d('nc_wysiwyg', 'path') + '&nbsp;:&nbsp;';
-			var path = document.getElementById('path_'+ this.id);
+			var path = document.getElementById('path-'+ this.id);
 			path.innerHTML = '';
 			path.appendChild(spn);
 			var n_el = el, buf_n;
@@ -1973,11 +1973,11 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			        break;
 			    if(nodeN == "b")
 			    	nodeN = "strong";
-			    a = $('<a href="javascript:;"></a>').addClass('nc_wysiwyg_path_' + t)
+			    a = $('<a href="javascript:;"></a>').addClass('nc-wysiwyg-path-' + t)
 	            .click(function(e) {
 	            	var n = e.target;
 	            	if (n.nodeName == 'A') {
-	            		var cth = 0, th = n.className.replace(/^.*nc_wysiwyg_path_([0-9]+).*$/, '$1');
+	            		var cth = 0, th = n.className.replace(/^.*nc-wysiwyg-path-([0-9]+).*$/, '$1');
 	            		n = n_el ;	//self.getSelectNode();
 	            		do {
 	            			if(n.nodeType == 1 && cth++ == th) {
@@ -2030,7 +2030,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 							var className = control.className || control.command || name || 'empty';
 			                var li = this.panel_btns[className]; //$($('.' + className, this.panel)[0].parentNode);
 			                if(!li) continue;
-			                var a_className = li.hasClass("nc_wysiwyg_arrow") ? "nc_wysiwyg_arrow_active" : (li.hasClass("nc_wysiwyg_rarrow") ? "nc_wysiwyg_rarrow_active" : "nc_wysiwyg_active");
+			                var a_className = li.hasClass("nc-wysiwyg-arrow") ? "nc-wysiwyg-arrow-active" : (li.hasClass("nc-wysiwyg-rarrow") ? "nc-wysiwyg-rarrow-active" : "nc-wysiwyg-active");
 			                li.removeClass(a_className);
 			                if ( !control.visible)
 			                	continue;
@@ -2115,7 +2115,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 										break;
 			                    } while ( el = el.parent() );
 			                }
-			                if ( a_className != "nc_wysiwyg_active" && ( control.tags || control.css || control.active_class)) {
+			                if ( a_className != "nc-wysiwyg-active" && ( control.tags || control.css || control.active_class)) {
 			                	li.css({opacity : ($(li).hasClass(a_className) ? '1.0' : '0.4')});
 			                }
 						}
@@ -2128,7 +2128,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			if(element && element.nodeName.toLowerCase() != "img" && (!bm || ($.browser.msie && bm.length == 0) || (!$.browser.msie && bm.start == bm.end))) {
 				o = $("li.collapsedDis", this.panel);
 				o.each(function(k, v) {
-					$(v).css({opacity : (!$(v).hasClass("nc_wysiwyg_active")) ? '0.4' : '1.0'});
+					$(v).css({opacity : (!$(v).hasClass("nc-wysiwyg-active")) ? '0.4' : '1.0'});
 				});
 			}else
 				$("li.collapsedDis", this.panel).css({opacity : '1.0'});
@@ -2452,15 +2452,15 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			if(mes.length > 0 && self.options.formatMes) {
 				var dialog,con_mes = '';
 				options = {
-					id       : "nc_wysiwyg_mes_" + self.id,
-					className: "nc_wysiwyg_mes",
+					id       : "nc-wysiwyg-mes-" + self.id,
+					className: "nc-wysiwyg-mes",
 					style    : {opacity : '0.8', left: "center", top : "center"},
 					pos_base : self.el,
 					callback : function(e){
 						$.each(mes, function(k, v) {
 							con_mes += '<li>' + v + '</li>';
 						});
-						$("#nc_wysiwyg_mes_" + self.id).html('<ul>' + con_mes + '</ul>');
+						$("#nc-wysiwyg-mes-" + self.id).html('<ul>' + con_mes + '</ul>');
 						setTimeout(function() {
 							if(dialog) dialog.hide();
 						}, self.options.format_time);
@@ -2482,7 +2482,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 		},
         // edit or html or preview
         getMode : function() {
-        	var self = this, act_btn = $("li.nc_wysiwyg_active", this.statusbar);
+        	var self = this, act_btn = $("li.nc-wysiwyg-active", this.statusbar);
         	if(act_btn.hasClass("edit"))
 	        	return "edit";
 			else if(act_btn.hasClass("html"))
@@ -2585,12 +2585,12 @@ IEで、iframe中のbodyのborderがつくから削除していると
 							h = now.getHours(), m = now.getMinutes();
 							mes += ((h >= 10) ? h : '0'+h) + ':' + ((m >= 10) ? m : '0'+m);
 							options = {
-								id       : "nc_wysiwyg_autoregist_" + t.id,
-								className: "nc_wysiwyg_autoregist",
+								id       : "nc-wysiwyg-autoregist-" + t.id,
+								className: "nc-wysiwyg-autoregist",
 								style    : {opacity : '0.8', left: "right", top : "outbottom"},
 								pos_base : t.el,
 								callback : function(e){
-									$("#nc_wysiwyg_autoregist_" + t.id).html(mes);
+									$("#nc-wysiwyg-autoregist-" + t.id).html(mes);
 									//setTimeout(function() {
 									//	if(dialog) dialog.hide();
 									//}, 5000);
@@ -2978,9 +2978,9 @@ IEで、iframe中のbodyのborderがつくから削除していると
 
 			// blockquote外部へ移動
 			if ($.browser.msie) {
-				var id_name = "nc_wysiwyg_split";
+				var id_name = "nc-wysiwyg-split";
 				r.pasteHTML('<span id="' + id_name + '"></span>');
-				var id_name_el = $('#nc_wysiwyg_split', this.editorDoc)[0];
+				var id_name_el = $('#nc-wysiwyg-split', this.editorDoc)[0];
 				var clone_el = id_name_el.cloneNode(false);
 				var new_text_nd = _cloneTextElement(id_name_el, clone_el, bq);
 				if(!bq.nextSibling) {
@@ -3036,7 +3036,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 				}
 			}
 			$("blockquote", bq.parentNode).each(function(k, el){
-				if(el.innerHTML == '' || el.innerHTML.toLowerCase() == '<span id=nc_wysiwyg_split></span>') {
+				if(el.innerHTML == '' || el.innerHTML.toLowerCase() == '<span id=nc-wysiwyg-split></span>') {
 					el.parentNode.removeChild(el);
 				}
 			});
@@ -3425,12 +3425,12 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			function replaceFonts() {
 				var bm, c_el, r_el;
 				$.each(t.select('span,font,img'), function(k, el) {
-					if (el.style.fontFamily == 'nc_wysiwygfont' || (el.face && el.face == 'nc_wysiwygfont') || (el.src && el.src.match(/nc_wysiwygurl$/))) {
+					if (el.style.fontFamily == 'nc-wysiwygfont' || (el.face && el.face == 'nc-wysiwygfont') || (el.src && el.src.match(/nc-wysiwygurl$/))) {
 						if (!bm)
 							bm = t.getBookmark();
 
 						if(collapsed == false)
-							at._nc_wysiwyg_ins = '1';
+							$(at).attr('data-nc-wysiwyg-ins', '1');
 						if(na.match(/^</))
 							c_el = $(na, t.editorDoc)[0];
 						else
@@ -3443,7 +3443,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 
 				// 重複するelementの削除
 				if(collapsed == false) {
-					$.each(t.select(na + '[_nc_wysiwyg_ins]'), function(k, n) {
+					$.each(t.select(na + '[data-nc-wysiwyg-ins]'), function(k, n) {
 						function removeStyle(n) {
 							if (n.nodeType == 1 && at.style) {
 								$.each(at.style, function(k, v) {
@@ -3496,7 +3496,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 							return false;
 						});
 
-						n.removeAttribute('_nc_wysiwyg_ins');
+						n.removeAttribute('data-nc-wysiwyg-ins');
 					});
 					if(buf_at != undefined && buf_at != null)
 						removeEmpty();
@@ -3508,9 +3508,9 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			// Create inline elements
 			t.focus();
 			if(collapsed)
-				t.editorDoc.execCommand('insertImage', false, 'nc_wysiwygurl');
+				t.editorDoc.execCommand('insertImage', false, 'nc-wysiwygurl');
 			else
-				t.editorDoc.execCommand('fontName', false, 'nc_wysiwygfont');
+				t.editorDoc.execCommand('fontName', false, 'nc-wysiwygfont');
 			r_el = replaceFonts();
 			if(t._keyhandler) {
 				$(this.editorDoc).unbind("keyup", t._keyhandler);
@@ -3660,7 +3660,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			} catch(e){}
 			return value;
         },
-        
+
 
 /**
  * リストメニュー作成
@@ -3677,7 +3677,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
  */
     	appendListMain : function (node, list, className, callback, args, node_exists, node_event) {
     		var t = this, name=null, li, a, a_flag = false;
-    		var umenu = $('<ul></ul>').addClass("listmenu_outer");
+    		var umenu = $('<ul></ul>').addClass("listmenu-outer");
     		var listmenu = $('<div></div>').addClass("listmenu").append(umenu).css("zIndex", $.Common.zIndex++);
     		node_exists = (node_exists == undefined) ? false : true;
     		node_event = (node_event == undefined) ? false : true;
@@ -3785,6 +3785,19 @@ IEで、iframe中のbodyのborderがつくから削除していると
     			listcontent.html(a.html());
     		return true;
     	},
+
+/**
+ * リストメニューの選択しているキー取得
+ * @param listbox       element  listbox element
+ * @return string
+ */
+		getList : function(listbox) {
+			var ret= '', value = $(".listcontent", listbox).html();
+			$("a", listbox.next()).each(function(k, v) {
+				if(value == v.innerHTML) ret = $(v).attr("name");
+			});
+			return ret;
+		}
 	});
 
 	/**

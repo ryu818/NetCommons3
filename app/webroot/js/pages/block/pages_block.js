@@ -10,7 +10,7 @@
 ;(function($) {
 	$(function(){
 	//$(document).ready(function(){
-		$(".nc_add_block").chosen().change( function(e){
+		$(".nc-add-block").chosen().change( function(e){
 			var module_id = $(this).val();
 			if(module_id != 0) {
 				$.PagesBlock.addBlock($(this), module_id);
@@ -42,25 +42,26 @@
 
 		initBlock: function(id) {
 			var t = this;
-			var block = $('#' + id),block_move = $("#nc_block_move" + id);
+			var block = $('#' + id),block_move = $("#nc-block-move" + id);
 			var block_move_desc= null;
 
 			if(block_move.get(0) && !block.hasClass('ui-draggable') && $('#container').get(0)) {
-				block_move.click(function(e){
+				block_move.unbind('click').click(function(e){
 					if (e.target.tagName.toUpperCase() === 'A') {
 						return;
 					}
-					var blockChild = block.children('.nc_frame:first');
+					var blockChild = block.children('.nc-frame:first');
 					// グルーピング
-					if(!blockChild.hasClass('nc_select_group')) {
-						blockChild.addClass('nc_select_group');
+					if(!blockChild.hasClass('nc-select-group')) {
+						blockChild.addClass('nc-select-group');
 						t.cancelSelects(block);
 						t.groups[id] = block;
 					} else {
-						blockChild.removeClass('nc_select_group');
+						blockChild.removeClass('nc-select-group');
 						delete t.groups[id];
 					}
 					t.toggleGroup();
+					//e.preventDefault();
 					e.stopPropagation();
 				});
 				block.draggable({
@@ -78,13 +79,13 @@
 						t.columnPos = new Object();
 						t.blocksPos = new Object();
 
-						var blockChild = block.children('.nc_frame:first');
+						var blockChild = block.children('.nc-frame:first');
 						blockChild.css("opacity", 0.3);
 						var columns = block.parents('[data-columns=top]:first');
 						t._setPos(t.columnsPos, columns);
 
 						var childBlocks = new Object();
-						if(block.hasClass('nc_group')) {
+						if(block.hasClass('nc-group')) {
 							//childBlocks[block.attr('id')] = true;
 							var els = $('[data-block]', block);
 							for (var i = 0,len = els.length; i < len; i++) {
@@ -105,7 +106,7 @@
 						if(!t.currentBlocks[1].get(0) && !t.currentBlocks[2].get(0)) {
 							t.currentBlocks[3] = block.parent();
 						}
-						var div = $('<div></div>').addClass('nc_block_dummy');
+						var div = $('<div></div>').addClass('nc-block-dummy');
 						block.before(div);
 						//block[0].parentNode.insertBefore(div[0], block[0]);
 						t.blockDummy = div;
@@ -125,7 +126,7 @@
 							height: blockChild.outerHeight() + "px"
 						});
 
-						block_move_desc = $('<div></div>').addClass('nc_block_move_desc');
+						block_move_desc = $('<div></div>').addClass('nc-block-move-desc');
 						$(ui.helper).append(block_move_desc);
 					},
 					drag:function(event, ui){
@@ -134,7 +135,7 @@
 					},
 					revert: function(socketObj) {
 						block_move_desc.remove();
-						if(t.currentBlocks[0].hasClass('nc_block_dummy')) {
+						if(t.currentBlocks[0].hasClass('nc-block-dummy')) {
 					        // revert
 							var column = block.parent();
 							t.blockDummy.remove();
@@ -147,10 +148,10 @@
 					},
 					stop:function(event, ui){
 						var block = $(this);
-						var ret = t.currentBlocks[0].hasClass('nc_block_dummy');
+						var ret = t.currentBlocks[0].hasClass('nc-block-dummy');
 						var show_count_el = null;
-						block.children('.nc_frame:first').css("opacity", 1);
-						t.currentBlocks[0].removeClass('nc_block_dummy');
+						block.children('.nc-frame:first').css("opacity", 1);
+						t.currentBlocks[0].removeClass('nc-block-dummy');
 						if(ret) {
 							return;
 						}
@@ -231,14 +232,14 @@
 									params['row_num'] += 1;
 								});
 							}
-							$.each(parent_columns.children('.nc_column'), function() {
+							$.each(parent_columns.children('.nc-column'), function() {
 								if(parent.get(0) == this) {
 									return false;
 								}
 								params['col_num'] += 1;
 							});
 
-							var parent_group = parent.parents(".nc_group:first");
+							var parent_group = parent.parents(".nc-group:first");
 							if(parent_group.get(0)) {
 								params['parent_id'] = parent_group.attr('data-block');
 							}
@@ -288,7 +289,7 @@
 			}
 */
 
-			if(columnsPos['el'].hasClass("nc_group"))
+			if(columnsPos['el'].hasClass("nc-group"))
 				insert_columns = columnsPos["group_el"];
 			else
 				insert_columns = columnsPos["el"];
@@ -468,9 +469,9 @@
 				}
 				if(t.currentBlocks[3]) {
 					if(direction == "left") {
-						insert_column = insert_columns.children(".nc_column:first");
+						insert_column = insert_columns.children(".nc-column:first");
 					} else {
-						insert_column = insert_columns.children(".nc_column:last");
+						insert_column = insert_columns.children(".nc-column:last");
 					}
 					if(insert_column && insert_column.get(0) == t.currentBlocks[3].get(0)) {
 		        		force = false;
@@ -534,9 +535,9 @@
 				delMoveEl(column);
 				if(index == -1) {
 					// 一番右
-					index = insert_columns.children('.nc_column').length - 1;
+					index = insert_columns.children('.nc-column').length - 1;
 				}
-				var insert_column = insert_columns.children('.nc_column:eq('+index+')');
+				var insert_column = insert_columns.children('.nc-column:eq('+index+')');
 				var new_column = $('<div></div>').addClass(insert_column.attr('class'));
 
 				if(direction == 'left') {
@@ -571,7 +572,7 @@
 						value = __d('pages', 'Add a new column:[%s]', block);
 					} else {
 						b_id = block.attr('id');
-						title = $('#nc_block_header_page_name' + b_id).html();
+						title = $('#nc-block-header-page-name' + b_id).html();
 						if(direction == 'top') {
 							value = __d('pages', 'Move to the top of the [%s]', title);
 						} else {
@@ -594,7 +595,7 @@
 			t.columnPos[now_parent_id] = Array();
 			t.blocksPos[now_parent_id] = Array();
 
-			columns_els = columns.children('.nc_column');
+			columns_els = columns.children('.nc-column');
 			for (var i = 0, col_len = columns_els.length; i < col_len; i++) {
 				column = $(columns_els[i]);
 				t.columnPos[now_parent_id][i] = new Object();
@@ -611,9 +612,9 @@
 					}
 					t.blocksPos[now_parent_id][i][count] = new Object();
 					t.blocksPos[now_parent_id][i][count]['group_flag'] = false;
-					if(row.hasClass('nc_group')) {
+					if(row.hasClass('nc-group')) {
 						//Groupingブロック
-						now_columns = $(".nc_columns:first", row);
+						now_columns = $(".nc-columns:first", row);
 						t.blocksPos[now_parent_id][i][count]['group_flag'] = true;
 						t.blocksPos[now_parent_id][i][count]['group_el'] = now_columns;
 						if(now_columns) t.setSearchBlock(now_columns, now_thread_num + 1,next_parent_id, childBlocks);
@@ -647,12 +648,12 @@
 
 			if((insert && insert.attr('id')) || force) {
 				t.blockDummy.css('display', '');
-				t.currentBlocks[0].removeClass('nc_block_dummy');
+				t.currentBlocks[0].removeClass('nc-block-dummy');
 				return true;
 			}
 			t.blockDummy.css('display', 'none');
 			$(t.currentBlocks[0]).before(t.blockDummy);
-			t.currentBlocks[0].addClass('nc_block_dummy');
+			t.currentBlocks[0].addClass('nc-block-dummy');
 			t.insert = t.currentBlocks[0];
 			if(!parent.children(':first').get(0)) {
 				parent.remove();
@@ -676,10 +677,10 @@
 				parent_el = chk.parent();
 				child_els = parent_el.children();
 				if(child_els.length == 1) {
-					columns = parent_el.parents(".nc_columns:first");
-					columns_len = columns.children('.nc_column').length;
+					columns = parent_el.parents(".nc-columns:first");
+					columns_len = columns.children('.nc-column').length;
 
-					group_parent = columns.parents(".nc_group:first");
+					group_parent = columns.parents(".nc-group:first");
 					target_remove = parent_el;	//chk.parent();
 					if(group_parent.get(0) && columns_len == 1) {
 						remove = group_parent;
@@ -691,7 +692,7 @@
 			if(remove) {
 				target_remove = remove;
 			}
-			if($(target_remove).hasClass("nc_column")) {
+			if($(target_remove).hasClass("nc-column")) {
 				target_remove = null;
 			}
 			return target_remove;
@@ -700,15 +701,15 @@
 		cancelGroupingComp: function(block) {
 			var t = this;
 			var parent_column = block.parent();
-			var current_columns = $(".nc_columns:first", block);
-			var current_column = $(".nc_column:first", current_columns);
+			var current_columns = $(".nc-columns:first", block);
+			var current_column = $(".nc-column:first", current_columns);
 
 			var columnList = Array();
 			var count_column = 0;
 
-			var block_els = current_columns.children('.nc_column');	//$(' > .nc_column', current_columns);
+			var block_els = current_columns.children('.nc-column');	//$(' > .nc-column', current_columns);
 			var buf_block = block;
-			//current_columns.children('.nc_column').each(function(k, column) {
+			//current_columns.children('.nc-column').each(function(k, column) {
 			block_els.each(function(k, column) {
 				if(column == current_column.get(0)) {
 					//既存列追加処理
@@ -742,7 +743,7 @@
 			}
 			$.each(t.groups, function(k, el) {
 				if (!block || $(el).parents('[data-columns]:first')[0] != current[0]) {
-					$(el).children('.nc_frame:first').removeClass('nc_select_group');
+					$(el).children('.nc-frame:first').removeClass('nc-select-group');
 					delete t.groups[$(el).attr('id')];
 				}
 			});
@@ -755,9 +756,9 @@
 				break;
 			}
 			if(group == true) {
-				$('#nc_block_group').slideDown();
+				$('#nc-block-group').slideDown();
 			} else {
-				$('#nc_block_group').slideUp();
+				$('#nc-block-group').slideUp();
 			}
 		},
 		/* グルーピング処理 */
@@ -802,7 +803,7 @@
 						}
 						first = false;
 					});
-					var objs = $('div.nc_block', prev);
+					var objs = $('div.nc-block', prev);
 					//$.proxy(t.initBlock(prev), t);
 					//objs.each(function() {
 					//	$.proxy(t.initBlock($(this)), t);
@@ -824,13 +825,13 @@
 
 			params['cancel_groups'] = new Array();
 			$.each(t.groups, function(k, el) {
-				if($(el).hasClass("nc_group")) {
+				if($(el).hasClass("nc-group")) {
 					params['cancel_groups'][i] = $(el).attr('data-block');
 				} else {
-					$(el).children('.nc_frame:first').removeClass('nc_select_group');
+					$(el).children('.nc-frame:first').removeClass('nc-select-group');
 					delete t.groups[k];
 				}
-				//$(el).children('.nc_frame:first').removeClass('nc_select_group');
+				//$(el).children('.nc-frame:first').removeClass('nc-select-group');
 				i++;
 				if(!block_id) {
 					block_id = $(el).attr('data-block');
@@ -851,8 +852,8 @@
 					params,
 					function(res){
 						$.each(t.groups, function() {
-							$(this).children('.nc_frame:first').removeClass('nc_select_group');
-							if($(this).hasClass("nc_group")) {
+							$(this).children('.nc-frame:first').removeClass('nc-select-group');
+							if($(this).hasClass("nc-group")) {
 								t.cancelGroupingComp($(this));
 							}
 						});
@@ -870,8 +871,8 @@
 			var ok = __('Ok') ,cancel = __('Cancel');
 
 			if(all_delete) {
-				confirm += '<div><label for="nc_confirm_dialog_mes_flag">'+
-							'<input id="nc_confirm_dialog_mes_flag" type="checkbox" name="confirm_dialog_mes_flag" value="1" />&nbsp;'+
+				confirm += '<div><label for="nc-confirm-dialog-mes-flag">'+
+							'<input id="nc-confirm-dialog-mes-flag" type="checkbox" name="confirm_dialog_mes_flag" value="1" />&nbsp;'+
 							all_delete+
 							'</label></div>';
 			}
@@ -914,7 +915,7 @@
 			$.post($.Common.urlBlock(null, 'block/add_block'),
 					params,
 					function(res){
-						var first_column = $(".nc_column:first", page_el);
+						var first_column = $(".nc-column:first", page_el);
 						var buf_block = first_column.children(":first");
 						if(buf_block.get(0)) {
 							buf_block.before(res);
@@ -930,7 +931,7 @@
 			var block = $('#_' + block_id);
 
 			show_count_el = block.parents('[data-show-count]:first');
-			if($('#nc_confirm_dialog_mes_flag').is(':checked')) {
+			if($('#nc-confirm-dialog-mes-flag').is(':checked')) {
 				params['all_delete'] = 1;
 			} else {
 				params['all_delete'] = 0;
@@ -953,7 +954,7 @@
 					}
 			);
 
-			$('#nc_mes_dialog').dialog('close');
+			$('#nc-mes-dialog').dialog('close');
 		}
 	}
 })(jQuery);

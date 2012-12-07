@@ -19,24 +19,24 @@ if($page['Page']['room_id'] != $block['Content']['room_id']) {
 if($is_edit) {
 	$title =  __('Quit');
 	$controller_action = $block['Module']['controller_action'];
-	$edit_class_name = "nc_block_header_setting_end_icon";
+	$edit_class_name = "nc-block-header-setting-end-icon";
 } else {
 	$title = __('Edit');
 	$controller_action = $block['Module']['edit_controller_action'];
-	$edit_class_name = "nc_block_header_setting_icon";
+	$edit_class_name = "nc-block-header-setting-icon";
 }
 ?>
-<div class="nc_block_mode">
-	<div id="nc_block_move<?php echo($id); ?>" class="nc_block_move">
-		<a href="#" title="<?php echo(__('Hide header'));?>" class="nc_block_header_display">
-			<span class="nc_arrow_up"></span>
+<div class="nc-block-mode">
+	<div id="nc-block-move<?php echo($id); ?>" class="nc-block-move">
+		<a href="#" title="<?php echo(__('Hide header'));?>" class="nc-block-header-display">
+			<span class="nc-arrow-up"></span>
 		</a>
-		<span id="nc_block_header_page_name<?php echo($id); ?>" class="nc_block_header_page_name">
+		<span id="nc-block-header-page-name<?php echo($id); ?>" class="nc-block-header-page-name">
 			<?php echo($block['Block']['title']); ?>
 		</span>
-		<ul class="nc_block_toolbox">
+		<ul class="nc-block-toolbox">
 			<li class="<?php echo($edit_class_name); ?>">
-				<?php 
+				<?php
 				$controller_arr = explode('/', $controller_action, 2);
 				$plugin = $controller = $controller_arr[0];
 				$action = null;
@@ -45,17 +45,17 @@ if($is_edit) {
 				}
 				echo $this->Html->link('', array('block_id' => $block_id, 'plugin' => $plugin, 'controller' => $controller, 'action' => $action, '#' => $id),
 					array(
-						'title' => $title, 
-						'class' => 'link ', 
+						'title' => $title,
+						'class' => 'link ',
 						'data-pjax' => '#'.$id
 					)
 				); ?>
 			</li>
-			<li class="nc_block_header_list_icon">
+			<li class="nc-block-header-list-icon">
 				<a href="#" title="<?php echo(__('Operation'));?>" class="link">
 				</a>
 			</li>
-			<li class="nc_block_header_close_icon">
+			<li class="nc-block-header-close-icon">
 				<a href="#" onclick="$.PagesBlock.delBlockConfirm(event, <?php echo($block['Block']['id']); ?>, <?php echo($all_delete); ?>,'<?php $title = (!empty($block['Block']['title'])) ? h($block['Block']['title']) : __('Block'); $confirm = __('Deleting %s. <br />Are you sure to proceed?', $title); echo($confirm);?>'); return false;" title="<?php echo(__('Delete'));?>" class="link">
 				</a>
 			</li>

@@ -16,10 +16,10 @@
 				callback       : null,
 				cancel_callback: null,
         		html           :
-	            	'<input type="text" id="colorpicker_color" name="color" value="COLOR_CODE" />' +
+	            	'<input type="text" id="colorpicker-color" name="color" value="COLOR_CODE" />' +
 						'<div id="colorpicker"></div>' +
-						'<div style="width: 218px;" class="align-center"><input class="common_btn" id="nc_colorpicker_ok" type="button" value="' + __d(['nc_wysiwyg', 'dialog'], 'ok') + '" />' +
-					'&nbsp;<input id="nc_colorpicker_cancel" class="common_btn" type="button" value="' + __d(['nc_wysiwyg', 'dialog'], 'cancel') + '" /></div>',
+						'<div style="width: 218px;" class="align-center"><input class="common-btn" id="nc-colorpicker-ok" type="button" value="' + __d(['nc_wysiwyg', 'dialog'], 'ok') + '" />' +
+					'&nbsp;<input id="nc-colorpicker-cancel" class="common-btn" type="button" value="' + __d(['nc_wysiwyg', 'dialog'], 'cancel') + '" /></div>',
 				js             : $._base_url+'js/plugins/farbtastic.js',
 				jsname         : '$.farbtastic',
         		css            : $._base_url+'css/plugins/farbtastic.css'
@@ -31,18 +31,18 @@
 		$.Common.load(options.js, options.jsname, function() {
 			$(self).html(options.html.replace(/COLOR_CODE/, options.colorcode));
 
-			$("#colorpicker").farbtastic("#colorpicker_color");
+			$("#colorpicker").farbtastic("#colorpicker-color");
 			// イベント
-			$("#nc_colorpicker_ok").click(function(e){
+			$("#nc-colorpicker-ok").click(function(e){
 				if(options.callback)
-					if(!options.callback.apply(self, [$("#colorpicker_color").val()]))
+					if(!options.callback.apply(self, [$("#colorpicker-color").val()]))
 						return false;
 				e.preventDefault();
 		        return false;
 			});
-			$("#nc_colorpicker_cancel").click(function(e){
+			$("#nc-colorpicker-cancel").click(function(e){
 				if(options.cancel_callback)
-					if(!options.cancel_callback.apply(self, [$("#colorpicker_color").val()]))
+					if(!options.cancel_callback.apply(self, [$("#colorpicker-color").val()]))
 						return false;
 				e.preventDefault();
 		        return false;

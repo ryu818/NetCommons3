@@ -10,11 +10,11 @@
 		var options = $.extend({
 				table_pos      : null,
 				html           :
-	            	'<ul class="nc_wysiwyg_tablemenu">' +
+	            	'<ul class="nc-wysiwyg-tablemenu">' +
             			'<li>' +
             				'<ul>' +
 		            			'<li>' +
-		            				'<a class="nc_wysiwyg_tablemenu_property" href="#">' +
+		            				'<a class="nc-wysiwyg-tablemenu-property" href="#">' +
 		            					__d('nc_wysiwyg_tablemenu', 'table_property') +
 		            				'</a>' +
 		            			'</li>' +
@@ -23,7 +23,7 @@
             			'<li>' +
             				'<ul>' +
 		            			'<li>' +
-		            				'<a class="nc_wysiwyg_tablemenu_cell_merge" href="#">' +
+		            				'<a class="nc-wysiwyg-tablemenu-cell-merge" href="#">' +
 		            					__d('nc_wysiwyg_tablemenu', 'cell_merge') +
 		            				'</a>' +
 		            			'</li>' +
@@ -32,17 +32,17 @@
             			'<li>' +
             				'<ul>' +
 		            			'<li>' +
-		            				'<a class="nc_wysiwyg_tablemenu_row_partition" href="#">' +
+		            				'<a class="nc-wysiwyg-tablemenu-row-partition" href="#">' +
 		            					__d('nc_wysiwyg_tablemenu', 'row_partition') +
 		            				'</a>' +
 		            			'</li>' +
 		            			'<li>' +
-		            				'<a class="nc_wysiwyg_tablemenu_col_partition" href="#">' +
+		            				'<a class="nc-wysiwyg-tablemenu-col-partition" href="#">' +
 		            					__d('nc_wysiwyg_tablemenu', 'col_partition') +
 		            				'</a>' +
 		            			'</li>' +
 		            			'<li>' +
-		            				'<a class="nc_wysiwyg_tablemenu_cell_partition" href="#">' +
+		            				'<a class="nc-wysiwyg-tablemenu-cell-partition" href="#">' +
 		            					__d('nc_wysiwyg_tablemenu', 'cell_partition') +
 		            				'</a>' +
 		            			'</li>' +
@@ -51,17 +51,17 @@
             			'<li>' +
             				'<ul>' +
 		            			'<li>' +
-		            				'<a class="nc_wysiwyg_tablemenu_row_before_insert" href="#">' +
+		            				'<a class="nc-wysiwyg-tablemenu-row-before-insert" href="#">' +
 		            					__d('nc_wysiwyg_tablemenu', 'row_before_insert') +
 		            				'</a>' +
 		            			'</li>' +
 		            			'<li>' +
-		            				'<a class="nc_wysiwyg_tablemenu_row_after_insert" href="#">' +
+		            				'<a class="nc-wysiwyg-tablemenu-row-after-insert" href="#">' +
 		            					__d('nc_wysiwyg_tablemenu', 'row_after_insert') +
 		            				'</a>' +
 		            			'</li>' +
 		            			'<li>' +
-		            				'<a class="nc_wysiwyg_tablemenu_row_delete" href="#">' +
+		            				'<a class="nc-wysiwyg-tablemenu-row-delete" href="#">' +
 		            					__d('nc_wysiwyg_tablemenu', 'row_delete') +
 		            				'</a>' +
 		            			'</li>' +
@@ -70,17 +70,17 @@
             			'<li>' +
             				'<ul>' +
 		            			'<li>' +
-		            				'<a class="nc_wysiwyg_tablemenu_col_before_insert" href="#">' +
+		            				'<a class="nc-wysiwyg-tablemenu-col-before-insert" href="#">' +
 		            					__d('nc_wysiwyg_tablemenu', 'col_before_insert') +
 		            				'</a>' +
 		            			'</li>' +
 		            			'<li>' +
-		            				'<a class="nc_wysiwyg_tablemenu_col_after_insert" href="#">' +
+		            				'<a class="nc-wysiwyg-tablemenu-col-after-insert" href="#">' +
 		            					__d('nc_wysiwyg_tablemenu', 'col_after_insert') +
 		            				'</a>' +
 		            			'</li>' +
 		            			'<li>' +
-		            				'<a class="nc_wysiwyg_tablemenu_col_delete" href="#">' +
+		            				'<a class="nc-wysiwyg-tablemenu-col-delete" href="#">' +
 		            					__d('nc_wysiwyg_tablemenu', 'col_delete') +
 		            				'</a>' +
 		            			'</li>' +
@@ -89,7 +89,7 @@
             			'<li>' +
             				'<ul>' +
 		            			'<li>' +
-		            				'<a class="nc_wysiwyg_tablemenu_delete" href="#">' +
+		            				'<a class="nc-wysiwyg-tablemenu-delete" href="#">' +
 		            					__d('nc_wysiwyg_tablemenu', 'table_delete') +
 		            				'</a>' +
 		            			'</li>' +
@@ -117,7 +117,7 @@
 			$("a", self).each(function(k, v) {
 				menuClassName = $(v).attr("class").replace(" active", "");
 				switch(menuClassName) {
-					case "nc_wysiwyg_tablemenu_property":
+					case "nc-wysiwyg-tablemenu-property":
 						/* 表プロパティ */
 						$(v).addClass("active").click(function() {
 							var callback = function() {
@@ -125,10 +125,10 @@
 													table_pos : table_pos,
 													wysiwyg : wysiwyg
 												}
-												$("#nc_wysiwyg_tableproperty").nc_tableproperty(opts);
+												$("#nc-wysiwyg-tableproperty").nc_tableproperty(opts);
 							};
 							var options = {
-								id  : "nc_wysiwyg_tableproperty",
+								id  : "nc-wysiwyg-tableproperty",
 								css : [$._base_url+'css/plugins/nc_wysiwyg/tableproperty.css'],
 								js : [$._base_url+'js/plugins/nc_wysiwyg/tableproperty.js'],
 								jsname : ['$.fn.nc_tableproperty'],
@@ -137,7 +137,7 @@
 							wysiwyg.toggleDialog(self, options);
 						});
 						break
-					case "nc_wysiwyg_tablemenu_cell_merge":
+					case "nc-wysiwyg-tablemenu-cell-merge":
 						/* セルのマージ */
 						$(v).addClass("active").click(function(){
 							var td, callback, options;
@@ -217,24 +217,24 @@
 																}
 															}
 															_merge(buf_table_pos);
-															wysiwyg.removeDialog("nc_wysiwyg_tablemerge");
+															wysiwyg.removeDialog("nc-wysiwyg-tablemerge");
 															wysiwyg.focus(true);
 															wysiwyg.rangeSelect(td);
 															wysiwyg.checkTargets();
 															return true;
 														},
 														cancel_callback : function() {
-															wysiwyg.removeDialog("nc_wysiwyg_tablemerge");
+															wysiwyg.removeDialog("nc-wysiwyg-tablemerge");
 															wysiwyg.focus(true);
 															wysiwyg.rangeSelect(td);
 															wysiwyg.checkTargets();
 															return true;
 														}
 													};
-													$("#nc_wysiwyg_tablemerge").nc_tablemerge(opts);
+													$("#nc-wysiwyg-tablemerge").nc_tablemerge(opts);
 								}
 								options = {
-									id  : "nc_wysiwyg_tablemerge",
+									id  : "nc-wysiwyg-tablemerge",
 									css : [$._base_url+'css/plugins/nc_wysiwyg/tablemerge.css'],
 									js : [$._base_url+'js/plugins/nc_wysiwyg/tablemerge.js'],
 									jsname : ['$.fn.nc_tablemerge'],
@@ -246,19 +246,19 @@
 
 						});
 						break;
-					case "nc_wysiwyg_tablemenu_row_partition":
+					case "nc-wysiwyg-tablemenu-row-partition":
 						if(rowspan_flag)
 							$(v).addClass("active").click(function(){
 								_rowPartition();
 							});
 						break;
-					case "nc_wysiwyg_tablemenu_col_partition":
+					case "nc-wysiwyg-tablemenu-col-partition":
 						if(colspan_flag)
 							$(v).addClass("active").click(function(){
 								_colPartition();
 							});
 						break;
-					case "nc_wysiwyg_tablemenu_cell_partition":
+					case "nc-wysiwyg-tablemenu-cell-partition":
 						if(colspan_flag || rowspan_flag)
 							$(v).addClass("active").click(function(){
 								// 行分割＋列分割
@@ -266,8 +266,8 @@
 								_colPartition();
 							});
 						break;
-					case "nc_wysiwyg_tablemenu_row_before_insert":
-					case "nc_wysiwyg_tablemenu_row_after_insert":
+					case "nc-wysiwyg-tablemenu-row-before-insert":
+					case "nc-wysiwyg-tablemenu-row-after-insert":
 						// 選択行の前後に挿入
 						$(v).addClass("active").click(function(e){
 							var rows = table_pos.table_el.rows, clone_el;
@@ -277,10 +277,10 @@
 								for (var j=0; j<rows[i].cells.length; j++) {
 									if($(rows[i].cells[j]).attr("rowSpan") > 1 &&
 										i + $(rows[i].cells[j]).attr("rowSpan") - 1  >= rowIndex) {
-										if(rows[i].rowIndex != rowIndex || $(e.target).hasClass("nc_wysiwyg_tablemenu_row_after_insert")) {
+										if(rows[i].rowIndex != rowIndex || $(e.target).hasClass("nc-wysiwyg-tablemenu-row-after-insert")) {
 											$(rows[i].cells[j]).attr("rowSpan", $(rows[i].cells[j]).attr("rowSpan") + 1);
 										}
-										if(rows[i].rowIndex == rowIndex && $(e.target).hasClass("nc_wysiwyg_tablemenu_row_after_insert")) {
+										if(rows[i].rowIndex == rowIndex && $(e.target).hasClass("nc-wysiwyg-tablemenu-row-after-insert")) {
 											$(clone_el.cells[j]).remove();
 										}
 									}
@@ -294,7 +294,7 @@
 								v.removeAttribute("rowSpan", 0);
 							});
 
-							if($(e.target).hasClass("nc_wysiwyg_tablemenu_row_before_insert"))
+							if($(e.target).hasClass("nc-wysiwyg-tablemenu-row-before-insert"))
 								$(table_pos.cell_els[0].parentNode).before(clone_el);
 							else
 								$(table_pos.cell_els[0].parentNode).after(clone_el);
@@ -307,7 +307,7 @@
 							}
 						});
 						break;
-					case "nc_wysiwyg_tablemenu_row_delete":
+					case "nc-wysiwyg-tablemenu-row-delete":
 						$(v).addClass("active").click(function(){
 							var tr;
 							for(var i = 0; i < table_pos.cell_els.length; i++) {
@@ -320,8 +320,8 @@
 								$(table_pos.table_el).remove();
 						});
 						break;
-					case "nc_wysiwyg_tablemenu_col_before_insert":
-					case "nc_wysiwyg_tablemenu_col_after_insert":
+					case "nc-wysiwyg-tablemenu-col-before-insert":
+					case "nc-wysiwyg-tablemenu-col-after-insert":
 						// 選択列の前後に挿入
 						$(v).addClass("active").click(function(e){
 							var current_colspan = 1,insert_index, otd, c_td, attr;
@@ -341,7 +341,7 @@
 										//style = $(rows[i].cells[j]).attr("style");
 										if(colspan < current_colspan && j == rows[i].cells.length - 1)
 											insert_index = rows[i].cells[j].cellIndex + 1;
-										else if($(e.target).hasClass("nc_wysiwyg_tablemenu_col_before_insert"))
+										else if($(e.target).hasClass("nc-wysiwyg-tablemenu-col-before-insert"))
 											insert_index = rows[i].cells[j].cellIndex;
 										else
 											insert_index = rows[i].cells[j].cellIndex + 1;
@@ -374,7 +374,7 @@
 							}
 						});
 						break;
-					case "nc_wysiwyg_tablemenu_col_delete":
+					case "nc-wysiwyg-tablemenu-col-delete":
 						$(v).addClass("active").click(function(e){
 							var rows = table_pos.table_el.rows, buf_colspan, buf_i = null;
 							var current_colspan = 1, tr = table_pos.cell_els[0].parentNode;
@@ -422,7 +422,7 @@
 								$(table_pos.table_el).remove();
 						});
 						break;
-					case "nc_wysiwyg_tablemenu_delete":
+					case "nc-wysiwyg-tablemenu-delete":
 						$(v).addClass("active").click(function(){
 							$(table_pos.table_el).remove();
 						});

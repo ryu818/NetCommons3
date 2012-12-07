@@ -70,7 +70,7 @@ echo '	$._nc.nc_wysiwyg[\'allow_js\'] = '.($nc_user['allow_htmltag_flag'] ? _ON 
 			$.Common.getAjax(e, $(this));
 		});
 
-		var options = {items: '.nc_tooltip', track: true};
+		var options = {items: '.nc-tooltip', track: true};
 		$( document ).tooltip(options);
 	});
 </script>

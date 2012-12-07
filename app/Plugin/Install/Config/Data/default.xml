@@ -2649,7 +2649,7 @@ e-mail：{X-EMAIL}
         <column name="content_id">1</column>
         <column name="content">&lt;div style=&quot;padding:10px;width:600px;&quot;&gt;
 &lt;h2 class=&quot;bold align-center&quot; style=&quot;font-size:150%;&quot;&gt;NetCommonsのインストールが完了しました。&lt;/h2&gt;
-&lt;div class=&quot;top_description&quot;&gt;NetCommonsの画面をデザインする基本的な手順は次のとおりです。&lt;/div&gt;
+&lt;div class=&quot;top-description&quot;&gt;NetCommonsの画面をデザインする基本的な手順は次のとおりです。&lt;/div&gt;
 &lt;ol style=&quot;list-style-type: decimal; margin: 5px; padding: 10px; border: 1px solid rgb(204, 204, 204);&quot;&gt;
 &amp;nbsp;&amp;nbsp;
 &lt;li class=&quot;bold&quot; style=&quot;padding: 10px;&quot;&gt;セッティングモードをONにする&lt;/li&gt;

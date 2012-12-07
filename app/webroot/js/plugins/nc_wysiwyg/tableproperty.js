@@ -287,10 +287,10 @@
 			var select_tab = options['table_pos']['sel_name'];
 
 
-			tabs = $('<ul class="nc_wysiwyg_tableproperty"></ul>').appendTo( self );
+			tabs = $('<ul class="nc-wysiwyg-tableproperty"></ul>').appendTo( self );
 
 			div = $('<div class="clearfix"></div>').appendTo( self );
-			
+
 			_appendTab(tabs, 'table', __d(['nc_wysiwyg_tableproperty', 'tab_name'], 'table'), (select_tab == 'table') ? true : false);
 			div.append(_createContent('table'));
 
@@ -303,18 +303,18 @@
 			_appendTab(tabs, 'cell', __d(['nc_wysiwyg_tableproperty', 'tab_name'], 'cell'), (select_tab == 'cell') ? true : false);
 			div.append(_createContent('cell', __d(['nc_wysiwyg_tableproperty', 'tab_name'], 'cell')));
 
-			$('ul#tableproperty_panel_'+select_tab).show();
+			$('ul#tableproperty-panel-'+select_tab).show();
 
 			// 線を重ねる
-			$("#nc_wysiwyg_tableproperty_table_borderCollapse").click(function(e){
+			$("#nc-wysiwyg-tableproperty-table-borderCollapse").click(function(e){
 				if(this.checked)
-					$("#nc_wysiwyg_tableproperty_table_cellSpacing")[0].disabled = true;
+					$("#nc-wysiwyg-tableproperty-table-cellSpacing")[0].disabled = true;
 				else
-					$("#nc_wysiwyg_tableproperty_table_cellSpacing")[0].disabled = false;
+					$("#nc-wysiwyg-tableproperty-table-cellSpacing")[0].disabled = false;
 			});
 
 			// 背景選択
-			$(".nc_wysiwyg_tableproperty_sel_color", div).click(function(e){
+			$(".nc-wysiwyg-tableproperty-sel-color", div).click(function(e){
 				var self = this;
 				var c = $.Common.getColorCode($("img", self)[0], 'backgroundColor');
 				if(c == "transparent")
@@ -325,16 +325,16 @@
 						callback  : function(v) {
 							$("img", self).css({'backgroundColor': v});
 							$(self.previousSibling).val(v);
-							options.wysiwyg.removeDialog("nc_wysiwyg_tableproperty_color");
+							options.wysiwyg.removeDialog("nc-wysiwyg-tableproperty-color");
 						},
 						cancel_callback  : function(v) {
-							options.wysiwyg.removeDialog("nc_wysiwyg_tableproperty_color");
+							options.wysiwyg.removeDialog("nc-wysiwyg-tableproperty-color");
 						}
 					};
-					$("#nc_wysiwyg_tableproperty_color").nc_colorpicker(opts);
+					$("#nc-wysiwyg-tableproperty-color").nc_colorpicker(opts);
 				};
 				var toggle_options = {
-					id        : "nc_wysiwyg_tableproperty_color",
+					id        : "nc-wysiwyg-tableproperty-color",
 					js        : [$._base_url+'js/plugins/jquery.colorpicker.js'],
 					jsname    : ['$.fn.nc_colorpicker'],
 					pos_base  : $(self.previousSibling),
@@ -346,30 +346,30 @@
 			    return false;
 			});
 
-			$(".nc_wysiwyg_tableproperty_color_input", div).keyup(function(e){
+			$(".nc-wysiwyg-tableproperty-color-input", div).keyup(function(e){
 				var c = $(this).val();
 				if(c.match(/^#[0-9a-f]{6}/i)) {
 					$("img", this.nextSibling).css({'backgroundColor': c});
 				}
 			}).focus(function(e){
-				options.wysiwyg.removeDialog("nc_wysiwyg_tableproperty_color");
+				options.wysiwyg.removeDialog("nc-wysiwyg-tableproperty-color");
 			});
 
 			//ok cancel button
 			buttons = $('<div class="btn-bottom"></div>').appendTo( self );
-			$(buttons).append($('<input name="ok" type="button" class="common_btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'ok')+'" />')
+			$(buttons).append($('<input name="ok" type="button" class="common-btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'ok')+'" />')
 				.click(function(e){
 					// 決定
 					// Activeのタブのみ更新。その他、タブまで更新してしまうと
 					// 本来、更新したくないものまで更新されてしまうため
 					var css = null, attr = null;
-					var w_el = $("#nc_wysiwyg_tableproperty_" + active_tab+ "_width"), w = w_el.val();
-					var w_unit_el = $("#nc_wysiwyg_tableproperty_" + active_tab+ "_width_unit"), w_unit = w_unit_el.val();
-					var h_el = $("#nc_wysiwyg_tableproperty_" + active_tab+ "_height"), h = h_el.val();
-					var h_unit_el = $("#nc_wysiwyg_tableproperty_" + active_tab+ "_height_unit"), h_unit = h_unit_el.val();
-					var bgc_el = $("#nc_wysiwyg_tableproperty_" + active_tab+ "_backgroundColor"), bgc = bgc_el.val();
-					var c_el = $("#nc_wysiwyg_tableproperty_" + active_tab+ "_color"), c = c_el.val();
-					var ws_el = $("#nc_wysiwyg_tableproperty_" + active_tab+ "_whiteSpace");
+					var w_el = $("#nc-wysiwyg-tableproperty-" + active_tab+ "-width"), w = w_el.val();
+					var w_unit_el = $("#nc-wysiwyg-tableproperty-" + active_tab+ "-width-unit"), w_unit = w_unit_el.val();
+					var h_el = $("#nc-wysiwyg-tableproperty-" + active_tab+ "-height"), h = h_el.val();
+					var h_unit_el = $("#nc-wysiwyg-tableproperty-" + active_tab+ "-height-unit"), h_unit = h_unit_el.val();
+					var bgc_el = $("#nc-wysiwyg-tableproperty-" + active_tab+ "-backgroundColor"), bgc = bgc_el.val();
+					var c_el = $("#nc-wysiwyg-tableproperty-" + active_tab+ "-color"), c = c_el.val();
+					var ws_el = $("#nc-wysiwyg-tableproperty-" + active_tab+ "-whiteSpace");
 
 					var m_w_el, m_w, m_h_el, m_h, bc_el, cp_el, cp, cs_el, cs, summary_el, summary;
 					var cell_p_el,cell_p;
@@ -380,12 +380,12 @@
 
 					switch (active_tab) {
 						case "table":
-							m_w_el = $("#nc_wysiwyg_tableproperty_" + active_tab+ "_margin_width"), m_w = m_w_el.val();
-							m_h_el = $("#nc_wysiwyg_tableproperty_" + active_tab+ "_margin_height"), m_h = m_h_el.val();
-							bc_el = $("#nc_wysiwyg_tableproperty_" + active_tab+ "_borderCollapse");
-							cp_el = $("#nc_wysiwyg_tableproperty_" + active_tab+ "_cellPadding"), cp = cp_el.val();
-							cs_el = $("#nc_wysiwyg_tableproperty_" + active_tab+ "_cellSpacing"), cs = cs_el.val();
-							summary_el = $("#nc_wysiwyg_tableproperty_" + active_tab+ "_summary"), summary = options.wysiwyg.htmlEncode(summary_el.val());
+							m_w_el = $("#nc-wysiwyg-tableproperty-" + active_tab+ "-margin_width"), m_w = m_w_el.val();
+							m_h_el = $("#nc-wysiwyg-tableproperty-" + active_tab+ "-margin_height"), m_h = m_h_el.val();
+							bc_el = $("#nc-wysiwyg-tableproperty-" + active_tab+ "-borderCollapse");
+							cp_el = $("#nc-wysiwyg-tableproperty-" + active_tab+ "-cellPadding"), cp = cp_el.val();
+							cs_el = $("#nc-wysiwyg-tableproperty-" + active_tab+ "-cellSpacing"), cs = cs_el.val();
+							summary_el = $("#nc-wysiwyg-tableproperty-" + active_tab+ "-summary"), summary = options.wysiwyg.htmlEncode(summary_el.val());
 							css = {
 								width           : parseInt(w) ? parseInt(w) + w_unit : "",
 								height          : parseInt(h) ? parseInt(h) + h_unit : "",
@@ -401,7 +401,7 @@
 								summary         : summary
 							};
 							// セル幅を均一に
-							if($("#nc_wysiwyg_tableproperty_" + "cell_equality")[0].checked)
+							if($("#nc-wysiwyg-tableproperty-" + "cell-equality")[0].checked)
 								setUniformlySized(property[active_tab].sel_els[0]);
 							else if(getUniformlySized(property[active_tab].sel_els[0])) {
 								$("td", property[active_tab].sel_els[0]).each(function(k, v){
@@ -412,7 +412,7 @@
 						case "row":
 						case "col":
 						case "cell":
-							cell_p_el = $("#nc_wysiwyg_tableproperty_" + active_tab+ "_padding"), cell_p = cell_p_el.val();
+							cell_p_el = $("#nc-wysiwyg-tableproperty-" + active_tab+ "-padding"), cell_p = cell_p_el.val();
 							css = {
 								width           : parseInt(w) ? parseInt(w) + w_unit : "",
 								height          : parseInt(h) ? parseInt(h) + h_unit : "",
@@ -423,18 +423,18 @@
 							};
 					}
 					// 配置
-					$(".nc_wysiwyg_tableproperty_active", $("#tableproperty_panel_" + active_tab)).each(function(k, v) {
-						if($(v).hasClass("nc_wysiwyg_tableproperty_" + active_tab + "_left")) {
+					$(".nc-wysiwyg-tableproperty-active", $("#tableproperty-panel-" + active_tab)).each(function(k, v) {
+						if($(v).hasClass("nc-wysiwyg-tableproperty-" + active_tab + "-left")) {
 							css['textAlign'] = "left";
-						} else if($(v).hasClass("nc_wysiwyg_tableproperty_" + active_tab + "_center")) {
+						} else if($(v).hasClass("nc-wysiwyg-tableproperty-" + active_tab + "-center")) {
 							css['textAlign'] = "center";
-						} else if($(v).hasClass("nc_wysiwyg_tableproperty_" + active_tab + "_right")) {
+						} else if($(v).hasClass("nc-wysiwyg-tableproperty-" + active_tab + "-right")) {
 							css['textAlign'] = "right";
-						} else if($(v).hasClass("nc_wysiwyg_tableproperty_" + active_tab + "_top")) {
+						} else if($(v).hasClass("nc-wysiwyg-tableproperty-" + active_tab + "-top")) {
 							css['verticalAlign'] = "top";
-						} else if($(v).hasClass("nc_wysiwyg_tableproperty_" + active_tab + "_middle")) {
+						} else if($(v).hasClass("nc-wysiwyg-tableproperty-" + active_tab + "-middle")) {
 							css['verticalAlign'] = "middle";
-						} else if($(v).hasClass("nc_wysiwyg_tableproperty_" + active_tab + "_bottom")) {
+						} else if($(v).hasClass("nc-wysiwyg-tableproperty-" + active_tab + "-bottom")) {
 							css['verticalAlign'] = "bottom";
 						}
 					});
@@ -460,14 +460,14 @@
 							});
 						}
 					});
-					options.wysiwyg.removeDialog("nc_wysiwyg_tableproperty");
+					options.wysiwyg.removeDialog("nc-wysiwyg-tableproperty");
 					e.preventDefault();
 			        return false;
 				}));
 
-			$(buttons).append($('<input name="cancel" type="button" class="common_btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'cancel')+'" />')
+			$(buttons).append($('<input name="cancel" type="button" class="common-btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'cancel')+'" />')
 				.click(function(e){
-					options.wysiwyg.removeDialog("nc_wysiwyg_tableproperty");
+					options.wysiwyg.removeDialog("nc-wysiwyg-tableproperty");
 					e.preventDefault();
 			        return false;
 				}));
@@ -475,7 +475,7 @@
 			return;
 
 			function _appendTab(tabs, name, title, active) {
-				var tab = $('<li><a class="nc_wysiwyg_tableproperty_tab" href="javascript:;" ><span>'+ title +'</span></a></li>').appendTo(tabs);
+				var tab = $('<li><a class="nc-wysiwyg-tableproperty-tab" href="javascript:;" ><span>'+ title +'</span></a></li>').appendTo(tabs);
 
 				if (active == true) {
 					var active_a = $("a", tab);
@@ -483,78 +483,78 @@
 					// focus移動
 					setTimeout(function() { active_a.focus(); }, 100);
 				}
-				var atag = $("a.nc_wysiwyg_tableproperty_tab",tab);
+				var atag = $("a.nc-wysiwyg-tableproperty-tab",tab);
 				atag.click(function(){
-					$("a.nc_wysiwyg_tableproperty_tab", tabs).css({backgroundColor : ""});
+					$("a.nc-wysiwyg-tableproperty-tab", tabs).css({backgroundColor : ""});
 					$(this).css({backgroundColor : "#ffffff"});
 					// set active tab
 					active_tab = name;
-					$('ul.tableproperty_panel').hide();
-					$('ul#tableproperty_panel_'+ name).toggle();
+					$('ul.tableproperty-panel').hide();
+					$('ul#tableproperty-panel-'+ name).toggle();
 				});
 				return ;
 			}
 
 			function _createContent(type, title) {
 				var content,pos;
-				
 
-				content = $('<ul id="tableproperty_panel_'+ type +'" class="tableproperty_panel"></ul>').hide();
+
+				content = $('<ul id="tableproperty-panel-'+ type +'" class="tableproperty-panel"></ul>').hide();
 				if (type == 'table') {
 					_appendTextAlign(type, content, property.table.textAlign, property.table.verticalAlign);
-					$(content).append('<li><dl><dt style="float: left;">'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'width') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc_wysiwyg_tableproperty_table_width" name="table_width" class="tableproperty_text align-right" value="'+ property.table.width +'" /><select id="nc_wysiwyg_tableproperty_table_width_unit" name="table_width_unit"><option value="px" '+ ((property.table.widthUnit == 'px') ? 'selected="selected"' : '') +' >px</option><option value="%" '+ ((property.table.widthUnit == '%') ? 'selected="selected"' : '') +' >%</option></select></dd></dl></li>');
-					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'height') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc_wysiwyg_tableproperty_table_height" name="table_height" class="tableproperty_text align-right" value="'+ property.table.height +'" /><select id="nc_wysiwyg_tableproperty_table_height_unit" name="table_height_unit"><option value="px" '+ ((property.table.heightUnit == 'px') ? 'selected="selected"' : '') +' >px</option><option value="%" '+ ((property.table.heightUnit == '%') ? 'selected="selected"' : '') +' >%</option></select></dd></dl></li>');
-					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'margin_width') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc_wysiwyg_tableproperty_table_margin_width" name="table_margin_width" class="tableproperty_text align-right" value="'+ property.table.marginWidth +'" />px</dd></dl></li>');
-					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'margin_height') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc_wysiwyg_tableproperty_table_margin_height" name="table_margin_height" class="tableproperty_text align-right" value="'+ property.table.marginHeight +'" />px</dd></dl></li>');
-					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'cellpadding') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc_wysiwyg_tableproperty_table_cellPadding" name="table_cellPadding" class="tableproperty_text align-right" value="'+ property.table.cellPadding +'"/>px</dd></dl></li>');
-					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'cellspacing') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input id="nc_wysiwyg_tableproperty_table_cellSpacing" type="text" id="nc_wysiwyg_tableproperty_table_cellSpacing" name="table_cellSpacing" class="tableproperty_text align-right" value="'+ property.table.cellSpacing +'"'+ ((property.table.borderCollapse == 'collapse') ? ' disabled="disabled"' : '') +' />px</dd></dl></li>');
-					$(content).append('<li><label for="nc_wysiwyg_tableproperty_table_borderCollapse"><input type="checkbox" id="nc_wysiwyg_tableproperty_table_borderCollapse" name="table_borderCollapse" '+ ((property.table.borderCollapse == 'collapse') ? 'checked="checked"' : '') +' />'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'border_pile') +'</label></li>');
-					$(content).append('<li class="nc_wysiwyg_tableproperty_linebreak clear"></li>');
-					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'bgcolor') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc_wysiwyg_tableproperty_table_backgroundColor" name="table_backgroundColor" class="nc_wysiwyg_tableproperty_color_input tableproperty_text" value="'+ property.table.backgroundColor +'" maxlength="7" /><a href="javascript:;" class="nc_wysiwyg_tableproperty_sel_color"><img' + ((property.table.backgroundColor != '') ? ' style="background-color:' + property.table.backgroundColor + '"' : '') + ' src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/sel_color.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" /></a></dd></dl></li>');
-					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'fontcolor') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc_wysiwyg_tableproperty_table_color" name="table_color" class="nc_wysiwyg_tableproperty_color_input tableproperty_text" value="'+ property.table.color +'" maxlength="7" /><a href="javascript:;" class="nc_wysiwyg_tableproperty_sel_color"><img' + ((property.table.color != '') ? ' style="background-color:' + property.table.color + '"' : '') + ' src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/sel_color.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" /></a></dd></dl></li>');
-					$(content).append('<li><label for="nc_wysiwyg_tableproperty_table_whiteSpace"><input type="checkbox" id="nc_wysiwyg_tableproperty_table_whiteSpace" name="table_whiteSpace" '+ ((property.table.whiteSpace == 'nowrap') ? 'checked="checked"' : '') +' />'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'nowrap') +'</label></li>');
-					$(content).append('<li><label for="nc_wysiwyg_tableproperty_cell_equality"><input type="checkbox" id="nc_wysiwyg_tableproperty_cell_equality" name="cell_equality" '+ ((property.table.uniformlySized == true) ? 'checked="checked"' : '') +' />'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'cell_equality') +'</label></li>');
+					$(content).append('<li><dl><dt style="float: left;">'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'width') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc-wysiwyg-tableproperty-table-width" name="table_width" class="tableproperty-text align-right" value="'+ property.table.width +'" /><select id="nc-wysiwyg-tableproperty-table-width-unit" name="table_width_unit"><option value="px" '+ ((property.table.widthUnit == 'px') ? 'selected="selected"' : '') +' >px</option><option value="%" '+ ((property.table.widthUnit == '%') ? 'selected="selected"' : '') +' >%</option></select></dd></dl></li>');
+					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'height') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc-wysiwyg-tableproperty-table-height" name="table_height" class="tableproperty-text align-right" value="'+ property.table.height +'" /><select id="nc-wysiwyg-tableproperty-table-height-unit" name="table_height_unit"><option value="px" '+ ((property.table.heightUnit == 'px') ? 'selected="selected"' : '') +' >px</option><option value="%" '+ ((property.table.heightUnit == '%') ? 'selected="selected"' : '') +' >%</option></select></dd></dl></li>');
+					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'margin_width') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc-wysiwyg-tableproperty-table-margin-width" name="table_margin_width" class="tableproperty-text align-right" value="'+ property.table.marginWidth +'" />px</dd></dl></li>');
+					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'margin_height') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc-wysiwyg-tableproperty-table-margin-height" name="table_margin_height" class="tableproperty-text align-right" value="'+ property.table.marginHeight +'" />px</dd></dl></li>');
+					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'cellpadding') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc-wysiwyg-tableproperty-table-cellPadding" name="table_cellPadding" class="tableproperty-text align-right" value="'+ property.table.cellPadding +'"/>px</dd></dl></li>');
+					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'cellspacing') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input id="nc-wysiwyg-tableproperty-table-cellSpacing" type="text" id="nc-wysiwyg-tableproperty-table-cellSpacing" name="table_cellSpacing" class="tableproperty-text align-right" value="'+ property.table.cellSpacing +'"'+ ((property.table.borderCollapse == 'collapse') ? ' disabled="disabled"' : '') +' />px</dd></dl></li>');
+					$(content).append('<li><label for="nc-wysiwyg-tableproperty-table-borderCollapse"><input type="checkbox" id="nc-wysiwyg-tableproperty-table-borderCollapse" name="table_borderCollapse" '+ ((property.table.borderCollapse == 'collapse') ? 'checked="checked"' : '') +' />'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'border_pile') +'</label></li>');
+					$(content).append('<li class="nc-wysiwyg-tableproperty-linebreak clear"></li>');
+					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'bgcolor') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc-wysiwyg-tableproperty-table-backgroundColor" name="table_backgroundColor" class="nc-wysiwyg-tableproperty-color-input tableproperty-text" value="'+ property.table.backgroundColor +'" maxlength="7" /><a href="javascript:;" class="nc-wysiwyg-tableproperty-sel-color"><img' + ((property.table.backgroundColor != '') ? ' style="background-color:' + property.table.backgroundColor + '"' : '') + ' src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/sel_color.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" /></a></dd></dl></li>');
+					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'fontcolor') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc-wysiwyg-tableproperty-table-color" name="table_color" class="nc-wysiwyg-tableproperty-color-input tableproperty-text" value="'+ property.table.color +'" maxlength="7" /><a href="javascript:;" class="nc-wysiwyg-tableproperty-sel-color"><img' + ((property.table.color != '') ? ' style="background-color:' + property.table.color + '"' : '') + ' src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/sel_color.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" /></a></dd></dl></li>');
+					$(content).append('<li><label for="nc-wysiwyg-tableproperty-table-whiteSpace"><input type="checkbox" id="nc-wysiwyg-tableproperty-table-whiteSpace" name="table_whiteSpace" '+ ((property.table.whiteSpace == 'nowrap') ? 'checked="checked"' : '') +' />'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'nowrap') +'</label></li>');
+					$(content).append('<li><label for="nc-wysiwyg-tableproperty-cell-equality"><input type="checkbox" id="nc-wysiwyg-tableproperty-cell-equality" name="cell_equality" '+ ((property.table.uniformlySized == true) ? 'checked="checked"' : '') +' />'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'cell_equality') +'</label></li>');
 					_appendBorderBtn();
 					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'summary') +'</dt><span class="nc_wysiwyg_tableproperty_summary_sep">'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'</span><dd><textarea id="nc_wysiwyg_tableproperty_table_summary" name="table_summary" style="width:250px;height:50px;" >'+ property.table.summary +'</textarea></dd></dl></li>');
 				} else if (type == 'row') {
-					$(content).append('<li class="nc_wysiwyg_tableproperty_title"><dl><dt>' + title + '</dt><dd>' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') + property.row.pos +'</dd></dl></li>');
+					$(content).append('<li class="nc-wysiwyg-tableproperty-title"><dl><dt>' + title + '</dt><dd>' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') + property.row.pos +'</dd></dl></li>');
 					_appendTextAlign(type, content, property.row.textAlign, property.row.verticalAlign);
-					$(content).append('<li><dl><dt style="float: left;">'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'width') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc_wysiwyg_tableproperty_row_width" name="row_width" class="tableproperty_text align-right" value="'+ property.row.width +'" /><select id="nc_wysiwyg_tableproperty_row_width_unit" name="row_width_unit"><option value="px" '+ ((property.row.widthUnit == 'px') ? 'selected="selected"' : '') +' >px</option><option value="%" '+ ((property.row.widthUnit == '%') ? 'selected="selected"' : '') +' >%</option></select></dd></dl></li>');
-					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'height') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc_wysiwyg_tableproperty_row_height" name="row_height" class="tableproperty_text align-right" value="'+ property.row.height +'" /><select id="nc_wysiwyg_tableproperty_row_height_unit" name="row_height_unit"><option value="px" '+ ((property.row.heightUnit == 'px') ? 'selected="selected"' : '') +' >px</option><option value="%" '+ ((property.row.heightUnit == '%') ? 'selected="selected"' : '') +' >%</option></select></dd></dl></li>');
-					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'cellpadding') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc_wysiwyg_tableproperty_row_padding" name="row_padding" class="tableproperty_text align-right" value="'+ property.row.cellPadding +'"/>px</dd></dl></li>');
-					$(content).append('<li class="nc_wysiwyg_tableproperty_linebreak clear" style="float:none;"></li>');
-					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'bgcolor') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc_wysiwyg_tableproperty_row_backgroundColor" name="row_backgroundColor" class="nc_wysiwyg_tableproperty_color_input tableproperty_text" value="'+ property.row.backgroundColor +'" maxlength="7" /><a href="javascript:;" class="nc_wysiwyg_tableproperty_sel_color"><img' + ((property.row.backgroundColor != '') ? ' style="background-color:' + property.row.backgroundColor + '"' : '') + ' src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/sel_color.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" /></a></dd></dl></li>');
-					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'fontcolor') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc_wysiwyg_tableproperty_row_color" name="row_color" class="nc_wysiwyg_tableproperty_color_input tableproperty_text" value="'+ property.row.color +'" maxlength="7" /><a href="javascript:;" class="nc_wysiwyg_tableproperty_sel_color"><img' + ((property.row.color != '') ? ' style="background-color:' + property.row.color + '"' : '') + ' src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/sel_color.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" /></a></dd></dl></li>');
-					$(content).append('<li><label for="nc_wysiwyg_tableproperty_row_whiteSpace"><input type="checkbox" id="nc_wysiwyg_tableproperty_row_whiteSpace" name="row_whiteSpace" '+ ((property.row.whiteSpace == 'nowrap') ? 'checked="checked"' : '') +' />'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'nowrap') +'</label></li>');
+					$(content).append('<li><dl><dt style="float: left;">'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'width') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc-wysiwyg-tableproperty-row-width" name="row_width" class="tableproperty-text align-right" value="'+ property.row.width +'" /><select id="nc-wysiwyg-tableproperty-row-width-unit" name="row_width_unit"><option value="px" '+ ((property.row.widthUnit == 'px') ? 'selected="selected"' : '') +' >px</option><option value="%" '+ ((property.row.widthUnit == '%') ? 'selected="selected"' : '') +' >%</option></select></dd></dl></li>');
+					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'height') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc-wysiwyg-tableproperty-row-height" name="row_height" class="tableproperty-text align-right" value="'+ property.row.height +'" /><select id="nc-wysiwyg-tableproperty-row-height-unit" name="row_height_unit"><option value="px" '+ ((property.row.heightUnit == 'px') ? 'selected="selected"' : '') +' >px</option><option value="%" '+ ((property.row.heightUnit == '%') ? 'selected="selected"' : '') +' >%</option></select></dd></dl></li>');
+					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'cellpadding') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc-wysiwyg-tableproperty-row-padding" name="row_padding" class="tableproperty-text align-right" value="'+ property.row.cellPadding +'"/>px</dd></dl></li>');
+					$(content).append('<li class="nc-wysiwyg-tableproperty-linebreak clear" style="float:none;"></li>');
+					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'bgcolor') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc-wysiwyg-tableproperty-row-backgroundColor" name="row_backgroundColor" class="nc-wysiwyg-tableproperty-color-input tableproperty-text" value="'+ property.row.backgroundColor +'" maxlength="7" /><a href="javascript:;" class="nc-wysiwyg-tableproperty-sel-color"><img' + ((property.row.backgroundColor != '') ? ' style="background-color:' + property.row.backgroundColor + '"' : '') + ' src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/sel_color.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" /></a></dd></dl></li>');
+					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'fontcolor') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc-wysiwyg-tableproperty-row-color" name="row_color" class="nc-wysiwyg-tableproperty-color-input tableproperty-text" value="'+ property.row.color +'" maxlength="7" /><a href="javascript:;" class="nc-wysiwyg-tableproperty-sel-color"><img' + ((property.row.color != '') ? ' style="background-color:' + property.row.color + '"' : '') + ' src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/sel_color.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" /></a></dd></dl></li>');
+					$(content).append('<li><label for="nc-wysiwyg-tableproperty-row-whiteSpace"><input type="checkbox" id="nc-wysiwyg-tableproperty-row-whiteSpace" name="row_whiteSpace" '+ ((property.row.whiteSpace == 'nowrap') ? 'checked="checked"' : '') +' />'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'nowrap') +'</label></li>');
 					_appendBorderBtn();
 				} else if (type == 'col') {
-					$(content).append('<li class="nc_wysiwyg_tableproperty_title"><dl><dt>' + title + '</dt><dd>' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') + property.col.pos +'</dd></dl></li>');
+					$(content).append('<li class="nc-wysiwyg-tableproperty-title"><dl><dt>' + title + '</dt><dd>' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') + property.col.pos +'</dd></dl></li>');
 					_appendTextAlign(type, content, property.col.textAlign, property.col.verticalAlign);
-					$(content).append('<li><dl><dt style="float: left;">'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'width') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc_wysiwyg_tableproperty_col_width" name="col_width" class="tableproperty_text align-right" value="'+ property.col.width +'" /><select id="nc_wysiwyg_tableproperty_col_width_unit" name="col_width_unit"><option value="px" '+ ((property.col.widthUnit == 'px') ? 'selected="selected"' : '') +' >px</option><option value="%" '+ ((property.col.widthUnit == '%') ? 'selected="selected"' : '') +' >%</option></select></dd></dl></li>');
-					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'height') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc_wysiwyg_tableproperty_col_height" name="col_height" class="tableproperty_text align-right" value="'+ property.col.height +'" /><select id="nc_wysiwyg_tableproperty_col_height_unit" name="col_height_unit"><option value="px" '+ ((property.col.heightUnit == 'px') ? 'selected="selected"' : '') +' >px</option><option value="%" '+ ((property.col.heightUnit == '%') ? 'selected="selected"' : '') +' >%</option></select></dd></dl></li>');
-					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'cellpadding') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc_wysiwyg_tableproperty_col_padding" name="col_padding" class="tableproperty_text align-right" value="'+ property.col.cellPadding +'"/>px</dd></dl></li>');
-					$(content).append('<li class="nc_wysiwyg_tableproperty_linebreak clear"></li>');
-					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'bgcolor') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc_wysiwyg_tableproperty_col_backgroundColor" name="col_backgroundColor" class="nc_wysiwyg_tableproperty_color_input tableproperty_text" value="'+ property.col.backgroundColor +'" maxlength="7" /><a href="javascript:;" class="nc_wysiwyg_tableproperty_sel_color"><img' + ((property.col.backgroundColor != '') ? ' style="background-color:' + property.col.backgroundColor + '"' : '') + ' src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/sel_color.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" /></a></dd></dl></li>');
-					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'fontcolor') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc_wysiwyg_tableproperty_col_color" name="col_color" class="nc_wysiwyg_tableproperty_color_input tableproperty_text" value="'+ property.col.color +'" maxlength="7" /><a href="javascript:;" class="nc_wysiwyg_tableproperty_sel_color"><img' + ((property.col.color != '') ? ' style="background-color:' + property.col.color + '"' : '') + ' src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/sel_color.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" /></a></dd></dl></li>');
-					$(content).append('<li><label for="nc_wysiwyg_tableproperty_col_whiteSpace"><input type="checkbox" id="nc_wysiwyg_tableproperty_col_whiteSpace" name="col_whiteSpace" '+ ((property.col.whiteSpace == 'nowrap') ? 'checked="checked"' : '') +' />'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'nowrap') +'</label></li>');
+					$(content).append('<li><dl><dt style="float: left;">'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'width') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc-wysiwyg-tableproperty-col-width" name="col_width" class="tableproperty-text align-right" value="'+ property.col.width +'" /><select id="nc-wysiwyg-tableproperty-col-width-unit" name="col_width_unit"><option value="px" '+ ((property.col.widthUnit == 'px') ? 'selected="selected"' : '') +' >px</option><option value="%" '+ ((property.col.widthUnit == '%') ? 'selected="selected"' : '') +' >%</option></select></dd></dl></li>');
+					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'height') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc-wysiwyg-tableproperty-col-height" name="col_height" class="tableproperty-text align-right" value="'+ property.col.height +'" /><select id="nc-wysiwyg-tableproperty-col-height-unit" name="col_height_unit"><option value="px" '+ ((property.col.heightUnit == 'px') ? 'selected="selected"' : '') +' >px</option><option value="%" '+ ((property.col.heightUnit == '%') ? 'selected="selected"' : '') +' >%</option></select></dd></dl></li>');
+					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'cellpadding') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc-wysiwyg-tableproperty-col-padding" name="col_padding" class="tableproperty-text align-right" value="'+ property.col.cellPadding +'"/>px</dd></dl></li>');
+					$(content).append('<li class="nc-wysiwyg-tableproperty-linebreak clear"></li>');
+					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'bgcolor') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc-wysiwyg-tableproperty-col-backgroundColor" name="col_backgroundColor" class="nc-wysiwyg-tableproperty-color-input tableproperty-text" value="'+ property.col.backgroundColor +'" maxlength="7" /><a href="javascript:;" class="nc-wysiwyg-tableproperty-sel-color"><img' + ((property.col.backgroundColor != '') ? ' style="background-color:' + property.col.backgroundColor + '"' : '') + ' src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/sel_color.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" /></a></dd></dl></li>');
+					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'fontcolor') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc-wysiwyg-tableproperty-col-color" name="col_color" class="nc-wysiwyg-tableproperty-color-input tableproperty-text" value="'+ property.col.color +'" maxlength="7" /><a href="javascript:;" class="nc-wysiwyg-tableproperty-sel-color"><img' + ((property.col.color != '') ? ' style="background-color:' + property.col.color + '"' : '') + ' src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/sel_color.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" /></a></dd></dl></li>');
+					$(content).append('<li><label for="nc-wysiwyg-tableproperty-col-whiteSpace"><input type="checkbox" id="nc-wysiwyg-tableproperty-col-whiteSpace" name="col_whiteSpace" '+ ((property.col.whiteSpace == 'nowrap') ? 'checked="checked"' : '') +' />'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'nowrap') +'</label></li>');
 					_appendBorderBtn();
 				} else if (type == 'cell') {
-					$(content).append('<li class="nc_wysiwyg_tableproperty_title"><dl><dt>' + title + '</dt><dd>' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') + property.cell.pos +'</dd></dl></li>');
+					$(content).append('<li class="nc-wysiwyg-tableproperty-title"><dl><dt>' + title + '</dt><dd>' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') + property.cell.pos +'</dd></dl></li>');
 					_appendTextAlign(type, content, property.cell.textAlign, property.cell.verticalAlign);
-					$(content).append('<li><dl><dt style="float: left;">'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'width') +'</dt><dd class="nc_wysiwyg_tableproperty_title_v">'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc_wysiwyg_tableproperty_cell_width" name="cell_width" class="tableproperty_text align-right" value="'+ property.cell.width +'" /><select id="nc_wysiwyg_tableproperty_cell_width_unit" name="cell_width_unit"><option value="px" '+ ((property.cell.widthUnit == 'px') ? 'selected="selected"' : '') +' >px</option><option value="%" '+ ((property.cell.widthUnit == '%') ? 'selected="selected"' : '') +' >%</option></select></dd></dl></li>');
-					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'height') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc_wysiwyg_tableproperty_cell_height" name="cell_height" class="tableproperty_text align-right" value="'+ property.cell.height +'" /><select id="nc_wysiwyg_tableproperty_cell_height_unit" name="cell_height_unit"><option value="px" '+ ((property.cell.heightUnit == 'px') ? 'selected="selected"' : '') +' >px</option><option value="%" '+ ((property.cell.heightUnit == '%') ? 'selected="selected"' : '') +' >%</option></select></dd></dl></li>');
-					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'cellpadding') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc_wysiwyg_tableproperty_cell_padding" name="cell_padding" class="tableproperty_text align-right" value="'+ property.cell.cellPadding +'"/>px</dd></dl></li>');
-					$(content).append('<li class="nc_wysiwyg_tableproperty_linebreak clear"></li>');
-					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'bgcolor') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc_wysiwyg_tableproperty_cell_backgroundColor" name="cell_backgroundColor" class="nc_wysiwyg_tableproperty_color_input tableproperty_text" value="'+ property.cell.backgroundColor +'" maxlength="7" /><a href="javascript:;" class="nc_wysiwyg_tableproperty_sel_color"><img' + ((property.cell.backgroundColor != '') ? ' style="background-color:' + property.cell.backgroundColor + '"' : '') + ' src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/sel_color.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" /></a></dd></dl></li>');
-					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'fontcolor') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc_wysiwyg_tableproperty_cell_color" name="cell_color" class="nc_wysiwyg_tableproperty_color_input tableproperty_text" value="'+ property.cell.color +'" maxlength="7" /><a href="javascript:;" class="nc_wysiwyg_tableproperty_sel_color"><img' + ((property.cell.color != '') ? ' style="background-color:' + property.cell.color + '"' : '') + ' src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/sel_color.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" /></a></dd></dl></li>');
-					$(content).append('<li><label for="nc_wysiwyg_tableproperty_cell_whiteSpace"><input type="checkbox" id="nc_wysiwyg_tableproperty_cell_whiteSpace" name="cell_whiteSpace" '+ ((property.cell.whiteSpace == 'nowrap') ? 'checked="checked"' : '') +' />'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'nowrap') +'</label></li>');
+					$(content).append('<li><dl><dt style="float: left;">'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'width') +'</dt><dd class="nc-wysiwyg-tableproperty-title-v">'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc_wysiwyg_tableproperty_cell_width" name="cell_width" class="tableproperty-text align-right" value="'+ property.cell.width +'" /><select id="nc-wysiwyg-tableproperty-cell-width-unit" name="cell_width_unit"><option value="px" '+ ((property.cell.widthUnit == 'px') ? 'selected="selected"' : '') +' >px</option><option value="%" '+ ((property.cell.widthUnit == '%') ? 'selected="selected"' : '') +' >%</option></select></dd></dl></li>');
+					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'height') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc-wysiwyg-tableproperty-cell-height" name="cell_height" class="tableproperty-text align-right" value="'+ property.cell.height +'" /><select id="nc-wysiwyg-tableproperty-cell-height-unit" name="cell_height_unit"><option value="px" '+ ((property.cell.heightUnit == 'px') ? 'selected="selected"' : '') +' >px</option><option value="%" '+ ((property.cell.heightUnit == '%') ? 'selected="selected"' : '') +' >%</option></select></dd></dl></li>');
+					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'cellpadding') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc-wysiwyg-tableproperty-cell-padding" name="cell_padding" class="tableproperty-text align-right" value="'+ property.cell.cellPadding +'"/>px</dd></dl></li>');
+					$(content).append('<li class="nc-wysiwyg-tableproperty-linebreak clear"></li>');
+					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'bgcolor') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc-wysiwyg-tableproperty-cell-backgroundColor" name="cell_backgroundColor" class="nc-wysiwyg-tableproperty-color-input tableproperty-text" value="'+ property.cell.backgroundColor +'" maxlength="7" /><a href="javascript:;" class="nc-wysiwyg-tableproperty-sel-color"><img' + ((property.cell.backgroundColor != '') ? ' style="background-color:' + property.cell.backgroundColor + '"' : '') + ' src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/sel_color.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" /></a></dd></dl></li>');
+					$(content).append('<li><dl><dt>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'fontcolor') +'</dt><dd>'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'separator') +'<input type="text" id="nc-wysiwyg-tableproperty-cell-color" name="cell_color" class="nc-wysiwyg-tableproperty-color-input tableproperty-text" value="'+ property.cell.color +'" maxlength="7" /><a href="javascript:;" class="nc-wysiwyg-tableproperty-sel-color"><img' + ((property.cell.color != '') ? ' style="background-color:' + property.cell.color + '"' : '') + ' src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/sel_color.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'sel_color') + '" /></a></dd></dl></li>');
+					$(content).append('<li><label for="nc-wysiwyg-tableproperty-cell-whiteSpace"><input type="checkbox" id="nc-wysiwyg-tableproperty-cell-whiteSpace" name="cell_whiteSpace" '+ ((property.cell.whiteSpace == 'nowrap') ? 'checked="checked"' : '') +' />'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'nowrap') +'</label></li>');
 					_appendBorderBtn();
 				}
 				return content;
 
 				function _appendBorderBtn() {
 					var wysiwyg = options['wysiwyg'];
-					$(content).append($('<li class="nc_wysiwyg_tableproperty_border"></li>')
+					$(content).append($('<li class="nc-wysiwyg-tableproperty-border"></li>')
 							.append($('<input type="button" value="'+ __d(['nc_wysiwyg_tableproperty', 'panel'], 'border') +'" />')
 								.click(function() {
 									var callback = function() {
@@ -565,10 +565,10 @@
 															pos_title  : property[active_tab]['pos'],
 															sel_els    : property[active_tab]['sel_els']
 														}
-														$("#nc_wysiwyg_tableborder").nc_tableborder(opts);
+														$("#nc-wysiwyg-tableborder").nc_tableborder(opts);
 									}
 									var toggle_opts = {
-										id  : "nc_wysiwyg_tableborder",
+										id  : "nc-wysiwyg-tableborder",
 										css : [$._base_url+'css/plugins/nc_wysiwyg/tableborder.css'],
 										js : [$._base_url+'js/plugins/nc_wysiwyg/tableborder.js'],
 										jsname : ['$.fn.nc_tableborder'],
@@ -582,17 +582,17 @@
 				}
 
 				function _appendTextAlign(type, content, textAlign, verticalAlign){
-					var li = $('<li class="nc_wysiwyg_tableproperty_position"><fieldset><legend>'+__d(['nc_wysiwyg_tableproperty', 'panel'], 'text_align')+'</legend>' +
-										'<ul class="tableproperty_align">'+
-											'<li><a href="javascript:;" class="nc_wysiwyg_tableproperty_' + type + '_left' + ((textAlign == "left") ? ' nc_wysiwyg_tableproperty_active' : '') + '"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-left.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'text_align_left') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'text_align_left') + '" /></a></li>'+
-											'<li><a href="javascript:;" class="nc_wysiwyg_tableproperty_' + type + '_center' + ((textAlign == "center") ? ' nc_wysiwyg_tableproperty_active' : '') + '"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-center.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'text_align_center') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'text_align_center') + '" /></a></li>'+
-											'<li><a href="javascript:;" class="nc_wysiwyg_tableproperty_' + type + '_right' + ((textAlign == "right") ? ' nc_wysiwyg_tableproperty_active' : '') + '"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-right.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'text_align_right') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'text_align_right') + '" /></a></li>'+
+					var li = $('<li class="nc-wysiwyg-tableproperty-position"><fieldset><legend>'+__d(['nc_wysiwyg_tableproperty', 'panel'], 'text_align')+'</legend>' +
+										'<ul class="tableproperty-align">'+
+											'<li><a href="javascript:;" class="nc-wysiwyg-tableproperty-' + type + '-left' + ((textAlign == "left") ? ' nc-wysiwyg-tableproperty-active' : '') + '"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-left.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'text_align_left') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'text_align_left') + '" /></a></li>'+
+											'<li><a href="javascript:;" class="nc-wysiwyg-tableproperty-' + type + '-center' + ((textAlign == "center") ? ' nc-wysiwyg-tableproperty-active' : '') + '"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-center.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'text_align_center') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'text_align_center') + '" /></a></li>'+
+											'<li><a href="javascript:;" class="nc-wysiwyg-tableproperty-' + type + '-right' + ((textAlign == "right") ? ' nc-wysiwyg-tableproperty-active' : '') + '"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-right.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'text_align_right') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'text_align_right') + '" /></a></li>'+
 										'</ul></fieldset>' +
 										'<fieldset><legend>'+__d(['nc_wysiwyg_tableproperty', 'panel'], 'vertical_align')+'</legend>' +
-										'<ul class="tableproperty_align">' +
-											'<li><a href="javascript:;" class="nc_wysiwyg_tableproperty_' + type + '_top' + ((verticalAlign == "top") ? ' nc_wysiwyg_tableproperty_active' : '') + '"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-top.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'vertical_align_top') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'vertical_align_top') + '" /></a></li>'+
-											'<li><a href="javascript:;" class="nc_wysiwyg_tableproperty_' + type + '_middle' + ((verticalAlign == "middle") ? ' nc_wysiwyg_tableproperty_active' : '') + '"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-middle.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'vertical_align_middle') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'vertical_align_middle') + '" /></a></li>'+
-											'<li><a href="javascript:;" class="nc_wysiwyg_tableproperty_' + type + '_bottom' + ((verticalAlign == "bottom") ? ' nc_wysiwyg_tableproperty_active' : '') + '"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-bottom.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'vertical_align_bottom') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'vertical_align_bottom') + '" /></a></li>'+
+										'<ul class="tableproperty-align">' +
+											'<li><a href="javascript:;" class="nc-wysiwyg-tableproperty-' + type + '-top' + ((verticalAlign == "top") ? ' nc-wysiwyg-tableproperty-active' : '') + '"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-top.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'vertical_align_top') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'vertical_align_top') + '" /></a></li>'+
+											'<li><a href="javascript:;" class="nc-wysiwyg-tableproperty-' + type + '-middle' + ((verticalAlign == "middle") ? ' nc-wysiwyg-tableproperty-active' : '') + '"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-middle.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'vertical_align_middle') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'vertical_align_middle') + '" /></a></li>'+
+											'<li><a href="javascript:;" class="nc-wysiwyg-tableproperty-' + type + '-bottom' + ((verticalAlign == "bottom") ? ' nc-wysiwyg-tableproperty-active' : '') + '"><img src="'+ $._base_url +'img/plugins/nc_wysiwyg/dialog/table-bottom.gif" title="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'vertical_align_bottom') + '" alt="' + __d(['nc_wysiwyg_tableproperty', 'panel'], 'vertical_align_bottom') + '" /></a></li>'+
 									'</ul></fieldset></li>');
 					$(content).append(li);
 
@@ -603,14 +603,14 @@
 							if(a.nodeName.toLowerCase() != 'a')
 								a = a.parentNode;
 
-							if($(a).hasClass("nc_wysiwyg_tableproperty_active"))
-								$(a).removeClass("nc_wysiwyg_tableproperty_active");
+							if($(a).hasClass("nc-wysiwyg-tableproperty-active"))
+								$(a).removeClass("nc-wysiwyg-tableproperty-active");
 							else {
 								var u_align = a.parentNode.parentNode;
-								$(".nc_wysiwyg_tableproperty_active", u_align).each(function(r_k, r_a){
-									$(r_a).removeClass("nc_wysiwyg_tableproperty_active");
+								$(".nc-wysiwyg-tableproperty-active", u_align).each(function(r_k, r_a){
+									$(r_a).removeClass("nc-wysiwyg-tableproperty-active");
 								});
-								$(a).addClass("nc_wysiwyg_tableproperty_active");
+								$(a).addClass("nc-wysiwyg-tableproperty-active");
 							}
 							return false;
 						});

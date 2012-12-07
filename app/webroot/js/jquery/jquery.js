@@ -8027,7 +8027,7 @@ jQuery.extend({
 			var re_fatal = new RegExp("^(<br \/>)*\n(<b>)*(Fatal|Parse) error(<\/b>)*:(.|\n|\r|\t)*", 'i');
 			var fatal_flag = false, content = '', log, logger_block = '';
 			if(data.match(re_fatal)) {
-				content = "<div id='nc-fatal_error'>"+data+"</div>";
+				content = "<div id='nc-fatal-error'>"+data+"</div>";
 				fatal_flag = true;
 			} else {
 				logger_block = data.match(re_log);

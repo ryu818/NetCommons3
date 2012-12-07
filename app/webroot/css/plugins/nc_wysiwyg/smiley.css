@@ -1,26 +1,26 @@
-ul.nc_wysiwyg_smiley {
+ul.nc-wysiwyg-smiley {
 	width: 150px;
 	padding: 0;
 	margin: 0;
 }
 
-ul.nc_wysiwyg_smiley li {
+ul.nc-wysiwyg-smiley li {
 	list-style-type: none;
 	float: left;
 }
 
-ul.nc_wysiwyg_smiley li a {
+ul.nc-wysiwyg-smiley li a {
 	padding: 1px;
 	margin:0;
 	display:block;
 	border: 0 none;
 }
 
-ul.nc_wysiwyg_smiley li a:hover {
+ul.nc-wysiwyg-smiley li a:hover {
 	background-color: #ffffa8;
 }
 
-ul.nc_wysiwyg_smiley li a img {
+ul.nc-wysiwyg-smiley li a img {
 	border: 0 none;
 	width:13px;
 	height:13px;

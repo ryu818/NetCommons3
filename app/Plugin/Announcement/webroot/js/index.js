@@ -12,7 +12,7 @@
 		var t = this, content;
 		var block_id = $('#' + id).attr('data-block');
 		var url = $.Common.urlBlock(block_id, 'announcement/edit');
-		content = $('#'+id+'_content');
+		content = $('#'+id+'-content');
 		content.dblclick(function(event) {
 			$.pjax.click(event, t, {'url': url});
 		}).hover(function() {

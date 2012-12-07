@@ -1,16 +1,16 @@
 /* Theme */
-.th_default_green {
+.th-default-green {
 	background:url("../../frame/default/img/green/back.gif") repeat-x scroll left top #ffffff;
 	border:1px solid #b0bd67;
 }
 
 /* highlight */
-.th_default_green .highlight{
+.th-default-green .highlight{
 	background-color:#f2ffef;
 	color:#91c830;
 }
 
-.th_default_green a.hover_highlight:hover {
+.th-default-green a.hover-highlight:hover {
 	background-color:#f2ffef;
 	color:#91c830;
 }

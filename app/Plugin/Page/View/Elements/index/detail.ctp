@@ -158,8 +158,8 @@
 	<?php endif; ?>
 	</ul>
 	<div class="btn-bottom">
-		<input type="submit" class="common_btn" name="ok" value="<?php echo( __('Ok')); ?>" />
-		<input type="button" class="common_btn" name="cancel" value="<?php echo(__('Cancel')); ?>" onclick="$('#pages-menu-edit-detail-<?php echo($page['Page']['id']);?>').slideUp(300);" />
+		<input type="submit" class="common-btn" name="ok" value="<?php echo( __('Ok')); ?>" />
+		<input type="button" class="common-btn" name="cancel" value="<?php echo(__('Cancel')); ?>" onclick="$('#pages-menu-edit-detail-<?php echo($page['Page']['id']);?>').slideUp(300);" />
 	</div>
 </fieldset>
 </div>

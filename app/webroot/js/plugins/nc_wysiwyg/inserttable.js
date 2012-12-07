@@ -31,16 +31,16 @@
 
 		function init() {
 			var top_el = self;
-			top_el.html('<div class="insertTable_title" >' + __d('nc_wysiwyg_inserttable', 'dialog_title') + '</div>'+
-				 							'<table class="insertTable_dialog" ></table>'+
-				 							'<div class="table_size align-center" > 0x0 </div>');
-			var table = $('.insertTable_dialog', top_el);
+			top_el.html('<div class="insertTable-title" >' + __d('nc_wysiwyg_inserttable', 'dialog_title') + '</div>'+
+				 							'<table class="insertTable-dialog" ></table>'+
+				 							'<div class="table-size align-center" > 0x0 </div>');
+			var table = $('.insertTable-dialog', top_el);
 			for (i = 1; i <= options['row']; i++) {
-				var tr = $('<tr id="row_'+ i +'" ></tr>');
+				var tr = $('<tr id="row-'+ i +'" ></tr>');
 				table.append(tr);
 
 				for (y = 1;y <= options['col']; y++) {
-					tr.append($('<td id="td_'+ i + '_' + y +'" ></td>')
+					tr.append($('<td id="td-'+ i + '-' + y +'" ></td>')
 						.hover(function () {
 							onHoverEvent(this);
 						})
@@ -54,13 +54,13 @@
 
 		function onHoverEvent(el) {
 			var top_el = self;
-			var table = $('.insertTable_dialog', top_el)[0];
-			var id_arr = el.id.split("_");
+			var table = $('.insertTable-dialog', top_el)[0];
+			var id_arr = el.id.split("-");
 			var row = id_arr[1];
 			var col = id_arr[2];
 			var tdList = table.getElementsByTagName("td");
 			for (i = 0; i < tdList.length; i++){
-				id_arr = tdList[i].id.split("_");
+				id_arr = tdList[i].id.split("-");
 				var now_row = id_arr[1];
 				var now_col = id_arr[2];
 				if(now_row <= row && now_col <= col) {
@@ -69,11 +69,11 @@
 					$(tdList[i]).css({backgroundColor : ''});
 				}
 			}
-			$('.table_size', self).html('<div class="table_size align-center" > '+ row + 'x' + col +' </div>');
+			$('.table_size', self).html('<div class="table-size align-center" > '+ row + 'x' + col +' </div>');
 		}
 
 		function onClickEvent(el) {
-			var id_arr = el.id.split("_");
+			var id_arr = el.id.split("-");
 			var row = id_arr[1];
 			var col = id_arr[2];
 

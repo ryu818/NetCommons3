@@ -15,16 +15,16 @@ if(method_exists($this->Html,'fetchScript')) {
 <meta http-equiv="Refresh" content="<?php echo $pause; ?>;url=<?php echo $url; ?>">
 <?php } ?>
 </head>
-<body class="nc_redirect_body">
-	<ul class="nc_redirect">
-		<li class="nc_redirect_text">
+<body class="nc-redirect-body">
+	<ul class="nc-redirect">
+		<li class="nc-redirect-text">
 			<?php echo($message); ?>
 		</li>
-		<li class="nc_redirect_subtext">
+		<li class="nc-redirect-subtext">
 			<?php echo(sprintf($sub_message, h($url))); ?>
 		</li>
 		<?php if(isset($error_id_str) && $error_id_str != ''): ?>
-			<li class="nc_redirect_subtext">
+			<li class="nc-redirect-subtext">
 				(error:<?php echo($error_id_str); ?>)
 			</li>
 		<?php endif; ?>

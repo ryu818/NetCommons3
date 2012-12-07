@@ -1,18 +1,18 @@
-.nc_wysiwyg_tablemenu, .nc_wysiwyg_tablemenu ul {
+.nc-wysiwyg-tablemenu, .nc-wysiwyg-tablemenu ul {
 	padding:0;
 	margin:0;
 }
 
-.nc_wysiwyg_tablemenu ul {
+.nc-wysiwyg-tablemenu ul {
 	border-bottom : 1px solid #efefef;
 }
 
-ul.nc_wysiwyg_tablemenu li {
+ul.nc-wysiwyg-tablemenu li {
 	list-style-type: none;
 	width:165px;
 }
 
-ul.nc_wysiwyg_tablemenu li a {
+ul.nc-wysiwyg-tablemenu li a {
 	color : #aca899;
 	text-decoration:none;
 	white-space: nowrap;
@@ -23,23 +23,23 @@ ul.nc_wysiwyg_tablemenu li a {
 	background-repeat : no-repeat;
 }
 
-.nc_wysiwyg_tablemenu_property { background-position: 0 -580px; }
-.nc_wysiwyg_tablemenu_cell_merge { background-position: 0 -660px; }
-.nc_wysiwyg_tablemenu_row_partition { background-position: 0 -680px; }
-.nc_wysiwyg_tablemenu_col_partition { background-position: 0 -700px; }
-.nc_wysiwyg_tablemenu_cell_partition { background-position: 0 -720px; }
-.nc_wysiwyg_tablemenu_row_before_insert { background-position: 0 -740px; }
-.nc_wysiwyg_tablemenu_row_after_insert { background-position: 0 -760px; }
-.nc_wysiwyg_tablemenu_row_delete { background-position: 0 -780px; }
-.nc_wysiwyg_tablemenu_col_before_insert { background-position: 0 -800px; }
-.nc_wysiwyg_tablemenu_col_after_insert { background-position: 0 -820px; }
-.nc_wysiwyg_tablemenu_col_delete { background-position: 0 -840px; }
-.nc_wysiwyg_tablemenu_delete { background-position: 0 -640px; }
+.nc-wysiwyg-tablemenu-property { background-position: 0 -580px; }
+.nc-wysiwyg-tablemenu-cell-merge { background-position: 0 -660px; }
+.nc-wysiwyg-tablemenu-row-partition { background-position: 0 -680px; }
+.nc-wysiwyg-tablemenu-col-partition { background-position: 0 -700px; }
+.nc-wysiwyg-tablemenu-cell-partition { background-position: 0 -720px; }
+.nc-wysiwyg-tablemenu-row-before-insert { background-position: 0 -740px; }
+.nc-wysiwyg-tablemenu-row-after-insert { background-position: 0 -760px; }
+.nc-wysiwyg-tablemenu-row-delete { background-position: 0 -780px; }
+.nc-wysiwyg-tablemenu-col-before-insert { background-position: 0 -800px; }
+.nc-wysiwyg-tablemenu-col-after-insert { background-position: 0 -820px; }
+.nc-wysiwyg-tablemenu-col-delete { background-position: 0 -840px; }
+.nc-wysiwyg-tablemenu-delete { background-position: 0 -640px; }
 
-ul.nc_wysiwyg_tablemenu li a.active {
+ul.nc-wysiwyg-tablemenu li a.active {
 	color : #333333;
 }
 
-ul.nc_wysiwyg_tablemenu li a.active:hover {
+ul.nc-wysiwyg-tablemenu li a.active:hover {
 	background-color: #e8ebff;
 }

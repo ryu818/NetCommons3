@@ -1,15 +1,15 @@
-ul.nc_wysiwyg_tableboder {
+ul.nc-wysiwyg-tableboder {
 	margin: 0;
 	padding: 0;
 	width: 375px;
 }
-.nc_wysiwyg_tableboder li {
+.nc-wysiwyg-tableboder li {
 	list-style-type: none;
 	padding:0;
 	margin:0;
 }
 
-ul.nc_wysiwyg_tableborder_align {
+ul.nc-wysiwyg-tableborder-align {
 	margin: 0;
 	padding: 0;
 	width: 245px;
@@ -17,37 +17,37 @@ ul.nc_wysiwyg_tableborder_align {
 	border: 1px solid #ababab;
 }
 
-li.nc_wysiwyg_tableborder_content{
+li.nc-wysiwyg-tableborder-content{
 	margin:5px;
 }
 
-.nc_wysiwyg_tableboder_align_clear {
+.nc-wysiwyg-tableboder-align-clear {
 	width:245px;
 	clear: both;
 }
 
-ul.nc_wysiwyg_tableboder_icon_l {
+ul.nc-wysiwyg-tableboder-icon-l {
 	padding : 0 8px 0 0;
 	margin  : 0;
 	float   : right;
 	width   : 150px;
 }
 
-ul.nc_wysiwyg_tableboder_icon_l li {
+ul.nc-wysiwyg-tableboder-icon-l li {
 	float : left;
-	padding : 5px 10px; 
+	padding : 5px 10px;
 }
 
-ul.nc_wysiwyg_tableboder_icon {
+ul.nc-wysiwyg-tableboder-icon {
 	padding:0;
 	margin:0;
 }
 
-ul.nc_wysiwyg_tableboder_icon li {
+ul.nc-wysiwyg-tableboder-icon li {
 	padding : 26px 0 26px 20px;
 }
 
-.nc_wysiwyg_tableborder_preview {
+.nc-wysiwyg-tableborder-preview {
 	float:right;
 	padding:0 !important;
 	margin:0 20px 0 0 !important;
@@ -59,84 +59,84 @@ ul.nc_wysiwyg_tableboder_icon li {
 	overflow:hidden;
 }
 
-#nc_wysiwyg_tableborder_preview {
+#nc-wysiwyg-tableborder-preview {
 	height: 120px;
 	width: 120px;
 	margin: 13px;
 	padding: 0;
 }
 
-ul.nc_wysiwyg_tableboder_icon_bottom {
+ul.nc-wysiwyg-tableboder-icon-bottom {
 	padding:0;
 	margin:0 0 0 75px;
 }
 
-ul.nc_wysiwyg_tableboder_icon_bottom li {
+ul.nc-wysiwyg-tableboder-icon-bottom li {
 	padding : 5px 26px;
 	float : left;
 }
 
 /* タイトル */
-.nc_wysiwyg_tableborder_title {
+.nc-wysiwyg-tableborder-title {
 	width:375px;
 	overflow:auto;
 	float:none !important;
 }
 
-.nc_wysiwyg_tableborder_title dt {
+.nc-wysiwyg-tableborder-title dt {
 	float:left;
 	padding: 3px;
 }
 
-.nc_wysiwyg_tableborder_title dd {
+.nc-wysiwyg-tableborder-title dd {
 	padding: 3px !important;
 }
 
 /* 線selectbox */
-.nc_wysiwyg_tableborder_border {
+.nc-wysiwyg-tableborder-border {
 	width : 100px;
 	height:58px;
 }
 
-a.nc_wysiwyg_tableborder_border {
+a.nc-wysiwyg-tableborder-border {
 	margin: 3px 0 0;
 }
 
-div.nc_wysiwyg_tableborder_border a {
+div.nc-wysiwyg-tableborder-border a {
 	height : 20px;
 }
-div.nc_wysiwyg_tableborder_border div {
+div.nc-wysiwyg-tableborder-border div {
 	height : 10px;
 }
 
-a.nc_wysiwyg_tableborder_border {
+a.nc-wysiwyg-tableborder-border {
 	height : 20px;
 	color: #333333;
 }
 
-a.nc_wysiwyg_tableborder_border div {
+a.nc-wysiwyg-tableborder-border div {
 	height : 7px;
 }
 
-a.nc_wysiwyg_tableborder_border .listcontent {
+a.nc-wysiwyg-tableborder-border .listcontent {
 	padding-right: 17px;
 }
 
-.nc_wysiwyg_tableborder_btn {
+.nc-wysiwyg-tableborder-btn {
 	padding: 5px 0;
 	clear : left;
 	text-align : center;
 	width: 375px;
 }
 /* 色選択 */
-.nc_wysiwyg_tableborder_color_input {
+.nc-wysiwyg-tableborder-color-input {
 	width: 60px;
 	margin-right:3px;
 }
 
-.nc_wysiwyg_tableborder_color {
+.nc-wysiwyg-tableborder-color {
 	vertical-align:bottom;
 }
-.nc_wysiwyg_tableborder_color img {
+.nc-wysiwyg-tableborder-color img {
 	background-color:#ffffff;
 }

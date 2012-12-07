@@ -25,24 +25,24 @@
 		function init(options) {
 			var frm, upload, files;
 
-			frm = $('<form action="' + options.url + '"class="nc_wysiwyg_insertfile" enctype = "multipart/form-data" method="POST"></form>').appendTo( self );
+			frm = $('<form action="' + options.url + '"class="nc-wysiwyg-insertfile" enctype = "multipart/form-data" method="POST"></form>').appendTo( self );
 			frm.append('<p>' + __d('nc_wysiwyg_insertfile', 'desc_file') + '</p>');
-			upload = $('<input class="nc_wysiwyg_insertfile_inputfile" name="files" type="file" />').appendTo( frm );
-			row = $('<ul class="nc_wysiwyg_insertfile_row">' +
+			upload = $('<input class="nc-wysiwyg-insertfile-inputfile" name="files" type="file" />').appendTo( frm );
+			row = $('<ul class="nc-wysiwyg-insertfile-row">' +
 						'<li>' +
 							'<dl>' +
 								'<dt>' + __d('nc_wysiwyg_insertfile', 'title') + '</dt>' +
 								'<dd>' +
-									'<input type="text" value="" name="alt_title" class="nc_wysiwyg_insertfile_title" />' +
+									'<input type="text" value="" name="alt_title" class="nc-wysiwyg-insertfile-title" />' +
 								'</dd>' +
 							'</dl>' +
 						'</li>' +
 					'</ul>').appendTo( frm );
 
 
-			$('<div class="nc_wysiwyg_insertfile_btn">' +
-								'<input name="ok" type="button" class="common_btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'ok')+'" />' +
-								'<input name="cancel" type="button" class="common_btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'cancel')+'" />' +
+			$('<div class="nc-wysiwyg-insertfile-btn">' +
+								'<input name="ok" type="button" class="common-btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'ok')+'" />' +
+								'<input name="cancel" type="button" class="common-btn" value="'+__d(['nc_wysiwyg', 'dialog'], 'cancel')+'" />' +
 							'</div>').appendTo( frm );
 			_addEvent(frm);
 			return;

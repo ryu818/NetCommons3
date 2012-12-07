@@ -5,7 +5,7 @@ $this->assign('title', __d('install', 'Setting Check'));
 	<form method="post" action="<?php echo $this->Html->url(array('plugin' => 'install','controller' => 'install','action' => 'database')); ?>">
 		<?php echo($this->element('hidden')); ?>
 		<h1><?php echo $this->fetch('title'); ?></h1>
-		<div class="top_description">
+		<div class="top-description">
 			<?php echo(__d('install', 'I checked a condition of the installation environment.<br />It is necessary to solve all the red items to advance next.')); ?>
 		</div>
 		<div>

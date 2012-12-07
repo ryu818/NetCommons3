@@ -6,10 +6,10 @@ if($content == '' && $hierarchy < NC_AUTH_MIN_CHIEF) {
 	return;
 }
 if($block['Block']['controller_action'] == 'group') {
-	$class_name = 'nc_group';
+	$class_name = 'nc-group';
 	$attr = ' data-columns="group"';
 } else {
-	$class_name = 'nc_block';
+	$class_name = 'nc-block';
 	$attr = '';
 }
 /* スタイル */
@@ -45,11 +45,11 @@ $parent_class_name = null;
 if($pos !== false) {
 	$parent_class_name = substr($block['Block']['theme_name'], 0, $pos);
 	$theme_name = array($parent_class_name.'.block', $block['Block']['theme_name'].'/block');
-	$parent_class_name = 'th_' . Inflector::underscore($parent_class_name);
+	$parent_class_name = 'th-' . Inflector::underscore($parent_class_name);
 } else {
 	$theme_name = $block['Block']['theme_name'].'.block';
 }
-$block['Block']['theme_name'] = 'th_' . str_replace('.', '_', Inflector::underscore($block['Block']['theme_name']));	// th_(frame_name)_(color_dir)
+$block['Block']['theme_name'] = 'th-' . str_replace('.', '-', Inflector::underscore($block['Block']['theme_name']));	// th-(frame_name)-(color_dir)
 $current_url = $this->here;
 if(count($this->params->query) > 0) {
 	$query = '';
@@ -61,7 +61,7 @@ if(count($this->params->query) > 0) {
 }
 ?>
 <div id="<?php echo($id); ?>" class="<?php echo($class_name); ?>"<?php echo($block['Block']['margin_style']); ?> data-block='<?php echo($block['Block']['id']); ?>' data-action='<?php echo($block['Block']['controller_action']); ?>' data-url='<?php echo(h($current_url)); ?>'<?php echo($attr); ?>>
-	<div class="<?php if(isset($parent_class_name)): ?><?php echo($parent_class_name.' '); ?><?php endif; ?><?php echo($block['Block']['theme_name']); ?> nc_frame table"<?php echo($block['Block']['style']); ?>>
+	<div class="<?php if(isset($parent_class_name)): ?><?php echo($parent_class_name.' '); ?><?php endif; ?><?php echo($block['Block']['theme_name']); ?> nc-frame table"<?php echo($block['Block']['style']); ?>>
 		<?php /* ブロックヘッダー */ ?>
 		<?php if($nc_mode == NC_BLOCK_MODE && $hierarchy >= NC_AUTH_MIN_CHIEF): ?>
 			<?php echo($this->element('Frame/block_header')); ?>

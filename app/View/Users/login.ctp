@@ -3,7 +3,7 @@ $this->assign('title', __('Login'));
 $class = "";
 if (!$this->request->is('ajax')) {
 	$this->extend('/Frame/base');
-	$class = " login_base";
+	$class = " login-base";
 }
 ?>
 <?php echo $this->Session->flash('auth'); ?>
@@ -38,8 +38,8 @@ $this->Form->inputDefaults(array(
 				<dd>
 					<?php echo $this->Form->input('password', array('value' => (isset($this->data['User']['password']) ? $this->data['User']['password'] : ''))); ?>
 					<?php if($autologin_use == NC_AUTOLOGIN_ON): ?>
-					<div class="login_save_my_info">
-						<label for="login_save_my_info">
+					<div class="login-save-my-info">
+						<label for="login-save-my-info">
 							<?php echo $this->Form->input('login_save_my_info', array('type' => 'checkbox', 'value' => _ON, 'id' => 'login_save_my_info')); ?>
 							&nbsp;<?php echo(__('Save my info?')); ?>
 						</label>
@@ -50,7 +50,7 @@ $this->Form->inputDefaults(array(
 		</li>
 	</ul>
 	<p class="align-right">
-		<?php echo $this->Form->button(__('Login'), array('name' => 'login', 'class' => 'common_btn')); ?>
+		<?php echo $this->Form->button(__('Login'), array('name' => 'login', 'class' => 'common-btn')); ?>
 	</p>
 </fieldset>
 <?php echo $this->Form->end();?>
