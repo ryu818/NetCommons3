@@ -32,10 +32,19 @@ class PageController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function index() {
+		include_once dirname(dirname(__FILE__)).'/Config/defines.inc.php';
+
 		$login_user = $this->Auth->user();
 		$user_id = $login_user['id'];
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		$is_edit = isset($this->request->query['is_edit']) ? intval($this->request->query['is_edit']) : _OFF;
+		$page = isset($this->request->query['page']) ? intval($this->request->query['page']) : 1;
+		$limit = isset($this->request->query['limit']) ? intval($this->request->query['limit']) : PAGES_COMMUNITY_LIMIT;
+		$active_tab = isset($this->request->query['active_tab']) ? intval($this->request->query['active_tab']) : null;
+		if(!isset($active_tab)) {
+			$active_tab = ($this->nc_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) ? 1 : 0;
+		}
+
 		$element_params = array(
 			'page_id' => $this->page_id,
 			'is_edit' => $is_edit
@@ -54,7 +63,7 @@ class PageController extends PageAppController {
 		$fetch_params = array(
 			'active_page_id' => $this->page_id
 		);
-		$params = null;
+		$params = null;	// TODO:後に削除するかも$params
 		/*if($is_edit) {
 			$params = array(
 					'conditions' => array(
@@ -95,7 +104,42 @@ class PageController extends PageAppController {
 		if(isset($private_pages[NC_SPACE_TYPE_PRIVATE])) {
 			$pages[NC_SPACE_TYPE_PRIVATE] = $private_pages[NC_SPACE_TYPE_PRIVATE];
 		}
+
+		// コミュニティ数
+		$conditions = array(
+			'Page.thread_num' => 1
+		);
+		$top_params = array(
+			'conditions' => $conditions
+		);
+		$pages_group_total_count = $this->Page->findMenu('count', $user_id, NC_SPACE_TYPE_GROUP, $current_user, $top_params);
+
+		$pages_group = array();
+		if($pages_group_total_count != 0) {
+			// コミュニティ取得
+			$conditions = array(
+				'Page.thread_num' => 1
+			);
+			$top_group_params = array(
+				'fields' => array('Page.room_id'),
+				'conditions' => $conditions,
+				'page' => $page,
+				'limit' => $limit
+			);
+			if($is_edit && $admin_hierarchy >= NC_AUTH_MIN_ADMIN) {
+				// 管理者で編集モードならばコミュニティすべて表示
+				$pages_top_group = $this->Page->findMenu('list', $user_id, NC_SPACE_TYPE_GROUP, $current_user, $top_group_params, null, null, true);
+			} else {
+				$pages_top_group = $this->Page->findMenu('list', $user_id, NC_SPACE_TYPE_GROUP, $current_user, $top_group_params);
+			}
+			$params['conditions']['Page.room_id'] = $pages_top_group;
+			$pages_group = $this->Page->findMenu('all', $user_id, NC_SPACE_TYPE_GROUP, $current_user, $params, null, $fetch_params, true);
+		}
+
 		$element_params['pages'] = $pages;
+		$element_params['pages_group'] = $pages_group;
+		$element_params['pages_group_total_count'] = $pages_group_total_count;
+		$element_params['active_tab'] = $active_tab;
 		$this->set('element_params', $element_params);
 	}
 

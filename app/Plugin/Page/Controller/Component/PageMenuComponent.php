@@ -56,8 +56,14 @@ class PageMenuComponent extends Component {
 			return false;
 		}
 
+		$is_auth_ok = false;
+		if($request->params['action'] == 'chgsequence' && $page['Page']['thread_num'] == 1 && $admin_hierarchy >= NC_AUTH_MIN_ADMIN &&
+				$page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
+			$is_auth_ok = true;
+		}
+
 		$chk_page = isset($parent_page) ? $parent_page : $page;
-		if(!$this->_controller->CheckAuth->chkAuth($chk_page['Authority']['hierarchy'], NC_AUTH_CHIEF)) {
+		if(!$is_auth_ok && !$this->_controller->CheckAuth->chkAuth($chk_page['Authority']['hierarchy'], NC_AUTH_CHIEF)) {
 			//if($user_id == 0) {
 			//	$this->Session->setFlash(__('Forbidden permission to access the page.'), 'default', array(), 'auth');
 			//}
@@ -70,7 +76,7 @@ class PageMenuComponent extends Component {
 			return false;
 		}
 
-		if(!$this->validatorPageDetail($request, $page, $parent_page)) {
+		if(!$this->validatorPageDetail($request, $page, $parent_page, $admin_hierarchy)) {
 			return false;
 		}
 
@@ -83,10 +89,11 @@ class PageMenuComponent extends Component {
  * @param  CakeRequest $request
  * @param  Page Model  $page
  * @param  Page Model  $parent_page
+ * @param  integer     $admin_hierarchy
  * @return boolean
  * @since   v 3.0.0.0
  */
-	public function validatorPageDetail($request, $page = null, $parent_page = null) {
+	public function validatorPageDetail($request, $page = null, $parent_page = null, $admin_hierarchy = null) {
 		if($request->params['action'] != 'detail') {
 			if(!$request->is('post')) {
 				$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.001', '400');
@@ -104,12 +111,12 @@ class PageMenuComponent extends Component {
 				// 親がOFFならば変更を許さない。
 				$parent_page = $this->_controller->Page->findById($page['Page']['parent_id']);
 				if(!isset($parent_page['Page']) || $parent_page['Page']['display_flag'] != NC_DISPLAY_FLAG_ON) {
-					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.004', '400');
+					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.003', '400');
 					return false;
 				}
 				if($page['Page']['thread_num'] <= 1 && $page['Page'] != NC_SPACE_TYPE_GROUP) {
 					//コミュニティ以外のTop Nodeの編集は許さない
-					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.005', '400');
+					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.004', '400');
 					return false;
 				}
 				break;
@@ -144,8 +151,19 @@ class PageMenuComponent extends Component {
 						return false;
 					}
 				}
-
 				// break;
+			case 'edit':
+				if($page['Page']['thread_num'] == 0 || ($page['Page']['thread_num'] == 1 && $page['Page']['space_type'] != NC_SPACE_TYPE_GROUP)) {
+					//コミュニティのTop Node以外の編集は許さない
+					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.005', '400');
+					return false;
+				}
+				/*if($page['Page']['space_type'] != NC_SPACE_TYPE_PUBLIC && $page['Page']['thread_num'] == 2 && $page['Page']['display_sequence'] == 1) {
+					//パブリック以外の各ノードのTopページの編集は許さない
+					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.006', '400');
+					return false;
+				}*/
+				break;
 			case 'chgsequence':
 				// ページロックしてあれば、削除不可。
 				if($page['Page']['lock_authority_id'] > 0) {
@@ -154,11 +172,14 @@ class PageMenuComponent extends Component {
 					$this->_controller->render(false, 'ajax');
 					return false;
 				}
-				// break;
-			case 'edit':
-				if($page['Page']['thread_num'] <= 1) {
+				if($page['Page']['thread_num'] == 1) {
+					if($page['Page']['space_type'] != NC_SPACE_TYPE_GROUP || $admin_hierarchy < NC_AUTH_MIN_ADMIN) {
+						//コミュニティの表示順変更は$admin_hierarchy=NC_AUTH_MIN_ADMINのみ
+						$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.007', '400');
+					}
+				} else if($page['Page']['thread_num'] <= 1) {
 					//Top Nodeの編集は許さない
-					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.003', '400');
+					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.008', '400');
 					return false;
 				}
 				break;
@@ -186,7 +207,7 @@ class PageMenuComponent extends Component {
 
 		// 移動先権限チェック
 		if(!$this->_controller->CheckAuth->chkAuth($parent_page['Authority']['hierarchy'], NC_AUTH_CHIEF)) {
-			$this->_controller->flash(__('Forbidden permission to access the page.'), null, 'PageMenu.validatorPage.001', '400');
+			$this->_controller->flash(__('Forbidden permission to access the page.'), null, 'PageMenu.validatorMovePage.001', '400');
 			return;
 		}
 
@@ -194,19 +215,26 @@ class PageMenuComponent extends Component {
 				|| $page['Page']['thread_num'] == 0 || $move_page['Page']['thread_num'] == 0 ||
 				($page['Page']['space_type'] != NC_SPACE_TYPE_GROUP && $move_page['Page']['thread_num'] == 1 && $position != 'inner')) {
 			// 移動元がコミュニティ以外のノード,移動先が Top Node
-			$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPage.002', '400');
+			$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorMovePage.002', '400');
 			return false;
 		}
 
 		if($position != 'inner' && $position != 'top' && $position != 'bottom') {
-			// 各スペースタイプのトップページの中か上に移動しようとした。
-			$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPage.003', '400');
+			$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorMovePage.003', '400');
 			return false;
 		}
 
-		if($move_page['Page']['display_sequence'] == 1 && ($position == 'inner' || $position == 'top')) {
+		if($move_page['Page']['thread_num'] == 2 &&
+				$move_page['Page']['display_sequence'] == 1 && ($position == 'inner' || $position == 'top')) {
 			// 各スペースタイプのトップページの中か上に移動しようとした。
-			$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPage.004', '400');
+			$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorMovePage.004', '400');
+			return false;
+		}
+
+		if($position != 'inner' && (($page['Page']['thread_num'] == 1 && $move_page['Page']['thread_num'] != 1) ||
+				($move_page['Page']['thread_num'] == 1 && $page['Page']['thread_num'] != 1))) {
+			// コミュニティTopノードへの移動チェック
+			$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorMovePage.005', '400');
 			return false;
 		}
 		return $parent_page;

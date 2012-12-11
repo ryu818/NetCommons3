@@ -440,11 +440,11 @@ class Page extends AppModel
  * @param function  $fetchcallback callback関数 default メニュー形式
  *                                     $pages[space_type][thread_num][parent_id][display_sequence] = Page
  * @param array     $fetch_params callback関数 parameter
- * @param integer   $admin_hierarchy
+ * @param boolean   $is_all $params['join']が設定されていない場合、true LEFT JOIN PageUserLink false INNER JOIN PageUserLink
  * @return array
  * @since   v 3.0.0.0
  */
-	public function findMenu($type, $login_user_id = null, $space_type = NC_SPACE_TYPE_PUBLIC, $current_user = null, $params = null, $fetchcallback = null, $fetch_params = null, $admin_hierarchy = null) {
+	public function findMenu($type, $login_user_id = null, $space_type = NC_SPACE_TYPE_PUBLIC, $current_user = null, $params = null, $fetchcallback = null, $fetch_params = null, $is_all = false) {
 		//$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		$space_type_flag = true;
 		if(is_array($space_type)) {
@@ -507,7 +507,7 @@ class Page extends AppModel
 				$params['fields'] = $this->_getFieldsArray();
 			}
 			if(!isset($params['joins'])) {
-				$join_type = ($admin_hierarchy < NC_AUTH_MIN_ADMIN && ($space_type == NC_SPACE_TYPE_PUBLIC || $space_type == NC_SPACE_TYPE_GROUP)) ? 'INNER' : 'LEFT';
+				$join_type = ($is_all) ? 'INNER' : 'LEFT';
 				$params['joins'] = $this->_getJoinsArray($login_user_id, $join_type);
 			}
 		}
@@ -528,9 +528,9 @@ class Page extends AppModel
 			unset($params['page']);
 		}*/
 
-		if($fetchcallback === "" || ($fetchcallback === null && $type == 'count')) {
+		if($fetchcallback === "" || ($fetchcallback === null && $type !== 'all')) {
 			$results = $this->find($type, $params);
-			if(isset($fetch_params['active_page_id'])) {
+			if(isset($fetch_params['active_page_id']) && $type == 'all') {
 				$parent_id_arr = array($fetch_params['active_page_id'] => true);
 				if(isset($results['Page'])) {
 					$results = array($results['Page']);
@@ -825,9 +825,48 @@ class Page extends AppModel
 			//"Page.id !=" => $page['Page']['id'],
 			"Page.root_id" => $page['Page']['root_id'],
 			"Page.position_flag" => $page['Page']['position_flag'],
+			"Page.thread_num >" => 1,
 			"Page.lang" => array("", $lang),
 			"Page.space_type" => $page['Page']['space_type'],
 			"Page.display_sequence >" => $page['Page']['display_sequence']	// >=
+		));
+		$ret = $this->updateAll($fields, $conditions);
+		return $ret;
+	}
+
+/**
+ * display_sequenceデクリメント処理(thread_num == 1の場合)
+ *
+ * @param  array     $page ページテーブル配列
+ * @param  integer   $display_sequence デクリメントする数
+ * @return boolean true or false
+ * @access	public
+ */
+	public function decrementRootDisplaySeq($page = null,$display_sequence = 1, $conditions = array()) {
+		$display_sequence = -1*$display_sequence;
+		return $this->_operationRootDisplaySeq($page, $display_sequence, $conditions);
+	}
+
+/**
+ * display_sequenceインクリメント処理(thread_num == 1の場合)
+ *
+ * @param  array     $page ページテーブル配列
+ * @param  integer   $display_sequence インクリメントする数
+ * @return boolean true or false
+ * @access	public
+ */
+	public function incrementRootDisplaySeq($page = null,$display_sequence = 1, $conditions = array()) {
+		return $this->_operationRootDisplaySeq($page, $display_sequence, $conditions);
+	}
+
+	protected function _operationRootDisplaySeq($page = null,$display_sequence = 1, $conditions = array()) {
+		$fields = array('Page.display_sequence'=>'Page.display_sequence+('.$display_sequence.')');
+		$conditions = array_merge($conditions, array(
+				//"Page.id !=" => $page['Page']['id'],
+				"Page.thread_num" => $page['Page']['thread_num'],
+				"Page.position_flag" => $page['Page']['position_flag'],
+				"Page.space_type" => $page['Page']['space_type'],
+				"Page.display_sequence >=" => $page['Page']['display_sequence']
 		));
 		$ret = $this->updateAll($fields, $conditions);
 		return $ret;

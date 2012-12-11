@@ -5335,7 +5335,7 @@ e-mail：{X-EMAIL}
         <column name="parent_id">10</column>
         <column name="thread_num">2</column>
         <column name="display_sequence">1</column>
-        <column name="page_name">Myportal</column>
+        <column name="page_name">Myportal Top</column>
         <column name="permalink">admin</column>
         <column name="position_flag">1</column>
         <column name="lang">ja</column>
@@ -5365,7 +5365,7 @@ e-mail：{X-EMAIL}
         <column name="parent_id">11</column>
         <column name="thread_num">2</column>
         <column name="display_sequence">1</column>
-        <column name="page_name">adminさんのマイルーム</column>
+        <column name="page_name">Private Top</column>
         <column name="permalink">admin</column>
         <column name="position_flag">1</column>
         <column name="lang"></column>

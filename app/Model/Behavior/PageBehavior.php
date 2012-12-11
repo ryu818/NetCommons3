@@ -19,42 +19,44 @@ class PageBehavior extends ModelBehavior {
  * @since   v 3.0.0.0
  */
 	public function setPageName(Model $Model, $page, $type = 0) {
-		if($type == 0) {
-			if(($page['page_name'] == "Public room" || $page['page_name'] == "Myportal"
-					|| $page['page_name'] == "Private room" || $page['page_name'] == "Community") &&
-				$page['thread_num'] <= 2 && $page['display_sequence'] <= 1) {
-				if(($page['thread_num'] == 1 || $page['thread_num'] == 2) && $page['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
-					$page['page_name'] = Configure::read(NC_AUTH_KEY.'.'.'myportal_name');
-				} else if(($page['thread_num'] == 1 || $page['thread_num'] == 2) && $page['space_type'] == NC_SPACE_TYPE_PRIVATE) {
-					$page['page_name'] = Configure::read(NC_AUTH_KEY.'.'.'private_name');
+		if($page['position_flag'] == _ON && ($page['thread_num'] == 0 || ($page['space_type'] != NC_SPACE_TYPE_GROUP && $page['thread_num'] == 1) ||
+				($page['space_type'] != NC_SPACE_TYPE_PUBLIC && $page['thread_num'] == 2 && $page['display_sequence'] == 1))) {
+			if($type == 0) {
+				if($page['thread_num'] == 1) {
+					if($page['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
+						$page['page_name'] = Configure::read(NC_AUTH_KEY.'.'.'myportal_name');
+					} else {
+						$page['page_name'] = Configure::read(NC_AUTH_KEY.'.'.'private_name');
+					}
 				} else {
-					$page['page_name'] = __($page['page_name'], true);
+					$page['page_name'] = __($page['page_name']);
 				}
-			}
-		} else {
-			if($page['thread_num'] <= 2 && $page['display_sequence'] <= 1) {
-				if($page['page_name'] == __('Public', true) &&
-					$page['space_type'] == NC_SPACE_TYPE_PUBLIC) {
-					$page['page_name'] = "Public room";
-				} else if($page['page_name'] == __('Myportal', true) &&
-					$page['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
-					$page['page_name'] = "Myportal";
-				} else if($page['page_name'] == __('Private room', true) &&
-					$page['space_type'] == NC_SPACE_TYPE_PRIVATE) {
-					$page['page_name'] = "Private room";
-				} else if($page['page_name'] == __('Community', true) &&
-					$page['space_type'] == NC_SPACE_TYPE_GROUP) {
-					$page['page_name'] = "Community";
-				}
-				if($page['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
-					$page_name = Configure::read(NC_AUTH_KEY.'.'.'myportal_name');
-					$def_page_name = "Myportal";
-				} else if($page['space_type'] == NC_SPACE_TYPE_PRIVATE) {
-					$page_name = Configure::read(NC_AUTH_KEY.'.'.'private_name');
-					$def_page_name = "Private room";
-				}
-				if(isset($page_name) && $page['page_name'] == $page_name) {
-					$page['page_name'] = $def_page_name;
+			} else {
+				switch($page['space_type']) {
+					case NC_SPACE_TYPE_PUBLIC:
+						if($page['page_name'] == __('Public')) {
+							$page['page_name'] = "Public room";
+						}
+						break;
+					case NC_SPACE_TYPE_MYPORTAL:
+						if($page['page_name'] == __('Myportal')) {
+							$page['page_name'] = "Myportal";
+						} else if($page['page_name'] == __('Myportal Top')) {
+							$page['page_name'] = "Myportal Top";
+						}
+						break;
+					case NC_SPACE_TYPE_PRIVATE:
+						if($page['page_name'] == __('Private')) {
+							$page['page_name'] = "Private room";
+						} else if($page['page_name'] == __('Private Top')) {
+							$page['page_name'] = "Private Top";	
+						}
+						break;
+					case NC_SPACE_TYPE_GROUP:
+						if($page['page_name'] == __('Community')) {
+							$page['page_name'] = "Community";
+						}
+						break;
 				}
 			}
 		}

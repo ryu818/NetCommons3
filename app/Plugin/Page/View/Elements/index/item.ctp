@@ -25,6 +25,11 @@
 	if($menu['thread_num'] <= 1) {
 		// コミュニティ以外のTopならば、移動させない。
 		$attr = " data-dd-sequence = \"inner-only\"";
+		if($space_type == NC_SPACE_TYPE_GROUP && $admin_hierarchy >= NC_AUTH_MIN_ADMIN) {
+			$is_chgseq = true;
+			$attr .= " data-dd-group = \"".$menu['thread_num']."\"";
+			$attr .= " data-dd-group-sequence = \"top-bottom-only\"";
+		}
 	} else {
 		if($menu['display_sequence'] == 1) {
 			$attr = " data-dd-sequence = \"bottom-only\"";
@@ -39,8 +44,8 @@
 		$is_delete = true;
 	}
 
-	if($is_chief && !($menu['thread_num'] == 1) && $menu['display_sequence'] != 1) {
-		// TopNodeでもなく、各ノードのトップページでなければ。
+	if($is_chief && $menu['thread_num'] != 1 && $menu['display_sequence'] != 1) {
+		// 主坦でTopNodeでもなく、各ノードのトップページでなければ公開設定を許す
 		$is_display = true;
 	}
 ?>
@@ -49,7 +54,8 @@
 <li id="pages-menu-edit-item-<?php echo(h($menu['id'])); ?>" class="dd-item dd-drag-item<?php if($menu['thread_num']==1){echo(' '.$class);} ?>" data-id="<?php echo(h($menu['id'])); ?>" data-is-chief="<?php if($is_chief){echo(_ON);} else {echo(_OFF);} ?>"<?php echo($attr); ?>>
 	<?php if($is_chgseq): ?>
 	<div class="dd-handle dd-drag-handle"></div>
-	<?php elseif($is_top): ?>
+	<?php endif; ?>
+	<?php if($is_top): ?>
 	<div class="pages-menu-top <?php echo($class); ?>-top"></div>
 	<?php endif; ?>
 	<?php
@@ -70,7 +76,7 @@
 		<?php endif; ?>
 		<input type="hidden" name="data[Page][display_flag]" value="<?php echo(intval($menu['display_flag'])); ?>" />
 
-		<a class="pages-menu-edit-title" href="<?php echo($this->webroot); ?><?php echo($menu['permalink']); ?>" title="<?php echo(h($menu['page_name'])); ?>"<?php if($is_edit && $menu['id'] == $page_id && (!isset($is_detail) || $is_detail) && (!isset($is_error) || $is_error)): ?> style="display:none;"<?php endif; ?>>
+		<a class="pages-menu-edit-title" href="<?php echo($this->webroot); ?><?php echo($menu['permalink']); ?>" title="<?php echo(h($menu['page_name'])); ?>"<?php if($is_edit && $menu['id'] == $page_id && ((!isset($is_detail) || $is_detail) || (!isset($is_error) || $is_error))): ?> style="display:none;"<?php endif; ?>>
 			<?php echo(h($menu['page_name'])); ?>
 		</a>
 		<?php

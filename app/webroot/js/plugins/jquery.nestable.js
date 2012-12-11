@@ -299,6 +299,17 @@
         		if(content.get(0) != el && $.Common.within($(el), e.pageX, e.pageY)) {
         			parent = $(el).parents(opt.itemNodeName+':first');
         			var sequence = parent.data("dd-sequence");
+        			var group = t.dragEl.data("dd-group");
+        			if(group) {
+        				if(group != parent.data("dd-group")) {
+        					return;
+        				} else {
+        					var group_sequence = parent.data("dd-group-sequence");
+        					if(group_sequence) {
+        						sequence = group_sequence;
+        					}
+        				}
+        			}
 					h = $(el).outerHeight();
         			if (!opt.isInner || sequence == 'top-bottom-only') {
                     	if(offset.top + h/2 >= e.pageY) {
@@ -321,7 +332,6 @@
 							insert_pos = "bottom";
 						}
 					}
-
 
 					if(insert_pos == "inner") {
 						t.placeEl.css({

@@ -28,9 +28,7 @@ class PageOperation extends AppModel {
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 
 		$ins_page = $current_page;
-		if($type == 'edit') {
-			return $current_page;
-		} else if($type == 'inner') {
+		if($type == 'inner') {
 			unset($ins_page['Page']['id']);
 			$ins_page['Page']['parent_id'] = $current_page['Page']['id'];
 			$ins_page['Page']['thread_num'] = $current_page['Page']['thread_num'] + 1;
@@ -41,22 +39,24 @@ class PageOperation extends AppModel {
 			// hierarchy
 			$ins_page['Authority']['hierarchy'] =$parent_page['Authority']['hierarchy'];
 		}
-		$display_sequence = $current_page['Page']['display_sequence'] + 1;
-
+		if($current_page['Page']['thread_num'] == 1) {
+			$display_sequence = 1;
+		} else {
+			$display_sequence = $current_page['Page']['display_sequence'] + 1;
+		}
 		$conditions = array(
-				'PageOperation.position_flag' => _ON,
-				'PageOperation.space_type' => $current_page['Page']['space_type'],
-				'PageOperation.thread_num >' => $current_page['Page']['thread_num'],
-				'PageOperation.lang' => array('', $lang)
+			'PageOperation.position_flag' => _ON,
+			'PageOperation.space_type' => $current_page['Page']['space_type'],
+			'PageOperation.lang' => array('', $lang)
 		);
 		if($current_page['Page']['root_id'] != 0) {
 			$conditions['PageOperation.root_id'] = $current_page['Page']['root_id'];
 		}
 		$display_sequence_results = $this->find('all', array(
-				'fields' => 'PageOperation.id, PageOperation.parent_id, PageOperation.display_sequence',
-				'recursive' => -1,
-				'conditions' => $conditions,
-				'order' => 'PageOperation.display_sequence'
+			'fields' => 'PageOperation.id, PageOperation.parent_id, PageOperation.display_sequence',
+			'recursive' => -1,
+			'conditions' => $conditions,
+			'order' => 'PageOperation.display_sequence'
 		));
 
 		$display_sequence_pages = array();
@@ -65,6 +65,7 @@ class PageOperation extends AppModel {
 			if(in_array($val['Page']['parent_id'], $parent_id_arr)) {
 				$display_sequence_pages[$val['Page']['id']] = $val;
 				$parent_id_arr[] = $val['Page']['id'];
+				var_dump($val);
 				$display_sequence = $val['Page']['display_sequence'] + 1;
 			}
 		}
@@ -75,6 +76,7 @@ class PageOperation extends AppModel {
 		$count_fields = 'MAX(PageOperation.display_sequence) as max_number';
 		$count_conditions = array(
 			'PageOperation.root_id' => $parent_page['Page']['root_id'],
+			'PageOperation.thread_num >' => 1,
 			'PageOperation.lang' => array('', $lang)
 		);
 		$result = $this->find('first', array(

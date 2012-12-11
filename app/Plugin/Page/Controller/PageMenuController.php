@@ -94,7 +94,17 @@ class PageMenuController extends PageAppController {
 		$page['Page']['id'] = $this->Page->id;
 
 		// display_sequence インクリメント処理
-		$fields = array('Page.display_sequence'=>'Page.display_sequence+1');
+		if( $page['Page']['thread_num'] == 1) {
+			// インクリメント処理
+			if(!$this->Page->incrementRootDisplaySeq($page, 1, array('not' => array('Page.id' => $page['Page']['id'])))) {
+				$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/add.004', '400');
+				return;
+			}
+		} else if(!$this->Page->incrementDisplaySeq($page, 1)) {
+			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/add.005', '400');
+			return;
+		}
+		/*$fields = array('Page.display_sequence'=>'Page.display_sequence+1');
 		$conditions = array(
 			'Page.id !=' => $page['Page']['id'],
 			'Page.root_id' => $page['Page']['root_id'],
@@ -107,7 +117,7 @@ class PageMenuController extends PageAppController {
 		if(!$ret) {
 			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/add.004', '400');
 			return;
-		}
+		}*/
 
 		$this->set('page', $page);
 		//$this->set('parent_page', $parent_page);
@@ -159,10 +169,17 @@ class PageMenuController extends PageAppController {
 			$page['Page']['display_from_date'] = '';
 		}
 		$child_pages = $this->Page->findChilds('all', $current_page, $user_id);
-		$fieldList = array('page_name', 'permalink', 'display_from_date', 'display_to_date', 'display_apply_subpage');
-		foreach($fieldList as $field) {
+		if($current_page['Page']['thread_num'] == 2 && $current_page['Page']['display_sequence'] == 1) {
+			// ページ名称のみ変更を許す
+			$fieldList = array('page_name');
+		} else {
+			$fieldList = array('page_name', 'permalink', 'display_from_date', 'display_to_date', 'display_apply_subpage');
+		}
+		foreach($fieldList as $key => $field) {
 			if(isset($page['Page'][$field])) {
 				$current_page['Page'][$field] = $page['Page'][$field];
+			} else {
+				unset($fieldList[$key]);
 			}
 		}
 		$current_page['parentPage'] = $parent_page['Page'];
@@ -173,7 +190,6 @@ class PageMenuController extends PageAppController {
 			'active_page_id' => $current_page['Page']['id']
 		);
 		$thread_pages = $this->Page->afterFindMenu($child_pages, $fetch_params);
-
 		if ($this->Page->validates(array('fieldList' => $fieldList))) {
 			// 子供の更新処理
 			if(!$this->PageMenu->childsUpdate($child_pages, $current_page)) {
@@ -381,7 +397,7 @@ class PageMenuController extends PageAppController {
 		$child_drag_pages = $this->Page->findChilds('all', $drag_page, $user_id);
 		$last_drag_page = $drag_page;
 		foreach($child_drag_pages as $child_page) {
-			if(!$this->PageMenu->validatorPageDetail($this->request, $child_page)) {
+			if(!$this->PageMenu->validatorPageDetail($this->request, $child_page, null, $admin_hierarchy)) {
 				return;
 			}
 			$drag_page_id_arr[] = $child_page['Page']['id'];
@@ -442,7 +458,16 @@ if($drag_page['Page']['room_id'] != $drop_page['Page']['room_id']) {
 		$drop_parent_id = $drop_page['Page']['parent_id'];
 
 		$drop_room_id = $insert_parent_page['Page']['room_id'];
-		if($position == 'inner' || $position == 'bottom') {
+		if($drag_page['Page']['thread_num'] == 1) {
+			if($position == 'bottom') {
+				$display_sequence = $drop_page['Page']['display_sequence'] + 1;
+			} else {
+				$display_sequence = $drop_page['Page']['display_sequence'] - 1;
+				if($display_sequence == 0) {
+					$display_sequence = 1;
+				}
+			}
+		} else if($position == 'inner' || $position == 'bottom') {
 			// ノード中のもっとも多いdisplay_sequenceのPageを取得
 			$insert_page = $drop_page;
 			if(count($child_drop_pages) > 0) {
@@ -476,11 +501,13 @@ if($drag_page['Page']['room_id'] != $drop_page['Page']['room_id']) {
 		$currentFieldList = array();
 		$permalink_arr = explode('/', $drag_page['Page']['permalink']);
 		if($insert_parent_page['Page']['permalink'] != '') {
-			$drag_page['Page']['permalink'] = $insert_parent_page['Page']['permalink'] . '/' . $permalink_arr[count($permalink_arr)-1];
-			$currentFieldList[] = 'permalink';//"'".$insert_parent_page['Page']['permalink'] . '/' . $permalink_arr[count($permalink_arr)-1]."'";
+			$permalink = $insert_parent_page['Page']['permalink'] . '/' . $permalink_arr[count($permalink_arr)-1];
 		} else {
-			$drag_page['Page']['permalink'] = $permalink_arr[count($permalink_arr)-1];
-			$currentFieldList[] = 'permalink';//"'".$permalink_arr[count($permalink_arr)-1]."'";
+			$permalink = $permalink_arr[count($permalink_arr)-1];
+		}
+		if($permalink != $drag_page['Page']['permalink']) {
+			$drag_page['Page']['permalink'] = $permalink;
+			$currentFieldList[] = 'permalink';
 		}
 		if($drop_parent_id != $drag_page['Page']['parent_id']) {
 			$drag_page['Page']['parent_id'] = $drop_parent_id;
@@ -488,52 +515,58 @@ if($drag_page['Page']['room_id'] != $drop_page['Page']['room_id']) {
 		}
 
 		$fields = array();
-		if($display_sequence != $drag_page['Page']['display_sequence']) {
-			$fields['Page.display_sequence'] = 'Page.display_sequence+('.($display_sequence - $drag_page['Page']['display_sequence']).')';
-		}
-		if($drop_thread_num != $drag_page['Page']['thread_num']) {
-			$fields['Page.thread_num'] = 'Page.thread_num+('.($drop_thread_num - $drag_page['Page']['thread_num']).')';
-			$drag_page['Page']['thread_num'] = $insert_parent_page['Page']['thread_num'] + 1;	// バリデートで使用するため
-		}
-		if($drop_root_id != $drag_page['Page']['root_id']) {
-			$fields['Page.root_id'] = $drop_root_id;
-		}
-		if($drop_space_type != $drag_page['Page']['space_type']) {
-			$fields['Page.space_type'] = $drop_space_type;
-			$drag_page['Page']['space_type'] = $drop_space_type;	// バリデートで使用するため
-		}
-		if($drop_room_id != $drag_page['Page']['room_id']) {
-			$fields['Page.room_id'] = $drop_room_id;
-		}
-
-		if(!$this->Page->save($drag_page, true, $currentFieldList)) {
-			$error = '';
-			foreach($this->Page->validationErrors as $field => $errors) {
-				if($field == 'permalink') {
-					$error .= __('Permalink'). ':';
-				}
-				$error .= $errors[0];	// 最初の１つめ
+		if($drag_page['Page']['thread_num'] != 1) {
+			if($display_sequence != $drag_page['Page']['display_sequence']) {
+				$fields['Page.display_sequence'] = 'Page.display_sequence+('.($display_sequence - $drag_page['Page']['display_sequence']).')';
 			}
-			echo $error;
-			$this->render(false, 'ajax');
-			return;
+			if($drop_thread_num != $drag_page['Page']['thread_num']) {
+				$fields['Page.thread_num'] = 'Page.thread_num+('.($drop_thread_num - $drag_page['Page']['thread_num']).')';
+				$drag_page['Page']['thread_num'] = $insert_parent_page['Page']['thread_num'] + 1;	// バリデートで使用するため
+			}
+			if($drop_root_id != $drag_page['Page']['root_id']) {
+				$fields['Page.root_id'] = $drop_root_id;
+			}
+			if($drop_space_type != $drag_page['Page']['space_type']) {
+				$fields['Page.space_type'] = $drop_space_type;
+				$drag_page['Page']['space_type'] = $drop_space_type;	// バリデートで使用するため
+			}
+			if($drop_room_id != $drag_page['Page']['room_id']) {
+				$fields['Page.room_id'] = $drop_room_id;
+			}
+		} else if($display_sequence != $drag_page['Page']['display_sequence']) {
+			$drag_page['Page']['display_sequence'] = $display_sequence;
+			$currentFieldList[] = 'display_sequence';
+		}
+		if(count($currentFieldList) > 0) {
+			if(!$this->Page->save($drag_page, true, $currentFieldList)) {
+				$error = '';
+				foreach($this->Page->validationErrors as $field => $errors) {
+					if($field == 'permalink') {
+						$error .= __('Permalink'). ':';
+					}
+					$error .= $errors[0];	// 最初の１つめ
+				}
+				echo $error;
+				$this->render(false, 'ajax');
+				return;
+			}
 		}
 
 		if(count($fields) > 0) {
 			$conditions = array(
-					'Page.id' => $drag_page_id_arr
+				'Page.id' => $drag_page_id_arr
 			);
 			$ret = $this->Page->updateAll($fields, $conditions);
 			if(!$ret) {
 				$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/chgsequence.003', '400');
 				return;
 			}
-		}
 
-		// カレント、子供、固定リンク,公開日付の更新
-		if(!$this->PageMenu->childsUpdate($child_drag_pages, $drag_page, $insert_parent_page)) {
-			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/chgsequence.004', '400');
-			return;
+			// カレント、子供、固定リンク,公開日付の更新
+			if(!$this->PageMenu->childsUpdate($child_drag_pages, $drag_page, $insert_parent_page)) {
+				$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/chgsequence.004', '400');
+				return;
+			}
 		}
 
 		/*
@@ -545,18 +578,30 @@ if($drag_page['Page']['room_id'] != $drop_page['Page']['room_id']) {
 		 */
 
 		//$display_sequence = $insert_page['Page']['display_sequence'];
-		// インクリメント処理
-		if(!$this->Page->incrementDisplaySeq($insert_page, count($child_drag_pages) + 1, array('not' => array('Page.id' => $drag_page_id_arr)))) {
-			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/chgsequence.006', '400');
-			return;
-		}
+		if( $drag_page['Page']['thread_num'] == 1) {
+			// インクリメント処理
+			if(!$this->Page->incrementRootDisplaySeq($drop_page, 1, array('not' => array('Page.id' => $drag_page['Page']['id'])))) {
+				$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/chgsequence.005', '400');
+				return;
+			}
+			// 移動元 前詰め処理
+			if(!$this->Page->decrementRootDisplaySeq($drag_page, 1, array('not' => array('Page.id' => array($drop_page['Page']['id'], $drag_page['Page']['id']))))) {
+				$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/chgsequence.006', '400');
+				return;
+			}
+		} else {
+			// インクリメント処理
+			if(!$this->Page->incrementDisplaySeq($insert_page, count($child_drag_pages) + 1, array('not' => array('Page.id' => $drag_page_id_arr)))) {
+				$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/chgsequence.007', '400');
+				return;
+			}
 
-		// 移動元 前詰め処理
-		if(!$this->Page->decrementDisplaySeq($last_drag_page, count($child_drag_pages) + 1)) {	//, array('not' => array('Page.id' => $drag_page_id_arr))
-			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/chgsequence.005', '400');
-			return;
+			// 移動元 前詰め処理
+			if(!$this->Page->decrementDisplaySeq($last_drag_page, count($child_drag_pages) + 1)) {	//, array('not' => array('Page.id' => $drag_page_id_arr))
+				$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/chgsequence.008', '400');
+				return;
+			}
 		}
-
 		//
 		// TODO:異なるルームへの移動
 		//

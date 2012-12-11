@@ -28,7 +28,7 @@
 .pages-menu-top {
 	position: absolute;
 	height: 34px;
-    left: 8px;
+    left: 12px;
     margin: 0;
     position: absolute;
     top: 1px;
@@ -88,7 +88,7 @@ input.pages-menu-edit-title {
 }
 
 /* ボタン */
-.pages-menu-edit-btn {
+#pages-menu-edit-btn {
 	display: block;
     padding: 10px;
     position: absolute;
@@ -115,6 +115,7 @@ input.pages-menu-edit-title {
 .pages-menu-add-btn-disable,.pages-menu-add-btn-disable:hover {
 	background: url(../../img/icons/base/add_file.gif) no-repeat 10px center !important;
 	color: #cccccc !important;
+	cursor:auto;
 }
 
 .pages-menu-edit-operation {

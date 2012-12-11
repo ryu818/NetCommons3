@@ -8,7 +8,7 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 ;(function($) {
-	$.fn.PageMenu = function(is_edit, active_page_id) {
+	$.fn.PageMenu = function(is_edit, active_page_id, active_tab) {
 		var tab = this;
 
 		var active_li;
@@ -16,15 +16,33 @@
 			active          : active_page_id,
 			activeItemClass : 'highlight'
 		};
+		var sel_active_tab = active_tab;
 
-		var root_menu = $('#pages-menu-page');
+		var root_menu = $('#pages-menu-page, #pages-menu-community');
 		if(!(is_edit)) {
 			options['singleHandleClass'] = 'pages-menu-dd-single';
 			options['contentClass'] = 'pages-menu-handle';
 		} else {
 			options['contentClass'] = 'dd-drag-content';
 		}
-		$('#pages-menu-tab').tabs();
+		$('#pages-menu-tab').tabs({
+			active: active_tab,
+			activate: function( event, ui ) {
+				if(ui['newPanel'].attr('id') == 'pages-menu-page') {
+					active_tab = 0;
+				} else {
+					active_tab = 1;
+				}
+				if(is_edit) {
+					var is_chief = active_li.data('is-chief');
+					if(sel_active_tab != active_tab) {
+						$('#pages-menu-add-btn').addClass('pages-menu-add-btn-disable');
+					} else if(is_chief) {
+						$('#pages-menu-add-btn').removeClass('pages-menu-add-btn-disable');
+					}
+				}
+			}
+		});
 
 		// ページ移動
 		root_menu.nestable(options)
@@ -94,6 +112,10 @@
  			});
  			return ret;
 		});
+		// ページ編集切替
+		$('#pages-menu-edit-btn').on('ajax:before', function(e, url) {
+			return url + '&active_tab=' + active_tab;
+		});
 		if(is_edit) {
 			active_li = $('#pages-menu-edit-item-' + active_page_id);
 
@@ -141,7 +163,7 @@
 			});
 
 			// ページ削除
-			$(tab).on('ajax:before','.pages-menu-delete-icon',function(e, url) {
+			root_menu.on('ajax:before','.pages-menu-delete-icon',function(e, url) {
 				var li = $($(e.target).data('ajax-data')),page_id = li.data('id');
 				var a = $('a.pages-menu-edit-title:first', li), title = $.trim(a.html());
 				var ok = __('Ok') ,cancel = __('Cancel');
@@ -184,7 +206,7 @@
 			});
 
 			// ページ詳細編集画面表示
-			$(tab).on('ajax:before','[data-page-edit-id]',function(e, url) {
+			root_menu.on('ajax:before','[data-page-edit-id]',function(e, url) {
 			    var page_id = $(this).data('page-edit-id');
 				var detail = $('#pages-menu-edit-detail-' + page_id);
 				if(detail.css('display') != 'none') {
@@ -211,7 +233,7 @@
 			});
 
 			// ページ編集
-			$(tab).on('ajax:before','form',function(e, url) {
+			root_menu.on('ajax:before','form',function(e, url) {
 				var focus_input = $(':focus', $(e.target));
 				if(focus_input.attr('type') == 'text' && focus_input.attr('name') != "data[Page][page_name]") {
 					// ページ名称以外のtextではsubmitさせない。IE8、9ではOKボタンに遷移しているため、動作しない。
@@ -235,7 +257,7 @@
 			});
 
 			// ページ公開・非公開
-			$(tab).on('click','.pages-menu-display-flag',function(e) {
+			root_menu.on('click','.pages-menu-display-flag',function(e) {
 				var li = $(this).parents('li:first');
 				var parentli = li.parents('li:first');
 				if(parentli.get(0)) {
@@ -277,7 +299,7 @@
 			});
 
 			// コンテンツクリックイベント
-			$(tab).on('click','.pages-menu-edit-content',function(e) {
+			root_menu.on('click','.pages-menu-edit-content',function(e) {
 				var content = $(this);
 				active_li = content.parents('li:first');
 
@@ -296,6 +318,7 @@
 				} else {
 					$('#pages-menu-add-btn').removeClass('pages-menu-add-btn-disable');
 				}
+				sel_active_tab = active_tab;
 
 				e.preventDefault();
 				e.stopPropagation();
