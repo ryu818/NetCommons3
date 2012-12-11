@@ -183,7 +183,8 @@ class PageMenuController extends PageAppController {
 			}
 		}
 		$current_page['parentPage'] = $parent_page['Page'];
-		$this->Page->set($current_page);
+		$ins_page = array('Page' => $this->Page->setPageName($current_page['Page'], _ON));
+		$this->Page->set($ins_page);
 
 		// 編集ページ以下のページ取得
 		$fetch_params = array(
@@ -198,7 +199,7 @@ class PageMenuController extends PageAppController {
 			}
 
 			// 登録処理
-			if (!$this->Page->save($page, false, $fieldList)) {
+			if (!$this->Page->save($ins_page, false, $fieldList)) {
 				$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/edit.004', '400');
 				return;
 			}
