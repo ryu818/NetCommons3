@@ -210,8 +210,9 @@ class AppController extends Controller {
 		}
 		$this->set('sub_message', __('The page will be automatically reloaded.If otherwise, please click <a href="%s">here</a>.'));
 		if($exit) {
+			$this->autoLayout = true;
 			$this->render(false, $layout);
-			$this->response->send();
+			echo $this->response->body();
 			$this->_stop();
 		} else {
 			$this->render(false, $layout);
