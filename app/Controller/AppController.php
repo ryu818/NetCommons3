@@ -172,10 +172,11 @@ class AppController extends Controller {
  * @param string  $status           Optional HTTP status code (eg: 404) default: 200
  * @param integer $pause            リダイレクト画面表示時間(秒) default 2秒
  * @param string  $layout			レイアウト名称
+ * @param boolean $stop 			処理を終了するかどうか
  * @return void Renders flash layout
  * @link http://book.cakephp.org/2.0/en/controllers.html#Controller::flash
  */
-	public function flash($message, $url, $error_id_str = '', $status = '200', $pause = 2, $layout = 'flash') {
+	public function flash($message, $url, $error_id_str = '', $status = '200', $pause = 2, $layout = 'flash', $exit = true) {
 		$this->autoRender = false;
 
 		///404 Not Found 403 Forbidden 400 Bad Request
@@ -208,7 +209,13 @@ class AppController extends Controller {
 			$this->set('error_id_str', '');
 		}
 		$this->set('sub_message', __('The page will be automatically reloaded.If otherwise, please click <a href="%s">here</a>.'));
-		$this->render(false, $layout);
+		if($exit) {
+			$this->render(false, $layout);
+			$this->response->send();
+			$this->_stop();
+		} else {
+			$this->render(false, $layout);
+		}
 	}
 
 /**
