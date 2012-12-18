@@ -1019,7 +1019,7 @@
 				params,
 				function(res){
 					if($.trim(res) == 'true') {
-						////location.reload(true);
+						location.reload(true);
 					} else {
 						// 確認メッセージ表示
 						var ok = __('Ok') ,cancel = __('Cancel');
