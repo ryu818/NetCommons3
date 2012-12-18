@@ -69,13 +69,15 @@ class AnnouncementOperationsComponent extends Object {
  *
  * @param   array 移動元ブロック $block
  * @param   array 移動先ブロック $block
+ * @param   array 移動元ブロック $content
+ * @param   array 移動先ブロック $content
  * @param   array 移動元ページ   $page
  * @param   array 移動先ページ   $page
  * @return  void
  * @since
  * @access  public
  */
-//	public function shortcut($from_block, $to_block, $from_page, $to_page) {
+//	public function shortcut($from_block, $to_block, $from_content, $to_content, $from_page, $to_page) {
 //		return true;
 //	}
 
@@ -85,17 +87,19 @@ class AnnouncementOperationsComponent extends Object {
  *
  * @param   array 移動元ブロック $block
  * @param   array 移動先ブロック $block
+ * @param   array 移動元ブロック $content
+ * @param   array 移動先ブロック $content
  * @param   array 移動元ページ   $page
  * @param   array 移動先ページ   $page
  * @return  void
  * @since
  * @access  public
  */
-	public function paste($from_block, $to_block, $from_page, $to_page) {
-		$htmlarea = $this->Htmlarea->findByMasterId($from_block['Content']['master_id']);
+	public function paste($from_block, $to_block, $from_content, $to_content, $from_page, $to_page) {
+		$htmlarea = $this->Htmlarea->findByContentId($from_content['Content']['id']);
 		if(isset($htmlarea['Htmlarea'])) {
 			unset($htmlarea['Htmlarea']['id']);
-			$htmlarea['Htmlarea']['content_id'] = $to_block['Content']['master_id'];
+			$htmlarea['Htmlarea']['content_id'] = $to_content['Content']['id'];
 			if(!$this->Htmlarea->save($htmlarea, false)) {
 				return false;
 			}
@@ -108,13 +112,14 @@ class AnnouncementOperationsComponent extends Object {
  * 移動実行時に呼ばれる関数
  *
  * @param   array 移動元ブロック $block
+ * @param   array 移動元コンテンツ $content
  * @param   array 移動元ページ   $page
  * @param   array 移動先ページ   $page
  * @return  void
  * @since
  * @access  public
  */
-//	public function move($from_block, $from_page, $to_page) {
+//	public function move($from_block, $from_content, $from_page, $to_page) {
 //		return true;
 //	}
 /**

@@ -1,6 +1,9 @@
 <?php
+if(isset($nc_error_flag) && $nc_error_flag) {
+	$cancel_class_name = 'nc-cancel-toolbox';
+}
 /* 削除アクションがあるかどうか */
-if($page['Page']['room_id'] != $block['Content']['room_id']) {
+if($page['Page']['room_id'] != $block['Content']['room_id'] || !$block['Content']['is_master']) {
 	$all_delete = _OFF;	// ショートカット
 } else {
 	App::uses($block['Module']['dir_name'].'OperationsComponent', 'Plugin/'.$block['Module']['dir_name'].'/Controller/Component');
@@ -34,7 +37,8 @@ if($is_edit) {
 		<span id="nc-block-header-page-name<?php echo($id); ?>" class="nc-block-header-page-name">
 			<?php echo($block['Block']['title']); ?>
 		</span>
-		<ul class="nc-block-toolbox">
+		<ul class="nc-block-toolbox<?php if(isset($cancel_class_name)){ echo(' '. $cancel_class_name); }?>">
+			<?php if(!isset($cancel_class_name)): ?>
 			<li class="<?php echo($edit_class_name); ?>">
 				<?php
 				$controller_arr = explode('/', $controller_action, 2);
@@ -46,17 +50,34 @@ if($is_edit) {
 				echo $this->Html->link('', array('block_id' => $block_id, 'plugin' => $plugin, 'controller' => $controller, 'action' => $action, '#' => $id),
 					array(
 						'title' => $title,
-						'class' => 'link ',
+						'class' => 'nc-block-toolbox-link',
 						'data-pjax' => '#'.$id
 					)
 				); ?>
 			</li>
 			<li class="nc-block-header-list-icon">
-				<a href="#" title="<?php echo(__('Operation'));?>" class="link">
+				<a href="#" onclick="$('#nc-block-header-operation<?php echo($id); ?>').toggle();return false;" title="<?php echo(__('Operation'));?>" class="nc-block-toolbox-link">
 				</a>
+				<div id="nc-block-header-operation<?php echo($id); ?>" class="nc-drop-down">
+					<ul>
+						<li>
+							<?php
+								/* TODO:lock_authority_idが入力されているロックされたブロックはコピー不可とする */
+								echo $this->Html->link(__('Copy'), array('plugin' => 'block', 'controller' => 'block_operation', 'action' => 'copy', 'block_id' => $block['Block']['id']),
+								array('title' => __('Copy'), 'id' => 'nc-block-header-copy'.$id, 'class' => 'link hover-highlight','data-ajax' => '', 'data-ajax-type' => 'post'));
+							?>
+						</li>
+						<li>
+							<a class="link hover-highlight" href="#">
+								<?php /* TODO:未実装 */ echo(__('Contents list'));?>
+							</a>
+						</li>
+					</ul>
+				</div>
 			</li>
+			<?php endif; ?>
 			<li class="nc-block-header-close-icon">
-				<a href="#" onclick="$.PagesBlock.delBlockConfirm(event, <?php echo($block['Block']['id']); ?>, <?php echo($all_delete); ?>,'<?php $title = (!empty($block['Block']['title'])) ? h($block['Block']['title']) : __('Block'); $confirm = __('Deleting %s. <br />Are you sure to proceed?', $title); echo($confirm);?>'); return false;" title="<?php echo(__('Delete'));?>" class="link">
+				<a href="#" onclick="$.PagesBlock.delBlockConfirm(event, <?php echo($block['Block']['id']); ?>, <?php echo($all_delete); ?>,'<?php $title = (!empty($block['Block']['title'])) ? h($block['Block']['title']) : __('Block'); $confirm = __('Deleting %s. <br />Are you sure to proceed?', $title); echo($confirm);?>'); return false;" title="<?php echo(__('Delete'));?>" class="nc-block-toolbox-link">
 				</a>
 			</li>
 		</ul>

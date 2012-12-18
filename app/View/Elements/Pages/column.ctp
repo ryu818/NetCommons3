@@ -7,7 +7,7 @@
 			foreach ($block_col as $row => $block) {
 
 				if(empty($block['Block']['hierarchy'])) {
-					$block['Block']['hierarchy'] = NC_AUTH_OTHER;
+					$block['Block']['hierarchy'] = $page['Authority']['hierarchy'];
 				}
 				$params = array('block_type' => 'active-blocks', 'block_id' => $block['Block']['id']);
 				if(!empty($this->params['active_plugin']) && $block['Block']['id'] == $this->params['block_id']) {

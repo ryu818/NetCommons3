@@ -1,9 +1,13 @@
 <?php
 $nc_mode = $this->Session->read(NC_SYSTEM_KEY.'.mode');
 $content = $this->fetch('content');
-if($content == '' && $hierarchy < NC_AUTH_MIN_CHIEF) {
-	// コンテンツが空で、主坦以下の権限ならば、非表示にする。
-	return;
+if($content == '') {
+	if($hierarchy < NC_AUTH_MIN_CHIEF) {
+		// コンテンツが空で、主坦以下の権限ならば、非表示にする。
+		return;
+	}
+	$content = __('Content not found.');
+	$this->assign('content', $content);
 }
 if($block['Block']['controller_action'] == 'group') {
 	$class_name = 'nc-group';
@@ -62,6 +66,13 @@ if(count($this->params->query) > 0) {
 ?>
 <div id="<?php echo($id); ?>" class="<?php echo($class_name); ?>"<?php echo($block['Block']['margin_style']); ?> data-block='<?php echo($block['Block']['id']); ?>' data-action='<?php echo($block['Block']['controller_action']); ?>' data-url='<?php echo(h($current_url)); ?>'<?php echo($attr); ?>>
 	<div class="<?php if(isset($parent_class_name)): ?><?php echo($parent_class_name.' '); ?><?php endif; ?><?php echo($block['Block']['theme_name']); ?> nc-frame table"<?php echo($block['Block']['style']); ?>>
+		<?php if($hierarchy >= NC_AUTH_MIN_CHIEF && !isset($nc_error_flag)): ?>
+			<?php if($page['Page']['room_id'] != $block['Content']['room_id']): ?>
+				<div class="nc-block-header-shortcut nc-block-header-shortcut-show"><div></div></div>
+			<?php elseif(!$block['Content']['is_master']): ?>
+				<div class="nc-block-header-shortcut nc-block-header-shortcut-edit"><div></div></div>
+			<?php endif; ?>
+		<?php endif; ?>
 		<?php /* ブロックヘッダー */ ?>
 		<?php if($nc_mode == NC_BLOCK_MODE && $hierarchy >= NC_AUTH_MIN_CHIEF): ?>
 			<?php echo($this->element('Frame/block_header')); ?>

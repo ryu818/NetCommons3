@@ -91,11 +91,22 @@ class PagesController extends AppController {
 			}
 		}
 
+		// コピーコンテンツ
+		$copy_content = null;
+		$copy_content_id = $this->Session->read('Blocks.'.'copy_content_id');
+		if(!empty($copy_content_id)) {
+			$copy_content = $this->Content->findById($copy_content_id);
+			if(!isset($copy_content['Content'])) {
+				$copy_content = null;
+			}
+		}
+
 		$this->set("blocks", $blocks);
 		$this->set("pages", $pages);
 		$this->set("page_id_arr", $this->page_id_arr);
 		$this->set('page_style', $page_style['PageStyle']);
 		$this->set("add_modules", $add_modules);
+		$this->set("copy_content", $copy_content );
 
 		//$this->render('responsive');
 	}

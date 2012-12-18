@@ -67,7 +67,7 @@
 					if(target) {
 						var res_target = $(target);
 						$(target).html(res);
-					} else {
+					} else if(replace_target) {
 						var res_target = $(res);
 						$(replace_target).replaceWith(res_target);
 					}
@@ -125,7 +125,7 @@
 						if(target) {
 							var res_target = $(target);
 							$(target).html(res);
-						} else {
+						} else if(replace_target) {
 							var res_target = $(res);
 							$(replace_target).replaceWith(res_target);
 						}
@@ -231,6 +231,28 @@
 			});
 
  		},
+
+ 		// エラーダイアログ表示
+ 		showErrorDialog : function(error_str, params, target) {
+			var ok = __('Ok');
+			var body = '<div class="error-message">' + error_str + '</div>', _buttons = {}, pos;
+
+			_buttons[ok] = function(){
+				$( this ).remove();
+			};
+			var default_params = {
+				resizable: false,
+	            modal: true,
+		        //position:,
+		        buttons: _buttons
+			}
+			if(target) {
+				pos = $(target).offset();
+				default_params['position'] = [pos.left + 5 - $(window).scrollLeft() ,pos.top + 5 - $(window).scrollTop()];
+			}
+			params = $.extend({}, default_params);
+			$('<div></div>').html(body).dialog(params);
+		},
 
 		// ・$this->Form-inputでselector指定した場合のアラート表示をform中のエレメントが変更されたら削除する
 		// ・エラーがおこった最初のエレメントにフォーカスを移動する。

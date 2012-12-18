@@ -14,8 +14,8 @@
  */
 class BlockController extends BlockAppController {
 
-	public $components = array('Block.BlockMove', 'CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF));
-	public $uses = array('Block.BlockOperation');
+	public $components = array('Block.BlockMove', 'CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF, 'checkOrder' => array("request", "url")));
+	public $uses = array('Block.BlockMoveOperation');
 
 	public $nc_block = array();
 	public $nc_page = array();
@@ -29,108 +29,224 @@ class BlockController extends BlockAppController {
 	public function beforeFilter()
 	{
 		parent::beforeFilter();
-		if($this->action == 'add_block') {
+		if(empty($this->request->params['requested']) && $this->action == 'add_block') {
 			$this->CheckAuth->chkBlockId = false;
+		} else if(($this->action == 'add_block' || $this->action == 'insert_row') && !empty($this->request->params['requested'])) {
+			$this->CheckAuth->chkMovedPermanently = false;
 		}
 	}
 
 /**
  * ブロック追加
+ * ブロック操作 - ペースト、ショットカット作成処理
  * @param   void
  * @return  void
  * @since   v 3.0.0.0
  */
 	public function add_block() {
 		$user_id = $this->Auth->user('id');
-		$page_id = $this->request->data['page_id'];
+		$page = $this->nc_page;
+		$page_id = $page['Page']['id'];
 		$module_id = $this->request->data['module_id'];
 		$show_count = $this->request->data['show_count'];
-		$page = $this->Page->findAuthById(intval($page_id), $user_id);
+		$pre_page = $page;
+		$copy_block_id = intval($this->Session->read('Blocks.'.'copy_block_id'));
+		$copy_content_id = intval($this->Session->read('Blocks.'.'copy_content_id'));
+		$shortcut_flag = isset($this->request->data['shortcut_flag']) ? $this->request->data['shortcut_flag'] : null;
 
-		if(!$page || $page['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
-			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), null, 'add_block.001', '403');
+		if(!empty($this->request->params['requested']) && !empty($copy_block_id)) {
+			$block = $this->Block->findById($copy_block_id);	// 再取得
+			$pre_page = $this->Page->findAuthById(intval($block['Block']['page_id']), $user_id);
+			if(!$pre_page || $pre_page['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
+				$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), null, 'add_block.001', '403');
+				return;
+			}
+			$content = array('Content' => $this->nc_block['Content']);
+			$ret_validator = $this->BlockMove->validatorRequestContent($content, $pre_page, $page);
+			if($ret_validator !== true) {
+				// error
+				$this->flash($ret_validator, null, 'add_block.002', '400');
+				return;
+			}
+		}
+
+		if (!isset($this->request->data) || !isset($this->request->data['show_count']) || !isset($this->request->data['module_id'])
+				|| !isset($this->request->data['page_id'])) {
+			// Error
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'add_block.003', '400');
 			return;
 		}
 
-		if($page['Page']['show_count'] != $show_count) {
-			$this->flash(__d('block', 'Because of the possibility of inconsistency happening, update will not be executed. <br /> Please redraw and update again.'), null, 'add_block.002', '400');
+		if(!$page || $page['Page']['show_count'] != $show_count) {
+			$this->flash(__d('block', 'Because of the possibility of inconsistency happening, update will not be executed. <br /> Please redraw and update again.'), null, 'add_block.004', '400');
 			return;
 		}
 
 		$module = $this->Module->findById($module_id);
 		if(!$module) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'add_block.003', '400');
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'add_block.005', '400');
 			return;
 		}
 
 		// TODO: そのmoduleが該当ルームに貼れるかどうかのチェックが必要。
 		// グループ化ブロック（ショートカット）ならば、該当グループ内のmoduleのチェックが必要。
-		// はりつけたあと、表示されませんで終わらす方法も？？？
+		// はりつけたあと、表示されませんで終わらす方法も？？？ -> グループ化ブロックはペースト不可
 
-		$ins_content['Content'] = array(
-				'module_id' => $module['Module']['id'],
-				'title' => $module['Module']['module_name'],
-				'is_master' => _ON,
-				'room_id' => $page['Page']['room_id'],
-				'accept_flag' => NC_ACCEPT_FLAG_ON,
-				'url' => ''
-		);
-		$ins_ret = $this->Content->save($ins_content);
-		if(!$ins_ret) {
-			$this->flash(__('Failed to register the database, (%s).', 'contents'), null, 'add_block.004', '400');
-			return;
+		if(isset($shortcut_flag) && $page['Page']['room_id'] == $content['Content']['room_id']) {
+			// コンテンツのルームが同じならば、ルーム権限を付与していないショートカットへ
+			$shortcut_flag = _OFF;
 		}
-		$last_content_id = $this->Content->id;
+
+		if(!empty($this->request->params['requested']) && !empty($copy_block_id)) {
+				//(isset($shortcut_flag) || $pre_page['Page']['room_id'] != $content['Content']['room_id'] || !$content['Content']['is_master'])) {
+
+			$master_content = $content;
+			if(!$content['Content']['is_master']) {
+				$master_content = $this->Content->findById($content['Content']['master_id']);
+			}
+		   /** ペースト、ショートカットのペースト,ショートカットの作成
+			* ・権限が付与されていないショートカットのペーストか、権限が付与されていないショートカットの作成
+			* 		Block.content_id 新規に取得しないで、ショートカット元のcontent_idを付与
+			* 		Contentは追加しない。
+			*  ・ペースト、ショートカットの作成（表示中のルーム権限より閲覧・編集権限を付与する。）
+			* 		Contentは新規追加するが、ショートカット元のContentの中身(title,is_master, master_id,accept_flag,url)はコピー
+			* 			room_idはショートカット先のroom_id
+			*/
+			if(($pre_page['Page']['room_id'] != $room_id || !$content['Content']['is_master']) &&
+					$page['Page']['room_id'] == $master_content['Content']['room_id']) {
+				// 権限が付与されているショートカット、または、ショートカットを元のルームに戻した。
+				$ins_content = $master_content;
+				$last_content_id = $master_content['Content']['id'];
+			} else if((!isset($shortcut_flag) && $pre_page['Page']['room_id'] != $content['Content']['room_id']) ||
+					$shortcut_flag === _OFF) {
+				// 権限が付与されていないショートカットのペーストか、権限が付与されていないショートカットの作成
+				$ins_content = $content;
+				$last_content_id = $content['Content']['id'];
+			} else {
+				$ins_content = array(
+					'Content' => array(
+						'module_id' => $content['Content']['module_id'],
+						'title' => $content['Content']['title'],
+						'is_master' => ($shortcut_flag === _ON) ? _OFF : $content['Content']['is_master'],
+						'room_id' => $page['Page']['room_id'],
+						'accept_flag' => $content['Content']['accept_flag'],
+						'url' => $content['Content']['url']
+					)
+				);
+				if($shortcut_flag === _ON) {
+					// 権限が付与されたショートカットの作成
+					$ins_content['Content']['master_id'] = $content['Content']['id'];
+				}
+				$ins_ret = $this->Content->save($ins_content);
+				if(!$ins_ret) {
+					$this->flash(__('Failed to register the database, (%s).', 'contents'), null, 'add_block.006', '500');
+					return;
+				}
+				$last_content_id = $this->Content->id;
+			}
+		} else {
+			$ins_content = array(
+				'Content' => array(
+					'module_id' => $module['Module']['id'],
+					'title' => $module['Module']['module_name'],
+					'is_master' => _ON,
+					'room_id' => $page['Page']['room_id'],
+					'accept_flag' => NC_ACCEPT_FLAG_ON,
+					'url' => ''
+				)
+			);
+			$ins_ret = $this->Content->save($ins_content);
+			if(!$ins_ret) {
+				$this->flash(__('Failed to register the database, (%s).', 'contents'), null, 'add_block.007', '500');
+				return;
+			}
+			$last_content_id = $this->Content->id;
+		}
 
 		if(!isset($ins_content['Content']['master_id'])) {
 			if(!$this->Content->saveField('master_id', $last_content_id)) {
-				$this->flash(__('Failed to update the database, (%s).', 'contents'), null, 'add_block.005', '400');
+				$this->flash(__('Failed to update the database, (%s).', 'contents'), null, 'add_block.008', '500');
 				return;
 			}
 		}
 
 		$ins_block = array();
-		$ins_block = $this->BlockOperation->defaultBlock($ins_block);
+		$ins_block = $this->BlockMoveOperation->defaultBlock($ins_block);
 		$ins_block['Block'] = array_merge($ins_block['Block'], array(
-				'page_id' => $page['Page']['id'],
-				'module_id' => $module['Module']['id'],
-				'content_id' => $last_content_id,
-				'controller_action' => $module['Module']['controller_action'],
-				'theme_name' => '',
-				'root_id' => 0,
-				'parent_id' => 0,
-				'thread_num' => 0,
-				'col_num' => 1,
-				'row_num' => 1
+			'page_id' => $page['Page']['id'],
+			'module_id' => $module['Module']['id'],
+			'content_id' => $last_content_id,
+			'controller_action' => $module['Module']['controller_action'],
+			'theme_name' => '',
+			'root_id' => 0,
+			'parent_id' => 0,
+			'thread_num' => 0,
+			'col_num' => 1,
+			'row_num' => 1
 		));
+		if(!empty($this->request->params['requested']) && !empty($copy_block_id)) {
+			/** ペースト OR ショートカット作成
+			 * 	移動元のBlockの中身(title, show_title, display_flag, display_from_date,display_to_date, theme_name, temp_name, leftmargin,
+			 * 		rightmargin, topmargin,bottommargin,min_width_size,min_height_size)はコピー
+			 */
+			$ins_block['Block'] = array_merge($ins_block['Block'], array(
+				'title' => $block['Block']['title'],
+				'show_title' => $block['Block']['show_title'],
+				'display_flag' => $block['Block']['display_flag'],
+				'display_from_date' => $block['Block']['display_from_date'],
+				'display_to_date' => $block['Block']['display_to_date'],
+				'theme_name' => $block['Block']['theme_name'],
+				'temp_name' => $block['Block']['temp_name'],
+				'leftmargin' => $block['Block']['leftmargin'],
+				'rightmargin' => $block['Block']['rightmargin'],
+				'topmargin' => $block['Block']['topmargin'],
+				'bottommargin' => $block['Block']['bottommargin'],
+				'min_width_size' => $block['Block']['min_width_size'],
+				'min_height_size' => $block['Block']['min_height_size'],
+			));
+		}
 
 		$ins_ret = $this->Block->save($ins_block);
 		if(!$ins_ret) {
-			$this->flash(__('Failed to register the database, (%s).', 'blocks'), null, 'add_block.006', '400');
+			$this->flash(__('Failed to register the database, (%s).', 'blocks'), null, 'add_block.009', '500');
 			return;
 		}
 
 		//root_idを再セット
 		$last_id = $this->Block->id;
 		if(!$this->Block->saveField('root_id', $last_id)) {
-			$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_block.007', '400');
+			$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_block.010', '500');
 			return;
 		}
 
 		$ins_ret['Block']['id'] = $this->Block->id;
 		$ins_ret['Block']['root_id'] = $this->Block->id;
 		$ins_ret['Block']['row_num'] = 0;
-		$inc_ret = $this->BlockOperation->incrementRowNum($ins_ret);
+		$inc_ret = $this->BlockMoveOperation->incrementRowNum($ins_ret);
 		if(!$inc_ret) {
-			$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_block.008', '400');
+			$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_block.011', '500');
 			return;
 		}
 
 		// 表示カウント++
 		$this->Page->id = $page_id;
 		if(!$this->Page->saveField('show_count', intval($show_count) + 1)) {
-			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'add_block.009', '400');
+			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'add_block.012', '500');
 			return;
+		}
+		if($pre_page['Page']['id'] != $page['Page']['id']) {
+			// 移動元表示カウント++(ブロック移動時)
+			$this->Page->id = $pre_page['Page']['id'];
+			if(!$this->Page->saveField('show_count', intval($pre_page['Page']['show_count']) + 1)) {
+				$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'add_block.013', '500');
+				return;
+			}
+		}
+
+		if(!empty($this->request->params['requested']) && !empty($copy_block_id)) {
+			// ペースト OR ショートカット
+			$this->autoRender = false;
+			return $last_id;
 		}
 
 		$params = array('block_id' => $last_id);
@@ -164,19 +280,19 @@ class BlockController extends BlockAppController {
 		// --------------------------------------
 		// --- 前詰め処理(移動元)		      ---
 		// --------------------------------------
-		$dec_ret = $this->BlockOperation->decrementRowNum($block);
+		$dec_ret = $this->BlockMoveOperation->decrementRowNum($block);
 		if(!$dec_ret) {
-			$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'del_block.002', '400');
+			$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'del_block.002', '500');
 			return;
 		}
 
-		$count_row_num = $this->BlockOperation->findRowCount($block['Block']['page_id'], $block['Block']['parent_id'], $block['Block']['col_num']);
+		$count_row_num = $this->BlockMoveOperation->findRowCount($block['Block']['page_id'], $block['Block']['parent_id'], $block['Block']['col_num']);
 		if($count_row_num == 1) {
 			//移動前の列が１つしかなかったので
 			//列--
-			$dec_ret = $this->BlockOperation->decrementColNum($block);
+			$dec_ret = $this->BlockMoveOperation->decrementColNum($block);
 			if(!$dec_ret) {
-				$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'del_block.003', '400');
+				$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'del_block.003', '500');
 				return;
 			}
 		}
@@ -185,14 +301,14 @@ class BlockController extends BlockAppController {
 		// --- ブロック削除処理     	      ---
 		// --------------------------------------
 		if(!$this->Block->deleteBlock($block, $all_delete)) {
-			$this->flash(__('Failed to delete the database, (%s).', 'blocks'), null, 'del_block.004', '400');
+			$this->flash(__('Failed to delete the database, (%s).', 'blocks'), null, 'del_block.004', '500');
 			return;
 		}
 
 		//グループ化した空ブロック削除処理
 		if($count_row_num == 1) {
 			if(!$this->BlockMove->delGroupingBlock($block['Block']['parent_id'])) {
-				$this->flash(__('Failed to delete the database, (%s).', 'blocks'), null, 'del_block.005', '400');
+				$this->flash(__('Failed to delete the database, (%s).', 'blocks'), null, 'del_block.005', '500');
 				return;
 			}
 		}
@@ -200,7 +316,7 @@ class BlockController extends BlockAppController {
 		// 表示カウント++
 		$this->Page->id = $page_id;
 		if(!$this->Page->saveField('show_count', intval($show_count) + 1)) {
-			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'del_block.006', '400');
+			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'del_block.006', '500');
 			return;
 		}
 
@@ -210,52 +326,65 @@ class BlockController extends BlockAppController {
 
 /**
  * ブロック移動 - 行移動
+ * ブロック操作 - 移動
  * @param   void
  * @return  void
  * @since   v 3.0.0.0
  */
 	public function insert_row() {
 		$user_id = $this->Auth->user('id');
-		$insert_page = null;
 		$block = $this->nc_block;
 		$page = $this->nc_page;
 		$page_id = $page['Page']['id'];
 		$show_count = $this->request->data['show_count'];
+		$pre_page = $page;
 
-		if(isset($this->request->data['insert_page_id'])) {
-			$insert_page = $this->Page->findAuthById(intval($request->data['insert_page_id']), $user_id);
-			if(!$insert_page || $insert_page['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
+		if(!empty($this->request->params['requested'])) {
+			$pre_page = $this->Page->findAuthById(intval($block['Block']['page_id']), $user_id);
+			if(!$pre_page || $pre_page['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
 				$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), null, 'insert_row.001', '403');
+				return;
+			}
+			$content = array('Content' => $block['Content']);
+			$ret_validator = $this->BlockMove->validatorRequestContent($content, $pre_page, $page);
+			if($ret_validator !== true) {
+				// error
+				$this->flash($ret_validator, null, 'insert_row.002', '400');
 				return;
 			}
 		}
 
-		if(!$this->BlockMove->validatorRequest($this->request, $insert_page)) {
+		if(!$this->BlockMove->validatorRequest($this->request)) {
 			// Error
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'insert_row.002', '400');
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'insert_row.003', '400');
 			return;
 		}
 
 		if(!$page || $page['Page']['show_count'] != $show_count) {
-			$this->flash(__d('block', 'Because of the possibility of inconsistency happening, update will not be executed. <br /> Please redraw and update again.'), null, 'insert_row.003', '400');
+			$this->flash(__d('block', 'Because of the possibility of inconsistency happening, update will not be executed. <br /> Please redraw and update again.'), null, 'insert_row.004', '400');
 			return;
 		}
 
-		// TODO: ShowCountのチェック(insert_page_id)
-
-
-
-		$ret = $this->BlockMove->InsertRow($block, $this->request->data['parent_id'], $this->request->data['col_num'], $this->request->data['row_num'], $page, $insert_page);
+		$ret = $this->BlockMove->InsertRow($block, $this->request->data['parent_id'], $this->request->data['col_num'], $this->request->data['row_num'], $pre_page, $page);
 		if(!$ret) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'insert_row.005', '400');
+			$this->flash(__('The server encountered an internal error and was unable to complete your request.'), null, 'insert_row.005', '500');
 			return;
 		}
 
 		// 表示カウント++
 		$this->Page->id = $page_id;
 		if(!$this->Page->saveField('show_count', intval($show_count) + 1)) {
-			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'insert_row.006', '400');
+			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'insert_row.006', '500');
 			return;
+		}
+
+		if($pre_page['Page']['id'] != $page['Page']['id']) {
+			// 移動元表示カウント++(ブロック移動時)
+			$this->Page->id = $pre_page['Page']['id'];
+			if(!$this->Page->saveField('show_count', intval($pre_page['Page']['show_count']) + 1)) {
+				$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'insert_row.007', '500');
+				return;
+			}
 		}
 
 		$this->render("/Commons/true");
@@ -275,15 +404,15 @@ class BlockController extends BlockAppController {
 		$page_id = $page['Page']['id'];
 		$show_count = $this->request->data['show_count'];
 
-		if(isset($this->request->data['insert_page_id'])) {
-			$insert_page = $this->Page->findAuthById(intval($request->data['insert_page_id']), $user_id);
+		if(!empty($this->request->params['requested']) && isset($this->request->data['page_id'])) {
+			$insert_page = $this->Page->findAuthById(intval($this->request->data['page_id']), $user_id);
 			if(!$insert_page || $insert_page['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
 				$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), null, 'insert_cell.001', '403');
 				return;
 			}
 		}
 
-		if(!$this->BlockMove->validatorRequest($this->request, $insert_page)) {
+		if(!$this->BlockMove->validatorRequest($this->request)) {
 			// Error
 			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'insert_cell.002', '400');
 			return;
@@ -298,14 +427,14 @@ class BlockController extends BlockAppController {
 
 		$ret = $this->BlockMove->InsertCell($block,  $this->request->data['parent_id'], $this->request->data['col_num'], $this->request->data['row_num'], $page, $insert_page);
 		if(!$ret) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'insert_cell.005', '400');
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'insert_cell.005', '500');
 			return;
 		}
 
 		// 表示カウント++
 		$this->Page->id = $page_id;
 		if(!$this->Page->saveField('show_count', intval($show_count) + 1)) {
-			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'insert_cell.006', '400');
+			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'insert_cell.006', '500');
 			return;
 		}
 
@@ -360,7 +489,7 @@ class BlockController extends BlockAppController {
 					 $group_block['Block']['parent_id'] != $pre_block['Block']['parent_id'] ||
 					 in_array($block_id, $upd_block_id_arr)))) {
 				// グループ化する基点とpage_id,parent_id相違
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'add_group.004', '400');
+				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'add_group.004', '500');
 				return;
 			}
 			$upd_block_id_arr[] = $block_id;
@@ -405,12 +534,12 @@ class BlockController extends BlockAppController {
 				$this->Content->create();
 				$ins_ret = $this->Content->save($ins_content);
 				if(!$ins_ret) {
-					$this->flash(__('Failed to register the database, (%s).', 'contents'), null, 'add_group.005', '400');
+					$this->flash(__('Failed to register the database, (%s).', 'contents'), null, 'add_group.005', '500');
 					return;
 				}
 				$last_content_id = $this->Content->id;
 				if(!$this->Content->saveField('master_id', $last_content_id)) {
-					$this->flash(__('Failed to update the database, (%s).', 'contents'), null, 'add_group.006', '400');
+					$this->flash(__('Failed to update the database, (%s).', 'contents'), null, 'add_group.006', '500');
 					return;
 				}
 
@@ -418,13 +547,13 @@ class BlockController extends BlockAppController {
 				 * Block Insert
 				 */
 				$ins_block['Block'] = $group_block['Block'];
-				$ins_block = $this->BlockOperation->defaultBlock($ins_block);
+				$ins_block = $this->BlockMoveOperation->defaultBlock($ins_block);
 				$ins_block['Block']['content_id'] = $this->Content->id;
 				//$ins_block['Block']['title'] = __d('block', 'New group');
 
 				$ins_ret = $this->Block->save($ins_block);
 				if(!$ins_ret) {
-					$this->flash(__('Failed to register the database, (%s).', 'blocks'), null, 'add_group.007', '400');
+					$this->flash(__('Failed to register the database, (%s).', 'blocks'), null, 'add_group.007', '500');
 					return;
 				}
 				$last_id = $this->Block->id;
@@ -436,7 +565,7 @@ class BlockController extends BlockAppController {
 
 				$ins_ret = $this->Block->save($ins_ret);
 				if(!$ins_ret) {
-					$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_group.008', '400');
+					$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_group.008', '500');
 					return;
 				}
 
@@ -458,9 +587,9 @@ class BlockController extends BlockAppController {
 				$upd_blocks[$key]['Block']['row_num'] = count($pos[$col_num - 1]);
 
 				//前詰め処理(移動元)
-				$dec_ret = $this->BlockOperation->decrementRowNum($group_block);
+				$dec_ret = $this->BlockMoveOperation->decrementRowNum($group_block);
 				if(!$dec_ret) {
-					$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_group.009', '400');
+					$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_group.009', '500');
 					return;
 				}
 				//$dec_row_num--;
@@ -477,9 +606,9 @@ class BlockController extends BlockAppController {
 				if($count_row_num == 1) {
 					//移動前の列が１つしかなかったので
 					//列--
-					$dec_ret = $this->BlockOperation->decrementColNum($group_block);
+					$dec_ret = $this->BlockMoveOperation->decrementColNum($group_block);
 					if(!$dec_ret) {
-						$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_group.010', '400');
+						$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_group.010', '500');
 						return;
 					}
 				}
@@ -492,7 +621,7 @@ class BlockController extends BlockAppController {
 			//$this->Block->create($upd_blocks[$key - 1]);
 			$upd_ret = $this->Block->save($upd_blocks[$key]);
 			if(!$upd_ret) {
-				$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_group.011', '400');
+				$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_group.011', '500');
 				return;
 			}
 			//グループ化しているブロックならば,そのグループの子供を求める
@@ -510,7 +639,7 @@ class BlockController extends BlockAppController {
 		    		$block_child['Block']['thread_num'] = intval($block_child['Block']['thread_num']) + 1;
 		    		$save_ret = $this->Block->save($block_child);
 		    		if(!$save_ret) {
-						$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_group.012', '400');
+						$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_group.012', '500');
 						return;
 					}
 	    		}
@@ -520,13 +649,13 @@ class BlockController extends BlockAppController {
 		// 表示カウント++
 		$this->Page->id = $page_id;
 		if(!$this->Page->saveField('show_count', intval($show_count) + 1)) {
-			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'add_group.013', '400');
+			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'add_group.013', '500');
 			return;
 		}
 
 		$params = array('block_id' => $last_id, 'plugin' => 'group', 'controller' => 'group', 'action' => 'index');
 		echo ($this->requestAction($params, array('return')));
-		$this->render("/Commons/empty");
+		$this->render(false, 'ajax');
 	}
 /**
  * ブロックグループ化解除
@@ -604,18 +733,18 @@ class BlockController extends BlockAppController {
 
     		//親移動
 	    	if($row_count != 0) {
-			$inc_ret = $this->BlockOperation->incrementRowNum($group_block, $row_count);
+			$inc_ret = $this->BlockMoveOperation->incrementRowNum($group_block, $row_count);
 				if(!$inc_ret) {
-					$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'cancel_group.004', '400');
+					$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'cancel_group.004', '500');
 					return;
 				}
 	    	}
 			if($col_count != 0) {
 				$buf_group_block = $group_block;
 				$buf_group_block['Block']['col_num']++;
-				$inc_ret = $this->BlockOperation->incrementColNum($buf_group_block, $col_count);
+				$inc_ret = $this->BlockMoveOperation->incrementColNum($buf_group_block, $col_count);
 				if(!$inc_ret) {
-					$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'cancel_group.005', '400');
+					$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'cancel_group.005', '500');
 					return;
 				}
 			}
@@ -644,7 +773,7 @@ class BlockController extends BlockAppController {
 	    		//$this->Block->create();
 	    		$save_ret = $this->Block->save($sub_block);
 	    		if(!$save_ret) {
-					$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'cancel_group.006', '400');
+					$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'cancel_group.006', '500');
 					return;
 				}
 				//グループ化しているブロックならば,そのグループの子供を求める
@@ -663,7 +792,7 @@ class BlockController extends BlockAppController {
 			    		//$this->Block->create();
 			    		$save_ret = $this->Block->save($block_child);
 			    		if(!$save_ret) {
-							$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'cancel_group.007', '400');
+							$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'cancel_group.007', '500');
 							return;
 						}
 		    		}
@@ -674,7 +803,7 @@ class BlockController extends BlockAppController {
 		// 表示カウント++
 		$this->Page->id = $page_id;
 		if(!$this->Page->saveField('show_count', intval($show_count) + 1)) {
-			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'cancel_group.008', '400');
+			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'cancel_group.008', '500');
 			return;
 		}
 

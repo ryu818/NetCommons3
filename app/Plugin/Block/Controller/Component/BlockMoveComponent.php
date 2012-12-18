@@ -35,22 +35,47 @@ class BlockMoveComponent extends Component {
  * @param  CakeRequest $request
  * @param  Page Model $insert_page
  * @return boolean true or false
- * @access	public
+ * @since   v 3.0.0.0
  */
-	public function validatorRequest($request, $insert_page = null) {
+	public function validatorRequest($request) {
 		if (!isset($request->data) || !isset($request->data['show_count']) || !isset($request->data['parent_id'])
-			 || !isset($request->data['col_num']) || !isset($request->data['row_num'])) {
+			 || !isset($request->data['page_id'])  || !isset($request->data['col_num']) || !isset($request->data['row_num'])) {
 			// Error
 			return false;
 		}
+		return true;
+	}
 
-		$request->data['insert_page_id'] = isset($request->data['insert_page_id']) ? $request->data['insert_page_id'] : null;
-		$request->data['insert_show_count'] = isset($request->data['insert_show_count']) ? $request->data['insert_show_count'] : null;
+/**
+ * コンテンツ情報バリデータ(移動、ペースト、ショートカット作成時)
+ * <pre>
+ * ショートカットブロックの移動、ペースト、ショートカット作成を許さない
+ * （但し、ショートカット先コンテンツルームも主坦か、同じルーム内での操作であれば可能とする）
+ * </pre>
+ * @param  Content Model $content
+ * @param  Page Model $pre_page
+ * @return mixed boolean true or string Error Mes
+ * @since   v 3.0.0.0
+ */
+	public function validatorRequestContent($content, $pre_page, $page) {
+		if($pre_page['Page']['room_id'] == $page['Page']['room_id']) {
+			// 同じルーム内
+			return true;
+		}
+		$room_id = $content['Content']['room_id'];
 
-		// TODO:ショートカットの別のルームへの移動は許さない。
-		// 但し、ショートカット先コンテンツルームも主坦であれば可能とする
-		// cake13 validatorContent参照
-
+		if($pre_page['Page']['room_id'] != $room_id || !$content['Content']['is_master']) {
+			// ショートカット
+			$user_id = $this->_controller->Auth->user('id');
+			$master_content = $this->_controller->Content->findAuthById($content['Content']['master_id'], $user_id);
+			if(!isset($master_content['Content'])) {
+				// error
+				return __d('block','Because an origin of contents is deleted, You can\'t be operated.');
+			}
+			if($master_content['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
+				return __d('block','Because there is not the room editing authority of the origin of contents, You can\'t be operated.');
+			}
+		}
 		return true;
 	}
 
@@ -65,7 +90,7 @@ class BlockMoveComponent extends Component {
  * @param object  $insert_page	移動先page
  *
  * @return boolean true or false
- * @access	public
+ * @since   v 3.0.0.0
  */
 	public function InsertCell($block, $parent_id, $col_num, $row_num, $page, $insert_page=null)
 	{
@@ -76,17 +101,17 @@ class BlockMoveComponent extends Component {
 		$pre_row_num = $block['Block']['row_num'];
 		$insert_room_id = isset($insert_page['Page']['room_id']) ? $insert_page['Page']['room_id'] : null;
 
-		$pre_count_row_num = $this->_controller->BlockOperation->findRowCount($page_id, $pre_parent_id, $pre_col_num);
+		$pre_count_row_num = $this->_controller->BlockMoveOperation->findRowCount($page_id, $pre_parent_id, $pre_col_num);
 
 		//前詰め処理(移動元)
-		$result = $this->_controller->BlockOperation->decrementRowNum($block);
+		$result = $this->_controller->BlockMoveOperation->decrementRowNum($block);
 		if(!$result) {
 			return false;
 		}
 		if($pre_count_row_num == 1) {
 			//移動前の列が１つしかなかったので
 			//列--
-			$result = $this->_controller->BlockOperation->decrementColNum($block);
+			$result = $this->_controller->BlockMoveOperation->decrementColNum($block);
 			if(!$result) {
 				return false;
 			}
@@ -160,8 +185,8 @@ class BlockMoveComponent extends Component {
 		if($insert_page) {
 			$buf_block['Block']['page_id'] = $insert_page['Page']['id'];
 		}
-		
-		$result = $this->_controller->BlockOperation->incrementColNum($buf_block);
+
+		$result = $this->_controller->BlockMoveOperation->incrementColNum($buf_block);
 		if(!$result) {
 			return false;
 		}
@@ -179,29 +204,28 @@ class BlockMoveComponent extends Component {
  * @param object  $insert_page	移動先page
  *
  * @return boolean true or false
- * @access	public
+ * @since   v 3.0.0.0
  */
-	public function InsertRow($block, $parent_id, $col_num, $row_num, $page, $insert_page=null)
+	public function InsertRow($block, $parent_id, $col_num, $row_num, $page, $insert_page)
 	{
 		$id = $block['Block']['id'];
-		$page_id = $block['Block']['page_id'];
+		$pre_page_id = $block['Block']['page_id'];
 		$pre_parent_id = $block['Block']['parent_id'];
 		$pre_col_num = $block['Block']['col_num'];
 		$pre_row_num = $block['Block']['row_num'];
-		////$insert_page_id = isset($insert_page['Page']['id']) ? $insert_page['Page']['id'] : null;
 		$insert_room_id = isset($insert_page['Page']['room_id']) ? $insert_page['Page']['room_id'] : null;
 
-		$pre_count_row_num = $this->_controller->BlockOperation->findRowCount($page_id, $pre_parent_id, $pre_col_num);
+		$pre_count_row_num = $this->_controller->BlockMoveOperation->findRowCount($pre_page_id, $pre_parent_id, $pre_col_num);
 
 		//前詰め処理(移動元)
-		$result = $this->_controller->BlockOperation->decrementRowNum($block);
+		$result = $this->_controller->BlockMoveOperation->decrementRowNum($block);
 		if(!$result) {
 			return false;
 		}
 		if($pre_count_row_num == 1) {
 			//移動前の列が１つしかなかったので
 			//列--
-			$result = $this->_controller->BlockOperation->decrementColNum($block);
+			$result = $this->_controller->BlockMoveOperation->decrementColNum($block);
 			if(!$result) {
 				return false;
 			}
@@ -228,39 +252,33 @@ class BlockMoveComponent extends Component {
     		'Block.row_num'=>$row_num,
 			'Block.thread_num'=>$thread_num
     	);
-		if($insert_page) {
-
+		if($insert_page['Page']['id'] != $page['Page']['id']) {
+			// ブロック移動時
 			$fields['Block.page_id'] = $insert_page['Page']['id'];
-			$page = $this->_controller->Page->findById($page_id);
 
 			/*
 			 * ほかのルームでショートカットを作成し、それを元のルームに戻したら(移動)、ショートカットの
 			 * コンテンツを削除する。ブロックもショートカットを解除する。
 			 */
-			// TODO:後に見直し
-			/****if($block['Content']['master_id'] != $block['Block']['content_id']) {
+			if(!$block['Content']['is_master']) {	// 権限を付与したショートカット
 				$content = $this->_controller->Content->findById($block['Content']['master_id']);
 				if($content['Content']['room_id'] == $insert_room_id) {
 					// 元のルームに戻した(権限を付与してあるショートカット)
 					// ショートカット削除処理
-					// 現在のショートカットがほかのブロックで使用されていないならば削除
-					$result = $this->_controller->Content->delete($block['Block']['content_id']);
+					$result = $this->_controller->Content->delete($block['Content']['id']);
 					if(!$result) {
 						return false;
 					}
 
 					$fields['Block.content_id'] = $block['Content']['master_id'];
 				}
-			} else if($page['Page']['room_id'] != $insert_room_id) {
-				// 元のルームに戻した
-				//////$fields['Block.shortcut_flag'] = NC_SHORTCUT_FLAG_OFF;
 			}
 
 			// 移動元のPage.room_id == Content.room_idならば、移動先のコンテンツとして更新
 			if(!isset($fields['Block.content_id']) && $page['Page']['room_id'] == $block['Content']['room_id']) {
 				// Content更新
 				$content_fields = array(
-		    		'Content.room_id'=>$insert_room_id
+		    		'Content.room_id'=> $insert_room_id
 		    	);
 		    	if($block['Content']['master_id'] == $block['Block']['content_id']) {
 					$content_fields['Content.master_id'] = $block['Block']['content_id'];
@@ -272,7 +290,7 @@ class BlockMoveComponent extends Component {
 				if(!$this->_controller->Content->updateAll($content_fields, $content_conditions)) {
 					return false;
 				}
-			}*/
+			}
 		}
 		$conditions = array(
 			"Block.id" => $id
@@ -283,9 +301,6 @@ class BlockMoveComponent extends Component {
 		}
 
 		//更新したブロックの子供のroot_id更新処理
-		//if($root_id==0)
-		//	$root_id = $id;
-
 		if($block['Block']['controller_action'] == "group")
 			$this->_updRootIdByParentId($id, $root_id, $thread_num+1, $page, $insert_page);
 
@@ -300,11 +315,11 @@ class BlockMoveComponent extends Component {
 		$buf_block['Block']['parent_id'] = $parent_id;
 		$buf_block['Block']['col_num'] = $col_num;
 		$buf_block['Block']['row_num'] = $row_num - 1;
-		if($insert_page) {
+		if($insert_page['Page']['id'] != $page['Page']['id']) {
 			$buf_block['Block']['page_id'] = $insert_page['Page']['id'];
 		}
-		$result = $this->_controller->BlockOperation->incrementRowNum($buf_block);
-		
+		$result = $this->_controller->BlockMoveOperation->incrementRowNum($buf_block);
+
 		if(!$result) {
 			return false;
 		}
@@ -322,7 +337,7 @@ class BlockMoveComponent extends Component {
  * @param object  $insert_page	移動先page
  *
  * @return boolean true or false
- * @access	public
+ * @since   v 3.0.0.0
  */
 	protected function _updRootIdByParentId($parent_id, $root_id, $thread_num=0, $page, $insert_page)
 	{
@@ -374,12 +389,12 @@ class BlockMoveComponent extends Component {
 
 /**
  * グループ化した空ブロック削除処理
- * 
+ *
  * @param integer $parent_id
  * @param integer $block_id	操作対象block_id
  *
  * @return boolean true or false
- * @access	private
+ * @since   v 3.0.0.0
  */
 	public function delGroupingBlock($parent_id, $block_id = null)
 	{
@@ -403,15 +418,15 @@ class BlockMoveComponent extends Component {
 			    	$block['Block']['id'] = $block_id;
 			    }
 			    //前詰め処理(移動元)
-			    $result = $this->_controller->BlockOperation->decrementRowNum($block);
+			    $result = $this->_controller->BlockMoveOperation->decrementRowNum($block);
 				if(!$result) {
 					return false;
 				}
-				$count_row_num = $this->_controller->BlockOperation->findRowCount($block['Block']['page_id'], $block['Block']['parent_id'], $block['Block']['col_num']);
+				$count_row_num = $this->_controller->BlockMoveOperation->findRowCount($block['Block']['page_id'], $block['Block']['parent_id'], $block['Block']['col_num']);
 				if($count_row_num == 0) {
 					//削除列が１つもなくなったので
 					//列--
-					$result = $this->_controller->BlockOperation->decrementColNum($block);
+					$result = $this->_controller->BlockMoveOperation->decrementColNum($block);
 					if(!$result) {
 						return false;
 					}

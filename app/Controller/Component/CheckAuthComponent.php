@@ -51,8 +51,14 @@ class CheckAuthComponent extends Component {
 	public $prohibitionURL = NC_PROHIBITION_URL;
 
 /**
+ * パーマリンクからのPageとblock_idのはってあるページが一致しているかどうかのチェックするかどうか
+ * @var boolean
+ */
+	public $chkMovedPermanently = true;
+
+/**
  * 一般モジュールでblock_idをチェックするかどうか
- * @var string
+ * @var boolean
  */
 	public $chkBlockId = true;
 
@@ -75,7 +81,7 @@ class CheckAuthComponent extends Component {
 	public $requestPageId = "page_id";
 
 /**
- * Start InitComponent for use in the controller
+ * Start CheckAuthComponent for use in the controller
  *
  * @param Controller $controller
  * @return  void
@@ -93,7 +99,6 @@ class CheckAuthComponent extends Component {
  * @since   v 3.0.0.0
  */
 	public function startup(Controller $controller) {
-
 		$this->_setControllerParams($controller);
 
 		if (isset($controller->nc_block['Block'])) {
@@ -161,11 +166,11 @@ class CheckAuthComponent extends Component {
 			}
 
 			$page = $this->_getPage($controller, $permalink, $page_id, $user_id, $lang);
-			if($permalink != '' && isset($active_page) && $active_page['Page']['position_flag'] &&
+			if($this->chkMovedPermanently && isset($active_page) && $active_page['Page']['position_flag'] &&
 				($page === false || $page['Page']['id'] != $active_page['Page']['id'])) {
 				// パーマリンクからのPageとblock_idのはってあるページが一致しなければエラー
 				// ３０１をかえして、その後、移動後のページへ遷移させる
-				// TODO:中央カラムのみにはってあるブロックのみチェックしてあるが、ヘッダーのブロックのチェックできる
+				// TODO:中央カラムのみにはってあるブロックのみチェックしているが、ヘッダーのブロックのチェックもするべき
 				$redirect_url = preg_replace('$^'.$permalink.'$i', $active_page['Page']['permalink'], $url);
 				$controller->flash(__('Moved Permanently.'), $redirect_url, 'CheckAuth.003', '301');
 				return ;
@@ -181,11 +186,11 @@ class CheckAuthComponent extends Component {
 				return ;
 			}
 
-			if(isset($block) && !is_null($block['Block']['hierarchy'])) {
-				$controller->hierarchy = intval($block['Block']['hierarchy']);
-			} else if(!is_null($page['Authority']['hierarchy'])) {
-				$controller->hierarchy = intval($page['Authority']['hierarchy']);
-			}
+			// PageとBlockのhierarchyの低いほうをセット
+			$page_hierarchy = (isset($page) && !is_null($page['Authority']['hierarchy'])) ? intval($page['Authority']['hierarchy']) : NC_AUTH_OTHER;
+			$block_hierarchy = (isset($block) && !is_null($block['Block']['hierarchy'])) ? intval($block['Block']['hierarchy']) : $page_hierarchy;
+			$controller->hierarchy = min($block_hierarchy, $page_hierarchy);
+
 			if(isset($block) && !is_null($block['Content']['master_id'])) {
 				$controller->content_id = intval($block['Content']['master_id']);
 			}
@@ -218,26 +223,6 @@ class CheckAuthComponent extends Component {
 			}*/
 			// TODO:test センターカラム以外のpege_idも入ってくる可能性あるため、修正予定。
 			$center_page = $page;
-
-			$current_user = $controller->User->currentUser($center_page, $user);
-			if($current_user === '') {
-				$current_user = array('User' => $user);
-			}
-			if(isset($current_user['User'])) {
-				$myportal_name = __('Myportal of %s', $current_user['User']['handle']);
-				$private_name = __('Private room of %s', $current_user['User']['handle']);
-				if( $center_page['Page']['display_sequence'] == 1 ) {
-					if($center_page['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
-						$page['Page']['page_name'] = $myportal_name;
-						$center_page['Page']['page_name'] = $myportal_name;
-					} else if($center_page['Page']['space_type'] == NC_SPACE_TYPE_PRIVATE) {
-						$page['Page']['page_name'] = $private_name;
-						$center_page['Page']['page_name'] = $private_name;
-					}
-				}
-				Configure::write(NC_AUTH_KEY.'.'.'myportal_name', $myportal_name);
-				Configure::write(NC_AUTH_KEY.'.'.'private_name', $private_name);
-			}
 
 
 			$controller->page_id = intval($page['Page']['id']);
@@ -404,14 +389,14 @@ class CheckAuthComponent extends Component {
 		if(empty($user_id)) {
 			$page_params = array(
 				'fields' => array(
-									'Page.*'
+					'Page.*'
 				)
 			);
 		} else {
 			$page_params = array(
 				'fields' => array(
-									'Page.*,'.
-									'Authority.hierarchy'
+					'Page.*,'.
+					'Authority.hierarchy'
 				),
 				'joins' => array(
 					array(
@@ -422,10 +407,10 @@ class CheckAuthComponent extends Component {
 							" AND `PageUserLink`.`user_id` =".$user_id
 						),
 					array(
-							"type" => "LEFT",
-							"table" => "authorities",
-							"alias" => "Authority",
-							"conditions" => "`Authority`.id``=`PageUserLink`.`authority_id`"
+						"type" => "LEFT",
+						"table" => "authorities",
+						"alias" => "Authority",
+						"conditions" => "`Authority`.id``=`PageUserLink`.`authority_id`"
 					)
 				)
 			);
@@ -495,6 +480,9 @@ class CheckAuthComponent extends Component {
 						$page = $current_page;
 					}
 				}
+				if(isset($page['Page'])) {
+					break;
+				}
 			}
 		}
 
@@ -519,7 +507,7 @@ class CheckAuthComponent extends Component {
  * @since   v 3.0.0.0
  */
 	protected function _getBlock(Controller $controller, $block_id, $user_id) {
-		$block =  $controller->Block->findByUserId($block_id, $user_id);
+		$block =  $controller->Block->findAuthById($block_id, $user_id);
 		if(!isset($block)) {
 			return false;
 		}

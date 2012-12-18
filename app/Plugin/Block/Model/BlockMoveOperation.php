@@ -1,9 +1,9 @@
 <?php
 /**
- * BlockOperationモデル
+ * BlockMoveOperationモデル
  *
  * <pre>
- *  ブロック操作用モデル
+ *  ブロック移動操作用モデル
  * </pre>
  *
  * @copyright     Copyright 2012, NetCommons Project
@@ -12,8 +12,8 @@
  * @since         v 3.0.0.0
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
-class BlockOperation extends AppModel {
-	public $name = 'BlockOperation';
+class BlockMoveOperation extends AppModel {
+	public $name = 'BlockMoveOperation';
     public $useTable = 'blocks';
 
 	public function findRowCount($page_id, $parent_id, $col_num)
@@ -22,9 +22,9 @@ class BlockOperation extends AppModel {
 			'fields' => 'COUNT(*) as count',
 			'recursive' => -1,
 			'conditions' => array(
-				'BlockOperation.page_id' => $page_id,
-				'BlockOperation.parent_id' => $parent_id,
-				'BlockOperation.col_num' => $col_num
+				'BlockMoveOperation.page_id' => $page_id,
+				'BlockMoveOperation.parent_id' => $parent_id,
+				'BlockMoveOperation.col_num' => $col_num
 			)
 		));
 		return $count_row_num;
@@ -44,13 +44,13 @@ class BlockOperation extends AppModel {
 	 	return $this->_operationRowNum($block, $row_num);
 	}
 	protected function _operationRowNum($block = null,$row_num = 1) {
-		$fields = array('BlockOperation.row_num'=>'BlockOperation.row_num+('.$row_num.')');
+		$fields = array('BlockMoveOperation.row_num'=>'BlockMoveOperation.row_num+('.$row_num.')');
 		$conditions = array(
-			"BlockOperation.page_id" => $block['Block']['page_id'],
-			"BlockOperation.id !=" => $block['Block']['id'],
-			"BlockOperation.parent_id" => $block['Block']['parent_id'],
-			"BlockOperation.col_num" => $block['Block']['col_num'],
-			"BlockOperation.row_num >" => $block['Block']['row_num']
+			"BlockMoveOperation.page_id" => $block['Block']['page_id'],
+			"BlockMoveOperation.id !=" => $block['Block']['id'],
+			"BlockMoveOperation.parent_id" => $block['Block']['parent_id'],
+			"BlockMoveOperation.col_num" => $block['Block']['col_num'],
+			"BlockMoveOperation.row_num >" => $block['Block']['row_num']
 		);
 		$ret = $this->updateAll($fields, $conditions);
 		return $ret;
@@ -69,12 +69,12 @@ class BlockOperation extends AppModel {
 	 	return $this->_operationColNum($block, $col_num);
 	}
 	protected function _operationColNum($block = null,$col_num = 1) {
-		$fields = array('BlockOperation.col_num'=>'BlockOperation.col_num+('.$col_num.')');
+		$fields = array('BlockMoveOperation.col_num'=>'BlockMoveOperation.col_num+('.$col_num.')');
 		$conditions = array(
-			"BlockOperation.page_id" => $block['Block']['page_id'],
-			"BlockOperation.id !=" => $block['Block']['id'],
-			"BlockOperation.parent_id" => $block['Block']['parent_id'],
-			"BlockOperation.col_num >=" => $block['Block']['col_num']
+			"BlockMoveOperation.page_id" => $block['Block']['page_id'],
+			"BlockMoveOperation.id !=" => $block['Block']['id'],
+			"BlockMoveOperation.parent_id" => $block['Block']['parent_id'],
+			"BlockMoveOperation.col_num >=" => $block['Block']['col_num']
 		);
 		$ret = $this->updateAll($fields, $conditions);
 		return $ret;
@@ -99,6 +99,7 @@ class BlockOperation extends AppModel {
 		$ins_block['Block']['bottommargin'] = 8;
 		$ins_block['Block']['min_width_size'] = 0;
 		$ins_block['Block']['min_height_size'] = 0;
+		$ins_block['Block']['lock_authority_id'] = 0;
 		return $ins_block;
 	}
 }

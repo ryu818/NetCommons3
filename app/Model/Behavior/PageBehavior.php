@@ -19,14 +19,35 @@ class PageBehavior extends ModelBehavior {
  * @since   v 3.0.0.0
  */
 	public function setPageName(Model $Model, $page, $type = 0) {
-		if($page['position_flag'] == _ON && ($page['thread_num'] == 0 || ($page['space_type'] != NC_SPACE_TYPE_GROUP && $page['thread_num'] == 1) ||
+		if(($page['thread_num'] == 0 || ($page['space_type'] != NC_SPACE_TYPE_GROUP && $page['thread_num'] == 1) ||
 				($page['space_type'] != NC_SPACE_TYPE_PUBLIC && $page['thread_num'] == 2 && $page['display_sequence'] == 1))) {
 			if($type == 0) {
-				if($page['thread_num'] == 1) {
+				if($page['thread_num'] == 1 && ($page['space_type'] == NC_SPACE_TYPE_MYPORTAL || $page['space_type'] == NC_SPACE_TYPE_PRIVATE)) {
+
+					App::uses('AuthComponent', 'Controller/Component');
+					$user = AuthComponent::user();
 					if($page['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
-						$page['page_name'] = Configure::read(NC_AUTH_KEY.'.'.'myportal_name');
+						// TODO:config_langsに{X-HANDLE}のマイポータル {X-USERNAME}のマイポータル等のデータを持ち、変換する。
+						if($user['myportal_page_id'] == $page['id']) {
+							$page['page_name'] = __('Myportal of %s', $user['handle']);
+						} else {
+							App::uses('User', 'Model');
+							$User = new User();
+							$conditions = array('myportal_page_id' => $page['id']);
+							$user = $this->find( 'first', array('conditions' => $conditions, 'recursive' => -1) );
+							$page['page_name'] = __('Myportal of %s', $user['User']['handle']);
+						}
 					} else {
-						$page['page_name'] = Configure::read(NC_AUTH_KEY.'.'.'private_name');
+						// TODO:config_langsに{X-handle}のマイルーム {X-username}のマイルーム等のデータを持ち、変換する。
+						if($user['private_page_id'] == $page['id']) {
+							$page['page_name'] = __('Private room of %s', $user['handle']);
+						} else {
+							App::uses('User', 'Model');
+							$User = new User();
+							$conditions = array('private_page_id' => $page['id']);
+							$user = $this->find( 'first', array('conditions' => $conditions, 'recursive' => -1) );
+							$page['page_name'] = __('Private room of %s', $user['User']['handle']);
+						}
 					}
 				} else {
 					$page['page_name'] = __($page['page_name']);
@@ -49,7 +70,7 @@ class PageBehavior extends ModelBehavior {
 						if($page['page_name'] == __('Private')) {
 							$page['page_name'] = "Private room";
 						} else if($page['page_name'] == __('Private Top')) {
-							$page['page_name'] = "Private Top";	
+							$page['page_name'] = "Private Top";
 						}
 						break;
 					case NC_SPACE_TYPE_GROUP:

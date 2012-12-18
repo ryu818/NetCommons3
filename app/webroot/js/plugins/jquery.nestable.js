@@ -402,7 +402,11 @@
         {
         	var t = this, el, ol;
         	add_event = (add_event == undefined) ? true : add_event;
-        	if(position == 'inner') {
+
+        	if(li.get(0).tagName.toLowerCase() == t.options.listNodeName) {
+        		// liではなくolが指定されていれば、append
+        		li.append(new_li);
+        	} else if(position == 'inner') {
             	el = li.children(t.options.listNodeName).first();
             	t.expandItem(li);
             	if(el.get(0)) {

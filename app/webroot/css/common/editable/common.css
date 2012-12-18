@@ -68,7 +68,7 @@ a.link:active {
 	color:#04419a;
 	text-decoration:none;
 }
-
+/*
 a.syslink,a.syslink:link {
 	color:#5c9084;
 	text-decoration:none;
@@ -85,7 +85,7 @@ a.syslink:active {
 	color:#5c9084;
 	text-decoration:none;
 }
-
+*/
 div.top-description {
 	padding:5px;
 }

@@ -23,10 +23,10 @@ class Block extends AppModel
  * @param   integer $block_id
  * @param   integer $user_id
  * @param   boolean $afterFind_flag	コールバックを呼ぶかどうか
- * @return  array   $block
+ * @return  Block   $block
  * @since   v 3.0.0.0
  */
-	public function findByUserId($block_id, $user_id, $afterFind_flag = true) {
+	public function findAuthById($block_id, $user_id, $afterFind_flag = true) {
 		$conditions['Block.id'] = $block_id;
 		$params = array(
 			'fields' => $this->_getFieldsArray(),
@@ -48,6 +48,7 @@ class Block extends AppModel
 
 		return $this->find($type, $params);
 	}
+
 /**
  * afterFind
  * @param   array   $val
@@ -76,7 +77,7 @@ class Block extends AppModel
 		// class name
 		if($val['Block']['controller_action'] == "group"){
 			$val['Block']['class_name'] = "nc-group";
-		} else{
+		} else if(isset($val['Block'])) {
 			$val['Block']['class_name'] = "nc-block";
 		}
 
@@ -129,6 +130,9 @@ class Block extends AppModel
 			}
 		} else {
 			$val['Block']['hierarchy'] = $val['Authority']['hierarchy'];
+		}
+		if(!isset($val['Content']['id'])) {
+			$val['Block']['hierarchy'] = null;
 		}
 		unset($val['Page']);
 		unset($val['Authority']);
@@ -402,9 +406,8 @@ class Block extends AppModel
 					($all_delete && $page['Page']['room_id'] == $content['Content']['room_id'])) {
 
 					// 権限が付与されたショートカットか、ショートカットではない場合
-					if(!$Content->delete($block['Block']['content_id'])) {
-						return false;
-					}
+					// コンテンツがなくてもエラーとしない
+					$Content->delete($block['Block']['content_id']);
 				}
 			}
 		}
@@ -417,12 +420,11 @@ class Block extends AppModel
 		}
 		// --------------------------------------------------------------------------------------
 		// --- contents 削除処理     	                                                      ---
-		// --- group化ブロック、または、権限が付与されたショートカット              	      ---
+		// --- group化ブロック                                                      	      ---
 		// --------------------------------------------------------------------------------------
-		if(isset($content['Content']) && ($content['Content']['module_id'] == 0 || !$content['Content']['is_master'])) {
-			if(!$Content->delete($block['Block']['content_id'])) {
-				return false;
-			}
+		if($controller_action == "group") {
+			// コンテンツがなくてもエラーとしない
+			$Content->delete($block['Block']['content_id']);
 		}
 		return true;
 	}

@@ -77,6 +77,8 @@ msgstr 	"管理"
 
 msgid  	"Content not found."
 msgstr 	"指定したコンテンツは、存在しません。"
+msgid  	"Content removed."
+msgstr 	"指定したコンテンツは、削除されました。"
 
 msgid  	"Page not found."
 msgstr 	"指定したページは、存在しません。"
@@ -147,7 +149,8 @@ msgstr 	"過去の%sは入力できません。"
 
 msgid  	"Unauthorized request.<br />Please reload the page."
 msgstr 	"不正なリクエストの可能性があります。<br />再度、実行してください。"
-
+msgid  	"The server encountered an internal error and was unable to complete your request."
+msgstr 	"サーバで内部エラーが発生したため、リクエストを完了できませんでした。"
 msgid  	"Authority Error!  You do not have the privilege to access this page."
 msgstr 	"権限が不正です。画面を表示、または、登録処理を実行できませんでした。"
 
@@ -181,6 +184,19 @@ msgid  	"The post with %s has been deleted."
 msgstr 	"%sの投稿は削除されました。"
 msgid  	"Unable to delete your post."
 msgstr 	"記事を削除することができません。"
+
+#操作
+msgid  	"Contents list"
+msgstr 	"コンテンツ一覧"
+
+msgid  	"Copy"
+msgstr 	"コピー"
+msgid  	"Create shortcut"
+msgstr 	"ショートカット作成"
+msgid  	"Move"
+msgstr 	"移動"
+msgid  	"Paste"
+msgstr 	"ペースト"
 
 ##DB関連
 msgid  	"Has been successfully registered."

@@ -65,7 +65,6 @@ class PageOperation extends AppModel {
 			if(in_array($val['Page']['parent_id'], $parent_id_arr)) {
 				$display_sequence_pages[$val['Page']['id']] = $val;
 				$parent_id_arr[] = $val['Page']['id'];
-				var_dump($val);
 				$display_sequence = $val['Page']['display_sequence'] + 1;
 			}
 		}

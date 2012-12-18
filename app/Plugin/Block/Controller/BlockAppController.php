@@ -1,4 +1,4 @@
 <?php
 App::uses('AppPluginController', 'Controller');
-class BlockAppController extends AppPluginController {
+class BlockAppController extends AppController {
 }

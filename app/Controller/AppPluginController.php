@@ -38,6 +38,34 @@ class AppPluginController extends AppController
 	{
 		parent::beforeFilter();
 	}
+
+/**
+ * Perform the startup process for this controller.
+ * Fire the Components and Controller callbacks in the correct order.
+ *
+ * - Initializes components, which fires their `initialize` callback
+ * - Calls the controller `beforeFilter`.
+ * - triggers Component `startup` methods.
+ * ブロックのショートカットを同じルーム内にはり、「完全に削除」した場合、
+ * ショートカット元のコンテンツが表示できないため、エラーを表示するように修正。
+ *
+ * @return void
+ */
+	public function startupProcess() {
+
+		$this->getEventManager()->dispatch(new CakeEvent('Controller.initialize', $this));
+		$this->getEventManager()->dispatch(new CakeEvent('Controller.startup', $this));
+
+		if(isset($this->nc_block) && !isset($this->nc_block['Content']['id'])) {
+			// Contentテーブルにデータなし
+			$this->set('nc_error_flag' , true);
+			$this->set('show_frame', isset($this->Frame) ? $this->Frame : true);
+			$this->set('name', __('Content removed.'));
+			$this->render("/Errors/block_error");
+			return false;
+		}
+	}
+
 /**
  * モジュール（プラグイン）の表示前処理
  * @param   void
