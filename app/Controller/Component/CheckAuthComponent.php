@@ -277,12 +277,26 @@ class CheckAuthComponent extends Component {
 			}
 		}
 
+		// 共通権限チェック
+		// TODO:マイポータルはConfigにより、公開、ログインしていないと表示しない。非公開（参加者のみ？、特定の権限以上のみ？公開）
+		// に変更するため、権限チェックにマイポータルを含める必要あり。
+		if(!empty($page['Page']['space_type']) &&
+				($page['Page']['space_type'] == NC_SPACE_TYPE_PRIVATE ||
+						$page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) &&
+				$controller->hierarchy < NC_AUTH_GUEST) {
+			if($user_id == 0) {
+				$this->Session->setFlash(__('Forbidden permission to access the page.', true), 'default', array(), 'auth');
+			}
+			$controller->flash(__('Forbidden permission to access the page.', true), $redirect_url, 'checkauth.07', 403);
+			return;
+		}
+
 		// 権限チェック
 		if(!$this->chkAuth($controller->hierarchy)) {
 			if($user_id == 0) {
 				$this->Session->setFlash(__('Forbidden permission to access the page.'), 'default', array(), 'auth');
 			}
-			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.007', '403');
+			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.008', '403');
 			return;
 		}
 
@@ -291,7 +305,7 @@ class CheckAuthComponent extends Component {
 			if($user_id == 0) {
 				$this->Session->setFlash(__('Forbidden permission to access the page.'), 'default', array(), 'auth');
 			}
-			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.008', '403');
+			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.009', '403');
 			return;
 		}
 	}
