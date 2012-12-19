@@ -431,7 +431,7 @@ p.nc-log-post,p.nc-log-get {
 p.nc-log-post span {
 	color:#0000ff;
 }
-td.nc-log-save {
+td.nc-log-save, .nc-log td.nc-log-post {
 	background-color: #d5ffe6;
 }
 .cake-error {

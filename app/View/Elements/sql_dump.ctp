@@ -40,7 +40,7 @@ if ($noLogs):
 	$nc_execute_start_times = Configure::read(NC_SYSTEM_KEY.'.nc_execute_start_times');
 	$nc_execute_end_times = Configure::read(NC_SYSTEM_KEY.'.nc_execute_end_times');
 endif;
-$header_log = '<table class="nc-log"><tr><td class="nc-php-log">';
+$header_log = '<table class="nc-log"><tr><td class="nc-php-log'.(($this->request->is('post')) ? ' nc-log-post' : '').'">';
 if (count($php_logs) > 0):
 	for($i = 0; $i < count($php_logs); $i++) {
 		$header_log .= $php_logs[$i]."\n";
