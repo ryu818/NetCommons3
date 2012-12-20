@@ -38,10 +38,47 @@ class MyCakeRoute extends CakeRoute {
 	 * @return mixed Boolean false on failure, otherwise an array or parameters
 	 */
 	public function parse($url) {
-		$route = parent::parse($url);
-		if (!$route) {
+		if (!$this->compiled()) {
+			$this->compile();
+		}
+		if (!preg_match($this->_compiledRoute, $url, $route)) {
 			return false;
 		}
+		foreach ($this->defaults as $key => $val) {
+			$key = (string)$key;
+			if ($key[0] === '[' && preg_match('/^\[(\w+)\]$/', $key, $header)) {
+				if (isset($this->_headerMap[$header[1]])) {
+					$header = $this->_headerMap[$header[1]];
+				} else {
+					$header = 'http_' . $header[1];
+				}
+				$header = strtoupper($header);
+
+				$val = (array)$val;
+				$h = false;
+
+				foreach ($val as $v) {
+					if (env($header) === $v) {
+						$h = true;
+					}
+				}
+				if (!$h) {
+					return false;
+				}
+			}
+		}
+		array_shift($route);
+		$count = count($this->keys);
+		for ($i = 0; $i <= $count; $i++) {
+			unset($route[$i]);
+		}
+		$route['pass'] = $route['named'] = array();
+
+		// Add Start Ryuji.M
+		//$route = parent::parse($url);
+		//if (!$route) {
+		//	return false;
+		//}
 		//if(isset($route['plugin']) && !isset($route['controller'])) {
 		//	$route['controller'] = $route['plugin'];
 		//}
@@ -51,7 +88,6 @@ class MyCakeRoute extends CakeRoute {
 				return false;
 			}
 		}
-		// Add Start Ryuji.M
 		// Conrtollerがあるかどうか判断し、なければ、Actionとする。
 		// コントローラ名は常にpluginName + controllerにて判断する。
 		// 例：active-blocks/(block_id)/announcement/edit
@@ -81,6 +117,46 @@ class MyCakeRoute extends CakeRoute {
 			}
 		}
 		// Add End Ryuji.M
+
+		// Assign defaults, set passed args to pass
+		foreach ($this->defaults as $key => $value) {
+			if (isset($route[$key])) {
+				continue;
+			}
+			if (is_integer($key)) {
+				$route['pass'][] = $value;
+				continue;
+			}
+			$route[$key] = $value;
+		}
+
+		foreach ($this->keys as $key) {
+			if (isset($route[$key])) {
+				$route[$key] = rawurldecode($route[$key]);
+			}
+		}
+
+		if (isset($route['_args_'])) {
+			list($pass, $named) = $this->_parseArgs($route['_args_'], $route);
+			$route['pass'] = array_merge($route['pass'], $pass);
+			$route['named'] = $named;
+			unset($route['_args_']);
+		}
+
+		if (isset($route['_trailing_'])) {
+			$route['pass'][] = rawurldecode($route['_trailing_']);
+			unset($route['_trailing_']);
+		}
+
+		// restructure 'pass' key route params
+		if (isset($this->options['pass'])) {
+			$j = count($this->options['pass']);
+			while ($j--) {
+				if (isset($route[$this->options['pass'][$j]])) {
+					array_unshift($route['pass'], $route[$this->options['pass'][$j]]);
+				}
+			}
+		}
 		return $route;
 	}
 
