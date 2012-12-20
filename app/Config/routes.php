@@ -129,7 +129,7 @@ if ($plugins = CakePlugin::loaded()) {
 			'block_type' => 'blocks|active-blocks',
 		) + $pluginParams
 	);
-	
+
 	Router::connect(
 		':permalink/:block_type/:plugin/:controller',
 		array(),
@@ -138,7 +138,7 @@ if ($plugins = CakePlugin::loaded()) {
 			'block_type' => 'blocks|active-blocks',
 		) + $pluginParams
 	);
-	
+
 	Router::connect(
 		':permalink/:block_type/:plugin',
 		array(),
@@ -169,7 +169,7 @@ Router::connect(
 		'active_plugin' => '\/?[^\/]*',
 		'active_controller' => '\/?[^\/]*',
 		'active_action' => '\/?[^\/]*'
-	)
+	) + $pluginParams
 );
 
 /**

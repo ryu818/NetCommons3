@@ -93,18 +93,42 @@ class MyCakeRoute extends CakeRoute {
 		// 例：active-blocks/(block_id)/announcement/edit
 		//     -> Plugin/AnnouncementEditController.phpがあれば、AnnouncementEditController->indexメソッドへ
 		//     -> なければ、Plugin/AnnouncementController.php->editメソッドへ
-		if(isset($route['controller'])) {
-			$pluginName = Inflector::camelize($route['plugin']);
-			if($route['plugin'] == $route['controller']) {
-				$controller = Inflector::camelize($route['controller']);
+		if(isset($route['active_plugin'])) {
+			$plugin_name = 'active_plugin';
+			$controller_name = 'active_controller';
+			$actin_name = 'active_action';
+			if(isset($route[$plugin_name])) {
+				$route[$plugin_name] = $this->_formatUrl($route[$plugin_name]);
+			}
+			if(isset($route[$controller_name])) {
+				$route[$controller_name] = $this->_formatUrl($route[$controller_name]);
+			}
+			if(isset($route[$actin_name])) {
+				$route[$actin_name] = $this->_formatUrl($route[$actin_name]);
+			}
+		} else {
+			$plugin_name = 'plugin';
+			$controller_name = 'controller';
+			$actin_name = 'action';
+		}
+
+		if(isset($route[$controller_name])) {
+			$pluginName = Inflector::camelize($route[$plugin_name]);
+			if($route[$plugin_name] == $route[$controller_name]) {
+				$controller = Inflector::camelize($route[$controller_name]);
 			} else {
-				$controller = $pluginName . Inflector::camelize($route['controller']);
+				$controller = $pluginName . Inflector::camelize($route[$controller_name]);
 			}
 			$file_path = App::pluginPath($pluginName) . 'Controller' . DS .$controller.'Controller.php';
 			if (!file_exists($file_path)) {
-				$buf_action = isset($route['action']) ? $route['action'] : null;
-				$route['action'] = $route['controller'];
-				$route['controller'] = $route['plugin'];
+				if(!isset($route[$actin_name]) || $route[$actin_name] == '') {
+					$buf_action = isset($route[$controller_name]) ? $route[$controller_name] : null;
+				} else {
+					$buf_action = $route[$actin_name];	//isset($route[$actin_name]) ? $route[$actin_name] : null;
+					$route[$actin_name] = $route[$controller_name];
+				}
+
+				$route[$controller_name] = $route[$plugin_name];
 				if(isset($buf_action)) {
 					if(isset($route['_args_'])) {
 						$route['_args_'] = $buf_action .'/'. $route['_args_'];
@@ -113,7 +137,7 @@ class MyCakeRoute extends CakeRoute {
 					}
 				}
 			} else {
-				$route['controller'] = $controller;
+				$route[$controller_name] = $controller;
 			}
 		}
 		// Add End Ryuji.M
@@ -158,6 +182,17 @@ class MyCakeRoute extends CakeRoute {
 			}
 		}
 		return $route;
+	}
+
+/**
+ * Urlの体裁を整える
+ *
+ * @param   string $url
+ * @return  string $url
+ * @since   v 3.0.0.0
+ */
+	protected function _formatUrl($url) {
+		return trim($url, '/');
 	}
 
 	/**
