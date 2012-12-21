@@ -116,17 +116,16 @@ class MyCakeRoute extends CakeRoute {
 			$pluginName = Inflector::camelize($route[$plugin_name]);
 			if($route[$plugin_name] == $route[$controller_name]) {
 				$controller = Inflector::camelize($route[$controller_name]);
+				$buf_controller = $route[$controller_name];
 			} else {
 				$controller = $pluginName . Inflector::camelize($route[$controller_name]);
+				$buf_controller = $route[$plugin_name] .'_'. $route[$controller_name];
 			}
+
 			$file_path = App::pluginPath($pluginName) . 'Controller' . DS .$controller.'Controller.php';
 			if (!file_exists($file_path)) {
-				if(!isset($route[$actin_name]) || $route[$actin_name] == '') {
-					$buf_action = isset($route[$controller_name]) ? $route[$controller_name] : null;
-				} else {
-					$buf_action = $route[$actin_name];	//isset($route[$actin_name]) ? $route[$actin_name] : null;
-					$route[$actin_name] = $route[$controller_name];
-				}
+				$buf_action = isset($route[$actin_name]) ? $route[$actin_name] : null;
+				$route[$actin_name] = $route[$controller_name];
 
 				$route[$controller_name] = $route[$plugin_name];
 				if(isset($buf_action)) {
@@ -137,7 +136,7 @@ class MyCakeRoute extends CakeRoute {
 					}
 				}
 			} else {
-				$route[$controller_name] = $controller;
+				$route[$controller_name] = $buf_controller;
 			}
 		}
 		// Add End Ryuji.M
@@ -181,6 +180,7 @@ class MyCakeRoute extends CakeRoute {
 				}
 			}
 		}
+
 		return $route;
 	}
 
@@ -228,7 +228,17 @@ class MyCakeRoute extends CakeRoute {
 		}
 
 		if(isset($url['action']) && $url['action'] == 'index') {
-			$url['action'] = '';
+			// namedやpassの情報がはいった場合、actionを省略しない
+			$chk_url = $url;
+			unset($chk_url['block_id']);
+			unset($chk_url['permalink']);
+			unset($chk_url['plugin']);
+			unset($chk_url['controller']);
+			unset($chk_url['action']);
+			if(count($chk_url) == 0) {
+				// 省略可能
+				$url['action'] = '';
+			}
 		}
 
 		//if (isset($url['controller']) && isset($url['plugin']) && $url['plugin'] != $url['controller']) {
