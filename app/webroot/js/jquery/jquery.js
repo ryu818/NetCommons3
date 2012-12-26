@@ -7853,6 +7853,13 @@ jQuery.extend({
 		// We also use the url parameter if available
 		s.url = ( ( url || s.url ) + "" ).replace( rhash, "" ).replace( rprotocol, ajaxLocParts[ 1 ] + "//" );
 
+		// Add source	Ryuji.M
+		// AjaxのURLに全角文字が含まれると、IE9以下はSJISでURIエンコードを行ってしまったため、
+		// jquery側で対応。
+		if($.browser.msie && parseInt($.browser.version) < 10) {
+			s.url = encodeURI(s.url);
+		}
+		// Add End Ryuji.M
 		// Extract dataTypes list
 		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().split( core_rspace );
 
