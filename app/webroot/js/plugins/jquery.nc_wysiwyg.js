@@ -2640,7 +2640,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
             try {
 				range = sel.rangeCount > 0 ? sel.getRangeAt(r_num) : (sel.createRange ? sel.createRange() : this.getWin().document.createRange());
 			} catch (ex) {}
-			if (!range) range = ($.browser.msie) ? this.editorDoc.body.createTextRange() : this.editorDoc.createRange();
+			if (!range || range == '') range = ($.browser.msie) ? this.editorDoc.body.createTextRange() : this.editorDoc.createRange();
 			return range;
         },
 
