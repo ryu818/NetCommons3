@@ -215,9 +215,8 @@ class CheckAuthComponent extends Component {
 			// TODO:test センターカラム以外のpege_idも入ってくる可能性あるため、修正予定。
 			$center_page = $page;
 
-
-			$controller->page_id = intval($page['Page']['id']);
-			Configure::write(NC_SYSTEM_KEY.'.'.'Center_Page', $center_page);
+			$controller->page_id = isset($block['Block']['page_id']) ? intval(($block['Block']['page_id'])) : intval($page['Page']['id']);
+			Configure::write(NC_SYSTEM_KEY.'.'.'center_page', $center_page);
 
 			//TODO:test
 			/*

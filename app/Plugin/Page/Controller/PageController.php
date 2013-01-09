@@ -147,7 +147,7 @@ class PageController extends PageAppController {
 		);
 
 		// カレント会員取得
-		$center_page = Configure::read(NC_SYSTEM_KEY.'.'.'Center_Page');
+		$center_page = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');
 		$current_user = $this->User->currentUser($center_page, $login_user);
 		if($current_user === false) {
 			$this->flash(__('Failed to obtain the database, (%s).','users'), null, 'Page/index.001', '500');
