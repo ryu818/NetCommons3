@@ -92,13 +92,14 @@ class CheckAuthComponent extends Component {
 	}
 
 /**
- * Start CheckAuthComponent for use in the controller
+ * 権限チェック
  *
- * @param Controller $controller
+ * @param   void
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function startup(Controller $controller) {
+	public function check() {
+		$controller = $this->_controller;
 		$this->_setControllerParams($controller);
 
 		if (isset($controller->nc_block['Block'])) {

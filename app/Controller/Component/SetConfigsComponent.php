@@ -14,6 +14,13 @@
  */
 class SetConfigsComponent extends Component {
 /**
+ * Controller
+ *
+ * @var     object
+ */
+	protected $_controller = null;
+
+/**
  * Other components utilized by Component
  *
  * @var     array
@@ -21,24 +28,33 @@ class SetConfigsComponent extends Component {
 	public $components = array('Auth', 'Session', 'Common');		// , 'Init', 'Auth'
 
 /**
-  * Start SetConfigsComponent for use in the controller
+ * Start CheckAuthComponent for use in the controller
  *
  * @param Controller $controller
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function startup(Controller $controller) {
-		$user = $this->Auth->user();//認証済みユーザーを取得
-		$user_id = isset($user['id']) ? intval($user['id']) : 0;
+	public function initialize(Controller $controller) {
+		$this->_controller = $controller;
+	}
+
+/**
+ * Config値セット
+ *
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function set() {
+		$controller = $this->_controller;
 
 		/*
 		 * 同じ処理を何度も実行させないため
 		 */
-		$lang = Configure::read(NC_CONFIG_KEY.'.'.'sitename');
-		if(isset($lang)) {
+		$sitename = Configure::read(NC_CONFIG_KEY.'.'.'sitename');
+		if(isset($sitename)) {
 			return;
 		}
-
 		// ******************************************************************************************
 		// 言語セット
 		// ******************************************************************************************
@@ -100,6 +116,8 @@ class SetConfigsComponent extends Component {
 		// ******************************************************************************************
 		// 自動ログイン
 		// ******************************************************************************************
+		$user = $this->Auth->user();//認証済みユーザーを取得
+		$user_id = isset($user['id']) ? intval($user['id']) : 0;
 		if(!$user && $this->Common->autoLogin($configs)) {
 			$user = $this->Auth->user();//認証済みユーザーを取得
 			$user_id = isset($user['id']) ? intval($user['id']) : 0;

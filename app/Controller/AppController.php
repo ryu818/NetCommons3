@@ -69,44 +69,37 @@ class AppController extends Controller {
     public $uses = array('Page', 'Block', 'Content', 'Module', 'Language', 'Config', 'Authority', 'User', 'Passport', 'PageStyle', 'ModuleLink', 'ModuleSystemLink');
     // , 'User', 'PageStyle', 'PageColumn', 'PageInf', 'SumPageView'
 /**
- * 実行前処理
+ * 初期処理
  * @param   void
  * @return  void
  * @since   v 3.0.0.0
  */
-    public function beforeFilter()
-	{
+    function constructClasses() {
 		$this->_setExecuteTimes();
-		parent::beforeFilter();
 
-		if ($this->request->is('ajax')) {
-			$this->layout = 'ajax';
-		}
+		parent::constructClasses();
 
 		// ******************************************************************************************
 		// Config
 		// Sessionのsession_gc_maxlifetimeをstart前にセットする必要があるため、別途取得
 		// ******************************************************************************************
+
 		/*
 		 * 同じ処理を何度も実行させないため
 		 */
-		$this->Common->initializeAuth();
-		$is_closed_site = Configure::read(NC_CONFIG_KEY.'.'.'is_closed_site');
-		if(isset($is_closed_site)) {
-			if(!$is_closed_site) {
-				$this->Auth->allow();
-			}
+		$config_language = Configure::read(NC_CONFIG_KEY.'.'.'config_language');
+		if(isset($config_language)) {
 			return;
 		}
 
-		$conditions = array(
-			'name' => array('session_gc_maxlifetime', 'session_name', 'language', 'is_closed_site'),
+    	$conditions = array(
+			'name' => array('session_gc_maxlifetime', 'session_name', 'language'),
 			'module_id' => 0
 		);
 		$params = array(
 			'fields' => array(
-				'Config.name',
-				'Config.value'
+					'Config.name',
+					'Config.value'
 			),
 			'conditions' => $conditions,
 			'limit' => 4
@@ -115,13 +108,26 @@ class AppController extends Controller {
 		$configs = $this->Config->find('all', $params);
 		Configure::write(NC_CONFIG_KEY.'.'.'config_language', $configs['language']);
 		Configure::write('Session.cookieTimeout', 0);
-    	Configure::write('Session.timeout', intval($configs['session_gc_maxlifetime']));
+		Configure::write('Session.timeout', intval($configs['session_gc_maxlifetime']));
 
-    	Configure::write('Session.cookie', $configs['session_name']);
+		Configure::write('Session.cookie', $configs['session_name']);
+    }
 
-    	if(!$configs['is_closed_site']) {
-    		$this->Auth->allow();
-    	}
+/**
+ * 実行前処理
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+    public function beforeFilter()
+	{
+		parent::beforeFilter();
+
+		$this->Common->initializeAuth();
+
+		if ($this->request->is('ajax')) {
+			$this->layout = 'ajax';
+		}
 
     	if ($this->request->is('ajax')) {
     		$plugin_name = isset($this->request->params['plugin']) ? $this->request->params['plugin'] :
@@ -136,6 +142,16 @@ class AppController extends Controller {
     			}
     		}
     	}
+    	// Configセット
+    	$this->SetConfigs->set();
+
+    	$is_closed_site = Configure::read(NC_CONFIG_KEY.'.'.'is_closed_site');
+    	if(!$is_closed_site) {
+    		$this->Auth->allow();
+    	}
+
+    	// 権限チェック
+    	$this->CheckAuth->check();
 	}
 
 /**

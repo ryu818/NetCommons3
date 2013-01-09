@@ -20,10 +20,10 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 /**
- * Componentsで権限チェックし、その後、beforeFilterにてエラーチェックを実行し、
+ * beforeFilterにてComponentsの権限チェックを実行し、その後、startupProcessで
  * エラーならば、ブロック内部のコンテンツにエラーメッセージのみ表示し、コントローラを
  * 呼ばないように設定する
- * => beforeFilter のreturnをみて、actionを実行するかどうかを決定するように修正。
+ * => startupProcess のreturnをみて、actionを実行するかどうかを決定するように修正。
  */
 
 App::uses('Router', 'Routing');
@@ -186,7 +186,7 @@ class Dispatcher implements CakeEventListener {
  */
 	protected function _invoke(Controller $controller, CakeRequest $request, CakeResponse $response) {
 		$controller->constructClasses();
-		/* Edit Start Ryuji.M  beforeFilter のreturnを見て、actionを実行するかどうかを決定する*/
+		/* Edit Start Ryuji.M  startupProcess のreturnを見て、actionを実行するかどうかを決定する*/
 		// $controller->startupProcess();
 		$ret = $controller->startupProcess();
 
