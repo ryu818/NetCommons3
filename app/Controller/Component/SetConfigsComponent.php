@@ -28,14 +28,14 @@ class SetConfigsComponent extends Component {
 	public $components = array('Auth', 'Session', 'Common');		// , 'Init', 'Auth'
 
 /**
- * Start CheckAuthComponent for use in the controller
+ * Constructor
  *
- * @param Controller $controller
- * @return  void
- * @since   v 3.0.0.0
+ * @param ComponentCollection $collection A ComponentCollection this component can use to lazy load its components
+ * @param array $settings Array of configuration settings.
  */
-	public function initialize(Controller $controller) {
-		$this->_controller = $controller;
+	public function __construct(ComponentCollection $collection, $settings = array()) {
+		$this->_controller = $collection->getController();
+		parent::__construct($collection, $settings);
 	}
 
 /**
