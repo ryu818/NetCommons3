@@ -182,12 +182,20 @@
                 list.expandItem($(this));
             });
         },
-
-        collapseAll: function()
+// highlight_selectorが指定されていれば、activeなItemがある個所以外を折りたたむ。
+        collapseAll: function(highlight_selector)
         {
             var list = this;
             list.el.find(list.options.itemNodeName).each(function() {
-                list.collapseItem($(this));
+            	if(highlight_selector) {
+            		var select = $(highlight_selector, $(this));
+            		if(!select.get(0)) {
+            			list.collapseItem($(this));
+            		}
+            	} else {
+            		list.collapseItem($(this));
+            	}
+            	// list.collapseItem($(this));
             });
         },
 

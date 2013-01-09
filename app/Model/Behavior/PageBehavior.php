@@ -102,13 +102,15 @@ class PageBehavior extends ModelBehavior {
 			} else {
 				$hierarchy = NC_AUTH_OTHER;
 			}
+			// TODO:コミュニティーで公開コミュニティーならば、設定した権限をセットすべき
 		} else if($page['space_type'] == NC_SPACE_TYPE_PUBLIC) {
 			$hierarchy = Configure::read(NC_CONFIG_KEY.'.default_entry_public_hierarchy');
 		} else if($page['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
 			$hierarchy = Configure::read(NC_CONFIG_KEY.'.default_entry_myportal_hierarchy');
-		} else if($page['space_type'] == NC_SPACE_TYPE_PRIVATE && $page['default_entry_flag'] == _ON) {
+		} else if($page['space_type'] == NC_SPACE_TYPE_PRIVATE) {
 			$hierarchy = Configure::read(NC_CONFIG_KEY.'.default_entry_private_hierarchy');
-		} else if($page['space_type'] == NC_SPACE_TYPE_GROUP && $page['default_entry_flag'] == _ON) {
+		} else if($page['space_type'] == NC_SPACE_TYPE_GROUP) {
+			// コミュニティーでログイン会員のみ公開であればここにいくべき
 			$hierarchy = Configure::read(NC_CONFIG_KEY.'.default_entry_group_hierarchy');
 		} else {
 			$hierarchy = NC_AUTH_OTHER;
@@ -246,10 +248,14 @@ class PageBehavior extends ModelBehavior {
 				$val[$Model->alias]['hierarchy'] = $val['Authority']['hierarchy'];
 			}
 
+			if(isset($val['CommunityLang']['community_name'])) {
+				$val[$Model->alias]['page_name'] = $val['CommunityLang']['community_name'];
+			}
+
 			$val[$Model->alias]['visibility_flag'] = empty($val['Menu']['visibility_flag']) ? _ON : $val['Menu']['visibility_flag'];
 			$val[$Model->alias]['permalink'] = $this->getPermalink($Model, $val[$Model->alias]['permalink'], $val[$Model->alias]['space_type']);
 			$val[$Model->alias] = $this->setPageName($Model, $val[$Model->alias]);
-			$pages[$val[$Model->alias]['space_type']][$val[$Model->alias]['thread_num']][$val[$Model->alias]['parent_id']][$val[$Model->alias]['display_sequence']] = $val[$Model->alias];
+			$pages[$val[$Model->alias]['space_type']][$val[$Model->alias]['thread_num']][$val[$Model->alias]['parent_id']][$val[$Model->alias]['display_sequence']] = $val;
 			//$parent_id_arr[$val[$Model->alias]['id']] = $val[$Model->alias]['id'];
 		}
 		return $pages;

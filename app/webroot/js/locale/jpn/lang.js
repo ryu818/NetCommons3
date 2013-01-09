@@ -15,6 +15,7 @@ $._lang['pages'] = {
 	groupCancelConfirm:'選択されたグループを解除します。<br />よろしいですか？',
 	groupCancelErr:'グループ化されたブロックが選択されていません。',
 	resizeSep:'×',
+	'Delete room': 'ルーム削除',
 	'Delete page': 'ページ削除',
 	'Delete block': 'ブロック削除',
 	'I completely delete it.': '完全に削除する。',

@@ -34,7 +34,7 @@ class BlockMoveOperation extends AppModel {
 	 * 行前詰め処理
 	 *
 	 * @return boolean true or false
-	 * @access	public
+	 * @since   v 3.0.0.0
 	 */
 	public function decrementRowNum($block = null,$row_num = 1) {
 	 	$row_num = -1*$row_num;
@@ -59,7 +59,7 @@ class BlockMoveOperation extends AppModel {
 	 * 列前詰め処理
 	 *
 	 * @return boolean true or false
-	 * @access	public
+	 * @since   v 3.0.0.0
 	 */
 	public function decrementColNum($block = null,$col_num = 1) {
 	 	$col_num = -1*$col_num;

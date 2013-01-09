@@ -320,8 +320,8 @@ class BlockController extends BlockAppController {
 			return;
 		}
 
-		$this->render("/Commons/true");
-		return;
+		echo 'true';
+		$this->render(false);
 	}
 
 /**
@@ -386,8 +386,8 @@ class BlockController extends BlockAppController {
 				return;
 			}
 		}
-
-		$this->render("/Commons/true");
+		echo 'true';
+		$this->render(false);
 	}
 
 /**
@@ -438,7 +438,8 @@ class BlockController extends BlockAppController {
 			return;
 		}
 
-		$this->render("/Commons/true");
+		echo 'true';
+		$this->render(false);
 	}
 
 /**
@@ -807,6 +808,7 @@ class BlockController extends BlockAppController {
 			return;
 		}
 
-		$this->render("/Commons/true");
+		echo 'true';
+		$this->render(false);
 	}
 }

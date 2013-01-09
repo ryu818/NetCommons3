@@ -8,15 +8,79 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 ;(function($) {
-	$.fn.PageMenu = function(is_edit, active_page_id, active_tab) {
+	$.fn.PageMenu = function(is_edit, active_page_id, active_tab, sel_active_tab) {
+		// Privateメソッド
+
+		// 表示件数
+		var chgLimit = function() {
+			// 表示件数
+			$('#pages-menu-community-limit:visible').chosen({disable_search : true}).change( function(e){
+				var limit_url = $(this).val();
+				$.get(limit_url, function(res) {
+					$('#nc-pages-setting-dialog').replaceWith(res);
+				});
+			} );
+		};
+
+		// ページ削除
+		var dletePage = function(url, page_id, all_delete, params) {
+			$.post(url, {'data[Page][id]': page_id, 'all_delete': all_delete},function(res){
+				var re_html = new RegExp("^<script>", 'i');
+				if(!$.trim(res).match(re_html)) {
+					// error
+					$.Common.showErrorDialog(res, params);
+				} else {
+					// success
+					var li = $('#pages-menu-edit-item-' + page_id);
+					var prev = li.prev(), next = li.prev(), parent = li.parents('li');
+					var active = (prev.get(0)) ? prev : ((next.get(0)) ? next : parent);
+					if(active.get(0)) {
+						$('.pages-menu-edit-content', active).click();
+					}
+					$(res).appendTo($(document.body));
+
+					li.remove();
+				}
+			});
+		};
+
+		var chgSequenceSuccess = function(res, page_id) {
+			var detail = $('#pages-menu-edit-detail-' + page_id);
+			if(detail.css('display') != 'none') {
+				// 表示順を変更したときに、詳細部分を閉じる->親と子の（固定リンクが変更されるかもしれないため）
+				detail.slideUp(300, function() {detail.html('');});
+			}
+			$(res).appendTo($(document.body));
+		};
+
+		var slideTarget = function(target, active_tab_name, scroll_target) {
+			scroll_target = (scroll_target) ? scroll_target : target;
+			target.slideDown(300, function() {
+				var position = scroll_target.offset().top+$(active_tab_name).scrollTop() - $(active_tab_name).offset().top;
+				// ページ名称にfocus
+				var page_name = $('[name=data\\[Page\\]\\[page_name\\]]:visible:first', target);
+				if(page_name.get(0)) {
+					page_name.select();
+				}
+				// スクロール
+				$(active_tab_name).animate({scrollTop:position}, 400, 'swing');
+			});
+		}
+
 		var tab = this;
 
-		var active_li;
+		var active_li = $('#pages-menu-edit-item-' + active_page_id);
 		var options = {
 			active          : active_page_id,
 			activeItemClass : 'highlight'
 		};
-		var sel_active_tab = active_tab;
+		var active_tab_name = null;
+
+		if(active_tab == 0) {
+			active_tab_name = '#pages-menu-page';
+		} else {
+			active_tab_name = '#pages-menu-community';
+		}
 
 		var root_menu = $('#pages-menu-page, #pages-menu-community');
 		if(!(is_edit)) {
@@ -30,24 +94,56 @@
 			activate: function( event, ui ) {
 				if(ui['newPanel'].attr('id') == 'pages-menu-page') {
 					active_tab = 0;
+					active_tab_name = '#pages-menu-page';
 				} else {
 					active_tab = 1;
+					active_tab_name = '#pages-menu-community';
 				}
 				if(is_edit) {
 					var is_chief = active_li.data('is-chief');
+					var add_community = $('#pages-menu-add-community-btn');
 					if(sel_active_tab != active_tab) {
-						$('#pages-menu-add-btn').addClass('pages-menu-add-btn-disable');
+						$('#pages-menu-add-btn').addClass('pages-menu-btn-disable');
 					} else if(is_chief) {
-						$('#pages-menu-add-btn').removeClass('pages-menu-add-btn-disable');
+						$('#pages-menu-add-btn').removeClass('pages-menu-btn-disable');
 					}
+					if(add_community.get(0)) {
+						if(active_tab == 0) {
+							add_community.addClass('pages-menu-btn-disable');
+						} else {
+							add_community.removeClass('pages-menu-btn-disable');
+						}
+					}
+				}
+
+				if(active_tab == 1) {
+					chgLimit();
 				}
 			}
 		});
+		chgLimit();
+
+		// スクロール
+		setTimeout(function(){
+			slideTarget(active_li, active_tab_name);
+		}, 500);
+
+		// 言語切替
+		var lang_sel =$('#pages-menu-language');
+		if(lang_sel.get(0)) {
+			lang_sel.chosen({disable_search : true}).change( function(e){
+				var lang = $(this).val();
+				var url = $(this).data('ajax-url') + '/' + lang + '?is_edit=' + is_edit + '&active_tab=' + active_tab;
+				$.get(url, function(res) {
+					$('#nc-pages-setting-dialog').replaceWith(res);
+				});
+			} );
+		}
 
 		// ページ移動
 		root_menu.nestable(options)
 		.on('change', function(e, page_id, drop_page_id, position) {
-			if(!page_id) {
+			if(!page_id || !drop_page_id) {
 				return;
 			}
 			// 表示順変更
@@ -70,7 +166,7 @@
 					var re_html = new RegExp("^<script>", 'i');
 					var ok = __('Ok') ,cancel = __('Cancel'), body, params;
 					if(!$.trim(res).match(re_html)) {
-						var re_info_html = new RegExp("^<div class=\"info-message\">", 'i');
+						var re_info_html = new RegExp("^<div>", 'i');
 						if($.trim(res).match(re_info_html)) {
 							// confirm
 							_buttons[ok] = function(){
@@ -85,7 +181,7 @@
 											chgSequenceSuccess(res, page_id);
 											root_menu.nestable('setStop', [true]);
 										} else {
-											errorDialog(res, default_params);
+											$.Common.showErrorDialog(res, null, li);
 											root_menu.nestable('setStop', [false]);
 										}
 									}
@@ -100,7 +196,7 @@
 							$('<div></div>').html(res).dialog(params);
 						} else {
 							// error
-							errorDialog(res, default_params);
+							$.Common.showErrorDialog(res, null, li);
 							ret = false;
 						}
 					} else {
@@ -112,13 +208,32 @@
  			});
  			return ret;
 		});
+
+		// コミュニティーはすべて閉じた状態で表示
+		$(root_menu.get(1)).nestable('collapseAll', ['.highlight:first']);
+
+		// すべて展開
+		$(root_menu.get(0)).on('click','.pages-menu-expand-all',function(e) {
+			$(root_menu.get(0)).nestable('expandAll', []);
+		});
+		$(root_menu.get(1)).on('click','.pages-menu-expand-all',function(e) {
+			$(root_menu.get(1)).nestable('expandAll', []);
+		});
+
+		// すべて折りたたむ
+		$(root_menu.get(0)).on('click','.pages-menu-collapse-all',function(e) {
+			$(root_menu.get(0)).nestable('collapseAll', []);
+		});
+		$(root_menu.get(1)).on('click','.pages-menu-collapse-all',function(e) {
+			$(root_menu.get(1)).nestable('collapseAll', []);
+		});
+
+		//root_menu.get(1).nestable('expandAll');
 		// ページ編集切替
 		$('#pages-menu-edit-btn').on('ajax:before', function(e, url) {
 			return url + '&active_tab=' + active_tab;
 		});
 		if(is_edit) {
-			active_li = $('#pages-menu-edit-item-' + active_page_id);
-
 			// ページ追加
 			$('#pages-menu-add-btn').on('ajax:before', function(e, url) {
 				if($(this).hasClass('pages-menu-add-btn-disable')) {
@@ -149,26 +264,45 @@
 				} else {
 					root_menu.nestable('collapseItem', [active_li]);
 				}
+				var insert_li = active_li;
+				if(!active_li.get(0)) {
+					insert_li = $('ol:first',$(active_tab_name));
+				}
+
 				target.hide();
-				root_menu.nestable('appendList', [active_li, target, position]);
-				target.slideDown(300, function() {
-					var position = target.offset().top+$('#pages-menu-page').scrollTop() - $('#pages-menu-page').offset().top;
-					// ページ名称にfocus
-					$('[name=data\\[Page\\]\\[page_name\\]]:first', target).select();
-					// スクロール
-					$('#pages-menu-page').animate({scrollTop:position}, 400, 'swing');
-				});
+				if(active_tab_name == '#pages-menu-page') {
+					$(root_menu.get(0)).nestable('appendList', [insert_li, target, position]);
+				} else {
+					$(root_menu.get(1)).nestable('appendList', [insert_li, target, position]);
+				}
+				// スクロール
+				slideTarget(target, active_tab_name);
 				// コンテンツクリックイベント
 				$('.pages-menu-edit-content:first', target).click();
 			});
 
+			// コミュニティー追加
+			$('#pages-menu-add-community-btn').on('ajax:before', function(e, url) {
+				if($(this).hasClass('pages-menu-btn-disable')) {
+					// ページ追加不可
+					return false;
+				}
+				url = url + '/' + active_li.data('id');
+				return url;
+			}).on('ajax:beforeSuccess', function(e, res) {
+				if (res) {
+					location.href = res;
+				}
+				e.preventDefault();
+			});
+
 			// ページ削除
 			root_menu.on('ajax:before','.pages-menu-delete-icon',function(e, url) {
-				var li = $($(e.target).data('ajax-data')),page_id = li.data('id');
+				var li = $($(e.target).data('ajax-data')),page_id = li.data('id'), room_id = li.data('room-id');
 				var a = $('a.pages-menu-edit-title:first', li), title = $.trim(a.html());
 				var ok = __('Ok') ,cancel = __('Cancel');
 				var pos = $(e.target).offset(), _buttons = {}, default_params = {
-					title: __d('pages', 'Delete page'),
+					title: (page_id == room_id) ? __d('pages', 'Delete room') : __d('pages', 'Delete page'),
 	            	resizable: false,
 	            	// height:180,
 	            	modal: true,
@@ -185,7 +319,7 @@
 							$(this).remove();
 						};
 						params = $.extend({buttons: _sub_buttons}, default_params);
-						$('<div class="info-message"></div>').html(__d('pages', 'I can\'t be undone completely removed. <br />Are you sure you want to delete?'))
+						$('<div></div>').html(__d('pages', 'I can\'t be undone completely removed. <br />Are you sure you want to delete?'))
 							.appendTo($(document.body)).dialog(params);
 					} else {
 						dletePage(url, page_id, 0, default_params);
@@ -197,7 +331,8 @@
 				};
 				params = $.extend({buttons: _buttons}, default_params);
 				body = __('Deleting %s. <br />Are you sure to proceed?', title) + '<div><label for="pages-menu-all-delete">'+
-							'<input id="pages-menu-all-delete" type="checkbox" name="all_delete" value="1" />&nbsp;'+
+							'<input id="pages-menu-all-delete" type="checkbox" name="all_delete" value="1" '+
+							((page_id == room_id) ? 'disabled="disabled" checked="checked" ' : '') + '/>&nbsp;'+
 							__d('pages', 'I completely delete it.')+
 							'</label></div>';
 
@@ -213,23 +348,15 @@
 					// 既に編集中->非表示
 					detail.slideUp(300, function() {detail.html('');});
 					return false;
-				} else if(detail.children().length > 0) {
-					detail.slideDown(300);
-					return false;
 				}
 
 				url = url + '/' + page_id;
 				return url;
 			}).on('ajax:success','[data-page-edit-id]',function(e, target) {
 				var page_id = $(this).data('page-edit-id');
-				target.slideDown(300, function() {
-					target = $('#pages-menu-edit-item-' + page_id);
-					var position = target.offset().top+$('#pages-menu-page').scrollTop() - $('#pages-menu-page').offset().top;
-					// ページ名称にfocus
-					$('[name=data\\[Page\\]\\[page_name\\]]:first', target).select();
-					// スクロール
-					$('#pages-menu-page').animate({scrollTop:position}, 400, 'swing');
-				});
+				var scroll_target = $('#pages-menu-edit-item-' + page_id);
+				// スクロール
+				slideTarget(target, active_tab_name, scroll_target);
 			});
 
 			// ページ編集
@@ -253,7 +380,11 @@
 			}).on('ajax:success','form',function(e, target) {
 				var li = $(this).parent();
 				var page_id = li.data('id');
-				root_menu.nestable('addEvent', [target, page_id]);
+				if(active_tab_name == '#pages-menu-page') {
+					$(root_menu.get(0)).nestable('addEvent', [target, page_id]);
+				} else {
+					$(root_menu.get(1)).nestable('addEvent', [target, page_id]);
+				}
 			});
 
 			// ページ公開・非公開
@@ -303,6 +434,11 @@
 				var content = $(this);
 				active_li = content.parents('li:first');
 
+				var button = $('button[data-action]:visible:first', active_li);
+				if(button.get(0)) {
+					button.click();
+				}
+
 				// ページ追加disable
 				var is_chief = active_li.data('is-chief');
 				var dd_sequence = active_li.data('dd-sequence');
@@ -314,9 +450,9 @@
 				}
 
 				if(!is_chief) {
-					$('#pages-menu-add-btn').addClass('pages-menu-add-btn-disable');
+					$('#pages-menu-add-btn').addClass('pages-menu-btn-disable');
 				} else {
-					$('#pages-menu-add-btn').removeClass('pages-menu-add-btn-disable');
+					$('#pages-menu-add-btn').removeClass('pages-menu-btn-disable');
 				}
 				sel_active_tab = active_tab;
 
@@ -351,46 +487,80 @@
 					input.select();
 				}
 			});
-		};
-		// ページ削除
-		var dletePage = function(url, page_id, all_delete, default_params) {
-			$.post(url, {'data[Page][id]': page_id, 'all_delete': all_delete},function(res){
-				var re_html = new RegExp("^<script>", 'i');
-				if(!$.trim(res).match(re_html)) {
-					// error
-					errorDialog(res, default_params);
-				} else {
-					// success
-					var li = $('#pages-menu-edit-item-' + page_id);
-					var prev = li.prev(), next = li.prev(), parent = li.parents('li');
-					var active = (prev.get(0)) ? prev : ((next.get(0)) ? next : parent);
-					if(active.get(0)) {
-						$('.pages-menu-edit-content', active).click();
-					}
-					$(res).appendTo($(document.body));
-
-					li.remove();
+		} else {
+			// コンテンツクリックイベント
+			root_menu.on('click','.pages-menu-handle',function(e) {
+				var content = $(this);
+				var active_li_buf = content.parents('li:first');
+				var button = $('button[data-action]:visible:first', active_li_buf);
+				if(button.get(0)) {
+					button.click();
 				}
 			});
-		};
+		}
+	};
+	$.PageMenu ={
+		pageDetailInit : function(id, permalink_prohibition, permalink_prohibition_replace) {
+			var form = $('#PagesMenuForm-' + id);
+			var input = $('input.pages-menu-edit-title:first', form);
+			var permalink = $('input#pages-menu-edit-permalink-' + id);
+			var buf_name = input.val();
+			var reg = new RegExp(permalink_prohibition , 'ig');
 
-		var chgSequenceSuccess = function(res, page_id) {
-			var detail = $('#pages-menu-edit-detail-' + page_id);
-			if(detail.css('display') != 'none') {
-				// 表示順を変更したときに、詳細部分を閉じる->親と子の（固定リンクが変更されるかもしれないため）
-				detail.slideUp(300, function() {detail.html('');});
-			}
-			$(res).appendTo($(document.body));
-		};
+			// ページ名称と固定リンクが同じならば、ページ名称の変更で、固定リンクも変更。
+			input.keyup(function(e) {
+				var replace_name = buf_name.replace(reg, permalink_prohibition_replace);
+				if(permalink.val() == replace_name) {
+    				permalink.val($(this).val().replace(reg, permalink_prohibition_replace));
+    			}
+			});
+			input.keydown(function(e) {
+				buf_name = $(this).val();
+			});
+		},
+		communityDetailInit : function(id, active_tab) {
+			active_tab = (active_tab) ? active_tab : 0;
+			var tab = $('#pages-menu-community-tab' + id);
+			tab.tabs({
+				active: active_tab,
+				activate: function( event, ui ) {
 
-		var errorDialog = function(res, default_params) {
-			var ok = __('Ok');
-			var body = '<div class="error-message">' + res + '</div>', _buttons = {};
-			_buttons[ok] = function(){
-				$( this ).remove();
-			};
-			params = $.extend({buttons: _buttons}, default_params);
-			$('<div></div>').html(body).dialog(params);
-		};
-	}
+				}
+			});
+
+			$('input[name="data[Community][publication_range_flag]"]', tab).change(function(e){
+				var target = $(this);
+				if(target.val() == '0') {
+					$('input[name="data[Community][publication_authority]"]', tab).attr('disabled', 'disabled');
+				} else {
+					$('input[name="data[Community][publication_authority]"]', tab).removeAttr('disabled');
+				}
+			});
+			$('input[name="data[Community][participate_flag]"]', tab).change(function(e){
+				var target = $(this);
+				if(target.val() == '0') {
+					$('#pages-menu-community-invite-authority-' + id).slider( "disable" );
+				} else {
+					$('#pages-menu-community-invite-authority-' + id).slider( "enable" );
+				}
+			});
+		},
+/**
+ * コミュニティ写真サンプル変更
+ * @param   element target
+ * @param   element form
+ * @param   string file_name
+ * @return  void
+ * @access  public
+ */
+		selectPhoto: function(id, target, file_name) {
+			var form = $('#PagesMenuForm-' + id);
+			var src = $(target).children(':first').attr("src");
+
+			$('input[name="data[Community][photo]"]:first', form).val(file_name);
+			$('input[name="data[Community][upload_id]"]:first', form).val("0");
+
+			$('#pages-menu-community-photo-preview-' + id).css('background-image', "url(" + src + ")");
+		}
+	};
 })(jQuery);

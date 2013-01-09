@@ -70,7 +70,7 @@ class TimeZoneBehavior extends ModelBehavior {
  * @param object $Model
  * @param   array    $data
  * @return  boolean
- * @access	public
+ * @since   v 3.0.0.0
  */
 	public function pastDateTime(Model $Model, $data) {
 		$values = array_values($data);

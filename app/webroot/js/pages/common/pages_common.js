@@ -9,7 +9,6 @@
  */
 ;(function($) {
 	$(function(){
-	//$(document).ready(function(){
 		// ヘッダーメニュー
 		var hover = false ;
 		var hmenu = $("#nc-hmenu");
@@ -35,11 +34,6 @@
 					});
 				}
 			});
-		}
-		if($._mode != 0) {
-			// setting modeならばdefault表示
-			hmenu.css('top', '0');
-			nc_hmenu_arrow.addClass('nc-arrow-up');
 		}
 		nc_hmenu_arrow.click(function(e){
 			if(nc_hmenu_arrow.hasClass('nc-arrow-up')) {
@@ -77,16 +71,32 @@
 		},
 		showPageSetting: function(e, url) {
 			var id = 'nc-pages-setting-dialog-outer', w, h;
+			var a = $(e.target);
+			var close_url = a.attr('data-page-setting-url');
+			var show_url = a.attr('href');
+
 			e.preventDefault();
 			var dialog_outer_el = $('#' + id);
 			var dialog_el = dialog_outer_el.children(':first');
-			if(dialog_outer_el.get(0)) {
+			var arrow_outer = $('#nc-pages-setting-arrow-outer');
+			var arrow = arrow_outer.children(':first');
+
+			if(arrow.get(0) && !arrow.hasClass('nc-arrow-left')) {
+				arrow_outer.click();
+			} else if(dialog_outer_el.get(0)) {
 				w = dialog_el.outerWidth();
 				$('.nc-pages-setting-arrow', dialog_el).addClass('nc-arrow-right').removeClass('nc-arrow-left');
 				dialog_el.animate({'left': '-' + w + 'px'}, 500, function() {
 					dialog_outer_el.remove();
 				});
+
+				// 閉じる(Sessionクリア)
+				$.get(url, function(res){
+					a.attr('data-page-setting-url', show_url);
+					a.attr('href', close_url);
+				});
 			} else {
+				// 表示
 				$.get(url,function(res) {
 					dialog_outer_el = $('<div id="' + id + '" style="visibility:hidden;"></div>').appendTo($(document.body));
 					dialog_outer_el.html(res);
@@ -95,6 +105,9 @@
 					dialog_el.css({'left' :  '-' + w + 'px'});
 					dialog_outer_el.css('visibility','visible');
 					dialog_el.animate({'left': 0}, 500);
+
+					a.attr('data-page-setting-url', show_url);
+					a.attr('href', close_url);
 				});
 			}
 		}

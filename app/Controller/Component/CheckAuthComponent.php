@@ -107,7 +107,7 @@ class CheckAuthComponent extends Component {
 		}
 
 		//$controller->set('title_for_layout',  '');
-		$user = $this->Auth->user();//認証済みユーザを取得
+		$user = $this->Auth->user();//認証済みユーザーを取得
 
 		$user_id = isset($user['id']) ? intval($user['id']) : 0;
 		$lang = $this->Session->read(NC_CONFIG_KEY.'.'.'language');
@@ -129,9 +129,10 @@ class CheckAuthComponent extends Component {
 		$controller_name = $controller->request->params['controller'];
 		$action_name = $controller->request->params['action'];
 
-		$permalink = $this->formatUrl($permalink);
+		$permalink = trim($permalink, '/');
 
 		Configure::write(NC_SYSTEM_KEY.'.permalink', $permalink);
+		Configure::write(NC_SYSTEM_KEY.'.user_id', $user_id);
 		$controller->id = '_'. $block_id;
 		$controller->block_id = $block_id;
 
@@ -193,19 +194,6 @@ class CheckAuthComponent extends Component {
 
 			if(isset($block) && !is_null($block['Content']['master_id'])) {
 				$controller->content_id = intval($block['Content']['master_id']);
-			}
-
-			if($plugin_name == '' && $controller_name == 'pages') {
-				// pages
-				if(isset($controller->request->params['active_plugin'])) {
-					$controller->request->offsetSet('active_plugin', $this->formatUrl($controller->request->params['active_plugin']));
-				}
-				if(isset($controller->request->params['active_controller'])) {
-					$controller->request->offsetSet('active_controller', $this->formatUrl($controller->request->params['active_controller']));
-				}
-				if(isset($controller->request->params['active_action'])) {
-					$controller->request->offsetSet('active_action', $this->formatUrl($controller->request->params['active_action']));
-				}
 			}
 
 			/*if($plugin_name != '' && $plugin_name != 'group') {// && $plugin_name != 'block'
@@ -287,7 +275,7 @@ class CheckAuthComponent extends Component {
 			if($user_id == 0) {
 				$this->Session->setFlash(__('Forbidden permission to access the page.', true), 'default', array(), 'auth');
 			}
-			$controller->flash(__('Forbidden permission to access the page.', true), $redirect_url, 'checkauth.07', 403);
+			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.007', 403);
 			return;
 		}
 
@@ -463,7 +451,8 @@ class CheckAuthComponent extends Component {
 							'Page.permalink' => $permalink,
 							'Page.position_flag' => _ON,
 							'Page.space_type' => $space_type,
-							'Page.display_sequence !=' => 0
+							'Page.display_sequence !=' => 0,
+							'Page.thread_num >' => 1
 						);
 					}
 					break;
@@ -527,17 +516,6 @@ class CheckAuthComponent extends Component {
 		}
 		$controller->nc_block = $block;
 		return $block;
-	}
-
-/**
- * Urlの体裁を整える
- *
- * @param   string $url
- * @return  string $url
- * @since   v 3.0.0.0
- */
-	public function formatUrl($url) {
-		return trim($url, '/');
 	}
 
 	protected function _setControllerParams(Controller $controller) {

@@ -8,29 +8,43 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 ;(function($) {
-	$.fn.Page = function() {
+	$.fn.Page = function(pos) {
 		var dialog_el = $(this);
+		var arrow_outer = $('#nc-pages-setting-arrow-outer');
+		var arrow = arrow_outer.children(':first');
+		var url = arrow_outer.data('page-setting-url'), w;
+
 		resizeWindow(dialog_el);
 
-		$('#nc-pages-setting-arrow-outer').click(function(event){
-			var arrow_outer = $(this);
-			var arrow = arrow_outer.children(':first');
-			var arrow_w = parseInt(arrow_outer.outerWidth());
-			var w = parseInt(dialog_el.outerWidth()) - arrow_w;
-
+		arrow_outer.click(function(event){
+			w = parseInt(dialog_el.outerWidth()) - parseInt(arrow_outer.outerWidth());
 			if(arrow.hasClass('nc-arrow-left')) {
 				dialog_el.stop(true, false).animate({left: '-' + w + 'px'}, 500, function(){
 					arrow.addClass('nc-arrow-right');
 					arrow.removeClass('nc-arrow-left');
+					$.get(url + '?pos=0');
+					dialog_el.css('visibility', 'visible');
 				});
 			} else {
 				dialog_el.stop(true, false).animate({left:'0'}, 500, function() {
 					arrow.addClass('nc-arrow-left');
 					arrow.removeClass('nc-arrow-right');
+					$.get(url + '?pos=1');
 				});
 			}
 			return false;
 		});
+		if(pos == 0) {
+			setTimeout(function(){
+				w = parseInt(dialog_el.outerWidth()) - parseInt(arrow_outer.outerWidth());
+				dialog_el.css('left', '-' + w + 'px');
+				arrow.addClass('nc-arrow-right');
+				arrow.removeClass('nc-arrow-left');
+				dialog_el.css('visibility', 'visible');
+			}, 500);
+		} else {
+			dialog_el.css('visibility', 'visible');
+		}
 	}
 
 /**
@@ -59,6 +73,7 @@
 		content.css('height', h + offset - parseInt(content_h)  - dialog_top - marginTop - marginBottom - paddingTop - paddingBottom);
 
 	}
+
 /**
  * ウィンドウサイズ　ボックスリサイズ処理
  * window.event

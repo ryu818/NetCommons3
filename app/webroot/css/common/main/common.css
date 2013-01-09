@@ -152,6 +152,7 @@ input.nc-time {
 	color:#ff0000 !important;
 	background: url(../../img/common/alert.gif) no-repeat 5px center #ffd9d9 !important;
 	padding:5px 0 5px 25px;
+	line-height: 26px;
 	margin:2px 0;
 	clear: both;
 }
@@ -159,6 +160,7 @@ input.nc-time {
 	color:#0000ff !important;
 	background-color:#d9e0ff !important;
 	padding:5px 0 5px 25px;
+	line-height: 26px;
 	margin:2px 0;
 	clear: both;
 }
@@ -264,36 +266,40 @@ img.icon {
 }
 
 /* ページ移動 */
-ul.nc-pager {
+ul.nc-paginator {
 	list-style-type: none;
-	margin: 0 0 1em;
+	margin: 0;
 	padding: 0;
 }
 
-ul.nc-pager li {
+ul.nc-paginator li {
     /* font-size: 13px; */
-    display: inline;
     line-height: 0;
-    margin: 0;
-    padding: 0;
-}
-
-ul.nc-pager a, ul.nc-pager a:visited, ul.nc-pager a:hover, ul.nc-pager span.nc-pager-current,ul.nc-pager span.nc-pager-dots {
-    /* background: url() no-repeat scroll left top transparent; */
-    width: 25px;
-    color: #777777;
-    display: block;
-    float: left;
-    line-height: 25px;
     margin: 0 3px 0 0;
     padding: 0;
-    text-align: center;
-    border-radius:3px;
-    border: 1px solid #cccccc;
-    text-decoration: none;
+
+    border-radius:4px;
+    border: 1px solid #ccc;
+    color: #ccc;
+    float: left;
 }
 
-ul.nc-pager span.nc-pager-current {
+ul.nc-paginator li,ul.nc-paginator a {
+	min-width: 23px;
+
+    display: block;
+    line-height: 23px;
+
+    padding: 0;
+    text-align: center;
+}
+
+ul.nc-paginator a {
+    text-decoration: none;
+    color: #777;
+}
+
+ul.nc-paginator li.current,ul.nc-paginator a:hover  {
     /* background: url("") no-repeat scroll left top transparent; */
     background-color:#7e9693;
     color: #ffffff;
@@ -384,6 +390,34 @@ ul.lists li dl dd {
     overflow: hidden;
     padding: 10px;
     /*width : 200px;*/
+}
+
+/* 権限スライドバー [主坦- モデレータ - 一般] */
+.authority-slider {
+	width:150px;
+}
+.authority-slider-labels-outer {
+	position: relative;
+	top: 1.3em;
+	width: 100%;
+}
+.authority-slider-label-outer {
+	overflow: visible;
+	position: absolute;
+}
+.authority-slider-label {
+	width:66px;
+	text-align:center;
+	overflow:hidden;
+	margin-left: -33px;
+	white-space:nowrap;
+}
+.authority-slider-line {
+	border-left: 1px solid #aaa;
+	height: 0.8em;
+	left: 0;
+	position: absolute;
+	top: -1.3em;
 }
 
 /** Debugging **/

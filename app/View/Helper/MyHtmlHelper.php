@@ -18,7 +18,6 @@ class MyHtmlHelper extends HtmlHelper {
  * instance
  *
  * @var array
- * @access protected
  */
 	protected $__instance = null;
 

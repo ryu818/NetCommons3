@@ -23,8 +23,7 @@ class AnnouncementOperationsComponent extends Object {
  *
  * @param   void
  * @return  void
- * @since
- * @access  public
+ * @since   v 3.0.0.0
  */
 	public function startup() {
 		App::uses('Content', 'Model');
@@ -39,8 +38,7 @@ class AnnouncementOperationsComponent extends Object {
  *
  * @param   array 削除ブロック $block
  * @return  void
- * @since
- * @access  public
+ * @since   v 3.0.0.0
  */
 	//public function delete_block($block) {
 	//	return $this->delete($block);
@@ -51,8 +49,7 @@ class AnnouncementOperationsComponent extends Object {
  *
  * @param   array 削除コンテンツ $content
  * @return  void
- * @since
- * @access  public
+ * @since   v 3.0.0.0
  */
 	public function delete($content) {
 		if(isset($content['Content'])) {
@@ -74,8 +71,7 @@ class AnnouncementOperationsComponent extends Object {
  * @param   array 移動元ページ   $page
  * @param   array 移動先ページ   $page
  * @return  void
- * @since
- * @access  public
+ * @since   v 3.0.0.0
  */
 //	public function shortcut($from_block, $to_block, $from_content, $to_content, $from_page, $to_page) {
 //		return true;
@@ -92,8 +88,7 @@ class AnnouncementOperationsComponent extends Object {
  * @param   array 移動元ページ   $page
  * @param   array 移動先ページ   $page
  * @return  void
- * @since
- * @access  public
+ * @since   v 3.0.0.0
  */
 	public function paste($from_block, $to_block, $from_content, $to_content, $from_page, $to_page) {
 		$htmlarea = $this->Htmlarea->findByContentId($from_content['Content']['id']);
@@ -116,8 +111,7 @@ class AnnouncementOperationsComponent extends Object {
  * @param   array 移動元ページ   $page
  * @param   array 移動先ページ   $page
  * @return  void
- * @since
- * @access  public
+ * @since   v 3.0.0.0
  */
 //	public function move($from_block, $from_content, $from_page, $to_page) {
 //		return true;
@@ -127,8 +121,7 @@ class AnnouncementOperationsComponent extends Object {
  *
  * @param   integer $module_id
  * @return  void
- * @since
- * @access  public
+ * @since   v 3.0.0.0
  */
 //	public function install($module_id) {
 //		return true;
@@ -139,8 +132,7 @@ class AnnouncementOperationsComponent extends Object {
  *
  * @param   integer $module_id
  * @return  void
- * @since
- * @access  public
+ * @since   v 3.0.0.0
  */
 //	public function update($module_id) {
 //		return true;
@@ -151,8 +143,7 @@ class AnnouncementOperationsComponent extends Object {
  *
  * @param   integer $module_id
  * @return  void
- * @since
- * @access  public
+ * @since   v 3.0.0.0
  */
 //	public function uninstall($module_id) {
 //		return true;

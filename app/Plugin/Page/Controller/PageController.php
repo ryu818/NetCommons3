@@ -14,6 +14,26 @@
  */
 class PageController extends PageAppController {
 /**
+ * Component name
+ * @var array
+ */
+	public $components = array('Page.PageMenu');
+
+/**
+ * Model name
+ * @var array
+ */
+	public $uses = array('Community', 'CommunityLang', 'CommunityTag');
+
+/**
+ * Heilper name
+ * @var array
+ */
+	public $helpers = array(
+		'Paginator'
+	);
+
+/**
  * page_id
  * @var integer
  */
@@ -26,51 +46,134 @@ class PageController extends PageAppController {
 	public $hierarchy = null;
 
 /**
- * ページメニュー表示
+ * セッションの言語保持 _sess_language
+ * @var string
+ */
+	private $_sess_language = null;
+
+/**
+ * コミュニティーのページ移動の設定
+ * @var array
+ */
+	public $paginate = array(
+		'fields' => array('Page.room_id'),
+		'conditions' => array(
+			'Page.thread_num' => 1
+		)
+	);
+
+/**
+ * 表示前処理
+ * <pre>
+ * 	ページメニューの言語切替の値を選択言語としてセット
+ * </pre>
  * @param   void
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function index() {
+	public function beforeFilter()
+	{
+		$this->_sess_language = null;
+		$active_lang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu_lang');
+		if(isset($active_lang)) {
+			$this->_sess_language = $this->Session->read(NC_CONFIG_KEY.'.language');
+			Configure::write(NC_CONFIG_KEY.'.'.'language', $active_lang);
+			$this->Session->write(NC_CONFIG_KEY.'.language', $active_lang);
+		}
+		parent::beforeFilter();
+	}
+
+/**
+ * 表示後処理
+ * <pre>
+ * 	セッションにセットしてあった言語を元に戻す。
+ * </pre>
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function afterFilter()
+	{
+		parent::afterFilter();
+		if($this->action == 'index' && isset($this->_sess_language)) {
+			$this->Session->write(NC_CONFIG_KEY.'.language', $this->_sess_language);
+		}
+	}
+
+/**
+ * ページメニュー表示
+ * @param   string $active_lang
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function index($active_lang = null) {
+		$this->Session->write(NC_SYSTEM_KEY.'.page_menu', $this->action);
+
 		include_once dirname(dirname(__FILE__)).'/Config/defines.inc.php';
 
 		$login_user = $this->Auth->user();
 		$user_id = $login_user['id'];
-		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
+
 		$is_edit = isset($this->request->query['is_edit']) ? intval($this->request->query['is_edit']) : _OFF;
-		$page = isset($this->request->query['page']) ? intval($this->request->query['page']) : 1;
-		$limit = isset($this->request->query['limit']) ? intval($this->request->query['limit']) : PAGES_COMMUNITY_LIMIT;
+		$is_detail = isset($this->request->query['is_detail']) ? intval($this->request->query['is_detail']) : _OFF;
 		$active_tab = isset($this->request->query['active_tab']) ? intval($this->request->query['active_tab']) : null;
+		$limit = !empty($this->request->named['limit']) ? intval($this->request->named['limit']) : PAGES_COMMUNITY_LIMIT;
+		$views = !empty($this->request->named['views']) ? intval($this->request->named['views']) : PAGES_COMMUNITY_VIEWS;
+
+		// 言語切替
+		$languages = $this->Language->findLists();
+		//$active_lang = isset($active_lang) ? $active_lang : $this->Session->read(NC_SYSTEM_KEY.'.page_menu_lang');
+		//$this->_sess_language = null;
+		if(isset($active_lang) && isset($languages[$active_lang])) {
+			Configure::write(NC_CONFIG_KEY.'.'.'language', $active_lang);
+			$this->_sess_language = $this->Session->read(NC_CONFIG_KEY.'.language');
+			$this->Session->write(NC_SYSTEM_KEY.'.page_menu_lang', $active_lang);
+			$this->Session->write(NC_CONFIG_KEY.'.language', $active_lang);
+		}
+		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
+
+		$this->paginate['limit'] = $limit;
+
+		if(isset($this->request->named['page']) || isset($this->request->named['limit'])) {
+			$active_tab = 1;
+		}
 		if(!isset($active_tab)) {
 			$active_tab = ($this->nc_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) ? 1 : 0;
 		}
 
 		$element_params = array(
-			'page_id' => $this->page_id,
-			'is_edit' => $is_edit
+			'is_edit' => $is_edit,
+			'community_params' => array()
 		);
 
 		// カレント会員取得
 		$center_page = Configure::read(NC_SYSTEM_KEY.'.'.'Center_Page');
 		$current_user = $this->User->currentUser($center_page, $login_user);
 		if($current_user === false) {
-			$this->flash(sprintf(__('Failed to obtain the database, (%s).',true),'users'), null, 'pagesmenu_index.002');
+			$this->flash(__('Failed to obtain the database, (%s).','users'), null, 'Page/index.001', '500');
 			return;
 		} else if($current_user === '') {
 			$current_user = array('User' => $login_user);
 		}
+		$sel_active_tab = 0;
+		if($center_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
+			$sel_active_tab = 1;
+		}
 
-		$fetch_params = array(
-			'active_page_id' => $this->page_id
-		);
-		$params = null;	// TODO:後に削除するかも$params
-		/*if($is_edit) {
+		$params = null;
+		if($is_edit) {
 			$params = array(
-					'conditions' => array(
-							'Page.lang' => array('', $lang)
-					)
+				'conditions' => array(
+					'Page.lang' => array('', $lang)
+				)
 			);
-		}*/
+		}
+		// activeなページがコミュニティーならば、コミュニティー一覧の何ページ目かにあるかを設定
+		if(!isset($this->request->named['page']) && $center_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
+			$community_page = $this->Page->findById($center_page['Page']['root_id']);
+			$this->paginate['page'] = ceil(intval($community_page['Page']['display_sequence'])/$this->paginate['limit']);
+		}
+
 		// 管理系の権限を取得
 		if($user_id) {
 			$admin_hierarchy = $this->ModuleSystemLink->findHierarchy(Inflector::camelize($this->request->params['plugin']), $login_user['authority_id']);
@@ -79,23 +182,66 @@ class PageController extends PageAppController {
 		}
 		$element_params['admin_hierarchy'] = $admin_hierarchy;
 
+		$parent_page = $this->Page->findAuthById($center_page['Page']['parent_id'], $user_id);
+		if(!isset($parent_page['Page'])) {
+			$this->flash(__('Failed to obtain the database, (%s).','pages'), null, 'Page/index.002', '500');
+			return;
+		}
 		if($is_edit) {
 			// active pageでページ追加をactiveにするかどうか。
 			$is_add = false;
+			$is_add_community = false;
 
 			if($center_page['Page']['thread_num'] <= 1) {
 				if($center_page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
 					$is_add = true;
 				}
-			} else {
-				$parent_page = $this->Page->findAuthById($center_page['Page']['parent_id'], $user_id);
-				if($parent_page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
-					$is_add = true;
-				}
+			} else if($parent_page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
+				$is_add = true;
+			}
+			if($admin_hierarchy >= NC_AUTH_MIN_MODERATE) {
+				$is_add_community = true;
+			}
+			if(($center_page['Page']['space_type'] != NC_SPACE_TYPE_GROUP && $active_tab == 1) ||
+					($center_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP && $active_tab == 0)) {
+				$is_add = false;
 			}
 			$element_params['is_add'] = $is_add;
+			$element_params['is_add_community'] = $is_add_community;
 		}
 
+		if($is_detail) {
+			$buf_thread_num = $center_page['Page']['thread_num'];
+			if($center_page['Page']['thread_num'] == 2 && $center_page['Page']['display_sequence'] == 1) {
+				// Topページ
+				$parent_page = $this->Page->findAuthById($parent_page['Page']['parent_id'], $user_id);	// 再取得
+				if(!isset($parent_page['Page'])) {
+					$this->flash(__('Failed to obtain the database, (%s).','pages'), null, 'Page/index.003', '500');
+					return;
+				}
+				$this->page_id = $center_page['Page']['parent_id'];
+				$buf_thread_num --;
+			}
+
+			if($buf_thread_num == 1 && $center_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
+				// コミュニティーならば
+				$ret = $this->PageMenu->getCommunityData($center_page['Page']['room_id']);
+				if($ret === false) {
+					$this->flash(__('Failed to obtain the database, (%s).', 'communities'), null, 'PageMenu/detail.002', '500');
+					return;
+				}
+				list($community, $community_lang, $community_tag) = $ret;
+
+				$element_params['community_params']['community'] = $community;
+				$element_params['community_params']['community_lang'] = $community_lang;
+				$element_params['community_params']['community_tag'] = $community_tag;
+				$element_params['community_params']['photo_samples'] = $this->PageMenu->getCommunityPhoto();
+			}
+		}
+
+		$fetch_params = array(
+			'active_page_id' => $this->page_id
+		);
 		$pages = $this->Page->findMenu('all', $user_id, NC_SPACE_TYPE_PUBLIC, $current_user, $params, null, $fetch_params);
 		$private_pages = $this->Page->findMenu('all', $user_id, array(NC_SPACE_TYPE_MYPORTAL, NC_SPACE_TYPE_PRIVATE), $current_user, $params, null, $fetch_params);
 		if(isset($private_pages[NC_SPACE_TYPE_MYPORTAL])) {
@@ -105,41 +251,31 @@ class PageController extends PageAppController {
 			$pages[NC_SPACE_TYPE_PRIVATE] = $private_pages[NC_SPACE_TYPE_PRIVATE];
 		}
 
-		// コミュニティ数
-		$conditions = array(
-			'Page.thread_num' => 1
-		);
-		$top_params = array(
-			'conditions' => $conditions
-		);
-		$pages_group_total_count = $this->Page->findMenu('count', $user_id, NC_SPACE_TYPE_GROUP, $current_user, $top_params);
-
+		// コミュニティー数
+		//$this->paginate['extra'] = array('user_id' => $user_id);
+		$this->paginate['user_id'] = $user_id;
+		if($is_edit && $admin_hierarchy >= NC_AUTH_MIN_ADMIN) {
+			$this->paginate['is_all'] = true;
+		}
+		$pages_top_group = $this->paginate('Page');
 		$pages_group = array();
-		if($pages_group_total_count != 0) {
-			// コミュニティ取得
-			$conditions = array(
-				'Page.thread_num' => 1
-			);
-			$top_group_params = array(
-				'fields' => array('Page.room_id'),
-				'conditions' => $conditions,
-				'page' => $page,
-				'limit' => $limit
-			);
-			if($is_edit && $admin_hierarchy >= NC_AUTH_MIN_ADMIN) {
-				// 管理者で編集モードならばコミュニティすべて表示
-				$pages_top_group = $this->Page->findMenu('list', $user_id, NC_SPACE_TYPE_GROUP, $current_user, $top_group_params, null, null, true);
-			} else {
-				$pages_top_group = $this->Page->findMenu('list', $user_id, NC_SPACE_TYPE_GROUP, $current_user, $top_group_params);
-			}
+		if(count($pages_top_group) > 0) {
 			$params['conditions']['Page.room_id'] = $pages_top_group;
-			$pages_group = $this->Page->findMenu('all', $user_id, NC_SPACE_TYPE_GROUP, $current_user, $params, null, $fetch_params, true);
+			$pages_group = $this->Page->findMenu('all', $user_id, NC_SPACE_TYPE_GROUP, null, $params, null, $fetch_params, true);
 		}
 
+		$element_params['languages'] = $languages;
 		$element_params['pages'] = $pages;
 		$element_params['pages_group'] = $pages_group;
-		$element_params['pages_group_total_count'] = $pages_group_total_count;
+		$element_params['page_id'] = $this->page_id;
+		$element_params['is_detail'] = $is_detail;
+		$element_params['parent_page'] = $parent_page;
+		////$element_params['pages_group_total_count'] = $pages_group_total_count;
 		$element_params['active_tab'] = $active_tab;
+		$element_params['sel_active_tab'] = $sel_active_tab;
+		$element_params['views'] = $views;
+		$element_params['limit'] = $limit;
+		$element_params['limit_select_values'] = explode('|', PAGES_COMMUNITY_LIMIT_SELECT);
 		$this->set('element_params', $element_params);
 	}
 
@@ -150,6 +286,7 @@ class PageController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function favorite() {
+		$this->Session->write(NC_SYSTEM_KEY.'.page_menu', $this->action);
 		$this->render('index');
 	}
 
@@ -160,6 +297,7 @@ class PageController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function meta() {
+		$this->Session->write(NC_SYSTEM_KEY.'.page_menu', $this->action);
 		$this->render('index');
 	}
 
@@ -170,6 +308,7 @@ class PageController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function style() {
+		$this->Session->write(NC_SYSTEM_KEY.'.page_menu', $this->action);
 		// ページ情報を取得
 		$page = $this->Page->findById($this->page_id);
 		// TODO ノードを基にスタイル情報を取得
@@ -208,6 +347,7 @@ class PageController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function theme() {
+		$this->Session->write(NC_SYSTEM_KEY.'.page_menu', $this->action);
 		$this->render('index');
 	}
 
@@ -218,6 +358,35 @@ class PageController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function layout() {
+		$this->Session->write(NC_SYSTEM_KEY.'.page_menu', $this->action);
 		$this->render('index');
+	}
+
+/**
+ * ページ設定非表示
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function close() {
+		$this->Session->delete(NC_SYSTEM_KEY.'.page_menu');
+		$this->Session->delete(NC_SYSTEM_KEY.'.page_menu_pos');
+		$this->render(false, 'ajax');
+	}
+
+/**
+ * ページ設定最小化-最大化
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function display() {
+		$pos = isset($this->request->query['pos']) ? intval($this->request->query['pos']) : _OFF;
+		if($pos == 0) {
+			$this->Session->write(NC_SYSTEM_KEY.'.page_menu_pos', intval($pos));
+		} else {
+			$this->Session->delete(NC_SYSTEM_KEY.'.page_menu_pos');
+		}
+		$this->render(false, 'ajax');
 	}
 }

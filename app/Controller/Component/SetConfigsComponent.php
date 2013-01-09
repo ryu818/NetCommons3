@@ -28,7 +28,7 @@ class SetConfigsComponent extends Component {
  * @since   v 3.0.0.0
  */
 	public function startup(Controller $controller) {
-		$user = $this->Auth->user();//認証済みユーザを取得
+		$user = $this->Auth->user();//認証済みユーザーを取得
 		$user_id = isset($user['id']) ? intval($user['id']) : 0;
 
 		/*
@@ -101,7 +101,7 @@ class SetConfigsComponent extends Component {
 		// 自動ログイン
 		// ******************************************************************************************
 		if(!$user && $this->Common->autoLogin($configs)) {
-			$user = $this->Auth->user();//認証済みユーザを取得
+			$user = $this->Auth->user();//認証済みユーザーを取得
 			$user_id = isset($user['id']) ? intval($user['id']) : 0;
 		}
 		// ******************************************************************************************

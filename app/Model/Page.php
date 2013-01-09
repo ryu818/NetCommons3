@@ -19,6 +19,7 @@ class Page extends AppModel
 	public $actsAs = array('Page', 'TimeZone');	// , 'Validation'
 	public $validate = array();
 
+// 公開日付をsaveする前に変換するかどうかのフラグ
 	public $autoConvert = true;
 
 /**
@@ -166,7 +167,7 @@ class Page extends AppModel
 
 /**
  * ページ名称重複チェック
- * 		コミュニティ名称のみ
+ * 		コミュニティー名称のみ
  * @param   array    $check
  * @return  boolean
  * @since   v 3.0.0.0
@@ -291,8 +292,8 @@ class Page extends AppModel
 		if(!empty($this->data['Page']['space_type']))
 			$check['space_type'] = $this->data['Page']['space_type'];
 		$count = $this->find( 'count', array('conditions' => $check, 'recursive' => -1) );
-		if(!empty($this->data['Page']['id']) && $this->data['Page']['thread_num'] == 1 && $count == 1) {
-			// ノード
+		if(($this->data['Page']['thread_num'] == 1 || $this->data['Page']['display_sequence'] == 1) && $count == 1) {
+			// ノード Or Node Top Page
 			$count = 0;
 		}
 		if($count != 0)
@@ -440,7 +441,7 @@ class Page extends AppModel
  * @param function  $fetchcallback callback関数 default メニュー形式
  *                                     $pages[space_type][thread_num][parent_id][display_sequence] = Page
  * @param array     $fetch_params callback関数 parameter
- * @param boolean   $is_all $params['join']が設定されていない場合、true LEFT JOIN PageUserLink false INNER JOIN PageUserLink
+ * @param boolean   $is_all $params['join']が設定されていない場合、使用。 default false true LEFT JOIN PageUserLink false INNER JOIN PageUserLink
  * @return array
  * @since   v 3.0.0.0
  */
@@ -459,7 +460,6 @@ class Page extends AppModel
 			$conditions = array(
 					'Page.space_type' => $space_type,
 					'Page.position_flag' => _ON,
-					'Page.thread_num !=' => 0
 					//'Page.lang' => array('', $lang)
 			);
 		} else {
@@ -467,7 +467,6 @@ class Page extends AppModel
 					//'Page.space_type' => array(NC_SPACE_TYPE_MYPORTAL, NC_SPACE_TYPE_PRIVATE),
 					'Page.position_flag' => _ON,
 					'Page.display_flag !=' => NC_DISPLAY_FLAG_DISABLE,
-					'Page.thread_num !=' => 0
 					//'Page.lang' => array('', $lang)
 			);
 			if(isset($current_user)) {
@@ -487,6 +486,9 @@ class Page extends AppModel
 		} else {
 			$params['conditions'] = array_merge($conditions, $params['conditions']);
 		}
+		if(!isset($params['conditions']['Page.thread_num'])) {
+			$params['conditions']['Page.thread_num !='] = 0;
+		}
 
 		if($type != 'count' && !isset($params['order'])) {
 			$params['order'] = array(
@@ -504,29 +506,13 @@ class Page extends AppModel
 			}
 		} else {
 			if(!isset($params['fields'])) {
-				$params['fields'] = $this->_getFieldsArray();
+				$params['fields'] = $this->_getFieldsArray($space_type);
 			}
 			if(!isset($params['joins'])) {
 				$join_type = ($is_all) ? 'INNER' : 'LEFT';
-				$params['joins'] = $this->_getJoinsArray($login_user_id, $join_type);
+				$params['joins'] = $this->_getJoinsArray($login_user_id, $join_type, $space_type);
 			}
 		}
-
-		/*if((isset($params['limit']) || isset($params['page'])) && $space_type == NC_SPACE_TYPE_GROUP &&
-				!isset($params['conditions']['Page.display_sequence'])) {
-			// ページメニュー：グループルーム編集モード
-			$top_params = $params;
-			$top_params['fields'] = array('Page.root_sequence');
-			$top_params['conditions']['Page.display_sequence'] = 0;
-			$top_results = $this->find('list', $top_params);
-			if(count($top_results) == 0) {
-				return $top_results;
-			}
-			$params['conditions']['Page.root_sequence'] = $top_results;
-			//$params['conditions']['Page.room_id'] = $top_results;
-			unset($params['limit']);
-			unset($params['page']);
-		}*/
 
 		if($fetchcallback === "" || ($fetchcallback === null && $type !== 'all')) {
 			$results = $this->find($type, $params);
@@ -563,49 +549,127 @@ class Page extends AppModel
 	public function findChilds($type, $current_page, $login_user_id = null) {
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		$params = array('conditions' => array(
-			'root_id' => $current_page['Page']['root_id'],
-			'thread_num >' => $current_page['Page']['thread_num'],
-			'lang' => array('', $lang)
+			'Page.root_id' => $current_page['Page']['root_id'],
+			'Page.thread_num >' => $current_page['Page']['thread_num'],
+			'Page.lang' => array('', $lang)
 		));
 		$fetch_params = array('active_page_id' => $current_page['Page']['id']);
 		return $this->findMenu($type, $login_user_id, $current_page['Page']['space_type'], null, $params, "", $fetch_params);
 	}
 
 /**
+ * Current_pageの子供のページを取得
+ * @param integer    $login_user_id
+ * @param array      $params
+ * @return  integer コミュニティー数
+ * @since   v 3.0.0.0
+ */
+	public function findCommunityCount($login_user_id = null, $params = null) {
+		if(!isset($params)) {
+			$params = array(
+				'conditions' => array(
+					'Page.thread_num' => 1
+				)
+			);
+		}
+		return $this->findMenu('count', $login_user_id, NC_SPACE_TYPE_GROUP, null, $params);
+	}
+
+/**
+ * コミュニティーpaginate用メソッド
+ * @param array    $conditions
+ * @param array    $fields
+ * @param array    $order
+ * @param array    $limit
+ * @param array    $page
+ * @param integer  $recursive
+ * @param array    $extra
+ * @return  array  コミュニティーのroom_idリスト
+ * @since   v 3.0.0.0
+ */
+	public function paginate($conditions, $fields, $order, $limit, $page = 1, $recursive = null, $extra = array()) {
+		$params = array(
+			'fields' => $fields,
+			'conditions' => $conditions,
+			'page' => $page,
+			'limit' => $limit,
+			'recursive' => $recursive
+		);
+		if(isset($extra['is_all']) && $extra['is_all']) {
+			$is_all = true;
+		} else {
+			$is_all = false;
+		}
+		return $this->findMenu('list', $extra['user_id'], NC_SPACE_TYPE_GROUP, null, $params, null, null, $is_all);
+	}
+
+/**
+ * コミュニティーpaginate用メソッド(コミュニティー数)
+ * @param array    $conditions
+ * @param integer  $recursive
+ * @param array    $extra
+ * @return  integer コミュニティー数
+ * @since   v 3.0.0.0
+ */
+	public function paginateCount($conditions = null, $recursive = 0, $extra = array()) {
+		$params = array(
+			'conditions' => $conditions,
+			'recursive' => $recursive
+		);
+		return $this->findCommunityCount($extra['user_id'], $params);
+	}
+
+/**
  * Pageモデル共通Fields文
- * @param   void
+ * @param   string  $space_type
  * @return  array   $fields
  * @since   v 3.0.0.0
  */
-	protected function _getFieldsArray() {
-		return array(
+	protected function _getFieldsArray($space_type = null) {
+		$ret = array(
 			'Page.*',
 			'Authority.myportal_use_flag, Authority.private_use_flag, Authority.hierarchy'
 		);
+		if(NC_SPACE_TYPE_GROUP) {
+			$ret[count($ret)] = 'CommunityLang.community_name, CommunityLang.summary, CommunityLang.description';
+		}
+		return $ret;
 	}
 
 /**
  * Pageモデル共通JOIN文
  * @param   integer $user_id
+ * @param   string  $type LEFT or INNER
+ * @param   string  $space_type
  * @return  array   $joins
  * @since   v 3.0.0.0
  */
-	protected function _getJoinsArray($user_id) {
+	protected function _getJoinsArray($user_id, $type = 'LEFT', $space_type = null) {
 		$ret = array(
 			array(
-					"type" => "LEFT",
-					"table" => "page_user_links",
-					"alias" => "PageUserLink",
-					"conditions" => "`Page`.`room_id`=`PageUserLink`.`room_id`".
-						" AND `PageUserLink`.`user_id` =".intval($user_id)
+				"type" => $type,
+				"table" => "page_user_links",
+				"alias" => "PageUserLink",
+				"conditions" => "`Page`.`room_id`=`PageUserLink`.`room_id`".
+					" AND `PageUserLink`.`user_id` =".intval($user_id)
 			),
 			array(
-					"type" => "LEFT",
-					"table" => "authorities",
-					"alias" => "Authority",
-					"conditions" => "`Authority`.id``=`PageUserLink`.`authority_id`"
+				"type" => "LEFT",
+				"table" => "authorities",
+				"alias" => "Authority",
+				"conditions" => "`Authority`.id``=`PageUserLink`.`authority_id`"
 			)
 		);
+		if(NC_SPACE_TYPE_GROUP) {
+			$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
+			$ret[count($ret)] = array(
+				"type" => "LEFT",
+				"table" => "community_langs",
+				"alias" => "CommunityLang",
+				"conditions" => "`Page`.`id`=`CommunityLang`.`room_id`".
+					" AND `CommunityLang`.`lang` ='".$lang."'"
+			);
+		}
 		return $ret;
 	}
 
@@ -613,11 +677,12 @@ class Page extends AppModel
  * ルーム（ページ）削除処理
  * @param mixed $id ID of record to delete
  * @param boolean $all_delete コンテンツもすべて削除するかどうか
- * @param integer $childs_count
+ * @param Model Page $child_pages 指定されていなければ取得
+ * @param boolean $is_recursion 再帰的に呼ばれたかどうか
  * @return boolean True on success
- * @access	public
+ * @since   v 3.0.0.0
  */
-	public function deletePage($id = null, $all_delete = _OFF, $childs_count = 0) {
+	public function deletePage($id = null, $all_delete = _OFF, $child_pages = null, $is_recursion = false) {
 		if (!empty($id)) {
 			$this->id = $id;
 		}
@@ -643,8 +708,20 @@ class Page extends AppModel
 			}
 		}
 
-		if($childs_count > 0) {
+		if(!$is_recursion) {
+			// 子ページ削除処理
+			if(!isset($child_pages)) {
+				$login_user_id = Configure::read(NC_SYSTEM_KEY.'.user_id');
+				$child_pages = $this->findChilds('all', $page, $login_user_id);
+			}
+			foreach($child_pages as $child_page) {
+				if(!$this->deletePage($child_page['Page']['id'], $all_delete, null, true)) {
+					$this->flash(__('Failed to delete the database, (%s).', 'pages'), null, 'PageMenu/delete.003', '500');
+					return;
+				}
+			}
 			//前詰め処理
+			$childs_count = count($child_pages);
 			if(!$this->decrementDisplaySeq($page, $childs_count + 1)) {
 				return false;
 			}
@@ -657,33 +734,33 @@ class Page extends AppModel
 		// TODO:page_columns削除
 		// TODO:page_themes削除
 		// TODO:uploads削除
-		// コミュニティの写真、コミュニティのWYSIWYGの画像も含まれる。
+		// コミュニティーの写真、コミュニティーのWYSIWYGの画像も含まれる。
 		// TODO:menu削除
 
 		if($page['Page']['id'] == $page['Page']['room_id']) {
 			// ルーム
-			App::uses('PagesUsersLink', 'Model');
-			$PagesUsersLink = new PagesUsersLink();
+			App::uses('PageUserLink', 'Model');
+			$PageUserLink = new PageUserLink();
 			$conditions = array(
-				"PagesUsersLink.room_id" => $page['Page']['id']
+				"PageUserLink.room_id" => $page['Page']['id']
 			);
-			$ret = $PagesUsersLink->deleteAll($conditions);
+			$ret = $PageUserLink->deleteAll($conditions);
 			if(!$ret) {
 				return false;
 			}
 
-			App::uses('ModulesLink', 'Model');
-			$ModulesLink = new ModulesLink();
+			App::uses('ModuleLink', 'Model');
+			$ModuleLink = new ModuleLink();
 			$conditions = array(
-				"ModulesLink.room_id" => $page['Page']['id']
+				"ModuleLink.room_id" => $page['Page']['id']
 			);
-			$ret = $ModulesLink->deleteAll($conditions);
+			$ret = $ModuleLink->deleteAll($conditions);
 			if(!$ret) {
 				return false;
 			}
 
 			if($page['Page']['thread_num'] == 1 && $page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
-				// コミュニティ削除
+				// コミュニティー削除
 				App::uses('Community', 'Model');
 				$Community = new Community();
 				$conditions = array(
@@ -694,31 +771,31 @@ class Page extends AppModel
 					return false;
 				}
 
-				App::uses('CommunitiesLang', 'Model');
-				$CommunitiesLang = new CommunitiesLang();
+				App::uses('CommunityLang', 'Model');
+				$CommunityLang = new CommunityLang();
 				$conditions = array(
-					"CommunitiesLang.room_id" => $page['Page']['id']
+					"CommunityLang.room_id" => $page['Page']['id']
 				);
-				$ret = $CommunitiesLang->deleteAll($conditions);
+				$ret = $CommunityLang->deleteAll($conditions);
 				if(!$ret) {
 					return false;
 				}
 
-				App::uses('CommunitiesTag', 'Model');
-				$CommunitiesTag = new CommunitiesTag();
+				App::uses('CommunityTag', 'Model');
+				$CommunityTag = new CommunityTag();
 				$params = array(
-					'fields' => array('CommunitiesTag.tag_id'),
+					'fields' => array('CommunityTag.tag_id'),
 					'conditions' => array(
-						"CommunitiesTag.room_id" => $page['Page']['id']
+						"CommunityTag.room_id" => $page['Page']['id']
 					)
 				);
 
-				$communities_tag_ids = $CommunitiesTag->find('list', $params);
+				$communities_tag_ids = $CommunityTag->find('list', $params);
 				if(count($communities_tag_ids) > 0) {
 					$conditions = array(
-						"CommunitiesTag.room_id" => $page['Page']['id']
+						"CommunityTag.room_id" => $page['Page']['id']
 					);
-					$ret = $CommunitiesTag->deleteAll($conditions);
+					$ret = $CommunityTag->deleteAll($conditions);
 					if(!$ret) {
 						return false;
 					}
@@ -799,7 +876,7 @@ class Page extends AppModel
  * @param  array     $page ページテーブル配列
  * @param  integer   $display_sequence デクリメントする数
  * @return boolean true or false
- * @access	public
+ * @since   v 3.0.0.0
  */
 	public function decrementDisplaySeq($page = null,$display_sequence = 1, $conditions = array()) {
 		$display_sequence = -1*$display_sequence;
@@ -812,7 +889,7 @@ class Page extends AppModel
  * @param  array     $page ページテーブル配列
  * @param  integer   $display_sequence インクリメントする数
  * @return boolean true or false
- * @access	public
+ * @since   v 3.0.0.0
  */
 	public function incrementDisplaySeq($page = null,$display_sequence = 1, $conditions = array()) {
 		return $this->_operationDisplaySeq($page, $display_sequence, $conditions);
@@ -822,54 +899,18 @@ class Page extends AppModel
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		$fields = array('Page.display_sequence'=>'Page.display_sequence+('.$display_sequence.')');
 		$conditions = array_merge($conditions, array(
-			//"Page.id !=" => $page['Page']['id'],
-			"Page.root_id" => $page['Page']['root_id'],
 			"Page.position_flag" => $page['Page']['position_flag'],
-			"Page.thread_num >" => 1,
 			"Page.lang" => array("", $lang),
 			"Page.space_type" => $page['Page']['space_type'],
-			"Page.display_sequence >" => $page['Page']['display_sequence']	// >=
+			"Page.display_sequence >=" => $page['Page']['display_sequence']
 		));
+		if($page['Page']['thread_num'] == 1) {
+			$conditions["Page.thread_num"] = 1;
+		} else {
+			$conditions["Page.root_id"] = $page['Page']['root_id'];
+			$conditions["Page.thread_num >"] = 1;
+		}
 		$ret = $this->updateAll($fields, $conditions);
 		return $ret;
 	}
-
-/**
- * display_sequenceデクリメント処理(thread_num == 1の場合)
- *
- * @param  array     $page ページテーブル配列
- * @param  integer   $display_sequence デクリメントする数
- * @return boolean true or false
- * @access	public
- */
-	public function decrementRootDisplaySeq($page = null,$display_sequence = 1, $conditions = array()) {
-		$display_sequence = -1*$display_sequence;
-		return $this->_operationRootDisplaySeq($page, $display_sequence, $conditions);
-	}
-
-/**
- * display_sequenceインクリメント処理(thread_num == 1の場合)
- *
- * @param  array     $page ページテーブル配列
- * @param  integer   $display_sequence インクリメントする数
- * @return boolean true or false
- * @access	public
- */
-	public function incrementRootDisplaySeq($page = null,$display_sequence = 1, $conditions = array()) {
-		return $this->_operationRootDisplaySeq($page, $display_sequence, $conditions);
-	}
-
-	protected function _operationRootDisplaySeq($page = null,$display_sequence = 1, $conditions = array()) {
-		$fields = array('Page.display_sequence'=>'Page.display_sequence+('.$display_sequence.')');
-		$conditions = array_merge($conditions, array(
-				//"Page.id !=" => $page['Page']['id'],
-				"Page.thread_num" => $page['Page']['thread_num'],
-				"Page.position_flag" => $page['Page']['position_flag'],
-				"Page.space_type" => $page['Page']['space_type'],
-				"Page.display_sequence >=" => $page['Page']['display_sequence']
-		));
-		$ret = $this->updateAll($fields, $conditions);
-		return $ret;
-	}
-
 }

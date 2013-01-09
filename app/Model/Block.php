@@ -184,6 +184,7 @@ class Block extends AppModel
  * root_idからblock配列を取得する
  * @param  integer root_id
  * @return array block
+ * @since   v 3.0.0.0
  */
 	function findByRootId($root_id)
 	{
@@ -330,7 +331,7 @@ class Block extends AppModel
  * @param object  $block
  * @param boolean $all_delete コンテンツもすべて削除するかどうか
  * @return	boolean true or false
- * @access	public
+ * @since   v 3.0.0.0
  **/
 	public function deleteBlock($block, $all_delete = _OFF)
 	{

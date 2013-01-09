@@ -44,7 +44,7 @@ class CommonComponent extends Component {
 
 		$this->_controller->Auth->logoutRedirect = '/';
 
-		//ユーザIDとパスワードのフィールドを指定
+		//ユーザーIDとパスワードのフィールドを指定
 		$this->_controller->Auth->authenticate = array('MyForm' =>
 			array(
 				'fields' => array('username' => 'login_id'),
@@ -172,7 +172,7 @@ class CommonComponent extends Component {
     }
 	protected function _redirectStartpage($page_id) {
     	$ret_url = false;
-    	$user = $this->_controller->Auth->user();//認証済みユーザを取得
+    	$user = $this->_controller->Auth->user();//認証済みユーザーを取得
 		$user_id = isset($user['id']) ? intval($user['id']) : 0;
 
 		if($user_id > 0 && $page_id < 0) {

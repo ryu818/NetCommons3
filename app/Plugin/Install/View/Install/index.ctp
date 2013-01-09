@@ -19,7 +19,7 @@ $this->assign('title', __d('install', 'Welcome'));
 		</div>
 
 		<div class="btn-bottom align-right">
-			<input type="submit" value="<?php echo(__('Next&gt;&gt;')); ?>" name="next" class="btn" />
+			<input type="submit" value="<?php echo(h(__('Next>>'))); ?>" name="next" class="btn" />
 		</div>
 	</form>
 </div>

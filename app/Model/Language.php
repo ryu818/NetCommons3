@@ -12,4 +12,18 @@ class Language extends AppModel
 {
 	public $name = 'Language';
 	public $primaryKey = 'language';
+
+/**
+ * 言語リスト取得
+ * @param   void
+ * @return  array
+ * @since   v 3.0.0.0
+ */
+	public function findLists() {
+		return $this->find('list', array(
+			'fields' => array('display_name'),
+			'conditions' => array('display_flag' => _ON),
+			'order' => array('display_sequence' => 'ASC')
+		));
+	}
 }

@@ -368,6 +368,31 @@
 			}
 			$.ajax(ajax_options);
 		},
+		/* 権限[主坦　モデレータ　一般]スライダー */
+		sliderAuthority: function(id, input_selector, disable) {
+			var slider = $('#' + id);
+			var input = $(input_selector);
+			if(!slider.get(0)) return false;
+			if(!input.get(0)) {
+				input = slider.next();
+			}
+			if(!input.get(0) || input.get(0).tagName.toLowerCase() != 'input') {
+				return false;
+			}
+			slider.slider({
+				'min'    : 2,
+				'max'    : 4,
+				'value'  : $(input).val(),
+				'animate': 'fast',
+				'range'  : 'min',
+				'change': function( event, ui ) {
+					$(input).val($(this).slider( "option", "value" ));
+				}
+			});
+			if(disable) {
+				slider.slider( "disable" );
+			}
+		},
 
 		/* 色取得一般メソッド */
 		// RBG値から HSL値を取得

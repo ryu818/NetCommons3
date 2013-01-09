@@ -38,8 +38,8 @@
 .pages-menu-handle {
 	display: block;
     font-weight: bold;
-    margin: 0;
-    padding: 5px 10px;
+    margin: 4px 0;
+    padding: 7px 10px;
 }
 
 .pages-menu-handle-public-top {
@@ -55,14 +55,35 @@
 	background-color: #715b95;
 }
 
+.pages-menu-handle-myportal-topnode {
+	background-color: #f6f9fb;
+}
+.pages-menu-handle-private-topnode {
+	background-color: #f7faf7;
+}
+.pages-menu-handle-community-topnode {
+	background-color: #f8f7fa;
+}
 .pages-menu-nonpublic {
 	color:#fe8d9e;
+}
+
+/* 言語切替 */
+.pages-menu-language-outer {
+	padding: 8px;
+    position: absolute;
+    right: 40px;
+    top: 0;
+    height:24px;
+}
+#pages-menu-language {
+	width:130px;
 }
 
 /* 編集 */
 .pages-menu-edit-content {
 	line-height: 25px;
-	min-width: 235px;
+	min-width:200px;
 }
 
 a.pages-menu-display-flag {
@@ -72,7 +93,7 @@ a.pages-menu-display-flag {
 
 a.pages-menu-edit-title {
 	/*
-	width: 150px; */
+	width: 150px;
 	overflow: hidden;
 	diplay:block;
 	*/
@@ -80,6 +101,7 @@ a.pages-menu-edit-title {
 input.pages-menu-edit-title {
 	font-weight:normal;
 	width:150px;
+	margin: 0 20px 0 0;
 }
 
 .pages-menu-error-message {
@@ -97,22 +119,21 @@ input.pages-menu-edit-title {
     width: 21px;
 }
 
-.pages-menu-add-btn:hover {
+.pages-menu-btn:hover {
 	background-image: url(../../img/icons/base/add_file_hover.gif);
 	color: #56b4ef !important;
 }
 
-.pages-menu-add-btn {
+.pages-menu-btn {
 	background: url(../../img/icons/base/add_file.gif) no-repeat 10px center;
 
 	padding: 5px 30px;
 	border-left:1px solid #e8e8e8;
-	border-right: 1px solid #e8e8e8;
 	color: #222222 !important;
 	font-weight:bold;
 }
 
-.pages-menu-add-btn-disable,.pages-menu-add-btn-disable:hover {
+.pages-menu-btn-disable,.pages-menu-btn-disable:hover {
 	background: url(../../img/icons/base/add_file.gif) no-repeat 10px center !important;
 	color: #cccccc !important;
 	cursor:auto;
@@ -161,6 +182,21 @@ input.pages-menu-edit-title {
 	background-image: url(../../page/img/index/list_h.png);
 }
 
+/* すべて展開、折りたたむ、ページ数 */
+.pages-menu-expand-all-outer, .pages-menu-counter-outer, .pages-menu-views-outer {
+	padding: 0 0 5px 0;
+	text-align: right;
+	white-space:nowrap;
+}
+.pages-menu-counter-outer div {
+	vertical-align:top;
+}
+
+/* ページ移動 */
+.pages-menu-paginator-outer {
+	padding: 0 0 5px 0;
+}
+
 /* ページ追加・編集 */
 .pages-menu-edit-view {
 	display: block;
@@ -174,18 +210,15 @@ input.pages-menu-edit-title {
     -webkit-border-radius: 0 0 3px 3px;
 	border-radius: 0 0 3px 3px;
     box-sizing: border-box; -moz-box-sizing: border-box;
-    padding: 0;
-    white-space:nowrap;
-
+    padding: 5px;
     position:relative;
     top: -5px;
 }
 
-.pages-menu-edit-outer {
+.pages-menu-edit-outer, .pages-menu-community-tab {
 	background-color:#fff;
 	border: 1px solid #e8e8e8;
 	padding:5px;
-	margin: 5px;
 }
 
 .pages-menu-edit-outer .lists {
@@ -198,4 +231,86 @@ input.pages-menu-edit-title {
 
 .pages-menu-edit-display-to-date {
 	padding:8px;
+}
+
+.pages-menu-community-tab .pages-menu-edit-outer {
+	border: none;
+	padding:0;
+}
+ul.pages-menu-community-lists li dl {
+	width:550px;
+}
+ul.pages-menu-community-lists li dl dt {
+	width:100px;
+}
+
+ul.pages-menu-community-lists li dl dd {
+	width:400px;
+	padding:5px;
+}
+ul.pages-menu-community-lists .hr {
+	padding: 5px 0 0 20px;
+	margin:0;
+}
+ul.pages-menu-community-lists legend {
+	float:left;
+	padding: 0 10px 0 0;
+}
+/* スライドバー */
+.pages-menu-community-slider-outer {
+	padding:5px 20px 23px;
+}
+
+/* 写真 */
+div.pages-menu-community-photo {
+	background:url("../../img/common/layer/layer.gif") no-repeat scroll 0 center transparent;
+	background-repeat:no-repeat;
+	float:left;
+	width:117px;
+	height:114px;
+	padding:0;
+	margin:0 10px 0 0;
+}
+
+div.pages-menu-community-photo img {
+	background-color:transparent;
+	background-position:center center;
+	background-repeat:no-repeat;
+	width:98px;
+	height:98px;
+	margin:7px 10px;
+}
+
+div.pages-menu-community-photo-sample {
+	border:1px solid #ccc;
+	width:270px;
+	height:110px;
+	overflow:auto;
+	margin-bottom:5px;
+	background-color:#fff;
+}
+
+div.pages-menu-community-photo-sample a {
+	text-decoration: none;
+}
+
+img.pages-menu-community-photo-sample {
+	width:66px;
+	margin:15px 5px 0;
+}
+
+input.pages-menu-community-photo-file {
+	width:100px;
+}
+
+/* 紹介 */
+.pages-menu-community-summary {
+	height: 70px;
+    width: 392px;
+}
+
+/* 詳細設定 */
+.pages-menu-community-detail-setting {
+	text-align:right;
+	padding: 0 10px 0 0;
 }

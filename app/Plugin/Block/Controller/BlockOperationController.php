@@ -332,7 +332,8 @@ class BlockOperationController extends BlockAppController {
 		$this->Session->delete('Blocks.'.'copy_block_id');
 		$this->Session->delete('Blocks.'.'copy_content_id');
 
-		$this->render("/Commons/true");
+		echo 'true';
+		$this->render(false);
 	}
 
 /**

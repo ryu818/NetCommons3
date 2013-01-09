@@ -70,7 +70,7 @@ class UsersController extends AppController {
 
 		$this->Auth->logoutRedirect = '/';
 
-		//ユーザIDとパスワードのフィールドを指定
+		//ユーザーIDとパスワードのフィールドを指定
 		$this->Auth->authenticate = array('MyForm' =>
 			array(
 				'fields' => array('username' => 'login_id'),
@@ -110,7 +110,7 @@ class UsersController extends AppController {
                 $this->Session->setFlash(__('Incorrect Login.Again, please enter.'), 'default', array(), 'auth');
             }
             $this->Session->setFlash(__('Login.'));
-			$user = $this->Auth->user();//認証済みユーザを取得
+			$user = $this->Auth->user();//認証済みユーザーを取得
 
 			//フォームからのデータの場合
 			if($configs['autologin_use'] == NC_AUTOLOGIN_ON) {
@@ -138,7 +138,7 @@ class UsersController extends AppController {
 				return $this->redirect($this->Auth->redirect());
 			}
 		} else {
-			$user = $this->Auth->user();//認証済みユーザを取得
+			$user = $this->Auth->user();//認証済みユーザーを取得
 		}
 
 		if (isset($user)) {

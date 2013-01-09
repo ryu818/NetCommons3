@@ -1,13 +1,13 @@
 <?php
 	$is_display = false;
-	if(!($page['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC && $page['Page']['thread_num'] == 1) && $page['Page']['display_sequence'] != 1) {
-		// TopNodeでもなく、各ノードのトップページでなければ。
+	if(($page['Page']['space_type'] == NC_SPACE_TYPE_GROUP && $page['Page']['thread_num'] == 1) || $page['Page']['display_sequence'] != 1) {
+		// コミュニティー以外のTopNodeでもなく、各ノードのトップページでなければ。
 		$is_display = true;
 	}
 ?>
 <div class="pages-menu-edit-outer">
 <fieldset class="form">
-<ul class="lists">
+	<ul class="lists">
 	<li>
 		<dl>
 			<dt>
@@ -33,8 +33,14 @@
 						?>
 					<?php echo($permalink_prefix); ?>
 				</div>
-				<?php if($page['Page']['display_sequence'] != 1): ?>
+				<?php if(($page['Page']['space_type'] == NC_SPACE_TYPE_GROUP && $page['Page']['thread_num'] == 1) || $page['Page']['display_sequence'] != 1): ?>
 					<?php
+						$permalink_arr = explode('/', trim($page['Page']['permalink'], '/'));
+						if(count($permalink_arr) > 0) {
+							$page['Page']['permalink'] = $permalink_arr[count($permalink_arr) - 1];
+						} else {
+							$page['Page']['permalink'] = '';
+						}
 						$settings = array(
 							'id' => "pages-menu-edit-permalink-".$page['Page']['id'],
 							'value' => $page['Page']['permalink'],
@@ -43,7 +49,7 @@
 							'maxlength' => 50,
 							'size' => 25,
 						);
-						if(isset($is_child)) {
+						if(!empty($is_child)) {
 							$settings['error'] = false;
 						} else {
 							$settings['error'] = array('attributes' => array(
@@ -63,7 +69,7 @@
 	<?php if($is_display): ?>
 	<?php
 		$locale = Configure::read(NC_SYSTEM_KEY.'.locale');
-		if(isset($is_error) && $is_error) {
+		if(isset($error_flag) && $error_flag) {
 			$display_from_date = $page['Page']['display_from_date'];
 		} else if(!empty($page['Page']['display_from_date'])) {
 			$page['Page']['display_from_date'] = $this->TimeZone->date($page['Page']['display_from_date']);
@@ -72,7 +78,7 @@
 			$display_from_date = '';
 		}
 
-		if(isset($is_error) && $is_error) {
+		if(isset($error_flag) && $error_flag) {
 			$display_to_date = $page['Page']['display_to_date'];
 		} else if(!empty($page['Page']['display_to_date'])) {
 			$page['Page']['display_to_date'] = $this->Timezone->date($page['Page']['display_to_date']);
@@ -157,12 +163,15 @@
 	</li>
 	<?php endif; ?>
 	</ul>
+	<?php if(!isset($is_community) || !$is_community): ?>
 	<div class="btn-bottom">
 		<input type="submit" class="common-btn" name="ok" value="<?php echo( __('Ok')); ?>" />
 		<input type="button" class="common-btn" name="cancel" value="<?php echo(__('Cancel')); ?>" onclick="$('#pages-menu-edit-detail-<?php echo($page['Page']['id']);?>').slideUp(300);" />
 	</div>
+	<?php endif; ?>
 </fieldset>
 </div>
+<?php if($is_display): ?>
 <?php
 	echo $this->Html->css(array('plugins/jquery-ui-timepicker-addon.css'));
 	echo $this->Html->script(array('plugins/jquery-ui-timepicker-addon.js', 'locale/'.$locale.'/plugins/jquery-ui-timepicker.js'));
@@ -171,5 +180,7 @@
 $(function(){
 	$('#pages-menu-edit-display-from-date-<?php echo($page['Page']['id']);?>').datetimepicker();
 	$('#pages-menu-edit-display-to-date-<?php echo($page['Page']['id']);?>').datetimepicker();
+	$.PageMenu.pageDetailInit(<?php echo($page['Page']['id']); ?>,"<?php echo(str_replace("\\", "\\\\\\", NC_PERMALINK_CONTENT)); ?>", "<?php echo(NC_PERMALINK_PROHIBITION_REPLACE); ?>");
 });
 </script>
+<?php endif; ?>

@@ -1,4 +1,4 @@
-<div id="nc-pages-setting-dialog">
+<div id="nc-pages-setting-dialog" style="visibility:hidden;">
 	<div class="nc-pages-setting-icon table-cell nc-panel-color">
 		<?php
 		$postfix = ($this->action == 'index') ? '-on' : '';
@@ -32,14 +32,16 @@
 			<?php echo($this->element($this->action, isset($element_params) ? $element_params : array())); ?>
 		</div>
 	</div>
-	<div id="nc-pages-setting-arrow-outer" class="table-cell">
+	<div id="nc-pages-setting-arrow-outer" class="table-cell nc-panel-color" data-page-setting-url="<?php echo $this->Html->url(array('plugin' => 'page', 'controller' => 'display'));?>">
 		<div class="nc-pages-setting-arrow nc-arrow-left"></div>
 	</div>
 	<?php
 		echo $this->Html->css('Page.index');
 		echo $this->Html->script('Page.index');
+		$pos = $this->Session->read(NC_SYSTEM_KEY.'.page_menu_pos');
+		$pos = isset($pos) ? intval($pos) : _ON;
 	?>
 	<script>
-	$('#nc-pages-setting-dialog').Page();
+	$('#nc-pages-setting-dialog').Page(<?php echo($pos);?>);
 	</script>
 </div>

@@ -10,6 +10,7 @@
 					$block['Block']['hierarchy'] = $page['Authority']['hierarchy'];
 				}
 				$params = array('block_type' => 'active-blocks', 'block_id' => $block['Block']['id']);
+				$requestActionOptions = array('return');
 				if(!empty($this->params['active_plugin']) && $block['Block']['id'] == $this->params['block_id']) {
 					$title = $this->fetch('title');
 					$title = (isset($title) && $title != '') ? $title : h($block['Block']['title']);
@@ -18,10 +19,11 @@
 					$params['plugin'] = $this->params['active_plugin'];
 					$params['controller'] = empty($this->params['active_controller']) ? $params['plugin'] : $this->params['active_controller'];
 					$params['action'] = empty($this->params['active_action']) ? '' : $this->params['active_action'];
+					$requestActionOptions['query'] = $this->params->query;
+					$requestActionOptions['named'] = $this->params->named;
+					$requestActionOptions['pass'] = $this->params->pass;
 					if ($this->params->is('post')) {
-						$requestActionParam = array('data' => $this->params['data'], 'query' => $this->params['query'], 'return');
-					} else {
-						$requestActionParam = array('query' => $this->params['query'], 'return');
+						$options['data'] = $this->params->data;
 					}
 				} else {
 					$controller_arr = explode('/', $block['Block']['controller_action'], 2);
@@ -29,19 +31,14 @@
 					if(isset($controller_arr[1])) {
 						$params['action'] = $controller_arr[1];
 					}
-					$requestActionParam = array('return');
 				}
 
 				Configure::write(NC_SYSTEM_KEY.'.block', $block);
 				Configure::write(NC_SYSTEM_KEY.'.page' , $page);
 				if($block['Block']['controller_action'] == "group") {
 					Configure::write(NC_SYSTEM_KEY.'.blocks', $blocks);
-					$c = trim($this->requestAction($params, $requestActionParam));
-				} else {
-					//$url = '/active-blocks'.'/'.$block['Block']['id'].'/'.$block['Block']['controller_action'].'/';
-					$c = trim($this->requestAction($params, $requestActionParam));
-
 				}
+				$c = trim($this->requestAction($params, $requestActionOptions));
 
 				if(preg_match(NC_DOCTYPE_STR, $c)) {
 					// モジュール内部にエラー等、DOCTYPEから出力するものあり

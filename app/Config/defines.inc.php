@@ -35,7 +35,8 @@ define('NC_VALIDATOR_DATE_TIME', "YmdHis");
 //-----------------長さチェック用-------------------------------------------
 define('NC_VALIDATOR_TITLE_LEN', 100);
 define('NC_VALIDATOR_MAIL_LEN', 256);
-define('NC_VALIDATOR_TEXTAREA_LEN', 60000);
+define('NC_VALIDATOR_TEXTAREA_LEN', 1000);
+define('NC_VALIDATOR_WYSIWYG_LEN', 60000);
 
 //-----------------禁止URL-------------------------------------------
 define('NC_PROHIBITION_URL', '/^(users\/|controls\/)/i');
@@ -75,18 +76,18 @@ define('NC_DISPLAY_FLAG_OFF', 0);
 define('NC_DISPLAY_FLAG_ON', 1);
 define('NC_DISPLAY_FLAG_DISABLE', 2);	// 利用不可
 
-//-----------------community allow_flag-------------------------------------------
+//-----------------community publication_range_flag-------------------------------------------
 
-define('NC_ALLOW_FLAG_OFF', 0);
-define('NC_ALLOW_FLAG_ON', 1);
-define('NC_ALLOW_FLAG_ONLY_USER', 2);
+define('NC_PUBLICATION_RANGE_FLAG_ONLY_USER', 0);
+define('NC_PUBLICATION_RANGE_FLAG_LOGIN_USER', 1);
+define('NC_PUBLICATION_RANGE_FLAG_ALL', 2);
 
 //-----------------community participate_flag-------------------------------------------
 
-define('NC_PARTICIPATE_FLAG_FREE', 3);				// 参加受付制(希望者は誰でも参加可能）
-define('NC_PARTICIPATE_FLAG_ACCEPT', 2);			// 承認制（主担の承認が必要）
-define('NC_PARTICIPATE_FLAG_INVITE', 1);			// 招待制（コミュニティーメンバーから招待を受けたユーザのみ参加可能）
 define('NC_PARTICIPATE_FLAG_ONLY_USER', 0);			// 参加会員のみ
+define('NC_PARTICIPATE_FLAG_INVITE', 1);			// 招待制（コミュニティーメンバーから招待を受けた会員のみ参加可能）
+define('NC_PARTICIPATE_FLAG_ACCEPT', 2);			// 承認制（主担の承認が必要）
+define('NC_PARTICIPATE_FLAG_FREE', 3);				// 参加受付制(希望者は誰でも参加可能）
 
 //-----------------space_type-------------------------------------------
 
@@ -169,7 +170,7 @@ define('NC_USER_IS_ACTIVE_PENDING', 2);		//承認待ち
 define('NC_USER_IS_ACTIVE_MAILED',  3);		//承認済み
 
 //-----------------自動登録-------------
-define('NC_AUTOREGIST_SELF', 0);					//ユーザ自身の確認が必要
+define('NC_AUTOREGIST_SELF', 0);					//会員自身の確認が必要
 define('NC_AUTOREGIST_AUTO' ,1);					//自動的にアカウントを有効にする
 define('NC_AUTOREGIST_ADMIN', 2);					//管理者の承認が必要
 

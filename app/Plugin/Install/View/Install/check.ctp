@@ -95,8 +95,8 @@ $this->assign('title', __d('install', 'Setting Check'));
 		</div>
 		<div class="btn-bottom align-right">
 			<input type="button" value="<?php echo(__d('install', 'Reload')); ?>" name="reload" class="btn" onclick="location.href='<?php echo $this->Html->url(array('plugin' => 'install','controller' => 'install','action' => 'check')); ?>';" />
-			<input type="button" value="<?php echo(__('&lt;&lt;Back')); ?>" name="back" class="btn" onclick="history.back();" />
-			<input type="submit" value="<?php echo(__('Next&gt;&gt;')); ?>" name="next" <?php if(!$check): ?>disabled="disabled" class="btn disabled"<?php else: ?>class="btn"<?php endif; ?>/>
+			<input type="button" value="<?php echo(h(__('<<Back'))); ?>" name="back" class="btn" onclick="history.back();" />
+			<input type="submit" value="<?php echo(h(__('Next>>'))); ?>" name="next" <?php if(!$check): ?>disabled="disabled" class="btn disabled"<?php else: ?>class="btn"<?php endif; ?>/>
 		</div>
 	</form>
 </div>
