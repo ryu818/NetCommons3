@@ -150,6 +150,7 @@ class CheckAuthComponent extends Component {
 					$controller->flash(__('Content not found.'), '', 'CheckAuth.001', '404');
 					return ;
 				}
+				$controller->nc_block = $block;
 
 				$active_page = $controller->Page->findById($block['Block']['page_id']);
 				if(!$active_page) {
@@ -182,6 +183,7 @@ class CheckAuthComponent extends Component {
 				$controller->flash(__('Page not found.'), $redirect_url, 'CheckAuth.004', '404');
 				return ;
 			}
+			$controller->nc_page = isset($active_page) ? $active_page : $page;
 			if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_DISABLE ||
 					($page['Page']['display_flag'] == NC_DISPLAY_FLAG_OFF && $page['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF)) {
 				$controller->flash(__('Content not found.'), $redirect_url, 'CheckAuth.005', '404');
@@ -494,7 +496,7 @@ class CheckAuthComponent extends Component {
 			return false;
 		}
 		$page = $controller->Page->afterFindIds($page);
-		$controller->nc_page = $page;
+
 		return $page;
 	}
 
@@ -515,7 +517,6 @@ class CheckAuthComponent extends Component {
 		if(!isset($block)) {
 			return false;
 		}
-		$controller->nc_block = $block;
 		return $block;
 	}
 
