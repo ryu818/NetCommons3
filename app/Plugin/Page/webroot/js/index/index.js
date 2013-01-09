@@ -34,9 +34,27 @@
 					var li = $('#pages-menu-edit-item-' + page_id);
 					var prev = li.prev(), next = li.prev(), parent = li.parents('li');
 					var active = (prev.get(0)) ? prev : ((next.get(0)) ? next : parent);
+					var pager, curent;
 					if(active.get(0)) {
 						$('.pages-menu-edit-content', active).click();
 					}
+
+					if(li.hasClass('pages-menu-handle-community')) {
+						// コミュニティーでページャーがあれば、再表示
+						// ページャーの表示がずれていくため
+						pager = $('.nc-paginator:first', $('#pages-menu-community'));
+						if(pager.get(0)) {
+							curent = $('.current:first', pager);
+							if(active.get(0) || !curent.prev().get(0)) {
+								// current
+								pager.next().attr('href', pager.next().attr('href').replace("active_tab=0", "active_tab=1")).click();
+							} else {
+								// current -1
+								curent.prev().children('a').click();
+							}
+						}
+					}
+
 					$(res).appendTo($(document.body));
 
 					li.remove();

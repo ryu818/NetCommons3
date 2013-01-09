@@ -128,7 +128,7 @@ input.pages-menu-edit-title {
 	background: url(../../img/icons/base/add_file.gif) no-repeat 10px center;
 
 	padding: 5px 30px;
-	border-left:1px solid #e8e8e8;
+	border-right:1px solid #e8e8e8;
 	color: #222222 !important;
 	font-weight:bold;
 }

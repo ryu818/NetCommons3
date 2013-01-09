@@ -678,11 +678,11 @@ class Page extends AppModel
  * @param mixed $id ID of record to delete
  * @param boolean $all_delete コンテンツもすべて削除するかどうか
  * @param Model Page $child_pages 指定されていなければ取得
- * @param boolean $is_recursion 再帰的に呼ばれたかどうか
+ * @param boolean $is_recursive 再帰的に呼ばれたかどうか
  * @return boolean True on success
  * @since   v 3.0.0.0
  */
-	public function deletePage($id = null, $all_delete = _OFF, $child_pages = null, $is_recursion = false) {
+	public function deletePage($id = null, $all_delete = _OFF, $child_pages = null, $is_recursive = false) {
 		if (!empty($id)) {
 			$this->id = $id;
 		}
@@ -708,7 +708,7 @@ class Page extends AppModel
 			}
 		}
 
-		if(!$is_recursion) {
+		if(!$is_recursive) {
 			// 子ページ削除処理
 			if(!isset($child_pages)) {
 				$login_user_id = Configure::read(NC_SYSTEM_KEY.'.user_id');
@@ -721,7 +721,12 @@ class Page extends AppModel
 				}
 			}
 			//前詰め処理
-			$childs_count = count($child_pages);
+			if($page['Page']['thread_num'] == 1) {
+				$childs_count = 0;
+			} else {
+				$childs_count = count($child_pages);
+			}
+
 			if(!$this->decrementDisplaySeq($page, $childs_count + 1)) {
 				return false;
 			}
