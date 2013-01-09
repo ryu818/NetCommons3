@@ -508,6 +508,9 @@
 		} else {
 			// コンテンツクリックイベント
 			root_menu.on('click','.pages-menu-handle',function(e) {
+				if($(e.target).get(0).tagName == 'A') {
+					return;
+				}
 				var content = $(this);
 				var active_li_buf = content.parents('li:first');
 				var button = $('button[data-action]:visible:first', active_li_buf);
