@@ -42,6 +42,8 @@
 		$pos = isset($pos) ? intval($pos) : _ON;
 	?>
 	<script>
-	$('#nc-pages-setting-dialog').Page(<?php echo($pos);?>);
+	$(function(){
+		$('#nc-pages-setting-dialog').Page(<?php echo($pos);?>);
+	});
 	</script>
 </div>

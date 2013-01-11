@@ -31,11 +31,16 @@ if(method_exists($this->Html,'fetchScript')) {
 </head>
 <body>
 	<?php echo $this->fetch('content'); ?>
+	<?php
+	if(method_exists($this->Html,'fetchScript')) {
+		echo($this->element('Pages/include_footer'));
+	}
+	?>
 	<?php echo $this->Token->create('nc_token', 'nc_token'); ?>
-	<?php 
+	<?php
 	$flashMes = $this->Session->flash();
 	if($flashMes) {
-		echo '<script>$.Common.flash("'.$this->Js->escape($flashMes).'");</script>';
+		echo '<script>$(function(){$.Common.flash("'.$this->Js->escape($flashMes).'");});</script>';
 	}
 	?>
 	<?php echo $this->element('sql_dump'); ?>

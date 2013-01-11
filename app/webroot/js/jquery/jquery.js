@@ -6289,7 +6289,6 @@ jQuery.extend({
 		var i, j, elem, tag, wrap, depth, div, hasBody, tbody, len, handleScript, jsTags,
 			safe = context === document && safeFragment,
 			ret = [];
-
 		// Ensure that context is a document
 		if ( !context || typeof context.createDocumentFragment === "undefined" ) {
 			context = document;
@@ -6399,7 +6398,33 @@ jQuery.extend({
 				}
 			};
 
+
+
 			for ( i = 0; (elem = ret[i]) != null; i++ ) {
+// Add Start	Ryuji.M
+// 同じscript src(link href)のファイルをajaxで読み込むと再度、includeされてしまうため、
+// jquery側で対応。
+				if (jQuery.nodeName( elem, "script" ) && elem.src) {
+					if($._nc.jsExistingTags[elem.src]) {
+						if(elem.parentNode) elem.parentNode.removeChild( elem );
+						continue;
+					} else {
+						$._nc.jsExistingTags[elem.src] = true;
+					}
+				} else {
+					$('link', elem).each(function(){
+						if (this.href) {
+							if($._nc.cssExistingTags[this.href]) {
+								if(this.parentNode) this.parentNode.removeChild( this );
+							}
+							// Ajaxで何度も読み込む場合、追加されたelementを上書きするならば再度、実行しなければならないため対処しない。
+							//else {
+								//$._nc.cssExistingTags[this.href] = true;
+							//}
+						}
+					});
+				}
+// Add End Ryuji.M
 				// Check if we're done after handling an executable script
 				if ( !( jQuery.nodeName( elem, "script" ) && handleScript( elem ) ) ) {
 					// Append to fragment and handle embedded scripts
@@ -7853,7 +7878,7 @@ jQuery.extend({
 		// We also use the url parameter if available
 		s.url = ( ( url || s.url ) + "" ).replace( rhash, "" ).replace( rprotocol, ajaxLocParts[ 1 ] + "//" );
 
-		// Add source	Ryuji.M
+		// Add Start	Ryuji.M
 		// AjaxのURLに全角文字が含まれると、IE9以下はSJISでURIエンコードを行ってしまったため、
 		// jquery側で対応。
 		if($.browser.msie && parseInt($.browser.version) < 10) {

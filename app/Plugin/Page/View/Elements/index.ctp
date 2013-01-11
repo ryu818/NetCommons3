@@ -159,5 +159,7 @@ if(isset($is_edit) && $is_edit == _ON){
 	echo $this->Html->script(array('plugins/jquery.nestable.js', 'Page.index/index.js'));
 ?>
 <script>
+$(function(){
 	$('#pages-menu-tab').PageMenu(<?php echo($is_edit);?>, <?php echo($page_id);?>, <?php echo($active_tab);?>, <?php echo($sel_active_tab);?>);
+});
 </script>

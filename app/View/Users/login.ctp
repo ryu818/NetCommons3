@@ -55,10 +55,12 @@ $this->Form->inputDefaults(array(
 </fieldset>
 <?php echo $this->Form->end();?>
 <script>
+$(function(){
 $("#UserLoginId").attr("autocomplete", "<?php echo($login_autocomplete);?>");
 $("#UserPassword").attr("autocomplete", "<?php echo($login_autocomplete);?>");
 // IE
 setTimeout(function(){
 	$("#UserLoginId").select();
 }, 500);
+});
 </script>

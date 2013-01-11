@@ -32,10 +32,15 @@ if(method_exists($this->Html,'fetchScript')) {
 <?php
 if(Configure::read('debug') == _OFF) {
 	echo "<script>".
-	"setTimeout(function(){var location_str = '".h($url)."';location.href=location_str.replace(/&amp;/ig,\"&\");}, ".$pause."*1000);".
+	"$(function(){setTimeout(function(){var location_str = '".h($url)."';location.href=location_str.replace(/&amp;/ig,\"&\");}, ".$pause."*1000);});".
 	"</script>";
 }
 ?>
 <?php echo $this->element('sql_dump'); ?>
+<?php
+if(method_exists($this->Html,'fetchScript')) {
+	echo($this->element('Pages/include_footer'));
+}
+?>
 </body>
 </html>

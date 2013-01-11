@@ -163,7 +163,7 @@ class MyHtmlHelperInstance extends AppHelper {
 		if ($rel == null) {
 			$rel = 'stylesheet';
 		}
-		$attributes = $this->_htmlHelper->_parseAttributes($options, array('inline', 'block', 'once'), '', ' ');
+		$attributes = $this->_htmlHelper->_parseAttributes($options, array('frame','inline', 'block', 'once'), '', ' ');
 		$block_key = empty($options['block'])  ? '_inline' : $options['block'];
 		if($block_key == '_inline') {
 			unset($this->_blockCsses[$block_key]);
@@ -339,11 +339,19 @@ class MyHtmlHelperInstance extends AppHelper {
 		$out = '';
 		if(isset($this->_blockScripts[$name])) {
 			$Asset = $this->_getModel('Asset');
-			$out = $Asset->findByUrls($this->_blockScripts[$name]);
-			if($out) {
-				$url = "{$this->_htmlHelper->request->webroot}theme/asset/" . $out;
-				$out = "\t".sprintf($this->_htmlHelper->_tags['javascriptlink'], $url, $attributes)."\n";
+			$rets = $Asset->findByUrls($this->_blockScripts[$name]);
+
+			foreach($rets as $plugin => $ret) {
+				if($ret) {
+					$buf_attributes = $attributes;
+					if(empty($buf_attributes)) {
+						$buf_attributes = " data-title = \"$plugin\"";
+					}
+					$url = "{$this->_htmlHelper->request->webroot}theme/assets/" . $ret;
+					$out .= "\t".sprintf($this->_htmlHelper->_tags['javascriptlink'], $url, $buf_attributes)."\n";
+				}
 			}
+
 		}
 		return $out;
 	}
@@ -361,11 +369,18 @@ class MyHtmlHelperInstance extends AppHelper {
 			$Asset = $this->_getModel('Asset');
 
 			if(count($this->_blockCsses[$name]) > 0) {
+
 				foreach($this->_blockCsses[$name] as $rel => $blockCss) {
-					$ret = $Asset->findByUrls($blockCss);
-					if($ret) {
-						$url = "{$this->_htmlHelper->request->webroot}theme/asset/" . $ret;
-						$out .= "\t".sprintf($this->_htmlHelper->_tags['css'], $rel, $url, $attributes)."\n";
+					$rets = $Asset->findByUrls($blockCss);
+					foreach($rets as $plugin => $ret) {
+						if($ret) {
+							$buf_attributes = $attributes;
+							if(empty($buf_attributes)) {
+								$buf_attributes = " data-title = \"$plugin\"";
+							}
+							$url = "{$this->_htmlHelper->request->webroot}theme/assets/" . $ret;
+							$out .= "\t".sprintf($this->_htmlHelper->_tags['css'], $rel, $url, $buf_attributes)."\n";
+						}
 					}
 				}
 			}
@@ -590,6 +605,16 @@ class MyHtmlHelperInstance extends AppHelper {
 			return array($webPath . $asset[1], $plugin, $webPath);
 			//return str_replace('//', '/', $webPath . $asset[1]);
 		}
+
+		// plugins名毎にScript、CSSを出力する。
+		if(preg_match('%^/css/plugins/%', $webPath)) {
+			$plugin = basename($webPath);
+		}else if(preg_match('%^/js/plugins/%', $webPath)) {
+			$plugin = basename($webPath);
+		} else if(preg_match('%^/js/locale/%', $webPath)) {
+			$plugin = 'Nc-Locale';
+		}
+
 		return array($webPath . $asset[1], $plugin, $realPath);
 	}
 
@@ -635,6 +660,7 @@ class MyHtmlHelperInstance extends AppHelper {
 		if (file_exists($framePath . $fileFragment)) {
 			$realPath = $framePath . $fileFragment;
 		}
-		return array($webPath . $asset[1], 'Frame:'.$frame, $realPath);
+		return array($webPath . $asset[1], 'Nc-Frame', $realPath);	// plugin名 Frame固定
+		////return array($webPath . $asset[1], 'Frame:'.$frame, $realPath);
 	}
 }

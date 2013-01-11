@@ -17,5 +17,7 @@ echo $this->Html->div('submit',
 echo $this->Form->end();
 ?>
 <script>
-$('#<?php echo($id); ?>').AnnouncementEdit('<?php echo ($id);?>');
+$(function(){
+	$('#<?php echo($id); ?>').AnnouncementEdit('<?php echo ($id);?>');
+});
 </script>

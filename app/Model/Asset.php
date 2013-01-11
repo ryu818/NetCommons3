@@ -43,84 +43,92 @@ class Asset extends AppModel
 				'Asset.url' => $urls,
 			)
 		);
-		return $this->_afterFind($this->find('all', $params), $options);
+		$rets = $this->_afterFind($this->find('all', $params), $options);
+		return $rets;
 	}
 
+	// plugin名称毎にマージして取得
+	// 同じscript,cssをAjaxにより何度も読み込ませないようにするため
 	protected function _afterFind($results, $options) {
-		$rets = array();
-		$root_path = $this->_getPath();
+		$outpus_arr = array();
+		$rets_arr = array();
+		$hashs_arr = array();
+		$ext_arr = array();
+		$create_arr = array();
+		$options_arr = array();
 
-		foreach ($results as $key => $val) {
-			//$url = $val['Asset']['url'];
-			//unset($val['Asset']['url']);
-			$rets[$val['Asset']['url']] = $val['Asset'];
-		}
-
-		$create_flag = false;
-		$hashs = '';
-		$ext = 'js';
-		foreach($options as $option) {
-			$url = $option['url'];
-			$plugin = $option['plugin'];
-			$realPath = $option['realPath'];
-			$ext = $option['ext'];
-			if(file_exists($realPath)) {
-				if(!isset($rets[$url])) {
-					$create_flag = true;
-					break;
-				}
-				$hash = $rets[$url]['hash_content'];
-				$hashs .= "-" . $hash;
-			}
-		}
-		$file = $this->_getAsetFile(md5($hashs), $ext);
 		if(extension_loaded('zlib') && !empty($_SERVER['HTTP_ACCEPT_ENCODING']) && preg_match('/gzip/i', $_SERVER['HTTP_ACCEPT_ENCODING'])) {
 			$postfix = '.gz';
 		} else {
 			$postfix = '';
 		}
-		if($create_flag || !file_exists($root_path . $file.$postfix) || Configure::read('debug') != _OFF) {
-			$hashs = '';
-			$contents = '';
-			foreach($options as $option) {
-				$url = $option['url'];
-				$plugin = $option['plugin'];
-				$realPath = $option['realPath'];
-				$ext = $option['ext'];
-				if(file_exists($realPath)) {
-					$content = $this->_getFileLists($realPath);
-					$hash = md5($content);
-					if(!isset($rets[$url])) {
-						$rets[$url] = array(
-							'url' => $url,
-							'hash_content' => null,
-							'plugin' => $plugin,
-						);
-					}
-					if($hash != $rets[$url]['hash_content']) {
-						$rets[$url]['hash_content'] = $hash;
-						$this->create();
-						$this->save($rets[$url]);
-						$create_flag = true;
-					}
-					$hashs .= "-" . $hash;
-					if($content != '') {
-						$contents .= "\n" . $content;
-					}
+		$root_path = $this->_getPath();
+
+		foreach ($results as $key => $val) {
+			$rets_arr[$val['Asset']['plugin']][$val['Asset']['url']] = $val['Asset'];
+		}
+
+		foreach($options as $option) {
+			$url = $option['url'];
+			$plugin = $option['plugin'];
+			$realPath = $option['realPath'];
+			if(!isset($hashs_arr[$plugin])) {
+				$hashs_arr[$plugin] = '';
+				$create_arr[$plugin] = false;
+				$ext_arr[$plugin] = $option['ext'];
+			}
+			if(file_exists($realPath) ) {
+				if(!isset($rets_arr[$plugin][$url])) {
+					// 指定されたURLのファイルがあるけどDBに登録されていない。
+					$create_arr[$plugin] = true;
+				} else {
+					$hashs_arr[$plugin] .= "-" . $rets_arr[$plugin][$url]['hash_content'];
 				}
 			}
-			if($contents != '') {
-				$this->_deleteAsetFile($file);
-				$file = $this->_createAsetFile(md5($hashs), $contents, $ext);
-			} else {
-				$file = '';
-				$postfix = '';
-			}
-			//if($file) {
-			//	$file_path = "{$this->request->webroot}asset/" . DS . $file;
-			//}
+			$options_arr[$plugin][] = $option;
+
 		}
-		return $file.$postfix;
+
+		foreach($hashs_arr as $hash_plugin => $hashs) {
+			$file = $this->_getAsetFile(md5($hashs), $ext_arr[$hash_plugin]);
+			if($create_arr[$hash_plugin] || !file_exists($root_path . $file.$postfix) || Configure::read('debug') != _OFF) {
+				$hashs = '';
+				$contents = '';
+				$ext = $ext_arr[$hash_plugin];
+				foreach($options_arr[$hash_plugin] as $option) {
+					$url = $option['url'];
+					$plugin = $option['plugin'];
+					$realPath = $option['realPath'];
+					if(file_exists($realPath)) {
+						$content = $this->_getFileLists($realPath);
+						$hash = md5($content);
+						if(!isset($rets_arr[$plugin][$url])) {
+							$rets_arr[$plugin][$url] = array(
+								'url' => $url,
+								'hash_content' => null,
+								'plugin' => $plugin,
+							);
+						}
+						if($hash != $rets_arr[$plugin][$url]['hash_content']) {
+							$rets_arr[$plugin][$url]['hash_content'] = $hash;
+							$this->create();
+							$this->save($rets_arr[$plugin][$url]);
+						}
+						$hashs .= "-" . $hash;
+						if($content != '') {
+							$contents .= "\n" . $content;
+						}
+					}
+				}
+				if($contents != '') {
+					$file = $this->_createAsetFile(md5($hashs), $contents, $ext);
+					$outpus_arr[$hash_plugin] = $file.$postfix;
+				}
+			} else {
+				$outpus_arr[$hash_plugin] = $file.$postfix;
+			}
+		}
+		return $outpus_arr;
 	}
 
 /**
@@ -161,7 +169,7 @@ class Asset extends AppModel
 
 	protected function _deleteAsetFile($file_name) {
 		$path = $this->_getPath();
-		$this->deleteFile($path);
+		$this->deleteFile($path . $file_name);
 	}
 
 	protected function _getAsetFile($hash, $ext = 'js') {
@@ -170,7 +178,7 @@ class Asset extends AppModel
 	}
 
 	protected function _getPath() {
-		$path = Configure::read('App.www_root') . 'theme' . DS . 'asset' . DS;
+		$path = Configure::read('App.www_root') . 'theme' . DS . 'assets' . DS;
 		return $path;
 	}
 

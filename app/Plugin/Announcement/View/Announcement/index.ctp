@@ -8,7 +8,9 @@ $this->extend('/Frame/block');
 		echo $this->Html->script('Announcement.index');
 	?>
 	<script>
-	$('#<?php echo($id); ?>').Announcement('<?php echo ($id);?>', <?php echo ($is_chief);?>);
+	$(function(){
+		$('#<?php echo($id); ?>').Announcement('<?php echo ($id);?>', <?php echo ($is_chief);?>);
+	});
 	</script>
 	<?php endif; ?>
 <?php endif; ?>

@@ -90,6 +90,10 @@ if(count($this->params->query) > 0) {
 		<?php $this->Html->css($theme_name, null, array('frame' => true)); ?>
 	</div>
 	<?php if($nc_mode == NC_BLOCK_MODE && $hierarchy >= NC_AUTH_MIN_CHIEF): ?>
-		<script>$.PagesBlock.initBlock('<?php echo($id); ?>');</script>
+		<script>
+		$(function(){
+			$.PagesBlock.initBlock('<?php echo($id); ?>');
+		});
+		</script>
 	<?php endif; ?>
 </div>
