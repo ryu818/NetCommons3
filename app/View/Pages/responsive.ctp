@@ -1,6 +1,7 @@
 <?php
 // TODO:php部分はcontrollerで行ったほうがよい個所もある
 // 同ディレクトリのindex.ctpと同等の処理になるため共通化するべき
+	$this->assign('title', $title);
 	$nc_user = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 	$nc_mode = $this->Session->read(NC_SYSTEM_KEY.'.'.'mode');
 
