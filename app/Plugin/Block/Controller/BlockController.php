@@ -28,12 +28,12 @@ class BlockController extends BlockAppController {
  */
 	public function beforeFilter()
 	{
-		parent::beforeFilter();
 		if(empty($this->request->params['requested']) && $this->action == 'add_block') {
 			$this->CheckAuth->chkBlockId = false;
 		} else if(($this->action == 'add_block' || $this->action == 'insert_row') && !empty($this->request->params['requested'])) {
 			$this->CheckAuth->chkMovedPermanently = false;
 		}
+		parent::beforeFilter();
 	}
 
 /**
@@ -45,7 +45,7 @@ class BlockController extends BlockAppController {
  */
 	public function add_block() {
 		$user_id = $this->Auth->user('id');
-		$page = $this->nc_page;
+		$page = (!empty($this->request->params['requested'])) ? $this->nc_current_page : $this->nc_page;
 		$page_id = $page['Page']['id'];
 		$module_id = $this->request->data['module_id'];
 		$show_count = $this->request->data['show_count'];
@@ -93,7 +93,7 @@ class BlockController extends BlockAppController {
 		// はりつけたあと、表示されませんで終わらす方法も？？？ -> グループ化ブロックはペースト不可
 
 		if(isset($shortcut_flag) && $page['Page']['room_id'] == $content['Content']['room_id']) {
-			// コンテンツのルームが同じならば、ルーム権限を付与していないショートカットへ
+			// コンテンツのルームが同じならば、権限が付与されていないショートカットへ
 			$shortcut_flag = _OFF;
 		}
 
@@ -112,9 +112,9 @@ class BlockController extends BlockAppController {
 			* 		Contentは新規追加するが、ショートカット元のContentの中身(title,is_master, master_id,accept_flag,url)はコピー
 			* 			room_idはショートカット先のroom_id
 			*/
-			if(($pre_page['Page']['room_id'] != $room_id || !$content['Content']['is_master']) &&
+			if(!$content['Content']['is_master'] &&
 					$page['Page']['room_id'] == $master_content['Content']['room_id']) {
-				// 権限が付与されているショートカット、または、ショートカットを元のルームに戻した。
+				// 権限が付与されているショートカットを元のルームに戻した。
 				$ins_content = $master_content;
 				$last_content_id = $master_content['Content']['id'];
 			} else if((!isset($shortcut_flag) && $pre_page['Page']['room_id'] != $content['Content']['room_id']) ||
@@ -334,7 +334,7 @@ class BlockController extends BlockAppController {
 	public function insert_row() {
 		$user_id = $this->Auth->user('id');
 		$block = $this->nc_block;
-		$page = $this->nc_page;
+		$page = (!empty($this->request->params['requested'])) ? $this->nc_current_page : $this->nc_page;
 		$page_id = $page['Page']['id'];
 		$show_count = $this->request->data['show_count'];
 		$pre_page = $page;
@@ -386,8 +386,13 @@ class BlockController extends BlockAppController {
 				return;
 			}
 		}
-		echo 'true';
-		$this->render(false);
+		if(!empty($this->request->params['requested'])) {
+			$this->autoRender = false;
+			return 'true';
+		} else {
+			echo 'true';
+			$this->render(false);
+		}
 	}
 
 /**

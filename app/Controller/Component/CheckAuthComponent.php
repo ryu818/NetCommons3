@@ -183,7 +183,8 @@ class CheckAuthComponent extends Component {
 				$controller->flash(__('Page not found.'), $redirect_url, 'CheckAuth.004', '404');
 				return ;
 			}
-			$controller->nc_page = isset($active_page) ? $active_page : $page;
+			$controller->nc_page = isset($active_page) ? $active_page : $page;	// blockから取得できるPage優先
+			$controller->nc_current_page = $page;								// pageから取得できるPage
 			if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_DISABLE ||
 					($page['Page']['display_flag'] == NC_DISPLAY_FLAG_OFF && $page['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF)) {
 				$controller->flash(__('Content not found.'), $redirect_url, 'CheckAuth.005', '404');

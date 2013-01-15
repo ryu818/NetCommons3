@@ -89,7 +89,7 @@ class BlockOperationController extends BlockAppController {
 		$block = array('Block' => $this->nc_block['Block']);	// 移動元Block
 		$content = array('Content' => $this->nc_block['Content']);
 		$module = array('Module' => $this->nc_block['Module']);
-		$page = $this->nc_page;	// 移動先Page
+		$page = $this->nc_current_page;	// 移動先Page
 		$pre_page = $this->Page->findAuthById(intval($block['Block']['page_id']), $user_id);
 
 		$shortcut_flag = isset($this->request->data['shortcut_flag']) ? _ON : _OFF;
@@ -122,7 +122,8 @@ class BlockOperationController extends BlockAppController {
 			'plugin' => 'block',
 			'controller' => 'block',
 			'action' => 'add_block',
-			'block_id' => $block['Block']['id']
+			'block_id' => $block['Block']['id'],
+			'block_type' => 'active-blocks'
 		);
 		$params = array(
 			'data' => array(
@@ -134,6 +135,7 @@ class BlockOperationController extends BlockAppController {
 			'return'
 		);
 		$ret_add_block = $this->requestAction($url, $params);
+
 		$add_block =  $this->Block->findAuthById(intval($ret_add_block), $user_id, false);
 		if(!isset($add_block['Block'])) {
 			$this->flash(__('The server encountered an internal error and was unable to complete your request.'), null, 'BlockOperation.shortcut.003', '500');
@@ -176,7 +178,7 @@ class BlockOperationController extends BlockAppController {
 		$block = array('Block' => $this->nc_block['Block']);	// 移動元Block
 		$content = array('Content' => $this->nc_block['Content']);
 		$module = array('Module' => $this->nc_block['Module']);
-		$page = $this->nc_page;	// 移動先Page
+		$page = $this->nc_current_page;	// 移動先Page
 		$pre_page = $this->Page->findAuthById(intval($block['Block']['page_id']), $user_id);
 
 		// ショートカットのペーストはショートカット作成と同意
@@ -208,7 +210,8 @@ class BlockOperationController extends BlockAppController {
 			'plugin' => 'block',
 			'controller' => 'block',
 			'action' => 'add_block',
-			'block_id' => $block['Block']['id']
+			'block_id' => $block['Block']['id'],
+			'block_type' => 'active-blocks'
 		);
 		$params = array(
 			'data' => array(
@@ -267,7 +270,7 @@ class BlockOperationController extends BlockAppController {
 		$block = array('Block' => $this->nc_block['Block']);	// 移動元Block
 		$content = array('Content' => $this->nc_block['Content']);
 		$module = array('Module' => $this->nc_block['Module']);
-		$page = $this->nc_page;	// 移動先Page
+		$page = $this->nc_current_page;	// 移動先Page
 		$pre_page = $this->Page->findAuthById(intval($block['Block']['page_id']), $user_id);
 
 		if(!$this->validatorRequest($this->request, $module['Module']['dir_name'])) {
@@ -285,7 +288,8 @@ class BlockOperationController extends BlockAppController {
 			'plugin' => 'block',
 			'controller' => 'block',
 			'action' => 'insert_row',
-			'block_id' => $block['Block']['id']
+			'block_id' => $block['Block']['id'],
+			'block_type' => 'active-blocks'
 		);
 		$params = array(
 			'data' => array(
@@ -384,6 +388,7 @@ class BlockOperationController extends BlockAppController {
 		$room_id = $content['Content']['room_id'];
 		$move_room_id = $move_page['Page']['room_id'];
 		$is_confirm = isset($request->data['is_confirm']) ? intval($request->data['is_confirm']) : _OFF;
+
 		if( !$is_confirm && $room_id != $move_room_id) {
 			if($pre_page['Page']['room_id'] == $move_room_id) {
 				// 移動元と移動先が同じならば表示しない
