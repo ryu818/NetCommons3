@@ -116,19 +116,44 @@ a.hover-highlight:active {
 /* ボタン - 共通 */
 .common-btn {
 	border-radius : 4px 4px 4px 4px;
-	background:url("../../img/common/btn_bg.gif") repeat-x scroll left top #ffffff;
 	border:1px solid #cccccc;
 	color:#686868;
 	font-weight:bold;
 	margin: 0 5px;
 	padding:8px 10px 4px;
 	text-shadow:0 -1px 0 #cccccc;
-	width:100px;
+	min-width:100px;
 	cursor:pointer;
+
+/* Firefox */
+    background-image: -moz-linear-gradient(center top , #ffffff, #f8f8f8);
+/* Webkit */
+    background: -webkit-gradient(
+        linear,
+        center top,
+        center bottom,
+        from(#ffffff),
+        to(#f8f8f8)
+        );
+/* IE */
+    filter:progid:DXImageTransform.Microsoft.gradient
+        (startColorstr=#ffffffff,endColorstr=#fff8f8f8);
 }
 
 .common-btn:hover {
-	background:url("../../img/common/btn_bg_hover.gif") repeat-x scroll left top #ffffff;
+/* Firefox */
+    background-image: -moz-linear-gradient(center top , #ffffff, #ffffcc);
+/* Webkit */
+    background: -webkit-gradient(
+        linear,
+        center top,
+        center bottom,
+        from(#ffffff),
+        to(#ffffcc)
+        );
+/* IE */
+    filter:progid:DXImageTransform.Microsoft.gradient
+        (startColorstr=#ffffffff,endColorstr=#ffffffcc);
 }
 
 .common-btn_disable {
@@ -136,8 +161,24 @@ a.hover-highlight:active {
 }
 
 .common-btn-disable:hover {
-	background:url("../../img/common/btn_bg.gif") repeat-x scroll left top #ffffff;
 }
+
+.common-btn-light {
+/* Firefox */
+    background-image: -moz-linear-gradient(center top , #ffffff, #b6d4f6);
+/* Webkit */
+    background: -webkit-gradient(
+        linear,
+        center top,
+        center bottom,
+        from(#ffffff),
+        to(#b6d4f6)
+        );
+/* IE */
+    filter:progid:DXImageTransform.Microsoft.gradient
+        (startColorstr=#ffffffff,endColorstr=#ffb6d4f6);
+}
+
 .submit,.btn-bottom {
 	margin:5px 0;
 	text-align:center;
