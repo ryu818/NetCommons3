@@ -26,27 +26,11 @@
 ?>
 <script>
 	$(function () {
-		<?php /*同じscript src(link href)のファイルをajaxで読み込むと再度、includeされてしまうため、jquery側で対応。*/ ?>
-		$._nc.jsExistingTags = {},$._nc.cssExistingTags = {};
-		$(document).ready(function(){
-			var nScript,nCss,i,head = $('head', document);
-			for(i=0; (nScript = document.getElementsByTagName("SCRIPT")[i]); i++) {
-				if ( nScript.src ) {
-					$._nc.jsExistingTags[nScript.src] = true;
-				}
-			}
-			$('link',head).each(function(){
-				nCss = this;
-				if ( nCss.href ) {
-					$._nc.cssExistingTags[nCss.href] = true;
-				}
-			});
-		});
 		$(document).pjax('a[data-pjax]');
 		$(document).on("submit", "form[data-pjax],form[data-ajax],form[data-ajax-replace]", function (e) {
 			$.Common.ajax(e, $(this));
 		});
-		$(document).on("click", "a[data-ajax],a[data-ajax-replace],input[data-ajax],input[data-ajax-replace]", function (e) {
+		$(document).on("click", "a[data-ajax],a[data-ajax-replace],input[data-ajax],input[data-ajax-replace],button[data-ajax],button[data-ajax-replace]", function (e) {
 			$.Common.ajax(e, $(this));
 		});
 
@@ -55,6 +39,5 @@
 	});
 </script>
 <?php
-	echo '<!--[if IE]>'."\n".$this->Html->script('html5/', array('inline' => true, 'data-title' => 'IE')).'<![endif]-->';
 	echo "\n". $this->fetch('script');
 ?>

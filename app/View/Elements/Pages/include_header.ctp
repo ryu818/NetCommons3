@@ -20,6 +20,7 @@ if (!empty($page_style['file'])) {
 
 	echo "\n".$this->fetch('meta');
 	echo "\n".$this->Html->script(array('jquery/', 'common/'), array('inline' => true, 'data-title' => 'jquery'));
+	echo '<!--[if IE]>'."\n".$this->Html->script('html5/', array('inline' => true, 'data-title' => 'IE')).'<![endif]-->';
 ?>
 <script>
 <?php
