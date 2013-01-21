@@ -42,14 +42,11 @@ class Security {
 		switch (Configure::read('Security.level')) {
 			case 'high':
 				return 10;
-			break;
 			case 'medium':
 				return 100;
-			break;
 			case 'low':
 			default:
 				return 300;
-				break;
 		}
 	}
 
@@ -67,7 +64,6 @@ class Security {
  *
  * @param string $authKey Authorization hash
  * @return boolean Success
- * @todo Complete implementation
  */
 	public static function validateAuthKey($authKey) {
 		return true;

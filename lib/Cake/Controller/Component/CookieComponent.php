@@ -155,7 +155,7 @@ class CookieComponent extends Component {
 
 /**
  * A reference to the Controller's CakeResponse object
- * 
+ *
  * @var CakeResponse
  */
 	protected $_response = null;
@@ -191,9 +191,6 @@ class CookieComponent extends Component {
 		$this->_expire($this->time);
 
 		$this->_values[$this->name] = array();
-		if (isset($_COOKIE[$this->name])) {
-			$this->_values[$this->name] = $this->_decrypt($_COOKIE[$this->name]);
-		}
 	}
 
 /**

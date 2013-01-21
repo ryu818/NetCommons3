@@ -113,7 +113,10 @@ class Sqlite extends DboSource {
 			$this->_connection = new PDO('sqlite:' . $config['database'], null, null, $flags);
 			$this->connected = true;
 		} catch(PDOException $e) {
-			throw new MissingConnectionException(array('class' => $e->getMessage()));
+			throw new MissingConnectionException(array(
+				'class' => get_class($this),
+				'message' => $e->getMessage()
+			));
 		}
 		return $this->connected;
 	}
@@ -246,7 +249,9 @@ class Sqlite extends DboSource {
 
 		$col = strtolower(str_replace(')', '', $real));
 		$limit = null;
-		@list($col, $limit) = explode('(', $col);
+		if (strpos($col, '(') !== false) {
+			list($col, $limit) = explode('(', $col);
+		}
 
 		if (in_array($col, array('text', 'integer', 'float', 'boolean', 'timestamp', 'date', 'datetime', 'time'))) {
 			return $col;
@@ -474,7 +479,7 @@ class Sqlite extends DboSource {
 			if (is_bool($indexes)) {
 				return array();
 			}
-			foreach ($indexes as $i => $info) {
+			foreach ($indexes as $info) {
 				$key = array_pop($info);
 				$keyInfo = $this->query('PRAGMA index_info("' . $key['name'] . '")');
 				foreach ($keyInfo as $keyCol) {
@@ -516,10 +521,8 @@ class Sqlite extends DboSource {
 					$indexes = "\t" . join("\n\t", array_filter($indexes));
 				}
 				return "CREATE TABLE {$table} (\n{$columns});\n{$indexes}";
-			break;
 			default:
 				return parent::renderStatement($type, $data);
-			break;
 		}
 	}
 

@@ -288,6 +288,7 @@ class EmailComponent extends Component {
 	public function send($content = null, $template = null, $layout = null) {
 		$lib = new CakeEmail();
 		$lib->charset = $this->charset;
+		$lib->headerCharset = $this->charset;
 
 		$lib->from($this->_formatAddresses((array)$this->from));
 		if (!empty($this->to)) {
@@ -305,7 +306,7 @@ class EmailComponent extends Component {
 		if (!empty($this->return)) {
 			$lib->returnPath($this->_formatAddresses((array)$this->return));
 		}
-		if (!empty($readReceipt)) {
+		if (!empty($this->readReceipt)) {
 			$lib->readReceipt($this->_formatAddresses((array)$this->readReceipt));
 		}
 

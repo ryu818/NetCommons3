@@ -18,8 +18,7 @@
  * @since         CakePHP(tm) v 2.2.0
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
-App::uses('ModelValidator', 'Model');
-App::uses('CakeValidationSet', 'Model/Validator');
+
 App::uses('Validation', 'Utility');
 
 /**
@@ -164,9 +163,9 @@ class CakeValidationRule {
  */
 	public function checkRequired($field, &$data) {
 		return (
-			(!isset($data[$field]) && $this->isRequired() === true) ||
+			(!array_key_exists($field, $data) && $this->isRequired() === true) ||
 			(
-				isset($data[$field]) && (empty($data[$field]) &&
+				array_key_exists($field, $data) && (empty($data[$field]) &&
 				!is_numeric($data[$field])) && $this->allowEmpty === false
 			)
 		);
@@ -246,7 +245,7 @@ class CakeValidationRule {
  * If called with no parameters it will return whether this rule
  * is configured for update operations or not.
  *
- * @return boolean 
+ * @return boolean
  **/
 	public function isUpdate($exists = null) {
 		if ($exists === null) {

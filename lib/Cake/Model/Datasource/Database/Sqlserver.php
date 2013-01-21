@@ -129,7 +129,10 @@ class Sqlserver extends DboSource {
 			);
 			$this->connected = true;
 		} catch (PDOException $e) {
-			throw new MissingConnectionException(array('class' => $e->getMessage()));
+			throw new MissingConnectionException(array(
+				'class' => get_class($this),
+				'message' => $e->getMessage()
+			));
 		}
 
 		return $this->connected;
@@ -283,9 +286,14 @@ class Sqlserver extends DboSource {
 						$fieldAlias = $this->name($alias . '__' . $fields[$i]);
 					} else {
 						$build = explode('.', $fields[$i]);
-						$this->_fieldMappings[$build[0] . '__' . $build[1]] = $fields[$i];
-						$fieldName = $this->name($build[0] . '.' . $build[1]);
-						$fieldAlias = $this->name(preg_replace("/^\[(.+)\]$/", "$1", $build[0]) . '__' . $build[1]);
+						$build[0] = trim($build[0], '[]');
+						$build[1] = trim($build[1], '[]');
+						$name = $build[0] . '.' . $build[1];
+						$alias = $build[0] . '__' . $build[1];
+
+						$this->_fieldMappings[$alias] = $name;
+						$fieldName = $this->name($name);
+						$fieldAlias = $this->name($alias);
 					}
 					if ($model->getColumnType($fields[$i]) == 'datetime') {
 						$fieldName = "CONVERT(VARCHAR(20), {$fieldName}, 20)";
@@ -533,10 +541,8 @@ class Sqlserver extends DboSource {
 					}
 				}
 				return "CREATE TABLE {$table} (\n{$columns});\n{$indexes}";
-			break;
 			default:
 				return parent::renderStatement($type, $data);
-			break;
 		}
 	}
 
@@ -636,7 +642,7 @@ class Sqlserver extends DboSource {
 /**
  * Generate a database-native column schema string
  *
- * @param array $column An array structured like the 
+ * @param array $column An array structured like the
  *   following: array('name'=>'value', 'type'=>'value'[, options]),
  *   where options can be 'default', 'length', or 'key'.
  * @return string

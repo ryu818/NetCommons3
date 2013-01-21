@@ -290,11 +290,6 @@ class View extends Object {
 	protected $_eventManager = null;
 
 /**
- * The view file to be rendered, only used inside _execute()
- */
-	private $__viewFileName = null;
-
-/**
  * Whether the event manager was already configured for this object
  *
  * @var boolean
@@ -420,8 +415,14 @@ class View extends Object {
 				$this->getEventManager()->dispatch(new CakeEvent('View.beforeRender', $this, array($file)));
 			}
 
+			$current = $this->_current;
+			$restore = $this->_currentType;
+
 			$this->_currentType = self::TYPE_ELEMENT;
 			$element = $this->_render($file, array_merge($this->viewVars, $data));
+
+			$this->_currentType = $restore;
+			$this->_current = $current;
 
 			if ($callbacks) {
 				$this->getEventManager()->dispatch(new CakeEvent('View.afterRender', $this, array($file, $element)));
@@ -561,7 +562,9 @@ class View extends Object {
 
 		if (preg_match('/^<!--cachetime:(\\d+)-->/', $out, $match)) {
 			if (time() >= $match['1']) {
+				//@codingStandardsIgnoreStart
 				@unlink($filename);
+				//@codingStandardsIgnoreEnd
 				unset ($out);
 				return false;
 			} else {
@@ -856,7 +859,7 @@ class View extends Object {
  */
 	public function loadHelpers() {
 		$helpers = HelperCollection::normalizeObjectArray($this->helpers);
-		foreach ($helpers as $name => $properties) {
+		foreach ($helpers as $properties) {
 			list($plugin, $class) = pluginSplit($properties['class']);
 			$this->{$class} = $this->Helpers->load($properties['class'], $properties['settings']);
 		}
@@ -882,7 +885,7 @@ class View extends Object {
 		$this->getEventManager()->dispatch(new CakeEvent('View.beforeRenderFile', $this, array($viewFile)));
 		$content = $this->_evaluate($viewFile, $data);
 		$afterEvent = new CakeEvent('View.afterRenderFile', $this, array($viewFile, $content));
-		//TODO: For BC puporses, set extra info in the event object. Remove when appropriate
+
 		$afterEvent->modParams = 1;
 		$this->getEventManager()->dispatch($afterEvent);
 		$content = $afterEvent->data[1];
@@ -908,7 +911,7 @@ class View extends Object {
  * Sandbox method to evaluate a template / view script in.
  *
  * @param string $viewFn Filename of the view
- * @param array $___dataForView Data to include in rendered view.
+ * @param array $dataForView Data to include in rendered view.
  *    If empty the current View::$viewVars will be used.
  * @return string Rendered output
  */
@@ -1055,7 +1058,7 @@ class View extends Object {
 	protected function _getExtensions() {
 		$exts = array($this->ext);
 		if ($this->ext !== '.ctp') {
-			array_push($exts, '.ctp');
+			$exts[] = '.ctp';
 		}
 		return $exts;
 	}
@@ -1108,13 +1111,14 @@ class View extends Object {
 
 		$paths = array_unique(array_merge($paths, $viewPaths));
 		if (!empty($this->theme)) {
+			$theme = Inflector::camelize($this->theme);
 			$themePaths = array();
 			foreach ($paths as $path) {
 				if (strpos($path, DS . 'Plugin' . DS) === false) {
 					if ($plugin) {
-						$themePaths[] = $path . 'Themed' . DS . $this->theme . DS . 'Plugin' . DS . $plugin . DS;
+						$themePaths[] = $path . 'Themed' . DS . $theme . DS . 'Plugin' . DS . $plugin . DS;
 					}
-					$themePaths[] = $path . 'Themed' . DS . $this->theme . DS;
+					$themePaths[] = $path . 'Themed' . DS . $theme . DS;
 				}
 			}
 			$paths = array_merge($themePaths, $paths);

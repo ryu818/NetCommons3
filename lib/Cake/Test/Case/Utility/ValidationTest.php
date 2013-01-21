@@ -1655,6 +1655,11 @@ class ValidationTest extends CakeTestCase {
 		$this->assertTrue(Validation::email('abc@example.travel'));
 		$this->assertTrue(Validation::email('someone@st.t-com.hr'));
 
+		// gTLD's
+		$this->assertTrue(Validation::email('example@host.local'));
+		$this->assertTrue(Validation::email('example@x.org'));
+		$this->assertTrue(Validation::email('example@host.xxx'));
+
 		// strange, but technically valid email addresses
 		$this->assertTrue(Validation::email('S=postmaster/OU=rz/P=uni-frankfurt/A=d400/C=de@gateway.d400.de'));
 		$this->assertTrue(Validation::email('customer/department=shipping@example.com'));
@@ -1669,7 +1674,6 @@ class ValidationTest extends CakeTestCase {
 		$this->assertFalse(Validation::email('abc.@example.com'));
 		$this->assertFalse(Validation::email('abc@example..com'));
 		$this->assertFalse(Validation::email('abc@example.com.a'));
-		$this->assertFalse(Validation::email('abc@example.toolong'));
 		$this->assertFalse(Validation::email('abc;@example.com'));
 		$this->assertFalse(Validation::email('abc@example.com;'));
 		$this->assertFalse(Validation::email('abc@efg@example.com'));
@@ -1826,32 +1830,32 @@ class ValidationTest extends CakeTestCase {
 		$this->assertTrue(Validation::url('ftp://cakephp.org/pub/cake'));
 		$this->assertTrue(Validation::url('ftp://192.168.0.1/pub/cake'));
 		$this->assertTrue(Validation::url('sftp://192.168.0.1/pub/cake'));
-		$this->assertFalse(Validation::url('ftps://256.168.0.1/pub/cake'));
-		$this->assertFalse(Validation::url('ftp://256.168.0.1/pub/cake'));
 		$this->assertTrue(Validation::url('https://my.domain.com/gizmo/app?class=MySip;proc=start'));
 		$this->assertTrue(Validation::url('www.domain.tld'));
-		$this->assertFalse(Validation::url('http://w_w.domain.co_m'));
-		$this->assertFalse(Validation::url('http://www.domain.12com'));
-		$this->assertFalse(Validation::url('http://www.domain.longttldnotallowed'));
-		$this->assertFalse(Validation::url('http://www.-invaliddomain.tld'));
-		$this->assertFalse(Validation::url('http://www.domain.-invalidtld'));
 		$this->assertTrue(Validation::url('http://123456789112345678921234567893123456789412345678951234567896123.com'));
-		$this->assertFalse(Validation::url('http://this-domain-is-too-loooooong-by-icann-rules-maximum-length-is-63.com'));
 		$this->assertTrue(Validation::url('http://www.domain.com/blogs/index.php?blog=6&tempskin=_rss2'));
 		$this->assertTrue(Validation::url('http://www.domain.com/blogs/parenth()eses.php'));
 		$this->assertTrue(Validation::url('http://www.domain.com/index.php?get=params&amp;get2=params'));
 		$this->assertTrue(Validation::url('http://www.domain.com/ndex.php?get=params&amp;get2=params#anchor'));
-		$this->assertFalse(Validation::url('http://www.domain.com/fakeenco%ode'));
 		$this->assertTrue(Validation::url('http://www.domain.com/real%20url%20encodeing'));
 		$this->assertTrue(Validation::url('http://en.wikipedia.org/wiki/Architectural_pattern_(computer_science)'));
-		$this->assertFalse(Validation::url('http://en.(wikipedia).org/'));
-		$this->assertFalse(Validation::url('www.cakephp.org', true));
 		$this->assertTrue(Validation::url('http://www.cakephp.org', true));
 		$this->assertTrue(Validation::url('http://example.com/~userdir/'));
 		$this->assertTrue(Validation::url('http://underscore_subdomain.example.org'));
 		$this->assertTrue(Validation::url('http://_jabber._tcp.gmail.com'));
+		$this->assertTrue(Validation::url('http://www.domain.longttldnotallowed'));
+		$this->assertFalse(Validation::url('ftps://256.168.0.1/pub/cake'));
+		$this->assertFalse(Validation::url('ftp://256.168.0.1/pub/cake'));
+		$this->assertFalse(Validation::url('http://w_w.domain.co_m'));
+		$this->assertFalse(Validation::url('http://www.domain.12com'));
+		$this->assertFalse(Validation::url('http://www.-invaliddomain.tld'));
+		$this->assertFalse(Validation::url('http://www.domain.-invalidtld'));
+		$this->assertFalse(Validation::url('http://this-domain-is-too-loooooong-by-icann-rules-maximum-length-is-63.com'));
 		$this->assertFalse(Validation::url('http://www.underscore_domain.org'));
 		$this->assertFalse(Validation::url('http://_jabber._tcp.g_mail.com'));
+		$this->assertFalse(Validation::url('http://en.(wikipedia).org/'));
+		$this->assertFalse(Validation::url('http://www.domain.com/fakeenco%ode'));
+		$this->assertFalse(Validation::url('www.cakephp.org', true));
 
 		$this->assertTrue(Validation::url('http://example.com/~userdir/subdir/index.html'));
 		$this->assertTrue(Validation::url('http://www.zwischenraume.de'));
