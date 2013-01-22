@@ -74,7 +74,7 @@ class AppController extends Controller {
  * @return  void
  * @since   v 3.0.0.0
  */
-    function constructClasses() {
+    public function constructClasses() {
 		$this->_setExecuteTimes();
 
 		parent::constructClasses();
@@ -143,7 +143,9 @@ class AppController extends Controller {
     		}
     	}
     	// Configセット
-    	$this->SetConfigs->set();
+    	if ($this->Components->enabled('Auth')) {
+    		$this->SetConfigs->set();
+    	}
 
     	$is_closed_site = Configure::read(NC_CONFIG_KEY.'.'.'is_closed_site');
     	if(!$is_closed_site) {
@@ -151,7 +153,9 @@ class AppController extends Controller {
     	}
 
     	// 権限チェック
-    	$this->CheckAuth->check();
+    	if ($this->Components->enabled('Auth')) {
+    		$this->CheckAuth->check();
+    	}
 	}
 
 /**
