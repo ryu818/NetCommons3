@@ -15,87 +15,41 @@
 		// data-ajax属性の値をtargetとしてhrefタグのURLを用いてAjaxでデータを取得する。
 		// data-ajax-replace属性ならば、targetと入れ替える。
 		//
+		// data-ajax-url:URL default：href属性から取得
+		// data-ajax-type: post or get
+		// data-ajax-effect: 遷移時effect default：fold
+		//
 		// カスタムイベント ajax:
-		// ajax:before - Ajaxリクエスト前に呼ばれる。falseを返せば処理を中断する。
-		// ajax:beforeのみ、return値(string or array)でURL及びdataの内容を上書き可。
-		// ajax:beforeSuccess - Ajaxリクエスト直後に呼ばれる。falseを返せば処理を中断する。
-		// ajax:success - Ajaxリクエスト後の処理が終了した時点で呼ばれる。
+		// ajax:beforeSend - Ajaxリクエスト前に呼ばれる。falseを返せば処理を中断する。
+		// ajax:beforeSendのみ、return値(string or array)でURL及びdataの内容を上書き可。
+		// ajax:success - Ajaxリクエスト直後に呼ばれる。falseを返せば処理を中断する。
 		// 例：$('form:first', this).on('ajax:beforeSuccess', function(e, res) {
 		//	       e.preventDefault();
 		//     });
 		//
-		getAjax : function(e, a) {
-			var target, replace_target, url = a.attr('href'), type;
-			var ret = $.Common.fireResult('ajax:before', [url], a);
-			var data = null;
-			if (!ret) {
-				e.preventDefault();
-				return false
-			}
-			if(ret !== true) {
-				if(typeof ret == "string") {
-					url = ret;
-				} else if(ret['url']) {
-					url = ret['url'];
-				} else {
-					url = ret[0];
-				}
-			}
-			target = a.data("ajax");
-			replace_target = a.data("ajax-replace");
-			type = a.data("ajax-type");
-			type = (type == 'POST' || type == 'post') ? 'POST' : "GET";
-			if(url == '#') {
-				return;
-			}
-			if(type == 'POST') {
-				data = a.data("ajax-data");
-				if($(data).get(0)) {
-					data = $(data).serializeArray();
-				}
-			}
-
-
-			$.ajax({
-				type: (type == 'POST' || type == 'post') ? 'POST' : "GET",
-				url: url,
-				data: data,
-				success: function(res, status, xhr){
-					if (!$.Common.fire('ajax:beforeSuccess', [res, status, xhr], a)) {
-						return false
-					}
-					if(target) {
-						var res_target = $(target);
-						$(target).html(res);
-					} else if(replace_target) {
-						var res_target = $(res);
-						$(replace_target).replaceWith(res_target);
-					}
-					if(a.attr('id')) {
-						var buf_a = $('#' + a.attr('id'));
-					} else {
-						var buf_a = a;
-					}
-					$.Common.fire('ajax:success', [res_target, status, xhr], buf_a);
-				}
- 			});
-
-			e.preventDefault();
-		},
-		postAjax : function(e, frm) {
-			var data_pjax,target,replace_target, top, url, data;
-			target_pjax = frm.attr("data-pjax");
+		ajax : function(e, a) {
+			var data_pjax, top, url, data, input_type, type, ret;
+			var target_pjax = a.attr("data-pjax");
 
 			if(target_pjax) {
 				// pjax
+				// TODO:pjaxにはeffect等が対応していない。
 				top = $(target_pjax);
 				if(top.get(0)) {
 					$.pjax.submit(e, top);
 				}
 			} else {
-				url = frm.attr('action');
-				data = frm.serializeArray();
-				var ret = $.Common.fireResult('ajax:before', [url, data], frm);
+				if(a.get(0).tagName.toLowerCase() == 'form') {
+					input_type = 'POST';
+					url = a.attr('action');
+					data = a.serializeArray();
+				} else {
+					input_type = 'GET';
+					url = a.attr('href');
+					data = {};
+				}
+
+				ret = $.Common.fireResult('ajax:beforeSend', [url, data], a);
 				if (!ret) {
 					e.preventDefault();
 					return false
@@ -103,42 +57,72 @@
 				if(ret !== true) {
 					if(typeof ret == "string") {
 						url = ret;
-					} else if(ret['url'] && ret['data']) {
+					} else if(ret['url']) {
 						url = ret['url'];
-						data = ret['data'];
+						data = ret['data'] ? ret['data'] : data;
 					} else {
 						url = ret[0];
 						data = ret[0];
 					}
 				}
-				target = frm.data("ajax");
-				replace_target = frm.data("ajax-replace");
-				type = frm.data("ajax-type");
+				type = a.data("ajax-type");
+				url = a.data("ajax-url") ? a.data("ajax-url") : url;
+				effect = a.data("ajax-effect") ? a.data("ajax-effect") : 'fold';
 				$.ajax({
-					type: (type == 'GET' || type == 'get') ? 'GET' : "POST",
+					type: (type == 'GET' || type == 'get' || type == 'POST' || type == 'post') ? type : input_type,
 					url: url,
 					data: data,
 					success: function(res, status, xhr){
-						if (!$.Common.fire('ajax:beforeSuccess', [res, status, xhr], frm)) {
+						if (!$.Common.fire('ajax:success', [res, status, xhr], a)) {
 							return false
 						}
-						if(target) {
-							var res_target = $(target);
-							$(target).html(res);
-						} else if(replace_target) {
-							var res_target = $(res);
-							$(replace_target).replaceWith(res_target);
-						}
-						if(frm.attr('name')) {
-							var buf_frm = $('form[name=' + frm.attr('name') + ']', res_target);
-						} else {
-							var buf_frm = frm;
-						}
-						$.Common.fire('ajax:success', [res_target, status, xhr], buf_frm);
+						$.Common.ajaxSuccess(a, res);
 					}
 	 			});
 			}
 			e.preventDefault();
+		},
+
+		ajaxSuccess : function(a, res) {
+			a = $(a);
+			var target = a.data("ajax");
+			var replace_target = a.data("ajax-replace");
+			var effect = a.data("ajax-effect") ? a.data("ajax-effect") : 'fold';
+			var buf_a, res_target, res_other_target, buf_res_target, effect_cnt = 0, effect_index = -1;
+			if(target) {
+				res_target = $(target);
+				if(effect && $(target).css('display') != 'none') {
+					$(target).hide(effect, function(){
+						$(target).html(res);
+						$(target).show(effect);
+					});
+				} else {
+					$(target).html(res);
+				}
+			} else if(replace_target) {
+				res_target = $();
+				res_other_target = $();
+				buf_res_target = $(res);
+				buf_res_target.each(function(){
+					if (this.nodeType == 1 && $(this).is(replace_target)) {
+						res_target.push(this);
+					} else {
+						res_other_target.push(this);
+					}
+				});
+				if(effect && res_target.get(0)) {
+					$(replace_target).hide(effect, function(){
+						$(res_target).css('display', 'none');
+						$(replace_target).replaceWith(res_target);
+						$(replace_target).after(res_other_target);
+						$(res_target).show(effect);
+					});
+				} else {
+					res_target = $(res);
+					$(replace_target).replaceWith(res_target);
+				}
+			}
+			return res_target;
 		},
 
 		fire : function(type, args, content) {

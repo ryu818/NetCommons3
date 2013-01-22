@@ -314,3 +314,17 @@ input.pages-menu-community-photo-file {
 	text-align:right;
 	padding: 0 10px 0 0;
 }
+
+/* 参加者修正 */
+.pages-menu-edit-participant {
+	width:830px;
+}
+.pages-menu-auth-listbox-lbl {
+	display: block;
+    overflow: hidden;
+    width: 100%;
+}
+
+.pages-menu-auth-listbox-name {
+	width:95px;
+}

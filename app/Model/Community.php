@@ -43,17 +43,6 @@ class Community extends AppModel
 					'message' => __('The input must be a number bigger than %d and less than %d.', NC_PUBLICATION_RANGE_FLAG_ONLY_USER, NC_PUBLICATION_RANGE_FLAG_ALL)
 				)
 			),
-			'publication_authority' => array(
-				'numeric' => array(
-					'rule' => array('numeric'),
-					'required' => true,
-					'message' => __('The input must be a number.')
-				),
-				'range' => array(
-					'rule' => array('range', NC_AUTH_MODERATE_ID - 1, NC_AUTH_GUEST_ID + 1),
-					'message' => __('The input must be a number bigger than %d and less than %d.', NC_AUTH_MODERATE_ID, NC_AUTH_GUEST_ID)
-				)
-			),
 			// TODO:participate_flag admin_hierarchyのチェックが必要
 			'participate_flag' => array(
 				'numeric' => array(

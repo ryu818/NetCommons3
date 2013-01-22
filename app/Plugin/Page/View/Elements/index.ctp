@@ -155,8 +155,8 @@ if(isset($is_edit) && $is_edit == _ON){
 	</div>
 </div>
 <?php
-	echo $this->Html->css(array('plugins/jquery.nestable.css', 'Page.index/index.css'));
-	echo $this->Html->script(array('plugins/jquery.nestable.js', 'Page.index/index.js'));
+	echo $this->Html->css(array('plugins/jquery.nestable.css', 'Page.index/index.css'), null, array('inline' => true));
+	echo $this->Html->script(array('plugins/jquery.nestable.js', 'Page.index/index.js'), array('inline' => true));
 ?>
 <script>
 $(function(){

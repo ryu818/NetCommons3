@@ -441,9 +441,10 @@ class Page extends AppModel
  * @param function  $fetchcallback callback関数 default メニュー形式
  *                                     $pages[space_type][thread_num][parent_id][display_sequence] = Page
  * @param array     $fetch_params callback関数 parameter
- * @param boolean   $is_all $params['join']が設定されていない場合、使用。 default false true LEFT JOIN PageUserLink false INNER JOIN PageUserLink
+ * @param boolean   $is_all $params['join']が設定されていない場合、使用。 default false, true LEFT JOIN PageUserLink false INNER JOIN PageUserLink
  * @return array
  * @since   v 3.0.0.0
+ * TODO:$login_user_id,$current_user等が指定されると、どのようなレスポンスが返るのかわかりにくいため修正したほうがよい。
  */
 	public function findMenu($type, $login_user_id = null, $space_type = NC_SPACE_TYPE_PUBLIC, $current_user = null, $params = null, $fetchcallback = null, $fetch_params = null, $is_all = false) {
 		//$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
@@ -509,7 +510,7 @@ class Page extends AppModel
 				$params['fields'] = $this->_getFieldsArray($space_type);
 			}
 			if(!isset($params['joins'])) {
-				$join_type = ($is_all) ? 'INNER' : 'LEFT';
+				$join_type = ($is_all) ? 'LEFT' : 'INNER';
 				$params['joins'] = $this->_getJoinsArray($login_user_id, $join_type, $space_type);
 			}
 		}
@@ -554,7 +555,7 @@ class Page extends AppModel
 			'Page.lang' => array('', $lang)
 		));
 		$fetch_params = array('active_page_id' => $current_page['Page']['id']);
-		return $this->findMenu($type, $login_user_id, $current_page['Page']['space_type'], null, $params, "", $fetch_params);
+		return $this->findMenu($type, $login_user_id, $current_page['Page']['space_type'], null, $params, "", $fetch_params, true);
 	}
 
 /**

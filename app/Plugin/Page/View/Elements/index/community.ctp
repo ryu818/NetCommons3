@@ -40,36 +40,6 @@
 									}
 									echo $this->Form->input('Community.publication_range_flag', $settings);
 								?>
-								<div class="hr">
-									<?php
-										$disable = false;
-										if($community_params['community']['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_ONLY_USER) {
-											$disable = true;
-										}
-										$settings = array(
-											'id' => "pages-menu-community-publication-authority-".$page['Page']['id'].'-',
-											'legend' => __d('page', 'Role of login user'),
-											'value' => $community_params['community']['Community']['publication_authority'],
-											'type' =>'radio',
-											'options' => array(
-												NC_AUTH_MODERATE_ID => __('Moderator'),
-												NC_AUTH_GENERAL_ID => __('Common User'),
-												NC_AUTH_GUEST_ID => __('Guest'),
-											),
-											'separator' => ' ',
-											'div' => false,
-											'disabled' => $disable,
-										);
-										if(isset($is_child)) {
-											$settings['error'] = false;
-										} else {
-											$settings['error'] = array('attributes' => array(
-												'selector' => $this->Js->escape("$('[name=data\\[Community\\]\\[publication_authority\\]]', $('#PagesMenuForm-".$page['Page']['id']."'))")
-											));
-										}
-										echo $this->Form->input('Community.publication_authority', $settings);
-									?>
-								</div>
 							</dd>
 						</dl>
 					</li>
@@ -194,6 +164,10 @@
 	<div class="btn-bottom">
 		<input type="submit" class="common-btn" name="ok" value="<?php echo( __('Ok')); ?>" />
 		<input type="button" class="common-btn" name="cancel" value="<?php echo(__('Cancel')); ?>" onclick="$('#pages-menu-edit-detail-<?php echo($page['Page']['id']);?>').slideUp(300);" />
+
+
+		<input type="button" class="common-btn common-btn-light" name="participant" value="<?php echo(__d('page','Edit members')); ?>" data-page-edit-id=<?php echo($page['Page']['id']);?> data-ajax-url="<?php echo($this->Html->url(array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'participant', $page['Page']['id']))); ?>" data-ajax-replace="#pages-menu-edit-participant-<?php echo($page['Page']['id']);?>" />
+
 	</div>
 </div>
 <script>

@@ -144,8 +144,8 @@ class SetConfigsComponent extends Component {
 		);
 		$params = array(
 			'fields' => array(
-								'Authority.id',
-								'Authority.hierarchy'
+				'Authority.id',
+				'Authority.hierarchy'
 			),
 			'conditions' => $conditions
 		);

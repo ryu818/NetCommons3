@@ -38,7 +38,7 @@
 	<?php
 		echo $this->Html->css('Page.index');
 		echo $this->Html->script('Page.index');
-		$pos = $this->Session->read(NC_SYSTEM_KEY.'.page_menu_pos');
+		$pos = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.pos');
 		$pos = isset($pos) ? intval($pos) : _ON;
 	?>
 	<script>

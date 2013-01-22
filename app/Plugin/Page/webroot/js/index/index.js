@@ -83,7 +83,7 @@
 				// スクロール
 				$(active_tab_name).animate({scrollTop:position}, 400, 'swing');
 			});
-		}
+		};
 
 		var tab = this;
 
@@ -248,12 +248,12 @@
 
 		//root_menu.get(1).nestable('expandAll');
 		// ページ編集切替
-		$('#pages-menu-edit-btn').on('ajax:before', function(e, url) {
+		$('#pages-menu-edit-btn').on('ajax:beforeSend', function(e, url) {
 			return url + '&active_tab=' + active_tab;
 		});
 		if(is_edit) {
 			// ページ追加
-			$('#pages-menu-add-btn').on('ajax:before', function(e, url) {
+			$('#pages-menu-add-btn').on('ajax:beforeSend', function(e, url) {
 				if($(this).hasClass('pages-menu-add-btn-disable')) {
 					// ページ追加不可
 					return false;
@@ -263,7 +263,8 @@
 				ajax_id = $(this).data('ajax-replace');
 				replace_ajax_id = ajax_id.replace(/^#/, '');
 
-				page_edit = $("<li id='"+ replace_ajax_id +"'></li>").hide().before(active_li);	// class='dd-item dd-drag-item'
+				page_edit = $("<li id='"+ replace_ajax_id +"'></li>").hide();
+				active_li.before(page_edit);	// class='dd-item dd-drag-item'
 
 				dd_sequence = active_li.data('dd-sequence');
 				position = 'bottom';
@@ -273,7 +274,10 @@
 				url = url + '/' + active_li.data('id') + '/' +  position;
 
 				return url;
-			}).on('ajax:success', function(e, target) {
+			}).on('ajax:success', function(e, res) {
+				var dd_sequence, position, insert_li;
+				var target = $.Common.ajaxSuccess(this, res);
+
 				dd_sequence = active_li.data('dd-sequence');
 				position = 'bottom';
 				if(dd_sequence == 'inner-only') {
@@ -282,7 +286,7 @@
 				} else {
 					root_menu.nestable('collapseItem', [active_li]);
 				}
-				var insert_li = active_li;
+				insert_li = active_li;
 				if(!active_li.get(0)) {
 					insert_li = $('ol:first',$(active_tab_name));
 				}
@@ -293,21 +297,23 @@
 				} else {
 					$(root_menu.get(1)).nestable('appendList', [insert_li, target, position]);
 				}
+
 				// スクロール
 				slideTarget(target, active_tab_name);
 				// コンテンツクリックイベント
 				$('.pages-menu-edit-content:first', target).click();
+				e.preventDefault();
 			});
 
 			// コミュニティー追加
-			$('#pages-menu-add-community-btn').on('ajax:before', function(e, url) {
+			$('#pages-menu-add-community-btn').on('ajax:beforeSend', function(e, url) {
 				if($(this).hasClass('pages-menu-btn-disable')) {
 					// ページ追加不可
 					return false;
 				}
 				url = url + '/' + active_li.data('id');
 				return url;
-			}).on('ajax:beforeSuccess', function(e, res) {
+			}).on('ajax:success', function(e, res) {
 				if (res) {
 					location.href = res;
 				}
@@ -315,7 +321,7 @@
 			});
 
 			// ページ削除
-			root_menu.on('ajax:before','.pages-menu-delete-icon',function(e, url) {
+			root_menu.on('ajax:beforeSend','.pages-menu-delete-icon',function(e, url) {
 				var li = $($(e.target).data('ajax-data')),page_id = li.data('id'), room_id = li.data('room-id');
 				var a = $('a.pages-menu-edit-title:first', li), title = $.trim(a.html());
 				var ok = __('Ok') ,cancel = __('Cancel');
@@ -358,27 +364,35 @@
 				return false;
 			});
 
-			// ページ詳細編集画面表示
-			root_menu.on('ajax:before','[data-page-edit-id]',function(e, url) {
+			// ページ詳細編集画面表示・参加者修正画面表示
+			root_menu.on('ajax:beforeSend','[data-page-edit-id]',function(e, url) {
+				if($(e.target).get(0).tagName == 'INPUT') {
+					// 参加者修正
+					return url;
+				}
 			    var page_id = $(this).data('page-edit-id');
-				var detail = $('#pages-menu-edit-detail-' + page_id);
-				if(detail.css('display') != 'none') {
-					// 既に編集中->非表示
-					detail.slideUp(300, function() {detail.html('');});
+				if($.PageMenu.hideDetail(page_id)) {
 					return false;
 				}
 
 				url = url + '/' + page_id;
 				return url;
-			}).on('ajax:success','[data-page-edit-id]',function(e, target) {
+			}).on('ajax:success','[data-page-edit-id]',function(e, res) {
 				var page_id = $(this).data('page-edit-id');
+				if($(e.target).get(0).tagName == 'INPUT') {
+					// 参加者修正
+					$.PageMenu.hideDetail(page_id);
+				}
+				var target = $.Common.ajaxSuccess(this, res);
 				var scroll_target = $('#pages-menu-edit-item-' + page_id);
 				// スクロール
 				slideTarget(target, active_tab_name, scroll_target);
+				e.preventDefault();		// ajax:success後の$.Common.ajaxの後処理をキャンセル
+				e.stopPropagation();	// formのajax:successイベントキャンセル
 			});
 
 			// ページ編集
-			root_menu.on('ajax:before','form',function(e, url) {
+			root_menu.on('ajax:beforeSend','form.pages-menu-edit-form',function(e, url) {
 				var focus_input = $(':focus', $(e.target));
 				if(focus_input.attr('type') == 'text' && focus_input.attr('name') != "data[Page][page_name]") {
 					// ページ名称以外のtextではsubmitさせない。IE8、9ではOKボタンに遷移しているため、動作しない。
@@ -395,7 +409,8 @@
 					a.css('display', '');
 					return false;
 				}
-			}).on('ajax:success','form',function(e, target) {
+			}).on('ajax:success','form.pages-menu-edit-form',function(e, res) {
+				var target = $.Common.ajaxSuccess(this, res);
 				var li = $(this).parent();
 				var page_id = li.data('id');
 				if(active_tab_name == '#pages-menu-page') {
@@ -403,6 +418,7 @@
 				} else {
 					$(root_menu.get(1)).nestable('addEvent', [target, page_id]);
 				}
+				e.preventDefault();
 			});
 
 			// ページ公開・非公開
@@ -549,14 +565,6 @@
 				}
 			});
 
-			$('input[name="data[Community][publication_range_flag]"]', tab).change(function(e){
-				var target = $(this);
-				if(target.val() == '0') {
-					$('input[name="data[Community][publication_authority]"]', tab).attr('disabled', 'disabled');
-				} else {
-					$('input[name="data[Community][publication_authority]"]', tab).removeAttr('disabled');
-				}
-			});
 			$('input[name="data[Community][participate_flag]"]', tab).change(function(e){
 				var target = $(this);
 				if(target.val() == '0') {
@@ -566,6 +574,7 @@
 				}
 			});
 		},
+
 /**
  * コミュニティ写真サンプル変更
  * @param   element target
@@ -582,6 +591,69 @@
 			$('input[name="data[Community][upload_id]"]:first', form).val("0");
 
 			$('#pages-menu-community-photo-preview-' + id).css('background-image', "url(" + src + ")");
+		},
+
+/**
+ * 参加者修正-全選択
+ * @param   integer page_id
+ * @param   integer def_authority_id
+ * @param   element el button element
+ * @return  void
+ * @access  public
+ */
+		allChecked: function(page_id, def_authority_id, el) {
+			var cell = $(el).parent();
+			//var name = $(".pages-menu-auth-listbox-name", cell);
+			var input = $("input:hidden:first", cell);
+			var select = $("select:first", cell);
+
+			$("input.pages-menu-auth-listbox-name-" + def_authority_id, $("#pages-menu-edit-participant-"+page_id)).each(function() {
+				if(!$(this).attr('disabled')) {
+					$(this).attr('checked', 'checked').val(input.val());
+
+					if(select.get(0)) {
+						var list_name = $(this).parent().next();
+						list_name.val(select.val());
+					}
+
+				}
+			});
+		},
+
+/**
+ * 参加者修正-権限セレクトボックス
+ * @param   integer page_id
+ * @param   integer def_authority_id
+ * @param   element el button element
+ * @return  void
+ * @access  public
+ */
+		chgSelectAuth: function(page_id, el) {
+			var authority_id = $(el).val();
+			var input = $('input:hidden:first,input:radio:first',$(el).parent());
+			input.val(authority_id);
+		},
+
+/**
+ * 参加者修正- ページ編集画面表示時
+ * @param   element top
+ * @param   integer page_id
+ * @return  boolean detail表示中かどうか
+ */
+		hideDetail : function(page_id) {
+			var ret = false;
+			var detail = $('#pages-menu-edit-detail-' + page_id);
+			var participant = $('#pages-menu-edit-participant-' + page_id);
+			if(participant.css('display') != 'none') {
+				// 既に表示中->非表示
+				participant.slideUp(300, function() {participant.css('display', 'none').html('');});
+			}
+			if(detail.css('display') != 'none') {
+				// 既に編集中->非表示
+				detail.slideUp(300, function() {detail.css('display', 'none').html('');});
+				ret = true;
+			}
+			return ret;
 		}
 	};
 })(jQuery);

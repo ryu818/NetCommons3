@@ -12,7 +12,7 @@ if($nc_mode == NC_BLOCK_MODE){
 	$setting_class = 'nc-hmenu-setting-btn';
 	$setting_mode = NC_BLOCK_MODE;
 }
-$page_menu = $this->Session->read(NC_SYSTEM_KEY.'.page_menu');
+$page_menu = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.action');
 if(isset($page_menu)) {
 	$action = "close";
 	$sub_action = "index";

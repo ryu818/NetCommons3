@@ -76,7 +76,7 @@ class PagesController extends AppController {
 		// ページスタイル情報を取得
 		// TODO ノードを基に取得
 		$center_page = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');
-		$page_style = $this->PageStyle->findByStylePageId($center_page['Page']['id']);
+		//$page_style = $this->PageStyle->findByStylePageId($center_page['Page']['id']);
 
 		$add_modules = array();
 		if($mode == NC_BLOCK_MODE) {
@@ -108,7 +108,7 @@ class PagesController extends AppController {
 		$this->set("blocks", $blocks);
 		$this->set("pages", $pages);
 		$this->set("page_id_arr", $this->page_id_arr);
-		$this->set('page_style', $page_style['PageStyle']);
+		//$this->set('page_style', $page_style['PageStyle']);
 		$this->set("add_modules", $add_modules);
 		$this->set("copy_content", $copy_content );
 

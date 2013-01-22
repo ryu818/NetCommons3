@@ -78,9 +78,9 @@ define('NC_DISPLAY_FLAG_DISABLE', 2);	// 利用不可
 
 //-----------------community publication_range_flag-------------------------------------------
 
-define('NC_PUBLICATION_RANGE_FLAG_ONLY_USER', 0);
-define('NC_PUBLICATION_RANGE_FLAG_LOGIN_USER', 1);
-define('NC_PUBLICATION_RANGE_FLAG_ALL', 2);
+define('NC_PUBLICATION_RANGE_FLAG_ONLY_USER', 0);		// 参加者のみ（コミュニティー参加者のみが閲覧可能）
+define('NC_PUBLICATION_RANGE_FLAG_LOGIN_USER', 1);		// 一部公開（すべてのログイン会員が閲覧可能）
+define('NC_PUBLICATION_RANGE_FLAG_ALL', 2);				// 公開（すべてのユーザーが閲覧可能）
 
 //-----------------community participate_flag-------------------------------------------
 

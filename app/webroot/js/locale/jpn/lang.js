@@ -3,8 +3,11 @@ $._lang['common'] = {
 	'Cancel' : 'キャンセル',
 	'Deleting %s. <br />Are you sure to proceed?' : '%sを削除します。<br />よろしいですか？',
 	'Login' : 'ログイン',
-	//'pagestat' : '{total} 件中 {from} から {to} まで表示',
+	'Displaying {from} to {to} of {total} items' : '{total} 件中 {from} から {to} まで表示',
 	'Processing, please wait ...' : 'ロード中･･･',
+	'No items' : 'データなし',
+	'of' : '/',
+	'Page' : 'ページ',
 	'No results match' : '結果が一致しません。'
 }
 
@@ -25,7 +28,8 @@ $._lang['pages'] = {
 	'Move to the bottom of the [%s]': '[%s]の下に移動',
 	'Thread:[%s]': '深さ：[%s]',
 	'Open': '開く',
-	'Close': '閉じる'
+	'Close': '閉じる',
+	'Room members' : '参加会員'
 }
 
 $._lang['nc_wysiwyg'] = {

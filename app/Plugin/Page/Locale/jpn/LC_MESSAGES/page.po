@@ -58,8 +58,8 @@ msgid  	"Delete page"
 msgstr 	"ページ削除"
 msgid  	"Other operation"
 msgstr 	"その他操作"
-msgid  	"Allocation of authority"
-msgstr 	"権限の割り当て"
+msgid  	"Edit members"
+msgstr 	"参加者修正"
 msgid  	"Modules to use"
 msgstr 	"モジュールの利用許可"
 
@@ -102,9 +102,6 @@ msgstr 	" 一部公開（すべてのログイン会員が閲覧可能）"
 msgid  	"Public(All user can see content.)"
 msgstr 	" 公開（すべてのユーザーが閲覧可能）"
 
-msgid  	"Role of login user"
-msgstr 	"ログイン会員の役割"
-
 msgid  	"How to participate"
 msgstr 	"参加方法"
 msgid  	"Free（All login user can participate.)"
@@ -143,6 +140,10 @@ msgstr 	"キーワードをカンマ区切りで入力してください"
 
 msgid  	"Has been successfully added community."
 msgstr 	"コミュニティーを追加しました。"
+
+## 参加者修正
+msgid  	"Set the roles of the room members, and press [Ok] button. To set the roles all at once, press [Select All] button."
+msgstr 	"このルームでの会員の役割を設定して、[決定]ボタンを押してください。[全選択]ボタンより役割を一括で選択できます。"
 
 ## ページ表示順変更
 

@@ -30,15 +30,15 @@
 			rpOptions: [10, 15, 20, 30, 50], //allowed per-page values
 			title: false,
 			idProperty: 'id',
-			pagestat: 'Displaying {from} to {to} of {total} items',
-			pagetext: 'Page',
-			outof: 'of',
-			findtext: 'Find',
+			pagestat: __('Displaying {from} to {to} of {total} items'),			// Edit Ryuji.M
+			pagetext: __('Page'),												// Edit Ryuji.M
+			outof: __('of'),													// Edit Ryuji.M
+			findtext: __('Find'),												// Edit Ryuji.M
 			params: [], //allow optional parameters to be passed around
-			procmsg: 'Processing, please wait ...',
+			procmsg: __('Processing, please wait ...'),							// Edit Ryuji.M
 			query: '',
 			qtype: '',
-			nomsg: 'No items',
+			nomsg: __('No items'),												// Edit Ryuji.M
 			minColToggle: 1, //minimum allowed column to be hidden
 			showToggleBtn: true, //show or hide column toggle popup
 			hideOnSubmit: true,
@@ -51,6 +51,9 @@
 			onToggleCol: false,
 			onChangeSort: false,
 			onDoubleClick: false,
+// add start Ryuji.M
+			 setParams : false,
+// add end Ryuji.M
 			onSuccess: false,
 			onError: false,
 			onSubmit: false //using a custom populate function
@@ -561,6 +564,9 @@
 					name: 'qtype',
 					value: p.qtype
 				}];
+// add start Ryuji.M
+				if (p.setParams) p.params = p.setParams(param, p.params);
+// add end Ryuji.M
 				if (p.params.length) {
 					for (var pi = 0; pi < p.params.length; pi++) {
 						param[param.length] = p.params[pi];
@@ -835,6 +841,10 @@
 					if (cm.width) {
 						$(th).attr('width', cm.width);
 					}
+// add start Ryuji.M
+					if (cm.height)
+						$(th).attr('height',cm.height);
+// add end Ryuji.M
 					if ($(cm).attr('hide')) {
 						th.hidden = true;
 					}

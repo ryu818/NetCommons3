@@ -1,5 +1,4 @@
 <?php
-	$is_top = false;
 	$is_chief = false;
 	$is_chgseq = false;
 	$is_edit = false;
@@ -9,7 +8,7 @@
 	$is_sel_users = false;
 	$is_display = false;
 
-	if($page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF){
+	if($page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF || $admin_hierarchy >= NC_AUTH_MIN_ADMIN){
 		$is_chief = true;
 	}
 	if($is_chief && (($page['Page']['space_type'] == NC_SPACE_TYPE_GROUP && $page['Page']['thread_num'] == 1) || $page['Page']['display_sequence'] != 1)) {
@@ -17,9 +16,6 @@
 	}
 
 	$attr = '';
-	if(($page['Page']['thread_num'] <= 1) ) {
-		$is_top = true;
-	}
 	if($page['Page']['thread_num'] <= 1) {
 		// コミュニティー以外のTopならば、移動させない。
 		$attr = " data-dd-sequence = \"inner-only\"";
@@ -43,9 +39,15 @@
 	}
 
 	if($is_chief && (($page['Page']['thread_num'] == 1 && $page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) || ($page['Page']['display_sequence'] != 1 && $page['Page']['thread_num'] > 1))) {
-		// 主坦でTopNodeでもなく、各ノードのトップページでなければ公開設定を許す
+		// 主坦ならばTopNodeでもなく、各ノードのトップページでなければ公開設定を許す
 		$is_display = true;
 	}
+
+	$is_top = false;
+	if(($page['Page']['thread_num'] <= 1) ) {
+		$is_top = true;
+	}
+
 	$is_editing_page_name = false;
 	if($page['Page']['id'] == $page_id && ($is_detail || (isset($error_flag) && $error_flag))) {
 		$is_editing_page_name = true;
@@ -61,7 +63,7 @@
 	<div class="pages-menu-top <?php echo($class); ?>-top"></div>
 	<?php endif; ?>
 	<?php
-	echo $this->Form->create(null, array('url' => array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'edit'), 'id' => 'PagesMenuForm-'.$page['Page']['id'], 'data-ajax-replace' => '#pages-menu-edit-item-'.h($page['Page']['id'])));
+	echo $this->Form->create(null, array('url' => array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'edit'), 'id' => 'PagesMenuForm-'.$page['Page']['id'], 'class' => 'pages-menu-edit-form','data-ajax-replace' => '#pages-menu-edit-item-'.h($page['Page']['id'])));
 	?>
 	<input type="hidden" name="data[Page][id]" value="<?php echo(intval($page['Page']['id'])); ?>" />
 	<div class="dd-drag-content pages-menu-edit-content clearfix">
@@ -124,8 +126,13 @@
 			}
 		 ?>
 	</div>
+
 	<?php endif; ?>
 	</form>
+	<?php if($is_edit): ?>
+	<div id="pages-menu-edit-participant-<?php echo(h($page['Page']['id'])); ?>" class="pages-menu-edit-view" style="display:none;">
+	</div>
+	<?php endif; ?>
 	<?php if(isset($pages) && !empty($pages[$space_type][$next_thread_num][$page['Page']['id']])): ?>
 		<ol class="dd-list">
 			<?php echo($this->element('index/edit_page', array('pages' => $pages, 'menus' => $pages[$space_type][$next_thread_num][$page['Page']['id']],

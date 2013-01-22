@@ -46,12 +46,6 @@ class PageController extends PageAppController {
 	public $hierarchy = null;
 
 /**
- * セッションの言語保持 _sess_language
- * @var string
- */
-	private $_sess_language = null;
-
-/**
  * コミュニティーのページ移動の設定
  * @var array
  */
@@ -74,30 +68,11 @@ class PageController extends PageAppController {
 	public function beforeFilter()
 	{
 		$this->_sess_language = null;
-		$active_lang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu_lang');
-		if(isset($active_lang)) {
-			$this->_sess_language = $this->Session->read(NC_CONFIG_KEY.'.language');
+		$active_lang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.lang');
+		if(isset($active_lang)) {//var_dump("KOKO");
 			Configure::write(NC_CONFIG_KEY.'.'.'language', $active_lang);
-			$this->Session->write(NC_CONFIG_KEY.'.language', $active_lang);
 		}
 		parent::beforeFilter();
-	}
-
-/**
- * 表示後処理
- * <pre>
- * 	セッションにセットしてあった言語を元に戻す。
- * </pre>
- * @param   void
- * @return  void
- * @since   v 3.0.0.0
- */
-	public function afterFilter()
-	{
-		parent::afterFilter();
-		if($this->action == 'index' && isset($this->_sess_language)) {
-			$this->Session->write(NC_CONFIG_KEY.'.language', $this->_sess_language);
-		}
 	}
 
 /**
@@ -107,7 +82,8 @@ class PageController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function index($active_lang = null) {
-		$this->Session->write(NC_SYSTEM_KEY.'.page_menu', $this->action);
+		$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', $this->action);
+		$this->Session->delete('pagesmenu.PageUserLink');
 
 		include_once dirname(dirname(__FILE__)).'/Config/defines.inc.php';
 
@@ -122,12 +98,12 @@ class PageController extends PageAppController {
 
 		// 言語切替
 		$languages = $this->Language->findLists();
-		//$active_lang = isset($active_lang) ? $active_lang : $this->Session->read(NC_SYSTEM_KEY.'.page_menu_lang');
+		//$active_lang = isset($active_lang) ? $active_lang : $this->Session->read(NC_SYSTEM_KEY.'.page_menu.lang');
 		//$this->_sess_language = null;
 		if(isset($active_lang) && isset($languages[$active_lang])) {
 			Configure::write(NC_CONFIG_KEY.'.'.'language', $active_lang);
 			$this->_sess_language = $this->Session->read(NC_CONFIG_KEY.'.language');
-			$this->Session->write(NC_SYSTEM_KEY.'.page_menu_lang', $active_lang);
+			$this->Session->write(NC_SYSTEM_KEY.'.page_menu.lang', $active_lang);
 			$this->Session->write(NC_CONFIG_KEY.'.language', $active_lang);
 		}
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
@@ -286,7 +262,7 @@ class PageController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function favorite() {
-		$this->Session->write(NC_SYSTEM_KEY.'.page_menu', $this->action);
+		$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', $this->action);
 		$this->render('index');
 	}
 
@@ -297,7 +273,7 @@ class PageController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function meta() {
-		$this->Session->write(NC_SYSTEM_KEY.'.page_menu', $this->action);
+		$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', $this->action);
 		$this->render('index');
 	}
 
@@ -308,7 +284,7 @@ class PageController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function style() {
-		$this->Session->write(NC_SYSTEM_KEY.'.page_menu', $this->action);
+		$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', $this->action);
 		// ページ情報を取得
 		$page = $this->Page->findById($this->page_id);
 		// TODO ノードを基にスタイル情報を取得
@@ -347,7 +323,7 @@ class PageController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function theme() {
-		$this->Session->write(NC_SYSTEM_KEY.'.page_menu', $this->action);
+		$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', $this->action);
 		$this->render('index');
 	}
 
@@ -358,7 +334,7 @@ class PageController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function layout() {
-		$this->Session->write(NC_SYSTEM_KEY.'.page_menu', $this->action);
+		$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', $this->action);
 		$this->render('index');
 	}
 
@@ -370,7 +346,6 @@ class PageController extends PageAppController {
  */
 	public function close() {
 		$this->Session->delete(NC_SYSTEM_KEY.'.page_menu');
-		$this->Session->delete(NC_SYSTEM_KEY.'.page_menu_pos');
 		$this->render(false, 'ajax');
 	}
 
@@ -383,9 +358,9 @@ class PageController extends PageAppController {
 	public function display() {
 		$pos = isset($this->request->query['pos']) ? intval($this->request->query['pos']) : _OFF;
 		if($pos == 0) {
-			$this->Session->write(NC_SYSTEM_KEY.'.page_menu_pos', intval($pos));
+			$this->Session->write(NC_SYSTEM_KEY.'.page_menu.pos', intval($pos));
 		} else {
-			$this->Session->delete(NC_SYSTEM_KEY.'.page_menu_pos');
+			$this->Session->delete(NC_SYSTEM_KEY.'.page_menu.pos');
 		}
 		$this->render(false, 'ajax');
 	}

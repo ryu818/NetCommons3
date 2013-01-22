@@ -44,7 +44,7 @@ class PageMenuController extends PageAppController {
  *
  * @var array
  */
-	public $helpers = array('TimeZone');
+	public $helpers = array('TimeZone', 'Page.PageMenu');
 
 /**
  * セッションの言語保持 _sess_language
@@ -64,7 +64,7 @@ class PageMenuController extends PageAppController {
 	public function beforeFilter()
 	{
 		$this->_sess_language = null;
-		$active_lang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu_lang');
+		$active_lang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.lang');
 		if(isset($active_lang)) {
 			$this->_sess_language = $this->Session->read(NC_CONFIG_KEY.'.language');
 			Configure::write(NC_CONFIG_KEY.'.'.'language', $active_lang);
@@ -143,10 +143,6 @@ class PageMenuController extends PageAppController {
 			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/add.004', '500');
 			return;
 		}
-
-		//$this->set('page', $page);
-		//$this->set('admin_hierarchy', $admin_hierarchy);
-
 		$this->set('page', $page);
 		$this->set('space_type', $page['Page']['space_type']);
 		$this->set('page_id', $page['Page']['id']);
@@ -247,7 +243,8 @@ class PageMenuController extends PageAppController {
 	}
 
 /**
- * ページ編集
+ * ページ編集・コミュニティ編集
+ * @param   void
  * @return  void
  * @since   v 3.0.0.0
  */
@@ -267,7 +264,7 @@ class PageMenuController extends PageAppController {
 			}
 			list($community, $community_lang, $community_tag) = $ret;
 
-			$fieldCommunityList = array('photo', 'upload_id', 'publication_range_flag', 'publication_authority', 'participate_flag',
+			$fieldCommunityList = array('photo', 'upload_id', 'publication_range_flag', 'participate_flag',
 										'invite_authority', 'participate_notice_flag', 'participate_notice_authority',
 										'resign_notice_flag', 'resign_notice_authority');
 			// TODO:descriptionは使用しなくなる可能性あり。
@@ -460,7 +457,7 @@ class PageMenuController extends PageAppController {
 		}
 
 		$parent_page = $this->Page->findById($page['Page']['parent_id']);
-		if(!isset($parent_page['Page']) || !$this->request->is('ajax')) {
+		if(!isset($parent_page['Page'])) {
 			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu/detail.001', '400');
 			return;
 		}
@@ -547,7 +544,7 @@ class PageMenuController extends PageAppController {
 		$all_delete = isset($this->request->data['all_delete']) ? intval($this->request->data['all_delete']) : _OFF;
 		$is_redirect = false;
 
-		if(!isset($page['Page']['id']) || !$this->request->is('ajax')) {
+		if(!isset($page['Page']['id']) ) {
 			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu/delete.001', '400');
 			return;
 		}
@@ -970,6 +967,129 @@ if($drag_page['Page']['thread_num'] != 1 && $drag_page['Page']['room_id'] != $in
 		}
 
 		$this->Session->setFlash(__('Has been successfully updated.'));
+		$this->render(false, 'ajax');
+	}
+
+/**
+ * 参加者修正画面表示・登録
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function participant($page_id) {
+
+		include_once dirname(dirname(__FILE__)).'/Config/defines.inc.php';
+
+		$user = $this->Auth->user();
+		$user_id = $user['id'];
+		$page = $this->Page->findAuthById($page_id, $user_id);
+
+		// 権限チェック
+		$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $page);
+		if(!$admin_hierarchy) {
+			return;
+		}
+
+		//$parent_page = $this->Page->findById($page['Page']['parent_id']);
+		//if(!isset($parent_page['Page'])) {
+		//	$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu/detail.001', '400');
+		//	return;
+		//}
+
+		if($this->request->is('post')) {
+			// 登録処理
+			$room_id = $page['Page']['room_id'];
+			$authority = $this->Authority->findById($user['authority_id']);
+			if(!isset($authority['Authority'])) {
+				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu/participant.001', '400');
+				return;
+			}
+			$page_user_links = $this->PageMenu->participantSession($this->request, $page_id, $admin_hierarchy);
+
+			if(!empty($page_user_links['PageUserLink'])) {
+				$is_participant_only = $this->Authority->isParticipantOnly($user['authority_id'], $page);
+				list($total, $users) = $this->User->findParticipant($room_id, array(), true, null, null);
+
+				if(!$this->PageUserLink->saveParticipant($page, $is_participant_only, $users, $page_user_links['PageUserLink'])) {
+					$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu/participant.002', '400');
+					return;
+				}
+
+			}
+			// TODO:未作成 後に作成
+			/*if(isset($page_id_list_arr) && count($page_id_list_arr) > 0) {
+				// 権限の割り当てで、子ルームを割り当てると、そこにはってあったブロックの変更処理
+				$result = $this->Pagesmenu->addAuthBlock($page_id_list_arr, $parent_room_id);
+			}*/
+
+			$this->Session->delete(NC_SYSTEM_KEY.'.page_menu.PageUserLink['.$page_id.']');
+			$this->Session->setFlash(__('Has been successfully updated.'));
+		}
+
+		$this->set('page', $page);
+		$this->set('auth_list', $this->Authority->findAuthSelectHtml());
+		$this->set('admin_hierarchy', $admin_hierarchy);
+
+
+		//$this->set('parent_page', $parent_page);
+	}
+
+/**
+ * 参加者修正画面Grid表示
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function participant_detail($page_id) {
+		$user = $this->Auth->user();
+		$user_id = $user['id'];
+		$page = $this->Page->findAuthById($page_id, $user_id);
+
+		// 権限チェック
+		$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $page);
+		if(!$admin_hierarchy) {
+			return;
+		}
+
+		$page_num = empty($this->request->data['page']) ? 1 : intval($this->request->data['page']);
+		$rp = empty($this->request->data['rp']) ? null : intval($this->request->data['rp']);
+		$sortname = (!empty($this->request->data['sortname']) && ($this->request->data['sortname'] == "handle" || $this->request->data['sortname'] == "chief")) ? $this->request->data['sortname'] : null;
+		$sortorder = (!empty($this->request->data['sortorder']) && ($this->request->data['sortorder'] == "asc" || $this->request->data['sortorder'] == "desc")) ? $this->request->data['sortorder'] : "asc";
+
+		$room_id = $page['Page']['room_id'];
+
+		// TODO:会員絞り込み未作成
+		////list($conditions, $joins) = $this->Common->getRefineSearch();
+		$is_participant_only = $this->Authority->isParticipantOnly($user['authority_id'], $page);
+		list($total, $users) = $this->User->findParticipant($room_id, array(), $is_participant_only, $page_num, $rp, $sortname, $sortorder);
+
+		$this->set('room_id', $page_id);
+		//$this->set('room_id', $room_id);
+		$this->set('page_num', $page_num);
+		$this->set('total', $total);
+		$this->set('users', $users);
+		$this->set('auth_list',$this->Authority->findAuthSelectHtml());
+		$this->set('user_id', $user_id);
+		$this->set('page', $page);
+		$this->set('page_user_links', $this->PageMenu->participantSession($this->request, $page_id, $admin_hierarchy));
+		$this->set('default_authority_id', $this->PageUserLink->getDefaultAuthorityId($page));
+		$this->set('admin_hierarchy', $admin_hierarchy);
+	}
+
+/**
+ * 参加者修正画面 キャンセルボタン
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function participant_cancel($page_id) {
+		$user_id = $this->Auth->user('id');
+		$page = $this->Page->findAuthById($page_id, $user_id);
+
+		// 権限チェック
+		$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $page);
+		if(!$admin_hierarchy) {
+			return;
+		}
+
+		$this->Session->delete('pagesmenu.PageUserLink['.$page_id.']');
 		$this->render(false, 'ajax');
 	}
 }

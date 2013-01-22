@@ -51,6 +51,9 @@ echo '	$._nc.nc_wysiwyg[\'allow_js\'] = '.($nc_user['allow_htmltag_flag'] ? _ON 
 ?>
 </script>
 <?php
+	if(!isset($locale) || !file_exists(WWW_ROOT.'locale/'.$locale.'/lang.js')) {
+		$locale = 'jpn';
+	}
 	if($locale) {
 		echo $this->Html->script(array('locale/'.$locale.'/lang.js', 'locale/'.$locale.'/jquery/ui/jquery.ui.datepicker.js'), array('inline' => true));
 	}

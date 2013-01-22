@@ -226,7 +226,7 @@ class Authority extends AppModel
 		return true;
     }
 
-	protected function findAuthSelectHtml() {
+	public function findAuthSelectHtml() {
 		$conditions = array(
 			'Authority.hierarchy >=' => NC_AUTH_MIN_GENERAL,
 			'Authority.hierarchy <=' => NC_AUTH_CHIEF
@@ -237,9 +237,9 @@ class Authority extends AppModel
 		);
 		$params = array(
 						'fields' => array(
-											'Authority.id',
-											'Authority.authority_name',
-											'Authority.hierarchy'
+							'Authority.id',
+							'Authority.authority_name',
+							'Authority.hierarchy'
 						),
 						'conditions' => $conditions,
 						'order' => $order,
@@ -272,12 +272,34 @@ class Authority extends AppModel
 		$rets[NC_AUTH_CHIEF] = $select_chief_arr;
 		$rets[NC_AUTH_MODERATE] = $select_moderate_arr;
 		$rets[NC_AUTH_GENERAL] = $select_general_arr;
-		$rets[NC_AUTH_GUEST][NC_AUTH_GUEST_ID]['authority_id'] = NC_AUTH_GUEST_ID;
+		$rets[NC_AUTH_GUEST][NC_AUTH_GUEST_ID]['id'] = NC_AUTH_GUEST_ID;
 		$rets[NC_AUTH_GUEST][NC_AUTH_GUEST_ID]['authority_name'] = 'Guest';
 		$rets[NC_AUTH_GUEST][NC_AUTH_GUEST_ID]['hierarchy'] = NC_AUTH_GUEST;
-		$rets[NC_AUTH_OTHER][NC_AUTH_OTHER_ID]['authority_id'] = NC_AUTH_OTHER_ID;
+		$rets[NC_AUTH_OTHER][NC_AUTH_OTHER_ID]['id'] = NC_AUTH_OTHER_ID;
 		$rets[NC_AUTH_OTHER][NC_AUTH_OTHER_ID]['authority_name'] = 'Non members';
 		$rets[NC_AUTH_OTHER][NC_AUTH_OTHER_ID]['hierarchy'] = NC_AUTH_OTHER;
 		return $rets;
+	}
+
+/**
+ * 参加者のみ取得する必要があるかどうかの確認
+ * @param  integer       $authority_id
+ * @param  Model Page    $page
+ * @return boolean
+ * @since  v 3.0.0.0
+ */
+	public function isParticipantOnly($authority_id, $page) {
+		if($page['Page']['space_type'] == NC_SPACE_TYPE_PRIVATE || $page['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
+			return false;
+		}
+		$authority = $this->findById($authority_id);
+		if(!isset($authority['Authority'])) {
+			return false;
+		}
+
+		if($authority['Authority']['allow_new_participant']) {
+			return false;
+		}
+		return true;
 	}
 }

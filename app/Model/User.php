@@ -327,4 +327,111 @@ class User extends AppModel
 
     	return $user;
     }
+
+
+/**
+ * 参加者情報取得
+ * サブグループの場合は、親で参加している会員のみ取得
+ *
+ * @param   array    $room_id
+ * @param   array    $conditions
+ * @param   boolean  $is_participant_only
+ * @param   integer  $page
+ * @param   integer  $limit
+ * @param   string $sortname
+ * @param   string   $sortorder
+ * @return  array array($total, $pages_users_link)
+ * @since   v 3.0.0.0
+ */
+    public function findParticipant($room_id, $conditions = array(), $is_participant_only = true, $page = 1, $limit= 30, $sortname= 'chief', $sortorder = 'DESC') {
+
+		$joins = array(
+			array(
+				"type" => ($is_participant_only) ? "INNER" : "LEFT",
+				"table" => "page_user_links",
+				"alias" => "PageUserLink",
+				"conditions" => "`User`.`id`=`PageUserLink`.`user_id`".
+				" AND `PageUserLink`.`room_id` =".intval($room_id)
+			),
+			array(
+				"type" => "LEFT",
+				"table" => "authorities",
+				"alias" => "Authority",
+				"conditions" => "`Authority`.id``=`PageUserLink`.`authority_id`"
+			),
+			array(
+				"type" => "INNER",
+				"table" => "authorities",
+				"alias" => "UserAuthority",
+				"conditions" => "`UserAuthority`.id``=`User`.`authority_id`"
+			),
+			array(
+				"type" => "LEFT",
+				"table" => "pages",
+				"alias" => "Page",
+				"conditions" => "`Page`.id``=`PageUserLink`.`room_id`"
+			)
+		);
+
+    	// TODO:後に削除
+    	//if($parent_room_id != 0) {
+    	//	// 親ルームが存在するならば、親ルームの参加者のみ表示
+    	//	$joins[] = array(
+    	//			"type" => "INNER",
+    	//			"table" => "page_user_links",
+    	//			"alias" => "PageUserLink2",
+    	//			"conditions" => "`User`.`id`=`PageUserLink2`.`user_id`".
+    	//			" AND `PageUserLink2`.`room_id` =".intval($parent_room_id)
+    	//	);
+		//}
+
+		if(empty($conditions)) {
+			$conditions = array();
+		}
+
+		$total = $this->find('count', array(
+			'fields' => 'COUNT(*) as count',
+			'joins' => $joins,
+			'conditions' => $conditions,
+			'recursive' => -1
+		));
+		if($total == 0) {
+			return array(0, array() );
+		}
+
+		if($sortname == 'chief') {
+			$order = array(
+				'Authority.hierarchy' => $sortorder,
+				'User.handle' => "ASC",
+				'User.id' => "ASC"
+			);
+		} else if(!empty($sortname)) {
+			$order = array(
+				'User.'.$sortname => $sortorder,
+				'User.id' => $sortorder
+			);
+		}
+
+		$params = array(
+			'fields' => array(
+				'Page.*',
+				'PageUserLink.id',
+				'PageUserLink.user_id',
+				'PageUserLink.authority_id',
+				'User.id',
+				'User.handle',
+				'User.authority_id',
+				'Authority.hierarchy',
+				'UserAuthority.hierarchy',
+			),
+			'joins' => $joins,
+			'conditions' => $conditions,
+			'limit' => $limit,
+			'page' => $page,
+			'recursive' => -1,
+			'order' => $order
+		);
+
+    	return array($total, $this->find('all', $params));
+    }
 }
