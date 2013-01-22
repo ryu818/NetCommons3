@@ -27,7 +27,7 @@
 // the options object.
 //
 // Returns the jQuery object
-// TODO:お知らせ編集->決定->戻る->戻る->進む->進むでお知らせの元の画面に戻るはずが、遷移しない。現状、対処しない。
+// TODO:v1.2.0 お知らせ編集->決定->戻る->戻る->進む->進むでお知らせの元の画面に戻るはずが、遷移しない。現状、対処しない。
 function fnPjax(selector, container, options) {
   var context = this
   return this.on('click.pjax', selector, function(event) {
@@ -84,8 +84,6 @@ function handleClick(event, container, options) {
   // Ignore empty anchor "foo.html#"
   if (link.href === location.href + '#')
     return
-  } else if (!options.url || !options.container){
-	  throw "$.fn.pjax or $.pjax.click requires an options.url and options.container"
   }
   var defaults = {
     url: $(link).attr('href'),
@@ -136,7 +134,7 @@ function _convertPluginUrl(container, url) {
 	}
 	return url;
 }
-//Add End Ryuji.M  
+//Add End Ryuji.M
 // Public: pjax on form submit handler
 //
 // Exported as $.pjax.submit
@@ -166,8 +164,8 @@ function handleSubmit(event, container, options) {
     data: $(form).serializeArray(),
     container: $(form).attr('data-pjax'),
     target: form,
-    fragment: null,
-    timeout: 0
+    fragment: null
+    ////,timeout: 0
   }
 
   pjax($.extend({}, defaults, options))
@@ -229,6 +227,14 @@ function pjax(options) {
       settings.timeout = 0
     }
 
+    xhr.setRequestHeader('X-PJAX', 'true')
+    xhr.setRequestHeader('X-PJAX-Container', context.selector)
+
+    var result
+
+    if (!fire('pjax:beforeSend', [xhr, settings]))
+      return false
+
     if (settings.timeout > 0) {
       timeoutTimer = setTimeout(function() {
         if (fire('pjax:timeout', [xhr, options]))
@@ -238,14 +244,6 @@ function pjax(options) {
       // Clear timeout setting so jquerys internal timeout isn't invoked
       settings.timeout = 0
     }
-
-    xhr.setRequestHeader('X-PJAX', 'true')
-    xhr.setRequestHeader('X-PJAX-Container', context.selector)
-
-    var result
-
-    if (!fire('pjax:beforeSend', [xhr, settings]))
-      return false
 
     options.requestUrl = parseURL(settings.url).href
   }
@@ -284,12 +282,13 @@ function pjax(options) {
           }
       }
 //Add Start Ryuji.M
-	  
+
     var container = extractContainer("", xhr, options)
 
     var allowed = fire('pjax:error', [xhr, textStatus, errorThrown, options])
-    if (textStatus !== 'abort' && allowed)
+    if (options.type == 'GET' && textStatus !== 'abort' && allowed) {
       locationReplace(container.url)
+    }
   }
 
   options.success = function(data, status, xhr) {
@@ -315,7 +314,7 @@ function pjax(options) {
 
     if (container.title) document.title = container.title
 //Edit Start Ryuji.M
-    context[0].innerHTML = container.contents;
+    context.html(container.contents)
     if(container.append_elements.length != 0) {
     	context.append(container.append_elements);
     }
@@ -335,7 +334,7 @@ function pjax(options) {
     	}
     }
 
-    $.each($(container.contents), function(){
+    /*$.each($(container.contents), function(){
     	if(this.nodeType == 1 && this.tagName.toLowerCase() == 'script') {
     		if($(this).attr('src')) {
 				context.append($(this));
@@ -343,7 +342,7 @@ function pjax(options) {
 				eval(this.innerHTML);
 			}
     	}
-    });
+    });*/
 
 	//context.html(container.contents)
 //Edit End Ryuji.M
@@ -423,7 +422,7 @@ function pjax(options) {
 //Edit End Ryuji.M
       window.history.pushState(null, "", stripPjaxParam(options.requestUrl))
     }
-//Add Start Ryuji.M
+
     fire('pjax:start', [xhr, options])
     fire('pjax:send', [xhr, options])
   }
@@ -467,7 +466,7 @@ function onPjaxPopstate(event) {
   var state = event.state
 
   if (state && state.container) {
-	var container = $(state.container)						// 1つ前に実行したブロック
+    var container = $(state.container)						// 1つ前に実行したブロック
 	var chg_container_id = '#' + cacheMappingId[state.id];
 	var chg_container = $(chg_container_id);				// 変更したブロック
 	var chg_url = cacheMapping[state.id];					// 変更する前のURL
@@ -478,7 +477,7 @@ function onPjaxPopstate(event) {
 			// Since state ids always increase, we can deduce the history
 			// direction from the previous state.
 			var direction = pjax.state.id < state.id ? 'forward' : 'back'
-	
+
 			// Cache current container before replacement and inform the
 			// cache which direction the history shifted.
 			var url = chg_container.attr('data-url');
@@ -489,7 +488,12 @@ function onPjaxPopstate(event) {
 			}
 			cachePop(direction, pjax.state.id, stripPjaxParam(url), cacheMappingId[state.id])	// + chg_container_id
 			//cachePop(direction, pjax.state.id, container.attr('data-url'), container.attr('id'))
-		}
+		} //else {
+			// Page was reloaded but we have an existing history entry.
+			// Set it to our initial state.
+			//pjax.state = state;
+			//return;
+		//}
 		var popstateEvent = $.Event('pjax:popstate', {
 			state: state,
 			direction: direction
@@ -521,7 +525,7 @@ function onPjaxPopstate(event) {
 		locationReplace(location.href)
 	}
   }
-  
+
   /*var state = event.state
 
   if (state && state.container) {
@@ -537,6 +541,11 @@ function onPjaxPopstate(event) {
         // Cache current container before replacement and inform the
         // cache which direction the history shifted.
         cachePop(direction, pjax.state.id, container.clone().contents())
+      } else {
+        // Page was reloaded but we have an existing history entry.
+        // Set it to our initial state.
+        pjax.state = state;
+        return;
       }
 
       var popstateEvent = $.Event('pjax:popstate', {
@@ -799,7 +808,7 @@ function extractContainer(data, xhr, options) {
     	}
       }
     }
-    
+
   }
 
   $(div).remove();
@@ -860,7 +869,7 @@ function extractContainer(data, xhr, options) {
   // Trim any whitespace off the title
   if (obj.title) obj.title = $.trim(obj.title)
 */
-  // Edit End Ryuji.M
+// Edit End Ryuji.M
   return obj
 }
 
@@ -981,7 +990,7 @@ function disable() {
   $.pjax.click = disableHandleClick
   //$.pjax.submit = disableHandleSubmit
   //$.pjax.click = $.noop
-//Edit End Ryuji.M  
+//Edit End Ryuji.M
   $.pjax.submit = $.noop
 
   $.pjax.reload = window.location.reload
