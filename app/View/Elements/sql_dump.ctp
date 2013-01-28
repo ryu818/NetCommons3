@@ -123,12 +123,13 @@ if ($noLogs || isset($_forced_from_dbo_)):
 				unset($current_urls[$i['global_count']]);
 			}
 			$pattern = "/^(INSERT INTO|CREATE TABLE IF NOT EXISTS|CREATE TABLE|ALTER TABLE|UPDATE|DELETE)(\s)+/siU";
+			$rep_pattern = "/( AND | OR | SET | WHERE | FROM | LEFT JOIN | INNER JOIN | ORDER BY )/siU";
 			if (preg_match($pattern, $i['query'], $matches)) {
 				$class_name = ' class="nc-log-save"';
 			} else {
 				$class_name = '';
 			}
-			echo "<tr><td".$class_name.">" . ($k + 1) . "</td><td>" . h($i['query']) . "</td><td>{$i['error']}</td><td style = \"text-align: right\">{$i['affected']}</td><td style = \"text-align: right\">{$i['numRows']}</td><td style = \"text-align: right\">{$i['took']}</td></tr>\n";
+			echo "<tr><td".$class_name.">" . ($k + 1) . "</td><td>" . preg_replace($rep_pattern, '<br />\1',h($i['query'])) . "</td><td>{$i['error']}</td><td style = \"text-align: right\">{$i['affected']}</td><td style = \"text-align: right\">{$i['numRows']}</td><td style = \"text-align: right\">{$i['took']}</td></tr>\n";
 		endforeach;
 	?>
 	</tbody></table>
