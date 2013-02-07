@@ -52,10 +52,15 @@
 	if($page['Page']['id'] == $page_id && ($is_detail || (isset($error_flag) && $error_flag))) {
 		$is_editing_page_name = true;
 	}
+
+	$is_other_operation = false;
+	if($is_chief || $is_sel_modules || $is_sel_users) {
+		$is_other_operation = true;
+	}
 ?>
 <?php $class = $this->element('index/init_page', array('page' => $page, 'is_edit' => _ON)); ?>
 <?php $next_thread_num = $page['Page']['thread_num']+1; ?>
-<li id="pages-menu-edit-item-<?php echo(h($page['Page']['id'])); ?>" class="dd-item dd-drag-item<?php if($page['Page']['thread_num']==1){echo(' '.$class);} ?>" data-id="<?php echo(h($page['Page']['id'])); ?>" data-room-id="<?php echo(h($page['Page']['room_id'])); ?>" data-is-chief="<?php if($is_chief){echo(_ON);} else {echo(_OFF);} ?>"<?php echo($attr); ?>>
+<li id="pages-menu-edit-item-<?php echo(h($page['Page']['id'])); ?>" class="pages-menu-edit-item dd-item dd-drag-item<?php if($page['Page']['thread_num']==1){echo(' '.$class);} ?>" data-id="<?php echo(h($page['Page']['id'])); ?>" data-room-id="<?php echo(h($page['Page']['room_id'])); ?>" data-is-chief="<?php if($is_chief){echo(_ON);} else {echo(_OFF);} ?>"<?php echo($attr); ?>>
 	<?php if($is_chgseq): ?>
 	<div class="dd-handle dd-drag-handle"></div>
 	<?php endif; ?>
@@ -91,6 +96,7 @@
 				'value' => $page['Page']['page_name'] ,
 				'label' => false,
 				'div' => false,
+				'maxlength' => NC_VALIDATOR_TITLE_LEN
 			);
 			if(!$is_editing_page_name) {
 				$settings['style'] = "display:none;";
@@ -141,22 +147,37 @@
 				'parent_page' => isset($parent_page) ? $parent_page : null, 'community_params' => isset($community_params) ? $community_params : null))); ?>
 		</ol>
 	<?php endif; ?>
-	<?php if($is_edit || $is_sel_modules || $is_sel_users || $is_delete): ?>
+	<?php if($is_edit || $is_delete || $is_chief || $is_sel_modules || $is_sel_users): ?>
 	<div class="pages-menu-edit-operation clearfix"<?php if($page['Page']['id'] != $page_id): ?> style="display:none;"<?php endif; ?>>
 	<?php
 		if($is_edit_detail) {
 			echo $this->Html->link('', array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'detail'),
 				array('title' => __('Edit'), 'class' => 'pages-menu-edit-icon' . ' nc-tooltip',
 				'data-ajax' => '#pages-menu-edit-detail-'.$page['Page']['id'], 'data-page-edit-id' => $page['Page']['id']));
+		} else {
+			echo $this->Html->link('', '#',
+				array('title' => __('Edit'), 'class' => 'pages-menu-edit-disable-icon',
+				'onclick' => 'return false;'));
 		}
-		echo $this->Html->link('', array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'operation'),
-			array('title' => __d('page', 'Other operation'), 'class' => 'pages-menu-other-icon' . ' nc-tooltip',
-			'data-ajax' => '#pages-menu-edit-view-'.$page['Page']['id']));
+		if($is_other_operation) {
+			echo $this->Html->link('', '#',
+				array('title' => __d('page', 'Other operations'), 'class' => 'pages-menu-other-icon' . ' nc-tooltip',
+				'data-ajax' => '#pages-menu-edit-view-'.$page['Page']['id'],
+				'onclick' => '$.PageMenu.clkOtherOperation(event);return false;' ));
 
+		} else {
+			echo $this->Html->link('', '#',
+				array('title' => __d('page', 'Other operations'), 'class' => 'pages-menu-other-disable-icon',
+				'onclick' => 'return false;'));
+		}
 		if($is_delete) {
 			echo $this->Html->link('', array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'delete'),
 				array('title' => ($page['Page']['id'] == $page['Page']['room_id']) ? __d('page', 'Delete room') : __d('page', 'Delete page'), 'class' => 'pages-menu-delete-icon' . ' nc-tooltip',
 				'data-ajax-replace' => '#pages-menu-edit-item-'.$page['Page']['id'], 'data-ajax-type' => 'POST', 'data-ajax-data' => '#pages-menu-edit-item-' . $page['Page']['id']));
+		} else {
+			echo $this->Html->link('', '#',
+				array('title' => ($page['Page']['id'] == $page['Page']['room_id']) ? __d('page', 'Delete room') : __d('page', 'Delete page'), 'class' => 'pages-menu-delete-disable-icon',
+				'onclick' => 'return false;'));
 		}
 	?>
 	</div>

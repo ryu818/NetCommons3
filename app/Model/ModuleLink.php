@@ -51,16 +51,16 @@ class ModuleLink extends AppModel
 
 		$order = array('Module.display_sequence' => 'ASC');
 		$params = array(
-						'fields' => array(
-							'ModuleLink.room_id',
-							'ModuleLink.authority_id',
-							'ModuleLink.space_type',
-							'ModuleLink.module_id',
-							'Module.dir_name',
-							'Module.module_icon'
-						),
-						'conditions' => $conditions,
-						'order' => $order
+			'fields' => array(
+				'ModuleLink.room_id',
+				'ModuleLink.authority_id',
+				'ModuleLink.space_type',
+				'ModuleLink.module_id',
+				'Module.dir_name',
+				'Module.module_icon'
+			),
+			'conditions' => $conditions,
+			'order' => $order
 		);
 
 		$module_links = $this->find('all', $params);
@@ -115,5 +115,18 @@ class ModuleLink extends AppModel
 			return $ret_authority_id;
 
 		return $ret_space_type;
+	}
+
+/**
+ * Page内で該当モジュールが追加できるかどうか
+ *
+ * @param  Model Page $page
+ * @param  integer $module_id
+ * @return boolean
+ * @since   v 3.0.0.0
+ */
+	public function isAddModule($page, $module_id) {
+		// TODO:未作成 常にtrue
+		return true;
 	}
 }

@@ -87,7 +87,7 @@
 			a = $(a);
 			var target = a.data("ajax");
 			var replace_target = a.data("ajax-replace");
-			var effect = a.data("ajax-effect") ? a.data("ajax-effect") : 'fold';
+			var effect = a.data("ajax-effect") ? a.data("ajax-effect") : null;
 			var buf_a, res_target, res_other_target, buf_res_target, effect_cnt = 0, effect_index = -1;
 			if(target) {
 				res_target = $(target);

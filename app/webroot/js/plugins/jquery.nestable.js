@@ -18,7 +18,7 @@
             itemNodeName      : 'li',
             listClass         : 'dd-list',
             itemClass         : 'dd-item',
-            handleClass       : 'dd-handle',
+            handleClass       : 'dd-handle:first',
             collapsedClass    : 'dd-collapsed',
             contentClass      : 'dd-handle',			// Add Ryuji.M
             singleHandleClass : '',						// Add Ryuji.M

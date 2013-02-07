@@ -6,6 +6,9 @@ msgstr 	"キャンセル"
 msgid  	"Reset"
 msgstr 	"リセット"
 
+msgid  	"Note"
+msgstr 	"注釈"
+
 msgid  	"Edit"
 msgstr 	"編集"
 msgid  	"Quit"
@@ -146,6 +149,8 @@ msgid  	"The contents of %s is already in use."
 msgstr 	"この%sの内容は既に使用されています。"
 msgid  	"%s in the past can not be input."
 msgstr 	"過去の%sは入力できません。"
+msgid  	"(The total number of the top node)"
+msgstr 	"(トップノードからの総数)"
 
 msgid  	"Unauthorized request.<br />Please reload the page."
 msgstr 	"不正なリクエストの可能性があります。<br />再度、実行してください。"
@@ -185,6 +190,9 @@ msgstr 	"%sの投稿は削除されました。"
 msgid  	"Unable to delete your post."
 msgstr 	"記事を削除することができません。"
 
+msgid  	"Failed to execute the %s."
+msgstr 	"%sの実行に失敗しました。"
+
 #操作
 msgid  	"Contents list"
 msgstr 	"コンテンツ一覧"
@@ -197,6 +205,12 @@ msgid  	"Move"
 msgstr 	"移動"
 msgid  	"Paste"
 msgstr 	"ペースト"
+msgid  	"Cancel copy"
+msgstr 	"コピーキャンセル"
+
+
+msgid  	"Allow the room authority to view and edit."
+msgstr 	"表示中のルーム権限より閲覧・編集を許可する。"
 
 ##DB関連
 msgid  	"Has been successfully registered."

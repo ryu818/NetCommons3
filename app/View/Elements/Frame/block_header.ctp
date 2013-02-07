@@ -60,7 +60,7 @@ if($is_edit) {
 				</a>
 				<div id="nc-block-header-operation<?php echo($id); ?>" class="nc-drop-down">
 					<ul>
-						<li>
+						<li class="nc-drop-down-border">
 							<?php
 								/* TODO:lock_authority_idが入力されているロックされたブロックはコピー不可とする */
 								echo $this->Html->link(__('Copy'), array('plugin' => 'block', 'controller' => 'block_operation', 'action' => 'copy', 'block_id' => $block['Block']['id']),

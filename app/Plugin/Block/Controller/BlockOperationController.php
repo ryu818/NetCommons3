@@ -101,14 +101,13 @@ class BlockOperationController extends BlockAppController {
 			$shortcut_flag = _ON;
 		}
 
-		if(!$this->validatorRequest($this->request, $module['Module']['dir_name'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlockOperation.shortcut.001', '403');
+		if(!$this->validatorRequest($this->request, $page, $module)) {
 			return;
 		}
 
 		if($block['Block']['module_id'] == 0) {
 			// グループのショートカットは許さない。
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlockOperation.shortcut.002', '500');
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlockOperation.shortcut.001', '500');
 			return;
 		}
 
@@ -138,7 +137,7 @@ class BlockOperationController extends BlockAppController {
 
 		$add_block =  $this->Block->findAuthById(intval($ret_add_block), $user_id, false);
 		if(!isset($add_block['Block'])) {
-			$this->flash(__('The server encountered an internal error and was unable to complete your request.'), null, 'BlockOperation.shortcut.003', '500');
+			$this->flash(__('The server encountered an internal error and was unable to complete your request.'), null, 'BlockOperation.shortcut.002', '500');
 			return;
 		}
 		$to_block = array('Block' => $add_block['Block']);	// 移動元Block
@@ -158,8 +157,8 @@ class BlockOperationController extends BlockAppController {
 			$pre_page,
 			$page
 		);
-		if(!$this->operationAction($module['Module']['dir_name'], $args)) {
-			$this->flash(__d('block', 'Failed to execute the %s.', __('Create shortcut')), null, 'BlockOperation.shortcut.004', '500');
+		if(!$this->Module->operationAction($module['Module']['dir_name'], $this->action, $args)) {
+			$this->flash(__('Failed to execute the %s.', __('Create shortcut')), null, 'BlockOperation.shortcut.003', '500');
 			return;
 		}
 
@@ -189,14 +188,13 @@ class BlockOperationController extends BlockAppController {
 			return;
 		}
 
-		if(!$this->validatorRequest($this->request, $module['Module']['dir_name'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlockOperation.paste.001', '403');
+		if(!$this->validatorRequest($this->request, $page, $module)) {
 			return;
 		}
 
 		if($block['Block']['module_id'] == 0) {
 			// グループのコピーは許さない。
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlockOperation.paste.002', '500');
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlockOperation.paste.001', '500');
 			return;
 		}
 
@@ -224,7 +222,7 @@ class BlockOperationController extends BlockAppController {
 		$ret_add_block = $this->requestAction($url, $params);
 		$add_block =  $this->Block->findAuthById(intval($ret_add_block), $user_id, false);
 		if(!isset($add_block['Block'])) {
-			$this->flash(__('The server encountered an internal error and was unable to complete your request.'), null, 'BlockOperation.paste.003', '500');
+			$this->flash(__('The server encountered an internal error and was unable to complete your request.'), null, 'BlockOperation.paste.002', '500');
 			return;
 		}
 		$to_block = array('Block' => $add_block['Block']);	// 移動元Block
@@ -246,8 +244,8 @@ class BlockOperationController extends BlockAppController {
 			$pre_page,
 			$page
 		);
-		if(!$this->operationAction($module['Module']['dir_name'], $args)) {
-			$this->flash(__d('block', 'Failed to execute the %s.', __('Paste')), null, 'BlockOperation.paste.004', '500');
+		if(!$this->Module->operationAction($module['Module']['dir_name'], $this->action, $args)) {
+			$this->flash(__('Failed to execute the %s.', __('Paste')), null, 'BlockOperation.paste.003', '500');
 			return;
 		}
 
@@ -273,8 +271,7 @@ class BlockOperationController extends BlockAppController {
 		$page = $this->nc_current_page;	// 移動先Page
 		$pre_page = $this->Page->findAuthById(intval($block['Block']['page_id']), $user_id);
 
-		if(!$this->validatorRequest($this->request, $module['Module']['dir_name'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlockOperation.move.001', '403');
+		if(!$this->validatorRequest($this->request, $page, $module)) {
 			return;
 		}
 
@@ -302,7 +299,7 @@ class BlockOperationController extends BlockAppController {
 			'return'
 		);
 		if($this->requestAction($url, $params) != 'true') {
-			$this->flash(__('The server encountered an internal error and was unable to complete your request.'), null, 'BlockOperation.move.002', '500');
+			$this->flash(__('The server encountered an internal error and was unable to complete your request.'), null, 'BlockOperation.move.001', '500');
 			return;
 		}
 
@@ -318,8 +315,8 @@ class BlockOperationController extends BlockAppController {
 			$pre_page,
 			$page
 		);
-		if(!$this->operationAction($module['Module']['dir_name'], $args)) {
-			$this->flash(__d('block', 'Failed to execute the %s.', __('Move')), null, 'BlockOperation.move.003', '500');
+		if(!$this->Module->operationAction($module['Module']['dir_name'], $this->action, $args)) {
+			$this->flash(__('Failed to execute the %s.', __('Move')), null, 'BlockOperation.move.002', '500');
 			return;
 		}
 
@@ -343,13 +340,16 @@ class BlockOperationController extends BlockAppController {
 /**
  * ブロック操作バリデータ
  * @param  CakeRequest $request
- * @param  string      $dir_name
+ * @param  Model Module  $module
+ * @param  Model Page  $page
  * @return boolean
  * @since   v 3.0.0.0
  */
-	protected function validatorRequest($request, $dir_name) {
+	protected function validatorRequest($request, $page, $module) {
+		$dir_name = $module['Module']['dir_name'];
 		if (!isset($request->data) || !isset($request->data['show_count']) || !isset($request->data['page_id'])) {
 			// Error
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlockOperation.validatorRequest.001', '400');
 			return false;
 		}
 
@@ -358,16 +358,20 @@ class BlockOperationController extends BlockAppController {
 		$copy_content_id = intval($this->Session->read('Blocks.'.'copy_content_id'));
 
 		if(empty($copy_block_id) || $block_id != $copy_block_id || !isset($this->nc_block['Block']) || $this->nc_block['Block']['content_id'] != $copy_content_id) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlockOperation.validatorRequest.002', '400');
 			return false;
 		}
 
-		// TODO:module_linksで移動先ルームに貼り付けることができるかどうか確認する。
+		// module_linksで移動先ルームに貼り付けることができるかどうか確認
+		if(!$this->ModuleLink->isAddModule($page, $module['Module']['id'])) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlockOperation.validatorRequest.003', '403');
+			return false;
+		}
 
-		App::uses($dir_name.'OperationsComponent', 'Plugin/'.$dir_name.'/Controller/Component');
-		$class_name = $dir_name.'OperationsComponent';
-		if(!class_exists($class_name) || !method_exists($class_name, $this->action)) {
+		if($this->action == 'paste') {
 			// ショートカットと移動は関数がなくてもエラーとしない
-			if($this->action != 'shortcut' && $this->action != 'move') {
+			if(!$this->Module->isOperationAction($dir_name, $this->action)) {
+				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlockOperation.validatorRequest.004', '403');
 				return false;
 			}
 		}
@@ -376,7 +380,7 @@ class BlockOperationController extends BlockAppController {
 	}
 
 /**
- * ブロック操作バリデータ
+ * 確認メッセージ表示
  * @param  CakeRequest $request
  * @param  integer     $room_id	コンテンツ元room_id
  * @param  Model Page  $move_page 移動先（コピー先、ショートカット先）Page
@@ -431,36 +435,12 @@ class BlockOperationController extends BlockAppController {
 				// コピー元がショートカットではないならば、チェックボックス表示
 				$echo_str .= '<label class="nc-block-confirm-shortcut" for="nc-block-confirm-shortcut">'.
 					'<input id="nc-block-confirm-shortcut" type="checkbox" name="shortcut_flag" value="'._ON.'" />&nbsp;'.
-					__d('block','Allow the room authority to view and edit.').
+					__('Allow the room authority to view and edit.').
 					'</label>';
 			}
 
 			echo $echo_str;
 			$this->render(false, 'ajax');
-			return false;
-		}
-		return true;
-	}
-
-/**
- * ブロック操作関数を実行
- * @param  string      $plugin
- * @param  string      $name	shortcut or move or paste
- * @param  string      $title
- * @return array       $args
- * @since   v 3.0.0.0
- */
-	protected function operationAction($dir_name, $args) {
-		$class_name = $dir_name.'OperationsComponent';
-		if(!class_exists($class_name) || !method_exists($class_name, $this->action)) {
-			return true;
-		}
-
-		eval('$class = new '.$class_name.'();');
-		$class->startup();
-
-		$ret = call_user_func_array(array($class, $this->action), $args);
-		if(!$ret) {
 			return false;
 		}
 		return true;

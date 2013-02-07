@@ -42,9 +42,9 @@ class Page extends AppModel
 						'message' => __('Please be sure to input.')
 					),
 					'maxlength'  => array(
-						'rule' => array('maxLength', 30),
+						'rule' => array('maxLength', NC_VALIDATOR_PAGE_TITLE_LEN),
 						'last' => false ,
-						'message' => __('The input must be up to %s characters.', 30)
+						'message' => __('The input must be up to %s characters.', NC_VALIDATOR_PAGE_TITLE_LEN)
 					),
 					'duplicationPageName'  => array(
 						'rule' => array('_duplicationPageName'),
@@ -65,8 +65,8 @@ class Page extends AppModel
 						'message' => __('It contains an invalid string.')
 					),
 					'maxlength'  => array(
-						'rule' => array('maxLength', 255),
-						'message' => __('The input must be up to %s characters.', 255)
+						'rule' => array('maxLength', NC_VALIDATOR_PERMALINK_LEN),
+						'message' => __('The input must be up to %s characters.', NC_VALIDATOR_PERMALINK_LEN).__('(The total number of the top node)')
 					),
 					'duplicationPermalink'  => array(
 						'rule' => array('_duplicationPermalink'),
@@ -177,8 +177,12 @@ class Page extends AppModel
 		if($position_flag == _OFF) {
 			return true;
 		}
-		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
-		$check['lang'] = array('', $lang);
+		if(!isset($this->data['Page']['lang'])) {
+			$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
+			$check['lang'] = array('', $lang);
+		} else {
+			$check['lang'] = $this->data['Page']['lang'];
+		}
 		$check['position_flag'] = _ON;
 		if(!isset($this->data['Page']['space_type']) || $this->data['Page']['space_type'] != NC_SPACE_TYPE_GROUP) {
 			return true;
@@ -281,8 +285,12 @@ class Page extends AppModel
 		if($check['permalink'] == '') {
 			return true;
 		}
-		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
-		$check['lang'] = array('', $lang);
+		if(!isset($this->data['Page']['lang'])) {
+			$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
+			$check['lang'] = array('', $lang);
+		} else {
+			$check['lang'] = $this->data['Page']['lang'];
+		}
 		$check['position_flag'] = _ON;
 		$check['display_sequence !='] = 0;
 
@@ -918,5 +926,27 @@ class Page extends AppModel
 		}
 		$ret = $this->updateAll($fields, $conditions);
 		return $ret;
+	}
+
+/**
+ * 移動後固定リンク取得
+ *
+ * @param  Model Page     $page
+ * @param  Model Page     $parent_page 移動先親Page
+ * @return boolean true or false
+ * @since   v 3.0.0.0
+ */
+	public function getMovePermalink($page, $parent_page) {
+		if($page['Page']['permalink'] == '') {
+			// Topページ
+			$page['Page']['permalink'] = preg_replace(NC_PERMALINK_PROHIBITION, NC_PERMALINK_PROHIBITION_REPLACE, __d('pages', 'copy_%s', $page['Page']['page_name']));
+		}
+		$permalink_arr = explode('/', $page['Page']['permalink']);
+		if($parent_page['Page']['permalink'] != '') {
+			$permalink = $parent_page['Page']['permalink'] . '/' . $permalink_arr[count($permalink_arr)-1];
+		} else {
+			$permalink = $permalink_arr[count($permalink_arr)-1];
+		}
+		return $permalink;
 	}
 }

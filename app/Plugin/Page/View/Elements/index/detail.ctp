@@ -16,7 +16,7 @@
 				</label>
 			</dt>
 			<dd>
-				<div class="bold">
+				<div class="pages-menu-edit-permalink">
 					<?php
 						$permalink_prefix = '/';	//$this->webroot;
 							$parent_permalink = '';
@@ -46,7 +46,7 @@
 							'value' => $page['Page']['permalink'],
 							'label' => false,
 							'div' => false,
-							'maxlength' => 50,
+							'maxlength' => NC_VALIDATOR_TITLE_LEN,
 							'size' => 25,
 						);
 						if(!empty($is_child)) {

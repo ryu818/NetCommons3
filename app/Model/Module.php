@@ -127,4 +127,50 @@ class Module extends AppModel
        	}
        	return $module_name;
 	}
+
+/**
+ * 操作関数が存在するかどうか
+ * @param  string  $dir_name
+ * @param  string  $action
+ * @return boolean
+ */
+	public function isOperationAction($dir_name, $action) {
+		App::uses($dir_name.'OperationsComponent', 'Plugin/'.$dir_name.'/Controller/Component');
+		$class_name = $dir_name.'OperationsComponent';
+		if(!class_exists($class_name) || !method_exists($class_name, $action)) {
+			// ショートカットと移動は関数がなくてもエラーとしない
+			return false;
+		}
+		return true;
+	}
+
+/**
+ * ブロック操作関数を実行
+ * @param  string      $dir_name
+ * @param  string      $action
+ * @param array       $args
+ * @return boolean
+ * @since   v 3.0.0.0
+ */
+	public function operationAction($dir_name, $action, $args) {
+		$class_name = $dir_name.'OperationsComponent';
+		if(!class_exists($class_name)) {
+			App::uses($dir_name.'OperationsComponent', 'Plugin/'.$dir_name.'/Controller/Component');
+			if(!class_exists($class_name)) {
+				return false;
+			}
+		}
+		if(!method_exists($class_name, $action)) {
+			return true;
+		}
+
+		eval('$class = new '.$class_name.'();');
+		$class->startup();
+
+		$ret = call_user_func_array(array($class, $action), $args);
+		if(!$ret) {
+			return false;
+		}
+		return true;
+	}
 }

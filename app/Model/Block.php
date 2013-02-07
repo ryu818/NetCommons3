@@ -318,6 +318,7 @@ class Block extends AppModel
  */
 	protected function _getOrderArray() {
 		return array(
+			'Block.page_id' => "ASC",
 			'Block.thread_num' => "ASC",
 			'Block.col_num' => "ASC",
 			'Block.row_num' => "ASC"

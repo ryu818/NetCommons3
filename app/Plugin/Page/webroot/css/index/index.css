@@ -40,6 +40,7 @@
     font-weight: bold;
     margin: 4px 0;
     padding: 7px 10px;
+    white-space: nowrap;
 }
 
 .pages-menu-handle-public-top {
@@ -170,6 +171,18 @@ input.pages-menu-edit-title {
 	background-image: url(../../page/img/index/list.png);
 }
 
+.pages-menu-edit-disable-icon {
+	background-image: url(../../page/img/index/edit_disable.png);
+}
+
+.pages-menu-delete-disable-icon {
+	background-image: url(../../page/img/index/trash_disable.png);
+}
+
+.pages-menu-other-disable-icon {
+	background-image: url(../../page/img/index/list_disable.png);
+}
+
 .pages-menu-edit-icon:hover {
 	background-image: url(../../page/img/index/edit_h.png);
 }
@@ -190,6 +203,10 @@ input.pages-menu-edit-title {
 }
 .pages-menu-counter-outer div {
 	vertical-align:top;
+}
+
+.pages-menu-edit-item {
+	min-width:230px;
 }
 
 /* ページ移動 */
@@ -213,6 +230,14 @@ input.pages-menu-edit-title {
     padding: 5px;
     position:relative;
     top: -5px;
+    min-width:340px;
+}
+
+.pages-menu-edit-permalink {
+	font-weight:bold;
+	max-width:200px;
+	overflow:auto;
+	max-height:100px;
 }
 
 .pages-menu-edit-outer, .pages-menu-community-tab {
@@ -327,4 +352,65 @@ input.pages-menu-community-photo-file {
 
 .pages-menu-auth-listbox-name {
 	width:95px;
+}
+
+/* その他操作 */
+.pages-menu-progressbar-outer {
+	position: fixed;
+	width:250px;
+}
+
+#pages-menu-progressbar-title {
+	line-height:25px;
+	margin:5px 0;
+	width:226px;
+	background-color:#fff;
+	border: 1px solid #aaa;
+    border-radius: 2px;
+    box-shadow: 0 8px 8px rgba(0, 0, 0, 0.03) inset, 1px 1px 1px #fff;
+    padding: 2px 10px;
+	overflow:hidden;
+	display:none;
+}
+
+.pages-menu-edit-highlight-icon {
+	background-image: url(../../page/img/index/list_highlight.png);
+}
+
+#pages-menu-edit-other-operation-title {
+	font-weight:bold;
+}
+
+.pages-menu-edit-confirm-note {
+	padding:5px;
+}
+
+#pages-menu-edit-confirm-ul {
+	color:#505050;
+	padding:10px;
+	border:1px solid #efefef;
+	display:none;
+}
+
+.pages-menu-edit-confirm-textarea {
+	padding:5px;
+	/* color:#0000ff !important; */
+	/* font-weight:bold; */
+}
+
+#pages-menu-edit-confirm-textarea {
+	width:265px;
+	height:60px;
+	display:none;
+}
+
+.pages-menu-edit-confirm-shortcut {
+	background-color: #efefef;
+    display: block;
+    margin: 5px;
+    padding: 5px;
+}
+
+.pages-menu-edit-item .error-message {
+	width:170px;
 }

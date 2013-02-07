@@ -8,6 +8,6 @@
 	<option value="<?php echo $this->Html->url(array('plugin' => 'block', 'controller' => 'block_operation', 'action' => 'shortcut', 'block_id' => $this->Session->read('Blocks.'.'copy_block_id'), 'content_id' => $this->Session->read('Blocks.'.'copy_content_id')));?>"><?php echo(__('Create shortcut')); ?></option>
 	<option value="<?php echo $this->Html->url(array('plugin' => 'block', 'controller' => 'block_operation', 'action' => 'paste', 'block_id' => $this->Session->read('Blocks.'.'copy_block_id'), 'content_id' => $this->Session->read('Blocks.'.'copy_content_id')));?>"><?php echo(__('Paste')); ?></option>
 	<?php endif; ?>
-	<option value="<?php echo $this->Html->url(array('plugin' => 'block', 'controller' => 'block_operation', 'action' => 'cancel', 'block_id' => $this->Session->read('Blocks.'.'copy_block_id'), 'content_id' => $this->Session->read('Blocks.'.'copy_content_id')));?>"><?php echo(__('Cancel')); ?></option>
+	<option value="<?php echo $this->Html->url(array('plugin' => 'block', 'controller' => 'block_operation', 'action' => 'cancel', 'block_id' => $this->Session->read('Blocks.'.'copy_block_id'), 'content_id' => $this->Session->read('Blocks.'.'copy_content_id')));?>"><?php echo(__('Cancel copy')); ?></option>
 </select>
 </div>

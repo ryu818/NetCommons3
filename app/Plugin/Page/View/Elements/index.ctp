@@ -31,6 +31,9 @@ if(isset($is_edit) && $is_edit == _ON){
 		<span class="<?php echo($setting_class); ?>"></span>
 	</a>
 	<?php endif; ?>
+	<?php
+		echo $this->element('index/other_operation', array('copy_page_id' => $copy_page_id, 'copy_page' => (isset($copy_page) ? $copy_page : null)));
+	?>
 </div>
 <?php if($is_edit): ?>
 <div class="nc-pages-setting-menu nc-panel-color" data-pages-header="true">
@@ -52,7 +55,7 @@ if(isset($is_edit) && $is_edit == _ON){
 	 ?>
 </div>
 <?php endif; ?>
-<div id="pages-menu-tab">
+<div id="pages-menu-tab" data-url="<?php echo $this->Html->url(array('plugin' => 'page', 'controller' => 'page', 'action' => 'index'));?>">
 	<ul data-pages-header="true">
 		<li><a href="#pages-menu-page"><span><?php echo(__d('page', 'Page list'));?></span></a></li>
 		<li><a href="#pages-menu-community"><span><?php echo(__d('page', 'Participation community'));?></span></a></li>
@@ -160,6 +163,6 @@ if(isset($is_edit) && $is_edit == _ON){
 ?>
 <script>
 $(function(){
-	$('#pages-menu-tab').PageMenu(<?php echo($is_edit);?>, <?php echo($page_id);?>, <?php echo($active_tab);?>, <?php echo($sel_active_tab);?>);
+	$('#pages-menu-tab').PageMenu(<?php echo($is_edit);?>, <?php echo($page_id);?>, <?php echo($active_tab);?>, <?php echo($sel_active_tab);?>, <?php echo($copy_page_id);?>);
 });
 </script>

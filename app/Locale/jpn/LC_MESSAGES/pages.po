@@ -8,3 +8,8 @@ msgstr 	"ブロック編集モードへ移行します。ブロックの追加�
 
 msgid  	"I exit edit mode block."
 msgstr 	"ブロック編集モードを終了します。"
+
+msgid  	"[copy%s]%s"
+msgstr 	"[copy%s]%s"
+msgid  	"-copy%s-%s"
+msgstr 	"-copy%s-%s"

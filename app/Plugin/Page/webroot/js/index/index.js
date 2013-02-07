@@ -8,7 +8,7 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 ;(function($) {
-	$.fn.PageMenu = function(is_edit, active_page_id, active_tab, sel_active_tab) {
+	$.fn.PageMenu = function(is_edit, active_page_id, active_tab, sel_active_tab, copy_page_id) {
 		// Privateメソッド
 
 		// 表示件数
@@ -63,11 +63,18 @@
 		};
 
 		var chgSequenceSuccess = function(res, page_id) {
-			var detail = $('#pages-menu-edit-detail-' + page_id);
-			if(detail.css('display') != 'none') {
-				// 表示順を変更したときに、詳細部分を閉じる->親と子の（固定リンクが変更されるかもしれないため）
-				detail.slideUp(300, function() {detail.html('');});
-			}
+			var li = $('#pages-menu-edit-item-' + page_id);
+
+			var details = $('.pages-menu-edit-view',li).each(function(){
+				var detail = $(this);
+				if(detail.css('display') != 'none') {
+					// 表示順を変更したときに、詳細部分を閉じる->親と子の（固定リンクが変更されるかもしれないため）
+					detail.slideUp(300, function() {detail.html('');});
+				}
+			});
+
+
+
 			$(res).appendTo($(document.body));
 		};
 
@@ -110,6 +117,9 @@
 		$('#pages-menu-tab').tabs({
 			active: active_tab,
 			activate: function( event, ui ) {
+				// その他操作非表示
+				$.PageMenu.closeOtherOperation();
+
 				if(ui['newPanel'].attr('id') == 'pages-menu-page') {
 					active_tab = 0;
 					active_tab_name = '#pages-menu-page';
@@ -139,6 +149,7 @@
 				}
 			}
 		});
+
 		chgLimit();
 
 		// スクロール
@@ -184,7 +195,7 @@
 					var re_html = new RegExp("^<script>", 'i');
 					var ok = __('Ok') ,cancel = __('Cancel'), body, params;
 					if(!$.trim(res).match(re_html)) {
-						var re_info_html = new RegExp("^<div>", 'i');
+						var re_info_html = new RegExp("^<div class=\"pages-menu-edit-confirm-desc\">", 'i');
 						if($.trim(res).match(re_info_html)) {
 							// confirm
 							_buttons[ok] = function(){
@@ -232,17 +243,21 @@
 
 		// すべて展開
 		$(root_menu.get(0)).on('click','.pages-menu-expand-all',function(e) {
+			$.PageMenu.closeOtherOperation();
 			$(root_menu.get(0)).nestable('expandAll', []);
 		});
 		$(root_menu.get(1)).on('click','.pages-menu-expand-all',function(e) {
+			$.PageMenu.closeOtherOperation();
 			$(root_menu.get(1)).nestable('expandAll', []);
 		});
 
 		// すべて折りたたむ
 		$(root_menu.get(0)).on('click','.pages-menu-collapse-all',function(e) {
+			$.PageMenu.closeOtherOperation();
 			$(root_menu.get(0)).nestable('collapseAll', []);
 		});
 		$(root_menu.get(1)).on('click','.pages-menu-collapse-all',function(e) {
+			$.PageMenu.closeOtherOperation();
 			$(root_menu.get(1)).nestable('collapseAll', []);
 		});
 
@@ -385,6 +400,8 @@
 				}
 				var target = $.Common.ajaxSuccess(this, res);
 				var scroll_target = $('#pages-menu-edit-item-' + page_id);
+				$('.pages-menu-edit-content', scroll_target).click();
+
 				// スクロール
 				slideTarget(target, active_tab_name, scroll_target);
 				e.preventDefault();		// ajax:success後の$.Common.ajaxの後処理をキャンセル
@@ -413,11 +430,15 @@
 				var target = $.Common.ajaxSuccess(this, res);
 				var li = $(this).parent();
 				var page_id = li.data('id');
-				if(active_tab_name == '#pages-menu-page') {
-					$(root_menu.get(0)).nestable('addEvent', [target, page_id]);
-				} else {
-					$(root_menu.get(1)).nestable('addEvent', [target, page_id]);
-				}
+
+				$(".pages-menu-edit-item" , target.parent()).each(function(){
+					var target = $(this);
+					if(active_tab_name == '#pages-menu-page') {
+						$(root_menu.get(0)).nestable('addEvent', [target, page_id]);
+					} else {
+						$(root_menu.get(1)).nestable('addEvent', [target, page_id]);
+					}
+				});
 				e.preventDefault();
 			});
 
@@ -473,6 +494,9 @@
 					button.click();
 				}
 
+				// その他操作非表示
+				$.PageMenu.closeOtherOperation();
+
 				// ページ追加disable
 				var is_chief = active_li.data('is-chief');
 				var dd_sequence = active_li.data('dd-sequence');
@@ -521,6 +545,10 @@
 					input.select();
 				}
 			});
+
+			if(copy_page_id > 0) {
+				$('.pages-menu-other-icon', $('#pages-menu-tab')).addClass('pages-menu-edit-highlight-icon');
+			}
 		} else {
 			// コンテンツクリックイベント
 			root_menu.on('click','.pages-menu-handle',function(e) {
@@ -535,6 +563,56 @@
 				}
 			});
 		}
+
+		// その他操作
+		var send_url, postfix_url;
+		$('a', '#pages-menu-edit-other-operation').on('ajax:beforeSend', function(e, url) {
+			var li = $(e.target).parent();
+			if(li.attr('data-name') == 'cancel') {
+				return url;
+			}
+			var list = $('#pages-menu-edit-other-operation');
+			var copy_page_id = list.attr('data-copy-page-id'), page_id = list.attr('data-id');
+			postfix_url = '/' + copy_page_id + '?page_id=' + page_id;
+			send_url = url + postfix_url;
+			return send_url;
+		}).on('ajax:success',function(e, res) {
+			var li = $(e.target).parent();
+			if(li.attr('data-name') == 'copy' || li.attr('data-name') == 'cancel') {
+				$('#pages-menu-edit-other-operation').after(res);
+				return;
+			}
+
+			var target = $('#pages-menu-edit-other-operation'), pos = $(target).offset();
+			// 確認メッセージ表示
+			var ok = __('Ok') ,cancel = __('Cancel');
+			var default_params = {
+				resizable: false,
+	            modal: true,
+		        position: [pos.left + 10 - $(window).scrollLeft() ,pos.top + 10 - $(window).scrollTop()]
+			}, _buttons = {}, params = new Object();
+			_buttons[ok] = function(){
+				var shortcut_flag = $('#pages-menu-edit-confirm-shortcut');
+				if(shortcut_flag.get(0) && shortcut_flag.is(':checked')) {
+					params['shortcut_flag'] = 1;
+				}
+
+				params['is_confirm'] = 1;
+				$( this ).remove();
+				$.PageMenu.operationPage(send_url, postfix_url, params);
+			};
+			_buttons[cancel] = function(){
+				$( this ).remove();
+			};
+			var dialog_params = $.extend({buttons: _buttons}, default_params);
+			$('<div></div>').html(res).dialog(dialog_params);
+
+			$.PageMenu.closeOtherOperation();
+
+			e.preventDefault();
+			e.stopPropagation();
+		});
+
 	};
 	$.PageMenu ={
 		pageDetailInit : function(id, permalink_prohibition, permalink_prohibition_replace) {
@@ -654,6 +732,182 @@
 				ret = true;
 			}
 			return ret;
+		},
+
+/**
+ * その他操作Click
+ * @param   Event e
+ * @return  void
+ */
+		clkOtherOperation : function(e) {
+			var a = $(e.target);
+			var pos = a.offset();
+			var list = $('#pages-menu-edit-other-operation');
+			var offset_top = - 20,offset_left = - 5;
+			var li = $(a).parents('li:first'), page_id = li.data('id'), room_id = li.data('room-id'),list_page_id = list.attr('data-id');
+			var copy_page_id = list.attr('data-copy-page-id');
+			var top = pos.top + offset_top - $(window).scrollTop();
+			var top_dialog_top = $("#nc-pages-setting-dialog").position().top;
+
+			// モジュール利用許可表示切替
+			if(room_id != page_id) {
+				$('#pages-menu-edit-other-operation-modules').hide();
+			} else {
+				$('#pages-menu-edit-other-operation-modules').show();
+			}
+			if(!copy_page_id) {
+				// コピー表示
+				$('li[data-operation=copy]',list).show();
+				$('li[data-operation=copy-after]',list).hide();
+			} else {
+				// 移動、ショートカット作成、ペースト表示
+				$('li[data-operation=copy]',list).hide();
+				$('li[data-operation=copy-after]',list).show();
+			}
+
+			a.tooltip().tooltip('close');
+			if(page_id != list_page_id) {
+				list.hide();
+			}
+			if(top  + list.outerHeight() + top_dialog_top > $(window).height()) {
+				// ウィンドウ幅をこえている
+				top -= top  + list.outerHeight() + top_dialog_top - $(window).height();
+			}
+			var params = {
+				'top': top,
+				'left': pos.left + offset_left - $(window).scrollLeft(),
+				'z-index': $.Common.zIndex++,
+			}
+
+			list.attr('data-id', page_id).css(params).toggle();
+			e.preventDefault();
+			e.stopPropagation();
+		},
+
+/**
+ * その他操作 Copy Click
+ * @param   Event e
+ * @return  void
+ */
+		clkCopy : function(e) {
+			var list = $('#pages-menu-edit-other-operation');
+			var list_page_id = list.attr('data-id');
+			var li = $('#pages-menu-edit-item-' + list_page_id);
+			var a = $('a.pages-menu-edit-title:first', li);
+			list.attr('data-copy-page-id', list_page_id);
+			this.closeOtherOperation();
+
+			$('.pages-menu-other-icon', $('#pages-menu-tab')).addClass('pages-menu-edit-highlight-icon');
+
+
+
+			$('#pages-menu-edit-other-operation-title').html('['+$(e.target).html() + ']' + a.html());
+
+			//e.preventDefault();
+		},
+/**
+ * その他操作 Cancel Click
+ * @param   Event e
+ * @return  void
+ */
+		clkCancel : function(e) {
+			var list = $('#pages-menu-edit-other-operation');
+			list.removeAttr('data-copy-page-id');
+			this.closeOtherOperation();
+			$('.pages-menu-other-icon', $('#pages-menu-tab')).removeClass('pages-menu-edit-highlight-icon');
+
+			//e.preventDefault();
+		},
+
+/**
+ * その他操作非表示
+ * @param   void
+ * @return  void
+ */
+		closeOtherOperation : function() {
+			$('#pages-menu-edit-other-operation').hide();
+		},
+
+/**
+ * ページ操作
+ * @param   void
+ * @return  void
+ */
+		operationPage: function(url, postfix_url, params) {
+			var progressbar_outer, progressbar_title, progressbar, timer;
+			var list = $('#pages-menu-edit-other-operation');
+			var page_id = list.attr('data-id');
+			var check_url = list.attr('data-url');
+			var timer, percent = 0;
+
+			var overlay = $( "<div>" ).addClass( "ui-widget-overlay" );
+			overlay.appendTo( document.body ).css({
+				width: $(document.body).width(),
+				height: $(document.body).height(),
+				zIndex: $.Common.zIndex++
+			});
+
+			progressbar_outer = $('<div class="pages-menu-progressbar-outer" style="display:none;"><div id="pages-menu-progressbar-title"></div><div id="pages-menu-progressbar"></div></div>').css('z-index', $.Common.zIndex++).appendTo($(document.body));
+			progressbar_outer.position({
+				my: "center",
+				at: "center",
+				of: window
+			});
+			progressbar_title = $('#pages-menu-progressbar-title');
+			progressbar = $('#pages-menu-progressbar');
+
+			progressbar.progressbar();
+			timer = setInterval(function(){
+				$.ajax({
+					type: "POST",
+					dataType: 'json',
+					url: check_url + postfix_url,
+					async: false,
+					success: function(res){
+						if(res['page_num']) {
+							progressbar_outer.show();
+							progressbar_title.html(res['page_num'] + '/' + res['total']  + ' : ' + res['title']).show();
+							percent = parseInt(res['percent']);
+						}
+					}
+	 			});
+				if(percent >= 100) {
+					clearInterval(timer);
+					return;
+                }
+
+				 // プログレスバーの値を変更
+				progressbar.progressbar("option", "value", percent);
+            }, 2000);
+
+			$.post(url,
+				params,
+				function(res){
+					var re_html = new RegExp("^<script>", 'i');
+					clearInterval(timer);
+					overlay.remove();
+					progressbar_outer.remove();
+
+					if(!$.trim(res).match(re_html)) {
+						// error
+						$.Common.showErrorDialog(res, null, $("#pages-menu-edit-item-" + page_id));
+					} else {
+						$('#pages-menu-edit-other-operation').after(res);
+					}
+				}
+			);
+		},
+
+/**
+ * ページメニューリロード
+ * @param   integer page_id
+ * @return  void
+ */
+		reload: function(page_id, is_edit) {
+			var tab = $('#pages-menu-tab'), is_edit = (is_edit) ? is_edit : 1;
+			$.get(tab.attr('data-url') + '?is_edit='+is_edit+'&page_id=' + page_id, function(res) {
+				$('#nc-pages-setting-dialog').replaceWith(res);
+			});
 		}
 	};
 })(jQuery);

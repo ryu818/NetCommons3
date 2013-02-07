@@ -45,6 +45,7 @@
 	margin:0;
 	overflow: auto;
 	min-width:200px;
+	max-width:800px
 }
 .nc-pages-setting-icon {
 	width: 35px;

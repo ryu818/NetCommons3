@@ -56,7 +56,7 @@ msgid  	"Delete room"
 msgstr 	"ルーム削除"
 msgid  	"Delete page"
 msgstr 	"ページ削除"
-msgid  	"Other operation"
+msgid  	"Other operations"
 msgstr 	"その他操作"
 msgid  	"Edit members"
 msgstr 	"参加者修正"
@@ -79,12 +79,20 @@ msgstr 	"公開ではないか、公開日付が入力していないため、�
 msgid  	"Please input in [publish date < closed date]."
 msgstr 	"[公開日付 < 非公開日付]で入力してください。"
 
+msgid  	"Select the page to which the movement, create a shortcut, paste, Can you please run from the [%s]."
+msgstr 	"移動、ショートカット作成、ペースト先のページを選択し、[その他操作]から実行してください。"
+
 msgid  	"Top of each page is required at least one page. <br />You can't delete."
 msgstr 	"各トップページは最低1ページ必要です。<br />削除できません。"
 msgid  	"If you want to delete the top page, please run after deleting all the pages of this room.<br />You can't delete."
 msgstr 	"トップページを削除する場合、本ルームのページをすべて削除後に実行してください。<br />削除できません。"
 msgid  	"Because the [%s] page is locked, I can't be deleted. Please run after unlock the page."
-msgstr 	"[%s]ページがロックされているため、削除できません。ページのロックを解除後に実行してください。"
+msgstr  "[%s]ページがロックされているため、削除できません。ページのロックを解除後に実行してください。"
+msgid  	"I'm already running. Please try again at a later time."
+msgstr  "既に実行中の可能性があります。時間をおいてからやり直してください。"
+
+msgid  	"Lower pages"
+msgstr 	"下位ページ"
 
 ## コミュニティー関連
 msgid  	"Community setting"
@@ -145,14 +153,35 @@ msgstr 	"コミュニティーを追加しました。"
 msgid  	"Set the roles of the room members, and press [Ok] button. To set the roles all at once, press [Select All] button."
 msgstr 	"このルームでの会員の役割を設定して、[決定]ボタンを押してください。[全選択]ボタンより役割を一括で選択できます。"
 
-## ページ表示順変更
+## ページ操作 - ページ表示順変更
+msgid  	"You are about to move to [%s]. <br />When you move, block placement will be moved as a shortcut. Are you sure?"
+msgstr 	"[%s]へ移動します。移動しますと、配置ブロックはショートカットとして移動されます。よろしいですか？"
+msgid  	"You are about to move to [%s]. <br />When you move the contents of the [%s], it becomes contents of [%s].Are you sure?"
+msgstr 	"[%s]へ移動します。移動しますと、[%s]のコンテンツは[%s]のものになります。よろしいですか？"
+msgid  	"You are about to move to [%s]. Are you sure?"
+msgstr 	"[%s]へ移動します。よろしいですか？"
 
-msgid  	"You are about to move to [%s]. When you move, block placement will be moved as a shortcut. Are you sure?"
-msgstr 	"[%s]へ移動しようとしてます。移動しますと、配置ブロックはショートカットとして移動されます。よろしいですか？"
+msgid  	"You create a copy to [%s]. The copying of contents may take time to some extent. Are you sure?"
+msgstr 	"[%s]へコピーを作成します。コンテンツのコピーに多少時間がかかる場合があります。よろしいですか？"
+msgid  	"You create a shortcut to [%s]. Are you sure?"
+msgstr 	"[%s]へショートカットを作成します。よろしいですか？"
 
-msgid  	"You are about to move to [%s]. When you move, block placement will be moved as a shortcut, the assignment of rights will be canceled. Are you sure?"
-msgstr 	"[%s]へ移動しようとしてます。移動しますと、配置ブロックはショートカットとして移動され、権限の割り当てが解除されます。よろしいですか？"
+msgid  	"Exempt from the Operation"
+msgstr 	"操作対象外モジュール"
+msgid  	"The following modules are exempt module from the operation or not pasted to the page."
+msgstr 	"以下のモジュールは、移動先に貼り付けられないモジュールか、操作対象外のモジュールです。"
 
+## ページ操作 - 移動以外
+msgid  	"Block shortcut is copied as is."
+msgstr 	"ショートカットブロックは、そのままの状態でコピーされます。"
+msgid  	"Only a block located on the page is copied."
+msgstr 	"ページに配置してあるブロックのみコピーされます。"
+msgid  	"It is added under the page that you selected."
+msgstr 	"選択したページの下に追加されます。"
+
+## ページ操作 - 子グループあり
+msgid  	"The assignment of the rights of the room is released."
+msgstr 	"ルームの権限の割り当てが解除されます。"
 
 ## ページスタイル
 msgid  	"Font color:"

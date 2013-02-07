@@ -33,10 +33,13 @@ define('NC_DB_DATE_FORMAT', 'Y-m-d H:i:s');
 define('NC_VALIDATOR_DATE_TIME', "YmdHis");
 
 //-----------------長さチェック用-------------------------------------------
-define('NC_VALIDATOR_TITLE_LEN', 100);
+define('NC_VALIDATOR_TITLE_LEN', 40);
 define('NC_VALIDATOR_MAIL_LEN', 256);
 define('NC_VALIDATOR_TEXTAREA_LEN', 1000);
 define('NC_VALIDATOR_WYSIWYG_LEN', 60000);
+
+define('NC_VALIDATOR_PAGE_TITLE_LEN', 100);
+define('NC_VALIDATOR_PERMALINK_LEN', 255);
 
 //-----------------禁止URL-------------------------------------------
 define('NC_PROHIBITION_URL', '/^(users\/|controls\/)/i');

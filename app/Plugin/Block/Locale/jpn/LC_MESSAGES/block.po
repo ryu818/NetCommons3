@@ -21,9 +21,3 @@ msgid  	"You create a copy to [%s]. Are you sure?"
 msgstr 	"[%s]へコピーを作成します。よろしいですか？"
 msgid  	"You create a shortcut to [%s]. Are you sure?"
 msgstr 	"[%s]へショートカットを作成します。よろしいですか？"
-
-msgid  	"Allow the room authority to view and edit."
-msgstr 	"表示中のルーム権限より閲覧・編集を許可する。"
-
-msgid  	"Failed to execute the %s."
-msgstr 	"%sの実行に失敗しました。"

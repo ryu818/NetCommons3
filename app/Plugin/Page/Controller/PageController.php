@@ -95,6 +95,7 @@ class PageController extends PageAppController {
 		$active_tab = isset($this->request->query['active_tab']) ? intval($this->request->query['active_tab']) : null;
 		$limit = !empty($this->request->named['limit']) ? intval($this->request->named['limit']) : PAGES_COMMUNITY_LIMIT;
 		$views = !empty($this->request->named['views']) ? intval($this->request->named['views']) : PAGES_COMMUNITY_VIEWS;
+		$page_id = isset($this->request->query['page_id']) ? intval($this->request->query['page_id']) : intval($this->page_id);
 
 		// 言語切替
 		$languages = $this->Language->findLists();
@@ -195,7 +196,7 @@ class PageController extends PageAppController {
 					$this->flash(__('Failed to obtain the database, (%s).','pages'), null, 'Page/index.003', '500');
 					return;
 				}
-				$this->page_id = $center_page['Page']['parent_id'];
+				$page_id = $center_page['Page']['parent_id'];
 				$buf_thread_num --;
 			}
 
@@ -216,7 +217,7 @@ class PageController extends PageAppController {
 		}
 
 		$fetch_params = array(
-			'active_page_id' => $this->page_id
+			'active_page_id' => $page_id
 		);
 		$pages = $this->Page->findMenu('all', $user_id, NC_SPACE_TYPE_PUBLIC, $current_user, $params, null, $fetch_params);
 		$private_pages = $this->Page->findMenu('all', $user_id, array(NC_SPACE_TYPE_MYPORTAL, NC_SPACE_TYPE_PRIVATE), $current_user, $params, null, $fetch_params);
@@ -239,11 +240,19 @@ class PageController extends PageAppController {
 			$params['conditions']['Page.room_id'] = $pages_top_group;
 			$pages_group = $this->Page->findMenu('all', $user_id, NC_SPACE_TYPE_GROUP, null, $params, null, $fetch_params, true);
 		}
+		$copy_page_id = $this->Session->read('Pages.'.'copy_page_id');
+		if(isset($copy_page_id)) {
+			$copy_page = $this->Page->findAuthById($copy_page_id, $user_id);
+			$element_params['copy_page_id'] = $copy_page_id;
+			$element_params['copy_page'] = $copy_page;
+		} else {
+			$element_params['copy_page_id'] = 0;
+		}
 
 		$element_params['languages'] = $languages;
 		$element_params['pages'] = $pages;
 		$element_params['pages_group'] = $pages_group;
-		$element_params['page_id'] = $this->page_id;
+		$element_params['page_id'] = $page_id;
 		$element_params['is_detail'] = $is_detail;
 		$element_params['parent_page'] = $parent_page;
 		////$element_params['pages_group_total_count'] = $pages_group_total_count;
@@ -252,6 +261,7 @@ class PageController extends PageAppController {
 		$element_params['views'] = $views;
 		$element_params['limit'] = $limit;
 		$element_params['limit_select_values'] = explode('|', PAGES_COMMUNITY_LIMIT_SELECT);
+
 		$this->set('element_params', $element_params);
 	}
 
