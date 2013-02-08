@@ -73,7 +73,7 @@
 				});
 			});
 
-			if(block_move.get(0) && !block.hasClass('ui-draggable') && $('#container').get(0)) {
+			if(block_move.get(0) && $('#container').get(0)) {
 				block_move.unbind('click').click(function(e){
 					if (e.target.tagName.toUpperCase() === 'A') {
 						return;
