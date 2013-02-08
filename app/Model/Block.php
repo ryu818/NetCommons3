@@ -73,6 +73,9 @@ class Block extends AppModel
 			// 非公開
 			return;
 		}
+		if(!isset($val['Block'])) {
+			return $val;
+		}
 
 		// class name
 		if($val['Block']['controller_action'] == "group"){

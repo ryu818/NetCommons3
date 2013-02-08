@@ -145,7 +145,7 @@ class CheckAuthComponent extends Component {
 		if(!preg_match($this->prohibitionURL, $url)) {
 			if($block_id > 0) {
 				$block = $this->_getBlock($controller, $block_id, $user_id);
-				if($block === false) {
+				if($block === false || !isset($block['Block'])) {
 					// 置いているpluginが異なる
 					$controller->flash(__('Content not found.'), '', 'CheckAuth.001', '404');
 					return ;
