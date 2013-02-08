@@ -123,7 +123,7 @@ if ($noLogs || isset($_forced_from_dbo_)):
 				unset($current_urls[$i['global_count']]);
 			}
 			$pattern = "/^(INSERT INTO|CREATE TABLE IF NOT EXISTS|CREATE TABLE|ALTER TABLE|UPDATE|DELETE)(\s)+/siU";
-			$rep_pattern = "/( AND | OR | SET | WHERE | FROM | LEFT JOIN | INNER JOIN | ORDER BY )/siU";
+			$rep_pattern = "/( AND | OR | SET | VALUES | WHERE | FROM | LEFT JOIN | INNER JOIN | ORDER BY )/siU";
 			if (preg_match($pattern, $i['query'], $matches)) {
 				$class_name = ' class="nc-log-save"';
 			} else {
