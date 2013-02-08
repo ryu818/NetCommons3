@@ -225,12 +225,13 @@ class Page extends AppModel
 		}
 		$permalink_arr = explode('/', $permalink);
 		$chk_thread_num = ($space_type == NC_SPACE_TYPE_PUBLIC || ($thread_num == 2 && $display_sequence == 1)) ? $thread_num - 1 : $thread_num;
-		if(!isset($permalink_arr[$chk_thread_num - 1])) {
-			/*if($thread_num == 0 || ($thread_num == 1 && $space_type == NC_SPACE_TYPE_PUBLIC)
-				|| ($thread_num == 2 && $display_sequence == 1)) {
+		if(!isset($permalink_arr[$chk_thread_num - 1]) || $permalink_arr[$chk_thread_num - 1] == '') {
+			if($thread_num == 0 || ($thread_num == 1 && $space_type == NC_SPACE_TYPE_PUBLIC)
+				|| ($thread_num == 2 && $display_sequence == 1 && $space_type == NC_SPACE_TYPE_PUBLIC)) {
 				// Topノード、パブリックTopノード、各ノードのTopページが存在する可能性あり
+				// パブリックでトップページのページ追加可能
 				return true;
-			}*/
+			}
 			return false;
 		}
 		$current_permalink = $permalink_arr[$chk_thread_num - 1];
