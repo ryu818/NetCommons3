@@ -15,7 +15,7 @@
 class BlockController extends BlockAppController {
 
 	public $components = array('Block.BlockMove', 'CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF, 'checkOrder' => array("request", "url")));
-	public $uses = array('Block.BlockMoveOperation');
+	public $uses = array('Block.BlockOperation');
 
 	public $nc_block = array();
 	public $nc_page = array();
@@ -88,157 +88,36 @@ class BlockController extends BlockAppController {
 			return;
 		}
 
-		// TODO: そのmoduleが該当ルームに貼れるかどうかのチェックが必要。
-		// グループ化ブロック（ショートカット）ならば、該当グループ内のmoduleのチェックが必要。
-		// はりつけたあと、表示されませんで終わらす方法も？？？ -> グループ化ブロックはペースト不可
-
-		if(isset($shortcut_flag) && $page['Page']['room_id'] == $content['Content']['room_id']) {
-			// コンテンツのルームが同じならば、権限が付与されていないショートカットへ
-			$shortcut_flag = _OFF;
-		}
-
 		if(!empty($this->request->params['requested']) && !empty($copy_block_id)) {
-				//(isset($shortcut_flag) || $pre_page['Page']['room_id'] != $content['Content']['room_id'] || !$content['Content']['is_master'])) {
-
-			$master_content = $content;
-			if(!$content['Content']['is_master']) {
-				$master_content = $this->Content->findById($content['Content']['master_id']);
-			}
-		   /** ペースト、ショートカットのペースト,ショートカットの作成
-			* ・権限が付与されていないショートカットのペーストか、権限が付与されていないショートカットの作成
-			* 		Block.content_id 新規に取得しないで、ショートカット元のcontent_idを付与
-			* 		Contentは追加しない。
-			*  ・ペースト、ショートカットの作成（表示中のルーム権限より閲覧・編集権限を付与する。）
-			* 		Contentは新規追加するが、ショートカット元のContentの中身(title,is_master, master_id,accept_flag,url)はコピー
-			* 			room_idはショートカット先のroom_id
-			*/
-			if(!$content['Content']['is_master'] &&
-					$page['Page']['room_id'] == $master_content['Content']['room_id']) {
-				// 権限が付与されているショートカットを元のルームに戻した。
-				$ins_content = $master_content;
-				$last_content_id = $master_content['Content']['id'];
-			} else if((!isset($shortcut_flag) && $pre_page['Page']['room_id'] != $content['Content']['room_id']) ||
-					$shortcut_flag === _OFF) {
-				// 権限が付与されていないショートカットのペーストか、権限が付与されていないショートカットの作成
-				$ins_content = $content;
-				$last_content_id = $content['Content']['id'];
-			} else {
-				$ins_content = array(
-					'Content' => array(
-						'module_id' => $content['Content']['module_id'],
-						'title' => $content['Content']['title'],
-						'is_master' => ($shortcut_flag === _ON) ? _OFF : $content['Content']['is_master'],
-						'room_id' => $page['Page']['room_id'],
-						'accept_flag' => $content['Content']['accept_flag'],
-						'url' => $content['Content']['url']
-					)
-				);
-				if($shortcut_flag === _ON) {
-					// 権限が付与されたショートカットの作成
-					$ins_content['Content']['master_id'] = $content['Content']['id'];
-				}
-				$ins_ret = $this->Content->save($ins_content);
-				if(!$ins_ret) {
-					$this->flash(__('Failed to register the database, (%s).', 'contents'), null, 'add_block.006', '500');
-					return;
-				}
-				$last_content_id = $this->Content->id;
-			}
+			$ins_ret = $this->BlockOperation->addBlock($pre_page, $module, $block, $content, $shortcut_flag, $page);
 		} else {
-			$ins_content = array(
-				'Content' => array(
-					'module_id' => $module['Module']['id'],
-					'title' => $module['Module']['module_name'],
-					'is_master' => _ON,
-					'room_id' => $page['Page']['room_id'],
-					'accept_flag' => NC_ACCEPT_FLAG_ON,
-					'url' => ''
-				)
-			);
-			$ins_ret = $this->Content->save($ins_content);
-			if(!$ins_ret) {
-				$this->flash(__('Failed to register the database, (%s).', 'contents'), null, 'add_block.007', '500');
-				return;
-			}
-			$last_content_id = $this->Content->id;
+			$ins_ret = $this->BlockOperation->addBlock($pre_page, $module);
 		}
-
-		if(!isset($ins_content['Content']['master_id'])) {
-			if(!$this->Content->saveField('master_id', $last_content_id)) {
-				$this->flash(__('Failed to update the database, (%s).', 'contents'), null, 'add_block.008', '500');
-				return;
-			}
-		}
-
-		$ins_block = array();
-		$ins_block = $this->BlockMoveOperation->defaultBlock($ins_block);
-		$ins_block['Block'] = array_merge($ins_block['Block'], array(
-			'page_id' => $page['Page']['id'],
-			'module_id' => $module['Module']['id'],
-			'content_id' => $last_content_id,
-			'controller_action' => $module['Module']['controller_action'],
-			'theme_name' => '',
-			'root_id' => 0,
-			'parent_id' => 0,
-			'thread_num' => 0,
-			'col_num' => 1,
-			'row_num' => 1
-		));
-		if(!empty($this->request->params['requested']) && !empty($copy_block_id)) {
-			/** ペースト OR ショートカット作成
-			 * 	移動元のBlockの中身(title, show_title, display_flag, display_from_date,display_to_date, theme_name, temp_name, leftmargin,
-			 * 		rightmargin, topmargin,bottommargin,min_width_size,min_height_size)はコピー
-			 */
-			$ins_block['Block'] = array_merge($ins_block['Block'], array(
-				'title' => $block['Block']['title'],
-				'show_title' => $block['Block']['show_title'],
-				'display_flag' => $block['Block']['display_flag'],
-				'display_from_date' => $block['Block']['display_from_date'],
-				'display_to_date' => $block['Block']['display_to_date'],
-				'theme_name' => $block['Block']['theme_name'],
-				'temp_name' => $block['Block']['temp_name'],
-				'leftmargin' => $block['Block']['leftmargin'],
-				'rightmargin' => $block['Block']['rightmargin'],
-				'topmargin' => $block['Block']['topmargin'],
-				'bottommargin' => $block['Block']['bottommargin'],
-				'min_width_size' => $block['Block']['min_width_size'],
-				'min_height_size' => $block['Block']['min_height_size'],
-			));
-		}
-
-		$ins_ret = $this->Block->save($ins_block);
-		if(!$ins_ret) {
-			$this->flash(__('Failed to register the database, (%s).', 'blocks'), null, 'add_block.009', '500');
+		if($ins_ret === false) {
+			$this->flash(__('Failed to register the database, (%s).', 'blocks'), null, 'add_block.006', '500');
 			return;
 		}
+		list($ins_block, $ins_content) = $ins_ret;
 
-		//root_idを再セット
-		$last_id = $this->Block->id;
-		if(!$this->Block->saveField('root_id', $last_id)) {
-			$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_block.010', '500');
-			return;
-		}
-
-		$ins_ret['Block']['id'] = $this->Block->id;
-		$ins_ret['Block']['root_id'] = $this->Block->id;
-		$ins_ret['Block']['row_num'] = 0;
-		$inc_ret = $this->BlockMoveOperation->incrementRowNum($ins_ret);
+		$last_id = $ins_block['Block']['id'];
+		$ins_block['Block']['row_num'] = 0;
+		$inc_ret = $this->BlockOperation->incrementRowNum($ins_block);
 		if(!$inc_ret) {
-			$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_block.011', '500');
+			$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_block.007', '500');
 			return;
 		}
 
 		// 表示カウント++
 		$this->Page->id = $page_id;
 		if(!$this->Page->saveField('show_count', intval($show_count) + 1)) {
-			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'add_block.012', '500');
+			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'add_block.008', '500');
 			return;
 		}
 		if($pre_page['Page']['id'] != $page['Page']['id']) {
 			// 移動元表示カウント++(ブロック移動時)
 			$this->Page->id = $pre_page['Page']['id'];
 			if(!$this->Page->saveField('show_count', intval($pre_page['Page']['show_count']) + 1)) {
-				$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'add_block.013', '500');
+				$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'add_block.009', '500');
 				return;
 			}
 		}
@@ -280,17 +159,17 @@ class BlockController extends BlockAppController {
 		// --------------------------------------
 		// --- 前詰め処理(移動元)		      ---
 		// --------------------------------------
-		$dec_ret = $this->BlockMoveOperation->decrementRowNum($block);
+		$dec_ret = $this->BlockOperation->decrementRowNum($block);
 		if(!$dec_ret) {
 			$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'del_block.002', '500');
 			return;
 		}
 
-		$count_row_num = $this->BlockMoveOperation->findRowCount($block['Block']['page_id'], $block['Block']['parent_id'], $block['Block']['col_num']);
+		$count_row_num = $this->BlockOperation->findRowCount($block['Block']['page_id'], $block['Block']['parent_id'], $block['Block']['col_num']);
 		if($count_row_num == 1) {
 			//移動前の列が１つしかなかったので
 			//列--
-			$dec_ret = $this->BlockMoveOperation->decrementColNum($block);
+			$dec_ret = $this->BlockOperation->decrementColNum($block);
 			if(!$dec_ret) {
 				$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'del_block.003', '500');
 				return;
@@ -553,7 +432,7 @@ class BlockController extends BlockAppController {
 				 * Block Insert
 				 */
 				$ins_block['Block'] = $group_block['Block'];
-				$ins_block = $this->BlockMoveOperation->defaultBlock($ins_block);
+				$ins_block = $this->BlockOperation->defaultBlock($ins_block);
 				$ins_block['Block']['content_id'] = $this->Content->id;
 				//$ins_block['Block']['title'] = __d('block', 'New group');
 
@@ -593,7 +472,7 @@ class BlockController extends BlockAppController {
 				$upd_blocks[$key]['Block']['row_num'] = count($pos[$col_num - 1]);
 
 				//前詰め処理(移動元)
-				$dec_ret = $this->BlockMoveOperation->decrementRowNum($group_block);
+				$dec_ret = $this->BlockOperation->decrementRowNum($group_block);
 				if(!$dec_ret) {
 					$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_group.009', '500');
 					return;
@@ -612,7 +491,7 @@ class BlockController extends BlockAppController {
 				if($count_row_num == 1) {
 					//移動前の列が１つしかなかったので
 					//列--
-					$dec_ret = $this->BlockMoveOperation->decrementColNum($group_block);
+					$dec_ret = $this->BlockOperation->decrementColNum($group_block);
 					if(!$dec_ret) {
 						$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_group.010', '500');
 						return;
@@ -739,7 +618,7 @@ class BlockController extends BlockAppController {
 
     		//親移動
 	    	if($row_count != 0) {
-			$inc_ret = $this->BlockMoveOperation->incrementRowNum($group_block, $row_count);
+			$inc_ret = $this->BlockOperation->incrementRowNum($group_block, $row_count);
 				if(!$inc_ret) {
 					$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'cancel_group.004', '500');
 					return;
@@ -748,7 +627,7 @@ class BlockController extends BlockAppController {
 			if($col_count != 0) {
 				$buf_group_block = $group_block;
 				$buf_group_block['Block']['col_num']++;
-				$inc_ret = $this->BlockMoveOperation->incrementColNum($buf_group_block, $col_count);
+				$inc_ret = $this->BlockOperation->incrementColNum($buf_group_block, $col_count);
 				if(!$inc_ret) {
 					$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'cancel_group.005', '500');
 					return;

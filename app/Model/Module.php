@@ -157,7 +157,8 @@ class Module extends AppModel
 		if(!class_exists($class_name)) {
 			App::uses($dir_name.'OperationsComponent', 'Plugin/'.$dir_name.'/Controller/Component');
 			if(!class_exists($class_name)) {
-				return false;
+				// isOperationActionで確認するため、ここではエラーにはしない。
+				return true;
 			}
 		}
 		if(!method_exists($class_name, $action)) {

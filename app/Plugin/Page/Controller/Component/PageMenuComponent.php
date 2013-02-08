@@ -375,11 +375,11 @@ class PageMenuComponent extends Component {
  * @param  array        $fieldChildsList
  * @param  integer      $old_parent_id
  * @param  integer      $new_parent_id
- * @return boolean false or array new page_id array
+ * @return boolean false or array new Model Pages $child_pages
  * @since   v 3.0.0.0
  */
 	public function childsUpdate($action, $child_pages, $fieldChildsList = null, $old_parent_id = null, $new_parent_id = null) {
-		$page_id_arr = array();
+		$new_child_pages = array();
 		if($old_parent_id != $new_parent_id) {
 			$parent_id_arr = array(
 				$old_parent_id => $new_parent_id
@@ -415,12 +415,13 @@ class PageMenuComponent extends Component {
 			if(!$ret) {
 				return false;
 			}
+			$child_page['Page']['id'] = $new_id;
+			$new_child_pages[] = $child_page;
 			if(isset($parent_id_arr)) {
 				$parent_id_arr[$old_id] = $new_id;
 			}
-			$page_id_arr[] = $new_id;
 		}
-		return $page_id_arr;
+		return $new_child_pages;
 	}
 
 /**
@@ -1068,8 +1069,10 @@ class PageMenuComponent extends Component {
 		}
 		list($count, $permalink) = $this->renamePermalink($id, $pre_permalink, $move_page['Page']['space_type'], $move_page['Page']['lang']);
 
-		if($count > 0) {
-			//$page_name = __d('pages', 'copy %s %s', $count, $copy_page['Page']['page_name']) ;
+		if($count > 0 || $copy_page['Page']['permalink'] == '') {
+			if($count == 0 && $copy_page['Page']['permalink'] == '') {
+				$count = '';
+			}
 			$page_name = preg_replace('/^\[copy[0-9]+\](.*)/', "$1", $page_name);
 			$page_name = __d('pages', '[copy%s]%s', $count, $page_name) ;
 		}
@@ -1232,15 +1235,18 @@ class PageMenuComponent extends Component {
 				return false;
 			}
 		} else if(isset($ret_childs) && is_array($ret_childs)) {
-			$ret_childsUpdate = $this->childsUpdate($action, $ret_childs[0], $ret_childs[1], $copy_page['Page']['id'], $ins_page['Page']['id']);
-			if (!$ret_childsUpdate) {
+			$new_child_pages = $this->childsUpdate($action, $ret_childs[0], $ret_childs[1], $copy_page['Page']['id'], $ins_page['Page']['id']);
+			if (!$new_child_pages) {
 				$this->_controller->flash(__($error_mes, 'pages'), null, 'PageMenu/operatePage.004', '500');
 				return false;
 			}
-			$ins_pages = array_merge ( $ins_pages, $ret_childs[0] );
+
+
+
+			$ins_pages = array_merge ( $ins_pages, $new_child_pages );
 			if($action == 'paste' || $action == 'shortcut') {
-				foreach($ret_childsUpdate as $new_page_id) {
-					$ins_page_id_arr[] = $new_page_id;
+				foreach($new_child_pages as $new_child_page) {
+					$ins_page_id_arr[] = $new_child_page['Page']['id'];;
 				}
 			}
 		}
@@ -1402,6 +1408,101 @@ class PageMenuComponent extends Component {
 
 
 		return array($copy_page_id_arr, $copy_pages, $ins_pages);
+	}
+
+/**
+ * ページのコピー,移動処理
+ * @param   string       $action paste or shortcut
+ * @param   string       TempDataテーブルハッシュキー $hash_key
+ * @param   integer      $user_id
+ * @param   integer      $copy_page_id_arr		コピー元ID配列
+ * @param   Model Pages  $copy_pages	コピー元
+ * @param   Model Pages  $ins_pages		コピー先
+ * @param   integer      $default_shortcut_flag ペーストならnull ショートカット 0 権限付与つきショートカット 1
+ * @return  boolean
+ * @since   v 3.0.0.0
+ */
+	public function operateBlock($hash_key, $user_id, $copy_page_id_arr, $copy_pages, $ins_pages, $default_shortcut_flag = null) {
+		$blocks = $this->_controller->Block->findByPageIds($copy_page_id_arr, $user_id, "");
+		$total = count($blocks);
+		if($total > 0) {
+			$percent = 0;
+			//$current = 0;
+			//$total_page = count($copy_page_id_arr);
+			$pages_indexs = array();
+			foreach($copy_pages as $key => $copy_page) {
+				$pages_indexs[$copy_page['Page']['id']] = $key;
+			}
+
+			$count = 0;
+			$pre_page_id = 0;
+			$root_id_arr = array();
+			$parent_id_arr = array();
+			$content_id_arr = array();
+			foreach($blocks as $buf_block) {
+				$block = array('Block' => $buf_block['Block']);
+				$module = isset($buf_block['Module']) ? array('Module' => $buf_block['Module']) : null;
+				$content = array('Content' => $buf_block['Content']);
+
+				$current_page = $copy_pages[$pages_indexs[$block['Block']['page_id']]];
+				$ins_page = $ins_pages[$pages_indexs[$block['Block']['page_id']]];
+
+				$count++;
+				//if($block['Block']['page_id'] != $pre_page_id) {
+				//	$pre_page_id = $block['Block']['page_id'];
+				//	$current++;
+				//}
+				if($block['Block']['title'] == "{X-CONTENT}") {
+					$title = $content['Content']['title'];
+				} else {
+					$title = $block['Block']['title'];
+				}
+				$title .= ' - ' . $current_page['Page']['page_name'];
+				$percent = floor((($count - 1) / $total)*100);
+				$data = array(
+					'percent' => $percent,
+					'title' => $title,
+					'total' => $total,
+					'current' => $count
+				);
+				$this->_controller->TempData->write($hash_key, serialize($data));
+
+				if($block['Block']['thread_num'] == 0) {
+					$new_root_id = null;
+					$new_parent_id = 0;
+				} else {
+					$new_root_id = $root_id_arr[$block['Block']['root_id']];
+					$new_parent_id = $parent_id_arr[$block['Block']['parent_id']];
+				}
+
+				if(isset($content_id_arr[$content['Content']['id']])) {
+					// 既にpasteしてあるコンテンツのショートカットならば、ショートカットとして貼り付ける。
+					$shortcut_flag = _OFF;
+					$content['Content']['id'] = $content_id_arr[$content['Content']['id']];
+					if($content['Content']['is_master']) {
+						$content['Content']['master_id'] = $content['Content']['id'];
+					}
+				} else {
+					$shortcut_flag = $default_shortcut_flag;
+				}
+
+				$ins_ret = $this->_controller->BlockOperation->addBlock($current_page, $module, $block, $content, $shortcut_flag, $ins_page, $new_root_id, $new_parent_id);
+
+				if($ins_ret === false) {
+					$this->_controller->TempData->destroy($hash_key);
+					return false;
+				}
+				list($ins_block, $ins_content) = $ins_ret;
+
+				$root_id_arr[$block['Block']['id']] = $ins_block['Block']['root_id'];
+				$parent_id_arr[$block['Block']['id']] = $ins_block['Block']['id'];
+				$content_id_arr[$content['Content']['id']] = $ins_content['Content']['id'];
+
+				//sleep(2);
+			}
+			$this->_controller->TempData->destroy($hash_key);
+			return true;
+		}
 	}
 
 /**

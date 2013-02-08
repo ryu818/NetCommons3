@@ -556,7 +556,7 @@ class Page extends AppModel
  * @since   v 3.0.0.0
  */
 	public function findChilds($type, $current_page, $login_user_id = null) {
-		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
+		$lang = $current_page['Page']['lang'];
 		$params = array('conditions' => array(
 			'Page.root_id' => $current_page['Page']['root_id'],
 			'Page.thread_num >' => $current_page['Page']['thread_num'],
@@ -639,7 +639,7 @@ class Page extends AppModel
 			'Page.*',
 			'Authority.myportal_use_flag, Authority.private_use_flag, Authority.hierarchy'
 		);
-		if(NC_SPACE_TYPE_GROUP) {
+		if($space_type == NC_SPACE_TYPE_GROUP) {
 			$ret[count($ret)] = 'CommunityLang.community_name, CommunityLang.summary, CommunityLang.description';
 		}
 		return $ret;
@@ -669,7 +669,7 @@ class Page extends AppModel
 				"conditions" => "`Authority`.id``=`PageUserLink`.`authority_id`"
 			)
 		);
-		if(NC_SPACE_TYPE_GROUP) {
+		if($space_type == NC_SPACE_TYPE_GROUP) {
 			$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 			$ret[count($ret)] = array(
 				"type" => "LEFT",
@@ -939,7 +939,7 @@ class Page extends AppModel
 	public function getMovePermalink($page, $parent_page) {
 		if($page['Page']['permalink'] == '') {
 			// Topページ
-			$page['Page']['permalink'] = preg_replace(NC_PERMALINK_PROHIBITION, NC_PERMALINK_PROHIBITION_REPLACE, __d('pages', 'copy_%s', $page['Page']['page_name']));
+			$page['Page']['permalink'] = preg_replace(NC_PERMALINK_PROHIBITION, NC_PERMALINK_PROHIBITION_REPLACE, $page['Page']['page_name']);
 		}
 		$permalink_arr = explode('/', $page['Page']['permalink']);
 		if($parent_page['Page']['permalink'] != '') {

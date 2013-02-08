@@ -140,27 +140,6 @@ class BlockOperationController extends BlockAppController {
 			$this->flash(__('The server encountered an internal error and was unable to complete your request.'), null, 'BlockOperation.shortcut.002', '500');
 			return;
 		}
-		$to_block = array('Block' => $add_block['Block']);	// 移動元Block
-		$to_content = array('Content' => $add_block['Content']);
-
-		/* args
-		 * @param   array 移動元ブロック   $block
-		 * @param   array 移動先ブロック   $block
-		 * @param   array 移動元コンテンツ $content
-		 * @param   array 移動先コンテンツ $content
-		 * @param   array 移動元ページ     $page
-		 * @param   array 移動先ページ     $page
-		 */
-		$args = array(
-			$block,
-			$add_block,
-			$pre_page,
-			$page
-		);
-		if(!$this->Module->operationAction($module['Module']['dir_name'], $this->action, $args)) {
-			$this->flash(__('Failed to execute the %s.', __('Create shortcut')), null, 'BlockOperation.shortcut.003', '500');
-			return;
-		}
 
 		$this->cancel();
 	}
@@ -223,29 +202,6 @@ class BlockOperationController extends BlockAppController {
 		$add_block =  $this->Block->findAuthById(intval($ret_add_block), $user_id, false);
 		if(!isset($add_block['Block'])) {
 			$this->flash(__('The server encountered an internal error and was unable to complete your request.'), null, 'BlockOperation.paste.002', '500');
-			return;
-		}
-		$to_block = array('Block' => $add_block['Block']);	// 移動元Block
-		$to_content = array('Content' => $add_block['Content']);
-
-		/* args
-		 * @param   array 移動元ブロック   $block
-		 * @param   array 移動先ブロック   $block
-		 * @param   array 移動元コンテンツ $content
-		 * @param   array 移動先コンテンツ $content
-		 * @param   array 移動元ページ     $page
-		 * @param   array 移動先ページ     $page
-		 */
-		$args = array(
-			$block,
-			$to_block,
-			$content,
-			$to_content,
-			$pre_page,
-			$page
-		);
-		if(!$this->Module->operationAction($module['Module']['dir_name'], $this->action, $args)) {
-			$this->flash(__('Failed to execute the %s.', __('Paste')), null, 'BlockOperation.paste.003', '500');
 			return;
 		}
 

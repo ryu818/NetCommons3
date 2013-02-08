@@ -45,7 +45,7 @@
 	margin:0;
 	overflow: auto;
 	min-width:200px;
-	max-width:800px
+	max-width:850px
 }
 .nc-pages-setting-icon {
 	width: 35px;
@@ -56,6 +56,7 @@
 .nc-pages-setting-icon a {
 	height:24px;
 	display:block;
+	margin-bottom:3px;
 }
 .nc-pages-menu-icon:hover,.nc-pages-menu-icon-on {
 	background: url(../../page/img/pages_menu_on.png) no-repeat center center;

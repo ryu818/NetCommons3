@@ -101,17 +101,17 @@ class BlockMoveComponent extends Component {
 		$pre_row_num = $block['Block']['row_num'];
 		$insert_room_id = isset($insert_page['Page']['room_id']) ? $insert_page['Page']['room_id'] : null;
 
-		$pre_count_row_num = $this->_controller->BlockMoveOperation->findRowCount($page_id, $pre_parent_id, $pre_col_num);
+		$pre_count_row_num = $this->_controller->BlockOperation->findRowCount($page_id, $pre_parent_id, $pre_col_num);
 
 		//前詰め処理(移動元)
-		$result = $this->_controller->BlockMoveOperation->decrementRowNum($block);
+		$result = $this->_controller->BlockOperation->decrementRowNum($block);
 		if(!$result) {
 			return false;
 		}
 		if($pre_count_row_num == 1) {
 			//移動前の列が１つしかなかったので
 			//列--
-			$result = $this->_controller->BlockMoveOperation->decrementColNum($block);
+			$result = $this->_controller->BlockOperation->decrementColNum($block);
 			if(!$result) {
 				return false;
 			}
@@ -186,7 +186,7 @@ class BlockMoveComponent extends Component {
 			$buf_block['Block']['page_id'] = $insert_page['Page']['id'];
 		}
 
-		$result = $this->_controller->BlockMoveOperation->incrementColNum($buf_block);
+		$result = $this->_controller->BlockOperation->incrementColNum($buf_block);
 		if(!$result) {
 			return false;
 		}
@@ -215,17 +215,17 @@ class BlockMoveComponent extends Component {
 		$pre_row_num = $block['Block']['row_num'];
 		$insert_room_id = isset($insert_page['Page']['room_id']) ? $insert_page['Page']['room_id'] : null;
 
-		$pre_count_row_num = $this->_controller->BlockMoveOperation->findRowCount($pre_page_id, $pre_parent_id, $pre_col_num);
+		$pre_count_row_num = $this->_controller->BlockOperation->findRowCount($pre_page_id, $pre_parent_id, $pre_col_num);
 
 		//前詰め処理(移動元)
-		$result = $this->_controller->BlockMoveOperation->decrementRowNum($block);
+		$result = $this->_controller->BlockOperation->decrementRowNum($block);
 		if(!$result) {
 			return false;
 		}
 		if($pre_count_row_num == 1) {
 			//移動前の列が１つしかなかったので
 			//列--
-			$result = $this->_controller->BlockMoveOperation->decrementColNum($block);
+			$result = $this->_controller->BlockOperation->decrementColNum($block);
 			if(!$result) {
 				return false;
 			}
@@ -318,7 +318,7 @@ class BlockMoveComponent extends Component {
 		if($insert_page['Page']['id'] != $page['Page']['id']) {
 			$buf_block['Block']['page_id'] = $insert_page['Page']['id'];
 		}
-		$result = $this->_controller->BlockMoveOperation->incrementRowNum($buf_block);
+		$result = $this->_controller->BlockOperation->incrementRowNum($buf_block);
 
 		if(!$result) {
 			return false;
@@ -418,15 +418,15 @@ class BlockMoveComponent extends Component {
 			    	$block['Block']['id'] = $block_id;
 			    }
 			    //前詰め処理(移動元)
-			    $result = $this->_controller->BlockMoveOperation->decrementRowNum($block);
+			    $result = $this->_controller->BlockOperation->decrementRowNum($block);
 				if(!$result) {
 					return false;
 				}
-				$count_row_num = $this->_controller->BlockMoveOperation->findRowCount($block['Block']['page_id'], $block['Block']['parent_id'], $block['Block']['col_num']);
+				$count_row_num = $this->_controller->BlockOperation->findRowCount($block['Block']['page_id'], $block['Block']['parent_id'], $block['Block']['col_num']);
 				if($count_row_num == 0) {
 					//削除列が１つもなくなったので
 					//列--
-					$result = $this->_controller->BlockMoveOperation->decrementColNum($block);
+					$result = $this->_controller->BlockOperation->decrementColNum($block);
 					if(!$result) {
 						return false;
 					}

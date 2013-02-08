@@ -216,6 +216,14 @@ class PageController extends PageAppController {
 			}
 		}
 
+		if($sel_active_tab == 0 && isset($this->request->query['page_id'])) {
+			// コピー、ペーストでコミュニティへペーストした場合、コミュニティタブへ
+			$active_page = $this->Page->findById(intval($this->request->query['page_id']));
+			if($active_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
+				$active_tab = 1;
+			}
+		}
+
 		$fetch_params = array(
 			'active_page_id' => $page_id
 		);

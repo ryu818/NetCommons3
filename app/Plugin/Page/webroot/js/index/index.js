@@ -857,27 +857,40 @@
 			progressbar = $('#pages-menu-progressbar');
 
 			progressbar.progressbar();
-			timer = setInterval(function(){
-				$.ajax({
+
+            function chgProgressbar(url, progressbar, progressbar_outer, progressbar_title) {
+            	var percent = 0;
+            	if(!$("#pages-menu-progressbar-title").get(0)) {
+            		return;
+            	}
+            	$.ajax({
 					type: "POST",
 					dataType: 'json',
 					url: check_url + postfix_url,
 					async: false,
 					success: function(res){
-						if(res['page_num']) {
+						if(res['current']) {
 							progressbar_outer.show();
-							progressbar_title.html(res['page_num'] + '/' + res['total']  + ' : ' + res['title']).show();
+							progressbar_title.html(res['current'] + '/' + res['total']  + ' : ' + res['title']).show();
 							percent = parseInt(res['percent']);
 						}
 					}
 	 			});
-				if(percent >= 100) {
+	 			progressbar.progressbar("option", "value", percent);
+	 			return percent;
+            };
+            // 最初は500ms、その後は2s毎にチェック
+            setTimeout(function(){
+
+            	percent = chgProgressbar(check_url + postfix_url, progressbar, progressbar_outer, progressbar_title);
+            }, 500);
+
+            timer = setInterval(function(){
+            	percent = chgProgressbar(check_url + postfix_url, progressbar, progressbar_outer, progressbar_title);
+            	if(percent >= 100) {
 					clearInterval(timer);
 					return;
                 }
-
-				 // プログレスバーの値を変更
-				progressbar.progressbar("option", "value", percent);
             }, 2000);
 
 			$.post(url,

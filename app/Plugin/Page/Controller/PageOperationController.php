@@ -30,7 +30,7 @@ class PageOperationController extends PageAppController {
  * Model name
  * @var array
  */
-	public $uses = array('TempData');
+	public $uses = array('TempData', 'Block.BlockOperation', 'Module');
 
 /**
  * ページコピー
@@ -53,7 +53,7 @@ class PageOperationController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function move($copy_page_id) {
-		$move_page_id = $this->request->query['page_id'];
+		/*$move_page_id = $this->request->query['page_id'];
 		$is_confirm = isset($this->request->data['is_confirm']) ? intval($this->request->data['is_confirm']) : _OFF;
 
 		$results = $this->PageMenu->operatePage($this->action, $is_confirm, $copy_page_id, $move_page_id);
@@ -64,7 +64,7 @@ class PageOperationController extends PageAppController {
 			echo $this->PageMenu->getErrorStr();
 			$this->cancel();
 			return;
-		}
+		}*/
 		$this->TempData->gc();
 
 		// 正常終了
@@ -80,24 +80,7 @@ class PageOperationController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function shortcut($copy_page_id) {
-		$move_page_id = $this->request->query['page_id'];
-		$is_confirm = isset($this->request->data['is_confirm']) ? intval($this->request->data['is_confirm']) : _OFF;
-
-		$results = $this->PageMenu->operatePage($this->action, $is_confirm, $copy_page_id, $move_page_id);
-		if($results === true) {
-			// 確認メッセージ
-			return;
-		} else if(!$results) {
-			echo $this->PageMenu->getErrorStr();
-			$this->cancel();
-			return;
-		}
-		$this->TempData->gc();
-
-		// 正常終了
-		$this->Session->setFlash(__('Has been successfully registered.'));
-		echo "<script>$.PageMenu.reload(".$ins_pages[0]['Page']['id'].");</script>";
-		$this->cancel();
+		$this->paste($copy_page_id);
 	}
 
 /**
@@ -110,7 +93,20 @@ class PageOperationController extends PageAppController {
 		$user_id = $this->Auth->User('id');
 		$move_page_id = $this->request->query['page_id'];
 		$is_confirm = isset($this->request->data['is_confirm']) ? intval($this->request->data['is_confirm']) : _OFF;
+		$shortcut_flag = isset($this->request->data['shortcut_flag']) ? intval($this->request->data['shortcut_flag']) : null;
+		if($this->action == "shortcut" && is_null($shortcut_flag)) {
+			$shortcut_flag = _OFF;
+		}
+		$this->TempData->gc();
 
+		$hash_key = $this->PageMenu->getOperationKey($copy_page_id, $move_page_id);
+		if($this->TempData->read($hash_key) !== false) {
+			// 既に実行中
+			$this->flash(__d('page', 'I\'m already running. Please try again at a later time.'), null, 'PageOperation.'.$this->action.'.001', '200');
+			return;
+		}
+
+		// 確認メッセージ表示、ページ処理開始
 		$results = $this->PageMenu->operatePage($this->action, $is_confirm, $copy_page_id, $move_page_id);
 		if($results === true) {
 			// 確認メッセージ
@@ -120,56 +116,13 @@ class PageOperationController extends PageAppController {
 			$this->cancel();
 			return;
 		}
-		$this->TempData->gc();
-		$hash_key = $this->PageMenu->getOperationKey($copy_page_id, $move_page_id);
-		if($this->TempData->read($hash_key) !== false) {
-			// 既に実行中
-			$this->flash(__d('page', 'I\'m already running. Please try again at a later time.'), null, 'Page.paste.001', '200');
-			return;
-		}
 
 		// ブロック処理開始
 		list($copy_page_id_arr, $copy_pages, $ins_pages) = $results;
 
-		$blocks = $this->Block->findByPageIds($copy_page_id_arr, $user_id, "");
-		$total = count($blocks);
-		if($total > 0) {
-			$percent = 0;
-			$page_num = 0;
-			$total_page = count($copy_page_id);
-			$pages_indexs = array();
-			foreach($copy_pages as $key => $copy_page) {
-				$pages_indexs[$copy_page['Page']['id']] = $key;
-			}
-
-			$count = 0;
-			$pre_page_id = 0;
-			foreach($blocks as $block) {
-				$count++;
-				if($block['Block']['page_id'] != $pre_page_id) {
-					$pre_page_id = $block['Block']['page_id'];
-					$page_num++;
-				}
-				if($block['Block']['title'] == "{X-CONTENT}") {
-					$title = $block['Content']['title'];
-				} else {
-					$title = $block['Block']['title'];
-				}
-				$title .= ' - ' . $copy_pages[$pages_indexs[$block['Block']['page_id']]]['Page']['page_name'];
-				$percent = floor(($count / $total)*100);
-				$data = array(
-					'percent' => $percent,
-					'title' => $title,
-					'total' => $total_page,
-					'page_num' => $page_num
-				);
-				$this->TempData->write($hash_key, serialize($data));
-				
-				
-
-				sleep(1);	// TODO:test
-			}
-			$this->TempData->destroy($hash_key);
+		if(!$this->PageMenu->operateBlock($hash_key, $user_id, $copy_page_id_arr, $copy_pages, $ins_pages, $shortcut_flag)) {
+			$this->flash(__('Failed to execute the %s.', __('Paste')), null, 'PageOperation.'.$this->action.'.002', '500');
+			return;
 		}
 
 		// 正常終了
