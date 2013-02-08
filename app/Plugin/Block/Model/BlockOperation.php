@@ -155,8 +155,8 @@ class BlockOperation extends AppModel {
 				// 権限が付与されているショートカットを元のルームに戻した。
 				$ins_content = $master_content;
 				$last_content_id = $master_content['Content']['id'];
-			} else if((!isset($shortcut_flag) && $pre_page['Page']['room_id'] != $content['Content']['room_id']) ||
-				$shortcut_flag === _OFF) {
+			} else if($block['Block']['module_id'] != 0 && ((!isset($shortcut_flag) && $pre_page['Page']['room_id'] != $content['Content']['room_id']) ||
+				$shortcut_flag === _OFF)) {
 				// 権限が付与されていないショートカットのペースト、ショートカット作成
 				$ins_content = $content;
 				$last_content_id = $content['Content']['id'];
@@ -172,10 +172,10 @@ class BlockOperation extends AppModel {
 					)
 				);
 
-				if(!$content['Content']['is_master']) {
+				if($block['Block']['module_id'] != 0 && !$content['Content']['is_master']) {
 					// 権限が付与されたショートカットのペーストか、権限が付与されたショートカットの権限が付与されたショートカット
 					$ins_content['Content']['master_id'] = $content['Content']['master_id'];
-				} else if($shortcut_flag === _ON) {
+				} else if($block['Block']['module_id'] != 0 && $shortcut_flag === _ON) {
 					// 権限が付与されたショートカットの作成
 					$ins_content['Content']['master_id'] = $content['Content']['id'];
 				} else {
