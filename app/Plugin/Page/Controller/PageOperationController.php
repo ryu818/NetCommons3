@@ -33,6 +33,49 @@ class PageOperationController extends PageAppController {
 	public $uses = array('TempData', 'Block.BlockOperation', 'Module');
 
 /**
+ * 表示前処理
+ * <pre>
+ * 	ページメニューの言語切替の値を選択言語としてセット
+ * </pre>
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function beforeFilter()
+	{
+		$active_lang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.lang');
+		if(isset($active_lang)) {
+			Configure::write(NC_CONFIG_KEY.'.'.'language', $active_lang);
+			$this->Session->write(NC_CONFIG_KEY.'.language', $active_lang);
+		}
+		parent::beforeFilter();
+
+		include_once dirname(dirname(__FILE__)).'/Config/defines.inc.php';
+		set_time_limit(PAGES_OPERATION_TIME_LIMIT);
+		// メモリ最大サイズ設定
+		ini_set('memory_limit', PAGES_OPERATION_MEMORY_LIMIT);
+	}
+
+/**
+ * 表示後処理
+ * <pre>
+ * 	セッションにセットしてあった言語を元に戻す。
+ * </pre>
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function afterFilter()
+	{
+		parent::afterFilter();
+		$pre_lang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.pre_lang');
+		if(isset($pre_lang)) {
+			Configure::write(NC_CONFIG_KEY.'.'.'language', $pre_lang);
+			$this->Session->write(NC_CONFIG_KEY.'.language', $pre_lang);
+		}
+	}
+
+/**
  * ページコピー
  * @param   integer   copy_page_id リクエストを正にするため使用しない
  * @return  void

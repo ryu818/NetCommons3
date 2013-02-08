@@ -5,3 +5,6 @@ define("PAGES_COMMUNITY_VIEWS", 5);		// ページ送り：リストを5ページ
 define("PAGES_COMMUNITY_LIMIT_SELECT", "10|20|30|40|50|100");
 define("PAGES_PARTICIPANT_LIMIT_DEFAULT", "15");
 define("PAGES_PARTICIPANT_LIMIT_SELECT", "[10, 15, 20, 30, 50, 100]");
+
+define("PAGES_OPERATION_TIME_LIMIT", 2400);		// ペースト、ショートカット作成、移動時のタイムアウト時間(s)
+define("PAGES_OPERATION_MEMORY_LIMIT", "128M");	// ペースト、ショートカット作成、移動時のメモリ使用量
