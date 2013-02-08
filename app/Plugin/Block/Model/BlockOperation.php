@@ -187,11 +187,6 @@ class BlockOperation extends AppModel {
 					return false;
 				}
 				$last_content_id = $Content->id;
-				if($ins_content['Content']['is_master'] && !isset($ins_content['Content']['master_id'])) {
-					if(!$Content->saveField('master_id', $last_content_id)) {
-						return false;
-					}
-				}
 			}
 		} else {
 			// ブロック追加時
@@ -213,11 +208,11 @@ class BlockOperation extends AppModel {
 		}
 		$ins_content['Content']['id'] = $last_content_id;
 
-		//if(!isset($ins_content['Content']['master_id'])) {
-		//	if(!$Content->saveField('master_id', $last_content_id)) {
-		//		return false;
-		//	}
-		//}
+		if($ins_content['Content']['is_master'] && !isset($ins_content['Content']['master_id'])) {
+			if(!$Content->saveField('master_id', $last_content_id)) {
+				return false;
+			}
+		}
 
 		$ins_block = array();
 		$ins_block = $this->defaultBlock($ins_block);

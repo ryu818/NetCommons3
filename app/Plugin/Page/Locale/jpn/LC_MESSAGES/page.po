@@ -80,7 +80,7 @@ msgid  	"Please input in [publish date < closed date]."
 msgstr 	"[公開日付 < 非公開日付]で入力してください。"
 
 msgid  	"Select the page to which the movement, create a shortcut, paste, Can you please run from the [%s]."
-msgstr 	"移動、ショートカット作成、ペースト先のページを選択し、[その他操作]から実行してください。"
+msgstr 	"移動、ショートカット作成、ペースト先のページを選択し、[%s]から実行してください。"
 
 msgid  	"Top of each page is required at least one page. <br />You can't delete."
 msgstr 	"各トップページは最低1ページ必要です。<br />削除できません。"
