@@ -86,6 +86,7 @@ class PageOperationController extends PageAppController {
 
 		$this->Session->write('Pages.'.'copy_page_id', $copy_page_id);
 		$this->Session->setFlash(__d('page', 'Select the page to which the movement, create a shortcut, paste, Can you please run from the [%s].', __d('page', 'Other operations')));
+		$this->set('pause', 5000);	// メッセージを5秒間表示
 		$this->render(false, 'ajax');
 	}
 

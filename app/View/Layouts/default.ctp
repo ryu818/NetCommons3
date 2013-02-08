@@ -37,12 +37,7 @@ if(method_exists($this->Html,'fetchScript')) {
 	}
 	?>
 	<?php echo $this->Token->create('nc_token', 'nc_token'); ?>
-	<?php
-	$flashMes = $this->Session->flash();
-	if($flashMes) {
-		echo '<script>$(function(){$.Common.flash("'.$this->Js->escape($flashMes).'");});</script>';
-	}
-	?>
+	<?php echo $this->element('flash_mes'); ?>
 	<?php echo $this->element('sql_dump'); ?>
 </body>
 </html>

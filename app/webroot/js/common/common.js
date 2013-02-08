@@ -204,13 +204,14 @@
  			}
  		},
 
- 		flash: function(str) {
+ 		flash: function(str, pause) {console.log(pause);
  			var mes = $('#flashMessage');
  			if(mes.get(0)) {
  				mes.remove();
  			}
  			mes = $(str).prependTo($("body"));
- 			mes.delay(2000).animate({top: -1 * mes.outerHeight()}, 500, function() {
+ 			pause = (typeof pause == "undefined") ? 2000 : pause;
+ 			mes.delay(pause).animate({top: -1 * mes.outerHeight()}, 500, function() {
 				mes.remove();
 			});
 

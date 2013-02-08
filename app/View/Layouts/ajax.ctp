@@ -22,10 +22,5 @@ if($this->request->header('X-PJAX') && $this->request->is('ajax')) {
 }
 ?>
 <?php echo $this->fetch('content'); ?>
-<?php
-$flashMes = $this->Session->flash();
-if($flashMes) {
-	echo '<script>$(function(){$.Common.flash("'.$this->Js->escape($flashMes).'");});</script>';
-}
-?>
+<?php echo $this->element('flash_mes'); ?>
 <?php echo $this->element('sql_dump'); ?>
