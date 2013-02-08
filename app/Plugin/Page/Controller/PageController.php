@@ -67,12 +67,36 @@ class PageController extends PageAppController {
  */
 	public function beforeFilter()
 	{
-		$this->_sess_language = null;
 		$active_lang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.lang');
-		if(isset($active_lang)) {//var_dump("KOKO");
+		if(isset($active_lang)) {
 			Configure::write(NC_CONFIG_KEY.'.'.'language', $active_lang);
+			$this->Session->write(NC_CONFIG_KEY.'.language', $active_lang);
 		}
 		parent::beforeFilter();
+	}
+
+/**
+ * 表示後処理
+ * <pre>
+ * 	セッションにセットしてあった言語を元に戻す。
+ * </pre>
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function afterFilter()
+	{
+		parent::afterFilter();
+		if($this->action != 'index') {
+			$this->Session->delete(NC_SYSTEM_KEY.'.page_menu.lang');
+			$this->Session->delete(NC_SYSTEM_KEY.'.page_menu.pre_lang');
+		}
+		$pre_lang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.pre_lang');
+		if(isset($pre_lang)) {
+			Configure::write(NC_CONFIG_KEY.'.'.'language', $pre_lang);
+			$this->Session->write(NC_CONFIG_KEY.'.language', $pre_lang);
+		}
+
 	}
 
 /**
@@ -102,10 +126,11 @@ class PageController extends PageAppController {
 		//$active_lang = isset($active_lang) ? $active_lang : $this->Session->read(NC_SYSTEM_KEY.'.page_menu.lang');
 		//$this->_sess_language = null;
 		if(isset($active_lang) && isset($languages[$active_lang])) {
+			$this->Session->write(NC_SYSTEM_KEY.'.page_menu.pre_lang', $this->Session->read(NC_CONFIG_KEY.'.language'));
+
 			Configure::write(NC_CONFIG_KEY.'.'.'language', $active_lang);
-			$this->_sess_language = $this->Session->read(NC_CONFIG_KEY.'.language');
-			$this->Session->write(NC_SYSTEM_KEY.'.page_menu.lang', $active_lang);
 			$this->Session->write(NC_CONFIG_KEY.'.language', $active_lang);
+			$this->Session->write(NC_SYSTEM_KEY.'.page_menu.lang', $active_lang);
 		}
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 

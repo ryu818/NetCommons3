@@ -47,12 +47,6 @@ class PageMenuController extends PageAppController {
 	public $helpers = array('TimeZone', 'Page.PageMenu');
 
 /**
- * セッションの言語保持 _sess_language
- * @var string
- */
-	private $_sess_language = null;
-
-/**
  * 表示前処理
  * <pre>
  * 	ページメニューの言語切替の値を選択言語としてセット
@@ -63,10 +57,8 @@ class PageMenuController extends PageAppController {
  */
 	public function beforeFilter()
 	{
-		$this->_sess_language = null;
 		$active_lang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.lang');
 		if(isset($active_lang)) {
-			$this->_sess_language = $this->Session->read(NC_CONFIG_KEY.'.language');
 			Configure::write(NC_CONFIG_KEY.'.'.'language', $active_lang);
 			$this->Session->write(NC_CONFIG_KEY.'.language', $active_lang);
 		}
@@ -85,8 +77,10 @@ class PageMenuController extends PageAppController {
 	public function afterFilter()
 	{
 		parent::afterFilter();
-		if(isset($this->_sess_language)) {
-			$this->Session->write(NC_CONFIG_KEY.'.language', $this->_sess_language);
+		$pre_lang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.pre_lang');
+		if(isset($pre_lang)) {
+			Configure::write(NC_CONFIG_KEY.'.'.'language', $pre_lang);
+			$this->Session->write(NC_CONFIG_KEY.'.language', $pre_lang);
 		}
 	}
 
