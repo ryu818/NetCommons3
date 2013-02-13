@@ -30,7 +30,7 @@ class PageMenuController extends PageAppController {
  *
  * @var array
  */
-	public $uses = array('PageUserLink', 'Community', 'CommunityLang', 'CommunityTag');
+	public $uses = array('PageUserLink', 'Community', 'CommunityLang', 'CommunityTag', 'TempData', 'Block.BlockOperation');
 
 /**
  * Component name
@@ -614,15 +614,16 @@ class PageMenuController extends PageAppController {
 			}
 			if(isset($permalink)) {
 				$permalink = $this->Page->getPermalink($permalink, $current_page['Page']['space_type']);
-				$redirect_url = Router::url('/', true). $permalink . 'blocks/page/index?is_edit=1';
+				//$redirect_url = Router::url('/', true). $permalink . 'blocks/page/index?is_edit=1';
+				$redirect_url = Router::url(array('permalink' => $permalink, 'plugin' => 'page', 'controller' => 'page', '?' => 'is_edit=1'));
+
 			} else {
-				$redirect_url = Router::url('/', true). 'blocks/page/index?is_edit=1';
+				//$redirect_url = Router::url('/', true). 'blocks/page/index?is_edit=1';
+				$redirect_url = Router::url(array('plugin' => 'page', 'controller' => 'page', '?' => 'is_edit=1'));
 			}
-			// TODO: setFlashしてredirectしたかったが、layoutが表示されないままリダイレクトされたため、
-			// controller->flashに変更。
-			//$this->layout = 'default';
-			//$this->redirect($redirect_url);
-			$this->flash(__('Has been successfully deleted.'), $redirect_url);
+			$this->Session->setFlash(__('Has been successfully deleted.'));
+			echo "<script>location.href='".$redirect_url."';</script>";
+			$this->render(false, 'ajax');
 		} else {
 			$this->Session->setFlash(__('Has been successfully deleted.'));
 			$this->render(false, 'ajax');
@@ -635,6 +636,11 @@ class PageMenuController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function chgsequence() {
+		include_once dirname(dirname(__FILE__)).'/Config/defines.inc.php';
+		set_time_limit(PAGES_OPERATION_TIME_LIMIT);
+		// メモリ最大サイズ設定
+		ini_set('memory_limit', PAGES_OPERATION_MEMORY_LIMIT);
+
 		$user_id = $this->Auth->user('id');
 		$page = $this->request->data;
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
@@ -645,16 +651,37 @@ class PageMenuController extends PageAppController {
 			return;
 		}
 
-		$ins_pages = $this->PageMenu->operatePage($this->action, $is_confirm, $page['Page']['id'], $page['DropPage']['id'], $position);
-		if($ins_pages === false) {
+		$this->TempData->gc();
+
+		$hash_key = $this->PageMenu->getOperationKey($page['Page']['id'], $page['DropPage']['id']);
+		if($this->TempData->read($hash_key) !== false) {
+			// 既に実行中
+			$this->flash(__d('page', 'I\'m already running. Please try again at a later time.'), null, 'PageMenu/chgsequence.002', '200');
+			return;
+		}
+
+		$results = $this->PageMenu->operatePage('move', $is_confirm, $page['Page']['id'], $page['DropPage']['id'], $position);
+		if($results === false) {
 			echo $this->PageMenu->getErrorStr();
 			$this->render(false, 'ajax');
+			return;
+		}
+
+		// ブロック処理開始
+		list($copy_page_id_arr, $copy_pages, $ins_pages) = $results;
+
+		if(!$this->PageMenu->operateBlock('move', $hash_key, $user_id, $copy_page_id_arr, $copy_pages, $ins_pages)) {
+			$this->flash(__('Failed to execute the %s.', __('Move')), null, 'PageMenu.chgsequence.003', '500');
 			return;
 		}
 
 		//
 		// TODO:異なるルームへの移動
 		//
+
+
+
+
 		/*
 		if($drop_room_id != $drag_page['Page']['room_id']) {
 			// 未実装

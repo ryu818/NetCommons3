@@ -9,6 +9,8 @@ msgstr 	"リセット"
 msgid  	"Note"
 msgstr 	"注釈"
 
+msgid  	"Add"
+msgstr 	"追加"
 msgid  	"Edit"
 msgstr 	"編集"
 msgid  	"Quit"

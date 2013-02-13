@@ -200,12 +200,16 @@
 							// confirm
 							_buttons[ok] = function(){
 								data['is_confirm'] = 1;
+								var list = $('#pages-menu-edit-other-operation');
+								var check_url = list.attr('data-url') + '/' + page_id + '?page_id=' + drop_page_id;
+								var timer = $.PageMenu.showProgressbar(check_url, params);
 								$.ajax({
 									type: "POST",
 									url: url,
 									data: data,
 									// async: false,
 									success: function(res){
+										$.PageMenu.hideProgressbar(timer);
 										if($.trim(res).match(re_html)) {
 											chgSequenceSuccess(res, page_id);
 											root_menu.nestable('setStop', [true]);
@@ -829,25 +833,23 @@
 		},
 
 /**
- * ページ操作
- * @param   void
- * @return  void
+ * プログレスバー表示
+ * @param   check_url
+ * @param   params
+ * @return  timer
  */
-		operationPage: function(url, postfix_url, params) {
+		showProgressbar: function(check_url, params) {
 			var progressbar_outer, progressbar_title, progressbar, timer;
-			var list = $('#pages-menu-edit-other-operation');
-			var page_id = list.attr('data-id');
-			var check_url = list.attr('data-url');
 			var timer, percent = 0;
 
-			var overlay = $( "<div>" ).addClass( "ui-widget-overlay" );
+			var overlay = $( "<div id='pages-menu-progressbar-overlay'>" ).addClass( "ui-widget-overlay" );
 			overlay.appendTo( document.body ).css({
 				width: $(document.body).width(),
 				height: $(document.body).height(),
 				zIndex: $.Common.zIndex++
 			});
 
-			progressbar_outer = $('<div class="pages-menu-progressbar-outer" style="display:none;"><div id="pages-menu-progressbar-title"></div><div id="pages-menu-progressbar"></div></div>').css('z-index', $.Common.zIndex++).appendTo($(document.body));
+			progressbar_outer = $('<div id="pages-menu-progressbar-outer" style="display:none;"><div id="pages-menu-progressbar-title"></div><div id="pages-menu-progressbar"></div></div>').css('z-index', $.Common.zIndex++).appendTo($(document.body));
 			progressbar_outer.position({
 				my: "center",
 				at: "center",
@@ -866,7 +868,7 @@
             	$.ajax({
 					type: "POST",
 					dataType: 'json',
-					url: check_url + postfix_url,
+					url: check_url,
 					async: false,
 					success: function(res){
 						if(res['current']) {
@@ -881,25 +883,55 @@
             };
             // 最初は500ms、その後は2s毎にチェック
             setTimeout(function(){
-
-            	percent = chgProgressbar(check_url + postfix_url, progressbar, progressbar_outer, progressbar_title);
+            	percent = chgProgressbar(check_url, progressbar, progressbar_outer, progressbar_title);
             }, 500);
 
             timer = setInterval(function(){
-            	percent = chgProgressbar(check_url + postfix_url, progressbar, progressbar_outer, progressbar_title);
+            	percent = chgProgressbar(check_url, progressbar, progressbar_outer, progressbar_title);
             	if(percent >= 100) {
 					clearInterval(timer);
 					return;
                 }
             }, 2000);
 
+            return timer;
+		},
+
+/**
+ * プログレスバー非表示
+ * @param   timer
+ * @return  void
+ */
+		hideProgressbar: function(timer) {
+			var overlay = $('#pages-menu-progressbar-overlay');
+			var progressbar_outer = $('#pages-menu-progressbar-outer');
+			clearInterval(timer);
+			overlay.remove();
+			progressbar_outer.remove();
+		},
+
+/**
+ * ページ操作
+ * @param   url
+ * @param   postfix_url
+ * @param   params
+ * @return  void
+ */
+		operationPage: function(url, postfix_url, params) {
+			var list = $('#pages-menu-edit-other-operation');
+			var page_id = list.attr('data-id');
+			var check_url = list.attr('data-url');
+
+			var timer = $.PageMenu.showProgressbar(check_url + postfix_url, params);
+
 			$.post(url,
 				params,
 				function(res){
 					var re_html = new RegExp("^<script>", 'i');
-					clearInterval(timer);
-					overlay.remove();
-					progressbar_outer.remove();
+					//clearInterval(timer);
+					//overlay.remove();
+					//progressbar_outer.remove();
+					$.PageMenu.hideProgressbar(timer);
 
 					if(!$.trim(res).match(re_html)) {
 						// error

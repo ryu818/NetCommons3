@@ -259,23 +259,6 @@ class BlockOperationController extends BlockAppController {
 			return;
 		}
 
-		/* args
-		 * @param   array 移動元ブロック   $block
-		 * @param   array 移動元コンテンツ $content
-		 * @param   array 移動元ページ     $page
-		 * @param   array 移動先ページ     $page
-		 */
-		$args =array(
-			$block,
-			$content,
-			$pre_page,
-			$page
-		);
-		if(!$this->Module->operationAction($module['Module']['dir_name'], $this->action, $args)) {
-			$this->flash(__('Failed to execute the %s.', __('Move')), null, 'BlockOperation.move.002', '500');
-			return;
-		}
-
 		$this->cancel();
 	}
 

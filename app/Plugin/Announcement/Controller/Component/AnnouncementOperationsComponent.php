@@ -34,21 +34,23 @@ class AnnouncementOperationsComponent extends Object {
 	}
 
 /**
- * ブロック削除時に呼ばれる関数
+ * ブロック削除実行時に呼ばれる関数
  *
- * @param   array 削除ブロック $block
- * @return  void
+ * @param   Model Block   削除ブロック
+ * @param   Model Content 削除コンテンツ
+ * @param   Model Page    削除先ページ
+ * @return  boolean
  * @since   v 3.0.0.0
  */
-	//public function delete_block($block) {
-	//	return $this->delete($block);
-	//}
+	//	public function delete_block($block, $content, $to_page) {
+	//		return true;
+	//	}
 
 /**
  * コンテンツ削除時に呼ばれる関数
  *
- * @param   array 削除コンテンツ $content
- * @return  void
+ * @param   Model Content 削除コンテンツ $content
+ * @return  boolean
  * @since   v 3.0.0.0
  */
 	public function delete($content) {
@@ -64,13 +66,13 @@ class AnnouncementOperationsComponent extends Object {
 /**
  * ショートカット実行時に呼ばれる関数
  *
- * @param   array 移動元ブロック $block
- * @param   array 移動先ブロック $block
- * @param   array 移動元ブロック $content
- * @param   array 移動先ブロック $content
- * @param   array 移動元ページ   $page
- * @param   array 移動先ページ   $page
- * @return  void
+ * @param   Model Block   移動元ブロック
+ * @param   Model Block   移動先ブロック
+ * @param   Model Content 移動元コンテンツ
+ * @param   Model Content 移動先コンテンツ
+ * @param   Model Page    移動元ページ
+ * @param   Model Page    移動先ページ
+ * @return  boolean
  * @since   v 3.0.0.0
  */
 //	public function shortcut($from_block, $to_block, $from_content, $to_content, $from_page, $to_page) {
@@ -81,13 +83,13 @@ class AnnouncementOperationsComponent extends Object {
 /**
  * コピー(ペースト)実行時に呼ばれる関数
  *
- * @param   array 移動元ブロック $block
- * @param   array 移動先ブロック $block
- * @param   array 移動元ブロック $content
- * @param   array 移動先ブロック $content
- * @param   array 移動元ページ   $page
- * @param   array 移動先ページ   $page
- * @return  void
+ * @param   Model Block   移動元ブロック
+ * @param   Model Block   移動先ブロック
+ * @param   Model Content 移動元コンテンツ
+ * @param   Model Content 移動先コンテンツ
+ * @param   Model Page    移動元ページ
+ * @param   Model Page    移動先ページ
+ * @return  boolean
  * @since   v 3.0.0.0
  */
 	public function paste($from_block, $to_block, $from_content, $to_content, $from_page, $to_page) {
@@ -102,25 +104,40 @@ class AnnouncementOperationsComponent extends Object {
 		return true;
 	}
 
-
 /**
- * 移動実行時に呼ばれる関数
+ * ブロック追加実行時に呼ばれる関数
  *
- * @param   array 移動元ブロック $block
- * @param   array 移動元コンテンツ $content
- * @param   array 移動元ページ   $page
- * @param   array 移動先ページ   $page
- * @return  void
+ * @param   Model Block   追加ブロック
+ * @param   Model Content 追加コンテンツ
+ * @param   Model Page    追加先ページ
+ * @return  boolean
  * @since   v 3.0.0.0
  */
-//	public function move($from_block, $from_content, $from_page, $to_page) {
+//	public function add_block($block, $content, $to_page) {
 //		return true;
 //	}
+
+/**
+ * 別ルームに移動実行時に呼ばれる関数
+ *
+ * @param   Model Block   移動元ブロック
+ * @param   Model Block   移動先ブロック
+ * @param   Model Content 移動元コンテンツ
+ * @param   Model Content 移動先コンテンツ
+ * @param   Model Page    移動元ページ
+ * @param   Model Page    移動先ページ
+ * @return  boolean
+ * @since   v 3.0.0.0
+ */
+//	public function move($from_block, $to_block, $from_content, $to_content, $from_page, $to_page) {
+//		return true;
+//	}
+
 /**
  * モジュールインストール時に呼ばれる関数
  *
  * @param   integer $module_id
- * @return  void
+ * @return  boolean
  * @since   v 3.0.0.0
  */
 //	public function install($module_id) {
@@ -131,7 +148,7 @@ class AnnouncementOperationsComponent extends Object {
  * モジュールアップデート時に呼ばれる関数
  *
  * @param   integer $module_id
- * @return  void
+ * @return  boolean
  * @since   v 3.0.0.0
  */
 //	public function update($module_id) {
@@ -142,7 +159,7 @@ class AnnouncementOperationsComponent extends Object {
  * モジュールアンインストール時に呼ばれる関数
  *
  * @param   integer $module_id
- * @return  void
+ * @return  boolean
  * @since   v 3.0.0.0
  */
 //	public function uninstall($module_id) {

@@ -204,7 +204,7 @@
  			}
  		},
 
- 		flash: function(str, pause) {console.log(pause);
+ 		flash: function(str, pause) {
  			var mes = $('#flashMessage');
  			if(mes.get(0)) {
  				mes.remove();

@@ -97,24 +97,7 @@ class PageOperationController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function move($copy_page_id) {
-		/*$move_page_id = $this->request->query['page_id'];
-		$is_confirm = isset($this->request->data['is_confirm']) ? intval($this->request->data['is_confirm']) : _OFF;
-
-		$results = $this->PageMenu->operatePage($this->action, $is_confirm, $copy_page_id, $move_page_id);
-		if($results === true) {
-			// 確認メッセージ
-			return;
-		} else if(!$results) {
-			echo $this->PageMenu->getErrorStr();
-			$this->cancel();
-			return;
-		}*/
-		$this->TempData->gc();
-
-		// 正常終了
-		$this->Session->setFlash(__('Has been successfully registered.'));
-		echo "<script>$.PageMenu.reload(".$ins_pages[0]['Page']['id'].");</script>";
-		$this->cancel();
+		$this->paste($copy_page_id);
 	}
 
 /**
@@ -164,14 +147,21 @@ class PageOperationController extends PageAppController {
 		// ブロック処理開始
 		list($copy_page_id_arr, $copy_pages, $ins_pages) = $results;
 
-		if(!$this->PageMenu->operateBlock($hash_key, $user_id, $copy_page_id_arr, $copy_pages, $ins_pages, $shortcut_flag)) {
+		if(!$this->PageMenu->operateBlock($this->action, $hash_key, $user_id, $copy_page_id_arr, $copy_pages, $ins_pages, $shortcut_flag)) {
 			$this->flash(__('Failed to execute the %s.', __('Paste')), null, 'PageOperation.'.$this->action.'.002', '500');
 			return;
 		}
 
 		// 正常終了
+		$center_page = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');
 		$this->Session->setFlash(__('Has been successfully registered.'));
-		echo "<script>$.PageMenu.reload(".$ins_pages[0]['Page']['id'].");</script>";
+		if($this->action == 'move' && in_array($center_page['Page']['id'], $copy_page_id_arr)) {
+			$permalink = $this->Page->getPermalink($ins_pages[0]['Page']['permalink'], $ins_pages[0]['Page']['space_type']);
+			$redirect_url = Router::url(array('permalink' => $permalink, 'plugin' => 'page', 'controller' => 'page', '?' => 'is_edit=1&page_id='.$ins_pages[0]['Page']['id']));
+			echo "<script>location.href='".$redirect_url."';</script>";
+		} else {
+			echo "<script>$.PageMenu.reload(".$ins_pages[0]['Page']['id'].");</script>";
+		}
 		$this->cancel();
 	}
 

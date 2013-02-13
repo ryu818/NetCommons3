@@ -857,14 +857,12 @@ class PageMenuComponent extends Component {
 				if($position != 'inner' && $move_page['Page']['thread_num'] == 1) {
 					// コミュニティ
 					return '';	// 確認メッセージなし
-				} else if(count($pre_room_id_arr) > 0) {
-					// ルーム
-					$echo_str .= __d('page', 'You are about to move to [%s]. <br />When you move the contents of the [%s], it becomes contents of [%s].Are you sure?',
-							$move_room_name, $pre_page['Page']['page_name'], $move_room_name);
 				} else if(count($blocks) > 0) {
 					// ブロックあり
 					if($pre_room_id != $move_room_id) {
-						$echo_str .= __d('page', 'You are about to move to [%s]. <br />When you move, block placement will be moved as a shortcut. Are you sure?', $move_room_name);
+						// 異なるルームへ
+						$echo_str .= __d('page', 'You are about to move to [%s]. <br />When you move the contents of the [%s], it becomes contents of [%s].Are you sure?',
+							$move_room_name, $pre_page['Page']['page_name'], $move_room_name);
 					} else {
 						$echo_str .= __d('page','You are about to move to [%s]. Are you sure?', $move_room_name);
 					}
@@ -1078,7 +1076,7 @@ class PageMenuComponent extends Component {
 		}
 
 		// 登録処理
-		$childs_update_type = ($action == 'move' || $action == 'chgsequence') ? 'update_once' : 'update_all';
+		$childs_update_type = ($action == 'move') ? 'update_once' : 'update_all';
 		$currentFieldList = array();
 		if($page_name != $copy_page['Page']['page_name']) {
 			$currentFieldList[] = 'page_name';
@@ -1139,7 +1137,7 @@ class PageMenuComponent extends Component {
 				$ins_page['Page']['room_id'] = $root_id;
 			}
 			if($space_type != $copy_page['Page']['space_type']) {
-				$fields['Page.space_type'] = $pace_type;
+				$fields['Page.space_type'] = $space_type;
 				$ins_page['Page']['space_type'] = $space_type;
 			}
 			if($room_id != $copy_page['Page']['room_id']) {
@@ -1392,7 +1390,7 @@ class PageMenuComponent extends Component {
 			}
 			$fields = array('Page.display_sequence'=>'Page.display_sequence+('.$upd_display_sequence.')');
 			if(!$this->_controller->Page->updateAll($fields, $conditions)) {
-				$this->_controller->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/chgsequence.007', '500');
+				$this->_controller->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/operatePage.007', '500');
 				return false;
 			}
 		}
@@ -1411,7 +1409,7 @@ class PageMenuComponent extends Component {
 	}
 
 /**
- * ページのコピー,移動処理
+ * ブロックのコピー,ショートカット、移動処理
  * @param   string       $action paste or shortcut
  * @param   string       TempDataテーブルハッシュキー $hash_key
  * @param   integer      $user_id
@@ -1422,7 +1420,12 @@ class PageMenuComponent extends Component {
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	public function operateBlock($hash_key, $user_id, $copy_page_id_arr, $copy_pages, $ins_pages, $default_shortcut_flag = null) {
+	public function operateBlock($action, $hash_key, $user_id, $copy_page_id_arr, $copy_pages, $ins_pages, $default_shortcut_flag = null) {
+		if($action == 'move' && $copy_pages[0]['Page']['room_id'] == $ins_pages[0]['Page']['room_id']) {
+			// 移動で同一ルーム内の移動であればblockテーブルは更新しない
+			$this->_controller->TempData->destroy($hash_key);
+			return true;
+		}
 		$blocks = $this->_controller->Block->findByPageIds($copy_page_id_arr, $user_id, "");
 		$total = count($blocks);
 		if($total > 0) {
@@ -1475,7 +1478,7 @@ class PageMenuComponent extends Component {
 					$new_parent_id = $parent_id_arr[$block['Block']['parent_id']];
 				}
 
-				if(isset($content_id_arr[$content['Content']['id']])) {
+				if($action != 'move' && isset($content_id_arr[$content['Content']['id']])) {
 					// 既にpasteしてあるコンテンツのショートカットならば、ショートカットとして貼り付ける。
 					$shortcut_flag = _OFF;
 					$content['Content']['id'] = $content_id_arr[$content['Content']['id']];
@@ -1486,7 +1489,7 @@ class PageMenuComponent extends Component {
 					$shortcut_flag = $default_shortcut_flag;
 				}
 
-				$ins_ret = $this->_controller->BlockOperation->addBlock($current_page, $module, $block, $content, $shortcut_flag, $ins_page, $new_root_id, $new_parent_id);
+				$ins_ret = $this->_controller->BlockOperation->addBlock($action, $current_page, $module, $block, $content, $shortcut_flag, $ins_page, $new_root_id, $new_parent_id);
 
 				if($ins_ret === false) {
 					$this->_controller->TempData->destroy($hash_key);
@@ -1498,8 +1501,45 @@ class PageMenuComponent extends Component {
 				$parent_id_arr[$block['Block']['id']] = $ins_block['Block']['id'];
 				$content_id_arr[$content['Content']['id']] = $ins_content['Content']['id'];
 
-				//sleep(2);
+				/*if($action == 'move' && $copy_pages[0]['Page']['room_id'] != $ins_pages[0]['Page']['room_id'] &&
+						$current_page['Page']['room_id'] == $content['Content']['room_id'] && $content['Content']['is_master']) {
+					// ブロックの移動で、該当ブロックコンテンツが他にもはってあれば、そのブロックを権限つきショートカットにする。
+					// ショートカット以外のコンテンツが対象
+					$params = array(
+						'conditions' => array(
+							'Block.content_id' => $content['Content']['id']
+						),
+						'fields' => array('Block.id', 'Block.page_id'),
+						'recursive' =>  -1
+					);
+					$other_blocks = $this->_controller->Block->find('all', $params);
+					foreach($other_blocks as $other_block) {
+						if(!in_array($other_block['Block']['page_id'], $copy_page_id_arr)) {
+							// コピーページ以外に該当コンテンツあり
+							$other_content = $content;
+							unset($other_content['Content']['id']);
+							$other_content['Content']['is_master'] = _OFF;
+							$other_content['Content']['master_id'] = $ins_content['Content']['id'];
+							$this->_controller->Content->create();
+
+							$ret_other_content = $this->_controller->Content->save($other_content);
+							if(!$ret_other_content) {
+								$this->_controller->TempData->destroy($hash_key);
+								return false;
+							}
+							$other_last_content_id = $this->_controller->Content->id;
+							$this->_controller->Block->create();
+							$this->_controller->Block->id = $other_block['Block']['id'];
+							if(!$this->Page->saveField('content_id', $other_last_content_id)) {
+								$this->_controller->TempData->destroy($hash_key);
+								return false;
+							}
+						}
+					}
+				}*/
+//sleep(4);
 			}
+
 			$this->_controller->TempData->destroy($hash_key);
 			return true;
 		}

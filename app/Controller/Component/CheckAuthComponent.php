@@ -168,7 +168,14 @@ class CheckAuthComponent extends Component {
 				//}
 			}
 
-			$page = $this->_getPage($controller, $permalink, $page_id, $user_id, $lang);
+			$result = $this->_getPage($controller, $permalink, $page_id, $user_id, $lang);
+			if($result === false) {
+				$page = false;
+				$center_page = false;
+			} else {
+				list($center_page, $page) = $result;
+			}
+			Configure::write(NC_SYSTEM_KEY.'.'.'center_page', $center_page);
 			if($this->chkMovedPermanently && isset($active_page) && $active_page['Page']['position_flag'] &&
 				($page === false || $page['Page']['id'] != $active_page['Page']['id'])) {
 				// パーマリンクからのPageとblock_idのはってあるページが一致しなければエラー
@@ -178,11 +185,12 @@ class CheckAuthComponent extends Component {
 				$controller->flash(__('Moved Permanently.'), $redirect_url, 'CheckAuth.003', '301');
 				return ;
 			}
-			if($page === false) {
+			if($page === false || $center_page === false) {
 				// ページが存在しない
 				$controller->flash(__('Page not found.'), $redirect_url, 'CheckAuth.004', '404');
 				return ;
 			}
+
 			$controller->nc_page = isset($active_page) ? $active_page : $page;	// blockから取得できるPage優先
 			$controller->nc_current_page = $page;								// pageから取得できるPage
 			if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_DISABLE ||
@@ -214,10 +222,9 @@ class CheckAuthComponent extends Component {
 				}
 			}*/
 			// TODO:test センターカラム以外のpege_idも入ってくる可能性あるため、修正予定。
-			$center_page = $page;
+			//$center_page = $page;
 
 			$controller->page_id = isset($block['Block']['page_id']) ? intval(($block['Block']['page_id'])) : intval($page['Page']['id']);
-			Configure::write(NC_SYSTEM_KEY.'.'.'center_page', $center_page);
 
 			//TODO:test
 			/*
@@ -386,11 +393,13 @@ class CheckAuthComponent extends Component {
  * @param   string  $permalink
  * @param   integer $user_id
  * @param   string  $lang
- * @return  array $page エラーの場合、false
+ * @return  array ($center_page, $page) エラーの場合、false
  * @since   v 3.0.0.0
  */
 	protected function _getPage(Controller $controller, $permalink, $page_id, $user_id, $lang) {
 		$page = null;
+		$request_page = null;
+		$center_page = false;
 		if(empty($user_id)) {
 			$page_params = array(
 				'fields' => array(
@@ -487,9 +496,17 @@ class CheckAuthComponent extends Component {
 					}
 				}
 				if(isset($page['Page'])) {
-					break;
+					if($order == 'url') {
+						$center_page  = $page;
+						break;
+					} else {
+						$request_page = $page;
+					}
 				}
 			}
+		}
+		if($request_page) {
+			$page = $request_page;
 		}
 
 		if(!isset($page)) {
@@ -497,7 +514,7 @@ class CheckAuthComponent extends Component {
 		}
 		$page = $controller->Page->afterFindIds($page);
 
-		return $page;
+		return array($center_page, $page);
 	}
 
 /**

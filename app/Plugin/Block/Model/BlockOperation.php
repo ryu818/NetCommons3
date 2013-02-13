@@ -105,19 +105,20 @@ class BlockOperation extends AppModel {
 	}
 
 /**
- * ブロック追加処理
+ * ブロック追加,移動,ショートカット作成処理
+ * @param  string        $action paste or shortcut
  * @param  Model Page    $pre_page
  * @param  Model Module  $module
- * @param  Model Block   $block(ペースト、ショートカット作成用)
- * @param  Model Content $content(ペースト、ショートカット作成用)
+ * @param  Model Block   $block(ペースト、ショートカット、移動作成用)
+ * @param  Model Content $content(ペースト、ショートカット、移動作成用)
  * @param  boolean       $shortcut_flag(ショートカットならば_OFF, 権限が付与されたショートカットならば_ON)
- * @param  Model Page    $page(ペースト、ショートカット作成用):追加先ページ
- * @param  integer       $new_root_id ページのペースト、ショートカット作成時 root_id
- * @param  integer       $new_parent_id ページのペースト、ショートカット作成時 parent_id
+ * @param  Model Page    $page(ペースト、ショートカット、移動、作成用):追加先ページ
+ * @param  integer       $new_root_id ページのペースト、ショートカット作成、移動時 root_id
+ * @param  integer       $new_parent_id ページのペースト、ショートカット作成、移動時 parent_id
  * @return false or array(Model Block   $ins_block, Model Content   $ins_content)
  * @since  v 3.0.0.0
  */
-	public function addBlock($pre_page, $module, $block = null, $content = null, $shortcut_flag = null, $page = null, $new_root_id = null, $new_parent_id = null) {
+	public function addBlock($action, $pre_page, $module, $block = null, $content = null, $shortcut_flag = null, $page = null, $new_root_id = null, $new_parent_id = null) {
 		// TODO: そのmoduleが該当ルームに貼れるかどうかのチェックが必要。
 		// グループ化ブロック（ショートカット）ならば、該当グループ内のmoduleのチェックが必要。
 		// はりつけたあと、表示されませんで終わらす方法も？？？ -> グループ化ブロックはペースト不可
@@ -135,11 +136,16 @@ class BlockOperation extends AppModel {
 		}
 
 		$Content->create();
-		if(isset($block) && isset($content)) {
+		if($action == 'paste' || $action == 'shortcut' || $action == 'move') {
 			// ブロック操作
 			$master_content = $content;
 			if(!$content['Content']['is_master']) {
 				$master_content = $Content->findById($content['Content']['master_id']);
+			}
+			if($action == 'shortcut' && $block['Block']['module_id'] == 0) {
+				// グループブロックはペースト、移動のみ
+				$action = 'paste';
+				$shortcut_flag = null;
 			}
 			/** ペースト、ショートカットのペースト,ショートカットの作成
 			 *  ・権限が付与されていないショートカットのペースト、ショートカット作成
@@ -149,17 +155,31 @@ class BlockOperation extends AppModel {
 			 * 		Contentは新規追加するが、ショートカット元のContentの中身(title,is_master, master_id,accept_flag,url)はコピー
 			 * 			room_idはショートカット先のroom_id
 			 */
-			$action = 'shortcut';
 			if(!$content['Content']['is_master'] &&
 					$page['Page']['room_id'] == $master_content['Content']['room_id']) {
 				// 権限が付与されているショートカットを元のルームに戻した。
 				$ins_content = $master_content;
 				$last_content_id = $master_content['Content']['id'];
+				if($action == 'move') {
+					// 前コンテンツ削除処理
+					$result = $Content->delete($content['Content']['id']);
+					// 同ページ内の他ブロックにより、既に削除されている可能性があるためエラーチェックしない。
+					// if(!$result) {
+					//	return false;
+					//}
+					$master_content_id = $last_content_id;
+				}
+				if($action == 'paste') {
+					$action = 'shortcut';
+				}
 			} else if($block['Block']['module_id'] != 0 && ((!isset($shortcut_flag) && $pre_page['Page']['room_id'] != $content['Content']['room_id']) ||
 				$shortcut_flag === _OFF)) {
 				// 権限が付与されていないショートカットのペースト、ショートカット作成
 				$ins_content = $content;
 				$last_content_id = $content['Content']['id'];
+				if($action == 'paste') {
+					$action = 'shortcut';
+				}
 			} else {
 				$ins_content = array(
 					'Content' => array(
@@ -171,15 +191,21 @@ class BlockOperation extends AppModel {
 						'url' => $content['Content']['url']
 					)
 				);
-
 				if($block['Block']['module_id'] != 0 && !$content['Content']['is_master']) {
 					// 権限が付与されたショートカットのペーストか、権限が付与されたショートカットの権限が付与されたショートカット
 					$ins_content['Content']['master_id'] = $content['Content']['master_id'];
+					if($action == 'paste') {
+						$action = 'shortcut';
+					}
 				} else if($block['Block']['module_id'] != 0 && $shortcut_flag === _ON) {
 					// 権限が付与されたショートカットの作成
 					$ins_content['Content']['master_id'] = $content['Content']['id'];
-				} else {
-					$action = 'paste';
+					if($action == 'paste') {
+						$action = 'shortcut';
+					}
+				}
+				if($action == 'move') {
+					$ins_content['Content']['id'] = $content['Content']['id'];
 				}
 
 				$ins_ret = $Content->save($ins_content);
@@ -214,92 +240,127 @@ class BlockOperation extends AppModel {
 			}
 		}
 
-		$ins_block = array();
-		$ins_block = $this->defaultBlock($ins_block);
-		$ins_block['Block'] = array_merge($ins_block['Block'], array(
-			'page_id' => $page['Page']['id'],
-			'module_id' => isset($module['Module']['id']) ? $module['Module']['id'] : 0,
-			'content_id' => $last_content_id,
-			'controller_action' =>  isset($module['Module']['controller_action']) ? $module['Module']['controller_action'] : '',
-			'theme_name' => '',
-			'root_id' => 0,
-			'parent_id' => 0,
-			'thread_num' => 0,
-			'col_num' => 1,
-			'row_num' => 1
-		));
-		if(isset($block) && isset($content)) {
-			/** ペースト OR ショートカット作成
-			 * 	移動元のBlockの中身(title, show_title, display_flag, display_from_date,display_to_date, theme_name, temp_name, leftmargin,
-			 * 		rightmargin, topmargin,bottommargin,min_width_size,min_height_size, lock_authority_id)はコピー
-			 */
+		if($action == 'move') {
+			$ins_block = $block;
+			if(isset($master_content_id)) {
+				$fields = array(
+					'content_id' => $master_content_id
+				);
+				$conditions = array(
+					'id' => $block['Block']['id']
+				);
+				$result = $this->updateAll($fields, $conditions);
+				if(!$result) {
+					return false;
+				}
+			}
+		} else {
+			$ins_block = array();
+			$ins_block = $this->defaultBlock($ins_block);
 			$ins_block['Block'] = array_merge($ins_block['Block'], array(
-				'title' => $block['Block']['title'],
-				'show_title' => $block['Block']['show_title'],
-				'display_flag' => $block['Block']['display_flag'],
-				'display_from_date' => $block['Block']['display_from_date'],
-				'display_to_date' => $block['Block']['display_to_date'],
-				'theme_name' => $block['Block']['theme_name'],
-				'temp_name' => $block['Block']['temp_name'],
-				'leftmargin' => $block['Block']['leftmargin'],
-				'rightmargin' => $block['Block']['rightmargin'],
-				'topmargin' => $block['Block']['topmargin'],
-				'bottommargin' => $block['Block']['bottommargin'],
-				'min_width_size' => $block['Block']['min_width_size'],
-				'min_height_size' => $block['Block']['min_height_size'],
-				'lock_authority_id' => $block['Block']['lock_authority_id'],
+				'page_id' => $page['Page']['id'],
+				'module_id' => isset($module['Module']['id']) ? $module['Module']['id'] : 0,
+				'content_id' => $last_content_id,
+				'controller_action' =>  isset($module['Module']['controller_action']) ? $module['Module']['controller_action'] : '',
+				'theme_name' => '',
+				'root_id' => 0,
+				'parent_id' => 0,
+				'thread_num' => 0,
+				'col_num' => 1,
+				'row_num' => 1
 			));
-		}
+			if($action == 'paste' || $action == 'shortcut') {
+				/** ペースト OR ショートカット作成 OR 移動
+				 * 	移動元のBlockの中身(title, show_title, display_flag, display_from_date,display_to_date, theme_name, temp_name, leftmargin,
+				 * 		rightmargin, topmargin,bottommargin,min_width_size,min_height_size, lock_authority_id)はコピー
+				 */
+				$ins_block['Block'] = array_merge($ins_block['Block'], array(
+					'title' => $block['Block']['title'],
+					'show_title' => $block['Block']['show_title'],
+					'display_flag' => $block['Block']['display_flag'],
+					'display_from_date' => $block['Block']['display_from_date'],
+					'display_to_date' => $block['Block']['display_to_date'],
+					'theme_name' => $block['Block']['theme_name'],
+					'temp_name' => $block['Block']['temp_name'],
+					'leftmargin' => $block['Block']['leftmargin'],
+					'rightmargin' => $block['Block']['rightmargin'],
+					'topmargin' => $block['Block']['topmargin'],
+					'bottommargin' => $block['Block']['bottommargin'],
+					'min_width_size' => $block['Block']['min_width_size'],
+					'min_height_size' => $block['Block']['min_height_size'],
+					'lock_authority_id' => $block['Block']['lock_authority_id'],
+				));
+			}
 
-		if(isset($new_parent_id)) {
-			// ページのペースト、ショートカット作成
-			$ins_block['Block'] = array_merge($ins_block['Block'], array(
-				'controller_action' => $block['Block']['controller_action'],
-				'root_id' => isset($new_root_id) ? $new_root_id : 0,
-				'parent_id' => $new_parent_id,
-				'thread_num' => $block['Block']['thread_num'],
-				'col_num' => $block['Block']['col_num'],
-				'row_num' => $block['Block']['row_num']
-			));
-		}
-
-		$this->create();
-		$ins_ret = $this->save($ins_block);
-		if(!$ins_ret) {
-			return false;
-		}
-		$last_id = $this->id;
-
-		if($ins_block['Block']['thread_num'] == 0) {
-			//root_idを再セット
-			if(!$this->saveField('root_id', $last_id)) {
+			if(isset($new_parent_id)) {
+				// ページのペースト、ショートカット作成
+				$ins_block['Block'] = array_merge($ins_block['Block'], array(
+					'controller_action' => $block['Block']['controller_action'],
+					'root_id' => isset($new_root_id) ? $new_root_id : 0,
+					'parent_id' => $new_parent_id,
+					'thread_num' => $block['Block']['thread_num'],
+					'col_num' => $block['Block']['col_num'],
+					'row_num' => $block['Block']['row_num']
+				));
+			}
+			$this->create();
+			$ins_ret = $this->save($ins_block);
+			if(!$ins_ret) {
 				return false;
 			}
-			$ins_block['Block']['root_id'] = $last_id;
-		}
-		$ins_block['Block']['id'] = $last_id;
+			$last_id = $this->id;
 
-		if(isset($action) && $block['Block']['module_id'] != 0) {
-			/** args
-			 * @param   array 移動元ブロック   $block
-			 * @param   array 移動先ブロック   $block
-			 * @param   array 移動元コンテンツ $content
-			 * @param   array 移動先コンテンツ $content
-			 * @param   array 移動元ページ     $page
-			 * @param   array 移動先ページ     $page
-			 */
+			if($ins_block['Block']['thread_num'] == 0) {
+				//root_idを再セット
+				if(!$this->saveField('root_id', $last_id)) {
+					return false;
+				}
+				$ins_block['Block']['root_id'] = $last_id;
+			}
+			$ins_block['Block']['id'] = $last_id;
+		}
+
+
+		if($block['Block']['module_id'] != 0) {
 			App::uses('Module', 'Model');
 			$Module = new Module();
-			$args = array(
-				$block,
-				$ins_block,
-				$content,
-				$ins_content,
-				$pre_page,
-				$page
-			);
-			if(!$Module->operationAction($module['Module']['dir_name'], $action, $args)) {
-				return false;
+
+			if($action != 'add_block') {
+				// ブロック移動(表示順変更)、ペースト、ショートカット作成
+				/** args
+				 * @param   Model Block   移動元ブロック
+				 * @param   Model Block   移動先ブロック
+				 * @param   Model Content 移動元コンテンツ
+				 * @param   Model Content 移動先コンテンツ
+				 * @param   Model Page    移動元ページ
+				 * @param   Model Page    移動先ページ
+				 */
+				$args = array(
+					$block,
+					$ins_block,
+					$content,
+					$ins_content,
+					$pre_page,
+					$page
+				);
+			} else {
+				// ブロック追加
+				/** args
+				 * @param   Model Block   追加ブロック
+				 * @param   Model Content 追加コンテンツ
+				 * @param   Model Page    追加先ページ
+				 */
+				$args = array(
+					$ins_block,
+					$ins_content,
+					$page
+				);
+			}
+			if($action != 'move' || $pre_page['Page']['room_id'] != $page['Page']['room_id']) {
+				// 移動は異なるルームへの移動のみmoveアクションを呼ぶ
+				if(!$Module->operationAction($module['Module']['dir_name'], $action, $args)) {
+					return false;
+				}
 			}
 		}
 

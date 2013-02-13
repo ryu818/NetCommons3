@@ -359,7 +359,7 @@ input.pages-menu-community-photo-file {
 }
 
 /* その他操作 */
-.pages-menu-progressbar-outer {
+#pages-menu-progressbar-outer {
 	position: fixed;
 	width:250px;
 }

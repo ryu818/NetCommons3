@@ -154,8 +154,6 @@ msgid  	"Set the roles of the room members, and press [Ok] button. To set the ro
 msgstr 	"このルームでの会員の役割を設定して、[決定]ボタンを押してください。[全選択]ボタンより役割を一括で選択できます。"
 
 ## ページ操作 - ページ表示順変更
-msgid  	"You are about to move to [%s]. <br />When you move, block placement will be moved as a shortcut. Are you sure?"
-msgstr 	"[%s]へ移動します。移動しますと、配置ブロックはショートカットとして移動されます。よろしいですか？"
 msgid  	"You are about to move to [%s]. <br />When you move the contents of the [%s], it becomes contents of [%s].Are you sure?"
 msgstr 	"[%s]へ移動します。移動しますと、[%s]のコンテンツは[%s]のものになります。よろしいですか？"
 msgid  	"You are about to move to [%s]. Are you sure?"

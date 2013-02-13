@@ -89,12 +89,21 @@ class BlockController extends BlockAppController {
 		}
 
 		if(!empty($this->request->params['requested']) && !empty($copy_block_id)) {
-			$ins_ret = $this->BlockOperation->addBlock($pre_page, $module, $block, $content, $shortcut_flag, $page);
+			if(isset($shortcut_flag)) {
+				$title = 'Shortcut';
+				$action = 'shortcut';
+			} else {
+				$title = 'Paste';
+				$action = 'paste';
+			}
+			$ins_ret = $this->BlockOperation->addBlock($action, $pre_page, $module, $block, $content,
+				$shortcut_flag, $page);
 		} else {
-			$ins_ret = $this->BlockOperation->addBlock($pre_page, $module);
+			$title = 'Add';
+			$ins_ret = $this->BlockOperation->addBlock($this->action, $pre_page, $module);
 		}
 		if($ins_ret === false) {
-			$this->flash(__('Failed to register the database, (%s).', 'blocks'), null, 'add_block.006', '500');
+			$this->flash(__('Failed to execute the %s.', __($title)), null, 'add_block.006', '500');
 			return;
 		}
 		list($ins_block, $ins_content) = $ins_ret;
@@ -266,6 +275,33 @@ class BlockController extends BlockAppController {
 			}
 		}
 		if(!empty($this->request->params['requested'])) {
+			if($pre_page['Page']['room_id'] != $page['Page']['room_id']) {
+				$module = array('Module' => $this->nc_block['Module']);
+				$ins_block = $this->Block->findById(intval($block['Block']['id']));
+				$ins_content = $this->Content->findById(intval($block['Block']['content_id']));
+				// ルームが異なればブロック移動アクションを呼ぶ
+				/** args
+				 * @param   Model Block   移動元ブロック
+				 * @param   Model Block   移動先ブロック
+				 * @param   Model Content 移動元コンテンツ
+				 * @param   Model Content 移動先コンテンツ
+				 * @param   Model Page    移動元ページ
+				 * @param   Model Page    移動先ページ
+				 */
+				$args = array(
+					array('Block' => $block['Block']),
+					$ins_block,
+					$content,
+					$ins_content,
+					$pre_page,
+					$page
+				);
+
+				if(!$this->Module->operationAction($module['Module']['dir_name'], 'move', $args)) {
+					$this->flash(__('Failed to execute the %s.', __('Move')), null, 'insert_row.007', '500');
+					return;
+				}
+			}
 			$this->autoRender = false;
 			return 'true';
 		} else {
