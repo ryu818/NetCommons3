@@ -30,7 +30,7 @@ class PageOperationController extends PageAppController {
  * Model name
  * @var array
  */
-	public $uses = array('TempData', 'Block.BlockOperation', 'Module');
+	public $uses = array('TempData', 'Block.BlockOperation', 'Module', 'PagesUsersLink');
 
 /**
  * 表示前処理

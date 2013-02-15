@@ -38,12 +38,19 @@
 					array('title' => __('Cancel copy'), 'class' => 'link hover-highlight', 'onclick' => '$.PageMenu.clkCancel(event);', 'data-ajax' => '', 'data-ajax-type' => 'post'));
 			?>
 		</li>
-		<li>
-			<a class="link hover-highlight" href="#">
-				<?php /* TODO:未実装 */ echo(__d('page', 'Edit members'));?>
-			</a>
+		<li id="pages-menu-edit-other-operation-add-members">
+			<?php
+				echo $this->Html->link(__d('page', 'Add members'), array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'participant'),
+					array('title' => __d('page', 'Add members'), 'class' => 'link hover-highlight', 'data-page-edit-id' => '','data-ajax-replace' => '#pages-menu-edit-participant'));
+			?>
 		</li>
-		<li>
+		<li id="pages-menu-edit-other-operation-members">
+			<?php
+				echo $this->Html->link(__d('page', 'Edit members'), array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'participant'),
+					array('title' => __d('page', 'Edit members'), 'class' => 'link hover-highlight', 'data-page-edit-id' => '','data-ajax-replace' => '#pages-menu-edit-participant'));
+			?>
+		</li>
+		<li id="pages-menu-edit-other-operation-modules">
 			<a class="link hover-highlight" href="#">
 				<?php /* TODO:未実装 */ echo(__d('page', 'Modules to use'));?>
 			</a>

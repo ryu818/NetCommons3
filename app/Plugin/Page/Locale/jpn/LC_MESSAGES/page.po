@@ -58,8 +58,12 @@ msgid  	"Delete page"
 msgstr 	"ページ削除"
 msgid  	"Other operations"
 msgstr 	"その他操作"
+msgid  	"Add members"
+msgstr 	"参加者設定"
 msgid  	"Edit members"
 msgstr 	"参加者修正"
+msgid  	"Unassign members"
+msgstr 	"参加者割り当て解除"
 msgid  	"Modules to use"
 msgstr 	"モジュールの利用許可"
 
@@ -152,6 +156,8 @@ msgstr 	"コミュニティーを追加しました。"
 ## 参加者修正
 msgid  	"Set the roles of the room members, and press [Ok] button. To set the roles all at once, press [Select All] button."
 msgstr 	"このルームでの会員の役割を設定して、[決定]ボタンを押してください。[全選択]ボタンより役割を一括で選択できます。"
+msgid  	"You set a new participant to [%s]. Are you sure?"
+msgstr 	"[%s]に参加者を新規に設定します。よろしいですか？"
 
 ## ページ操作 - ページ表示順変更
 msgid  	"You are about to move to [%s]. <br />When you move the contents of the [%s], it becomes contents of [%s].Are you sure?"

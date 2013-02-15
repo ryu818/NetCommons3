@@ -73,6 +73,11 @@ define('NC_CONFIG_KEY', 'Config');
 define('NC_THEME_KEY', 'Theme');
 define('NC_SYSTEM_KEY', 'System');
 
+//-----------------権限(authorities.myportal_use_flag)------------------------------------
+define('NC_MYPORTAL_USE_NOT', 0);			// 使用しない
+define('NC_MYPORTAL_USE_ALL', 1);			// すべて公開
+define('NC_MYPORTAL_NOT_MEMBERS', 2);		// ログイン会員のみ公開(allow_myportal _viewing_authorityの権限以上で閲覧可能とする[主坦、モデレータ、一般、ゲスト])
+
 //-----------------display_flag-------------------------------------------
 
 define('NC_DISPLAY_FLAG_OFF', 0);

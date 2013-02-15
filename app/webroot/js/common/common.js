@@ -18,6 +18,7 @@
 		// data-ajax-url:URL default：href属性から取得
 		// data-ajax-type: post or get
 		// data-ajax-effect: 遷移時effect default：fold
+		// data-ajax-confirm: メッセージをValueに設定すると確認ダイアログ表示
 		//
 		// カスタムイベント ajax:
 		// ajax:beforeSend - Ajaxリクエスト前に呼ばれる。falseを返せば処理を中断する。
@@ -27,9 +28,28 @@
 		//	       e.preventDefault();
 		//     });
 		//
-		ajax : function(e, a) {
+		ajax : function(e, a, confirm) {
 			var data_pjax, top, url, data, input_type, type, ret;
 			var target_pjax = a.attr("data-pjax");
+			var confirm = (typeof confirm == "undefined") ? a.attr("data-ajax-confirm") : confirm;
+			if(confirm){
+				var ok = __('Ok') ,cancel = __('Cancel');
+				var default_params = {
+					resizable: false,
+		            modal: true
+				}, _buttons = {}, params = new Object();
+				_buttons[ok] = function(){
+					$( this ).remove();
+					$.Common.ajax(e, a, false);
+				};
+				_buttons[cancel] = function(){
+					$( this ).remove();
+				};
+				var dialog_params = $.extend({buttons: _buttons}, default_params);
+				$('<div></div>').html(confirm).dialog(dialog_params);
+				e.preventDefault();
+				return;
+			}
 
 			if(target_pjax) {
 				// pjax
@@ -65,9 +85,9 @@
 						data = ret[0];
 					}
 				}
-				type = a.data("ajax-type");
-				url = a.data("ajax-url") ? a.data("ajax-url") : url;
-				effect = a.data("ajax-effect") ? a.data("ajax-effect") : 'fold';
+				type = a.attr("data-ajax-type");
+				url = a.attr("data-ajax-url") ? a.attr("data-ajax-url") : url;
+				effect = a.attr("data-ajax-effect") ? a.attr("data-ajax-effect") : 'fold';
 				$.ajax({
 					type: (type == 'GET' || type == 'get' || type == 'POST' || type == 'post') ? type : input_type,
 					url: url,
@@ -85,9 +105,9 @@
 
 		ajaxSuccess : function(a, res) {
 			a = $(a);
-			var target = a.data("ajax");
-			var replace_target = a.data("ajax-replace");
-			var effect = a.data("ajax-effect") ? a.data("ajax-effect") : null;
+			var target = a.attr("data-ajax");
+			var replace_target = a.attr("data-ajax-replace");
+			var effect = a.attr("data-ajax-effect") ? a.attr("data-ajax-effect") : null;
 			var buf_a, res_target, res_other_target, buf_res_target, effect_cnt = 0, effect_index = -1;
 			if(target) {
 				res_target = $(target);
@@ -110,6 +130,10 @@
 						res_other_target.push(this);
 					}
 				});
+				if(!res_target.get(0)) {
+					res_target = res_other_target;
+					res_other_target = $();
+				}
 				if(effect && res_target.get(0)) {
 					$(replace_target).hide(effect, function(){
 						$(res_target).css('display', 'none');
@@ -118,8 +142,8 @@
 						$(res_target).show(effect);
 					});
 				} else {
-					res_target = $(res);
 					$(replace_target).replaceWith(res_target);
+					$(replace_target).after(res_other_target);
 				}
 			}
 			return res_target;
@@ -284,16 +308,16 @@
 
 		},
 		alert: function(str) {
-			str = this._massage(str);
+			str = this._message(str);
 			if(str == "") return;
 			alert(str);
 		},
 		confirm: function(str) {
-			str = this._massage(str);
+			str = this._message(str);
 			if(str == "") return;
 			return confirm(str);
 		},
-		_massage: function(str) {
+		_message: function(str) {
 			if(typeof str != 'string') return "";
 			var re_html = new RegExp("^[\s\r\n]*<!DOCTYPE html", 'i');
 			if(str.match(re_html)) {

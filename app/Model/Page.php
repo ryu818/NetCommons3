@@ -468,16 +468,16 @@ class Page extends AppModel
 		}
 		if($space_type == NC_SPACE_TYPE_PUBLIC || $space_type == NC_SPACE_TYPE_GROUP || (is_array($space_type) && $space_type_flag)) {
 			$conditions = array(
-					'Page.space_type' => $space_type,
-					'Page.position_flag' => _ON,
-					//'Page.lang' => array('', $lang)
+				'Page.space_type' => $space_type,
+				'Page.position_flag' => _ON,
+				//'Page.lang' => array('', $lang)
 			);
 		} else {
 			$conditions = array(
-					//'Page.space_type' => array(NC_SPACE_TYPE_MYPORTAL, NC_SPACE_TYPE_PRIVATE),
-					'Page.position_flag' => _ON,
-					'Page.display_flag !=' => NC_DISPLAY_FLAG_DISABLE,
-					//'Page.lang' => array('', $lang)
+				//'Page.space_type' => array(NC_SPACE_TYPE_MYPORTAL, NC_SPACE_TYPE_PRIVATE),
+				'Page.position_flag' => _ON,
+				'Page.display_flag !=' => NC_DISPLAY_FLAG_DISABLE,
+				//'Page.lang' => array('', $lang)
 			);
 			if(isset($current_user)) {
 				if($login_user_id != $current_user['User']['id'] || $space_type == NC_SPACE_TYPE_MYPORTAL) {
@@ -553,16 +553,21 @@ class Page extends AppModel
  * @param string    $type
  * @param array     $current_user
  * @param integer   $login_user_id ログイン会員ID
+ * @param string    $lang
  * @return  array   $fields
  * @since   v 3.0.0.0
  */
-	public function findChilds($type, $current_page, $login_user_id = null) {
-		$lang = $current_page['Page']['lang'];
+	public function findChilds($type, $current_page, $login_user_id = null, $lang = null) {
+
+		$lang = !isset($lang) ? $current_page['Page']['lang'] : $lang;
 		$params = array('conditions' => array(
 			'Page.root_id' => $current_page['Page']['root_id'],
-			'Page.thread_num >' => $current_page['Page']['thread_num'],
-			'Page.lang' => array('', $lang)
+			'Page.thread_num >' => $current_page['Page']['thread_num']
 		));
+		if($lang != '') {
+			$params['conditions']['Page.lang'] = array('', $lang);
+		}
+
 		$fetch_params = array('active_page_id' => $current_page['Page']['id']);
 		return $this->findMenu($type, $login_user_id, $current_page['Page']['space_type'], null, $params, "", $fetch_params, true);
 	}

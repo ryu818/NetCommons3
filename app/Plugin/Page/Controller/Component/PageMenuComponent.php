@@ -725,10 +725,11 @@ class PageMenuComponent extends Component {
  * @param   CakeRequest $request
  * @param   integer     $page_id
  * @param   integer     $admin_hierarchy
+ * @param   array       $auth_list	権限リストになければベースの権限でセットさせる
  * @return  array $page_user_links
  * @since   v 3.0.0.0
  */
-	public function participantSession($request, $page_id, $admin_hierarchy) {
+	public function participantSession($request, $page_id, $admin_hierarchy, $auth_list = null) {
 		$login_user = $this->_controller->Auth->user();
 		$user_id = $login_user['id'];
 
@@ -747,8 +748,17 @@ class PageMenuComponent extends Component {
 					'authority_id' => NC_AUTH_CHIEF_ID
 				);
 			}
+			if(isset($auth_list)) {
+				foreach($buf_page_user_links_params['PageUserLink'] as $key => $buf_data) {
+					if(!isset($auth_list[NC_AUTH_CHIEF][$buf_data['authority_id']]) && !isset($auth_list[NC_AUTH_MODERATE][$buf_data['authority_id']]) &&
+							!isset($auth_list[NC_AUTH_GENERAL][$buf_data['authority_id']]) && $buf_data['authority_id'] != NC_AUTH_GUEST_ID &&
+							$buf_data['authority_id'] != NC_AUTH_OTHER_ID) {
+						// 存在しない権限に変更しようとした->ゲストにする
+						$buf_page_user_links_params['PageUserLink'][$key]['authority_id'] = NC_AUTH_GUEST_ID;
+					}
+				}
+			}
 			if(!empty($buf_page_user_links)) {
-
 				//$buf_page_user_links['PageUserLink'] = array_merge($buf_page_user_links['PageUserLink'], $buf_page_user_links_params['PageUserLink']);
 				foreach($buf_page_user_links_params['PageUserLink'] as $key => $buf_data) {
 					$buf_page_user_links['PageUserLink'][$key] = $buf_data;
@@ -1025,17 +1035,6 @@ class PageMenuComponent extends Component {
 			$display_sequence = $insert_display_sequence + 1;
 			$room_id = $move_page['Page']['room_id'];
 			$root_id = $move_page['Page']['root_id'];
-		//} else if($copy_page['Page']['thread_num'] <= 1) {
-		//	// Top Node top or bottom
-		//	$parent_id = $move_page['Page']['parent_id'];
-		//	$thread_num = $move_page['Page']['thread_num'];
-		//	if ($move_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
-		//		$display_sequence = ($position == 'bottom') ? $move_page['Page']['display_sequence'] + 1 : $move_page['Page']['display_sequence'];
-		//	} else {
-		//		$display_sequence = 0;
-		//	}
-		//	$room_id = $copy_page['Page']['room_id'];
-		//  $root_id = $move_page['Page']['root_id'];
 		} else if($is_same_top_node) {
 			$parent_id = $copy_page['Page']['parent_id'];
 			$thread_num = $copy_page['Page']['thread_num'];
@@ -1395,15 +1394,23 @@ class PageMenuComponent extends Component {
 			}
 		}
 
-		//
-		// 権限の解除
-		//
-		// TOOD:未作成
-
-
-
-
-
+		// 異なるルームへの操作で移動元にルームが存在していれば権限の割り当てを解除する
+		if($copy_page['Page']['room_id'] != $move_parent_page['Page']['room_id'] && count($copy_room_id_arr) > 0) {
+			foreach($copy_room_id_arr as $copy_room_id) {
+				$conditions = array(
+					"PagesUsersLink.room_id" => $copy_room_id
+				);
+				if(!$this->_controller->PagesUsersLink->deleteAll($conditions)) {
+					return false;
+				}
+				$conditions = array(
+					"ModulesLink.room_id" => $copy_room_id
+				);
+				if(!$this->_controller->ModulesLink->deleteAll($conditions)) {
+					return false;
+				}
+			}
+		}
 
 		return array($copy_page_id_arr, $copy_pages, $ins_pages);
 	}
@@ -1500,49 +1507,15 @@ class PageMenuComponent extends Component {
 				$root_id_arr[$block['Block']['id']] = $ins_block['Block']['root_id'];
 				$parent_id_arr[$block['Block']['id']] = $ins_block['Block']['id'];
 				$content_id_arr[$content['Content']['id']] = $ins_content['Content']['id'];
-
-				/*if($action == 'move' && $copy_pages[0]['Page']['room_id'] != $ins_pages[0]['Page']['room_id'] &&
-						$current_page['Page']['room_id'] == $content['Content']['room_id'] && $content['Content']['is_master']) {
-					// ブロックの移動で、該当ブロックコンテンツが他にもはってあれば、そのブロックを権限つきショートカットにする。
-					// ショートカット以外のコンテンツが対象
-					$params = array(
-						'conditions' => array(
-							'Block.content_id' => $content['Content']['id']
-						),
-						'fields' => array('Block.id', 'Block.page_id'),
-						'recursive' =>  -1
-					);
-					$other_blocks = $this->_controller->Block->find('all', $params);
-					foreach($other_blocks as $other_block) {
-						if(!in_array($other_block['Block']['page_id'], $copy_page_id_arr)) {
-							// コピーページ以外に該当コンテンツあり
-							$other_content = $content;
-							unset($other_content['Content']['id']);
-							$other_content['Content']['is_master'] = _OFF;
-							$other_content['Content']['master_id'] = $ins_content['Content']['id'];
-							$this->_controller->Content->create();
-
-							$ret_other_content = $this->_controller->Content->save($other_content);
-							if(!$ret_other_content) {
-								$this->_controller->TempData->destroy($hash_key);
-								return false;
-							}
-							$other_last_content_id = $this->_controller->Content->id;
-							$this->_controller->Block->create();
-							$this->_controller->Block->id = $other_block['Block']['id'];
-							if(!$this->Page->saveField('content_id', $other_last_content_id)) {
-								$this->_controller->TempData->destroy($hash_key);
-								return false;
-							}
-						}
-					}
-				}*/
 //sleep(4);
 			}
 
+			// TODO:uploadsテーブルの更新処理
+
+
 			$this->_controller->TempData->destroy($hash_key);
-			return true;
 		}
+		return true;
 	}
 
 /**

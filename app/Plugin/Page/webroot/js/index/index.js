@@ -86,9 +86,13 @@
 				var page_name = $('[name=data\\[Page\\]\\[page_name\\]]:visible:first', target);
 				if(page_name.get(0)) {
 					page_name.select();
+					// スクロール
+					$(active_tab_name).animate({scrollTop:position}, 400, 'swing');
+				} else {
+					// スクロール 参加者修正の場合、スクロールにdelayをつけて実行
+					$(active_tab_name).delay(500).animate({scrollTop:position}, 400, 'swing');
 				}
-				// スクロール
-				$(active_tab_name).animate({scrollTop:position}, 400, 'swing');
+
 			});
 		};
 
@@ -128,7 +132,7 @@
 					active_tab_name = '#pages-menu-community';
 				}
 				if(is_edit) {
-					var is_chief = active_li.data('is-chief');
+					var is_chief = active_li.attr('data-is-chief');
 					var add_community = $('#pages-menu-add-community-btn');
 					if(sel_active_tab != active_tab) {
 						$('#pages-menu-add-btn').addClass('pages-menu-btn-disable');
@@ -162,7 +166,7 @@
 		if(lang_sel.get(0)) {
 			lang_sel.chosen({disable_search : true}).change( function(e){
 				var lang = $(this).val();
-				var url = $(this).data('ajax-url') + '/' + lang + '?is_edit=' + is_edit + '&active_tab=' + active_tab;
+				var url = $(this).attr('data-ajax-url') + '/' + lang + '?is_edit=' + is_edit + '&active_tab=' + active_tab;
 				$.get(url, function(res) {
 					$('#nc-pages-setting-dialog').replaceWith(res);
 				});
@@ -279,25 +283,25 @@
 				}
 
 				var ajax_id, page_edit, replace_ajax_id, active, dd_sequence, position;
-				ajax_id = $(this).data('ajax-replace');
+				ajax_id = $(this).attr('data-ajax-replace');
 				replace_ajax_id = ajax_id.replace(/^#/, '');
 
 				page_edit = $("<li id='"+ replace_ajax_id +"'></li>").hide();
 				active_li.before(page_edit);	// class='dd-item dd-drag-item'
 
-				dd_sequence = active_li.data('dd-sequence');
+				dd_sequence = active_li.attr('data-dd-sequence');
 				position = 'bottom';
 				if(dd_sequence == 'inner-only') {
 					position = 'inner';
 				}
-				url = url + '/' + active_li.data('id') + '/' +  position;
+				url = url + '/' + active_li.attr('data-id') + '/' +  position;
 
 				return url;
 			}).on('ajax:success', function(e, res) {
 				var dd_sequence, position, insert_li;
 				var target = $.Common.ajaxSuccess(this, res);
 
-				dd_sequence = active_li.data('dd-sequence');
+				dd_sequence = active_li.attr('data-dd-sequence');
 				position = 'bottom';
 				if(dd_sequence == 'inner-only') {
 					position = 'inner';
@@ -330,7 +334,7 @@
 					// ページ追加不可
 					return false;
 				}
-				url = url + '/' + active_li.data('id');
+				url = url + '/' + active_li.attr('data-id');
 				return url;
 			}).on('ajax:success', function(e, res) {
 				if (res) {
@@ -341,7 +345,7 @@
 
 			// ページ削除
 			root_menu.on('ajax:beforeSend','.pages-menu-delete-icon',function(e, url) {
-				var li = $($(e.target).data('ajax-data')),page_id = li.data('id'), room_id = li.data('room-id');
+				var li = $($(e.target).attr('data-ajax-data')),page_id = li.attr('data-id'), room_id = li.attr('data-room-id');
 				var a = $('a.pages-menu-edit-title:first', li), title = $.trim(a.html());
 				var ok = __('Ok') ,cancel = __('Cancel');
 				var pos = $(e.target).offset(), _buttons = {}, default_params = {
@@ -383,28 +387,38 @@
 				return false;
 			});
 
-			// ページ詳細編集画面表示・参加者修正画面表示
-			root_menu.on('ajax:beforeSend','[data-page-edit-id]',function(e, url) {
-				if($(e.target).get(0).tagName == 'INPUT') {
+			// ページ編集画面表示・参加者修正画面表示
+			root_menu.add('#pages-menu-edit-other-operation').on('ajax:beforeSend','[data-page-edit-id]',function(e, url) {
+				var link = $(e.target);
+				if(!link.hasClass('pages-menu-edit-icon')) {
 					// 参加者修正
+					if(link.get(0).tagName != 'INPUT') {
+						// その他操作内
+						var list = $('#pages-menu-edit-other-operation');
+						var list_page_id = list.attr('data-id');
+
+						url += '/' + list_page_id;
+						link.attr("data-page-edit-id", list_page_id);
+						link.attr("data-ajax-replace", "#pages-menu-edit-participant-" + list_page_id);
+					}
 					return url;
 				}
-			    var page_id = $(this).data('page-edit-id');
-				if($.PageMenu.hideDetail(page_id)) {
+			    var page_id = $(this).attr("data-page-edit-id");
+			    if($.PageMenu.hideDetail(page_id)) {
 					return false;
 				}
 
 				url = url + '/' + page_id;
 				return url;
 			}).on('ajax:success','[data-page-edit-id]',function(e, res) {
-				var page_id = $(this).data('page-edit-id');
-				if($(e.target).get(0).tagName == 'INPUT') {
+				var page_id = $(this).attr("data-page-edit-id");
+				if(!$(e.target).hasClass('pages-menu-edit-icon')) {
 					// 参加者修正
 					$.PageMenu.hideDetail(page_id);
 				}
 				var target = $.Common.ajaxSuccess(this, res);
 				var scroll_target = $('#pages-menu-edit-item-' + page_id);
-				$('.pages-menu-edit-content', scroll_target).click();
+				$('.pages-menu-edit-content:first', scroll_target).click();
 
 				// スクロール
 				slideTarget(target, active_tab_name, scroll_target);
@@ -412,28 +426,35 @@
 				e.stopPropagation();	// formのajax:successイベントキャンセル
 			});
 
-			// ページ編集
+			// ページ編集・参加者修正登録
 			root_menu.on('ajax:beforeSend','form.pages-menu-edit-form',function(e, url) {
-				var focus_input = $(':focus', $(e.target));
-				if(focus_input.attr('type') == 'text' && focus_input.attr('name') != "data[Page][page_name]") {
-					// ページ名称以外のtextではsubmitさせない。IE8、9ではOKボタンに遷移しているため、動作しない。
-					return false;
-				}
 				var li = $(this).parent();
-				var a = $('a.pages-menu-edit-title:first', $(this));
-				var input = $('input.pages-menu-edit-title:first', $(this));
-				var page_id = li.data('id');
-				var detail = $('#pages-menu-edit-detail-' + page_id);
-				if(detail.css('display') == 'none' && input.val() == $.trim(a.html()) && !input.hasClass('error-input-message')) {
-					// ページ名称変更なし
-					input.css('display', 'none');
-					a.css('display', '');
-					return false;
+				if(li.get(0).tagName == 'LI') {
+					var focus_input = $(':focus', $(e.target));
+					if(focus_input.attr('type') == 'text' && focus_input.attr('name') != "data[Page][page_name]") {
+						// ページ名称以外のtextではsubmitさせない。IE8、9ではOKボタンに遷移しているため、動作しない。
+						return false;
+					}
+
+					var a = $('a.pages-menu-edit-title:first', $(this));
+					var input = $('input.pages-menu-edit-title:first', $(this));
+					var page_id = li.attr('data-id');
+					var detail = $('#pages-menu-edit-detail-' + page_id);
+					if(detail.css('display') == 'none' && input.val() == $.trim(a.html()) && !input.hasClass('error-input-message')) {
+						// ページ名称変更なし
+						input.css('display', 'none');
+						a.css('display', '');
+						return false;
+					}
 				}
+
 			}).on('ajax:success','form.pages-menu-edit-form',function(e, res) {
 				var target = $.Common.ajaxSuccess(this, res);
 				var li = $(this).parent();
-				var page_id = li.data('id');
+				if(li.get(0).tagName != 'LI') {
+					li = li.parents('li:first');
+				}
+				var page_id = li.attr('data-id');
 
 				$(".pages-menu-edit-item" , target.parent()).each(function(){
 					var target = $(this);
@@ -457,7 +478,7 @@
 					}
 				}
 
-				var page_id = li.data('id');
+				var page_id = li.attr('data-id');
 				var setDisplay = null;
 				var url = $.Common.urlBlock(0, 'page/menu/display');
 				e.preventDefault();
@@ -502,12 +523,12 @@
 				$.PageMenu.closeOtherOperation();
 
 				// ページ追加disable
-				var is_chief = active_li.data('is-chief');
-				var dd_sequence = active_li.data('dd-sequence');
+				var is_chief = active_li.attr('data-is-chief');
+				var dd_sequence = active_li.attr('data-dd-sequence');
 				if(dd_sequence != 'inner-only') {
 					var parent_li = active_li.parents('li');
 					if(parent_li.get(0)) {
-						is_chief = active_li.data('is-chief');
+						is_chief = active_li.attr('data-is-chief');
 					}
 				}
 
@@ -570,7 +591,7 @@
 
 		// その他操作
 		var send_url, postfix_url;
-		$('a', '#pages-menu-edit-other-operation').on('ajax:beforeSend', function(e, url) {
+		$('a[data-ajax-type=post]', '#pages-menu-edit-other-operation').on('ajax:beforeSend', function(e, url) {
 			var li = $(e.target).parent();
 			if(li.attr('data-name') == 'cancel') {
 				return url;
@@ -691,7 +712,7 @@
 
 			$("input.pages-menu-auth-listbox-name-" + def_authority_id, $("#pages-menu-edit-participant-"+page_id)).each(function() {
 				if(!$(this).attr('disabled')) {
-					$(this).attr('checked', 'checked').val(input.val());
+					$(this).click().val(input.val());
 
 					if(select.get(0)) {
 						var list_name = $(this).parent().next();
@@ -730,6 +751,9 @@
 				// 既に表示中->非表示
 				participant.slideUp(300, function() {participant.css('display', 'none').html('');});
 			}
+			if(!detail.get(0)) {
+				return true;
+			}
 			if(detail.css('display') != 'none') {
 				// 既に編集中->非表示
 				detail.slideUp(300, function() {detail.css('display', 'none').html('');});
@@ -748,17 +772,31 @@
 			var pos = a.offset();
 			var list = $('#pages-menu-edit-other-operation');
 			var offset_top = - 20,offset_left = - 5;
-			var li = $(a).parents('li:first'), page_id = li.data('id'), room_id = li.data('room-id'),list_page_id = list.attr('data-id');
+			var li = $(a).parents('li:first'), page_id = li.attr('data-id'), room_id = li.attr('data-room-id'),list_page_id = list.attr('data-id');
+			var is_top = li.attr('data-is-top')
 			var copy_page_id = list.attr('data-copy-page-id');
 			var top = pos.top + offset_top - $(window).scrollTop();
 			var top_dialog_top = $("#nc-pages-setting-dialog").position().top;
 
 			// モジュール利用許可表示切替
-			if(room_id != page_id) {
+			if(room_id != page_id || (is_top && (li.hasClass("pages-menu-handle-private") || li.hasClass("pages-menu-handle-myportal")))) {
 				$('#pages-menu-edit-other-operation-modules').hide();
 			} else {
 				$('#pages-menu-edit-other-operation-modules').show();
 			}
+			if(!$('#pages-menu-edit-participant-'+page_id).get(0)) {
+				$('#pages-menu-edit-other-operation-members').hide();
+				$('#pages-menu-edit-other-operation-add-members').hide();
+			} else {
+				if(page_id != room_id) {
+					$('#pages-menu-edit-other-operation-members').hide();
+					$('#pages-menu-edit-other-operation-add-members').show();
+				} else {
+					$('#pages-menu-edit-other-operation-members').show();
+					$('#pages-menu-edit-other-operation-add-members').hide();
+				}
+			}
+
 			if(!copy_page_id) {
 				// コピー表示
 				$('li[data-operation=copy]',list).show();

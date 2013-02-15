@@ -34,6 +34,15 @@
     top: 1px;
     width: 8px;
 }
+.pages-menu-room {
+	position: absolute;
+	height: 34px;
+    left: 12px;
+    margin: 0;
+    position: absolute;
+    top: 1px;
+    width: 4px;
+}
 
 .pages-menu-handle {
 	display: block;
@@ -46,17 +55,16 @@
 .pages-menu-handle-top {
 	padding: 7px 10px;
 }
-
-.pages-menu-handle-public-top {
+.pages-menu-handle-public-room {
 	background-color: #5b7695;
 }
-.pages-menu-handle-myportal-top {
+.pages-menu-handle-myportal-room {
 	background-color: #4c80b5;
 }
-.pages-menu-handle-private-top {
+.pages-menu-handle-private-room {
 	background-color: #61955b;
 }
-.pages-menu-handle-community-top {
+.pages-menu-handle-community-room {
 	background-color: #715b95;
 }
 
@@ -345,6 +353,9 @@ input.pages-menu-community-photo-file {
 }
 
 /* 参加者修正 */
+.pages-menu-edit-participant-outer {
+	width:825px;
+}
 .pages-menu-edit-participant {
 	width:830px;
 }

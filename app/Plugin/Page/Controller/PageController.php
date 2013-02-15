@@ -270,7 +270,7 @@ class PageController extends PageAppController {
 		$pages_top_group = $this->paginate('Page');
 		$pages_group = array();
 		if(count($pages_top_group) > 0) {
-			$params['conditions']['Page.room_id'] = $pages_top_group;
+			$params['conditions']['Page.root_id'] = $pages_top_group;
 			$pages_group = $this->Page->findMenu('all', $user_id, NC_SPACE_TYPE_GROUP, null, $params, null, $fetch_params, true);
 		}
 		$copy_page_id = $this->Session->read('Pages.'.'copy_page_id');

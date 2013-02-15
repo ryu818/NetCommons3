@@ -7,16 +7,21 @@
 	$is_sel_modules = false;
 	$is_sel_users = false;
 	$is_display = false;
+	$is_node_top_page = false;
+	$is_top = false;
+	if($page['Page']['display_sequence'] == 1 && $page['Page']['thread_num'] == 2) {
+		$is_node_top_page = true;
+	}
+	if(($page['Page']['thread_num'] <= 1) ) {
+		$is_top = true;
+	}
 
 	if($page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF || $admin_hierarchy >= NC_AUTH_MIN_ADMIN){
 		$is_chief = true;
 	}
-	if($is_chief && (($page['Page']['space_type'] == NC_SPACE_TYPE_GROUP && $page['Page']['thread_num'] == 1) || $page['Page']['display_sequence'] != 1)) {
-		$is_edit_detail = true;
-	}
 
 	$attr = '';
-	if($page['Page']['thread_num'] <= 1) {
+	if($is_top) {
 		// コミュニティー以外のTopならば、移動させない。
 		$attr = " data-dd-sequence = \"inner-only\"";
 		if($space_type == NC_SPACE_TYPE_GROUP && $admin_hierarchy >= NC_AUTH_MIN_CHIEF) {
@@ -25,7 +30,7 @@
 			$attr .= " data-dd-group-sequence = \"top-bottom-only\"";
 		}
 	} else {
-		if($page['Page']['thread_num'] != 1 && $page['Page']['display_sequence'] == 1) {
+		if($is_node_top_page) {
 			$attr = " data-dd-sequence = \"bottom-only\"";
 		}
 		if($is_chief && $page['Page']['display_sequence'] != 1) {
@@ -33,19 +38,21 @@
 		}
 	}
 
-	if($is_chief && ($page['Page']['thread_num'] > 1 || $space_type == NC_SPACE_TYPE_GROUP)) {
+	if($is_chief && (!$is_top || $space_type == NC_SPACE_TYPE_GROUP)) {
 		$is_edit = true;
 		$is_delete = true;
 	}
+	if($is_chief && !$is_node_top_page && $space_type != NC_SPACE_TYPE_PRIVATE) {
+		$is_sel_users = true;
+	}
 
-	if($is_chief && (($page['Page']['thread_num'] == 1 && $page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) || ($page['Page']['display_sequence'] != 1 && $page['Page']['thread_num'] > 1))) {
+	if($is_chief && (($is_top && $page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) || !$is_node_top_page)) {
 		// 主坦ならばTopNodeでもなく、各ノードのトップページでなければ公開設定を許す
 		$is_display = true;
 	}
 
-	$is_top = false;
-	if(($page['Page']['thread_num'] <= 1) ) {
-		$is_top = true;
+	if($is_edit && !$is_node_top_page) {
+		$is_edit_detail = true;
 	}
 
 	$is_editing_page_name = false;
@@ -60,15 +67,17 @@
 ?>
 <?php $class = $this->element('index/init_page', array('page' => $page, 'is_edit' => _ON)); ?>
 <?php $next_thread_num = $page['Page']['thread_num']+1; ?>
-<li id="pages-menu-edit-item-<?php echo(h($page['Page']['id'])); ?>" class="pages-menu-edit-item dd-item dd-drag-item<?php if($page['Page']['thread_num']==1){echo(' '.$class);} ?>" data-id="<?php echo(h($page['Page']['id'])); ?>" data-room-id="<?php echo(h($page['Page']['room_id'])); ?>" data-is-chief="<?php if($is_chief){echo(_ON);} else {echo(_OFF);} ?>"<?php echo($attr); ?>>
+<li id="pages-menu-edit-item-<?php echo(h($page['Page']['id'])); ?>" class="pages-menu-edit-item dd-item dd-drag-item<?php if($page['Page']['id']==$page['Page']['room_id']){echo(' '.$class);} ?>" data-id="<?php echo(h($page['Page']['id'])); ?>" data-room-id="<?php echo(h($page['Page']['room_id'])); ?>" data-is-top="<?php if($is_top){echo(_ON);}else{echo(_OFF);} ?>" data-is-chief="<?php if($is_chief){echo(_ON);} else {echo(_OFF);} ?>"<?php echo($attr); ?>>
 	<?php if($is_chgseq): ?>
 	<div class="dd-handle dd-drag-handle"></div>
 	<?php endif; ?>
 	<?php if($is_top): ?>
-	<div class="pages-menu-top <?php echo($class); ?>-top"></div>
+	<div class="pages-menu-top <?php echo($class); ?>-room"></div>
+	<?php elseif($page['Page']['id'] == $page['Page']['room_id']): ?>
+	<div class="pages-menu-room <?php echo($class); ?>-room"></div>
 	<?php endif; ?>
 	<?php
-	echo $this->Form->create(null, array('url' => array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'edit'), 'id' => 'PagesMenuForm-'.$page['Page']['id'], 'class' => 'pages-menu-edit-form','data-ajax-replace' => '#pages-menu-edit-item-'.h($page['Page']['id'])));
+	echo $this->Form->create(null, array('url' => array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'edit'), 'id' => 'PagesMenuForm-'.$page['Page']['id'], 'class' => 'pages-menu-edit-form','data-ajax-replace' => '#pages-menu-edit-item-'.$page['Page']['id']));
 	?>
 	<input type="hidden" name="data[Page][id]" value="<?php echo(intval($page['Page']['id'])); ?>" />
 	<div class="dd-drag-content pages-menu-edit-content clearfix">
@@ -113,7 +122,7 @@
 		}
 		?>
 	</div>
-	<?php if($is_edit): ?>
+	<?php if($is_edit_detail): ?>
 	<div id="pages-menu-edit-detail-<?php echo(h($page['Page']['id'])); ?>" class="pages-menu-edit-view"<?php if(!empty($is_child) || (!$is_detail || $page_id != $page['Page']['id'])): ?> style="display:none;"<?php endif; ?>>
 		<?php
 			if($is_detail && $page_id == $page['Page']['id']) {
@@ -135,8 +144,8 @@
 
 	<?php endif; ?>
 	</form>
-	<?php if($is_edit): ?>
-	<div id="pages-menu-edit-participant-<?php echo(h($page['Page']['id'])); ?>" class="pages-menu-edit-view" style="display:none;">
+	<?php if($is_sel_users): ?>
+	<div id="pages-menu-edit-participant-<?php echo(h($page['Page']['id'])); ?>" class="pages-menu-edit-view  pages-menu-edit-participant-outer" style="display:none;">
 	</div>
 	<?php endif; ?>
 	<?php if(isset($pages) && !empty($pages[$space_type][$next_thread_num][$page['Page']['id']])): ?>

@@ -30,7 +30,7 @@ if(!empty($all_selected) && $all_selected) {
 }
 
 if($radio) {
-	$id = $prefix.'-'.$user_id.'-'.$def_authority_id;
+	$id = $prefix.'-'.$user_id.'-'.$room_id.'-'.$def_authority_id;
 	$name = 'data[PageUserLink]['.$user_id.'][authority_id]';
 
 	$checked = "";

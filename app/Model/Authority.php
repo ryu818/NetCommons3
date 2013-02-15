@@ -60,11 +60,11 @@ class Authority extends AppModel
 
 			'myportal_use_flag' => array(
 				'boolean'  => array(
-									'rule' => array('boolean'),
+									'rule' => array('numeric'),
 									'last' => true,
 									'required' => true,
 									'allowEmpty' => false,
-									'message' => __('The input must be a boolean.')
+									'message' => __('The input must be a number.')
 								)
 			),
 
@@ -289,12 +289,16 @@ class Authority extends AppModel
  * @since  v 3.0.0.0
  */
 	public function isParticipantOnly($authority_id, $page) {
+		if($page['Page']['thread_num'] > 1) {
+			// 子ルームならば、参加会員のみ
+			return true;
+		}
 		if($page['Page']['space_type'] == NC_SPACE_TYPE_PRIVATE || $page['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
-			return false;
+			return true;
 		}
 		$authority = $this->findById($authority_id);
 		if(!isset($authority['Authority'])) {
-			return false;
+			return true;
 		}
 
 		if($authority['Authority']['allow_new_participant']) {

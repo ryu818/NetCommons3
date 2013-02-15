@@ -1,13 +1,21 @@
-<div id="pages-menu-edit-participant-<?php echo($page['Page']['id']);?>" class="pages-menu-edit-view">
+<div id="pages-menu-edit-participant-<?php echo($page['Page']['id']);?>" class="pages-menu-edit-view pages-menu-edit-participant-outer">
 <div class="pages-menu-edit-participant">
 	<div class="bold">
-		<?php echo(__d('page', 'Edit members'));?>
+		<?php
+			$form_params = array('id' => 'pages-menu-edit-participant-form-'.$page['Page']['id'],
+					'class' => 'pages-menu-edit-form', 'data-ajax-replace' => '#pages-menu-edit-item-'.$page['Page']['id']);
+			if($page['Page']['id'] != $page['Page']['room_id']) {
+				echo(__d('page', 'Add members'));
+				$form_params['data-ajax-confirm'] = h(__d('page','You set a new participant to [%s]. Are you sure?',$page['Page']['page_name']));
+			} else {
+				echo(__d('page', 'Edit members'));
+			}
+		?>
 	</div>
 	<div class="top-description">
 		<?php echo(__d('page', 'Set the roles of the room members, and press [Ok] button. To set the roles all at once, press [Select All] button.'));?>
 	</div>
-	<?php echo $this->Form->create(null, array('id' => 'pages-menu-edit-participant-form-'.$page['Page']['id'],
-			'class' => 'pages-menu-edit-participant-form', 'data-ajax-replace' => '#pages-menu-edit-participant-'.$page['Page']['id'])); ?>
+	<?php echo $this->Form->create(null, $form_params); ?>
 	<table id="pages-menu-edit-participant-grid-<?php echo($page['Page']['id']);?>" style="display:none;">
 	</table>
 	<?php
@@ -40,8 +48,10 @@ $(function(){
                 {display: '<?php echo($this->element('index/auth_list', array('auth' => $auth_list[NC_AUTH_CHIEF],   'user_id' => '0', 'selauth'=> true,  'radio'=> false, 'all_selected' => true, 'authority_id' => NC_AUTH_CHIEF_ID)));?>', name : 'chief', width: 120, sortable : true, align: 'center'  },
                 {display: '<?php echo($this->element('index/auth_list', array('auth' => $auth_list[NC_AUTH_MODERATE],'user_id' => '0', 'selauth'=> true,  'radio'=> false, 'all_selected' => true, 'authority_id' => NC_AUTH_MODERATE_ID)));?>', name : 'moderator', width: 120, sortable : false, align: 'center'  },
                 {display: '<?php echo($this->element('index/auth_list', array('auth' => $auth_list[NC_AUTH_GENERAL], 'user_id' => '0', 'selauth'=> true,  'radio'=> false, 'all_selected' => true, 'authority_id' => NC_AUTH_GENERAL_ID)));?>', name : 'general', width: 120, sortable : false, align: 'center'  },
-                {display: '<?php echo($this->element('index/auth_list', array('auth' => $auth_list[NC_AUTH_GUEST],   'user_id' => '0', 'selauth'=> false, 'radio'=> false, 'all_selected' => true, 'authority_id' => NC_AUTH_GUEST_ID)));?>', name : 'guest', width: 120, sortable : false, align: 'center'  },
-                {display: '<?php echo($this->element('index/auth_list', array('auth' => $auth_list[NC_AUTH_OTHER],   'user_id' => '0', 'selauth'=> false, 'radio'=> false, 'all_selected' => true, 'authority_id' => NC_AUTH_OTHER_ID)));?>', name : 'none', width: 120, sortable : false, align: 'center'  }
+                {display: '<?php echo($this->element('index/auth_list', array('auth' => $auth_list[NC_AUTH_GUEST],   'user_id' => '0', 'selauth'=> false, 'radio'=> false, 'all_selected' => true, 'authority_id' => NC_AUTH_GUEST_ID)));?>', name : 'guest', width: 120, sortable : false, align: 'center'  }
+                <?php if($page['Page']['space_type'] != NC_SPACE_TYPE_PUBLIC): ?>
+                ,{display: '<?php echo($this->element('index/auth_list', array('auth' => $auth_list[NC_AUTH_OTHER],   'user_id' => '0', 'selauth'=> false, 'radio'=> false, 'all_selected' => true, 'authority_id' => NC_AUTH_OTHER_ID)));?>', name : 'none', width: 120, sortable : false, align: 'center'  }
+                <?php endif; ?>
             ],
             sortname: "chief",
             sortorder: "desc",

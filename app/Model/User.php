@@ -402,8 +402,9 @@ class User extends AppModel
 		if($sortname == 'chief') {
 			$order = array(
 				'Authority.hierarchy' => $sortorder,
-				'User.handle' => "ASC",
-				'User.id' => "ASC"
+				'PageUserLink.id' => $sortorder,
+				'User.handle' => $sortorder,
+				'User.id' => $sortorder
 			);
 		} else if(!empty($sortname)) {
 			$order = array(
