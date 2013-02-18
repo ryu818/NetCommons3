@@ -913,7 +913,11 @@ class PageMenuComponent extends Component {
 			$echo_sub_str .= '<li>'.__d('page', 'Block shortcut is copied as is.').'</li>';
 			$echo_sub_str .= '<li>'.__d('page', 'Only a block located on the page is copied.').'</li>';
 		}
-		$echo_sub_str .= '<li>'.__d('page', 'It is added under the page that you selected.').'</li>';
+		if($position != 'inner') {
+			$echo_sub_str .= '<li>'.__d('page', 'It is added under the page that you selected.').'</li>';
+		} else {
+			$echo_sub_str .= '<li>'.__d('page', 'It is added to the page that you selected.').'</li>';
+		}
 		$echo_str .= '<div class="align-right"><a class="pages-menu-edit-confirm-note" href="#" onclick="$(\'#pages-menu-edit-confirm-ul\').toggle();return false;">'.__('Note')
 				.'</a></div><ul id="pages-menu-edit-confirm-ul">'.$echo_sub_str.'</ul>';
 

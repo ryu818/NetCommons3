@@ -184,6 +184,8 @@ msgid  	"Only a block located on the page is copied."
 msgstr 	"ページに配置してあるブロックのみコピーされます。"
 msgid  	"It is added under the page that you selected."
 msgstr 	"選択したページの下に追加されます。"
+msgid  	"It is added to the page that you selected."
+msgstr 	"選択したページ内に追加されます。"
 
 ## ページ操作 - 子グループあり
 msgid  	"The assignment of the rights of the room is released."

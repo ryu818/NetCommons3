@@ -644,7 +644,10 @@ class PageMenuController extends PageAppController {
 		}
 
 		$results = $this->PageMenu->operatePage('move', $is_confirm, $page['Page']['id'], $page['DropPage']['id'], $position);
-		if($results === false) {
+		if($results === true) {
+			// 確認メッセージ
+			return;
+		} else if($results === false) {
 			echo $this->PageMenu->getErrorStr();
 			$this->render(false, 'ajax');
 			return;
