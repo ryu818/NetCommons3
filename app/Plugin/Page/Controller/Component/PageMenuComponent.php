@@ -50,7 +50,7 @@ class PageMenuComponent extends Component {
 		}
 		if($request->params['action'] == 'detail' || $request->params['action'] == 'delete' ||
 				$request->params['action'] == 'participant' || $request->params['action'] == 'participant_detail' ||
-				$request->params['action'] == 'participant_cancel' ||
+				$request->params['action'] == 'participant_cancel' || $request->params['action'] == 'deallocation' ||
 				$request->params['action'] == 'copy' || $request->params['action'] == 'paste' ||
 				$request->params['action'] == 'move' || $request->params['action'] == 'shortcut') {
 			if(!$request->is('ajax')) {
@@ -205,13 +205,18 @@ class PageMenuComponent extends Component {
 				}
 				break;
 			case "participant":
+			case "deallocation":
 				if($page['Page']['space_type'] == NC_SPACE_TYPE_PRIVATE) {
 					// プライベートスペースは権限を設定不可
 					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.007', '400');
 					return false;
 				}
-				if($page['Page']['thread_num'] == 0) {
+				if($page['Page']['thread_num'] == 0 || ($page['Page']['thread_num'] == 2 && $page['Page']['display_sequence'] == 1)) {
 					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.008', '400');
+					return false;
+				}
+				if($request->params['action'] == "deallocation" && $page['Page']['thread_num'] == 1) {
+					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.009', '400');
 					return false;
 				}
 		}
@@ -1398,15 +1403,15 @@ class PageMenuComponent extends Component {
 		if($copy_page['Page']['room_id'] != $move_parent_page['Page']['room_id'] && count($copy_room_id_arr) > 0) {
 			foreach($copy_room_id_arr as $copy_room_id) {
 				$conditions = array(
-					"PagesUsersLink.room_id" => $copy_room_id
+					"PageUserLink.room_id" => $copy_room_id
 				);
-				if(!$this->_controller->PagesUsersLink->deleteAll($conditions)) {
+				if(!$this->_controller->PageUserLink->deleteAll($conditions)) {
 					return false;
 				}
 				$conditions = array(
-					"ModulesLink.room_id" => $copy_room_id
+					"ModuleLink.room_id" => $copy_room_id
 				);
-				if(!$this->_controller->ModulesLink->deleteAll($conditions)) {
+				if(!$this->_controller->ModuleLink->deleteAll($conditions)) {
 					return false;
 				}
 			}

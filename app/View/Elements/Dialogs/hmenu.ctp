@@ -76,7 +76,7 @@ if(isset($page_menu)) {
 	$params['action'] = $page_menu;
 
 }
-if(!empty($this->params['active_plugin']) && $this->params['active_plugin'] == 'page') {
+if(!empty($this->params['active_plugin']) && $this->params['active_plugin'] == 'page' && $this->params['active_action'] == 'index') {
 	$show_page_setting = true;
 	$options['query'] = $this->params->query;
 	//$options['url'] = $this->params->query;

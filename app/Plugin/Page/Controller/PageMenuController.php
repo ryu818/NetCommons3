@@ -712,28 +712,20 @@ class PageMenuController extends PageAppController {
 					return;
 				}
 			}
-			$child_pages = $this->Page->findChilds('all', $page);
+			$child_pages = $this->Page->findChilds('all', $page, $user_id);
 			if($page['Page']['id'] != $page['Page']['room_id']) {
 				// 新規ルーム
-				$page_id_list_arr = array($page['Page']['id']);
-				$room_id_list_arr = array($page['Page']['id']);
-				foreach($child_pages as $child_page) {
-					$page_id_list_arr[] = $child_page['Page']['id'];
-					if($child_page['Page']['room_id'] == $page['Page']['room_id']) {
-						// 親のルームと等しいpageリスト
-						$room_id_list_arr[] = $child_page['Page']['id'];
-					}
-				}
+				$page_id_list_arr = $this->_getIdList($page, $child_pages);
 
 				$fields = array(
 					'room_id' => $page['Page']['id']
 				);
 				$conditions = array(
-					'id' => $room_id_list_arr
+					'id' => $page_id_list_arr
 				);
 				if(!$this->Page->updateAll($fields, $conditions)) {
 					$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/participant.003', '500');
-					return false;
+					return;
 				}
 				if($page['Page']['parent_id'] > 0) {
 					// 権限の割り当てで、子ルームを割り当てると、そこにはってあったブロックの変更処理
@@ -753,9 +745,6 @@ class PageMenuController extends PageAppController {
 		$this->set('page', $page);
 		$this->set('auth_list', $auth_list);
 		$this->set('admin_hierarchy', $admin_hierarchy);
-
-
-		//$this->set('parent_page', $parent_page);
 	}
 
 /**
@@ -827,6 +816,49 @@ class PageMenuController extends PageAppController {
 	}
 
 /**
+ * 参加者割り当て解除
+ * @param   integer   カレントpage_id $page_id
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function deallocation($page_id) {
+		$user = $this->Auth->user();
+		$user_id = $user['id'];
+		$page = $this->Page->findAuthById($page_id, $user_id);
+
+		// 権限チェック
+		$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $page);
+		if(!$admin_hierarchy) {
+			return;
+		}
+		$parent_page = $this->Page->findById($page['Page']['parent_id']);
+		$child_pages = $this->Page->findChilds('all', $page, $user_id);
+
+		// 登録処理
+		$page_id_list_arr = $this->_getIdList($page, $child_pages);
+
+		$fields = array(
+			'room_id' => $parent_page['Page']['room_id']
+		);
+		$conditions = array(
+			'id' => $page_id_list_arr
+		);
+		if(!$this->Page->updateAll($fields, $conditions)) {
+			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/deallocation.001', '500');
+			return;
+		}
+		$page['Page']['room_id'] = $parent_page['Page']['room_id'];
+		// 権限の割り当て解除で、そこにはってあったブロックの変更処理
+		if(!$this->PageBlock->deallocationBlock($page_id_list_arr, $parent_page['Page']['room_id'])) {
+			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/deallocation.002', '500');
+			return;
+		}
+
+		$this->Session->setFlash(__('Has been successfully updated.'));
+		$this->_renderItem($page, $admin_hierarchy, false, false, $parent_page, $child_pages);
+	}
+
+/**
  * ページのitemのrenderを行う
  * @param   Model Page    $page
  * @param   integer       $admin_hierarchy
@@ -841,7 +873,7 @@ class PageMenuController extends PageAppController {
 		if(isset($parent_page)) {
 			$this->set('parent_page', $parent_page);
 		}
-		if(isset($child_pages)) {
+		if(isset($child_pages) && count($child_pages) > 0) {
 			$fetch_params = array(
 				'active_page_id' => $page['Page']['id']
 			);
@@ -855,5 +887,23 @@ class PageMenuController extends PageAppController {
 		$this->set('is_detail', $is_detail);
 		$this->set('error_flag', $error_flag);
 		$this->render('Elements/index/item');
+	}
+
+/**
+ * ページIDのリストを取得
+ * @param   Model Page    $page
+ * @param   Model Pages   $child_pages
+ * @return  array(array $page_id_list_arr, array $room_id_list_arr)
+ * @since   v 3.0.0.0
+ */
+	private function _getIdList($page, $child_pages) {
+		$page_id_list_arr = array($page['Page']['id']);
+		foreach($child_pages as $child_page) {
+			if($child_page['Page']['room_id'] == $page['Page']['room_id']) {
+				// 親のルームと等しいpageリスト
+				$page_id_list_arr[] = $child_page['Page']['id'];
+			}
+		}
+		return $page_id_list_arr;
 	}
 }

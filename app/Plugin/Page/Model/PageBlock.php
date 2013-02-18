@@ -114,6 +114,10 @@ class PageBlock extends AppModel {
 				}
 			}
 		}
+
+
+		// TODO:uploadsテーブルの更新処理
+
 		return true;
 	}
 
@@ -137,42 +141,39 @@ class PageBlock extends AppModel {
 			'Block.page_id' => $page_id_arr
 		);
 		$params = array(
-				'fields' => array('Block.*', 'Content.*'),
-				'conditions' => $conditions,
-				'recursive' => -1,
-				'joins' => array(
-					array(
-						'type' => "LEFT",
-						'table' => "contents",
-						'alias' => "Content",
-						'conditions' => "`Block`.`content_id`=`Content`.`id`"
-					)
+			'fields' => array('Block.*', 'Content.*'),
+			'conditions' => $conditions,
+			'recursive' => -1,
+			'joins' => array(
+				array(
+					'type' => "LEFT",
+					'table' => "contents",
+					'alias' => "Content",
+					'conditions' => "`Block`.`content_id`=`Content`.`id`"
 				)
+			)
 		);
 
 		$blocks = $this->find('all', $params);
 		if(count($blocks) > 0) {
 			foreach($blocks as $block) {
-				if($block['Block']['controller_action'] == 'group') {
-					// グループブロックか権限が付与されたショートカット
-					$Content->id = $block['Block']['content_id'];
-					if(!$Content->saveField('room_id', $parent_room_id)) {
-						return false;
-					}
-					continue;
-				} else if($block['Content']['room_id'] != $parent_room_id && $block['Content']['room_id'] != $deallocation_room_id) {
-					// 親ルームのコンテンツではない(どこかのルームのショートカットか、子ルームが既に存在している)
+				if($block['Block']['controller_action'] == 'group' ||
+						($block['Content']['room_id'] != $parent_room_id && $block['Content']['room_id'] != $deallocation_room_id)) {
+					// グループブロックか親ルームのコンテンツではない(どこかのルームのショートカットか、子ルームが既に存在している)
 					continue;
 				}
 
 				// 親ルームのショートカットならば、ショートカットを解除
-				if(!$block['Content']['is_master'] && $block['Content']['room_id'] == $parent_room_id) {
-					// 親ルームの権限つきショートカット
-					// 同ページ内の他ブロックにより、既に削除されている可能性があるためエラーチェックしない。
-					$Content->delete($block['Content']['id']);
-					$this->id = $block['Block']['id'];
-					if(!$this->saveField('content_id', $block['Content']['master_id'])) {
-						return false;
+				if(!$block['Content']['is_master']) {
+					$master_content = $Content->findById($block['Content']['master_id']);
+					if(isset($master_content['Content']) && $master_content['Content']['room_id'] == $parent_room_id) {
+						// 親ルームの権限つきショートカット
+						// 同ページ内の他ブロックにより、既に削除されている可能性があるためエラーチェックしない。
+						$Content->delete($block['Content']['id']);
+						$this->id = $block['Block']['id'];
+						if(!$this->saveField('content_id', $block['Content']['master_id'])) {
+							return false;
+						}
 					}
 				}
 			}
@@ -189,6 +190,10 @@ class PageBlock extends AppModel {
 		if(!$Content->updateAll($fields, $conditions)) {
 			return false;
 		}
+
+
+		// TODO:uploadsテーブルの更新処理
+
 		return true;
 	}
 }

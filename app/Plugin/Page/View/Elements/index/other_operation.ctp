@@ -50,6 +50,14 @@
 					array('title' => __d('page', 'Edit members'), 'class' => 'link hover-highlight', 'data-page-edit-id' => '','data-ajax-replace' => '#pages-menu-edit-participant'));
 			?>
 		</li>
+		<li id="pages-menu-edit-other-operation-unassign-members">
+			<?php
+				echo $this->Html->link(__d('page', 'Unassign members'), array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'deallocation'),
+					array('title' => __d('page', 'Unassign members'), 'class' => 'link hover-highlight', 'data-page-edit-id' => '','data-ajax-replace' => '#pages-menu-edit-item',
+						'data-ajax-confirm' => h(__d('page','Unassign members of [%s]. Are you sure?',$page['Page']['page_name'])), 'data-ajax-type' => 'post'
+				));
+			?>
+		</li>
 		<li id="pages-menu-edit-other-operation-modules">
 			<a class="link hover-highlight" href="#">
 				<?php /* TODO:未実装 */ echo(__d('page', 'Modules to use'));?>

@@ -387,7 +387,7 @@
 				return false;
 			});
 
-			// ページ編集画面表示・参加者修正画面表示
+			// ページ編集画面表示・参加者修正画面表示・参加者解除
 			root_menu.add('#pages-menu-edit-other-operation').on('ajax:beforeSend','[data-page-edit-id]',function(e, url) {
 				var link = $(e.target);
 				if(!link.hasClass('pages-menu-edit-icon')) {
@@ -399,7 +399,12 @@
 
 						url += '/' + list_page_id;
 						link.attr("data-page-edit-id", list_page_id);
-						link.attr("data-ajax-replace", "#pages-menu-edit-participant-" + list_page_id);
+						if(link.parent().attr('id') == 'pages-menu-edit-other-operation-unassign-members') {
+							// 参加者解除
+							link.attr("data-ajax-replace", "#pages-menu-edit-item-" + list_page_id);
+						} else {
+							link.attr("data-ajax-replace", "#pages-menu-edit-participant-" + list_page_id);
+						}
 					}
 					return url;
 				}
@@ -419,6 +424,17 @@
 				var target = $.Common.ajaxSuccess(this, res);
 				var scroll_target = $('#pages-menu-edit-item-' + page_id);
 				$('.pages-menu-edit-content:first', scroll_target).click();
+
+				if(target.hasClass('pages-menu-edit-item')) {
+					$(".pages-menu-edit-item" , target.parent()).each(function(){
+						var target = $(this);
+						if(active_tab_name == '#pages-menu-page') {
+							$(root_menu.get(0)).nestable('addEvent', [target, page_id]);
+						} else {
+							$(root_menu.get(1)).nestable('addEvent', [target, page_id]);
+						}
+					});
+				}
 
 				// スクロール
 				slideTarget(target, active_tab_name, scroll_target);
@@ -591,7 +607,7 @@
 
 		// その他操作
 		var send_url, postfix_url;
-		$('a[data-ajax-type=post]', '#pages-menu-edit-other-operation').on('ajax:beforeSend', function(e, url) {
+		$('a[data-ajax-type=post][data-ajax=]', '#pages-menu-edit-other-operation').on('ajax:beforeSend', function(e, url) {
 			var li = $(e.target).parent();
 			if(li.attr('data-name') == 'cancel') {
 				return url;
@@ -784,6 +800,8 @@
 			} else {
 				$('#pages-menu-edit-other-operation-modules').show();
 			}
+
+			// 参加者設定 - 修正
 			if(!$('#pages-menu-edit-participant-'+page_id).get(0)) {
 				$('#pages-menu-edit-other-operation-members').hide();
 				$('#pages-menu-edit-other-operation-add-members').hide();
@@ -795,6 +813,13 @@
 					$('#pages-menu-edit-other-operation-members').show();
 					$('#pages-menu-edit-other-operation-add-members').hide();
 				}
+			}
+
+			// 参加者割り当て解除
+			if(page_id == room_id && is_top == 0) {
+				$('#pages-menu-edit-other-operation-unassign-members').show();
+			} else {
+				$('#pages-menu-edit-other-operation-unassign-members').hide();
 			}
 
 			if(!copy_page_id) {
