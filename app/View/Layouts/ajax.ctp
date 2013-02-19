@@ -16,11 +16,11 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 ?>
+<?php echo $this->element('flash_mes'); ?>
 <?php
 if($this->request->header('X-PJAX') && $this->request->is('ajax')) {
 	echo($this->element('Pages/title'));
 }
 ?>
 <?php echo $this->fetch('content'); ?>
-<?php echo $this->element('flash_mes'); ?>
 <?php echo $this->element('sql_dump'); ?>

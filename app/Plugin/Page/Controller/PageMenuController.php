@@ -662,8 +662,16 @@ class PageMenuController extends PageAppController {
 		}
 
 		$this->Session->setFlash(__('Has been successfully updated.'));
-		$this->set('page', $ins_pages[0]);
-		//$this->render(false, 'ajax');
+
+		// 再取得
+		$page = $this->Page->findAuthById($ins_pages[0]['Page']['id'], $user_id);
+		$parent_page = $this->Page->findById($page['Page']['parent_id']);
+		$child_pages = $this->Page->findChilds('all', $page, $user_id);
+		//$page = $ins_pages[0];
+		//$parent_page = $this->Page->findById($page['Page']['parent_id']);
+		//$child_pages = $ins_pages;
+
+		$this->_renderItem($page, $admin_hierarchy, false, false, $parent_page, $child_pages);
 	}
 
 /**

@@ -394,6 +394,7 @@
         {
         	var t = this, el;
         	var parent = t.dragEl.parents(t.options.itemNodeName + ':first');
+        	var drag_id = t.dragEl.data('id'), drop_id = t.dropEl.data('id'), position = t.dragPosition;
         	t.appendList(t.dropEl, t.dragEl, t.dragPosition, false);
 
             // キャンセル
@@ -404,6 +405,8 @@
             }
             t.setParent(parent, false);
 			t.reset();
+			// 完了イベント
+			$.Common.fireResult('success',[drag_id, drop_id, position], t.el);
         },
 
         appendList: function(li, new_li, position, add_event)

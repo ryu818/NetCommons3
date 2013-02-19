@@ -103,12 +103,22 @@
 			e.preventDefault();
 		},
 
-		ajaxSuccess : function(a, res) {
-			a = $(a);
-			var target = a.attr("data-ajax");
-			var replace_target = a.attr("data-ajax-replace");
-			var effect = a.attr("data-ajax-effect") ? a.attr("data-ajax-effect") : null;
+		ajaxSuccess : function(a, res, params) {
+			var target,replace_target,effect;
 			var buf_a, res_target, res_other_target, buf_res_target, effect_cnt = 0, effect_index = -1;
+			a = $(a);
+			if (params) {
+				var target = params['data-ajax'];
+				replace_target = params['data-ajax-replace'];
+				effect = params['data-ajax-effect'];
+			} else if(a.get(0)) {
+				target = a.attr("data-ajax");
+				replace_target = a.attr("data-ajax-replace");
+				effect = a.attr("data-ajax-effect") ? a.attr("data-ajax-effect") : null;
+			} else {
+				return false;
+			}
+
 			if(target) {
 				res_target = $(target);
 				if(effect && $(target).css('display') != 'none') {

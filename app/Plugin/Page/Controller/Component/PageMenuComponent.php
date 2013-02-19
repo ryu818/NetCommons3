@@ -297,10 +297,6 @@ class PageMenuComponent extends Component {
 		// 更新は行わない。
 		$ret_pages = array();
 		$ret_fieldChildList = array();
-		$display_flag = $ins_page['Page']['display_flag'];
-		$display_from_date = $ins_page['Page']['display_from_date'];
-		$display_to_date = $ins_page['Page']['display_to_date'];
-		$display_apply_subpage = $ins_page['Page']['display_apply_subpage'];
 
 		$current_permalink_arr = array(
 			$ins_page['Page']['id'] => $ins_page['Page']['permalink']
@@ -329,24 +325,7 @@ class PageMenuComponent extends Component {
 			$child_page['Page']['permalink'] = $upd_permalink;
 			$current_permalink_arr[$child_page['Page']['id']] = $upd_permalink;
 
-			if($display_flag == _OFF && $child_page['Page']['display_flag'] == _ON) {
-				$fieldChildList[] = 'display_flag';
-				$child_page['Page']['display_flag'] = $display_flag;
-			}
-			if(!empty($display_from_date) && $display_apply_subpage == _ON) {
-				$fieldChildList[] = 'display_from_date';
-				$child_page['Page']['display_from_date'] = $display_from_date;
-			}
-			if(!empty($display_from_date) && !empty($child_page['Page']['display_from_date']) &&
-					strtotime($child_page['Page']['display_from_date']) < strtotime($display_from_date)) {
-				$fieldChildList[] = 'display_from_date';
-				$child_page['Page']['display_from_date'] = $display_from_date;
-			}
-			if(!empty($display_to_date) && (empty($child_page['Page']['display_to_date']) ||
-					strtotime($child_page['Page']['display_to_date']) > strtotime($display_to_date))) {
-				$fieldChildList[] = 'display_to_date';
-				$child_page['Page']['display_to_date'] = $display_to_date;
-			}
+			list($child_page, $fieldChildList) = $this->setDisplay($child_page, $ins_page, $fieldChildList);
 
 			$this->_controller->Page->create();
 			//if($action == 'paste' || $action == 'shortcut') {
@@ -1037,25 +1016,34 @@ class PageMenuComponent extends Component {
 		$ins_page['Page']['display_reverse_permalink'] = null;
 
 		$space_type = $move_page['Page']['space_type'];
-		$lang = $move_page['Page']['lang'];
 		if($position == 'inner') {
 			$parent_id = $move_page['Page']['id'];
 			$thread_num = $move_page['Page']['thread_num'] + 1;
 			$display_sequence = $insert_display_sequence + 1;
 			$room_id = $move_page['Page']['room_id'];
 			$root_id = $move_page['Page']['root_id'];
+			if($move_page['Page']['thread_num'] <= 1 && $space_type != NC_SPACE_TYPE_PRIVATE) {
+				$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
+			} else {
+				$lang = $move_page['Page']['lang'];
+			}
+			$chk_display_page = $move_page;
 		} else if($is_same_top_node) {
 			$parent_id = $copy_page['Page']['parent_id'];
 			$thread_num = $copy_page['Page']['thread_num'];
 			$display_sequence = ($position == 'bottom') ? $move_page['Page']['display_sequence'] + 1 : $move_page['Page']['display_sequence'];
 			$room_id = $copy_page['Page']['room_id'];
 			$root_id = $copy_page['Page']['root_id'];
+			$lang = $copy_page['Page']['lang'];
+			$chk_display_page = $copy_page;
 		} else if($position == 'bottom') {
 			$parent_id = $move_page['Page']['parent_id'];
 			$thread_num = $move_page['Page']['thread_num'];
 			$display_sequence = $insert_display_sequence + 1;
 			$room_id = $move_parent_page['Page']['room_id'];
 			$root_id = $move_parent_page['Page']['root_id'];
+			$lang = $move_page['Page']['lang'];
+			$chk_display_page = $move_parent_page;
 		} else {
 			// top
 			$parent_id = $move_page['Page']['parent_id'];
@@ -1063,6 +1051,8 @@ class PageMenuComponent extends Component {
 			$display_sequence = $move_page['Page']['display_sequence'];
 			$room_id = $move_parent_page['Page']['room_id'];
 			$root_id = $move_parent_page['Page']['root_id'];
+			$lang = $move_page['Page']['lang'];
+			$chk_display_page = $move_parent_page;
 		}
 
 		// 固定リンク、ページ名称設定
@@ -1073,7 +1063,7 @@ class PageMenuComponent extends Component {
 		} else {
 			$id = $copy_page['Page']['id'];
 		}
-		list($count, $permalink) = $this->renamePermalink($id, $pre_permalink, $move_page['Page']['space_type'], $move_page['Page']['lang']);
+		list($count, $permalink) = $this->renamePermalink($id, $pre_permalink, $move_page['Page']['space_type'], $lang);
 
 		if($count > 0 || $copy_page['Page']['permalink'] == '') {
 			if($count == 0 && $copy_page['Page']['permalink'] == '') {
@@ -1152,7 +1142,17 @@ class PageMenuComponent extends Component {
 				$fields['Page.room_id'] = $room_id;
 				$ins_page['Page']['room_id'] = $room_id;
 			}
-			if($lang != $copy_page['Page']['lang']) {
+			if($room_id != $copy_page['Page']['room_id']) {
+				$fields['Page.room_id'] = $room_id;
+				$ins_page['Page']['room_id'] = $room_id;
+			}
+
+			list($ins_page, $fieldChildList) = $this->setDisplay($ins_page, $chk_display_page);
+			foreach($fieldChildList as $fieldChild) {
+				$fields['Page.'.$fieldChild] = $ins_page['Page'][$fieldChild];
+			}
+
+			if($move_page['Page']['thread_num'] > 1 && $lang != $copy_page['Page']['lang']) {
 				$fields['Page.lang'] = $lang;
 			}
 			$error_mes = "Failed to update the database, (%s).";
@@ -1181,6 +1181,14 @@ class PageMenuComponent extends Component {
 				$currentFieldList[] = 'room_id';
 				$ins_page['Page']['room_id'] = $room_id;
 			}
+
+			list($ins_page, $currentFieldList) = $this->setDisplay($ins_page, $chk_display_page, $currentFieldList);
+
+			if($lang != $copy_page['Page']['lang']) {
+				$currentFieldList[] = 'lang';
+				$ins_page['Page']['lang'] = $lang;
+			}
+
 			$error_mes = "Failed to register the database, (%s).";
 		}
 
@@ -1228,11 +1236,11 @@ class PageMenuComponent extends Component {
 		if(isset($fields) && count($fields) > 0) {
 			if($is_same_top_node) {
 				$conditions = array(
-						'Page.id' => $copy_page['Page']['id']
+					'Page.id' => $copy_page['Page']['id']
 				);
 			} else {
 				$conditions = array(
-						'Page.id' => $copy_page_id_arr
+					'Page.id' => $copy_page_id_arr
 				);
 			}
 			$ret = $this->_controller->Page->updateAll($fields, $conditions);
@@ -1546,6 +1554,40 @@ class PageMenuComponent extends Component {
 		echo $error;
 	}
 
+/**
+ * 公開日、非公開日等を親のPageをみてセットしなおす
+ * @param   Model Page    $page カレントページ
+ * @param   Model Page    $parent_page 親ページ
+ * @param   array $fieldChildList
+ * @return  string エラーメッセージ
+ * @since   v 3.0.0.0
+ */
+	public function setDisplay($page, $parent_page, $fieldChildList = array()) {
+		$display_flag = $parent_page['Page']['display_flag'];
+		$display_from_date = $parent_page['Page']['display_from_date'];
+		$display_apply_subpage = $parent_page['Page']['display_apply_subpage'];
+		$display_to_date = $parent_page['Page']['display_to_date'];
+
+		if($display_flag == _OFF && $page['Page']['display_flag'] == _ON) {
+			$fieldChildList[] = 'display_flag';
+			$page['Page']['display_flag'] = $display_flag;
+		}
+		if(!empty($display_from_date) && $display_apply_subpage == _ON) {
+			$fieldChildList[] = 'display_from_date';
+			$page['Page']['display_from_date'] = $display_from_date;
+		}
+		if(!empty($display_from_date) && !empty($page['Page']['display_from_date']) &&
+				strtotime($page['Page']['display_from_date']) < strtotime($display_from_date)) {
+			$fieldChildList[] = 'display_from_date';
+			$page['Page']['display_from_date'] = $display_from_date;
+		}
+		if(!empty($display_to_date) && (empty($page['Page']['display_to_date']) ||
+				strtotime($page['Page']['display_to_date']) > strtotime($display_to_date))) {
+			$fieldChildList[] = 'display_to_date';
+			$page['Page']['display_to_date'] = $display_to_date;
+		}
+		return array($page, $fieldChildList);
+	}
 /**
  * 同じ階層に同名の固定リンクあればリネームして返す
  *
