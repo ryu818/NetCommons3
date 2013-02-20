@@ -400,19 +400,20 @@ class Page extends AppModel
 		);
 
 		if(is_array($page_id_arr)) {
-			return $this->afterFindIds($this->find('all', $params));
+			return $this->afterFindIds($this->find('all', $params), $user_id);
 		}
-		$ret = $this->afterFindIds($this->find('first', $params));
+		$ret = $this->afterFindIds($this->find('first', $params), $user_id);
 		return $ret;
 	}
 
 /**
  * afterFind
  * @param   array   $results
+ * @param   integer  $user_id
  * @return  array   $pages
  * @since   v 3.0.0.0
  */
-	public function afterFindIds($results) {
+	public function afterFindIds($results, $user_id) {
 		$pages = array();
 		$single_flag = false;
 		if(isset($results['Page']['id'])) {
@@ -423,7 +424,7 @@ class Page extends AppModel
 		if(is_array($results)) {
 			foreach ($results as $key => $val) {
 				if(!isset($val['Authority']['hierarchy'])) {
-					$val['Authority']['hierarchy'] = $this->getDefaultHierarchy($val['Page']);
+					$val['Authority']['hierarchy'] = $this->getDefaultHierarchy($val, $user_id);
 				}
 				$val['Page'] = $this->setPageName($val['Page']);
 				$pages[$val['Page']['id']] = $val;
@@ -542,7 +543,7 @@ class Page extends AppModel
 		} else if(!is_null($fetchcallback)) {
 			$results = call_user_func_array($fetchcallback, array($this->find($type, $params), $fetch_params));
 		} else {
-			$results = $this->afterFindMenu($this->find($type, $params), $fetch_params);
+			$results = $this->afterFindMenu($this->find($type, $params), $login_user_id, $fetch_params);
 		}
 		return $results;
 	}

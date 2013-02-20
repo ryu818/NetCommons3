@@ -12,6 +12,8 @@ class Content extends AppModel
 {
 	public $name = 'Content';
 
+	public $actsAs = array('Page');
+
 /**
  * content_id,user_idから該当コンテンツを取得
  * @param   integer   $content_id
@@ -27,7 +29,22 @@ class Content extends AppModel
 			'conditions' => $conditions
 		);
 
-		return $this->find('first', $params);
+		$ret = $this->afterFindDefault($this->find('first', $params), $user_id);
+		return $ret;
+	}
+
+/**
+ * afterFind
+ * @param   array   $val
+ * @param   integer  $user_id
+ * @return  Model Content   $content
+ * @since   v 3.0.0.0
+ */
+	public function afterFindDefault($val, $user_id) {
+		if(!isset($val['Authority']['hierarchy'])) {
+			$val['Authority']['hierarchy'] = $this->getDefaultHierarchy($val, $user_id);
+		}
+		return $val;
 	}
 
 	/**
@@ -39,7 +56,7 @@ class Content extends AppModel
 	protected function _getFieldsArray() {
 		return array(
 			'Content.*',
-			//'Page.space_type',
+			'Page.thread_num','Page.room_id','Page.root_id','Page.space_type',
 			'Module.id','Module.controller_action','Module.edit_controller_action','Module.dir_name','Module.content_has_one',
 			'Authority.id','Authority.hierarchy'
 		);
@@ -64,11 +81,11 @@ class Content extends AppModel
 				"alias" => "Authority",
 				"conditions" => "`Authority`.id``=`PageUserLink`.`authority_id`"
 			),
-			/*array("type" => "LEFT",
+			array("type" => "LEFT",
 				"table" => "pages",
 				"alias" => "Page",
 				"conditions" => "`Content`.`room_id`=`Page`.`id`"
-			),*/
+			),
 			array("type" => "LEFT",
 				"table" => "modules",
 				"alias" => "Module",

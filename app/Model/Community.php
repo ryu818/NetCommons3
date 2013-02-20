@@ -109,6 +109,12 @@ class Community extends AppModel
 		);
 	}
 
+/**
+ * コミュニティーデフォルト値取得
+ * @param   void
+ * @return  Model Community
+ * @since   v 3.0.0.0
+ */
 	public function getDefault() {
 		$data = array();
 
@@ -127,5 +133,82 @@ class Community extends AppModel
 		$data['Community']['resign_notice_authority'] = NC_AUTH_CHIEF_ID;
 
 		return $data;
+	}
+
+/**
+ * コミュニティー情報取得
+ * @param   integer        $room_id
+ * @return  mixed false or array    array(Model community Model Communitylang , Model CommunitiesTag['tag_values'])
+ * @since   v 3.0.0.0
+ */
+	public function getCommunityData($room_id) {
+		App::uses('CommunityLang', 'Model');
+		$CommunityLang = new CommunityLang();
+		App::uses('CommunityTag', 'Model');
+		$CommunityTag = new CommunityTag();
+
+
+		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
+
+		$conditions = array(
+			'Community.room_id' => $room_id
+		);
+		$community = $this->find('first', array(
+			'recursive' => -1,
+			'conditions' => $conditions
+		));
+		if(!isset($community['Community'])) {
+			return false;
+		}
+
+		$conditions = array(
+			'CommunityLang.room_id' =>  $room_id,
+			'CommunityLang.lang' => $lang
+		);
+		$community_lang = $CommunityLang->find('first', array(
+			'recursive' => -1,
+			'conditions' => $conditions
+		));
+		if(!isset($community_lang['CommunityLang'])) {
+			$community_lang = $CommunityLang->getDefault('', $room_id);
+		}
+
+		$params = array(
+			'fields' => array('CommunityTag.tag_value'),
+			'conditions' => array(
+				'CommunityTag.room_id' => $room_id
+			),
+			'joins' => array(
+				array(
+					'type' => "INNER",
+					'table' => "tags",
+					'alias' => "Tag",
+					'conditions' => array(
+						"`Tag`.`id`=`CommunityTag`.`tag_id`",
+						'Tag.lang' => $lang
+					)
+				)
+			),
+			'order' => array('CommunityTag.display_sequence' => 'ASC')
+		);
+
+		$ret_communities_tags = $CommunityTag->find('list', $params);
+		if(!isset($communities_tags['CommunityTag'])) {
+			$communities_tag['CommunityTag']['tag_values'] = '';
+		} else {
+			if(count($ret_communities_tags) > 0) {
+				$tags_str = '';
+				foreach($ret_communities_tags as $ret_communities_tag) {
+					if($tags_str != '') {
+						$tags_str .= ',';
+					}
+					$tags_str .= $ret_communities_tag;
+
+				}
+			}
+			$communities_tag['CommunityTag']['tag_values'] = $tags_str;
+		}
+
+		return array($community, $community_lang, $communities_tag);
 	}
 }

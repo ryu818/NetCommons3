@@ -272,23 +272,23 @@ class PageMenuComponent extends Component {
 		return true;
 	}
 
-	/**
-	 *  子ページバリデータ処理
-	 *  ページ表示順変更、編集時、ページペースト、ページ移動、ページショートカットの作成、子供編集処理
-	 *
-	 *  <pre>
-	 *  現在のpage下のページすべてのpermalink更新処理
-	 *  From公開日付は、「下位にも適用」の場合、親の日付で更新
-	 *  To公開日付は、子供がセットしていないか、親よりも古い日付ならば、親の日付で更新
-	 *  </pre>
-	 *
-	 * @param  string       $action edit or move or shortcut or paste
-	 * @param  Page Models  $child_pages
-	 * @param  Page Model   $ins_page 親ページ
-	 * @param  array        $appendField 更新カラム情報($action != 'edit'のみ)
-	 * @return 成功 array($ret_pages, $ret_fieldChildList) 失敗 false エラーメッセージ データなし true
-	 * @since   v 3.0.0.0
-	 */
+/**
+ *  子ページバリデータ処理
+ *  ページ表示順変更、編集時、ページペースト、ページ移動、ページショートカットの作成、子供編集処理
+ *
+ *  <pre>
+ *  現在のpage下のページすべてのpermalink更新処理
+ *  From公開日付は、「下位にも適用」の場合、親の日付で更新
+ *  To公開日付は、子供がセットしていないか、親よりも古い日付ならば、親の日付で更新
+ *  </pre>
+ *
+ * @param  string       $action edit or move or shortcut or paste
+ * @param  Page Models  $child_pages
+ * @param  Page Model   $ins_page 親ページ
+ * @param  array        $appendField 更新カラム情報($action != 'edit'のみ)
+ * @return 成功 array($ret_pages, $ret_fieldChildList) 失敗 false エラーメッセージ データなし true
+ * @since   v 3.0.0.0
+ */
 	public function childsValidateErrors($action, $child_pages, $ins_page, $appendField = null) {
 
 		// 表示順変更の場合、「下位にも適用」のFrom公開日付を１つ上の階層のものしかみていない。
@@ -610,81 +610,10 @@ class PageMenuComponent extends Component {
 	}
 
 /**
- * コミュニティー情報取得
- * @param   integer        $room_id
- * @return  mixed false or array    array(Model community Model Communitylang , Model CommunitiesTag['tag_values'])
+ * コミュニティーPhotoサンプル画像名称取得
+ * @return  array
  * @since   v 3.0.0.0
  */
-	public function getCommunityData($room_id) {
-		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
-
-		$conditions = array(
-			'Community.room_id' => $room_id
-		);
-		$community = $this->_controller->Community->find('first', array(
-			'recursive' => -1,
-			'conditions' => $conditions
-		));
-		if(!isset($community['Community'])) {
-			return false;
-		}
-
-		$conditions = array(
-			'CommunityLang.room_id' =>  $room_id,
-			'CommunityLang.lang' => $lang
-		);
-		$community_lang = $this->_controller->CommunityLang->find('first', array(
-			'recursive' => -1,
-			'conditions' => $conditions
-		));
-		if(!isset($community_lang['CommunityLang'])) {
-			$community_lang = $this->_controller->CommunityLang->getDefault('', $room_id);
-		}
-
-		$params = array(
-			'fields' => array('CommunityTag.tag_value'),
-			'conditions' => array(
-				'CommunityTag.room_id' => $room_id
-			),
-			'joins' => array(
-				array(
-					'type' => "INNER",
-					'table' => "tags",
-					'alias' => "Tag",
-					'conditions' => array(
-						"`Tag`.`id`=`CommunityTag`.`tag_id`",
-						'Tag.lang' => $lang
-					)
-				)
-			),
-			'order' => array('CommunityTag.display_sequence' => 'ASC')
-		);
-
-		$ret_communities_tags = $this->_controller->CommunityTag->find('list', $params);
-		if(!isset($communities_tags['CommunityTag'])) {
-			$communities_tag['CommunityTag']['tag_values'] = '';
-		} else {
-			if(count($ret_communities_tags) > 0) {
-				$tags_str = '';
-				foreach($ret_communities_tags as $ret_communities_tag) {
-					if($tags_str != '') {
-						$tags_str .= ',';
-					}
-					$tags_str .= $ret_communities_tag;
-
-				}
-			}
-			$communities_tag['CommunityTag']['tag_values'] = $tags_str;
-		}
-
-		return array($community, $community_lang, $communities_tag);
-	}
-
-	/**
-	 * コミュニティーPhotoサンプル画像名称取得
-	 * @return  array
-	 * @since   v 3.0.0.0
-	 */
 	public function getCommunityPhoto() {
 		$photo_samples = array();
 		$plugin_path = App::pluginPath('Page');
@@ -845,7 +774,7 @@ class PageMenuComponent extends Component {
 		$move_room_id = $move_page['Page']['room_id'];
 
 		$echo_str = '<div class="pages-menu-edit-confirm-desc">';
-		switch($this->_controller->action) {
+		switch($action) {
 			case 'chgsequence':
 			case 'move':
 				if($position != 'inner' && $move_page['Page']['thread_num'] == 1) {
@@ -874,7 +803,7 @@ class PageMenuComponent extends Component {
 
 		$echo_str .= '</div>';
 
-		if($this->_controller->action == 'shortcut' && $pre_room_id != $move_room_id) {
+		if($action == 'shortcut' && $pre_room_id != $move_room_id) {
 			// 移動先が移動元と異なれば、チェックボックス表示
 			$echo_str .= '<label class="pages-menu-edit-confirm-shortcut" for="pages-menu-edit-confirm-shortcut">'.
 					'<input id="pages-menu-edit-confirm-shortcut" type="checkbox" name="shortcut_flag" value="'._ON.'" />&nbsp;'.
@@ -888,7 +817,7 @@ class PageMenuComponent extends Component {
 			// ルーム、または、子グループあり
 			$echo_sub_str .= '<li>'.__d('page', 'The assignment of the rights of the room is released.').'</li>';
 		}
-		if($this->_controller->action != 'move' && $this->_controller->action != 'chgsequence') {
+		if($action != 'move' && $action != 'chgsequence') {
 			$echo_sub_str .= '<li>'.__d('page', 'Block shortcut is copied as is.').'</li>';
 			$echo_sub_str .= '<li>'.__d('page', 'Only a block located on the page is copied.').'</li>';
 		}
@@ -1001,7 +930,7 @@ class PageMenuComponent extends Component {
 		$blocks = $this->_controller->Block->findByPageIds($copy_page_id_arr, $user_id, '');
 
 		if(!$is_confirm) {
-			$confirm = $this->showConfirm($this->_controller->action, $position, $copy_page, $move_page, $move_room_name, $copy_room_id_arr, $blocks);
+			$confirm = $this->showConfirm($action, $position, $copy_page, $move_page, $move_room_name, $copy_room_id_arr, $blocks);
 			if($confirm != '') {
 				echo $confirm;
 				$this->_controller->render(false, 'ajax');
@@ -1412,18 +1341,9 @@ class PageMenuComponent extends Component {
 		}
 
 		// 異なるルームへの操作で移動元にルームが存在していれば権限の割り当てを解除する
-		if($copy_page['Page']['room_id'] != $move_parent_page['Page']['room_id'] && count($copy_room_id_arr) > 0) {
+		if($action == 'move' && $copy_page['Page']['room_id'] != $move_parent_page['Page']['room_id'] && count($copy_room_id_arr) > 0) {
 			foreach($copy_room_id_arr as $copy_room_id) {
-				$conditions = array(
-					"PageUserLink.room_id" => $copy_room_id
-				);
-				if(!$this->_controller->PageUserLink->deleteAll($conditions)) {
-					return false;
-				}
-				$conditions = array(
-					"ModuleLink.room_id" => $copy_room_id
-				);
-				if(!$this->_controller->ModuleLink->deleteAll($conditions)) {
+				if(!$this->_controller->PageBlock->deallocationRoom($copy_room_id)) {
 					return false;
 				}
 			}

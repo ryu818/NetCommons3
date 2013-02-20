@@ -41,6 +41,14 @@ class PageMenuHelper extends AppHelper {
 			} else {
 				$hierarchy = NC_AUTH_OTHER;
 			}
+		} else if(isset($user['PageUserLinkParent']['authority_id']) && $page['Page']['id'] != $page['Page']['room_id']) {
+			// 新規
+			$authority_id = $user['PageUserLinkParent']['authority_id'];
+			if(isset($user['AuthorityParent']['hierarchy'])) {
+				$hierarchy = $user['AuthorityParent']['hierarchy'];
+			} else {
+				$hierarchy = NC_AUTH_OTHER;
+			}
 		} else {
 			$authority_id = $default_authority_id;
 			$hierarchy = $this->_getHierarchy($authority_id, $auth_list);

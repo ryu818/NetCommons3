@@ -85,37 +85,95 @@ class PageBehavior extends ModelBehavior {
 	}
 
 /**
- * HierarchyのDefault値取得
- *
- * @param Model    $Model
- * @param array    $page
- * @return integer  $hierarchy
- * @since   v 3.0.0.0
+ * 会員ID、ページ情報からHierarchyを返す
+ * @param  Model        $Model
+ * @param  boolean      $is_login
+ * @param  Model Page   $page
+ * @return integer hierarchy
+ * @since  v 3.0.0.0
  */
-	public function getDefaultHierarchy(Model $Model, $page) {
-		$id = Configure::read(NC_AUTH_KEY.'.'.'id');
-
-		// configの値から初期権限を付与する
-		if(!isset($id)) {
-			if($page['space_type'] == NC_SPACE_TYPE_PUBLIC || $page['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
+	public function getDefaultHierarchy($Model, $page, $is_login = false) {
+		if($page['Page']['space_type'] != NC_SPACE_TYPE_GROUP || !isset($is_login) || intval($is_login) === 0) {
+			if($page['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC) {
+				$hierarchy = NC_AUTH_GUEST;
+			} else if($page['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
+				// TODO:Configでマイポータルをログイン会員のみ表示させるかどうかをもつ
+				// 現状、公開Only
 				$hierarchy = NC_AUTH_GUEST;
 			} else {
 				$hierarchy = NC_AUTH_OTHER;
 			}
-			// TODO:コミュニティーで公開コミュニティーならば、設定した権限をセットすべき
-		} else if($page['space_type'] == NC_SPACE_TYPE_PUBLIC) {
-			$hierarchy = Configure::read(NC_CONFIG_KEY.'.default_entry_public_hierarchy');
-		} else if($page['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
-			$hierarchy = Configure::read(NC_CONFIG_KEY.'.default_entry_myportal_hierarchy');
-		} else if($page['space_type'] == NC_SPACE_TYPE_PRIVATE) {
-			$hierarchy = Configure::read(NC_CONFIG_KEY.'.default_entry_private_hierarchy');
-		} else if($page['space_type'] == NC_SPACE_TYPE_GROUP) {
-			// コミュニティーでログイン会員のみ公開であればここにいくべき
-			$hierarchy = Configure::read(NC_CONFIG_KEY.'.default_entry_group_hierarchy');
-		} else {
-			$hierarchy = NC_AUTH_OTHER;
+			return $hierarchy;
 		}
-		return $hierarchy;
+		$default_authority_id = $this->getDefaultAuthorityId($Model, $page, $is_login);
+
+		if($default_authority_id == NC_AUTH_OTHER_ID) {
+			return NC_AUTH_OTHER;
+		}
+		App::uses('Authority', 'Model');
+		$Authority = new Authority();
+		$authority = $Authority->findById($default_authority_id);
+		return $authority['Authority']['hierarchy'];
+	}
+
+/**
+ * ページにおけるデフォルトの権限を取得
+ * @param  Model       $Model
+ * @param  boolean     $is_login
+ * @param  Model Page  $page
+ * @return integer authority_id
+ * @since  v 3.0.0.0
+ */
+	public function getDefaultAuthorityId($Model, $page, $is_login = false) {
+		$authority_id = NC_AUTH_OTHER;
+		if($page['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC) {
+			$authority_id = Configure::read(NC_CONFIG_KEY.'.default_entry_public_authority_id');
+		} else if($page['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
+			$authority_id = Configure::read(NC_CONFIG_KEY.'.default_entry_myportal_authority_id');
+		} else if($page['Page']['space_type'] == NC_SPACE_TYPE_PRIVATE) {
+			$authority_id = Configure::read(NC_CONFIG_KEY.'.default_entry_private_authority_id');
+		} else if($page['Page']['root_id'] == 0) {
+			$authority_id = NC_AUTH_OTHER_ID;
+		} else {
+			App::uses('Community', 'Model');
+			$Community = new Community();
+			$params = array(
+				'fields' => array(
+					'Community.publication_range_flag'
+				),
+				'conditions' => array('room_id' => $page['Page']['root_id']),
+			);
+			$current_community = $Community->find('first', $params);
+			if($current_community['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_ONLY_USER ||
+					((!isset($is_login) || intval($is_login) == 0) && $current_community['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_LOGIN_USER)) {
+				$authority_id = NC_AUTH_OTHER_ID;
+			} else {
+				$authority_id = Configure::read(NC_CONFIG_KEY.'.default_entry_group_authority_id');
+			}
+		}
+
+		/*if($is_login != _OFF && $authority_id != NC_AUTH_OTHER_ID && $page['Page']['root_id'] != $page['Page']['room_id']) {
+			// 子グループ
+			// 親ルームが存在するならば、親ルームの参加者権限を取得
+			App::uses('Page', 'Model');
+			$Page = new Page();
+			$parent_page = $Page->findById($page['Page']['parent_id']);
+			$parent_room_id = $parent_page['Page']['room_id'];
+
+			App::uses('PageUserLink', 'Model');
+			$PageUserLink = new PageUserLink();
+			$conditions = array(
+				'PageUserLink.room_id' => $parent_room_id,
+				'PageUserLink.user_id' => $is_login
+			);
+			$params = array(
+				'fields' => 'PageUserLink.authority_id',
+				'conditions' => $conditions
+			);
+			$page_user_link = $PageUserLink->find('first', $params);
+			$authority_id = $page_user_link['PageUserLink']['authority_id'];
+		}*/
+		return $authority_id;
 	}
 
 /**
@@ -150,11 +208,12 @@ class PageBehavior extends ModelBehavior {
  *
  * @param  Model     $Model
  * @param  array     $results
+ * @param  boolean   $is_login
  * @param  array     $fetch_params
  * @return array     $pages['space_type']['thread_num']['parent_id']['display_sequence']
  * @since   v 3.0.0.0
  */
-	public function afterFindMenu(Model $Model, $results, $fetch_params = null) {
+	public function afterFindMenu(Model $Model, $results, $is_login = false, $fetch_params = null) {
 		$pages = array();
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		$active_page_id = isset($fetch_params['active_page_id']) ? $fetch_params['active_page_id'] : null;
@@ -243,7 +302,7 @@ class PageBehavior extends ModelBehavior {
 			}
 			//$val[$Model->alias]['hierarchy'] = isset($val['Authority']['hierarchy']) ? $val['Authority']['hierarchy'] : NC_AUTH_OTHER;
 			if(!isset($val['Authority']['hierarchy'])) {
-				$val[$Model->alias]['hierarchy'] = $this->getDefaultHierarchy($Model, $val[$Model->alias]);
+				$val[$Model->alias]['hierarchy'] = $this->getDefaultHierarchy($Model, $val, $is_login);
 			} else {
 				$val[$Model->alias]['hierarchy'] = $val['Authority']['hierarchy'];
 			}

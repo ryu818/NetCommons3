@@ -12,6 +12,8 @@ class PageUserLink extends AppModel
 {
 	public $name = 'PageUserLink';
 
+	public $actsAs = array('Page');
+
 /**
  * 参加会員修正時のPageUserLink登録・更新処理
  * @param  Model Page  $page
@@ -25,7 +27,7 @@ class PageUserLink extends AppModel
  */
 	public function saveParticipant($page, $post_page_user_links, $pre_page_user_links, $pre_parent_page_user_links = null, $is_participant_only = null) {
 		$room_id = $page['Page']['id'];
-		$default_authority_id = $this->getDefaultAuthorityId($page);
+		$default_authority_id = $this->getDefaultAuthorityId($page, true);
 		$del_user_id_arr = array();
 		$pre_user_id_arr = array();
 		$post_user_id_arr = array();
@@ -37,7 +39,7 @@ class PageUserLink extends AppModel
 		foreach($pre_page_user_links as $page_user_link) {
 			$pre_user_id_arr[$page_user_link['PageUserLink']['user_id']] = $page_user_link['PageUserLink']['authority_id'];
 		}
-		if(isset($pre_parent_page_user_links)) {
+		if(isset($pre_parent_page_user_links) && isset($is_participant_only) && $is_participant_only) {
 			// 子グループ
 			foreach($pre_parent_page_user_links as $page_user_link) {
 				$pre_parent_user_id_arr[$page_user_link['PageUserLink']['user_id']] = $page_user_link['PageUserLink']['authority_id'];
@@ -187,39 +189,5 @@ class PageUserLink extends AppModel
 		}
 
 		return true;
-	}
-
-/**
- * ページにおけるデフォルトの権限を取得
- * @param  Model Page  $page
-
- * @return integer authority_id
- * @since  v 3.0.0.0
- */
-	public function getDefaultAuthorityId($page) {
-		$authority_id = NC_AUTH_OTHER;
-		if($page['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC) {
-			$authority_id = Configure::read(NC_CONFIG_KEY.'.default_entry_public_authority_id');
-		} else if($page['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
-			$authority_id = Configure::read(NC_CONFIG_KEY.'.default_entry_myportal_authority_id');
-		} else if($page['Page']['space_type'] == NC_SPACE_TYPE_PRIVATE) {
-			$authority_id = Configure::read(NC_CONFIG_KEY.'.default_entry_private_authority_id');
-		} else {
-			App::uses('Community', 'Model');
-			$Community = new Community();
-			$params = array(
-				'fields' => array(
-					'Community.publication_range_flag'
-				),
-				'conditions' => array('room_id' => $page['Page']['root_id']),
-			);
-			$current_community = $Community->find('first', $params);
-			if($current_community['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_ONLY_USER) {
-				$authority_id = NC_AUTH_OTHER_ID;
-			} else {
-				$authority_id = Configure::read(NC_CONFIG_KEY.'.default_entry_group_authority_id');
-			}
-		}
-		return $authority_id;
 	}
 }

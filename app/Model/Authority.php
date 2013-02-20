@@ -289,10 +289,6 @@ class Authority extends AppModel
  * @since  v 3.0.0.0
  */
 	public function isParticipantOnly($authority_id, $page) {
-		if($page['Page']['thread_num'] > 1) {
-			// 子ルームならば、参加会員のみ
-			return true;
-		}
 		if($page['Page']['space_type'] == NC_SPACE_TYPE_PRIVATE || $page['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
 			return true;
 		}

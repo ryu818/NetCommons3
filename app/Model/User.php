@@ -333,21 +333,37 @@ class User extends AppModel
  * 参加者情報取得
  * サブグループの場合は、親で参加している会員のみ取得
  *
- * @param   array    $room_id
+ * @param   Model Page $page
+ * @param   integer  $is_participant_only
+ * 						false: 公開
+ * 						true : 参加者のみ公開
+ * 						null : 親ルームのデータを取得しない(会員参加登録時使用)
  * @param   array    $conditions
- * @param   boolean  $is_participant_only
- * @param   integer  $page
+ * @param   integer  $start_page
  * @param   integer  $limit
  * @param   string $sortname
  * @param   string   $sortorder
  * @return  array array($total, $pages_users_link)
  * @since   v 3.0.0.0
  */
-    public function findParticipant($room_id, $conditions = array(), $is_participant_only = true, $page = 1, $limit= 30, $sortname= 'chief', $sortorder = 'DESC') {
+    public function findParticipant($page, $is_participant_only = true, $conditions = array(), $start_page = 1, $limit= 30, $sortname= 'chief', $sortorder = 'DESC') {
 
+    	$room_id = $page['Page']['id'];
+		$fields = array(
+			'Page.*',
+			'PageUserLink.id',
+			'PageUserLink.user_id',
+			'PageUserLink.authority_id',
+			'User.id',
+			'User.handle',
+			'User.authority_id',
+			'Authority.hierarchy',
+			'UserAuthority.hierarchy',
+		);
+		$type = (($is_participant_only && $page['Page']['thread_num'] <= 1) || is_null($is_participant_only)) ? "INNER" : "LEFT";
 		$joins = array(
 			array(
-				"type" => ($is_participant_only) ? "INNER" : "LEFT",
+				"type" => $type,
 				"table" => "page_user_links",
 				"alias" => "PageUserLink",
 				"conditions" => "`User`.`id`=`PageUserLink`.`user_id`".
@@ -373,17 +389,31 @@ class User extends AppModel
 			)
 		);
 
-    	// TODO:後に削除
-    	//if($parent_room_id != 0) {
-    	//	// 親ルームが存在するならば、親ルームの参加者のみ表示
-    	//	$joins[] = array(
-    	//			"type" => "INNER",
-    	//			"table" => "page_user_links",
-    	//			"alias" => "PageUserLink2",
-    	//			"conditions" => "`User`.`id`=`PageUserLink2`.`user_id`".
-    	//			" AND `PageUserLink2`.`room_id` =".intval($parent_room_id)
-    	//	);
-		//}
+		if(!is_null($is_participant_only) && $page['Page']['thread_num'] > 1) {
+		//if($page['Page']['id'] != $page['Page']['room_id'] && $page['Page']['thread_num'] > 1) {
+			// 親ルームが存在するならば、親ルームの参加者のみ表示
+			$fields[] = 'PageUserLinkParent.authority_id';
+			$fields[] = 'AuthorityParent.hierarchy';
+
+			App::uses('Page', 'Model');
+			$Page = new Page();
+			$parent_page = $Page->findById($page['Page']['parent_id']);
+			$parent_room_id = $parent_page['Page']['room_id'];
+			$type = ($is_participant_only) ? "INNER" : "LEFT";
+			$joins[] = array(
+				"type" => ($is_participant_only) ? "INNER" : "LEFT",
+				"table" => "page_user_links",
+				"alias" => "PageUserLinkParent",
+				"conditions" => "`User`.`id`=`PageUserLinkParent`.`user_id`".
+				" AND `PageUserLinkParent`.`room_id` =".intval($parent_room_id)
+			);
+			$joins[] = array(
+				"type" => "LEFT",
+				"table" => "authorities",
+				"alias" => "AuthorityParent",
+				"conditions" => "`AuthorityParent`.id``=`PageUserLinkParent`.`authority_id`"
+			);
+		}
 
 		if(empty($conditions)) {
 			$conditions = array();
@@ -406,6 +436,22 @@ class User extends AppModel
 				'User.handle' => $sortorder,
 				'User.id' => $sortorder
 			);
+			if(isset($parent_room_id)) {
+				$order = array(
+					'Authority.hierarchy' => $sortorder,
+					'AuthorityParent.hierarchy' => $sortorder,
+					'UserAuthority.hierarchy' => $sortorder,
+					'User.handle' => 'ASC',
+					'User.id' => 'ASC'
+				);
+			} else {
+				$order = array(
+					'Authority.hierarchy' => $sortorder,
+					'UserAuthority.hierarchy' => $sortorder,
+					'User.handle' => 'ASC',
+					'User.id' => 'ASC'
+				);
+			}
 		} else if(!empty($sortname)) {
 			$order = array(
 				'User.'.$sortname => $sortorder,
@@ -414,21 +460,11 @@ class User extends AppModel
 		}
 
 		$params = array(
-			'fields' => array(
-				'Page.*',
-				'PageUserLink.id',
-				'PageUserLink.user_id',
-				'PageUserLink.authority_id',
-				'User.id',
-				'User.handle',
-				'User.authority_id',
-				'Authority.hierarchy',
-				'UserAuthority.hierarchy',
-			),
+			'fields' => $fields,
 			'joins' => $joins,
 			'conditions' => $conditions,
 			'limit' => $limit,
-			'page' => $page,
+			'page' => $start_page,
 			'recursive' => -1,
 			'order' => $order
 		);

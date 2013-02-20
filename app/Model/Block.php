@@ -18,6 +18,8 @@ class Block extends AppModel
 	public $name = 'Block';
 	// public $belongsTo = array('Module');
 
+	public $actsAs = array('Page');
+
 /**
  * block_id,user_idから該当ブロックを取得
  * @param   integer $block_id
@@ -36,7 +38,7 @@ class Block extends AppModel
 
 		if(!$afterFind_flag)
 			return $this->find('first', $params);
-		return $this->afterFindDefault($this->find('first', $params));
+		return $this->afterFindDefault($this->find('first', $params), $user_id);
 	}
 
 	public function findUsers($type, $conditions, $user_id) {
@@ -52,11 +54,12 @@ class Block extends AppModel
 /**
  * afterFind
  * @param   array   $val
+ * @param   integer  $user_id
  * @param   boolean $check_auth	権限チェックをするかどうか
  * @return  array   $block
  * @since   v 3.0.0.0
  */
-	public function afterFindDefault($val, $check_auth = true) {
+	public function afterFindDefault($val, $user_id, $check_auth = true) {
 		$d = gmdate("Y-m-d H:i:s");
 		// 公開日付・非公開日時
 		if(!empty($val['Block']['display_from_date']) && strtotime($val['Block']['display_from_date']) <= strtotime($d)) {
@@ -112,29 +115,13 @@ class Block extends AppModel
 				$val['Block']['block_only'] = _ON;
 			}
 		}
-
 		if(!isset($val['Authority']['hierarchy'])) {
-			// configの値から初期権限を付与する
-			$id = Configure::read(NC_AUTH_KEY.'.'.'id');
-			if(!isset($id)) {
-				if($val['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC) {
-					$val['Block']['hierarchy'] = NC_AUTH_GUEST;
-				} else {
-					$val['Block']['hierarchy'] = NC_AUTH_OTHER;
-				}
-			} else if($val['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC) {
-				$val['Block']['hierarchy'] = Configure::read(NC_CONFIG_KEY.'.default_entry_public_hierarchy');
-			} else if($val['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
-				$val['Block']['hierarchy'] = Configure::read(NC_CONFIG_KEY.'.default_entry_myportal_hierarchy');
-			} else if($val['Page']['space_type'] == NC_SPACE_TYPE_PRIVATE) {
-				$val['Block']['hierarchy'] = Configure::read(NC_CONFIG_KEY.'.default_entry_private_hierarchy');
-			} else {
-				$val['Block']['hierarchy'] = Configure::read(NC_CONFIG_KEY.'.default_entry_group_hierarchy');
-			}
-		} else {
-			$val['Block']['hierarchy'] = $val['Authority']['hierarchy'];
+			$val['Authority']['hierarchy'] = $this->getDefaultHierarchy($val, $user_id);
 		}
+		$val['Block']['hierarchy'] = $val['Authority']['hierarchy'];
+
 		if(!isset($val['Content']['id'])) {
+			// TODO:必要かどうか検討すること
 			$val['Block']['hierarchy'] = null;
 		}
 		unset($val['Page']);
@@ -222,7 +209,7 @@ class Block extends AppModel
 			'conditions' => $conditions,
 			'order' => $this->_getOrderArray(),
 		);
-		return $this->_afterFind($this->find('all', $params), array('group_block_id' => $block['Block']['id']));
+		return $this->_afterFind($this->find('all', $params), $user_id, array('group_block_id' => $block['Block']['id']));
 	}
 /**
  * afterFind
@@ -231,7 +218,7 @@ class Block extends AppModel
  * @return  array   $blocks
  * @since   v 3.0.0.0
  */
-	protected function _afterFind($results, $fetch_params = array()) {
+	protected function _afterFind($results, $user_id, $fetch_params = array()) {
 		$blocks = array();
 		$group_block_id = null;
 		if(isset($fetch_params['group_block_id'])) {
@@ -241,7 +228,7 @@ class Block extends AppModel
 
 		foreach ($results as $key => $val) {
 			// 公開日付・非公開日付
-			$val = $this->afterFindDefault($val);
+			$val = $this->afterFindDefault($val, $user_id);
 			if(empty($val))
 				continue;
 			if($group_block_id && ($val['Block']['id'] == $group_block_id ||
@@ -268,7 +255,7 @@ class Block extends AppModel
 	protected function _getFieldsArray() {
 		return array(
 			'Block.*',
-			'Page.space_type',
+			'Page.thread_num','Page.room_id','Page.root_id','Page.space_type',
 			'Content.id','Content.module_id','Content.title','Content.is_master','Content.master_id','Content.room_id','Content.accept_flag','Content.url',
 			'Module.id','Module.controller_action','Module.edit_controller_action','Module.dir_name','Module.content_has_one',
 			'Authority.id','Authority.hierarchy'

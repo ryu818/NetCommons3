@@ -227,7 +227,7 @@ class PageController extends PageAppController {
 
 			if($buf_thread_num == 1 && $center_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
 				// コミュニティーならば
-				$ret = $this->PageMenu->getCommunityData($center_page['Page']['room_id']);
+				$ret = $this->Community->getCommunityData($center_page['Page']['room_id']);
 				if($ret === false) {
 					$this->flash(__('Failed to obtain the database, (%s).', 'communities'), null, 'PageMenu/detail.002', '500');
 					return;

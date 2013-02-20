@@ -31,9 +31,9 @@ class CheckAuthComponent extends Component {
  * 許す権限
  *
  * @var integer
- * default 誰でも閲覧可
+ * default Auto
  */
-	public $allowAuth = NC_AUTH_OTHER;
+	public $allowAuth = null;
 
 /**
  * 許す会員権限
@@ -169,6 +169,7 @@ class CheckAuthComponent extends Component {
 			}
 
 			$result = $this->_getPage($controller, $permalink, $page_id, $user_id, $lang);
+
 			if($result === false) {
 				$page = false;
 				$center_page = false;
@@ -185,6 +186,7 @@ class CheckAuthComponent extends Component {
 				$controller->flash(__('Moved Permanently.'), $redirect_url, 'CheckAuth.003', '301');
 				return ;
 			}
+
 			if($page === false || $center_page === false) {
 				// ページが存在しない
 				$controller->flash(__('Page not found.'), $redirect_url, 'CheckAuth.004', '404');
@@ -275,26 +277,39 @@ class CheckAuthComponent extends Component {
 			}
 		}
 
-		// 共通権限チェック
-		// TODO:マイポータルはConfigにより、公開、ログインしていないと表示しない。非公開（参加者のみ？、特定の権限以上のみ？公開）
-		// に変更するため、権限チェックにマイポータルを含める必要あり。
-		if(!empty($page['Page']['space_type']) &&
-				($page['Page']['space_type'] == NC_SPACE_TYPE_PRIVATE ||
-						$page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) &&
-				$controller->hierarchy < NC_AUTH_GUEST) {
-			if($user_id == 0) {
-				$this->Session->setFlash(__('Forbidden permission to access the page.', true), 'default', array(), 'auth');
+		// 権限チェック
+		if(!isset($this->allowAuth) && isset($page['Page'])) {
+			if($page['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC) {
+				$this->allowAuth = NC_AUTH_OTHER;
+			} else if($page['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
+				// TODO:Configにマイポータルを公開か、ログイン会員のみかどうかをもつ必要あり
+				// 現状、常に公開
+				$this->allowAuth = NC_AUTH_OTHER;
+			} else if($page['Page']['space_type'] == NC_SPACE_TYPE_PRIVATE) {
+				$this->allowAuth = NC_AUTH_GUEST;;
+			} else {
+				// コミュニティ
+				$params = array(
+					'fields' => array(
+						'Community.publication_range_flag'
+					),
+					'conditions' => array('room_id' => $page['Page']['root_id']),
+				);
+				$current_community = $controller->Community->find('first', $params);
+				if($current_community['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_ALL) {
+					// 公開
+					$this->allowAuth = NC_AUTH_OTHER;
+				} else {
+					$this->allowAuth = NC_AUTH_GUEST;
+				}
 			}
-			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.007', 403);
-			return;
 		}
 
-		// 権限チェック
 		if(!$this->chkAuth($controller->hierarchy)) {
 			if($user_id == 0) {
 				$this->Session->setFlash(__('Forbidden permission to access the page.'), 'default', array(), 'auth');
 			}
-			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.008', '403');
+			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.007', '403');
 			return;
 		}
 
@@ -303,7 +318,7 @@ class CheckAuthComponent extends Component {
 			if($user_id == 0) {
 				$this->Session->setFlash(__('Forbidden permission to access the page.'), 'default', array(), 'auth');
 			}
-			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.009', '403');
+			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.008', '403');
 			return;
 		}
 	}
@@ -317,16 +332,11 @@ class CheckAuthComponent extends Component {
  * @since   v 3.0.0.0
  */
 	public function chkAuth($hierarchy, $allowAuth = null) {
-		$allowAuth = ($allowAuth == null) ? $this->allowAuth : $allowAuth;
-		$allowAuth = $this->_getMinAuth($allowAuth);
-		// 共通権限チェック
-		// TODO:マイポータルを非公開に設定した場合は、ここのチェックにも追加する必要あり。
-		if(!empty($page['Page']['space_type']) &&
-				($page['Page']['space_type'] == NC_SPACE_TYPE_PRIVATE ||
-						$page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) &&
-				$hierarchy < NC_AUTH_GUEST) {
-			return false;
+		if(!isset($allowAuth)) {
+			$allowAuth = ($this->allowAuth == null) ? NC_AUTH_OTHER : $this->allowAuth;
 		}
+		$allowAuth = $this->_getMinAuth($allowAuth);
+
 		if($hierarchy < $allowAuth) {	// $page_id != 0 &&
 			return false;
 		}
@@ -342,7 +352,9 @@ class CheckAuthComponent extends Component {
  * @since   v 3.0.0.0
  */
 	public function chkUserAuth($hierarchy, $allowUserAuth = null) {
-		$allowUserAuth = ($allowUserAuth == null) ? $this->allowUserAuth : $allowUserAuth;
+		if(!isset($allowUserAuth)) {
+			$allowUserAuth = ($this->allowUserAuth == null) ? NC_AUTH_OTHER : $this->allowUserAuth;
+		}
 		$allowUserAuth = $this->_getMinAuth($allowUserAuth);
 		if(intval($hierarchy) < $allowUserAuth) {
 			return false;
@@ -512,7 +524,7 @@ class CheckAuthComponent extends Component {
 		if(!isset($page)) {
 			return false;
 		}
-		$page = $controller->Page->afterFindIds($page);
+		$page = $controller->Page->afterFindIds($page, $user_id);
 
 		return array($center_page, $page);
 	}

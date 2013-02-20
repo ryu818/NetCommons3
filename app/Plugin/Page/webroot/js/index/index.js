@@ -247,6 +247,8 @@
 			params['data-ajax-replace'] = '#pages-menu-edit-item-' + page_id;
 			var target = $.Common.ajaxSuccess(null, result_response, params);
 			addEventNestable(active_tab_name, root_menu, target, page_id);
+			// コンテンツクリックイベント
+			$('.pages-menu-edit-content:first', target).click();
 		});
 
 		// コミュニティーはすべて閉じた状態で表示
@@ -328,6 +330,9 @@
 				slideTarget(target, active_tab_name);
 				// コンテンツクリックイベント
 				$('.pages-menu-edit-content:first', target).click();
+				if(copy_page_id > 0) {
+					$('.pages-menu-other-icon:first', target).addClass('pages-menu-edit-highlight-icon');
+				}
 				e.preventDefault();
 			});
 
@@ -466,6 +471,7 @@
 					li = li.parents('li:first');
 				}
 				var page_id = li.attr('data-id');
+				active_li = target;
 				addEventNestable(active_tab_name, root_menu, target, page_id);
 				e.preventDefault();
 			});
@@ -610,31 +616,34 @@
 				$('#pages-menu-edit-other-operation').after(res);
 				return;
 			}
+			var re_html = new RegExp("^<script>", 'i');
+			if(!$.trim(res).match(re_html)) {
+				var target = $('#pages-menu-edit-other-operation'), pos = $(target).offset();
+				// 確認メッセージ表示
+				var ok = __('Ok') ,cancel = __('Cancel');
+				var default_params = {
+					resizable: false,
+		            modal: true,
+			        position: [pos.left + 10 - $(window).scrollLeft() ,pos.top + 10 - $(window).scrollTop()]
+				}, _buttons = {}, params = new Object();
+				_buttons[ok] = function(){
+					var shortcut_flag = $('#pages-menu-edit-confirm-shortcut');
+					if(shortcut_flag.get(0) && shortcut_flag.is(':checked')) {
+						params['shortcut_flag'] = 1;
+					}
 
-			var target = $('#pages-menu-edit-other-operation'), pos = $(target).offset();
-			// 確認メッセージ表示
-			var ok = __('Ok') ,cancel = __('Cancel');
-			var default_params = {
-				resizable: false,
-	            modal: true,
-		        position: [pos.left + 10 - $(window).scrollLeft() ,pos.top + 10 - $(window).scrollTop()]
-			}, _buttons = {}, params = new Object();
-			_buttons[ok] = function(){
-				var shortcut_flag = $('#pages-menu-edit-confirm-shortcut');
-				if(shortcut_flag.get(0) && shortcut_flag.is(':checked')) {
-					params['shortcut_flag'] = 1;
-				}
-
-				params['is_confirm'] = 1;
-				$( this ).remove();
-				$.PageMenu.operationPage(send_url, postfix_url, params);
-			};
-			_buttons[cancel] = function(){
-				$( this ).remove();
-			};
-			var dialog_params = $.extend({buttons: _buttons}, default_params);
-			$('<div></div>').html(res).dialog(dialog_params);
-
+					params['is_confirm'] = 1;
+					$( this ).remove();
+					$.PageMenu.operationPage(send_url, postfix_url, params);
+				};
+				_buttons[cancel] = function(){
+					$( this ).remove();
+				};
+				var dialog_params = $.extend({buttons: _buttons}, default_params);
+				$('<div></div>').html(res).dialog(dialog_params);
+			} else {
+				$('#pages-menu-edit-other-operation').after(res);
+			}
 			$.PageMenu.closeOtherOperation();
 
 			e.preventDefault();
