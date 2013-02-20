@@ -24,7 +24,7 @@ class PageOperationController extends PageAppController {
  *
  * @var array
  */
-	public $components = array('Page.PageMenu', 'CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF, 'checkOrder' => array("request", "url")));
+	public $components = array('Page.PageMenu');	// 権限チェックは、ここActionで行う。admin_hierarchyが管理者ならばすべて許すため。
 
 /**
  * Model name
@@ -81,8 +81,16 @@ class PageOperationController extends PageAppController {
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function copy() {
-		$copy_page_id = $this->request->query['page_id'];
+	public function copy($copy_page_id) {
+		$user_id = $this->Auth->user('id');
+		$current_page = $this->Page->findAuthById($copy_page_id, $user_id);
+
+		$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $current_page);
+		if(!$admin_hierarchy) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.', 'pages'), null, 'PageOperation.copy.001', '500');
+			return false;
+		}
+		// $copy_page_id = $this->request->query['page_id'];
 
 		$this->Session->write('Pages.'.'copy_page_id', $copy_page_id);
 		$this->Session->setFlash(__d('page', 'Select the page to which the movement, create a shortcut, paste, Can you please run from the [%s].', __d('page', 'Other operations')));
@@ -121,6 +129,7 @@ class PageOperationController extends PageAppController {
 		$move_page_id = $this->request->query['page_id'];
 		$is_confirm = isset($this->request->data['is_confirm']) ? intval($this->request->data['is_confirm']) : _OFF;
 		$shortcut_flag = isset($this->request->data['shortcut_flag']) ? intval($this->request->data['shortcut_flag']) : null;
+		$position = isset($this->request->data['position']) ? $this->request->data['position'] : 'bottom';
 		if($this->action == "shortcut" && is_null($shortcut_flag)) {
 			$shortcut_flag = _OFF;
 		}
@@ -134,7 +143,7 @@ class PageOperationController extends PageAppController {
 		}
 
 		// 確認メッセージ表示、ページ処理開始
-		$results = $this->PageMenu->operatePage($this->action, $is_confirm, $copy_page_id, $move_page_id);
+		$results = $this->PageMenu->operatePage($this->action, $is_confirm, $copy_page_id, $move_page_id, $position);
 		if($results === true) {
 			// 確認メッセージ
 			return;

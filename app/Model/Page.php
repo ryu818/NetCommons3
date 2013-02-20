@@ -519,10 +519,10 @@ class Page extends AppModel
 			if(!isset($params['fields'])) {
 				$params['fields'] = $this->_getFieldsArray($space_type);
 			}
-			if(!isset($params['joins'])) {
-				$join_type = ($is_all) ? 'LEFT' : 'INNER';
-				$params['joins'] = $this->_getJoinsArray($login_user_id, $join_type, $space_type);
-			}
+		}
+		if(!isset($params['joins'])) {
+			$join_type = ($is_all) ? 'LEFT' : 'INNER';
+			$params['joins'] = $this->_getJoinsArray($login_user_id, $join_type, $space_type);
 		}
 
 		if($fetchcallback === "" || ($fetchcallback === null && $type !== 'all')) {
@@ -577,10 +577,11 @@ class Page extends AppModel
  * Current_pageの子供のページを取得
  * @param integer    $login_user_id
  * @param array      $params
+ * @param boolean   $is_all
  * @return  integer コミュニティー数
  * @since   v 3.0.0.0
  */
-	public function findCommunityCount($login_user_id = null, $params = null) {
+	public function findCommunityCount($login_user_id = null, $params = null, $is_all = false) {
 		if(!isset($params)) {
 			$params = array(
 				'conditions' => array(
@@ -588,7 +589,7 @@ class Page extends AppModel
 				)
 			);
 		}
-		return $this->findMenu('count', $login_user_id, NC_SPACE_TYPE_GROUP, null, $params);
+		return $this->findMenu('count', $login_user_id, NC_SPACE_TYPE_GROUP, null, $params, null, null, $is_all);
 	}
 
 /**
@@ -632,7 +633,7 @@ class Page extends AppModel
 			'conditions' => $conditions,
 			'recursive' => $recursive
 		);
-		return $this->findCommunityCount($extra['user_id'], $params);
+		return $this->findCommunityCount($extra['user_id'], $params, (isset($extra['is_all']) && $extra['is_all']) ? true : false);
 	}
 
 /**

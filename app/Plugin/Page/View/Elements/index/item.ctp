@@ -9,6 +9,7 @@
 	$is_display = false;
 	$is_node_top_page = false;
 	$is_top = false;
+	$is_parent_chief = false;
 	if($page['Page']['display_sequence'] == 1 && $page['Page']['thread_num'] == 2) {
 		$is_node_top_page = true;
 	}
@@ -16,14 +17,19 @@
 		$is_top = true;
 	}
 
-	if($page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF || $admin_hierarchy >= NC_AUTH_MIN_ADMIN){
+	if($admin_hierarchy >= NC_AUTH_MIN_GENERALL && ($page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF || $admin_hierarchy >= NC_AUTH_MIN_ADMIN)){
 		$is_chief = true;
 	}
 
+	if(isset($parent_page) && $admin_hierarchy >= NC_AUTH_MIN_GENERALL && ($parent_page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF || $admin_hierarchy >= NC_AUTH_MIN_ADMIN)) {
+		$is_parent_chief = true;
+	}
+
 	$attr = '';
+	$move = array();
 	if($is_top) {
 		// コミュニティー以外のTopならば、移動させない。
-		$attr = " data-dd-sequence = \"inner-only\"";
+		$move['inner'] = true;
 		if($space_type == NC_SPACE_TYPE_GROUP && $admin_hierarchy >= NC_AUTH_MIN_CHIEF) {
 			$is_chgseq = true;
 			$attr .= " data-dd-group = \"".$page['Page']['thread_num']."\"";
@@ -31,11 +37,33 @@
 		}
 	} else {
 		if($is_node_top_page) {
-			$attr = " data-dd-sequence = \"bottom-only\"";
+			$move['bottom'] = true;
+		} else {
+			$move = array(
+				'top' => true,
+				'bottom' => true,
+				'inner' => true
+			);
 		}
 		if($is_chief && $page['Page']['display_sequence'] != 1) {
 			$is_chgseq = true;
 		}
+	}
+	if(!$is_chief) {
+		unset($move['inner']);
+	}
+	if(!$is_parent_chief) {
+		unset($move['top']);
+		unset($move['bottom']);
+	}
+	if(count($move) == 0) {
+		$attr .= " data-dd-sequence = \"none\"";
+	} else if(isset($move['top']) && isset($move['bottom']) && !isset($move['inner'])) {
+		$attr .= " data-dd-sequence = \"top-bottom-only\"";
+	} else if(!isset($move['top']) && !isset($move['bottom']) && isset($move['inner'])) {
+		$attr .= " data-dd-sequence = \"inner-only\"";
+	} else if(!isset($move['top']) && isset($move['bottom']) && !isset($move['inner'])) {
+		$attr .= " data-dd-sequence = \"bottom-only\"";
 	}
 
 	if($is_chief && (!$is_top || $space_type == NC_SPACE_TYPE_GROUP)) {
@@ -61,13 +89,13 @@
 	}
 
 	$is_other_operation = false;
-	if($is_chief || $is_sel_modules || $is_sel_users) {
+	if($is_parent_chief || $is_chief || $is_sel_modules || $is_sel_users) {
 		$is_other_operation = true;
 	}
 ?>
 <?php $class = $this->element('index/init_page', array('page' => $page, 'is_edit' => _ON)); ?>
 <?php $next_thread_num = $page['Page']['thread_num']+1; ?>
-<li id="pages-menu-edit-item-<?php echo(h($page['Page']['id'])); ?>" class="pages-menu-edit-item dd-item dd-drag-item<?php if($page['Page']['id']==$page['Page']['room_id']){echo(' '.$class);} ?>" data-id="<?php echo(h($page['Page']['id'])); ?>" data-room-id="<?php echo(h($page['Page']['room_id'])); ?>" data-is-top="<?php if($is_top){echo(_ON);}else{echo(_OFF);} ?>" data-is-chief="<?php if($is_chief){echo(_ON);} else {echo(_OFF);} ?>"<?php echo($attr); ?>>
+<li id="pages-menu-edit-item-<?php echo(h($page['Page']['id'])); ?>" class="pages-menu-edit-item dd-item dd-drag-item<?php if($page['Page']['id']==$page['Page']['room_id']){echo(' '.$class);} ?>" data-id="<?php echo(h($page['Page']['id'])); ?>" data-room-id="<?php echo(h($page['Page']['room_id'])); ?>" data-is-top="<?php if($is_top){echo(_ON);}else{echo(_OFF);} ?>" data-is-chief="<?php if($is_chief){echo(_ON);} else {echo(_OFF);} ?>" data-is-parent-chief="<?php if($is_parent_chief){echo(_ON);} else {echo(_OFF);} ?>"<?php echo($attr); ?>>
 	<?php if($is_chgseq): ?>
 	<div class="dd-handle dd-drag-handle"></div>
 	<?php endif; ?>
@@ -153,7 +181,7 @@
 			<?php echo($this->element('index/edit_page', array('pages' => $pages, 'menus' => $pages[$space_type][$next_thread_num][$page['Page']['id']],
 				'page_id' => $page_id, 'space_type' => $space_type, 'admin_hierarchy' => $admin_hierarchy,
 				'is_child' => true, 'is_display' => $is_display, 'is_detail' => $is_detail,
-				'parent_page' => isset($parent_page) ? $parent_page : null, 'community_params' => isset($community_params) ? $community_params : null))); ?>
+				'parent_page' => $page, 'community_params' => isset($community_params) ? $community_params : null))); ?>
 		</ol>
 	<?php endif; ?>
 	<?php if($is_edit || $is_delete || $is_chief || $is_sel_modules || $is_sel_users): ?>

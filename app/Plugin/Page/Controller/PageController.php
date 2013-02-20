@@ -252,7 +252,7 @@ class PageController extends PageAppController {
 		$fetch_params = array(
 			'active_page_id' => $page_id
 		);
-		$pages = $this->Page->findMenu('all', $user_id, NC_SPACE_TYPE_PUBLIC, $current_user, $params, null, $fetch_params);
+		$pages = $this->Page->findMenu('all', $user_id, NC_SPACE_TYPE_PUBLIC, $current_user, $params, null, $fetch_params, true);
 		$private_pages = $this->Page->findMenu('all', $user_id, array(NC_SPACE_TYPE_MYPORTAL, NC_SPACE_TYPE_PRIVATE), $current_user, $params, null, $fetch_params);
 		if(isset($private_pages[NC_SPACE_TYPE_MYPORTAL])) {
 			$pages[NC_SPACE_TYPE_MYPORTAL] = $private_pages[NC_SPACE_TYPE_MYPORTAL];
@@ -266,6 +266,8 @@ class PageController extends PageAppController {
 		$this->paginate['user_id'] = $user_id;
 		if($is_edit && $admin_hierarchy >= NC_AUTH_MIN_ADMIN) {
 			$this->paginate['is_all'] = true;
+		} else {
+			$this->paginate['is_all'] = false;
 		}
 		$pages_top_group = $this->paginate('Page');
 		$pages_group = array();

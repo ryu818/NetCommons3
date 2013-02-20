@@ -319,7 +319,9 @@
         				}
         			}
 					h = $(el).outerHeight();
-        			if (!opt.isInner || sequence == 'top-bottom-only') {
+					if(sequence == 'none') {
+						return;
+        			} else if (!opt.isInner || sequence == 'top-bottom-only') {
                     	if(offset.top + h/2 >= e.pageY) {
 							insert_pos = "top";
 						} else {

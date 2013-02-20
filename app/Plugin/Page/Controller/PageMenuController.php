@@ -37,7 +37,7 @@ class PageMenuController extends PageAppController {
  *
  * @var array
  */
-	public $components = array('Page.PageMenu');
+	public $components = array('Page.PageMenu');	// 権限チェックは、ここActionで行う。admin_hierarchyが管理者ならばすべて許すため。
 
 /**
  * Helper name
@@ -137,7 +137,7 @@ class PageMenuController extends PageAppController {
 			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/add.004', '500');
 			return;
 		}
-		$this->_renderItem($page, $admin_hierarchy);
+		$this->_renderItem($page, $parent_page, $admin_hierarchy);
 	}
 
 /**
@@ -440,7 +440,7 @@ class PageMenuController extends PageAppController {
 		}
 
 		$current_page['Page']['hierarchy'] = $current_page['Authority']['hierarchy'];
-		$this->_renderItem($current_page, $admin_hierarchy, $is_detail, $error_flag, $parent_page, $child_pages);
+		$this->_renderItem($current_page, $parent_page, $admin_hierarchy, $is_detail, $error_flag, $child_pages);
 	}
 
 /**
@@ -679,7 +679,7 @@ class PageMenuController extends PageAppController {
 		//$parent_page = $this->Page->findById($page['Page']['parent_id']);
 		//$child_pages = $ins_pages;
 
-		$this->_renderItem($page, $admin_hierarchy, false, false, $parent_page, $child_pages);
+		$this->_renderItem($page, $parent_page, $admin_hierarchy, false, false, $child_pages);
 	}
 
 /**
@@ -767,7 +767,7 @@ class PageMenuController extends PageAppController {
 			$this->Session->delete(NC_SYSTEM_KEY.'.page_menu.PageUserLink['.$page_id.']');
 			$this->Session->setFlash(__('Has been successfully updated.'));
 
-			$this->_renderItem($page, $admin_hierarchy, false, false, $parent_page, $child_pages);
+			$this->_renderItem($page, $parent_page, $admin_hierarchy, false, false, $child_pages);
 			return;
 		}
 
@@ -887,21 +887,21 @@ class PageMenuController extends PageAppController {
 		}
 
 		$this->Session->setFlash(__('Has been successfully updated.'));
-		$this->_renderItem($page, $admin_hierarchy, false, false, $parent_page, $child_pages);
+		$this->_renderItem($page, $parent_page, $admin_hierarchy, false, false, $child_pages);
 	}
 
 /**
  * ページのitemのrenderを行う
  * @param   Model Page    $page
+ * @param   Model Pages   $parent_page
  * @param   integer       $admin_hierarchy
  * @param   boolean       $is_detail
  * @param   boolean       $error_flag
- * @param   Model Pages   $parent_page
  * @param   Model Pages   $child_pages
  * @return  void
  * @since   v 3.0.0.0
  */
-	private function _renderItem($page, $admin_hierarchy, $is_detail = false, $error_flag = false, $parent_page = null, $child_pages = null) {
+	private function _renderItem($page, $parent_page = null, $admin_hierarchy, $is_detail = false, $error_flag = false, $child_pages = null) {
 		if(isset($parent_page)) {
 			$this->set('parent_page', $parent_page);
 		}

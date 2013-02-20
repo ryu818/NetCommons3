@@ -60,7 +60,7 @@ class PageMenuComponent extends Component {
 		}
 
 		$admin_hierarchy = $this->_controller->ModuleSystemLink->findHierarchy(Inflector::camelize($request->params['plugin']), $login_user['authority_id']);
-		if($admin_hierarchy <= NC_AUTH_GENERAL) {
+		if($admin_hierarchy < NC_AUTH_MIN_GENERAL) {
 			$this->_controller->flash(__('Forbidden permission to access the page.'), null, 'PageMenu.validatorPage.003', '403');
 			return false;
 		}
@@ -73,26 +73,7 @@ class PageMenuComponent extends Component {
 			return false;
 		}
 
-		/**
-		 * 管理者：コミュニティーの表示順変更、コミュニティ内において、自分が主坦でなくても追加・編集・削除・参加者修正、モジュール選択を許す。
-		 * 主坦：コミュニティーの表示順変更(参加コミュニティのみ) TODO:未テスト。デフォルト参加ルームの作成。
-		 * モデレータ：コミュニティーの作成、編集、削除。（公開コミュニティーの作成。モデレータのHierarchyを２つに分離する）
-		 * 一般：主坦権限のルームへのページ追加、編集、削除
-		 * ゲスト：ページメニューをみるだけ。
-		 */
-		$is_auth_ok = false;
-		if($admin_hierarchy >= NC_AUTH_MIN_ADMIN &&
-				$page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
-			$is_auth_ok = true;
-		}
-
-		$chk_page = isset($parent_page) ? $parent_page : $page;
-		if(!$is_auth_ok && !$this->_controller->CheckAuth->chkAuth($chk_page['Authority']['hierarchy'], NC_AUTH_CHIEF)) {
-			$this->_controller->flash(__('Forbidden permission to access the page.'), null, 'PageMenu.validatorPage.005', '403');
-			return false;
-		}
-
-		if($page['Page']['position_flag'] != _ON) {
+		if(!$this->chkAuth($admin_hierarchy, $page, $parent_page)) {
 			$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPage.006', '400');
 			return false;
 		}
@@ -102,6 +83,38 @@ class PageMenuComponent extends Component {
 		}
 
 		return $admin_hierarchy;
+	}
+	/**
+	 * 権限チェック
+	 * <pre>
+	 *  管理者：コミュニティーの表示順変更、自分が主坦でなくても追加・編集・削除・参加者修正、モジュール選択を許す。
+	 *  主坦：コミュニティーの表示順変更(参加コミュニティのみ) TODO:未テスト。デフォルト参加ルームの作成。
+	 *  モデレータ：コミュニティーの作成、編集、削除。（公開コミュニティーの作成。モデレータのHierarchyを２つに分離する）
+	 *  一般：主坦権限のルームへのページ追加、編集、削除
+	 *  	TODO:一般権限のHierarchyも２つに分離し、ページ操作、ブロック操作を行えるかどうかを追加するほうが望ましい。
+	 *  ゲスト：ページメニューをみるだけ。
+	 * </pre>
+	 * @param  integer     $admin_hierarchy
+	 * @param  Page Model  $page
+	 * @param  Page Model  $parent_page
+	 * @return boolean
+	 * @since   v 3.0.0.0
+	 */
+	public function chkAuth($admin_hierarchy, $page = null, $parent_page = null) {
+		$is_auth_ok = false;
+		if($admin_hierarchy >= NC_AUTH_MIN_ADMIN) {
+			$is_auth_ok = true;
+		}
+
+		$chk_page = isset($parent_page) ? $parent_page : $page;
+		if(!$is_auth_ok && !$this->_controller->CheckAuth->chkAuth($chk_page['Authority']['hierarchy'], NC_AUTH_CHIEF)) {
+			return false;
+		}
+
+		if($page['Page']['position_flag'] != _ON) {
+			return false;
+		}
+		return true;
 	}
 
 /**
@@ -938,6 +951,21 @@ class PageMenuComponent extends Component {
 			}
 		}
 
+		// コピー先権限チェック
+		if(isset($move_page['Page'])) {
+			if($move_page['Page']['thread_num'] <= 1) {
+				if($move_page['Page']['space_type'] != NC_SPACE_TYPE_GROUP || $admin_hierarchy <= NC_AUTH_GENERAL) {
+					// モデレータ以上
+					// TODO:現状、パブリック、マイポータル、マイページ直下への操作はエラーとする
+					$this->_controller->flash(__('Forbidden permission to access the page.'), null, 'PageMenu/operatePage.003', '403');
+					return false;
+				}
+			} else if(!$this->chkAuth($admin_hierarchy, $move_page, $move_parent_page)) {
+				$this->_controller->flash(__('Forbidden permission to access the page.'), null, 'PageMenu/operatePage.004', '403');
+				return false;
+			}
+		}
+
 		//
 		// ページデータ挿入
 		//
@@ -1174,13 +1202,13 @@ class PageMenuComponent extends Component {
 			}
 			$ret = $this->_controller->Page->updateAll($fields, $conditions);
 			if(!$ret) {
-				$this->_controller->flash(__($error_mes, 'pages'), null, 'PageMenu/operatePage.003', '500');
+				$this->_controller->flash(__($error_mes, 'pages'), null, 'PageMenu/operatePage.005', '500');
 				return false;
 			}
 		} else if(isset($ret_childs) && is_array($ret_childs)) {
 			$new_child_pages = $this->childsUpdate($action, $ret_childs[0], $ret_childs[1], $copy_page['Page']['id'], $ins_page['Page']['id']);
 			if (!$new_child_pages) {
-				$this->_controller->flash(__($error_mes, 'pages'), null, 'PageMenu/operatePage.004', '500');
+				$this->_controller->flash(__($error_mes, 'pages'), null, 'PageMenu/operatePage.006', '500');
 				return false;
 			}
 
@@ -1246,7 +1274,7 @@ class PageMenuComponent extends Component {
 			}
 			$fields = array('Page.display_sequence'=>'Page.display_sequence+('.$upd_display_sequence.')');
 			if(!$this->_controller->Page->updateAll($fields, $conditions)) {
-				$this->_controller->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/operatePage.005', '500');
+				$this->_controller->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/operatePage.007', '500');
 				return false;
 			}
 		} else {
@@ -1275,7 +1303,7 @@ class PageMenuComponent extends Component {
 				$pre_conditions["Page.lang"] = $copy_page['Page']['lang'];
 				$pre_conditions["Page.root_id"] = $copy_page['Page']['root_id'];
 				if(!$this->_controller->Page->updateAll($pre_fields, $pre_conditions)) {
-					$this->_controller->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/operatePage.006', '500');
+					$this->_controller->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/operatePage.008', '500');
 					return false;
 				}
 				if($position == 'bottom' || $position == 'inner') {
@@ -1335,7 +1363,7 @@ class PageMenuComponent extends Component {
 			}
 			$fields = array('Page.display_sequence'=>'Page.display_sequence+('.$upd_display_sequence.')');
 			if(!$this->_controller->Page->updateAll($fields, $conditions)) {
-				$this->_controller->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/operatePage.007', '500');
+				$this->_controller->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/operatePage.009', '500');
 				return false;
 			}
 		}
