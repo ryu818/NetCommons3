@@ -360,7 +360,7 @@ class User extends AppModel
 			'Authority.hierarchy',
 			'UserAuthority.hierarchy',
 		);
-		$type = (($is_participant_only && $page['Page']['thread_num'] <= 1) || is_null($is_participant_only)) ? "INNER" : "LEFT";
+		$type = ($is_participant_only || is_null($is_participant_only)) ? "INNER" : "LEFT";
 		$joins = array(
 			array(
 				"type" => $type,
@@ -401,7 +401,7 @@ class User extends AppModel
 			$parent_room_id = $parent_page['Page']['room_id'];
 			$type = ($is_participant_only) ? "INNER" : "LEFT";
 			$joins[] = array(
-				"type" => ($is_participant_only) ? "INNER" : "LEFT",
+				"type" => "LEFT",
 				"table" => "page_user_links",
 				"alias" => "PageUserLinkParent",
 				"conditions" => "`User`.`id`=`PageUserLinkParent`.`user_id`".
