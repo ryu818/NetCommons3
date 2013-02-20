@@ -88,7 +88,7 @@ class ModuleLink extends AppModel
 			// 1.みているroom_idのデータ(ルーム)
 			// 2.みているspace_type, authority_id(会員権限)のデータ(マイポータル、マイルーム)
 			// 3.みているspace_type(パブリック、マイポータル、マイルーム、コミュニティー、デフォルト)
-			$val['ModuleLink']['module_name'] = __('New module');
+			$val['Module']['module_name'] = __('New module');
 			$file_path = App::pluginPath($val['Module']['dir_name']) . 'Locale'. '/' . $locale. '/'. NC_MODINFO_FILENAME;
 			if (file_exists($file_path)) {
 	 	        $modinfo_ini = parse_ini_file($file_path);

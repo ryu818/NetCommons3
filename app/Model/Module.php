@@ -114,7 +114,7 @@ class Module extends AppModel
  * @return string  $module_name
  */
 	public static function loadModuleName($dir_name, $locale = null) {
-		$module_name = __('New module', true);
+		$module_name = __('New module');
 		if(!isset($locale)) {
 			$locale = Configure::read(NC_SYSTEM_KEY.'.locale');
 		}
