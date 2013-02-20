@@ -95,6 +95,7 @@ class PageController extends PageAppController {
 		if(isset($pre_lang)) {
 			Configure::write(NC_CONFIG_KEY.'.'.'language', $pre_lang);
 			$this->Session->write(NC_CONFIG_KEY.'.language', $pre_lang);
+			$this->Session->delete(NC_SYSTEM_KEY.'.page_menu.pre_lang');
 		}
 
 	}
