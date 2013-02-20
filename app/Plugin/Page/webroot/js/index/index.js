@@ -456,7 +456,7 @@
 					var input = $('input.pages-menu-edit-title:first', $(this));
 					var page_id = li.attr('data-id');
 					var detail = $('#pages-menu-edit-detail-' + page_id);
-					if(detail.css('display') == 'none' && input.val() == $.trim(a.html()) && !input.hasClass('error-input-message')) {
+					if((!detail.get(0) || detail.css('display') == 'none') && input.val() == $.trim(a.html()) && !input.hasClass('error-input-message')) {
 						// ページ名称変更なし
 						input.css('display', 'none');
 						a.css('display', '');

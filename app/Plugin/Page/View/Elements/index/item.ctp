@@ -17,11 +17,11 @@
 		$is_top = true;
 	}
 
-	if($admin_hierarchy >= NC_AUTH_MIN_GENERALL && ($page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF || $admin_hierarchy >= NC_AUTH_MIN_ADMIN)){
+	if($admin_hierarchy >= NC_AUTH_MIN_GENERAL && ($page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF || $admin_hierarchy >= NC_AUTH_MIN_ADMIN)){
 		$is_chief = true;
 	}
 
-	if(isset($parent_page) && $admin_hierarchy >= NC_AUTH_MIN_GENERALL && ($parent_page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF || $admin_hierarchy >= NC_AUTH_MIN_ADMIN)) {
+	if(isset($parent_page) && $admin_hierarchy >= NC_AUTH_MIN_GENERAL && ($parent_page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF || $admin_hierarchy >= NC_AUTH_MIN_ADMIN)) {
 		$is_parent_chief = true;
 	}
 
@@ -197,8 +197,14 @@
 				'onclick' => 'return false;'));
 		}
 		if($is_other_operation) {
+			$copy_page_id = $this->Session->read('Pages.'.'copy_page_id');
+			if(isset($copy_page_id)) {
+				$operation_class = ' pages-menu-edit-highlight-icon';
+			} else {
+				$operation_class = '';
+			}
 			echo $this->Html->link('', '#',
-				array('title' => __d('page', 'Other operations'), 'class' => 'pages-menu-other-icon' . ' nc-tooltip',
+				array('title' => __d('page', 'Other operations'), 'class' => 'pages-menu-other-icon' . ' nc-tooltip'.$operation_class,
 				'data-ajax' => '#pages-menu-edit-view-'.$page['Page']['id'],
 				'onclick' => '$.PageMenu.clkOtherOperation(event);return false;' ));
 

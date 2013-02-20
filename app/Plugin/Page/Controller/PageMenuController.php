@@ -287,7 +287,7 @@ class PageMenuController extends PageAppController {
 			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu/edit.002', '400');
 			return;
 		}
-		$parent_page = $this->Page->findById($current_page['Page']['parent_id']);
+		$parent_page = $this->Page->findAuthById($current_page['Page']['parent_id'], $user_id);
 		if(!isset($parent_page['Page'])) {
 			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu/edit.003', '400');
 			return;
