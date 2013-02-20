@@ -717,6 +717,17 @@ class PageMenuController extends PageAppController {
 			$page_user_links = $this->PageMenu->participantSession($this->request, $page_id, $admin_hierarchy, $auth_list);
 
 			if(!empty($page_user_links['PageUserLink'])) {
+				$is_set_chief = false;
+				foreach($page_user_links['PageUserLink'] as $buf_page_user_link) {
+					if(isset($auth_list[NC_AUTH_CHIEF][$buf_page_user_link['authority_id']])) {
+						$is_set_chief = true;
+					}
+				}
+				if(!$is_set_chief) {
+					echo __d('page', 'Chief has to set the one.Please try again.');
+					$this->render(false, 'ajax');
+					return;
+				}
 				list($total, $users) = $this->User->findParticipant($page, null, array(), null, null);
 				$is_participant_only = $this->Authority->isParticipantOnly($user['authority_id'], $page);
 				if($page['Page']['thread_num'] <= 1) {

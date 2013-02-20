@@ -176,6 +176,8 @@ msgid  	"Exempt from the Operation"
 msgstr 	"操作対象外モジュール"
 msgid  	"The following modules are exempt module from the operation or not pasted to the page."
 msgstr 	"以下のモジュールは、移動先に貼り付けられないモジュールか、操作対象外のモジュールです。"
+msgid  	"Chief has to set the one.Please try again."
+msgstr 	"主坦は一人は設定する必要があります。再度、設定してください。"
 
 ## ページ操作 - 移動以外
 msgid  	"Block shortcut is copied as is."
