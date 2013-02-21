@@ -539,6 +539,13 @@ class Page extends AppModel
 						unset($results[$key]);
 					}
 				}
+				$buf_results = array();
+				$count = 0;
+				foreach($results as $result) {
+					$buf_results[$count] = $result;
+					$count++;
+				}
+				$results = $buf_results;
 			}
 		} else if(!is_null($fetchcallback)) {
 			$results = call_user_func_array($fetchcallback, array($this->find($type, $params), $fetch_params));

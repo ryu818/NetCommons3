@@ -706,7 +706,7 @@ class PageMenuComponent extends Component {
  * @param   integer  $pre_page_id 移動元（コピー元、ショートカット元）PageId
  * @param   integer  $move_page_id 移動先（コピー先、ショートカット先）PageId
  * @param   string   $position 移動位置 default:inner   inner or top or bottom
- * @return  array    array(Model Page 移動元Page, Model Page 移動先Page, Model Page 移動元親Page, string 移動先ルーム名称,
+ * @return  array    array(Model Page 移動元Page, Model Page 移動先Page, Model Page 移動元親Page, Model Page 移動先親Page, string 移動先ルーム名称,
  * 							array 移動元ページID配列, array 移動元ルームのページID配列, Model Pages 移動元子供Pages,
  * 							Model Pages 移動先子供Pages,
  * 							Model Page 移動元のもっとも多いdisplay_sequenceのPage, Model Page 移動先のもっとも多いdisplay_sequenceのPage)
@@ -720,6 +720,7 @@ class PageMenuComponent extends Component {
 			return false;
 		}
 
+		$parent_pre_page = $this->_controller->Page->findAuthById($pre_page['Page']['parent_id'], $user_id);
 		if($position != 'inner') {
 			$parent_move_page = $this->_controller->Page->findAuthById($move_page['Page']['parent_id'], $user_id);
 		} else {
@@ -745,7 +746,7 @@ class PageMenuComponent extends Component {
 		foreach($child_pre_pages as $child_page) {
 			$pre_page_id_arr[] = $child_page['Page']['id'];
 			if($child_page['Page']['id'] == $child_page['Page']['room_id']) {
-				$pre_room_id_arr = array($child_page['Page']['id']);
+				$pre_room_id_arr[] = $child_page['Page']['id'];
 			}
 			// ノード中のもっとも多いdisplay_sequenceのPageを取得
 			if($pre_page['Page']['thread_num'] != 1 && $last_pre_page['Page']['display_sequence'] < $child_page['Page']['display_sequence']) {
@@ -766,7 +767,8 @@ class PageMenuComponent extends Component {
 				}
 			}
 		}
-		return array($pre_page, $move_page, $parent_move_page, $move_room_name, $pre_page_id_arr, $pre_room_id_arr, $child_pre_pages, $child_move_pages, $last_pre_page, $last_move_page);
+		return array($pre_page, $move_page, $parent_pre_page, $parent_move_page, $move_room_name, $pre_page_id_arr, $pre_room_id_arr,
+				$child_pre_pages, $child_move_pages, $last_pre_page, $last_move_page);
 	}
 
 /**
@@ -776,12 +778,14 @@ class PageMenuComponent extends Component {
  * @param  Model Page  $pre_page 移動元（コピー元、ショートカット元）Page
  * @param  Model Page  $move_page 移動先（コピー先、ショートカット先）Page
  * @param  string 移動先ルーム名称
+ * @param  Model Page  $pre_parent_page
+ * @param  Model Page  $move_parent_page
  * @param  array 移動元ルームのページID配列
  * @param  Model Blocks $blocks 移動元blocks
  * @return string dialog html string
  * @since   v 3.0.0.0
  */
-	public function showConfirm($action, $position, $pre_page, $move_page, $move_room_name, $pre_room_id_arr, $blocks) {
+	public function showConfirm($action, $position, $pre_page, $move_page, $move_room_name, $pre_parent_page, $move_parent_page, $pre_room_id_arr, $blocks) {
 		$pre_room_id = $pre_page['Page']['room_id'];
 		$move_room_id = $move_page['Page']['room_id'];
 
@@ -825,7 +829,7 @@ class PageMenuComponent extends Component {
 
 		// 注釈
 		$echo_sub_str = '';
-		if(count($pre_room_id_arr) > 0) {
+		if(count($pre_room_id_arr) > 0 && $pre_parent_page['Page']['room_id'] != $move_parent_page['Page']['room_id']) {
 			// ルーム、または、子グループあり
 			$echo_sub_str .= '<li>'.__d('page', 'The assignment of the rights of the room is released.').'</li>';
 		}
@@ -907,7 +911,7 @@ class PageMenuComponent extends Component {
 			$this->_controller->flash(__('Failed to obtain the database, (%s).', 'pages'), null, 'PageMenu/operatePage.001', '500');
 			return false;
 		}
-		list($copy_page, $move_page, $move_parent_page, $move_room_name, $copy_page_id_arr,
+		list($copy_page, $move_page, $copy_parent_page, $move_parent_page, $move_room_name, $copy_page_id_arr,
 				$copy_room_id_arr, $child_copy_pages, $child_move_pages, $last_copy_page, $last_move_page) = $results;
 		$insert_display_sequence = $last_move_page['Page']['display_sequence'];
 		$copy_pages[] = $copy_page;
@@ -942,7 +946,7 @@ class PageMenuComponent extends Component {
 		$blocks = $this->_controller->Block->findByPageIds($copy_page_id_arr, $user_id, '');
 
 		if(!$is_confirm) {
-			$confirm = $this->showConfirm($action, $position, $copy_page, $move_page, $move_room_name, $copy_room_id_arr, $blocks);
+			$confirm = $this->showConfirm($action, $position, $copy_page, $move_page, $move_room_name, $copy_parent_page, $move_parent_page, $copy_room_id_arr, $blocks);
 			if($confirm != '') {
 				echo $confirm;
 				$this->_controller->render(false, 'ajax');
@@ -1019,14 +1023,14 @@ class PageMenuComponent extends Component {
 		} else {
 			$id = $copy_page['Page']['id'];
 		}
-		list($count, $permalink) = $this->renamePermalink($id, $pre_permalink, $move_page['Page']['space_type'], $lang);
+		list($rename_count, $permalink) = $this->renamePermalink($id, $pre_permalink, $move_page['Page']['space_type'], $lang);
 
-		if($count > 0 || $copy_page['Page']['permalink'] == '') {
-			if($count == 0 && $copy_page['Page']['permalink'] == '') {
-				$count = '';
+		if($rename_count > 0 || $copy_page['Page']['permalink'] == '') {
+			if($rename_count == 0 && $copy_page['Page']['permalink'] == '') {
+				$rename_count = '';
 			}
 			$page_name = preg_replace('/^\[copy[0-9]+\](.*)/', "$1", $page_name);
-			$page_name = __d('pages', '[copy%s]%s', $count, $page_name) ;
+			$page_name = __d('pages', '[copy%s]%s', $rename_count, $page_name) ;
 		}
 
 		// 登録処理
@@ -1088,17 +1092,13 @@ class PageMenuComponent extends Component {
 			}
 			if($root_id != $copy_page['Page']['root_id']) {
 				$fields['Page.root_id'] = $root_id;
-				$ins_page['Page']['room_id'] = $root_id;
+				$ins_page['Page']['root_id'] = $root_id;
 			}
 			if($space_type != $copy_page['Page']['space_type']) {
 				$fields['Page.space_type'] = $space_type;
 				$ins_page['Page']['space_type'] = $space_type;
 			}
-			if($room_id != $copy_page['Page']['room_id']) {
-				$fields['Page.room_id'] = $room_id;
-				$ins_page['Page']['room_id'] = $room_id;
-			}
-			if($room_id != $copy_page['Page']['room_id']) {
+			if($room_id != $copy_page['Page']['room_id'] && $copy_parent_page['Page']['room_id'] != $move_parent_page['Page']['room_id']) {
 				$fields['Page.room_id'] = $room_id;
 				$ins_page['Page']['room_id'] = $room_id;
 			}
@@ -1133,7 +1133,7 @@ class PageMenuComponent extends Component {
 				$currentFieldList[] = 'space_type';
 				$ins_page['Page']['space_type'] = $space_type;
 			}
-			if($room_id != $copy_page['Page']['room_id']) {
+			if($room_id != $copy_page['Page']['room_id'] && $copy_parent_page['Page']['room_id'] != $move_parent_page['Page']['room_id']) {
 				$currentFieldList[] = 'room_id';
 				$ins_page['Page']['room_id'] = $room_id;
 			}
@@ -1170,6 +1170,7 @@ class PageMenuComponent extends Component {
 
 		// カレントページ更新
 		$ins_page_id_arr = array();
+		$ins_room_id_arr = array();
 		if(count($currentFieldList) > 0) {
 			if($action == 'paste' || $action == 'shortcut') {
 				unset($ins_page['Page']['id']);	// pageをinsertするため
@@ -1185,6 +1186,9 @@ class PageMenuComponent extends Component {
 			$ins_pages[0] = $ins_page;	// 再セット
 			if($action == 'paste' || $action == 'shortcut') {
 				$ins_page_id_arr[] = $this->_controller->Page->id;
+				if($copy_page['Page']['id'] == $copy_page['Page']['room_id']) {
+					$ins_room_id_arr[] = $this->_controller->Page->id;
+				}
 			}
 		}
 
@@ -1211,12 +1215,13 @@ class PageMenuComponent extends Component {
 				return false;
 			}
 
-
-
 			$ins_pages = array_merge ( $ins_pages, $new_child_pages );
 			if($action == 'paste' || $action == 'shortcut') {
-				foreach($new_child_pages as $new_child_page) {
-					$ins_page_id_arr[] = $new_child_page['Page']['id'];;
+				foreach($new_child_pages as $index =>$new_child_page) {
+					$ins_page_id_arr[] = $new_child_page['Page']['id'];
+					if($child_copy_pages[$index]['Page']['id'] == $child_copy_pages[$index]['Page']['room_id']) {
+						$ins_room_id_arr[] = $this->_controller->Page->id;
+					}
 				}
 			}
 		}
@@ -1368,9 +1373,34 @@ class PageMenuComponent extends Component {
 		}
 
 		// 異なるルームへの操作で移動元にルームが存在していれば権限の割り当てを解除する
-		if($action == 'move' && $copy_page['Page']['room_id'] != $move_parent_page['Page']['room_id'] && count($copy_room_id_arr) > 0) {
+		if($action == 'move' && $copy_parent_page['Page']['room_id'] != $move_parent_page['Page']['room_id'] && count($copy_room_id_arr) > 0) {
 			foreach($copy_room_id_arr as $copy_room_id) {
-				if(!$this->_controller->PageBlock->deallocationRoom($copy_room_id)) {
+				if(!$this->_controller->PageMenuUserLink->deallocationRoom($copy_room_id)) {
+					$this->_controller->flash(__('Failed to delete the database, (%s).', 'page_user_links'), null, 'PageMenu/operatePage.010', '500');
+					return false;
+				}
+			}
+		} else if(($action == 'shortcut' || $action == 'paste') && $copy_parent_page['Page']['room_id'] == $move_parent_page['Page']['room_id'] &&
+				 count($copy_room_id_arr) > 0) {
+			// Page room_id更新
+			foreach($ins_room_id_arr as $buf_ins_room_id) {
+				$this->_controller->Page->id = $buf_ins_room_id;
+				if(!$this->_controller->Page->saveField('room_id', $buf_ins_room_id)) {
+					$this->_controller->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/operatePage.011', '500');
+					return false;
+				}
+			}
+
+			// 同じルーム内でのペースト、ショートカット作成は、権限を引き継ぐ。
+			if(!$this->_controller->PageMenuUserLink->copyPageUserLink($ins_room_id_arr, $copy_room_id_arr)) {
+				$this->_controller->flash(__('Failed to register the database, (%s).', 'page_user_links'), null, 'PageMenu/operatePage.012', '500');
+				return false;
+			}
+
+			// コミュニティ直下のショートカット作成、ペーストでコミュニティ関連を作成
+			if($move_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP && $move_page['Page']['thread_num'] == 1) {
+				if(!$this->_controller->PageMenuCommunity->copyCommunity($ins_room_id_arr[0], $copy_room_id_arr[0], $rename_count)) {
+					$this->_controller->flash(__('Failed to register the database, (%s).', 'communities'), null, 'PageMenu/operatePage.013', '500');
 					return false;
 				}
 			}

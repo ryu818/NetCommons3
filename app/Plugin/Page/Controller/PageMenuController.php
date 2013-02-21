@@ -30,7 +30,8 @@ class PageMenuController extends PageAppController {
  *
  * @var array
  */
-	public $uses = array('PageUserLink', 'Community', 'CommunityLang', 'CommunityTag', 'TempData', 'Page.PageBlock','Block.BlockOperation');
+	public $uses = array('PageUserLink', 'Community', 'CommunityLang', 'CommunityTag', 'TempData',
+			'Page.PageBlock', 'Page.PageMenuUserLink', 'Page.PageMenuCommunity', 'Block.BlockOperation');
 
 /**
  * Component name
@@ -710,10 +711,6 @@ class PageMenuController extends PageAppController {
 		$auth_list = $this->Authority->findAuthSelectHtml();
 		if($this->request->is('post')) {
 			// 登録処理
-			$parent_page = null;
-			if($page['Page']['parent_id'] > 0) {
-				$parent_page = $this->Page->findById($page['Page']['parent_id']);
-			}
 			$authority = $this->Authority->findById($user['authority_id']);
 			if(!isset($authority['Authority'])) {
 				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu/participant.001', '400');
@@ -885,7 +882,7 @@ class PageMenuController extends PageAppController {
 			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/deallocation.001', '500');
 			return;
 		}
-		if(!$this->PageBlock->deallocationRoom($page['Page']['room_id'])) {
+		if(!$this->PageMenuUserLink->deallocationRoom($page['Page']['room_id'])) {
 			$this->flash(__('Failed to delete the database, (%s).', 'page_user_links'), null, 'PageMenu/deallocation.002', '500');
 			return false;
 		}

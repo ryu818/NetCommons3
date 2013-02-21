@@ -172,9 +172,16 @@ class PageController extends PageAppController {
 			);
 		}
 		// activeなページがコミュニティーならば、コミュニティー一覧の何ページ目かにあるかを設定
-		if(!isset($this->request->named['page']) && $center_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
-			$community_page = $this->Page->findById($center_page['Page']['root_id']);
-			$this->paginate['page'] = ceil(intval($community_page['Page']['display_sequence'])/$this->paginate['limit']);
+		if(!isset($this->request->named['page'])) {
+			if(isset($page_id)) {
+				$page = $this->Page->findById($page_id);
+				$community_page = $this->Page->findById($page['Page']['root_id']);
+			} else if($center_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
+				$community_page = $this->Page->findById($center_page['Page']['root_id']);
+			}
+			if(isset($community_page)) {
+				$this->paginate['page'] = ceil(intval($community_page['Page']['display_sequence'])/$this->paginate['limit']);
+			}
 		}
 
 		// 管理系の権限を取得
@@ -274,7 +281,7 @@ class PageController extends PageAppController {
 		$pages_group = array();
 		if(count($pages_top_group) > 0) {
 			$params['conditions']['Page.root_id'] = $pages_top_group;
-			$pages_group = $this->Page->findMenu('all', $user_id, NC_SPACE_TYPE_GROUP, null, $params, null, $fetch_params, true);
+			$pages_group = $this->Page->findMenu('all', $user_id, NC_SPACE_TYPE_GROUP, null, $params, null, $fetch_params, $this->paginate['is_all']);
 		}
 		$copy_page_id = $this->Session->read('Pages.'.'copy_page_id');
 		if(isset($copy_page_id)) {

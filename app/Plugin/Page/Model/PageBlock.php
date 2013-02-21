@@ -195,33 +195,4 @@ class PageBlock extends AppModel {
 
 		return true;
 	}
-
-/**
- * 権限解除で、PageUserLink,ModuleLinkテーブル削除処理
- *
- * @param integer $room_id
- *
- * @return  boolean
- * @since  v 3.0.0.0
- */
-	public function deallocationRoom($room_id) {
-		App::uses('PageUserLink', 'Model');
-		$PageUserLink = new PageUserLink();
-		App::uses('ModuleLink', 'Model');
-		$ModuleLink = new ModuleLink();
-
-		$conditions = array(
-			"PageUserLink.room_id" => $room_id
-		);
-		if(!$PageUserLink->deleteAll($conditions)) {
-			return false;
-		}
-		$conditions = array(
-			"ModuleLink.room_id" => $room_id
-		);
-		if(!$ModuleLink->deleteAll($conditions)) {
-			return false;
-		}
-		return true;
-	}
 }
