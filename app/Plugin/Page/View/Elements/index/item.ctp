@@ -33,7 +33,7 @@
 				break;
 			case NC_SPACE_TYPE_GROUP:
 				// コミュニティ
-				if($admin_hierarchy >= NC_AUTH_MIN_MODERATE) {
+				if($admin_hierarchy >= NC_AUTH_MIN_CHIEF) {
 					$is_parent_chief = true;
 				}
 				break;
@@ -107,7 +107,7 @@
 ?>
 <?php $class = $this->element('index/init_page', array('page' => $page, 'is_edit' => _ON)); ?>
 <?php $next_thread_num = $page['Page']['thread_num']+1; ?>
-<li id="pages-menu-edit-item-<?php echo(h($page['Page']['id'])); ?>" class="pages-menu-edit-item dd-item dd-drag-item<?php if($page['Page']['id']==$page['Page']['room_id']){echo(' '.$class);} ?>" data-id="<?php echo(h($page['Page']['id'])); ?>" data-room-id="<?php echo(h($page['Page']['room_id'])); ?>" data-is-top="<?php if($is_top){echo(_ON);}else{echo(_OFF);} ?>" data-is-chief="<?php if($is_chief){echo(_ON);} else {echo(_OFF);} ?>" data-is-parent-chief="<?php if($is_parent_chief){echo(_ON);} else {echo(_OFF);} ?>"<?php echo($attr); ?>>
+<li id="pages-menu-edit-item-<?php echo(h($page['Page']['id'])); ?>" class="pages-menu-edit-item dd-item dd-drag-item<?php if($page['Page']['id']==$page['Page']['room_id']){echo(' '.$class);} ?>" data-id="<?php echo(h($page['Page']['id'])); ?>" data-room-id="<?php echo(h($page['Page']['room_id'])); ?>" data-is-top="<?php if($is_top){echo(_ON);}else{echo(_OFF);} ?>" data-space-type="<?php echo($page['Page']['space_type']); ?>" data-is-chief="<?php if($is_chief){echo(_ON);} else {echo(_OFF);} ?>" data-is-parent-chief="<?php if($is_parent_chief){echo(_ON);} else {echo(_OFF);} ?>"<?php echo($attr); ?>>
 	<?php if($is_chgseq): ?>
 	<div class="dd-handle dd-drag-handle"></div>
 	<?php endif; ?>
