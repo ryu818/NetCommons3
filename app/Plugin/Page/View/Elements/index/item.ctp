@@ -22,7 +22,23 @@
 		$is_chief = true;
 	}
 
-	if(isset($parent_page) && $admin_hierarchy >= NC_AUTH_MIN_GENERAL && ($parent_page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF || $admin_hierarchy >= NC_AUTH_MIN_ADMIN)) {
+	if($is_top) {
+		switch($space_type) {
+			case NC_SPACE_TYPE_PUBLIC:
+			case NC_SPACE_TYPE_MYPORTAL:
+			case NC_SPACE_TYPE_PRIVATE:
+				if($admin_hierarchy >= NC_AUTH_MIN_ADMIN) {
+					$is_parent_chief = true;
+				}
+				break;
+			case NC_SPACE_TYPE_GROUP:
+				// コミュニティ
+				if($admin_hierarchy >= NC_AUTH_MIN_MODERATE) {
+					$is_parent_chief = true;
+				}
+				break;
+		}
+	} else if(isset($parent_page) && $admin_hierarchy >= NC_AUTH_MIN_GENERAL && ($parent_page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF || $admin_hierarchy >= NC_AUTH_MIN_ADMIN)) {
 		$is_parent_chief = true;
 	}
 

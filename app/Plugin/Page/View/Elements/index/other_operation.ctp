@@ -32,7 +32,7 @@
 					array('title' => __('Paste'), 'class' => 'link hover-highlight','data-ajax' => '', 'data-ajax-type' => 'post'));
 			?>
 		</li>
-		<li class="nc-drop-down-border" data-operation="copy-after" data-name="cancel">
+		<li class="nc-drop-down-border" id="pages-menu-edit-other-operation-copy-cancel" data-name="cancel">
 			<?php
 				echo $this->Html->link(__('Cancel copy'), array('plugin' => 'page', 'controller' => 'page_operation', 'action' => 'cancel'),
 					array('title' => __('Cancel copy'), 'class' => 'link hover-highlight', 'onclick' => '$.PageMenu.clkCancel(event);', 'data-ajax' => '', 'data-ajax-type' => 'post'));

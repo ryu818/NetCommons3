@@ -806,7 +806,7 @@
 			var contents = $('#pages-menu-edit-other-operation-contents');
 			var copy = $('li[data-operation=copy]',list);
 			var copy_after = $('li[data-operation=copy-after]',list);
-
+			var copy_cancel = $('#pages-menu-edit-other-operation-copy-cancel');
 
 			// モジュール利用許可表示切替
 			if(room_id != page_id || (is_top && (li.hasClass("pages-menu-handle-private") || li.hasClass("pages-menu-handle-myportal")))) {
@@ -840,10 +840,12 @@
 				// コピー表示
 				copy.show();
 				copy_after.hide();
+				copy_cancel.hide();
 			} else {
 				// 移動、ショートカット作成、ペースト表示
 				copy.hide();
 				copy_after.show();
+				copy_cancel.show();
 			}
 
 			if(is_chief) {
@@ -851,7 +853,7 @@
 			} else {
 				$('a:first', copy).addClass('disable-lbl');
 			}
-			if((is_top && is_chief) || (!is_top && is_parent_chief)) {
+			if(is_parent_chief) {
 				$('a:first', copy_after).removeClass('disable-lbl');
 			} else {
 				$('a:first', copy_after).addClass('disable-lbl');
