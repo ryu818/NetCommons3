@@ -32,6 +32,10 @@
 			var data_pjax, top, url, data, input_type, type, ret;
 			var target_pjax = a.attr("data-pjax");
 			var confirm = (typeof confirm == "undefined") ? a.attr("data-ajax-confirm") : confirm;
+			if(a.hasClass('disable-lbl')) {
+				e.preventDefault();
+				return false;
+			}
 			if(confirm){
 				var ok = __('Ok') ,cancel = __('Cancel');
 				var default_params = {

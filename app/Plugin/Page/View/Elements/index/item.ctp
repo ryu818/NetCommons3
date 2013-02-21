@@ -4,8 +4,9 @@
 	$is_edit = false;
 	$is_edit_detail = false;
 	$is_delete = false;
+	$is_sel_members = false;
 	$is_sel_modules = false;
-	$is_sel_users = false;
+	$is_contents = false;
 	$is_display = false;
 	$is_node_top_page = false;
 	$is_top = false;
@@ -70,8 +71,8 @@
 		$is_edit = true;
 		$is_delete = true;
 	}
-	if($is_chief && !$is_node_top_page && $space_type != NC_SPACE_TYPE_PRIVATE) {
-		$is_sel_users = true;
+	if($is_chief && !$is_node_top_page && $space_type != NC_SPACE_TYPE_PRIVATE && ($is_top || $is_parent_chief)) {
+		$is_sel_members = true;
 	}
 
 	if($is_chief && (($is_top && $page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) || !$is_node_top_page)) {
@@ -86,11 +87,6 @@
 	$is_editing_page_name = false;
 	if($page['Page']['id'] == $page_id && ($is_detail || (isset($error_flag) && $error_flag))) {
 		$is_editing_page_name = true;
-	}
-
-	$is_other_operation = false;
-	if($is_parent_chief || $is_chief || $is_sel_modules || $is_sel_users) {
-		$is_other_operation = true;
 	}
 ?>
 <?php $class = $this->element('index/init_page', array('page' => $page, 'is_edit' => _ON)); ?>
@@ -172,7 +168,7 @@
 
 	<?php endif; ?>
 	</form>
-	<?php if($is_sel_users): ?>
+	<?php if($is_sel_members): ?>
 	<div id="pages-menu-edit-participant-<?php echo(h($page['Page']['id'])); ?>" class="pages-menu-edit-view  pages-menu-edit-participant-outer" style="display:none;">
 	</div>
 	<?php endif; ?>
@@ -184,7 +180,7 @@
 				'parent_page' => $page, 'community_params' => isset($community_params) ? $community_params : null))); ?>
 		</ol>
 	<?php endif; ?>
-	<?php if($is_edit || $is_delete || $is_chief || $is_sel_modules || $is_sel_users): ?>
+	<?php if($is_edit || $is_delete || $is_chief || $is_sel_modules || $is_sel_members): ?>
 	<div class="pages-menu-edit-operation clearfix"<?php if($page['Page']['id'] != $page_id): ?> style="display:none;"<?php endif; ?>>
 	<?php
 		if($is_edit_detail) {
@@ -196,7 +192,7 @@
 				array('title' => __('Edit'), 'class' => 'pages-menu-edit-disable-icon',
 				'onclick' => 'return false;'));
 		}
-		if($is_other_operation) {
+		if($is_parent_chief || $is_chief || $is_sel_modules || $is_sel_members) {
 			$copy_page_id = $this->Session->read('Pages.'.'copy_page_id');
 			if(isset($copy_page_id)) {
 				$operation_class = ' pages-menu-edit-highlight-icon';
@@ -206,6 +202,11 @@
 			echo $this->Html->link('', '#',
 				array('title' => __d('page', 'Other operations'), 'class' => 'pages-menu-other-icon' . ' nc-tooltip'.$operation_class,
 				'data-ajax' => '#pages-menu-edit-view-'.$page['Page']['id'],
+				'data-is-parent-chief' => $is_parent_chief,
+				'data-is-chief' => $is_chief,
+				'data-is-sel-modules' => $is_sel_modules,
+				'data-is-sel-members' => $is_sel_members,
+				'data-is-contents' => $is_contents,
 				'onclick' => '$.PageMenu.clkOtherOperation(event);return false;' ));
 
 		} else {

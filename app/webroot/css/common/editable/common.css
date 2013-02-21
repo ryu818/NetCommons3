@@ -26,7 +26,7 @@ blockquote.quote {
 
 /* クリック不可リンクラベル色 */
 .disable-lbl {
-	color:#aca899;
+	color:#aca899 !important;
 }
 
 /* hr */

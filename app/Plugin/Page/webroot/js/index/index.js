@@ -790,47 +790,90 @@
 			var list = $('#pages-menu-edit-other-operation');
 			var offset_top = - 20,offset_left = - 5;
 			var li = $(a).parents('li:first'), page_id = li.attr('data-id'), room_id = li.attr('data-room-id'),list_page_id = list.attr('data-id');
-			var is_top = li.attr('data-is-top')
 			var copy_page_id = list.attr('data-copy-page-id');
 			var top = pos.top + offset_top - $(window).scrollTop();
 			var top_dialog_top = $("#nc-pages-setting-dialog").position().top;
+			var is_top = parseInt(li.attr('data-is-top'));
+			var is_chief = parseInt(li.attr('data-is-chief'));
+			var is_parent_chief = parseInt(li.attr('data-is-parent-chief'));
+			var is_sel_modules = parseInt(a.attr('data-is-sel-modules'));
+			var is_sel_members = parseInt(a.attr('data-is-sel-members'));
+			var is_contents = parseInt(a.attr('data-is-sel-contents'));
+			var modules = $('#pages-menu-edit-other-operation-modules');
+			var members = $('#pages-menu-edit-other-operation-members');
+			var add_members = $('#pages-menu-edit-other-operation-add-members');
+			var unassign_members = $('#pages-menu-edit-other-operation-unassign-members');
+			var contents = $('#pages-menu-edit-other-operation-contents');
+			var copy = $('li[data-operation=copy]',list);
+			var copy_after = $('li[data-operation=copy-after]',list);
+
 
 			// モジュール利用許可表示切替
 			if(room_id != page_id || (is_top && (li.hasClass("pages-menu-handle-private") || li.hasClass("pages-menu-handle-myportal")))) {
-				$('#pages-menu-edit-other-operation-modules').hide();
+				modules.hide();
 			} else {
-				$('#pages-menu-edit-other-operation-modules').show();
+				modules.show();
 			}
 
 			// 参加者設定 - 修正
-			if(!$('#pages-menu-edit-participant-'+page_id).get(0)) {
-				$('#pages-menu-edit-other-operation-members').hide();
-				$('#pages-menu-edit-other-operation-add-members').hide();
-			} else {
+			//if(!$('#pages-menu-edit-participant-'+page_id).get(0)) {
+			//	members.hide();
+			//	add_members.hide();
+			//} else {
 				if(page_id != room_id) {
-					$('#pages-menu-edit-other-operation-members').hide();
-					$('#pages-menu-edit-other-operation-add-members').show();
+					members.hide();
+					add_members.show();
 				} else {
-					$('#pages-menu-edit-other-operation-members').show();
-					$('#pages-menu-edit-other-operation-add-members').hide();
+					members.show();
+					add_members.hide();
 				}
-			}
+			//}
 
 			// 参加者割り当て解除
 			if(page_id == room_id && is_top == 0) {
-				$('#pages-menu-edit-other-operation-unassign-members').show();
+				unassign_members.show();
 			} else {
-				$('#pages-menu-edit-other-operation-unassign-members').hide();
+				unassign_members.hide();
 			}
 
 			if(!copy_page_id) {
 				// コピー表示
-				$('li[data-operation=copy]',list).show();
-				$('li[data-operation=copy-after]',list).hide();
+				copy.show();
+				copy_after.hide();
 			} else {
 				// 移動、ショートカット作成、ペースト表示
-				$('li[data-operation=copy]',list).hide();
-				$('li[data-operation=copy-after]',list).show();
+				copy.hide();
+				copy_after.show();
+			}
+
+			if(is_chief) {
+				$('a:first', copy).removeClass('disable-lbl');
+			} else {
+				$('a:first', copy).addClass('disable-lbl');
+			}
+			if((is_top && is_chief) || (!is_top && is_parent_chief)) {
+				$('a:first', copy_after).removeClass('disable-lbl');
+			} else {
+				$('a:first', copy_after).addClass('disable-lbl');
+			}
+			if(is_sel_members) {
+				$('a:first', unassign_members).removeClass('disable-lbl');
+				$('a:first', members).removeClass('disable-lbl');
+				$('a:first', add_members).removeClass('disable-lbl');
+			} else {
+				$('a:first', unassign_members).addClass('disable-lbl');
+				$('a:first', members).addClass('disable-lbl');
+				$('a:first', add_members).addClass('disable-lbl');
+			}
+			if(is_sel_modules) {
+				$('a:first', modules).removeClass('disable-lbl');
+			} else {
+				$('a:first', modules).addClass('disable-lbl');
+			}
+			if(is_contents) {
+				$('a:first', contents).removeClass('disable-lbl');
+			} else {
+				$('a:first', contents).addClass('disable-lbl');
 			}
 
 			a.tooltip().tooltip('close');

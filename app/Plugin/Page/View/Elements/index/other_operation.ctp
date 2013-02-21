@@ -63,7 +63,7 @@
 				<?php /* TODO:未実装 */ echo(__d('page', 'Modules to use'));?>
 			</a>
 		</li>
-		<li>
+		<li id="pages-menu-edit-other-operation-contents">
 			<a class="link hover-highlight" href="#">
 				<?php /* TODO:未実装 */ echo(__('Contents list'));?>
 			</a>

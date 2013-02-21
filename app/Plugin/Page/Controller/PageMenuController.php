@@ -695,9 +695,14 @@ class PageMenuController extends PageAppController {
 		$user = $this->Auth->user();
 		$user_id = $user['id'];
 		$page = $this->Page->findAuthById($page_id, $user_id);
+		$parent_page = null;
+		if($page['Page']['root_id'] != $page['Page']['room_id']) {
+			// 子グループ
+			$parent_page = $this->Page->findAuthById($page['Page']['parent_id'], $user_id);
+		}
 
 		// 権限チェック
-		$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $page);
+		$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $page, $parent_page);
 		if(!$admin_hierarchy) {
 			return;
 		}
@@ -853,9 +858,14 @@ class PageMenuController extends PageAppController {
 		$user = $this->Auth->user();
 		$user_id = $user['id'];
 		$page = $this->Page->findAuthById($page_id, $user_id);
+		$parent_page = null;
+		if($page['Page']['root_id'] != $page['Page']['room_id']) {
+			// 子グループ
+			$parent_page = $this->Page->findAuthById($page['Page']['parent_id'], $user_id);
+		}
 
 		// 権限チェック
-		$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $page);
+		$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $page, $parent_page);
 		if(!$admin_hierarchy) {
 			return;
 		}
