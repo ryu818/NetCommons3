@@ -500,7 +500,13 @@
 
 				$('[name=data\\[Page\\]\\[display_flag\\]]', li).each(function(){
 					var display = $(this);
-					var a = display.prev(), img = a.children(':first');
+					var a = display.prev(),img;
+
+					if(a.get(0).tagName == 'A') {
+						img = a.children(':first');
+					} else {
+						img = a;
+					}
 					if(setDisplay == null) {
 						setDisplay = (display.val() == '1') ? 0 : 1;;
 					}
@@ -917,6 +923,10 @@
 			var copy_space_type = li.attr('data-space-type');
 			var copy_is_top = li.attr('data-is-top');
 			var a = $('a.pages-menu-edit-title:first', li);
+			if($(e.target).hasClass('disable-lbl')) {
+				e.preventDefault();
+				return;
+			}
 			//list.attr('data-id', copy_page_id);
 			list.attr('data-copy-page-id', copy_page_id);
 			list.attr('data-copy-is-top', copy_is_top);

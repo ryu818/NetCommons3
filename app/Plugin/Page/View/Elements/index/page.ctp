@@ -1,6 +1,10 @@
 <?php if(!empty($menus)): ?>
 	<?php foreach ($menus as $page): ?>
 		<?php
+			if($page['Page']['display_flag'] != NC_DISPLAY_FLAG_ON && $page['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
+				// 非公開
+				continue;
+			}
 			$active_lang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.pre_lang');
 			$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 			$parameter = '';

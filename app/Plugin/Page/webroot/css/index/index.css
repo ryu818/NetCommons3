@@ -183,18 +183,6 @@ input.pages-menu-edit-title {
 	background-image: url(../../page/img/index/list.png);
 }
 
-.pages-menu-edit-disable-icon {
-	background-image: url(../../page/img/index/edit_disable.png);
-}
-
-.pages-menu-delete-disable-icon {
-	background-image: url(../../page/img/index/trash_disable.png);
-}
-
-.pages-menu-other-disable-icon {
-	background-image: url(../../page/img/index/list_disable.png);
-}
-
 .pages-menu-edit-icon:hover {
 	background-image: url(../../page/img/index/edit_h.png);
 }

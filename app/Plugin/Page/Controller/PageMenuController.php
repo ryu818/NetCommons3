@@ -794,7 +794,12 @@ class PageMenuController extends PageAppController {
 		$page = $this->Page->findAuthById($page_id, $user_id);
 
 		// 権限チェック
-		$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $page);
+		$parent_page = null;
+		if($page['Page']['root_id'] != $page['Page']['room_id']) {
+			// 子グループ
+			$parent_page = $this->Page->findAuthById($page['Page']['parent_id'], $user_id);
+		}
+		$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $page, $parent_page);
 		if(!$admin_hierarchy) {
 			return;
 		}
@@ -859,18 +864,17 @@ class PageMenuController extends PageAppController {
 		$user = $this->Auth->user();
 		$user_id = $user['id'];
 		$page = $this->Page->findAuthById($page_id, $user_id);
-		$parent_page = null;
+		$parent_page = $this->Page->findAuthById($page['Page']['parent_id'], $user_id);
+		// 権限チェック
 		if($page['Page']['root_id'] != $page['Page']['room_id']) {
 			// 子グループ
-			$parent_page = $this->Page->findAuthById($page['Page']['parent_id'], $user_id);
+			$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $page, $parent_page);
+		} else {
+			$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $page);
 		}
-
-		// 権限チェック
-		$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $page, $parent_page);
 		if(!$admin_hierarchy) {
 			return;
 		}
-		$parent_page = $this->Page->findById($page['Page']['parent_id']);
 		$child_pages = $this->Page->findChilds('all', $page, $user_id);
 
 		// 登録処理

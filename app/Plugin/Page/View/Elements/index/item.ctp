@@ -11,6 +11,7 @@
 	$is_node_top_page = false;
 	$is_top = false;
 	$is_parent_chief = false;
+	$is_operate_chief = false;
 	if($page['Page']['display_sequence'] == 1 && $page['Page']['thread_num'] == 2) {
 		$is_node_top_page = true;
 	}
@@ -40,6 +41,10 @@
 		}
 	} else if(isset($parent_page) && $admin_hierarchy >= NC_AUTH_MIN_GENERAL && ($parent_page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF || $admin_hierarchy >= NC_AUTH_MIN_ADMIN)) {
 		$is_parent_chief = true;
+	}
+
+	if(($is_top && $is_chief) || (!$is_top && $is_parent_chief)) {
+		$is_operate_chief = true;
 	}
 
 	$attr = '';
@@ -86,18 +91,22 @@
 	if($is_chief && (!$is_top || $space_type == NC_SPACE_TYPE_GROUP)) {
 		$is_edit = true;
 	}
-	if(($is_chief && $is_top && $space_type == NC_SPACE_TYPE_GROUP) || (!$is_top && $is_parent_chief)) {
-		$is_delete = true;
-	}
-	if($is_chief && !$is_node_top_page && $space_type != NC_SPACE_TYPE_PRIVATE && ($is_top || $is_parent_chief)) {
-		$is_sel_members = true;
-	}
 
 	if($is_chief && (($is_top && $page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) || !$is_node_top_page)) {
 		// 主坦ならばTopNodeでもなく、各ノードのトップページでなければ公開設定を許す
 		$is_display = true;
 	}
 
+	if($is_operate_chief) {
+		if(!$is_top || $space_type == NC_SPACE_TYPE_GROUP) {
+			$is_edit = true;
+			$is_delete = true;
+		}
+		if($space_type != NC_SPACE_TYPE_MYPORTAL && $space_type != NC_SPACE_TYPE_PRIVATE ) {
+			$is_sel_members = true;
+			//$is_sel_modules = true;
+		}
+	}
 	if($is_edit && !$is_node_top_page) {
 		$is_edit_detail = true;
 	}
@@ -132,6 +141,12 @@
 				<a class="pages-menu-display-flag"  href="#" title="<?php echo(__d('page', 'To public')); ?>">
 					<img class="icon" alt="<?php echo(__d('page', 'To public')); ?>" src="<?php echo($this->webroot); ?>/img/icons/base/off.gif" />
 				</a>
+			<?php endif; ?>
+		<?php else: ?>
+			<?php if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_ON): ?>
+				<img class="icon disable-lbl" alt="<?php echo(__d('page', 'To private')); ?>" src="<?php echo($this->webroot); ?>/img/icons/base/on.gif" />
+			<?php else: ?>
+				<img class="icon disable-lbl" alt="<?php echo(__d('page', 'To public')); ?>" src="<?php echo($this->webroot); ?>/img/icons/base/off.gif" />
 			<?php endif; ?>
 		<?php endif; ?>
 		<input type="hidden" name="data[Page][display_flag]" value="<?php echo(intval($page['Page']['display_flag'])); ?>" />
@@ -195,7 +210,8 @@
 			<?php echo($this->element('index/edit_page', array('pages' => $pages, 'menus' => $pages[$space_type][$next_thread_num][$page['Page']['id']],
 				'page_id' => $page_id, 'space_type' => $space_type, 'admin_hierarchy' => $admin_hierarchy,
 				'is_child' => true, 'is_display' => $is_display, 'is_detail' => $is_detail,
-				'parent_page' => $page, 'community_params' => isset($community_params) ? $community_params : null))); ?>
+				'parent_page' => $page, 'community_params' => isset($community_params) ? $community_params : null,
+				'is_root_parent_chief' => isset($is_root_parent_chief) ? $is_root_parent_chief : true))); ?>
 		</ol>
 	<?php endif; ?>
 	<?php if($is_edit || $is_delete || $is_chief || $is_sel_modules || $is_sel_members): ?>
@@ -207,7 +223,7 @@
 				'data-ajax' => '#pages-menu-edit-detail-'.$page['Page']['id'], 'data-page-edit-id' => $page['Page']['id']));
 		} else {
 			echo $this->Html->link('', '#',
-				array('title' => __('Edit'), 'class' => 'pages-menu-edit-disable-icon',
+				array('title' => __('Edit'), 'class' => 'pages-menu-edit-icon disable-lbl',
 				'onclick' => 'return false;'));
 		}
 		if($is_parent_chief || $is_chief || $is_sel_modules || $is_sel_members) {
@@ -229,7 +245,7 @@
 
 		} else {
 			echo $this->Html->link('', '#',
-				array('title' => __d('page', 'Other operations'), 'class' => 'pages-menu-other-disable-icon',
+				array('title' => __d('page', 'Other operations'), 'class' => 'pages-menu-other-icon disable-lbl',
 				'onclick' => 'return false;'));
 		}
 		if($is_delete) {
@@ -238,7 +254,7 @@
 				'data-ajax-replace' => '#pages-menu-edit-item-'.$page['Page']['id'], 'data-ajax-type' => 'POST', 'data-ajax-data' => '#pages-menu-edit-item-' . $page['Page']['id']));
 		} else {
 			echo $this->Html->link('', '#',
-				array('title' => ($page['Page']['id'] == $page['Page']['room_id']) ? __d('page', 'Delete room') : __d('page', 'Delete page'), 'class' => 'pages-menu-delete-disable-icon',
+				array('title' => ($page['Page']['id'] == $page['Page']['room_id']) ? __d('page', 'Delete room') : __d('page', 'Delete page'), 'class' => 'pages-menu-delete-icon disable-lbl',
 				'onclick' => 'return false;'));
 		}
 	?>
