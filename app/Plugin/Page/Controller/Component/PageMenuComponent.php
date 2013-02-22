@@ -969,8 +969,12 @@ class PageMenuComponent extends Component {
 			}
 
 			// 親ページをコピーし、それを子ページにペースト、ショートカット作成、移動を行うとエラーとする
-			if(in_array($move_page['Page']['id'], $copy_page_id_arr)) {
+			if(in_array($move_page['Page']['id'], $copy_page_id_arr) && $move_page['Page']['id'] != $copy_page_id_arr[0]) {
 				$this->_controller->Page->validationErrors['page_menu_errors'][0] = __d('page', 'You can\'t operate to the lower page of the copy page.');
+				return false;
+			}
+			if($action == 'move' && $move_page['Page']['id'] == $copy_page_id_arr[0]) {
+				// 移動元と移動先が同じ
 				return false;
 			}
 		}

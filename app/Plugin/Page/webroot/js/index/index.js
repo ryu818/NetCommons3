@@ -615,6 +615,10 @@
 			var copy_page_id = list.attr('data-copy-page-id'), page_id = list.attr('data-id');
 			postfix_url = '/' + copy_page_id + '?page_id=' + page_id;
 			send_url = url + postfix_url;
+			if(copy_page_id == page_id && li.attr('data-name') == 'move') {
+				$.PageMenu.closeOtherOperation();
+				return false;
+			}
 			return send_url;
 		}).on('ajax:success',function(e, res) {
 			var li = $(e.target).parent();

@@ -14,7 +14,7 @@
 					array('title' => __('Copy'), 'class' => 'link hover-highlight', 'onclick' => '$.PageMenu.clkCopy(event);', 'data-ajax' => '', 'data-ajax-type' => 'post'));
 			?>
 		</li>
-		<li  data-operation="copy-after">
+		<li  data-operation="copy-after" data-name="move">
 			<?php
 				echo $this->Html->link(__('Move'), array('plugin' => 'page', 'controller' => 'page_operation', 'action' => 'move'),
 					array('title' => __('Move'), 'class' => 'link hover-highlight','data-ajax' => '', 'data-ajax-type' => 'post'));
