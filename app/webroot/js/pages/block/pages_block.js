@@ -49,7 +49,7 @@
 
 			// ブロックコピー
 			$('#nc-block-header-copy' + id).on('ajax:success', function(e, res) {
-				var re_html = new RegExp("^<div class=\"nc-copy-block-outer\"", 'i');
+				var re_html = new RegExp("<div class=\"nc-copy-block-outer\"", 'i');
 				$(this).parents('.nc-drop-down:first').hide();
 				if(!$.trim(res).match(re_html)) {
 					// error

@@ -21,3 +21,6 @@ msgid  	"You create a copy to [%s]. Are you sure?"
 msgstr 	"[%s]へコピーを作成します。よろしいですか？"
 msgid  	"You create a shortcut to [%s]. Are you sure?"
 msgstr 	"[%s]へショートカットを作成します。よろしいですか？"
+
+msgid  	"Move page to move,create a shortcut, paste, can you please run from the upper selectbox."
+msgstr 	"移動、ショートカット作成、ペースト先のページに移動し、上部セレクトボックスから実行してください。"

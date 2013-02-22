@@ -83,7 +83,7 @@ msgstr 	"公開ではないか、公開日付が入力していないため、�
 msgid  	"Please input in [publish date < closed date]."
 msgstr 	"[公開日付 < 非公開日付]で入力してください。"
 
-msgid  	"Select the page to which the movement, create a shortcut, paste, Can you please run from the [%s]."
+msgid  	"Select the page to which the movement, create a shortcut, paste, can you please run from the [%s]."
 msgstr 	"移動、ショートカット作成、ペースト先のページを選択し、[%s]から実行してください。"
 
 msgid  	"Top of each page is required at least one page. <br />You can't delete."

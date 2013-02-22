@@ -40,34 +40,15 @@ class BlockOperationController extends BlockAppController {
 		$content_id = $this->nc_block['Content']['id'];
 		$content = $this->nc_block;
 
-		/*TODO:後に削除
-		 * if(!$this->nc_block['Content']['is_master']) {
-			// ショートカット
-			// ショートカットのコピーは、ショートカット元のコンテンツが主担以上であれば、許す。
-			// そうでなければショートカットのコピーは認めない。
-			$master_content = $this->Content->findAuthById($this->nc_block['Content']['master_id'], $user_id);
-			if(isset($master_content['Content'])) {
-				$content_id = $master_content['Content']['id'];
-				$content = $master_content;
-			} else {
-				// error
-				echo __d('block','Because an origin of contents is deleted, You can\'t copy it.');
-				$this->render(false, 'ajax');
-				return;
-			}
-			if($master_content['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
-				echo __d('block','Because there is not the room editing authority of the origin of contents, You can\'t copy it.');
-				$this->render(false, 'ajax');
-				return;
-			}
-		}*/
-
 		/* TODO:lock_authority_idが入力されているロックされたブロックはコピー不可とする */
 
 		$this->Session->write('Blocks.'.'copy_block_id', $block_id);
 		$this->Session->write('Blocks.'.'copy_content_id', $content_id);
 
 		$this->set('copy_content', $content);
+
+		$this->Session->setFlash(__d('block', 'Move page to move,create a shortcut, paste, can you please run from the upper selectbox.'));
+		$this->set('pause', 5000);	// メッセージを5秒間表示
 
 		$this->render('Elements/copy', 'ajax');
 
