@@ -302,9 +302,7 @@ class PageBehavior extends ModelBehavior {
 			}
 			//$val[$Model->alias]['hierarchy'] = isset($val['Authority']['hierarchy']) ? $val['Authority']['hierarchy'] : NC_AUTH_OTHER;
 			if(!isset($val['Authority']['hierarchy'])) {
-				$val[$Model->alias]['hierarchy'] = $this->getDefaultHierarchy($Model, $val, $is_login);
-			} else {
-				$val[$Model->alias]['hierarchy'] = $val['Authority']['hierarchy'];
+				$val['Authority']['hierarchy'] = $this->getDefaultHierarchy($Model, $val, $is_login);
 			}
 
 			if(isset($val['CommunityLang']['community_name'])) {

@@ -588,7 +588,7 @@ class Page extends AppModel
  * @return  integer コミュニティー数
  * @since   v 3.0.0.0
  */
-	public function findCommunityCount($login_user_id = null, $params = null, $is_all = false) {
+	public function findCommunityCount($login_user_id = null, $params = null, $is_all = true) {
 		if(!isset($params)) {
 			$params = array(
 				'conditions' => array(

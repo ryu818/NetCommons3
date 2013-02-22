@@ -31,8 +31,10 @@ class PageMenuUserLink extends AppModel {
 			);
 			$page_user_links = $this->find('all', array('fields' => $fields, 'conditions' => $conditions));
 			$set_room_id_arr = array();
-			foreach($ins_room_id_arr as $index => $ins_room_id) {
+			$index = 0;
+			foreach($ins_room_id_arr as $ins_room_id) {
 				$set_room_id_arr[$copy_room_id_arr[$index]] = $ins_room_id;
+				$index++;
 			}
 			foreach($page_user_links as $page_user_link) {
 				$this->create();

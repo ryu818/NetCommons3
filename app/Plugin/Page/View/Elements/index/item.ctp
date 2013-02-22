@@ -85,6 +85,8 @@
 
 	if($is_chief && (!$is_top || $space_type == NC_SPACE_TYPE_GROUP)) {
 		$is_edit = true;
+	}
+	if(($is_chief && $is_top && $space_type == NC_SPACE_TYPE_GROUP) || (!$is_top && $is_parent_chief)) {
 		$is_delete = true;
 	}
 	if($is_chief && !$is_node_top_page && $space_type != NC_SPACE_TYPE_PRIVATE && ($is_top || $is_parent_chief)) {

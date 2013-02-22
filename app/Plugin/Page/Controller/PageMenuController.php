@@ -440,7 +440,6 @@ class PageMenuController extends PageAppController {
 			$current_page['Page']['permalink'] = $input_permalink;
 		}
 
-		$current_page['Page']['hierarchy'] = $current_page['Authority']['hierarchy'];
 		$this->_renderItem($current_page, $parent_page, $admin_hierarchy, $is_detail, $error_flag, $child_pages);
 	}
 
@@ -565,9 +564,14 @@ class PageMenuController extends PageAppController {
 			// ルームならば必ずすべて削除。
 			$all_delete = _ON;
 		}
+		$parent_page = null;
+		if($current_page['Page']['root_id'] != $current_page['Page']['room_id']) {
+			// 子グループならば親の権限に従う
+			$parent_page = $this->Page->findAuthById($current_page['Page']['parent_id'], $user_id);
+		}
 
 		// 権限チェック
-		$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $current_page);
+		$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $current_page, $parent_page);
 		if(!$admin_hierarchy) {
 			return;
 		}

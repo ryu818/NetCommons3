@@ -1098,7 +1098,7 @@ class PageMenuComponent extends Component {
 				$fields['Page.space_type'] = $space_type;
 				$ins_page['Page']['space_type'] = $space_type;
 			}
-			if($room_id != $copy_page['Page']['room_id'] && $copy_parent_page['Page']['room_id'] != $move_parent_page['Page']['room_id']) {
+			if($room_id != $copy_page['Page']['room_id']) {
 				$fields['Page.room_id'] = $room_id;
 				$ins_page['Page']['room_id'] = $room_id;
 			}
@@ -1133,7 +1133,7 @@ class PageMenuComponent extends Component {
 				$currentFieldList[] = 'space_type';
 				$ins_page['Page']['space_type'] = $space_type;
 			}
-			if($room_id != $copy_page['Page']['room_id'] && $copy_parent_page['Page']['room_id'] != $move_parent_page['Page']['room_id']) {
+			if($room_id != $copy_page['Page']['room_id']) {
 				$currentFieldList[] = 'room_id';
 				$ins_page['Page']['room_id'] = $room_id;
 			}
@@ -1185,9 +1185,9 @@ class PageMenuComponent extends Component {
 			$ins_page['Page']['id'] = $this->_controller->Page->id;
 			$ins_pages[0] = $ins_page;	// 再セット
 			if($action == 'paste' || $action == 'shortcut') {
-				$ins_page_id_arr[] = $this->_controller->Page->id;
+				$ins_page_id_arr[$this->_controller->Page->id] = $this->_controller->Page->id;
 				if($copy_page['Page']['id'] == $copy_page['Page']['room_id']) {
-					$ins_room_id_arr[] = $this->_controller->Page->id;
+					$ins_room_id_arr[$this->_controller->Page->id] = $this->_controller->Page->id;
 				}
 			}
 		}
@@ -1217,10 +1217,12 @@ class PageMenuComponent extends Component {
 
 			$ins_pages = array_merge ( $ins_pages, $new_child_pages );
 			if($action == 'paste' || $action == 'shortcut') {
+				$ins_parent_id_arr = array();
 				foreach($new_child_pages as $index =>$new_child_page) {
-					$ins_page_id_arr[] = $new_child_page['Page']['id'];
+					$ins_page_id_arr[$new_child_page['Page']['id']] = $new_child_page['Page']['id'];
+					$ins_parent_id_arr[$new_child_page['Page']['id']] = $new_child_page['Page']['parent_id'];
 					if($child_copy_pages[$index]['Page']['id'] == $child_copy_pages[$index]['Page']['room_id']) {
-						$ins_room_id_arr[] = $this->_controller->Page->id;
+						$ins_room_id_arr[$new_child_page['Page']['id']] = $new_child_page['Page']['id'];
 					}
 				}
 			}
@@ -1383,9 +1385,28 @@ class PageMenuComponent extends Component {
 		} else if(($action == 'shortcut' || $action == 'paste') && $copy_parent_page['Page']['room_id'] == $move_parent_page['Page']['room_id'] &&
 				 count($copy_room_id_arr) > 0) {
 			// Page room_id更新
-			foreach($ins_room_id_arr as $buf_ins_room_id) {
-				$this->_controller->Page->id = $buf_ins_room_id;
-				if(!$this->_controller->Page->saveField('room_id', $buf_ins_room_id)) {
+			foreach($ins_page_id_arr as $buf_ins_page_id) {
+				if(isset($ins_room_id_arr[$buf_ins_page_id])) {
+					$upd_room_id = $ins_room_id_arr[$buf_ins_page_id];
+				} else {
+					$upd_room_id = null;
+					$buf_parent_id = $ins_parent_id_arr[$buf_ins_page_id];
+					while(1) {
+						if(isset($ins_room_id_arr[$buf_parent_id])) {
+							$upd_room_id = $ins_room_id_arr[$buf_parent_id];
+							break;
+						}
+						if(!isset($ins_parent_id_arr[$buf_parent_id])) {
+							break;
+						}
+						$buf_parent_id = $ins_parent_id_arr[$buf_parent_id];
+					}
+					if(!isset($upd_room_id)) {
+						continue;
+					}
+				}
+				$this->_controller->Page->id = $buf_ins_page_id;
+				if(!$this->_controller->Page->saveField('room_id', $upd_room_id)) {
 					$this->_controller->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/operatePage.011', '500');
 					return false;
 				}
