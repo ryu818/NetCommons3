@@ -178,7 +178,7 @@ class PageMenuComponent extends Component {
 						'Page.lang' => array('', $lang)
 					);
 					$count = $this->_controller->Page->find('count', array('conditions' => $conditions));
-					if($count >= 1) {
+					if($count > 1) {
 						echo __d('page', 'If you want to delete the top page, please run after deleting all the pages of this room.<br />You can\'t delete.');
 						$this->_controller->render(false, 'ajax');
 						return false;
