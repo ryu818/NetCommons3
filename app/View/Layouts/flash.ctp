@@ -2,7 +2,7 @@
 <html>
 <head>
 <?php echo $this->Html->charset(); ?>
-<title><?php echo h($page_title); ?></title>
+<title><?php echo h(strip_tags($page_title)); ?></title>
 <?php
 if(method_exists($this->Html,'fetchScript')) {
 	echo($this->element('Pages/include_header'));
