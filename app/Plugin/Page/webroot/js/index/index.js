@@ -466,6 +466,11 @@
 
 			}).on('ajax:success','form.pages-menu-edit-form',function(e, res) {
 				var target = $.Common.ajaxSuccess(this, res);
+				var re_html = new RegExp("^<script>", 'i');
+				if($(this).attr('data-name') == 'participant' && !$.trim(res).match(re_html)) {
+					$.Common.showErrorDialog(res);
+					return;
+				}
 				var li = $(this).parent();
 				if(li.get(0).tagName != 'LI') {
 					li = li.parents('li:first');

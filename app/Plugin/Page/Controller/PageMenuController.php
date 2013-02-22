@@ -845,12 +845,16 @@ class PageMenuController extends PageAppController {
 		$page = $this->Page->findAuthById($page_id, $user_id);
 
 		// 権限チェック
-		$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $page);
+		$parent_page = null;
+		if($page['Page']['root_id'] != $page['Page']['room_id']) {
+			// 子グループ
+			$parent_page = $this->Page->findAuthById($page['Page']['parent_id'], $user_id);
+		}
+		$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $page, $parent_page);
 		if(!$admin_hierarchy) {
 			return;
 		}
-
-		$this->Session->delete('pagesmenu.PageUserLink['.$page_id.']');
+		$this->Session->delete(NC_SYSTEM_KEY.'.page_menu.PageUserLink['.$page_id.']');
 		$this->render(false, 'ajax');
 	}
 

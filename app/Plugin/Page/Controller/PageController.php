@@ -108,7 +108,7 @@ class PageController extends PageAppController {
  */
 	public function index($active_lang = null) {
 		$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', $this->action);
-		$this->Session->delete('pagesmenu.PageUserLink');
+		$this->Session->delete(NC_SYSTEM_KEY.'.page_menu.PageUserLink');
 
 		include_once dirname(dirname(__FILE__)).'/Config/defines.inc.php';
 

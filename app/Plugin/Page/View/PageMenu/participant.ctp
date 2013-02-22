@@ -3,7 +3,7 @@
 	<div class="bold">
 		<?php
 			$form_params = array('id' => 'pages-menu-edit-participant-form-'.$page['Page']['id'],
-					'class' => 'pages-menu-edit-form', 'data-ajax-replace' => '#pages-menu-edit-item-'.$page['Page']['id']);
+					'class' => 'pages-menu-edit-form', 'data-ajax-replace' => '#pages-menu-edit-item-'.$page['Page']['id'],'data-name' => 'participant');
 			if($page['Page']['id'] != $page['Page']['room_id']) {
 				echo(__d('page', 'Add members'));
 				$form_params['data-ajax-confirm'] = h(__d('page','Set a new participant to [%s]. Are you sure?',$page['Page']['page_name']));
