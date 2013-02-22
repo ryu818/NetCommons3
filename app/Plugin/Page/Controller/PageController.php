@@ -179,8 +179,11 @@ class PageController extends PageAppController {
 			} else if($center_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
 				$community_page = $this->Page->findById($center_page['Page']['root_id']);
 			}
-			if(isset($community_page)) {
+			if(isset($community_page) && $community_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
 				$this->paginate['page'] = ceil(intval($community_page['Page']['display_sequence'])/$this->paginate['limit']);
+				$sel_active_tab = 1;
+			} else {
+				$sel_active_tab = 0;
 			}
 		}
 
@@ -254,6 +257,8 @@ class PageController extends PageAppController {
 			$active_page = $this->Page->findById(intval($this->request->query['page_id']));
 			if($active_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
 				$active_tab = 1;
+			} else {
+				$active_tab = 0;
 			}
 		}
 
