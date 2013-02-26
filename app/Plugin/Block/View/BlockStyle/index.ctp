@@ -307,7 +307,7 @@
 			echo $this->Form->hidden('is_apply' , array('name' => 'is_apply', 'id' => "nc-block-style-apply-".$block_id, 'value' => _ON));
 			echo $this->Html->div('submit',
 				$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'common-btn', 'type' => 'button',
-					'onclick' => '$.BlockStyle.clickSubmit(this, \''.'#nc-block-style-apply-'.$block_id.'\');')).
+					'onclick' => '$.BlockStyle.clickSubmit(this, \''.'#nc-block-style-apply-'.$block_id.'\'); $(this.form).submit();')).
 				$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
 					'onclick' => '$(\'#nc-block-style-dialog'.$block_id.'\').remove(); return false;')).
 				$this->Form->button(__('Apply'), array('name' => 'apply', 'class' => 'common-btn',

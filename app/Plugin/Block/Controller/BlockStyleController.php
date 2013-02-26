@@ -52,6 +52,7 @@ class BlockStyleController extends BlockAppController {
 
 		$user_id = $this->Auth->user('id');
 		$block_id = $this->nc_block['Block']['id'];
+		$content_title = $this->nc_block['Content']['title'];
 
 		$is_apply = isset($this->request->data['is_apply']) ? intval($this->request->data['is_apply']) : _OFF;
 		unset($this->request->data['is_apply']);
@@ -70,6 +71,9 @@ class BlockStyleController extends BlockAppController {
 			unset($block['Block']['id']);
 			unset($block['Block']['min_width_size_select']);
 			unset($block['Block']['min_height_size_select']);
+			if($block['Block']['title'] == $content_title) {
+				$block['Block']['title'] = "{X-CONTENT}";
+			}
 
 			$block['Block'] = array_merge($this->nc_block['Block'], $block['Block']);
 			$fieldList = array(
@@ -89,8 +93,12 @@ class BlockStyleController extends BlockAppController {
 			);
 
 			$this->Block->set($block);
-			$this->Block->save($block, true, $fieldList);
-			$this->Session->setFlash(__('Has been successfully updated.'));
+			if($this->Block->save($block, true, $fieldList)) {
+				$this->Session->setFlash(__('Has been successfully updated.'));
+			}
+			if($block['Block']['title'] == "{X-CONTENT}") {
+				$block['Block']['title'] = $content_title;
+			}
 		} else {
 			$block = $this->nc_block;
 		}
@@ -99,7 +107,7 @@ class BlockStyleController extends BlockAppController {
 		$this->set('block', $block);
 		$this->set('active_tab', 0);//固定
 
-		if(!$is_apply && $this->request->is('post')) {
+		if(count($this->Block->validationErrors) == 0 && !$is_apply && $this->request->is('post')) {
 			$this->render(false);
 		}
 	}
