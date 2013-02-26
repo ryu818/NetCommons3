@@ -187,7 +187,7 @@
 				resizable: false,
 	            modal: true,
 		        position: [pos.left + 30 - $(window).scrollLeft() ,pos.top + 30 - $(window).scrollTop()]
-			}
+			};
 			$.ajax({
 				type: "POST",
 				url: url,

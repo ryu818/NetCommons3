@@ -2,7 +2,7 @@
 	<div id="pages-menu-community-tab<?php echo($page['Page']['id']); ?>">
 		<ul>
 			<li><a href="#pages-menu-community<?php echo($page['Page']['id']); ?>"><?php echo(__d('page', 'Community setting'));?></a></li>
-			<li><a href="#pages-menu-general<?php echo($page['Page']['id']); ?>"><?php echo(__d('page', 'General setting'));?></a></li>
+			<li><a href="#pages-menu-general<?php echo($page['Page']['id']); ?>"><?php echo(__('General setting'));?></a></li>
 		</ul>
 		<div id="pages-menu-community<?php echo($page['Page']['id']); ?>" class="display-none">
 			<fieldset class="form">

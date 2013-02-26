@@ -94,10 +94,10 @@ class BlockOperation extends AppModel {
 		$ins_block['Block']['controller_action'] = 'group';
 		$ins_block['Block']['theme_name'] = 'None';
 		$ins_block['Block']['temp_name'] = 'default';
-		$ins_block['Block']['leftmargin'] = 8;
-		$ins_block['Block']['rightmargin'] = 8;
-		$ins_block['Block']['topmargin'] = 8;
-		$ins_block['Block']['bottommargin'] = 8;
+		$ins_block['Block']['left_margin'] = 8;
+		$ins_block['Block']['right_margin'] = 8;
+		$ins_block['Block']['top_margin'] = 8;
+		$ins_block['Block']['bottom_margin'] = 8;
 		$ins_block['Block']['min_width_size'] = 0;
 		$ins_block['Block']['min_height_size'] = 0;
 		$ins_block['Block']['lock_authority_id'] = 0;

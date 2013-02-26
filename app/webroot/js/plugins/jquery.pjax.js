@@ -59,11 +59,11 @@ function fnPjax(selector, container, options) {
 // Returns nothing.
 function handleClick(event, container, options) {
   options = optionsFor(container, options)
-
-  var link = event.currentTarget
 //Edit Start Ryuji.M
+  var link = (event) ? event.currentTarget : null
+
 // アンカー以外でもOK
-  if (link.tagName.toUpperCase() === 'A') {
+  if (link && link.tagName.toUpperCase() === 'A') {
     //if (link.tagName.toUpperCase() !== 'A')
     //  throw "$.fn.pjax or $.pjax.click requires an anchor element"
 
@@ -96,8 +96,9 @@ function handleClick(event, container, options) {
   if(url != options['url']) {options['push_url'] = url;}
   pjax(options)
   //pjax($.extend({}, defaults, options))
+  if(event)
+  	event.preventDefault()
 //Edit End Ryuji.M
-  event.preventDefault()
 }
 //Add Start Ryuji.M 非対応ブラウザでは、Aタグではないと遷移されないため、修正。
 // TODO:submit時に動作するかどうかは未検証。

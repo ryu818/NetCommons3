@@ -9,13 +9,13 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 class TimeZoneBehavior extends ModelBehavior {
-	/**
-	 * グリニッジ標準の日付を返す
-	 * @param   Model   $Model
-	 * @param   string $format
-	 * @return  string $time
-	 * @since   v 3.0.0.0
-	 */
+/**
+ * グリニッジ標準の日付を返す
+ * @param   Model   $Model
+ * @param   string $format
+ * @return  string $time
+ * @since   v 3.0.0.0
+ */
 	public function nowDate(Model $Model, $format = null) {
 		if($format === null) {
 			$format =  NC_DB_DATE_FORMAT;
@@ -67,7 +67,7 @@ class TimeZoneBehavior extends ModelBehavior {
 /**
  * 過去の日付かどうかチェック
  *
- * @param object $Model
+ * @param   Model   $Model
  * @param   array    $data
  * @return  boolean
  * @since   v 3.0.0.0
@@ -79,6 +79,63 @@ class TimeZoneBehavior extends ModelBehavior {
     	if(strtotime($date_time) <= strtotime(gmdate(NC_VALIDATOR_DATE_TIME))) {
     		return false;
 		}
+		return true;
+	}
+
+/**
+ * From公開日付チェック
+ *
+ * @param   Model   $Model
+ * @param  array     $check
+ * @return boolean
+ * @since   v 3.0.0.0
+ */
+	public function invalidDisplayFromDate(Model $Model, $check){
+		if(isset($Model->data[$Model->alias]['display_flag']) && $Model->data[$Model->alias]['display_flag'] == _ON) {
+			// 既に公開中
+			return false;
+		}
+
+		if(isset($Model->data['parent'.$Model->alias]) && $Model->data['parent'.$Model->alias]['display_flag'] == _OFF) {
+			// 親が非公開ならば、公開日付を設定させない。
+			return false;
+		}
+		return true;
+	}
+
+/**
+ * To公開日付チェック
+ *
+ * @param   Model   $Model
+ * @param  array     $check
+ * @return boolean
+ * @since   v 3.0.0.0
+ */
+	public function invalidDisplayToDate(Model $Model, $check){
+		if(isset($Model->data[$Model->alias]['display_flag']) && ($Model->data[$Model->alias]['display_flag'] != _ON &&
+				empty($Model->data[$Model->alias]['display_from_date']))) {
+			// 公開ではないか、公開日付が入力していない
+			return false;
+		}
+
+		return true;
+	}
+
+/**
+ * From-To公開日付チェック
+ *
+ * @param   Model   $Model
+ * @param  array     $check
+ * @return boolean
+ * @since   v 3.0.0.0
+ */
+	public function invalidDisplayFromToDate(Model $Model, $check){
+		if(!empty($Model->data[$Model->alias]['display_from_date']) && !empty($Model->data[$Model->alias]['display_to_date']) &&
+				strtotime($Model->data[$Model->alias]['display_from_date']) >= strtotime($Model->data[$Model->alias]['display_to_date'])) {
+			// "[公開日付 < 非公開日付]
+			return false;
+		}
+
 		return true;
 	}
 }

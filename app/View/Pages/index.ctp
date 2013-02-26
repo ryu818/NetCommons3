@@ -36,17 +36,17 @@
 	$right_style = '';
 	$header_style = '';
 	$footer_style = '';
-	if(!empty($page_style['PageStyle']['leftmargin'])) {
-		$style .= 'margin-left:'.intval($page_style['PageStyle']['leftmargin']).'px;';
+	if(!empty($page_style['PageStyle']['left_margin'])) {
+		$style .= 'margin-left:'.intval($page_style['PageStyle']['left_margin']).'px;';
 	}
-	if(!empty($page_style['PageStyle']['rightmargin'])) {
-		$style .= 'margin-right:'.intval($page_style['PageStyle']['rightmargin']).'px;';
+	if(!empty($page_style['PageStyle']['right_margin'])) {
+		$style .= 'margin-right:'.intval($page_style['PageStyle']['right_margin']).'px;';
 	}
-	if(!empty($page_style['PageStyle']['topmargin'])) {
-		$style .= 'margin-top:'.intval($page_style['PageStyle']['topmargin']).'px;';
+	if(!empty($page_style['PageStyle']['top_margin'])) {
+		$style .= 'margin-top:'.intval($page_style['PageStyle']['top_margin']).'px;';
 	}
-	if(!empty($page_style['PageStyle']['bottommargin'])) {
-		$style .= 'margin-bottom:'.intval($page_style['PageStyle']['bottommargin']).'px;';
+	if(!empty($page_style['PageStyle']['bottom_margin'])) {
+		$style .= 'margin-bottom:'.intval($page_style['PageStyle']['bottom_margin']).'px;';
 	}
 	if(!empty($page_style['PageStyle']['min_width_size'])) {
 		switch($page_style['PageStyle']['min_width_size']) {

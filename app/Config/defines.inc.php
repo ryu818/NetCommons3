@@ -41,6 +41,8 @@ define('NC_VALIDATOR_WYSIWYG_LEN', 60000);
 define('NC_VALIDATOR_PAGE_TITLE_LEN', 100);
 define('NC_VALIDATOR_PERMALINK_LEN', 255);
 
+define('NC_VALIDATOR_BLOCK_TITLE_LEN', 100);
+
 //-----------------禁止URL-------------------------------------------
 define('NC_PROHIBITION_URL', '/^(users\/|controls\/)/i');
 

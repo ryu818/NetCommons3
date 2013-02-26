@@ -1,4 +1,4 @@
-<?php 
+<?php
 class AppSchema extends CakeSchema {
 
 	public function before($event = array()) {
@@ -71,10 +71,10 @@ class AppSchema extends CakeSchema {
 		'display_to_date' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'theme_name' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'temp_name' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'leftmargin' => array('type' => 'integer', 'null' => true, 'default' => null),
-		'rightmargin' => array('type' => 'integer', 'null' => true, 'default' => null),
-		'topmargin' => array('type' => 'integer', 'null' => true, 'default' => null),
-		'bottommargin' => array('type' => 'integer', 'null' => true, 'default' => null),
+		'left_margin' => array('type' => 'integer', 'null' => true, 'default' => null),
+		'right_margin' => array('type' => 'integer', 'null' => true, 'default' => null),
+		'top_margin' => array('type' => 'integer', 'null' => true, 'default' => null),
+		'bottom_margin' => array('type' => 'integer', 'null' => true, 'default' => null),
 		'min_width_size' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'min_height_size' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'lock_authority_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
@@ -219,7 +219,7 @@ class AppSchema extends CakeSchema {
 	public $htmlarea_video_urls = array(
 		'url' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'indexes' => array(
-			
+
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);

@@ -112,7 +112,7 @@
 }
 /* 時間 */
 input.nc-datetime {
-    width: 120px !important;
+    width: 135px !important;
 }
 input.nc-date {
     width: 80px !important;
@@ -151,18 +151,18 @@ input.nc-time {
 .error-message {
 	color:#ff0000 !important;
 	background: url(../../img/common/alert.gif) no-repeat 5px center #ffd9d9 !important;
-	padding:5px 0 5px 25px;
-	line-height: 26px;
-	margin:2px 0;
-	clear: both;
+	padding:5px 0 5px 25px !important;
+	line-height: 26px !important;
+	margin:2px 0 !important;
+	clear: both !important;
 }
 .info-message {
 	color:#0000ff !important;
 	background-color:#d9e0ff !important;
-	padding:5px 0 5px 25px;
-	line-height: 26px;
-	margin:2px 0;
-	clear: both;
+	padding:5px 0 5px 25px !important;
+	line-height: 26px !important;
+	margin:2px 0 !important;
+	clear: both !important;
 }
 
 div.message {

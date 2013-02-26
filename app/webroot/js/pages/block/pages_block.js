@@ -73,6 +73,32 @@
 				});
 			});
 
+			// ブロックスタイル
+
+			$('#nc-block-style-link' + id).on('ajax:beforeSend', function(e, url) {
+				var a = $(e.target);
+				var dialog_id = a.attr('data-block-style-dialog-id');
+				var style_dialog = $('#' + dialog_id);
+				if(style_dialog.get(0)) {
+					// 既に表示中
+					style_dialog.dialog('open');
+					$(this).parents('.nc-drop-down:first').hide();
+					return false;
+				}
+				return url;
+			}).on('ajax:success', function(e, res) {
+				var a = $(e.target), pos = a.offset(), style_dialog;
+				var params = {
+					title: __d('block', 'Block style'),
+					resizable: false,
+					width: 400,
+		            position: [e.pageX - $(window).scrollLeft(), e.pageY - $(window).scrollTop()]
+				};
+				var dialog_id = a.attr('data-block-style-dialog-id');
+				style_dialog = $('<div id="' + dialog_id + '" class="nc-block-style-dialog"></div>').html(res).dialog(params);
+				$(this).parents('.nc-drop-down:first').hide();
+			});
+
 			if(block_move.get(0) && $('#container').get(0)) {
 				block_move.unbind('click').click(function(e){
 					if (e.target.tagName.toUpperCase() === 'A') {

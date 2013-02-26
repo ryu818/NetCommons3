@@ -17,8 +17,8 @@ if($block['Block']['controller_action'] == 'group') {
 	$attr = '';
 }
 /* スタイル */
-$margin = "margin:".$block['Block']['topmargin']."px ".$block['Block']['rightmargin']."px ".$block['Block']['bottommargin']."px ".
-					$block['Block']['leftmargin']."px; ";
+$margin = "margin:".$block['Block']['top_margin']."px ".$block['Block']['right_margin']."px ".$block['Block']['bottom_margin']."px ".
+					$block['Block']['left_margin']."px; ";
 if($margin == "margin:0px 0px 0px 0px;") {
 	$margin = "";
 }

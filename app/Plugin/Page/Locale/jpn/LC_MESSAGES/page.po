@@ -76,13 +76,6 @@ msgstr 	"新規コミュニティー"
 msgid  	"Apply to the subpage."
 msgstr 	"下位ページにも適用"
 
-msgid  	"Because the parent page is closed, I cannot set a public date."
-msgstr 	"親ページが非公開のため、公開日付を設定できません。"
-msgid  	"Because the page is not published, I cannot set a closed date."
-msgstr 	"公開ではないか、公開日付が入力していないため、非公開日付を設定できません。"
-msgid  	"Please input in [publish date < closed date]."
-msgstr 	"[公開日付 < 非公開日付]で入力してください。"
-
 msgid  	"Select the page to which the movement, create a shortcut, paste, can you please run from the [%s]."
 msgstr 	"移動、ショートカット作成、ペースト先のページを選択し、[%s]から実行してください。"
 
@@ -101,8 +94,6 @@ msgstr 	"下位ページ"
 ## コミュニティー関連
 msgid  	"Community setting"
 msgstr 	"コミュニティー設定"
-msgid  	"General setting"
-msgstr 	"一般設定"
 
 msgid  	"Publication range"
 msgstr 	"公開範囲"

@@ -18,7 +18,208 @@ class Block extends AppModel
 	public $name = 'Block';
 	// public $belongsTo = array('Module');
 
-	public $actsAs = array('Page');
+	public $actsAs = array('Page', 'TimeZone', 'Validation');
+
+	// 公開日付をsaveする前に変換するかどうかのフラグ
+	public $autoConvert = true;
+
+/**
+ * バリデート処理
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function __construct() {
+		parent::__construct();
+
+				/*
+		 * エラーメッセージ設定
+		 */
+		$this->validate = array(
+			'page_id' => array(
+				'numeric' => array(
+									'rule' => array('numeric'),
+									'allowEmpty' => false,
+									'message' => __('The input must be a number.')
+							)
+			),
+			'content_id' => array(
+					'numeric' => array(
+							'rule' => array('numeric'),
+							'allowEmpty' => false,
+							'message' => __('The input must be a number.')
+					)
+			),
+			'module_id' => array(
+					'numeric' => array(
+							'rule' => array('numeric'),
+							'allowEmpty' => false,
+							'message' => __('The input must be a number.')
+					)
+			),
+			'title' => array(
+				'notEmpty'  => array(
+									'rule' => array('notEmpty'),
+									'last' => true,
+									'required' => true,
+									'allowEmpty' => false,
+									'message' => __('Please be sure to input.')
+								),
+				'maxlength'  => array(
+									'rule' => array('maxLength', NC_VALIDATOR_BLOCK_TITLE_LEN),
+									'message' => __('The input must be up to %s characters.', NC_VALIDATOR_BLOCK_TITLE_LEN)
+								)
+			),
+			'show_title' => array(
+				'boolean'  => array(
+									'rule' => array('boolean'),
+									'last' => true,
+									'allowEmpty' => false,
+									'message' => __('The input must be a boolean.')
+								)
+			),
+
+			'display_flag' => array(
+				'boolean'  => array(
+									'rule' => array('boolean'),
+									'last' => true,
+									'required' => true,
+									'allowEmpty' => false,
+									'message' => __('Unauthorized pattern for %s.', __('Publishing setting'))
+								)
+			),
+			'display_from_date' => array(
+				'datetime'  => array(
+					'rule' => array('datetime'),
+					'last' => true,
+					'allowEmpty' => true,
+					'message' => __('Unauthorized pattern for %s.', __('Date-time'))
+				),
+				'pastDateTime'  => array(
+						'rule' => array('pastDateTime'),
+						'last' => true,
+						'allowEmpty' => true,
+						'message' => __('%s in the past can not be input.', __('Date-time'))
+				),
+				'invalidDisplayFromDate'  => array(
+						'rule' => array('invalidDisplayFromDate'),
+						'last' => true,
+						'allowEmpty' => true,
+						'message' => __('Because the page is not a private, You can\'t set a publish date.')
+				),
+			),
+			'display_to_date' => array(
+				'datetime'  => array(
+						'rule' => array('datetime'),
+						'last' => true,
+						'allowEmpty' => true,
+						'message' => __('Unauthorized pattern for %s.', __('Date-time'))
+				),
+				'pastDateTime'  => array(
+						'rule' => array('pastDateTime'),
+						'last' => true,
+						'allowEmpty' => true,
+						'message' => __('%s in the past can not be input.', __('Date-time'))
+				),
+				'invalidDisplayToDate'  => array(
+						'rule' => array('invalidDisplayToDate'),
+						'last' => true,
+						'allowEmpty' => true,
+						'message' => __('Because the page is not published, You can\'t set a closed date.')
+				),
+				'invalidDisplayFromToDate'  => array(
+						'rule' => array('invalidDisplayFromToDate'),
+						'last' => true,
+						'allowEmpty' => true,
+						'message' => __('Please input in [publish date < closed date].')
+				),
+			),
+			/* TODO:未作成
+			 * 'temp_name' => array(
+
+			),*/
+			'theme_name' => array(
+				'existsTheme'  => array(
+									'rule' => array('existsTheme'),
+									'last' => true,
+									'allowEmpty' => true,
+									'message' => __('Content not found.')
+								)
+			),
+			'left_margin' => array(
+				'range'  => array(
+								'rule' => array('range', -1, 1000),
+								'last' => true,
+								'allowEmpty' => false,
+								'message' => __('The input must be a number bigger than %d and less than %d.', 0, 999)
+							)
+			),
+			'right_margin' => array(
+				'range'  => array(
+								'rule' => array('range', -1, 1000),
+								'last' => true,
+								//'required' => true,
+								'allowEmpty' => false,
+								'message' => __('The input must be a number bigger than %d and less than %d.', 0, 999)
+							)
+			),
+			'top_margin' => array(
+				'range'  => array(
+								'rule' => array('range', -1, 1000),
+								'last' => true,
+								'allowEmpty' => false,
+								'message' => __('The input must be a number bigger than %d and less than %d.', 0, 999)
+							)
+			),
+			'bottom_margin' => array(
+				'range'  => array(
+								'rule' => array('range', -1, 1000),
+								'last' => true,
+								'allowEmpty' => false,
+								'message' => __('The input must be a number bigger than %d and less than %d.', 0, 999)
+							)
+			),
+			'min_width_size' => array(
+				'range'  => array(
+								'rule' => array('range', -2, 2001),
+								'last' => true,
+								'allowEmpty' => false,
+								'message' => __('The input must be a number bigger than %d and less than %d.', 0, 2000)
+							)
+			),
+			'min_height_size' => array(
+				'range'  => array(
+								'rule' => array('range', -2, 2001),
+								'last' => true,
+								'allowEmpty' => false,
+								'message' => __('The input must be a number bigger than %d and less than %d.', 0, 2000)
+							)
+			),
+			/* TODO:未作成
+			 * 'lock_authority_id' => array(
+
+			 ),*/
+	    );
+	}
+
+/**
+ * beforeSave
+ * @param   array  $options
+ * @return  boolean
+ * @since   v 3.0.0.0
+ */
+	public function beforeSave($options = array()) {
+		if(!$this->autoConvert) {
+			return true;
+		}
+		if (!empty($this->data['Block']['display_from_date']) ) {
+			$this->data['Block']['display_from_date'] = $this->date($this->data['Block']['display_from_date']);
+		}
+		if (!empty($this->data['Block']['display_to_date']) ) {
+			$this->data['Block']['display_to_date'] = $this->date($this->data['Block']['display_to_date']);
+		}
+		return true;
+	}
 
 /**
  * block_id,user_idから該当ブロックを取得

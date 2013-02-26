@@ -68,6 +68,12 @@ if($is_edit) {
 							?>
 						</li>
 						<li>
+							<?php
+								echo $this->Html->link(__('Block style'), array('plugin' => 'block', 'controller' => 'block_style', 'action' => 'index', 'block_id' => $block['Block']['id']),
+								array('title' => __('Block style'), 'id' => 'nc-block-style-link'.$id, 'class' => 'link hover-highlight','data-ajax' => '', 'data-block-style-dialog-id' => 'nc-block-style-dialog'.$block['Block']['id']));
+							?>
+						</li>
+						<li>
 							<a class="link hover-highlight" href="#">
 								<?php /* TODO:未実装 */ echo(__('Contents list'));?>
 							</a>

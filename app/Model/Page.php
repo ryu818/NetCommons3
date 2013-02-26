@@ -122,10 +122,10 @@ class Page extends AppModel
 							'message' => __('%s in the past can not be input.', __('Date-time'))
 					),
 					'invalidDisplayFromDate'  => array(
-							'rule' => array('_invalidDisplayFromDate'),
+							'rule' => array('invalidDisplayFromDate'),
 							'last' => true,
 							'allowEmpty' => true,
-							'message' => __d('page', 'Because the parent page is closed, I cannot set a public date.')
+							'message' => __('Because the page is not a private, You can\'t set a publish date.')
 					),
 				),
 				'display_to_date' => array(
@@ -142,16 +142,16 @@ class Page extends AppModel
 							'message' => __('%s in the past can not be input.', __('Date-time'))
 					),
 					'invalidDisplayToDate'  => array(
-							'rule' => array('_invalidDisplayToDate'),
+							'rule' => array('invalidDisplayToDate'),
 							'last' => true,
 							'allowEmpty' => true,
-							'message' => __d('page', 'Because the page is not published, I cannot set a closed date.')
+							'message' => __('Because the page is not published, You can\'t set a closed date.')
 					),
-					'_invalidDisplayFromToDate'  => array(
-							'rule' => array('_invalidDisplayFromToDate'),
+					'invalidDisplayFromToDate'  => array(
+							'rule' => array('invalidDisplayFromToDate'),
 							'last' => true,
 							'allowEmpty' => true,
-							'message' => __d('page', 'Please input in [publish date < closed date].')
+							'message' => __('Please input in [publish date < closed date].')
 					),
 				),
 				'display_apply_subpage' => array(
@@ -307,60 +307,6 @@ class Page extends AppModel
 		}
 		if($count != 0)
 			return false;
-		return true;
-	}
-
-/**
- * From公開日付チェック
- *
- * @param  array     $check
- * @return boolean
- * @since   v 3.0.0.0
- */
-	public function _invalidDisplayFromDate($check){
-		if(isset($this->data['Page']['display_flag']) && $this->data['Page']['display_flag'] == _ON) {
-			// 既に公開中
-			return false;
-		}
-
-		if(isset($this->data['parentPage']) && $this->data['parentPage']['display_flag'] == _OFF) {
-			// 親が非公開ならば、公開日付を設定させない。
-			return false;
-		}
-		return true;
-	}
-
-/**
- * To公開日付チェック
- *
- * @param  array     $check
- * @return boolean
- * @since   v 3.0.0.0
- */
-	public function _invalidDisplayToDate($check){
-		if(isset($this->data['Page']['display_flag']) && ($this->data['Page']['display_flag'] != _ON &&
-				empty($this->data['Page']['display_from_date']))) {
-			// 公開ではないか、公開日付が入力していない
-			return false;
-		}
-
-		return true;
-	}
-
-/**
- * From-To公開日付チェック
- *
- * @param  array     $check
- * @return boolean
- * @since   v 3.0.0.0
- */
-	public function _invalidDisplayFromToDate($check){
-		if(!empty($this->data['Page']['display_from_date']) && !empty($this->data['Page']['display_to_date']) &&
-				strtotime($this->data['Page']['display_from_date']) >= strtotime($this->data['Page']['display_to_date'])) {
-			// "[公開日付 < 非公開日付]
-			return false;
-		}
-
 		return true;
 	}
 

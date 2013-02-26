@@ -24,6 +24,9 @@
 		// ajax:beforeSend - Ajaxリクエスト前に呼ばれる。falseを返せば処理を中断する。
 		// ajax:beforeSendのみ、return値(string or array)でURL及びdataの内容を上書き可。
 		// ajax:success - Ajaxリクエスト直後に呼ばれる。falseを返せば処理を中断する。
+		//        @param Event ajax:success event object
+		//        @param res ajax response
+		//        @param Event parent event object
 		// 例：$('form:first', this).on('ajax:beforeSuccess', function(e, res) {
 		//	       e.preventDefault();
 		//     });
@@ -73,7 +76,7 @@
 					data = {};
 				}
 
-				ret = $.Common.fireResult('ajax:beforeSend', [url, data], a);
+				ret = $.Common.fire('ajax:beforeSend', [url, data], a, e);
 				if (!ret) {
 					e.preventDefault();
 					return false
@@ -97,7 +100,7 @@
 					url: url,
 					data: data,
 					success: function(res, status, xhr){
-						if (!$.Common.fire('ajax:success', [res, status, xhr], a)) {
+						if (!$.Common.fire('ajax:success', [res, e, status, xhr], a,e)) {
 							return false
 						}
 						$.Common.ajaxSuccess(a, res);
@@ -163,21 +166,50 @@
 			return res_target;
 		},
 
-		fire : function(type, args, content) {
+		fire : function(type, args, content, parent_event) {
 			var event = $.Event(type);	// , { relatedTarget: target }
-			content.trigger(event, args);
-			return !event.isDefaultPrevented();
-		},
-		fireResult : function(type, args, content) {
-			var event = $.Event(type);	// , { relatedTarget: target }
-			content.trigger(event, args);
+			// mouse系変数マージ
+			if(parent_event && parent_event.pageX) {
+				event.pageX = parent_event.pageX;
+				event.pageY = parent_event.pageY;
+				event.clientX = parent_event.clientX;
+				event.clientY = parent_event.clientY;
+				event.screenX = parent_event.screenX;
+				event.screenY = parent_event.screenY;
+				event.offsetX = parent_event.offsetX;
+				event.offsetY = parent_event.offsetY;
+			}
 
+			content.trigger(event, args);
+			//return !event.isDefaultPrevented();
 			if(typeof event.result == "undefined") {
 				return !event.isDefaultPrevented();
 			}
 			return event.result;
-
 		},
+
+		// ブロックリロード処理
+		reloadBlock : function(e, id, pjax) {
+			pjax = (typeof pjax == 'undefined') ? false : pjax
+			var block = (typeof id == 'string') ? $('#' + id) : $(id),re, params = new Object();
+			var url = block.attr('data-url');
+			if($._block_type == 'blocks') {
+				re = new RegExp("/active-blocks/", 'i');
+				url = url.replace(re, "/" + $._block_type + "/");
+			} else {
+				re = new RegExp("/blocks/", 'i');
+				url = url.replace(re, "/" + $._block_type + "/");
+			}
+			if(pjax && $.support.pjax) {
+				params['url'] = url;
+				$.pjax.click(e, block, params);
+			} else {
+				$.get(url, function(res) {
+					block.replaceWith(res);
+				});
+			}
+		},
+
 		// block_id,controller_action名称からurl取得
 		urlBlock : function(block_id, controller_action) {
 			if(!block_id) {

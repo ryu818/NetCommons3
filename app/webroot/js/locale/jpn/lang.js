@@ -32,6 +32,10 @@ $._lang['pages'] = {
 	'Room members' : '参加会員'
 }
 
+$._lang['block'] = {
+	'Block style': 'ブロックスタイル',
+}
+
 $._lang['nc_wysiwyg'] = {
 	edit    : "編集",
 	html    : "HTML",
