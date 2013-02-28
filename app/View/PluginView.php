@@ -126,4 +126,28 @@ class PluginView extends View {
 		}
 		return false;
 	}
+
+/**
+ * プラグインDir下のThemedを対象にする。
+ * <pre>
+ * pluginを作成するとnc/View/Themed/xxxx/にファイルを置く必要があるが、
+ * plugin単位で完全に分離したいため、nc/Plugins/(plugin)/View/Themed/(theme)/下にまとめるようにする。
+ * </pre>
+ *
+ * @param string $plugin Optional plugin name to scan for view files.
+ * @param boolean $cached Set to true to force a refresh of view paths.
+ * @return array paths
+ */
+	protected function _paths($plugin = null, $cached = true) {
+		$paths = parent::_paths($plugin, $cached);
+		if (!is_string($plugin) || empty($plugin) || empty($this->theme))
+			return $paths;
+		// add app/plugins/PLUGIN/View/Themed/THEME path
+		$plugin_path = App::pluginPath($plugin);	// App::pluginPath(Inflector::camelize($plugin));
+
+		$dirPath = $plugin_path . 'View' . DS . 'Themed' . DS . $this->theme . DS;
+		if (is_dir($dirPath))
+			$paths = array_merge(array($dirPath), $paths);
+		return $paths;
+	}
 }

@@ -74,7 +74,7 @@ class FileBehavior extends ModelBehavior {
 			while ( false !== ($file = readdir($handle)) ) {
 				if ( $file == '.' || $file == '..' ) { continue; }
 				// if ( $file == 'CVS' || strtolower($file) == '.svn') { continue; }
-				if ( is_dir($path. "/". $file) ) {
+				if ( is_dir($path. DS . $file) ) {
 					$dir_list[] = $file;
 				}
 			}

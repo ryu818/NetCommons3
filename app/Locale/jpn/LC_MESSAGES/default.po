@@ -339,6 +339,8 @@ msgstr 	"公開設定"
 
 msgid  	"Template"
 msgstr 	"テンプレート"
+msgid  	"Default"
+msgstr 	"デフォルト"
 
 msgid  	"Public room"
 msgstr 	"パブリック"

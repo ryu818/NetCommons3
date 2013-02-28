@@ -55,6 +55,7 @@ class BlockStyleController extends BlockAppController {
 
 		unset($this->request->data['is_apply']);
 		$block = $this->request->data;
+		$templates = $this->_showTemplete($data_block['Block']['controller_action']);
 
 		if($this->request->is('post')) {
 			// 登録処理
@@ -87,6 +88,12 @@ class BlockStyleController extends BlockAppController {
 					'top_margin',
 					'bottom_margin',
 				);
+				if(isset($templates[$block['Block']['temp_name']])) {
+					if($block['Block']['temp_name'] == 'Default') {
+						$block['Block']['temp_name'] = '';
+					}
+					$fieldList[] = 'temp_name';
+				}
 			} else {
 				// ブロックテーマ変更
 				$block['Block'] = array_merge($data_block['Block'], $block['Block']);
@@ -116,8 +123,8 @@ class BlockStyleController extends BlockAppController {
 	}
 
 /**
- * ブロックスタイル画面
- * @param   void
+ * テーマ一覧をset
+ * @param   string $theme_name
  * @return  void
  * @since   v 3.0.0.0
  */
@@ -128,5 +135,34 @@ class BlockStyleController extends BlockAppController {
 		$this->set('theme_list', $theme_list);
 		$this->set('image_path', $image_path);
 		$this->set('act_category', $act_category);
+	}
+
+/**
+ * テンプレート一覧をset
+ * @param   string $controller_action
+ * @return  array  $templates
+ * @since   v 3.0.0.0
+ */
+	protected function _showTemplete($controller_action) {
+		$templates = array();
+		if($controller_action != 'group') {
+			$controller_action_arr = explode('/', $controller_action);
+			if(isset($controller_action_arr[0])) {
+				$plugin_path = App::pluginPath(Inflector::camelize($controller_action_arr[0]));
+				$view_path = $plugin_path . 'View' . DS . 'Themed' . DS;
+				if(is_dir($view_path)) {
+					$templates['Default'] = __('Default');
+
+					$dirArray = $this->Theme->getCurrentDir($view_path);
+					if(is_array($dirArray) && count($dirArray) > 0) {
+						foreach($dirArray as $value) {
+							$templates[$value] = __d($controller_action_arr[0], $value);
+						}
+						$this->set('templates', $templates);
+					}
+				}
+			}
+		}
+		return $templates;
 	}
 }

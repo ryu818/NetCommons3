@@ -84,6 +84,9 @@ class AppPluginController extends AppController
 			$this->set('id', '_'.$this->request->params['module_id']);
 		}
 		if(isset($this->nc_block) && !isset($this->viewVars['block'])) {
+			if($this->nc_block['Block']['temp_name'] != '') {
+				$this->theme = $this->nc_block['Block']['temp_name'];
+			}
 			$this->set('block', $this->nc_block);
 		}
 		if(isset($this->nc_page) && !isset($this->viewVars['page'])) {
