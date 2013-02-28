@@ -60,6 +60,10 @@ $current_url = $this->here;
 if(count($this->params->query) > 0) {
 	$query = '';
 	foreach($this->params->query as $k => $v) {
+		if(substr($k, 0, 1) == '_') {
+			// 先頭「_」のものはURLに加えない。
+			continue;
+		}
 		$query .= ($query == '') ? '?' : '&';
 		$query .= $k. '='. $v;
 	}
