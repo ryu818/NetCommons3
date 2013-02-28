@@ -3,13 +3,7 @@
 <head>
 <?php echo $this->Html->charset(); ?>
 <title><?php echo h(strip_tags($page_title)); ?></title>
-<?php
-if(method_exists($this->Html,'fetchScript')) {
-	echo($this->element('Pages/include_header'));
-} else {
-	echo($this->element('Pages/include_header_error'));
-}
-?>
+<?php echo($this->element('Pages/include_header')); ?>
 <?php echo $this->Html->css('redirect/', null, array('inline' => true, 'data-title' => 'Redirect')); ?>
 <?php if (Configure::read('debug') == 0) { ?>
 <meta http-equiv="Refresh" content="<?php echo $pause; ?>;url=<?php echo $url; ?>">
@@ -37,10 +31,6 @@ if(Configure::read('debug') == _OFF) {
 }
 ?>
 <?php echo $this->element('sql_dump'); ?>
-<?php
-if(method_exists($this->Html,'fetchScript')) {
-	echo($this->element('Pages/include_footer'));
-}
-?>
+<?php echo($this->element('Pages/include_footer')); ?>
 </body>
 </html>

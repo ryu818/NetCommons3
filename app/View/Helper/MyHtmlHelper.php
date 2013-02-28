@@ -209,8 +209,8 @@ class MyHtmlHelperInstance extends AppHelper {
 			if($block_key == '_inline') {
 				return $out;
 			} else {
-				$this->_htmlHelper->_View->append($options['block'], $out);
-				//$this->_htmlHelper->_View->assign($options['block'], $out);
+				//$this->_htmlHelper->_View->append($options['block'], $out);
+				$this->_htmlHelper->_View->assign($options['block'], $out);
 			}
 		}
 	}
@@ -319,8 +319,8 @@ class MyHtmlHelperInstance extends AppHelper {
 			if($block_key == '_inline') {
 				return $out;
 			} else {
-				$this->_htmlHelper->_View->append($options['block'], $out);
-				//$this->_htmlHelper->_View->assign($options['block'], $out);
+				//$this->_htmlHelper->_View->append($options['block'], $out);
+				$this->_htmlHelper->_View->assign($options['block'], $out);
 			}
 		}
 	}

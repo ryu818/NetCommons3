@@ -21,21 +21,11 @@
 <head>
 <?php echo $this->Html->charset(); ?>
 <?php echo($this->element('Pages/title')); ?>
-<?php
-if(method_exists($this->Html,'fetchScript')) {
-	echo($this->element('Pages/include_header'));
-} else {
-	echo($this->element('Pages/include_header_error'));
-}
-?>
+<?php echo($this->element('Pages/include_header')); ?>
 </head>
 <body>
 	<?php echo $this->fetch('content'); ?>
-	<?php
-	if(method_exists($this->Html,'fetchScript')) {
-		echo($this->element('Pages/include_footer'));
-	}
-	?>
+	<?php echo($this->element('Pages/include_footer')); ?>
 	<?php echo $this->Token->create('nc_token', 'nc_token'); ?>
 	<?php echo $this->element('flash_mes'); ?>
 	<?php echo $this->element('sql_dump'); ?>
