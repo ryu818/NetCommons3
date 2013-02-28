@@ -189,7 +189,7 @@
 		},
 
 		// ブロックリロード処理
-		reloadBlock : function(e, id, pjax) {
+		reloadBlock : function(e, id, data, pjax) {
 			pjax = (typeof pjax == 'undefined') ? false : pjax
 			var block = (typeof id == 'string') ? $('#' + id) : $(id),re, params = new Object();
 			var url = block.attr('data-url');
@@ -202,11 +202,20 @@
 			}
 			if(pjax && $.support.pjax) {
 				params['url'] = url;
+				if(data) {
+					params['data'] = data;
+				}
 				$.pjax.click(e, block, params);
 			} else {
-				$.get(url, function(res) {
-					block.replaceWith(res);
-				});
+				$.ajax({
+					type: 'GET',
+					url: url,
+					data: data,
+					success: function(res, status, xhr){
+						block.replaceWith(res);
+						//$.Common.ajaxSuccess(a, res);
+					}
+	 			});
 			}
 		},
 

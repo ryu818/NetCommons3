@@ -8,11 +8,11 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 ;(function($) {
-	$.fn.BlockStyle = function(active_tab, block_id) {
-		$('form#PageIndexForm'+block_id).on('ajax:success', function(e, res) {
+	$.fn.BlockStyle = function(block_id, active_tab, act_category) {
+		$('form#PageIndexForm'+block_id+',form#PageIndexFormTheme'+block_id).on('ajax:success', function(e, res) {
 			var re_html = new RegExp("^<script>", 'i');
 			if($.trim(res).match(re_html)) {
-				$.Common.reloadBlock(null, '_' + block_id);
+				$.Common.reloadBlock(null, '_' + block_id, {'_nc_include_css' : 1});
 				if($('[name=is_apply]', $(this)).val() == 0) {
 					// 決定
 					$('#nc-block-style-dialog'+block_id).after(res).remove();
@@ -23,7 +23,17 @@
 		});
 
 		$(this).tabs({
-			active: active_tab
+			active: active_tab,
+			show: function(event, ui) {
+				var accordion_el = $('#nc-block-style-theme' + block_id);
+				if(ui.index == 1 && !accordion_el.hasClass('ui-accordion')) {
+					accordion_el.show().accordion({
+						//'fillSpace': true,
+						//'event': 'mouseover'
+						'active' : act_category
+					});
+				}
+			}
 		});
 		$('#nc-block-style-display-to-date-' + block_id).datetimepicker();
 		$('#nc-block-style-display-from-date-' + block_id).datetimepicker();
@@ -52,6 +62,14 @@
 			} else {
 				$(input).val(0);
 			}
+		},
+		/* テーマクリック */
+		clickTheme: function(form, theme_name, input) {
+			if($(input).val() == theme_name) {
+				return false;
+			}
+			$(input).val(theme_name);
+			$(form).submit();
 		}
 	}
 })(jQuery);

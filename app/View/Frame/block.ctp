@@ -34,8 +34,10 @@ if($block['Block']['min_width_size'] != 0) {
 //	$width .= "min-width:120px;";
 //}
 $height = "";
+$min_height = "";
 if($block['Block']['min_height_size'] != 0) {
 	$height = "height:".$block['Block']['min_height_size']."px;";
+	$min_height = "min-height:".$block['Block']['min_height_size']."px;";
 }
 if($width != "" || $height != "" || $margin != "") {
 	$block['Block']['margin_style'] = ' style="'.$margin.'"';
@@ -63,6 +65,12 @@ if(count($this->params->query) > 0) {
 	}
 	$current_url .= $query;
 }
+if($min_height != "" && $nc_mode == NC_BLOCK_MODE && $hierarchy >= NC_AUTH_MIN_CHIEF) {
+	// 最小の高さを高く設定してもリサイズのアイコンの位置がかわらないため、コンテンツの高さも設定するように修正。
+	$block['Block']['height'] = ' style="'.$min_height.'"';
+} else {
+	$block['Block']['height'] = '';
+}
 ?>
 <div id="<?php echo($id); ?>" class="<?php echo($class_name); ?>"<?php echo($block['Block']['margin_style']); ?> data-block='<?php echo($block['Block']['id']); ?>' data-action='<?php echo($block['Block']['controller_action']); ?>' data-url='<?php echo(h($current_url)); ?>'<?php echo($attr); ?>>
 	<div class="<?php if(isset($parent_class_name)): ?><?php echo($parent_class_name.' '); ?><?php endif; ?><?php echo($block['Block']['theme_name']); ?> nc-frame table"<?php echo($block['Block']['style']); ?>>
@@ -86,8 +94,13 @@ if(count($this->params->query) > 0) {
 		<?php if($nc_mode == NC_BLOCK_MODE && $hierarchy >= NC_AUTH_MIN_CHIEF): ?>
 			<?php echo($this->element('Frame/block_footer')); ?>
 		<?php endif; ?>
-		<?php /* echoしてないため、テーマのCSSはAjaxで表示する際は読み込まれない。 */ ?>
-		<?php $this->Html->css($theme_name, null, array('frame' => true)); ?>
+		<?php
+			/* 基本、echoしてないため、テーマのCSSはAjaxで表示する際は読み込まれない。 */
+			$block_css = $this->Html->css($theme_name, null, array('frame' => true));
+			if(isset($this->request->query['_nc_include_css']) && $this->request->query['_nc_include_css']) {
+				echo $block_css;
+			}
+		?>
 	</div>
 	<?php if($nc_mode == NC_BLOCK_MODE && $hierarchy >= NC_AUTH_MIN_CHIEF): ?>
 		<script>

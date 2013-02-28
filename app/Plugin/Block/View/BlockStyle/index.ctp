@@ -45,10 +45,14 @@
 								);
 								echo $this->Form->input('Block.show_title', $settings);
 							?>
+							<div class="note nc-block-style-note">
+								<?php echo(__d('block', 'You may use the following keywords in the block title, {X-CONTENT}.Each keyword will be translated to the content title[%s].', $content_title));?>
+							</div>
 						</dd>
 					</dl>
 				</li>
 				<?php if (isset($templates)): ?>
+				<?php /* TODO:未作成 */ ?>
 				<li>
 					<dl>
 						<dt>
@@ -198,7 +202,8 @@
 										'selector' => $this->Js->escape("$('[name=data\\[Block\\]\\[min_width_size\\]]', $('#nc-block-style-tab-init".$block_id."'))")
 									))
 								);
-								if($block['Block']['min_width_size'] <= 0) {
+								if($block['Block']['min_width_size'] == BLOCK_STYLE_MIN_SIZE_AUTO || $block['Block']['min_width_size'] == BLOCK_STYLE_MIN_SIZE_100) {
+									$settings['value'] = '';
 									$settings['style'] = 'display:none;';
 								}
 								echo $this->Form->input('Block.min_width_size', $settings);
@@ -245,7 +250,8 @@
 										'selector' => $this->Js->escape("$('[name=data\\[Block\\]\\[min_height_size\\]]', $('#nc-block-style-tab-init".$block_id."'))")
 									))
 								);
-								if($block['Block']['min_height_size'] <= 0) {
+								if($block['Block']['min_height_size'] == BLOCK_STYLE_MIN_SIZE_AUTO || $block['Block']['min_height_size'] == BLOCK_STYLE_MIN_SIZE_100) {
+									$settings['value'] = '';
 									$settings['style'] = 'display:none;';
 								}
 								echo $this->Form->input('Block.min_height_size', $settings);
@@ -317,16 +323,74 @@
 		?>
 	</div>
 	<div id="nc-block-style-tab-theme<?php echo($block_id); ?>" class="nc-block-style-theme-outer">
-
+		<?php /* ブロックテーマ */ ?>
+		<?php
+			echo $this->Form->create(null, array('id' => 'PageIndexFormTheme'.$block_id, 'data-ajax-replace' => '#nc-block-style'.$block_id));
+			$act_category_cnt = -1
+		?>
+		<div class="nc-block-style-theme-selected highlight">
+			<?php
+				$settings = array(
+					'id' => "nc-block-style-page-theme-selected-".$block_id,
+					'name' => 'is_page_theme_apply',
+					'value' => ($block['Block']['theme_name'] == '') ? _ON : _OFF,
+					'div' => false,
+					'type' =>'radio',
+					'options' => array(
+						_ON => "&nbsp;".__d('block', 'Default setting following the page theme.')
+					),
+					'onclick' => "$.BlockStyle.clickTheme($('#PageIndexFormTheme" . $block_id . "'), '', '#nc-block-style-theme-name-".$block_id."');"
+				);
+				echo $this->Form->input('is_page_theme_apply', $settings);
+			?>
+		</div>
+		<div id="nc-block-style-theme<?php echo($block_id); ?>" class="nc-block-style-theme">
+			<?php $category_cnt = 0; ?>
+			<?php foreach ($category_list as $category => $category_name): ?>
+				<?php if (isset($theme_list[$category])): ?>
+					<div><a<?php if ($category == $act_category): ?> id="nc-block-style-active<?php echo($block_id); ?>"<?php endif; ?> href="#"><?php echo(h($category_name)); ?></a></div>
+					<div>
+						<div style="overflow:auto;">
+							<?php foreach ($theme_list[$category] as $theme_key => $theme_name): ?>
+								<?php
+									$theme_arr = explode('.', $theme_key);
+									$theme_dir_name = $theme_arr[0];
+								?>
+								<div class="float-left">
+									<a href="#" onclick="$.BlockStyle.clickTheme($('#PageIndexFormTheme<?php echo($block_id); ?>'), '<?php echo($theme_key); ?>', '#nc-block-style-theme-name-<?php echo($block_id); ?>'); $(this.form).submit();" class="display-block hover-highlight<?php if ($block['Block']['theme_name'] == $theme_key): ?> highlight<?php $act_category_cnt = $category_cnt; ?><?php endif; ?>">
+										<img class="nc-block-style-theme-img nc-tooltip" title="<?php echo($theme_name); ?>" alt="<?php echo($theme_name); ?>" src="<?php echo($this->webroot); ?>frame/<?php echo(Inflector::underscore($theme_dir_name)); ?>/img/<?php echo($image_path[$theme_key]); ?>" />
+									</a>
+								</div>
+							<?php endforeach; ?>
+						</div>
+					</div>
+					<?php $category_cnt++; ?>
+				<?php endif; ?>
+			<?php endforeach; ?>
+		</div>
+		<?php
+			echo $this->Form->hidden('Block.theme_name' , array('id' => "nc-block-style-theme-name-".$block_id, 'value' => $block['Block']['theme_name']));
+			echo $this->Form->hidden('is_apply' , array('name' => 'is_apply', 'value' => _ON));
+			echo $this->Form->hidden('is_theme' , array('name' => 'is_theme', 'value' => _ON));
+			echo $this->Html->div('btn-bottom',
+				$this->Form->button(__('Close'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
+					'onclick' => '$(\'#nc-block-style-dialog'.$block_id.'\').remove(); return false;'))
+			);
+			echo $this->Form->end();
+		?>
 	</div>
 </div>
 <?php
 	echo $this->Html->css(array('Block.style/index', 'plugins/jquery-ui-timepicker-addon.css'));
 	echo $this->Html->script(array('Block.style/index', 'plugins/jquery-ui-timepicker-addon.js', 'locale/'.$locale.'/plugins/jquery-ui-timepicker.js'));
+	//if($active_tab == 1 && $block['Block']['theme_name'] != '') {
+	//	// ブロックテーマ読み込み
+	//	echo $this->Html->css(array($block['Block']['theme_name'], $block['Block']['theme_name'].'/block'), null, array('frame' => true));
+	//}
 ?>
 <script>
 $(function(){
-	$('#nc-block-style-tab<?php echo($block_id); ?>').BlockStyle(<?php echo($active_tab);?>, <?php echo($block_id);?>);
+	$('#nc-block-style-tab<?php echo($block_id); ?>').BlockStyle(<?php echo($block_id);?>, <?php echo($active_tab);?>, <?php echo($act_category_cnt);?>);
 });
 </script>
 </div>

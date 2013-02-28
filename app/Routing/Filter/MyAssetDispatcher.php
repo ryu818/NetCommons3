@@ -67,8 +67,8 @@ class MyAssetDispatcher extends AssetDispatcher {
 			$paths = App::path('Frame');
 			$framePath = null;
 			foreach ($paths as $path) {
-				if (is_dir($path . $frameDir)) {
-					$framePath = $path . $frameDir . DS;
+				if (is_dir($path . 'Plugin' . DS . $frameDir)) {
+					$framePath = $path . 'Plugin' . DS . $frameDir . DS;
 					break;
 				}
 			}

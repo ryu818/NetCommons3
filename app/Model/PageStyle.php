@@ -12,7 +12,7 @@ class PageStyle extends AppModel
 {
 	public $name = 'PageStyle';
 	public $actsAs = array('File');
-	
+
 	private $css_extension = '.css';
 
 	/**

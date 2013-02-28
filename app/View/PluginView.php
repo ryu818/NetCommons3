@@ -120,8 +120,8 @@ class PluginView extends View {
 		$framePath = Inflector::camelize($frameName) . DS .'View' . DS . $file .'.ctp';
 		$paths = App::path('Frame');
 		foreach ($paths as $path) {
-			if (file_exists($path . $framePath)) {
-				return $path . $framePath;
+			if (file_exists($path . 'Plugin' . DS . $framePath)) {
+				return $path . 'Plugin' . DS . $framePath;
 			}
 		}
 		return false;

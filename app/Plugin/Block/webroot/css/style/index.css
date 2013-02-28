@@ -21,7 +21,7 @@ ul.nc-block-style-lists li dl dt {
 }
 
 ul.nc-block-style-lists li dl dd {
-	width:200px;
+	width:220px;
 	padding:5px;
 }
 
@@ -50,4 +50,33 @@ ul.nc-block-style-lists li dl dd {
 
 .nc-block-style-margin div {
 	padding: 2px 0;
+}
+
+.nc-block-style-note {
+	font-size:80%;
+}
+
+/* テーマ */
+.nc-block-style-theme-selected {
+	padding:10px;
+	margin:5px 0;
+}
+
+.nc-block-style-theme {
+	/* width:345px !important;*/
+	height:320px !important;
+	overflow:auto;
+	display:none;
+}
+
+.nc-block-style-theme-list {
+	padding-left: 20px;
+	padding-right: 20px;
+	white-space: nowrap;
+}
+
+.nc-block-style-theme-img {
+	height: 60px;
+    margin: 5px;
+    width: 80px;
 }

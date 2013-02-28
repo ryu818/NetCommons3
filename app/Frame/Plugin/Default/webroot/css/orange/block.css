@@ -1,0 +1,16 @@
+/* Theme */
+.th-default-orange {
+	background:url("../../frame/default/img/block/orange/back.gif") repeat-x scroll left top #ffffff;
+	border:1px solid #fcb099;
+}
+
+/* highlight */
+.th-default-orange .highlight{
+	background-color:#ffeeee;
+	color:#f13e07;
+}
+
+.th-default-orange a.hover-highlight:hover {
+	background-color:#ffeeee;
+	color:#f13e07;
+}

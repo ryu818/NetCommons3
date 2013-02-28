@@ -82,6 +82,9 @@ msgstr 	"&nbsp;～&nbsp;"
 msgid  	"Manage"
 msgstr 	"管理"
 
+msgid  	"Untitled"
+msgstr 	"名称未設定"
+
 msgid  	"Content not found."
 msgstr 	"指定したコンテンツは、存在しません。"
 msgid  	"Content removed."
