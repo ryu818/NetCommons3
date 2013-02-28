@@ -75,6 +75,11 @@ if($min_height != "" && $nc_mode == NC_BLOCK_MODE && $hierarchy >= NC_AUTH_MIN_C
 } else {
 	$block['Block']['height'] = '';
 }
+if($block['Block']['display_flag'] == NC_DISPLAY_FLAG_OFF) {
+	$class_name .= ' nonpublic';
+} else if(!empty($block['Block']['display_to_date']) && $nc_mode == NC_BLOCK_MODE) {
+    $class_name .= ' to-nonpublic';
+}
 ?>
 <div id="<?php echo($id); ?>" class="<?php echo($class_name); ?>"<?php echo($block['Block']['margin_style']); ?> data-block='<?php echo($block['Block']['id']); ?>' data-action='<?php echo($block['Block']['controller_action']); ?>' data-url='<?php echo(h($current_url)); ?>'<?php echo($attr); ?>>
 	<div class="<?php if(isset($parent_class_name)): ?><?php echo($parent_class_name.' '); ?><?php endif; ?><?php echo($block['Block']['theme_name']); ?> nc-frame table"<?php echo($block['Block']['style']); ?>>

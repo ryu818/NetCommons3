@@ -45,7 +45,7 @@ class PageMenuController extends PageAppController {
  *
  * @var array
  */
-	public $helpers = array('TimeZone', 'Page.PageMenu');
+	public $helpers = array('Page.PageMenu');
 
 /**
  * 表示前処理
@@ -678,7 +678,7 @@ class PageMenuController extends PageAppController {
 
 		// 再取得
 		$page = $this->Page->findAuthById($ins_pages[0]['Page']['id'], $user_id);
-		$parent_page = $this->Page->findById($page['Page']['parent_id']);
+		$parent_page = $this->Page->findAuthById($page['Page']['parent_id'], $user_id);
 		$child_pages = $this->Page->findChilds('all', $page, $user_id);
 		//$page = $ins_pages[0];
 		//$parent_page = $this->Page->findById($page['Page']['parent_id']);

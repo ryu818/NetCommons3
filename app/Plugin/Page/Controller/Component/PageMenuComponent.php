@@ -1180,6 +1180,9 @@ class PageMenuComponent extends Component {
 		// カレントページ更新
 		$ins_page_id_arr = array();
 		$ins_room_id_arr = array();
+		if($action == 'move') {
+			$this->_controller->Page->autoConvert = false;
+		}
 		if(count($currentFieldList) > 0) {
 			if($action == 'paste' || $action == 'shortcut') {
 				unset($ins_page['Page']['id']);	// pageをinsertするため

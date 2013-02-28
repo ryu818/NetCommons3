@@ -185,6 +185,19 @@ div.message {
 	border-color:#ff8b8b !important;
 }
 
+/* 非公開 */
+.nonpublic-lbl {
+	color:#fe8d9e;
+}
+/* クリック不可リンクラベル色 */
+.nonpublic {
+	opacity:.5;
+	filter:Alpha(Opacity=50);
+}
+.to-nonpublic {
+	border: 1px dashed #fe8d9e;
+}
+
 /* WYSIWYG:IE+Ajaxの場合、一度目が正常に表示されないため */
 textarea.nc-wysiwyg {
 	width:520px;

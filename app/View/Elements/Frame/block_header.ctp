@@ -28,14 +28,22 @@ if($is_edit) {
 	$controller_action = $block['Module']['edit_controller_action'];
 	$edit_class_name = "nc-block-header-setting-icon";
 }
+$tooltip_title = '';
+if($hierarchy >= NC_AUTH_MIN_CHIEF) {
+	$tooltip_title = $this->TimeZone->getPublishedLabel($block['Block']['display_from_date'], $block['Block']['display_to_date']);
+	if($tooltip_title != '') {
+		$tooltip_title = ' title="' . $tooltip_title . '"';
+	}
+}
 ?>
 <div class="nc-block-mode">
 	<div id="nc-block-move<?php echo($id); ?>" class="nc-block-move">
 		<a href="#" title="<?php echo(__('Hide header'));?>" class="nc-block-header-display">
 			<span class="nc-arrow-up"></span>
 		</a>
-		<span id="nc-block-header-page-name<?php echo($id); ?>" class="nc-block-header-page-name">
+		<span id="nc-block-header-page-name<?php echo($id); ?>" class="nc-block-header-page-name<?php if($tooltip_title != ''): ?> nc-tooltip<?php endif; ?>"<?php echo($tooltip_title); ?>>
 			<?php echo($block['Block']['title']); ?>
+			<?php echo($this->element('Frame/block_published_lbl')); ?>
 		</span>
 		<ul class="nc-block-toolbox<?php if(isset($cancel_class_name)){ echo(' '. $cancel_class_name); }?>">
 			<?php if(!isset($cancel_class_name)): ?>

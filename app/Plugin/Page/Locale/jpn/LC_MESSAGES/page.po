@@ -44,9 +44,6 @@ msgstr 	"ページ追加"
 msgid  	"Create community"
 msgstr 	"コミュニティー作成"
 
-msgid  	"(Private)"
-msgstr 	"(非公開)"
-
 msgid  	"To public"
 msgstr 	"公開にする"
 msgid  	"To private"

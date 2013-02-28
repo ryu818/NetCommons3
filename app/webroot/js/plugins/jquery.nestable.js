@@ -272,7 +272,7 @@
         	t.ret = null;
         	$('.' + t.options.placeClass, this.el).removeClass(t.options.placeClass);
         	t.placeEl.remove();
-        	var ret = $.Common.fireResult('change',[t.dragEl.data('id'), t.dropEl.data('id'), t.dragPosition], t.el);
+        	var ret = $.Common.fire('change',[t.dragEl.data('id'), t.dropEl.data('id'), t.dragPosition], t.el);
         	if(ret === null) {
         		// wait
         		var timer = setInterval(function(){
@@ -408,7 +408,7 @@
             t.setParent(parent, false);
 			t.reset();
 			// 完了イベント
-			$.Common.fireResult('success',[drag_id, drop_id, position], t.el);
+			$.Common.fire('success',[drag_id, drop_id, position], t.el);
         },
 
         appendList: function(li, new_li, position, add_event)

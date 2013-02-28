@@ -92,6 +92,8 @@ span.nc-block-header-page-name {
 	position:absolute;
 	left:30px;
 	top:6px;
+	width:80%;
+	overflow:hidden;
 }
 
 .nc-block span.nc-block-header-page-name {

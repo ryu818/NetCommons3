@@ -115,9 +115,23 @@
 	if($page['Page']['id'] == $page_id && ($is_detail || (isset($error_flag) && $error_flag))) {
 		$is_editing_page_name = true;
 	}
+	$class = $this->element('index/init_page', array('page' => $page, 'is_edit' => _ON));
+	$next_thread_num = $page['Page']['thread_num']+1;
+
+	$class_link = '';
+	if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_OFF) {
+		$class_link .= ' nonpublic';
+	} else if(!empty($page['Page']['display_to_date']) && $is_parent_chief) {
+    	$class_link .= ' to-nonpublic';
+	}
+	$tooltip_title = '';
+	if($page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
+		$tooltip_title = $this->TimeZone->getPublishedLabel($page['Page']['display_from_date'], $page['Page']['display_to_date']);
+		if($tooltip_title != '') {
+			$tooltip_title = ' ' . $tooltip_title;
+		}
+	}
 ?>
-<?php $class = $this->element('index/init_page', array('page' => $page, 'is_edit' => _ON)); ?>
-<?php $next_thread_num = $page['Page']['thread_num']+1; ?>
 <li id="pages-menu-edit-item-<?php echo(h($page['Page']['id'])); ?>" class="pages-menu-edit-item dd-item dd-drag-item<?php if($page['Page']['id']==$page['Page']['room_id']){echo(' '.$class);} ?>" data-id="<?php echo(h($page['Page']['id'])); ?>" data-room-id="<?php echo(h($page['Page']['room_id'])); ?>" data-is-top="<?php if($is_top){echo(_ON);}else{echo(_OFF);} ?>" data-space-type="<?php echo($page['Page']['space_type']); ?>" data-is-chief="<?php if($is_chief){echo(_ON);} else {echo(_OFF);} ?>" data-is-parent-chief="<?php if($is_parent_chief){echo(_ON);} else {echo(_OFF);} ?>"<?php echo($attr); ?>>
 	<?php if($is_chgseq): ?>
 	<div class="dd-handle dd-drag-handle"></div>
@@ -151,7 +165,7 @@
 		<?php endif; ?>
 		<input type="hidden" name="data[Page][display_flag]" value="<?php echo(intval($page['Page']['display_flag'])); ?>" />
 
-		<a class="pages-menu-edit-title" href="<?php echo($this->webroot); ?><?php echo($page['Page']['permalink']); ?>" title="<?php echo(h($page['Page']['page_name'])); ?>"<?php if($is_editing_page_name): ?> style="display:none;"<?php endif; ?>>
+		<a class="pages-menu-edit-title<?php echo($class_link);?>" href="<?php echo($this->webroot); ?><?php echo($page['Page']['permalink']); ?>" title="<?php echo(h($page['Page']['page_name'])); ?><?php echo(h($tooltip_title)); ?>"<?php if($is_editing_page_name): ?> style="display:none;"<?php endif; ?>>
 			<?php echo(h($page['Page']['page_name'])); ?>
 		</a>
 		<?php

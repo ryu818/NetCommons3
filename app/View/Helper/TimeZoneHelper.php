@@ -10,6 +10,13 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 class TimeZoneHelper extends AppHelper {
+/**
+ * タイムゾーンで変換し、日付を表示
+ * @param   $time nullならば現在の時刻
+ * @param   $format nullならば__('Y-m-d H:i:s')
+ * @return  void
+ * @since   v 3.0.0.0
+ */
 	public function date($time = null, $format = null) {
 		if($format === null) {
 	    	$format =  __('Y-m-d H:i:s');
@@ -30,5 +37,26 @@ class TimeZoneHelper extends AppHelper {
 						intval(substr($time, 4, 2)), intval(substr($time, 6, 2)), intval(substr($time, 0, 4)));
 
 		return date($format, $int_time);
+    }
+
+/**
+ * 公開日付（非公開日付）が設定されている場合のタイトルを取得
+ * @param   date $display_from_date
+ * @param   date $display_to_date
+ * @return  string $title
+ * @since   v 3.0.0.0
+ */
+    public function getPublishedLabel($display_from_date, $display_to_date = null) {
+    	$display_from_date = !empty($display_from_date) ? $this->date($display_from_date) : null;
+    	$display_to_date = !empty($display_to_date) ? $this->date($display_to_date) : null;
+    	$title = '';
+    	if(!empty($display_from_date) && !empty($display_to_date)) {
+    		$title = h(__('Published until from [%s] to [%s]', $display_from_date, $display_to_date));
+    	} else if(!empty($display_from_date)) {
+    		$title = h(__('Published from [%s]', $display_from_date));
+    	} else if(!empty($display_to_date)) {
+    		$title = h(__('Published until [%s]', $display_to_date));
+    	}
+    	return $title;
     }
 }

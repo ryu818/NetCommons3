@@ -11,16 +11,29 @@
 			if(isset($active_lang) && $active_lang != $lang) {
 				$parameter = '?lang='.$lang;
 			}
+			$class = $this->element('index/init_page', array('page' => $page, 'is_edit' => _OFF));
+			$next_thread_num = $page['Page']['thread_num']+1;
+
+			if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_OFF) {
+				$class .= ' nonpublic';
+			} else if(!empty($page['Page']['display_to_date']) && $page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
+    			$class .= ' to-nonpublic';
+			}
+			$tooltip_title = '';
+			if($page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
+				$tooltip_title = $this->TimeZone->getPublishedLabel($page['Page']['display_from_date'], $page['Page']['display_to_date']);
+				if($tooltip_title != '') {
+					$tooltip_title = ' title="' . $tooltip_title . '"';
+				}
+			}
 		?>
-		<?php $class = $this->element('index/init_page', array('page' => $page, 'is_edit' => _OFF)); ?>
-		<?php $next_thread_num = $page['Page']['thread_num']+1; ?>
-		<li class="dd-item" data-id="<?php echo(h($page['Page']['id'])); ?>">
+		<li class="dd-item<?php if($tooltip_title != ''): ?> nc-tooltip<?php endif; ?>" data-id="<?php echo(h($page['Page']['id'])); ?>"<?php echo($tooltip_title); ?>>
 			<div class="pages-menu-handle <?php echo($class); ?><?php if($page['Page']['id'] == $page_id): ?> highlight<?php endif; ?><?php if($page['Page']['thread_num'] == 1): ?> pages-menu-handle-top<?php endif; ?>">
 			<a href="<?php echo($this->webroot); ?><?php echo($page['Page']['permalink'].$parameter); ?>" title="<?php echo(h($page['Page']['page_name'])); ?>">
 				<?php echo(h($page['Page']['page_name'])); ?>
 			</a>
 			<?php if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_OFF): ?>
-				<span class="pages-menu-nonpublic"><?php echo(__d('page', '(Private)')); ?></span>
+				<span class="nonpublic-lbl"><?php echo(__('(Private)')); ?></span>
 			<?php endif; ?>
 			</div>
 			<?php if(!empty($pages[$space_type][$next_thread_num][$page['Page']['id']])): ?>

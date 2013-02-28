@@ -63,8 +63,9 @@ class AppController extends Controller {
         ),
 		'Js',
         'Token',
+		'TimeZone',
     );
-    // , 'Timezone', 'Common',
+    // , 'Common',
 
     public $uses = array('Page', 'Block', 'Content', 'Module', 'Language', 'Config', 'Authority',
     		'User', 'Passport', 'PageStyle', 'ModuleLink', 'ModuleSystemLink', 'Community');

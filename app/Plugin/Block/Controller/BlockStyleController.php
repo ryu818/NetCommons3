@@ -28,13 +28,6 @@ class BlockStyleController extends BlockAppController {
 	public $components = array('CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF));
 
 /**
- * Helper name
- *
- * @var array
- */
-	public $helpers = array('TimeZone');
-
-/**
  * Model Block Content Module
  *
  * @var integer
