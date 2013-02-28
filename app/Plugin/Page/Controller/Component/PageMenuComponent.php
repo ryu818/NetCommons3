@@ -933,7 +933,6 @@ class PageMenuComponent extends Component {
 			$is_same_top_node = false;
 		}
 
-
 		// 権限チェック
 		$admin_hierarchy = $this->validatorPage($this->_controller->request, $copy_page);
 		if(!$admin_hierarchy) {
@@ -1197,7 +1196,8 @@ class PageMenuComponent extends Component {
 			if($action == 'paste' || $action == 'shortcut') {
 				$ins_page_id_arr[$this->_controller->Page->id] = $this->_controller->Page->id;
 				if($copy_page['Page']['id'] == $copy_page['Page']['room_id']) {
-					$ins_room_id_arr[$this->_controller->Page->id] = $this->_controller->Page->id;
+					$ins_new_room_id = $this->_controller->Page->id;
+					$ins_room_id_arr[$ins_new_room_id] = $ins_new_room_id;
 				}
 			}
 		}
@@ -1430,7 +1430,7 @@ class PageMenuComponent extends Component {
 
 			// コミュニティ直下のショートカット作成、ペーストでコミュニティ関連を作成
 			if($move_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP && $move_page['Page']['thread_num'] == 1) {
-				if(!$this->_controller->PageMenuCommunity->copyCommunity($ins_room_id_arr[0], $copy_room_id_arr[0], $rename_count)) {
+				if(!$this->_controller->PageMenuCommunity->copyCommunity($ins_new_room_id, $copy_room_id_arr[0], $rename_count)) {
 					$this->_controller->flash(__('Failed to register the database, (%s).', 'communities'), null, 'PageMenu/operatePage.013', '500');
 					return false;
 				}

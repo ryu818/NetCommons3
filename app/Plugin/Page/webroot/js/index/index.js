@@ -8,6 +8,16 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 ;(function($) {
+/**
+ * ページメニュー表示時
+ * @param   integer is_edit 編集モードかどうか
+ * @param   integer active_page_id 現在表示中のページID
+ * @param   integer active_tab アクティブなタブのindex 0 or 1
+ * @param   integer sel_active_tab 選択中のページItemのあるタブのindex
+ * @param   integer copy_page_id
+ * @return  void
+ * @since   v 3.0.0.0
+ */
 	$.fn.PageMenu = function(is_edit, active_page_id, active_tab, sel_active_tab, copy_page_id) {
 		// Privateメソッド
 

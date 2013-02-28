@@ -139,8 +139,7 @@ class PageController extends PageAppController {
 
 		if(isset($this->request->named['page']) || isset($this->request->named['limit'])) {
 			$active_tab = 1;
-		}
-		if(!isset($active_tab)) {
+		} else if(!isset($active_tab)) {
 			$active_tab = ($this->nc_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) ? 1 : 0;
 		}
 
@@ -185,6 +184,10 @@ class PageController extends PageAppController {
 			} else {
 				$sel_active_tab = 0;
 			}
+		}
+		if(isset($this->request->query['page_id'])) {
+			// コピー、ペーストでコミュニティへペーストした場合、コミュニティタブへ
+			$active_tab = $sel_active_tab;
 		}
 
 		// 管理系の権限を取得
@@ -249,16 +252,6 @@ class PageController extends PageAppController {
 				$element_params['community_params']['community_lang'] = $community_lang;
 				$element_params['community_params']['community_tag'] = $community_tag;
 				$element_params['community_params']['photo_samples'] = $this->PageMenu->getCommunityPhoto();
-			}
-		}
-
-		if($sel_active_tab == 0 && isset($this->request->query['page_id'])) {
-			// コピー、ペーストでコミュニティへペーストした場合、コミュニティタブへ
-			$active_page = $this->Page->findById(intval($this->request->query['page_id']));
-			if($active_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
-				$active_tab = 1;
-			} else {
-				$active_tab = 0;
 			}
 		}
 
