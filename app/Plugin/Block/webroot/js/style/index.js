@@ -21,7 +21,8 @@
 
 			}
 		});
-
+		// 適用ボタン等でタブ等が一瞬くずれて表示されるためjsからshow
+		$('#nc-block-style' + block_id).show();
 		$(this).tabs({
 			active: active_tab,
 			show: function(event, ui) {
@@ -37,6 +38,7 @@
 		});
 		$('#nc-block-style-display-to-date-' + block_id).datetimepicker();
 		$('#nc-block-style-display-from-date-' + block_id).datetimepicker();
+
 	};
 
 	$.BlockStyle = {

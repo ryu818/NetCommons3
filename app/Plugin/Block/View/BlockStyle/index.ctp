@@ -1,4 +1,4 @@
-<div id="nc-block-style<?php echo($block_id); ?>">
+<div id="nc-block-style<?php echo($block_id); ?>" style="display:none;">
 <div id="nc-block-style-tab<?php echo($block_id); ?>">
 	<ul>
 		<li><a href="#nc-block-style-tab-init<?php echo($block_id); ?>"><span><?php echo(__('General setting'));?></span></a></li>
