@@ -38,7 +38,7 @@ if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 ?>
 <div class="nc-block-mode">
 	<div id="nc-block-move<?php echo($id); ?>" class="nc-block-move">
-		<a href="#" title="<?php echo(__('Hide header'));?>" class="nc-block-header-display">
+		<a href="#" title="<?php echo(__('Hide header'));?>" class="nc-block-header-display nc-tooltip" onclick="$.PagesBlock.toggleBlockHeader(event); return false;">
 			<span class="nc-arrow-up"></span>
 		</a>
 		<span id="nc-block-header-page-name<?php echo($id); ?>" class="nc-block-header-page-name<?php if($tooltip_title != ''): ?> nc-tooltip<?php endif; ?>"<?php echo($tooltip_title); ?>>
@@ -58,13 +58,13 @@ if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 				echo $this->Html->link('', array('block_id' => $block_id, 'plugin' => $plugin, 'controller' => $controller, 'action' => $action, '#' => $id),
 					array(
 						'title' => $title,
-						'class' => 'nc-block-toolbox-link',
+						'class' => 'nc-block-toolbox-link nc-tooltip',
 						'data-pjax' => '#'.$id
 					)
 				); ?>
 			</li>
 			<li class="nc-block-header-list-icon">
-				<a href="#" onclick="$('#nc-block-header-operation<?php echo($id); ?>').toggle();return false;" title="<?php echo(__('Operation'));?>" class="nc-block-toolbox-link">
+				<a href="#" onclick="$('#nc-block-header-operation<?php echo($id); ?>').toggle();return false;" title="<?php echo(__('Operation'));?>" class="nc-block-toolbox-link nc-tooltip">
 				</a>
 				<div id="nc-block-header-operation<?php echo($id); ?>" class="nc-drop-down">
 					<ul>
@@ -91,9 +91,14 @@ if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 			</li>
 			<?php endif; ?>
 			<li class="nc-block-header-close-icon">
-				<a href="#" onclick="$.PagesBlock.delBlockConfirm(event, <?php echo($block['Block']['id']); ?>, <?php echo($all_delete); ?>,'<?php $title = (!empty($block['Block']['title'])) ? h($block['Block']['title']) : __('Block'); $confirm = __('Deleting %s. <br />Are you sure to proceed?', $title); echo($confirm);?>'); return false;" title="<?php echo(__('Delete'));?>" class="nc-block-toolbox-link">
+				<a href="#" onclick="$.PagesBlock.delBlockConfirm(event, <?php echo($block['Block']['id']); ?>, <?php echo($all_delete); ?>,'<?php $title = (!empty($block['Block']['title'])) ? h($block['Block']['title']) : __('Block'); $confirm = __('Deleting %s. <br />Are you sure to proceed?', $title); echo($confirm);?>'); return false;" title="<?php echo(__('Delete'));?>" class="nc-block-toolbox-link nc-tooltip">
 				</a>
 			</li>
 		</ul>
+	</div>
+	<div class="nc-block-hide-header" style="display:none;">
+		<a href="#" title="<?php echo(__('Show header'));?>" class="nc-block-header-display nc-tooltip" onclick="$.PagesBlock.toggleBlockHeader(event); return false;">
+			<span class="nc-arrow"></span>
+		</a>
 	</div>
 </div>

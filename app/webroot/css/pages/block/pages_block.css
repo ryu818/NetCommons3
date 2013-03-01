@@ -67,6 +67,10 @@
 	width:100%;
 }
 
+.nc-block-hide-header {
+	text-align:center;
+}
+
 .nc-block .nc-block-move {
 	background:url("../../img/pages/block/block_dot.gif") repeat-x scroll left center transparent !important;
 }
