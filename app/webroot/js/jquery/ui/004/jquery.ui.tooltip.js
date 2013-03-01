@@ -46,7 +46,7 @@ $.widget( "ui.tooltip", {
 	version: "1.9.2",
 	options: {
 		content: function() {
-// Edit Start Ryujiu.M
+// Edit Start Ryuji.M
 			var title = $( this ).attr( "title" );
 			var dataTooltip = $( this ).data('tooltip-desc');
 			if (dataTooltip && title) {
