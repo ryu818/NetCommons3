@@ -46,6 +46,47 @@ class Asset extends AppModel
 		$rets = $this->_afterFind($this->find('all', $params), $options);
 		return $rets;
 	}
+/**
+ * JavaScript,CSSガーベージコレクション
+ * <pre>
+ * 最終アクセス時刻がNC_ASSET_GC_LIFETIMEより古いものを削除。
+ * （環境により、最終アクセス時刻がとれない場合、最終更新時刻より削除）
+ * </pre>
+ *
+ * @param  string  $path
+ * @param  boolean $delete_asset_table Assetテーブルの更新日付がNC_ASSET_GC_LIFETIMEより古いものを削除するかどうか。
+ * @param  boolean $is_all 保存期間関係なくすべて削除する場合、true
+ * @return void
+ */
+	public function gc($path = null, $delete_asset_table = true, $is_all = false) {
+		if(!isset($path)) {
+			$path = $this->_getPath();
+		}
+		$rmTime = time() - NC_ASSET_GC_LIFETIME;
+		$files = $this->getCurrentFile($path);
+
+		foreach($files as $file) {
+			$atime = @fileatime($path . $file);
+			if (($is_all == true || ($atime !== false && $atime < $rmTime)) ||
+					(($atime === false && @filemtime($path . $file) < $rmTime))) {
+				if(preg_match('/^'.NC_ASSET_PREFIX.'/', $file) && substr($file, 0, 1) != '.') {
+					@unlink($path . $file);
+				}
+			}
+		}
+
+		if($delete_asset_table) {
+			if($is_all) {
+				$this->getDataSource()->truncate($this->table);
+			} else {
+				// TODO:今後、modifiedの保存をグリニッジにした場合、動作しなくなる。
+				$conditions = array(
+					"Asset.modified <" => date("Y-m-d H:i:s", $rmTime)
+				);
+				$this->deleteAll($conditions);
+			}
+		}
+	}
 
 	// plugin名称毎にマージして取得
 	// 同じscript,cssをAjaxにより何度も読み込ませないようにするため
@@ -173,7 +214,7 @@ class Asset extends AppModel
 	}
 
 	protected function _getAsetFile($hash, $ext = 'js') {
-		$file = 'application-' . $hash . '.' . $ext;
+		$file = NC_ASSET_PREFIX . $hash . '.' . $ext;
 		return $file;
 	}
 

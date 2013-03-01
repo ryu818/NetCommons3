@@ -73,6 +73,11 @@ class PagesController extends AppController {
 		$pages = $this->Page->findAuthById($this->page_id_arr, intval($user['id']));
 		$authority_id = isset($user['authority_id']) ? $user['authority_id'] : 0;
 
+		// js,Cssガーベージコレクション
+		if(rand(0, NC_ASSET_GC_PROBABILITY) == 0) {
+			$this->Asset->gc();
+		}
+
 		// ページスタイル情報を取得
 		// TODO ノードを基に取得
 		$center_page = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');

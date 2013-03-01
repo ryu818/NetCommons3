@@ -211,9 +211,7 @@ define('NC_SYSTEM_USER_ID',       1);
 define('NC_GENERAL_MODE', 0);
 define('NC_BLOCK_MODE', 1);
 
-/*
- * アップロード関連
- */
+//-----------------アップロード関連-------------------------------------------
 define("NC_ALLOW_ATTACHMENT_NO", 0);
 define("NC_ALLOW_ATTACHMENT_IMAGE" ,1);
 define("NC_ALLOW_ATTACHMENT_ALL", 2);
@@ -242,3 +240,8 @@ define('NC_UPLOAD_COMPRESSIONFILE_EXTENSION', 'zip,tar,tgz,gz');
 
 define("NC_CATEGORY_INIFILE",          "category.ini");
 define("NC_THEME_INIFILE",             "theme.ini");
+
+//-----------------JS,CSSファイル関連-------------------------------------------
+define("NC_ASSET_PREFIX", 'application-');
+define("NC_ASSET_GC_PROBABILITY", 100);	// JS、CSSファイルガーベージコレクション発生確率(Page表示時：100回に一度)
+define("NC_ASSET_GC_LIFETIME", 604800);		// JS、CSSファイル保持期間（デフォルト1週間）

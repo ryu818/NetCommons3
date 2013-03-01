@@ -64,17 +64,22 @@ class FileBehavior extends ModelBehavior {
  *
  * @param   Model  $Model
  * @param  string	$path	対象パス
+ * @param  boolean	$is_file
  * @return	array	array:正常, boolean false:異常
  * @since   v 3.0.0.0
  **/
-	public function getCurrentDir(Model $Model, $path) {
+	public function getCurrentDir(Model $Model, $path, $is_file = false) {
 		if ( is_dir($path) ) {
 			$dir_list = array();
 			$handle = opendir($path);
 			while ( false !== ($file = readdir($handle)) ) {
 				if ( $file == '.' || $file == '..' ) { continue; }
 				// if ( $file == 'CVS' || strtolower($file) == '.svn') { continue; }
-				if ( is_dir($path. DS . $file) ) {
+				if($is_file) {
+					if ( is_file($path. DS . $file) ) {
+						$dir_list[] = $file;
+					}
+				} else if ( is_dir($path. DS . $file) ) {
 					$dir_list[] = $file;
 				}
 			}
@@ -83,5 +88,17 @@ class FileBehavior extends ModelBehavior {
 		} else {
 			return false;
 		}
+	}
+
+/**
+ * 指定パスにあるファイル一覧を返す
+ *
+ * @param   Model  $Model
+ * @param  string	$path	対象パス
+ * @return	array	array:正常, boolean false:異常
+ * @since   v 3.0.0.0
+ **/
+	public function getCurrentFile(Model $Model, $path) {
+		return $this->getCurrentDir($Model, $path, true) ;
 	}
 }

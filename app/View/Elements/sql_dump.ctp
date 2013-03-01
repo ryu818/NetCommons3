@@ -122,7 +122,7 @@ if ($noLogs || isset($_forced_from_dbo_)):
 				echo ("<tr><td class=\"nc-log-child-url\" colspan=\"6\">".$current_urls[$i['global_count']]."</td></tr>");
 				unset($current_urls[$i['global_count']]);
 			}
-			$pattern = "/^(INSERT INTO|CREATE TABLE IF NOT EXISTS|CREATE TABLE|ALTER TABLE|UPDATE|DELETE)(\s)+/siU";
+			$pattern = "/^(INSERT INTO|CREATE TABLE IF NOT EXISTS|CREATE TABLE|ALTER TABLE|UPDATE|DELETE|TRUNCATE TABLE)(\s)+/siU";
 			$rep_pattern = "/( AND | OR | SET | VALUES | ON | WHERE | FROM | LEFT JOIN | INNER JOIN | ORDER BY | LIMIT )/siU";
 			if (preg_match($pattern, $i['query'], $matches)) {
 				$class_name = ' class="nc-log-save"';
