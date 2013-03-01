@@ -38,7 +38,7 @@ if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 ?>
 <div class="nc-block-mode">
 	<div id="nc-block-move<?php echo($id); ?>" class="nc-block-move">
-		<a href="#" title="<?php echo(__('Hide header'));?>" class="nc-block-header-display nc-tooltip" onclick="$.PagesBlock.toggleBlockHeader(event); return false;">
+		<a href="#" title="<?php echo(__('Hide header'));?>" class="nc-block-header-display nc-tooltip" onclick="$.PagesBlock.toggleBlockHeader(event, this); return false;">
 			<span class="nc-arrow-up"></span>
 		</a>
 		<span id="nc-block-header-page-name<?php echo($id); ?>" class="nc-block-header-page-name<?php if($tooltip_title != ''): ?> nc-tooltip<?php endif; ?>"<?php echo($tooltip_title); ?>>
@@ -97,7 +97,7 @@ if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 		</ul>
 	</div>
 	<div class="nc-block-hide-header" style="display:none;">
-		<a href="#" title="<?php echo(__('Show header'));?>" class="nc-block-header-display nc-tooltip" onclick="$.PagesBlock.toggleBlockHeader(event); return false;">
+		<a href="#" title="<?php echo(__('Show header'));?>" class="nc-block-header-display nc-tooltip" onclick="$.PagesBlock.toggleBlockHeader(event, this); return false;">
 			<span class="nc-arrow"></span>
 		</a>
 	</div>

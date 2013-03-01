@@ -1077,11 +1077,12 @@
 		},
 
 		// ヘッダー表示・非表示切替
-		toggleBlockHeader: function(event) {
-			var target = $(event.target).parent();
+		toggleBlockHeader: function(e, a) {
+			var target = $(a).parent();
 			var show_target = (target.hasClass('nc-block-move')) ? target.next() : target.prev();
 			target.slideUp();
 			show_target.slideDown();
+			e.preventDefault();
 		}
 	}
 })(jQuery);
