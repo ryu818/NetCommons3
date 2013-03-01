@@ -64,7 +64,7 @@ if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 				); ?>
 			</li>
 			<li class="nc-block-header-list-icon">
-				<a href="#" onclick="$('#nc-block-header-operation<?php echo($id); ?>').toggle();return false;" title="<?php echo(__('Operation'));?>" class="nc-block-toolbox-link nc-tooltip">
+				<a href="#" onclick="$('#nc-block-header-operation<?php echo($id); ?>').toggle().css('zIndex', $.Common.blockZIndex++);return false;" title="<?php echo(__('Operation'));?>" class="nc-block-toolbox-link nc-tooltip">
 				</a>
 				<div id="nc-block-header-operation<?php echo($id); ?>" class="nc-drop-down">
 					<ul>
