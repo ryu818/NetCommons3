@@ -50,6 +50,28 @@
 			return false;
 		});
 
+		var path = $('#nc-pages-menu-path'), path_w = path.width();
+		var pathMouseMove = function(e) {
+			if($.Common.within(path, e.pageX, e.pageY)) {
+				return;
+			}
+			$(document).unbind('mousemove', pathMouseMove);
+			path.animate({
+    			width: path_w + 'px'
+  			}, 'normal');
+		};
+		path.mouseover(function(e) {
+			var span = path.children(':first');
+			if(path.width() > span.width()) {
+				return;
+			}
+			path.animate({
+    			width: span.width() + 10 + 'px'
+  			}, 'normal', function(){
+  				$(document).mousemove(pathMouseMove);
+  			});
+		});
+
 		// ログイン
 		var nc_login = $('#nc-login');
 		nc_login.click(function(e){

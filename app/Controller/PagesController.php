@@ -69,6 +69,7 @@ class PagesController extends AppController {
 	public function index() {
 		$mode = $this->Session->read(NC_SYSTEM_KEY.'.mode');
 		$user = $this->Auth->user();
+		$user_id = $user['id'];
 		$blocks = $this->Block->findByPageIds($this->page_id_arr, intval($user['id']));
 		$pages = $this->Page->findAuthById($this->page_id_arr, intval($user['id']));
 		$authority_id = isset($user['authority_id']) ? $user['authority_id'] : 0;
@@ -77,6 +78,9 @@ class PagesController extends AppController {
 		if(rand(0, NC_ASSET_GC_PROBABILITY) == 0) {
 			$this->Asset->gc();
 		}
+
+		// パンくずリスト
+		$pages_list = $this->Page->findBreadcrumb($this->page_id_arr[0], $user_id);
 
 		// ページスタイル情報を取得
 		// TODO ノードを基に取得
@@ -116,7 +120,7 @@ class PagesController extends AppController {
 		//$this->set('page_style', $page_style['PageStyle']);
 		$this->set("add_modules", $add_modules);
 		$this->set("copy_content", $copy_content );
-
+		$this->set('pages_list', $pages_list);
 		//$this->render('responsive');
 	}
 

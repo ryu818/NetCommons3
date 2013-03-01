@@ -25,38 +25,37 @@ if(isset($page_menu)) {
 	<div id="nc-hmenu-l" class="nc-panel-color">
 		<ul class="nc-hmenu-ul ">
 			<li class="nc-hmenu-li nc-hmenu-logo-li">
-				<a title="NetCommons" href="<?php echo($this->Html->url('/')); ?>">
+				<a class="nc-hmenu-menu-a" title="NetCommons" href="<?php echo($this->Html->url('/')); ?>">
 					<span class="nc-hmenu-logo"></span>
 				</a>
 			</li>
 			<li class="nc-hmenu-li">
-				<?php /* TODO:未作成 パンくずリスト */ ?>
-				<div class="nc-pages-menu-path">
-						ホーム(TODO:test) > ページ1 > ページ3 > ページ4 > ページ5
+				<div id="nc-pages-menu-path">
+					<span><?php echo trim($this->element('Pages/breadcrumb', array('pages_list' => $pages_list)),"\n\t "); ?></span>
 				</div>
 			</li>
 			<li class="nc-hmenu-li">
-				<?php echo $this->Html->link(__('Pages settings'), array('plugin' => 'page', 'controller' => 'page', 'action' => $action), array('id' => 'nc-pages-setting', 'aria-haspopup' => 'true', 'data-page-setting-url' => $this->Html->url(array('plugin' => 'page',  'controller' => 'page', 'action' => $sub_action)))); ?>
+				<?php echo $this->Html->link(__('Pages settings'), array('plugin' => 'page', 'controller' => 'page', 'action' => $action), array('id' => 'nc-pages-setting', 'class' => 'nc-hmenu-menu-a', 'aria-haspopup' => 'true', 'data-page-setting-url' => $this->Html->url(array('plugin' => 'page',  'controller' => 'page', 'action' => $sub_action)))); ?>
 			</li>
 		</ul>
 	</div>
 	<div id="nc-hmenu-r" class="nc-panel-color">
 		<ul class="nc-hmenu-ul">
 			<li class="nc-hmenu-li">
-				<a class="nc-tooltip" title="<?php echo(__('To the Site Management screen.')); ?>" href="#">
+				<a class="nc-tooltip nc-hmenu-menu-a" title="<?php echo(__('To the Site Management screen.')); ?>" href="#">
 					<?php echo(__('Admin menu')); ?>
 				</a>
 			</li>
 			<li class="nc-hmenu-li">
 				<?php if(empty($nc_user['id'])): ?>
-					<?php echo $this->Html->link(__('Login'), array('controller' => 'users', 'action' => 'login'), array('id' => 'nc-login', 'aria-haspopup' => 'true')); ?>
+					<?php echo $this->Html->link(__('Login'), array('controller' => 'users', 'action' => 'login'), array('id' => 'nc-login', 'class' => 'nc-hmenu-menu-a', 'aria-haspopup' => 'true')); ?>
 				<?php else: ?>
-					<?php echo $this->Html->link(__('Logout'), array('controller' => 'users', 'action' => 'logout')); ?>
+					<?php echo $this->Html->link(__('Logout'), array('controller' => 'users', 'action' => 'logout'), array('class' => 'nc-hmenu-menu-a')); ?>
 				<?php endif; ?>
 			</li>
 			<?php if(!empty($nc_user['id']) && $hierarchy >= NC_AUTH_MIN_CHIEF): ?>
 			<li class="nc-hmenu-li nc-hmenu-setting-m">
-				<a class="nc-tooltip" title="<?php echo(h($setting)); ?>" data-tooltip-desc="<?php echo(h($tooltip_setting)); ?>" href="<?php echo(rtrim($this->Html->url(), '/').'/?setting_mode='.$setting_mode); ?>">
+				<a class="nc-tooltip nc-hmenu-menu-a" title="<?php echo(h($setting)); ?>" data-tooltip-desc="<?php echo(h($tooltip_setting)); ?>" href="<?php echo(rtrim($this->Html->url(), '/').'/?setting_mode='.$setting_mode); ?>">
 					<span class="<?php echo($setting_class); ?>"></span>
 				</a>
 			</li>

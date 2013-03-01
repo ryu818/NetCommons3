@@ -52,7 +52,7 @@
     margin:0 -3px;
     padding:0 5px;
 }
-#nc-hmenu li.nc-hmenu-li a {
+#nc-hmenu li.nc-hmenu-li a.nc-hmenu-menu-a {
     color: #222222;
     display: block;
     height: 40px;
@@ -112,12 +112,12 @@
 #nc-hmenu li.nc-hmenu-setting-m {
    border-right: none;
 }
-#nc-hmenu li.nc-hmenu-logo-li a {
+#nc-hmenu li.nc-hmenu-logo-li a.nc-hmenu-menu-a {
    padding: 5px;
    height: auto;
 }
 
-#nc-hmenu li.nc-hmenu-setting-m a {
+#nc-hmenu li.nc-hmenu-setting-m a.nc-hmenu-menu-a {
    padding: 9px 4px;
    height: auto;
 }
@@ -151,7 +151,7 @@
 	background:transparent url("../../img/dialogs/hmenu/setting_h_end_over.gif") no-repeat left top;
 }
 
-#nc-hmenu .nc-pages-menu-path {
+#nc-hmenu #nc-pages-menu-path {
 	margin:7px 5px;
 	background-color:#ffffff;
 	padding:1px 5px;
