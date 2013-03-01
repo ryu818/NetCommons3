@@ -34,10 +34,8 @@ if($block['Block']['min_width_size'] != 0) {
 //	$width .= "min-width:120px;";
 //}
 $height = "";
-$min_height = "";
 if($block['Block']['min_height_size'] != 0) {
 	$height = "height:".$block['Block']['min_height_size']."px;";
-	$min_height = "min-height:".$block['Block']['min_height_size']."px;";
 }
 if($width != "" || $height != "" || $margin != "") {
 	$block['Block']['margin_style'] = ' style="'.$margin.'"';
@@ -69,12 +67,6 @@ if(count($this->params->query) > 0) {
 	}
 	$current_url .= $query;
 }
-if($min_height != "" && $nc_mode == NC_BLOCK_MODE && $hierarchy >= NC_AUTH_MIN_CHIEF) {
-	// 最小の高さを高く設定してもリサイズのアイコンの位置がかわらないため、コンテンツの高さも設定するように修正。
-	$block['Block']['height'] = ' style="'.$min_height.'"';
-} else {
-	$block['Block']['height'] = '';
-}
 if($block['Block']['display_flag'] == NC_DISPLAY_FLAG_OFF) {
 	$class_name .= ' nonpublic';
 } else if(!empty($block['Block']['display_to_date']) && $nc_mode == NC_BLOCK_MODE) {
@@ -100,9 +92,6 @@ if($block['Block']['display_flag'] == NC_DISPLAY_FLAG_OFF) {
 		echo($this->element('index', array('title' => $this->element('Frame/block_title', array('block' => $block, 'parent_class_name' => $parent_class_name)), 'content' => $this->element('Frame/block_content', array('block' => $block, 'parent_class_name' => $parent_class_name))), array('frame' => 'default')));
 		?>
 		</section>
-		<?php if($nc_mode == NC_BLOCK_MODE && $hierarchy >= NC_AUTH_MIN_CHIEF): ?>
-			<?php echo($this->element('Frame/block_footer')); ?>
-		<?php endif; ?>
 		<?php
 			/* 基本、echoしてないため、テーマのCSSはAjaxで表示する際は読み込まれない。 */
 			$block_css = $this->Html->css($theme_name, null, array('frame' => true));

@@ -29,11 +29,12 @@ $._lang['pages'] = {
 	'Thread:[%s]': '深さ：[%s]',
 	'Open': '開く',
 	'Close': '閉じる',
-	'Room members' : '参加会員'
+	'Room members' : '参加会員',
+	'x' : '×'
 }
 
 $._lang['block'] = {
-	'Block style': 'ブロックスタイル',
+	'Block style': 'ブロックスタイル'
 }
 
 $._lang['nc_wysiwyg'] = {

@@ -52,6 +52,7 @@ class BlockStyleController extends BlockAppController {
 
 		$is_apply = isset($this->request->data['is_apply']) ? intval($this->request->data['is_apply']) : _OFF;
 		$is_theme = isset($this->request->data['is_theme']) ? intval($this->request->data['is_theme']) : _OFF;
+		$is_resize = isset($this->request->data['is_resize']) ? intval($this->request->data['is_resize']) : _OFF;
 
 		unset($this->request->data['is_apply']);
 		$block = $this->request->data;
@@ -59,7 +60,7 @@ class BlockStyleController extends BlockAppController {
 
 		if($this->request->is('post')) {
 			// 登録処理
-			if(!$is_theme) {
+			if(!$is_theme && !$is_resize) {
 				if($block['Block']['min_width_size_select'] == BLOCK_STYLE_MIN_SIZE_AUTO ||
 						$block['Block']['min_width_size_select'] == BLOCK_STYLE_MIN_SIZE_100) {
 					$block['Block']['min_width_size'] = $block['Block']['min_width_size_select'];
@@ -94,6 +95,18 @@ class BlockStyleController extends BlockAppController {
 					}
 					$fieldList[] = 'temp_name';
 				}
+			} else if($is_resize) {
+				$block['Block'] = $data_block['Block'];
+				if(isset($this->request->data['min_width_size'])) {
+					$block['Block']['min_width_size'] = intval($this->request->data['min_width_size']);
+				}
+				if(isset($this->request->data['min_height_size'])) {
+					$block['Block']['min_height_size'] = intval($this->request->data['min_height_size']);
+				}
+				$fieldList = array(
+					'min_width_size',
+					'min_height_size',
+				);
 			} else {
 				// ブロックテーマ変更
 				$block['Block'] = array_merge($data_block['Block'], $block['Block']);
@@ -106,6 +119,10 @@ class BlockStyleController extends BlockAppController {
 			$this->Block->set($block);
 			if($this->Block->save($block, true, $fieldList)) {
 				$this->Session->setFlash(__('Has been successfully updated.'));
+			}
+			if($is_resize) {
+				$this->render(false);
+				return;
 			}
 		} else {
 			$block = $data_block;

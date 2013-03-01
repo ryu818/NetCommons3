@@ -8,7 +8,7 @@ if($block['Block']['controller_action'] == 'group' && $nc_mode == NC_BLOCK_MODE 
 }
 ?>
 <?php if($content != '' || ($hierarchy >= NC_AUTH_MIN_CHIEF && $nc_mode == NC_BLOCK_MODE)): ?>
-	<div id="<?php echo($id); ?>-content" class="<?php if(isset($parent_class_name)): ?><?php echo($parent_class_name.'-content '); ?><?php endif; ?><?php echo($block['Block']['theme_name']); ?>-content nc-content<?php echo($setting_class_name); ?>"<?php echo($block['Block']['height']); ?>>
+	<div id="<?php echo($id); ?>-content" class="<?php if(isset($parent_class_name)): ?><?php echo($parent_class_name.'-content '); ?><?php endif; ?><?php echo($block['Block']['theme_name']); ?>-content nc-content<?php echo($setting_class_name); ?>">
 		<?php echo($content);?>
 	</div>
 <?php endif; ?>

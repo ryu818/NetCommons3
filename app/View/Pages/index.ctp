@@ -84,8 +84,7 @@
 		/* グループ */
 		echo($this->element('Dialogs/group'));
 		/* リサイズ */
-		//<div id="nc-show-size" class="display-none">
-		//</div>
+		echo('<div id="nc-block-show-size" class="display-none"></div>');
 	}
 ?>
 <?php if(!empty($nc_user['id']) || Configure::read(NC_CONFIG_KEY.'.'.'display_header_menu') != NC_HEADER_MENU_NONE) {

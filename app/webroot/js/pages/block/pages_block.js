@@ -311,6 +311,39 @@
 					}
 				});
 			}
+
+			// リサイズ処理
+			var block_frame = block.children('.nc-frame:first');
+			var show_size = $('#nc-block-show-size');
+			block_frame.resizable({
+				zIndex:1,
+				resize : function(e, ui) {
+					show_size.css("top", e.pageY  + "px")
+						.css("left", e.pageX  + "px")
+						.html(ui['size']['width'] + __d('pages', 'x') + ui['size']['height'])
+						.css("zIndex", $.Common.blockZIndex + 1)
+						.removeClass("display-none");
+				},
+				stop : function(e, ui) {
+					show_size.addClass("display-none");
+					var params = new Object();
+					params['is_resize'] = 1;
+					if(ui['size']['width'] != ui['originalSize']['width']) {
+						params['min_width_size'] = ui['size']['width'];
+					}
+					if(ui['size']['height'] != ui['originalSize']['height']) {
+						params['min_height_size'] = ui['size']['height'];
+					}
+					if(!params['min_width_size'] && !params['min_height_size']) {
+						// 変更なし
+						return;
+					}
+					$.post($('#nc-block-style-link' + id).attr('href'),
+						params
+					);
+				}
+			});
+			block_frame.children('.ui-resizable-se:last-child').addClass('nc-block-mode');
 		},
 		//
 		//移動挿入先検索

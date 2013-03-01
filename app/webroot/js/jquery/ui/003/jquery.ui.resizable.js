@@ -89,7 +89,8 @@ $.widget("ui.resizable", $.ui.mouse, {
 
 		}
 
-		this.handles = o.handles || (!$('.ui-resizable-handle', this.element).length ? "e,s,se" : { n: '.ui-resizable-n', e: '.ui-resizable-e', s: '.ui-resizable-s', w: '.ui-resizable-w', se: '.ui-resizable-se', sw: '.ui-resizable-sw', ne: '.ui-resizable-ne', nw: '.ui-resizable-nw' });
+		this.handles = o.handles || (!this.element.children('.ui-resizable-handle').length ? "e,s,se" : { n: '.ui-resizable-n', e: '.ui-resizable-e', s: '.ui-resizable-s', w: '.ui-resizable-w', se: '.ui-resizable-se', sw: '.ui-resizable-sw', ne: '.ui-resizable-ne', nw: '.ui-resizable-nw' });
+
 		if(this.handles.constructor == String) {
 
 			if(this.handles == 'all') this.handles = 'n,e,s,w,se,sw,ne,nw';
@@ -122,7 +123,7 @@ $.widget("ui.resizable", $.ui.mouse, {
 			for(var i in this.handles) {
 
 				if(this.handles[i].constructor == String)
-					this.handles[i] = $(this.handles[i], this.element).show();
+					this.handles[i] = this.element.children(this.handles[i]).show();//$(this.handles[i], this.element).show();
 
 				//Apply pad to wrapper element, needed to fix axis position (textarea, inputs, scrolls)
 				if (this.elementIsWrapper && this.originalElement[0].nodeName.match(/textarea|input|select|button/i)) {
@@ -154,7 +155,7 @@ $.widget("ui.resizable", $.ui.mouse, {
 		//TODO: make renderAxis a prototype function
 		this._renderAxis(this.element);
 
-		this._handles = $('.ui-resizable-handle', this.element)
+		this._handles = this.element.children('.ui-resizable-handle')
 			.disableSelection();
 
 		//Matching axis name
@@ -222,6 +223,7 @@ $.widget("ui.resizable", $.ui.mouse, {
 
 	_mouseCapture: function(event) {
 		var handle = false;
+
 		for (var i in this.handles) {
 			if ($(this.handles[i])[0] == event.target) {
 				handle = true;
