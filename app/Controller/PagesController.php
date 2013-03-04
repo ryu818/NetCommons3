@@ -71,6 +71,7 @@ class PagesController extends AppController {
 		$user = $this->Auth->user();
 		$user_id = $user['id'];
 		$blocks = $this->Block->findByPageIds($this->page_id_arr, intval($user['id']));
+		$center_page = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');
 		$pages = $this->Page->findAuthById($this->page_id_arr, intval($user['id']));
 		$authority_id = isset($user['authority_id']) ? $user['authority_id'] : 0;
 
@@ -80,13 +81,12 @@ class PagesController extends AppController {
 		}
 
 		// パンくずリスト
-		$pages_list = $this->Page->findBreadcrumb($this->page_id_arr[0], $user_id);
+		$pages_list = $this->Page->findBreadcrumb($pages[$this->page_id_arr[0]], $user_id);
 
 		// ページスタイル情報を取得
 		// TODO ノードを基に取得
-		$center_page = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');
-		//$page_style = $this->PageStyle->findByStylePageId($center_page['Page']['id']);
 
+		//$page_style = $this->PageStyle->findByStylePageId($center_page['Page']['id']);
 		$add_modules = array();
 		if($mode == NC_BLOCK_MODE) {
 			// 追加モジュールリスト取得

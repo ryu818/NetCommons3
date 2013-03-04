@@ -333,15 +333,16 @@ class Page extends AppModel
  * ページリストからページ取得
  * @param   integer or array    $page_id_arr
  * @param   integer  $user_id
+ * @param   integer  $space_type
  * @return  array    $pages
  * @since   v 3.0.0.0
  */
-	public function findAuthById($page_id_arr, $user_id) {
+	public function findAuthById($page_id_arr, $user_id, $space_type = null) {
 		$conditions = array('Page.id' => $page_id_arr);
 
 		$params = array(
-			'fields' => $this->_getFieldsArray(),
-			'joins' => $this->_getJoinsArray($user_id),
+			'fields' => $this->_getFieldsArray($space_type),
+			'joins' => $this->_getJoinsArray($user_id, 'LEFT', $space_type),
 			'conditions' => $conditions
 		);
 
@@ -389,50 +390,32 @@ class Page extends AppModel
 /**
  * パンくずリストの配列を取得する
  *
- * @param string $page_id
+ * @param Model Page $page
  * @param string $user_id
  * @return array
  * @access public
  */
-	function findBreadcrumb($page_id, $user_id = null) {
+	function findBreadcrumb($page, $user_id = null) {
 		$results = array();
-		$conditions = array(
-			'Page.id' => $page_id
-		);
 
-		if(empty($user_id)) {
-			$params = array(
-				'fields' => array(
-					'Page.*'
-				),
-				'conditions' => $conditions
-			);
-		} else {
-			$params = array(
-				'fields' => $this->_getFieldsArray(),
-				'joins' =>  $this->_getJoinsArray($user_id),
-				'conditions' => $conditions
-			);
+		if(!isset($page['Authority']['hierarchy'])) {
+			$page['Authority']['hierarchy'] = $this->getDefaultHierarchy($page);
 		}
-		$ret = $this->find('first', $params);
-		//if($user_id == "0") {
-		//	$ret['Authority']['hierarchy'] = NC_AUTH_OTHER;
-		//}
-
-		if(!isset($ret['Authority']['hierarchy'])) {
-			$ret['Authority']['hierarchy'] = $this->getDefaultHierarchy($ret);
+		if(isset($page['CommunityLang']['community_name'])) {
+			$page['Page']['page_name'] = $page['CommunityLang']['community_name'];
 		}
-		$ret['Page'] = $this->setPageName($ret['Page']);
-		$ret['Page']['permalink'] = $this->getPermalink($ret['Page']['permalink'], $ret['Page']['space_type']);
+		$page['Page'] = $this->setPageName($page['Page']);
+		$page['Page']['permalink'] = $this->getPermalink($page['Page']['permalink'], $page['Page']['space_type']);
 
-		if(($ret['Page']['space_type'] != NC_SPACE_TYPE_PUBLIC && $ret['Page']['thread_num'] > 1) ||
-				($ret['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC && $ret['Page']['display_sequence'] > 1)) {
-			$ret_parents = $this->findBreadcrumb($ret['Page']['parent_id'], $user_id);
-			foreach($ret_parents as $ret_parent) {
-				$results[] = $ret_parent;
+		if(($page['Page']['space_type'] != NC_SPACE_TYPE_PUBLIC && $page['Page']['thread_num'] > 1) ||
+				($page['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC && $page['Page']['display_sequence'] > 1)) {
+			$parent_page = $this->findAuthById($page['Page']['parent_id'], $user_id, $page['Page']['space_type']);
+			$parents_page = $this->findBreadcrumb($parent_page, $user_id);
+			foreach($parents_page as $buf_parent_page) {
+				$results[] = $buf_parent_page;
 			}
 		}
-		$results[] = $ret;
+		$results[] = $page;
 
 		return $results;
 	}
