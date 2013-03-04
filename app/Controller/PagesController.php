@@ -112,7 +112,7 @@ class PagesController extends AppController {
 		}
 
 		// ページタイトル取得
-		$this->set("title", $this->_getPageTitle($center_page));
+		$this->set("title", $this->_getPageTitle($pages_list));
 
 		$this->set("blocks", $blocks);
 		$this->set("pages", $pages);
@@ -126,30 +126,29 @@ class PagesController extends AppController {
 
 /**
  * ページタイトル取得
- * @param   Model Page
+ * @param   Model Pages $pages_list
  * @return  string $title
  * @since   v 3.0.0.0
  */
-	protected function _getPageTitle($center_page) {
-		if($center_page['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC) {
-			if($center_page['Page']['display_sequence'] == 1 && $center_page['Page']['thread_num'] == 2) {
+	protected function _getPageTitle($pages_list) {
+		$count = count($pages_list);
+		if($pages_list[$count - 1]['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC) {
+			if($pages_list[$count - 1]['Page']['display_sequence'] == 1 && $pages_list[$count - 1]['Page']['thread_num'] == 2) {
 				$title = '';
 			} else {
-				$title = $center_page['Page']['page_name'];
+				$title = $pages_list[$count - 1]['Page']['page_name'];
 			}
-		} else if($center_page['Page']['id'] == $center_page['Page']['root_id']) {
-			$title = $center_page['Page']['page_name'];
+		} else if($pages_list[$count - 1]['Page']['id'] == $pages_list[$count - 1]['Page']['root_id']) {
+			$title = $pages_list[$count - 1]['Page']['page_name'];
 		} else {
-			$root_page = $this->Page->findById($center_page['Page']['root_id']);
-			$root_page['Page'] = $this->Page->setPageName($root_page['Page']);
-			if($center_page['Page']['display_sequence'] == 1 && $center_page['Page']['thread_num'] == 2) {
+			if($pages_list[$count - 1]['Page']['display_sequence'] == 1 && $pages_list[$count - 1]['Page']['thread_num'] == 2) {
 				// マイポータル、マイルーム、コミュニティTop
-				$title = $root_page['Page']['page_name'];
+				$title = $pages_list[0]['Page']['page_name'];
 			} else {
-				$title = $center_page['Page']['page_name'].NC_TITLE_SEPARATOR.$root_page['Page']['page_name'];
+				$title = $pages_list[$count - 1]['Page']['page_name'].NC_TITLE_SEPARATOR.$pages_list[0]['Page']['page_name'];
 			}
-
 		}
+
 		return $title;
 	}
 }
