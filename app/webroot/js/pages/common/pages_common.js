@@ -50,9 +50,10 @@
 			return false;
 		});
 
+		// パンくずリスト
 		var path = $('#nc-pages-menu-path'), path_w = path.width();
 		var pathMouseMove = function(e) {
-			if($.Common.within(path, e.pageX, e.pageY)) {
+			if($.Common.within(path.parent(), e.pageX, e.pageY)) {
 				return;
 			}
 			$(document).unbind('mousemove', pathMouseMove);
