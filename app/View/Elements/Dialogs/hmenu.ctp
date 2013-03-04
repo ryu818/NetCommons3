@@ -30,12 +30,12 @@ if(isset($page_menu)) {
 				</a>
 			</li>
 			<li class="nc-hmenu-li">
+				<?php echo $this->Html->link(__('Pages settings'), array('plugin' => 'page', 'controller' => 'page', 'action' => $action), array('id' => 'nc-pages-setting', 'class' => 'nc-hmenu-menu-a', 'aria-haspopup' => 'true', 'data-page-setting-url' => $this->Html->url(array('plugin' => 'page',  'controller' => 'page', 'action' => $sub_action)))); ?>
+			</li>
+			<li class="nc-hmenu-li">
 				<div id="nc-pages-menu-path">
 					<span><?php echo trim($this->element('Pages/breadcrumb', array('pages_list' => $pages_list)),"\n\t "); ?></span>
 				</div>
-			</li>
-			<li class="nc-hmenu-li">
-				<?php echo $this->Html->link(__('Pages settings'), array('plugin' => 'page', 'controller' => 'page', 'action' => $action), array('id' => 'nc-pages-setting', 'class' => 'nc-hmenu-menu-a', 'aria-haspopup' => 'true', 'data-page-setting-url' => $this->Html->url(array('plugin' => 'page',  'controller' => 'page', 'action' => $sub_action)))); ?>
 			</li>
 		</ul>
 	</div>

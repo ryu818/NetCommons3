@@ -57,7 +57,7 @@
 				return;
 			}
 			$(document).unbind('mousemove', pathMouseMove);
-			path.animate({
+			path.stop().animate({
     			width: path_w + 'px'
   			}, 'normal');
 		};
@@ -66,7 +66,7 @@
 			if(path.width() > span.width()) {
 				return;
 			}
-			path.animate({
+			path.stop().animate({
     			width: span.width() + 10 + 'px'
   			}, 'normal', function(){
   				$(document).mousemove(pathMouseMove);
