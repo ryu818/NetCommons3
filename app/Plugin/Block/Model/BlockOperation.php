@@ -271,8 +271,8 @@ class BlockOperation extends AppModel {
 			));
 			if($action == 'paste' || $action == 'shortcut') {
 				/** ペースト OR ショートカット作成 OR 移動
-				 * 	移動元のBlockの中身(title, show_title, display_flag, display_from_date,display_to_date, theme_name, temp_name, leftmargin,
-				 * 		rightmargin, topmargin,bottommargin,min_width_size,min_height_size, lock_authority_id)はコピー
+				 * 	移動元のBlockの中身(title, show_title, display_flag, display_from_date,display_to_date, theme_name, temp_name, left_margin,
+				 * 		right_margin, top_margin,bottom_margin,min_width_size,min_height_size, lock_authority_id)はコピー
 				 */
 				$ins_block['Block'] = array_merge($ins_block['Block'], array(
 					'title' => $block['Block']['title'],
@@ -282,10 +282,10 @@ class BlockOperation extends AppModel {
 					'display_to_date' => $block['Block']['display_to_date'],
 					'theme_name' => $block['Block']['theme_name'],
 					'temp_name' => $block['Block']['temp_name'],
-					'leftmargin' => $block['Block']['leftmargin'],
-					'rightmargin' => $block['Block']['rightmargin'],
-					'topmargin' => $block['Block']['topmargin'],
-					'bottommargin' => $block['Block']['bottommargin'],
+					'left_margin' => $block['Block']['left_margin'],
+					'right_margin' => $block['Block']['right_margin'],
+					'top_margin' => $block['Block']['top_margin'],
+					'bottom_margin' => $block['Block']['bottom_margin'],
 					'min_width_size' => $block['Block']['min_width_size'],
 					'min_height_size' => $block['Block']['min_height_size'],
 					'lock_authority_id' => $block['Block']['lock_authority_id'],
