@@ -19,7 +19,10 @@
 		// data-ajax-type: post or get
 		// data-ajax-effect: 遷移時effect default：fold
 		// data-ajax-confirm: メッセージをValueに設定すると確認ダイアログ表示
-		//
+		// data-ajax-dialog-id: ダイアログとして表示する場合、指定dialogTopのid属性
+		// data-ajax-dialog-title: ダイアログとして表示した場合のダイアログタイトル
+		// data-ajax-dialog-options: ダイアログとして表示した場合のダイアログオプション jquery dialogのoptionsをhash配列を文字列に変換したもの
+		//		"position" : "mouse"指定があればマウス位置にダイアログ表示
 		// カスタムイベント ajax:
 		// ajax:beforeSend - Ajaxリクエスト前に呼ばれる。falseを返せば処理を中断する。
 		// ajax:beforeSendのみ、return値(string or array)でURL及びdataの内容を上書き可。
@@ -94,7 +97,6 @@
 				}
 				type = a.attr("data-ajax-type");
 				url = a.attr("data-ajax-url") ? a.attr("data-ajax-url") : url;
-				effect = a.attr("data-ajax-effect") ? a.attr("data-ajax-effect") : 'fold';
 				$.ajax({
 					type: (type == 'GET' || type == 'get' || type == 'POST' || type == 'post') ? type : input_type,
 					url: url,
@@ -103,30 +105,59 @@
 						if (!$.Common.fire('ajax:success', [res, e, status, xhr], a,e)) {
 							return false
 						}
-						$.Common.ajaxSuccess(a, res);
+						$.Common.ajaxSuccess(a, res, null, e);
 					}
 	 			});
 			}
 			e.preventDefault();
 		},
 
-		ajaxSuccess : function(a, res, params) {
+		ajaxSuccess : function(a, res, params, e) {
 			var target,replace_target,effect;
 			var buf_a, res_target, res_other_target, buf_res_target, effect_cnt = 0, effect_index = -1;
+			var dialog_id, dialog_title, dialog_options, dialog;
 			a = $(a);
 			if (params) {
 				var target = params['data-ajax'];
 				replace_target = params['data-ajax-replace'];
 				effect = params['data-ajax-effect'];
+				dialog_id = params['data-ajax-dialog-id'];
+				dialog_options = params['data-ajax-dialog-options'];
 			} else if(a.get(0)) {
 				target = a.attr("data-ajax");
 				replace_target = a.attr("data-ajax-replace");
 				effect = a.attr("data-ajax-effect") ? a.attr("data-ajax-effect") : null;
+				dialog_id = a.attr("data-ajax-dialog-id");
+				dialog_options = a.attr("data-ajax-dialog-options");
 			} else {
 				return false;
 			}
 
-			if(target) {
+			if(typeof dialog_options == 'string') {
+				dialog_options = $.parseJSON(dialog_options);
+				if(dialog_options['position'] && dialog_options['position'] == 'mouse') {
+					dialog_options['position'] = [e.pageX - $(window).scrollLeft(), e.pageY - $(window).scrollTop()];
+				}
+
+			}
+
+			if(dialog_options) {
+				if(effect) {
+					dialog_options['show'] = effect;
+					dialog_options['hide'] = effect;
+				}
+				dialog_options = $.extend({}, {zIndex: ++$.Common.zIndex}, dialog_options);
+			}
+
+			if (dialog_id) {
+				dialog = $('#' + dialog_id);
+				if(!dialog.get(0)) {
+					target = (target) ? target : $(document.body);
+					dialog = $('<div id='+ dialog_id +'></div>').appendTo(target);
+				}
+				dialog.html(res);
+				dialog.dialog(dialog_options);
+			} else if(target) {
 				res_target = $(target);
 				if(effect && $(target).css('display') != 'none') {
 					$(target).hide(effect, function(){

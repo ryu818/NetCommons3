@@ -34,7 +34,15 @@ class Module extends AppModel
 		return $module;
 	}
 
-	public function afterFind($results, $dir_name = '') {
+/**
+ * afterFind
+ *
+ * @param  array   $results
+ * @param  boolean $primary
+ * @return array $results
+ * @since   v 3.0.0.0
+ */
+	public function afterFind($results, $primary = false) {
 		$ret = array();
 		$locale = Configure::read(NC_SYSTEM_KEY.'.locale');
 
@@ -48,11 +56,7 @@ class Module extends AppModel
 			if(!isset($result['Module']['id'])) {
 				continue;
 			}
-			if(isset($result['Module']['dir_name'])) {
-				$dir_name = $result['Module']['dir_name'];
-			} else {
-				$result['Module']['dir_name'] = $dir_name;
-			}
+			$dir_name = $result['Module']['dir_name'];
 
 			$result['Module']['ini'] = $this->loadInstallIni($dir_name);
 
@@ -71,6 +75,7 @@ class Module extends AppModel
 			if(!isset($result['Module']['ini']['temp_name'])) {
 				$result['Module']['ini']['temp_name'] = 'Default';
 			}
+			// TODO:content_has_oneカラム自体使用するかどうか未検討
 			if(!isset($result['Module']['ini']['content_has_one'])) {
 				$result['Module']['ini']['content_has_one'] = _OFF;
 			}
@@ -91,6 +96,40 @@ class Module extends AppModel
 			return $ret[0];
 		}
 		return $ret;
+	}
+
+/**
+ * コントロールパネルの表示リスト一覧取得
+ * @param  integer  $authority_id
+ * @return Model Modules
+ */
+	public function findSystemModule($authority_id) {
+		$conditions = array(
+			'Module.system_flag' => _ON,
+			'Module.disposition_flag' => _ON
+		);
+		$order = array(
+			'Module.display_sequence' => "ASC"
+		);
+		$params = array(
+			'fields' => array(
+					'Module.*'
+			),
+			'joins' => array(
+				array("type" => "INNER",
+					"table" => "module_system_links",
+					"alias" => "ModuleSystemLink",
+					"conditions" => array(
+						"`ModuleSystemLink`.`module_id`=`Module`.`id`",
+						"`ModuleSystemLink`.`authority_id`" => intval($authority_id)
+					)
+				),
+			),
+			'conditions' => $conditions,
+			'order' => $order
+		);
+
+		return $this->find('all', $params);
 	}
 
 /**
