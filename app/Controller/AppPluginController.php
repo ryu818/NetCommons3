@@ -56,11 +56,14 @@ class AppPluginController extends AppController
 		$this->getEventManager()->dispatch(new CakeEvent('Controller.initialize', $this));
 		$this->getEventManager()->dispatch(new CakeEvent('Controller.startup', $this));
 
-		if(!empty($this->nc_block) && !isset($this->nc_block['Content']['id'])) {
-			// Contentテーブルにデータなし
+		if(!empty($this->nc_block) && (!isset($this->nc_block['Content']['id']) || !isset($this->nc_block['Module']['id']))) {
 			$this->set('nc_error_flag' , true);
 			$this->set('show_frame', isset($this->Frame) ? $this->Frame : true);
-			$this->set('name', __('Content removed.'));
+			if(!isset($this->nc_block['Content']['id'])) {
+				$this->set('name', __('Content removed.'));
+			} else {
+				$this->set('name', __('Module uninstalled.'));
+			}
 			$this->render("/Errors/block_error");
 			return false;
 		}

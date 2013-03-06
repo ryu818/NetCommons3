@@ -587,6 +587,7 @@ class InstallController extends Controller {
  * @since  v 3.0.0.0
  */
 	public function admin_setting() {
+		App::uses('Sanitize', 'Utility');
 		App::uses('AppModel', 'Model');
 		App::uses('User', 'Model');
 		$User = new User();
@@ -605,7 +606,7 @@ class InstallController extends Controller {
 				$User->invalidate('password', __d('install', '%s and %s does not match. Please re-enter.',
 						__d('install', 'Admin Password'),
 						__d('install', 'Confirm Password')));
-	return;
+				return;
 			}
 			unset($user['User']['confirm_password']);
 			if (!empty($error)) {
@@ -634,11 +635,11 @@ class InstallController extends Controller {
 
 		$Config = new Config();
 		$ConfigLang = new ConfigLang();
-		$fields = array('Config.value' => '"'.addslashes($config['site_name']).'"');
+		$fields = array('Config.value' => "'" . Sanitize::escape($config['site_name']) . "'");
 		$conditions = array('Config.id' => 1);
 		$retConfig = $Config->updateAll($fields, $conditions);
 
-		$fields = array('ConfigLang.value' => '"'.addslashes($config['site_name']).'"');
+		$fields = array('ConfigLang.value' => "'" . Sanitize::escape($config['site_name']) . "'");
 		$conditions = array('ConfigLang.config_id' => 1);
 		$retConfigLang = $ConfigLang->updateAll($fields, $conditions);
 

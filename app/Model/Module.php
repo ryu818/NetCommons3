@@ -73,7 +73,7 @@ class Module extends AppModel
  	        	$result['Module']['ini']['module_icon'] = '';
  	        }
 			if(!isset($result['Module']['ini']['temp_name'])) {
-				$result['Module']['ini']['temp_name'] = 'Default';
+				$result['Module']['ini']['temp_name'] = '';
 			}
 			// TODO:content_has_oneカラム自体使用するかどうか未検討
 			if(!isset($result['Module']['ini']['content_has_one'])) {

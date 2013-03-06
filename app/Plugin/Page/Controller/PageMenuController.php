@@ -239,6 +239,7 @@ class PageMenuController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function edit() {
+		App::uses('Sanitize', 'Utility');
 		$user_id = $this->Auth->user('id');
 		$page['Page'] = $this->request->data['Page'];
 
@@ -394,7 +395,7 @@ class PageMenuController extends PageAppController {
 			if($current_page['Page']['thread_num'] == 1 && $current_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
 				// コミュニティーTop更新
 				$fields = array(
-					'permalink' => '"'.addslashes($ins_page['Page']['permalink']).'"'
+					'permalink' => "'" . Sanitize::escape($ins_page['Page']['permalink']) . "'"
 				);
 				$conditions = array(
 					'room_id' => $ins_page['Page']['id'],

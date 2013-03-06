@@ -99,6 +99,8 @@ msgid  	"Content not found."
 msgstr 	"指定したコンテンツは、存在しません。"
 msgid  	"Content removed."
 msgstr 	"指定したコンテンツは、削除されました。"
+msgid  	"Module uninstalled."
+msgstr 	"指定したモジュールは、アンインストールされました。"
 
 msgid  	"Page not found."
 msgstr 	"指定したページは、存在しません。"

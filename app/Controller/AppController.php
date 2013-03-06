@@ -44,7 +44,7 @@ class AppController extends Controller {
  *
  * @var string
  */
-	public $theme = 'Default';
+	public $theme = '';
 
 	public $hierarchy = null;
 
