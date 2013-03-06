@@ -147,6 +147,14 @@ if ($plugins = CakePlugin::loaded()) {
 			'block_type' => 'blocks|active-blocks',
 		) + $pluginParams
 	);
+
+	Router::connect(
+		'/:block_type/:plugin/*',
+		array(),
+		array(
+			'block_type' => 'active-controls',
+		) + $pluginParams
+	);
 }
 /*
  foreach ($prefixes as $prefix) {

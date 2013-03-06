@@ -93,7 +93,7 @@ class BlockOperation extends AppModel {
 		$ins_block['Block']['display_to_date'] = null;
 		$ins_block['Block']['controller_action'] = 'group';
 		$ins_block['Block']['theme_name'] = 'None';
-		$ins_block['Block']['temp_name'] = 'default';
+		$ins_block['Block']['temp_name'] = '';
 		$ins_block['Block']['left_margin'] = 8;
 		$ins_block['Block']['right_margin'] = 8;
 		$ins_block['Block']['top_margin'] = 8;

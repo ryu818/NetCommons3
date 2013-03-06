@@ -1,7 +1,6 @@
 <?php
 class GroupController extends GroupAppController {
 
-	public $nc_block = array();
 	public $nc_blocks = array();
 
 	public function index() {
@@ -9,7 +8,7 @@ class GroupController extends GroupAppController {
 		$block = $this->nc_block;
 
 		$this->set('parent_id', intval($block['Block']['id']));
-		
+
 		if(count($this->nc_blocks) == 0) {
 			$buf_blocks = $this->Block->findByGroupId($block, $user_id);
 			if(isset($buf_blocks[$block['Block']['page_id']])) {

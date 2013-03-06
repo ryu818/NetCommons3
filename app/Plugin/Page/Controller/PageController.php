@@ -192,7 +192,7 @@ class PageController extends PageAppController {
 
 		// 管理系の権限を取得
 		if($user_id) {
-			$admin_hierarchy = $this->ModuleSystemLink->findHierarchy(Inflector::camelize($this->request->params['plugin']), $login_user['authority_id']);
+			$admin_hierarchy = $this->ModuleSystemLink->findHierarchyByPluginName($this->request->params['plugin'], $login_user['authority_id']);
 		} else {
 			$admin_hierarchy = NC_AUTH_OTHER;
 		}

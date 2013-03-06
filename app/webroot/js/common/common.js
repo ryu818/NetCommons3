@@ -20,7 +20,7 @@
 		// data-ajax-effect: 遷移時effect default：fold
 		// data-ajax-confirm: メッセージをValueに設定すると確認ダイアログ表示
 		// data-ajax-dialog-id: ダイアログとして表示する場合、指定dialogTopのid属性
-		// data-ajax-dialog-title: ダイアログとして表示した場合のダイアログタイトル
+		// data-ajax-dialog-class: ダイアログとして表示した場合のダイアログクラス名
 		// data-ajax-dialog-options: ダイアログとして表示した場合のダイアログオプション jquery dialogのoptionsをhash配列を文字列に変換したもの
 		//		"position" : "mouse"指定があればマウス位置にダイアログ表示
 		// カスタムイベント ajax:
@@ -122,12 +122,14 @@
 				replace_target = params['data-ajax-replace'];
 				effect = params['data-ajax-effect'];
 				dialog_id = params['data-ajax-dialog-id'];
+				dialog_class = params['data-ajax-dialog-class'];
 				dialog_options = params['data-ajax-dialog-options'];
 			} else if(a.get(0)) {
 				target = a.attr("data-ajax");
 				replace_target = a.attr("data-ajax-replace");
 				effect = a.attr("data-ajax-effect") ? a.attr("data-ajax-effect") : null;
 				dialog_id = a.attr("data-ajax-dialog-id");
+				dialog_class = a.attr("data-ajax-dialog-class");
 				dialog_options = a.attr("data-ajax-dialog-options");
 			} else {
 				return false;
@@ -146,6 +148,9 @@
 					dialog_options['show'] = effect;
 					dialog_options['hide'] = effect;
 				}
+				if(typeof dialog_options['resizable'] == 'undefined') {
+					dialog_options['resizable'] = false;
+				}
 				dialog_options = $.extend({}, {zIndex: ++$.Common.zIndex}, dialog_options);
 			}
 
@@ -153,10 +158,13 @@
 				dialog = $('#' + dialog_id);
 				if(!dialog.get(0)) {
 					target = (target) ? target : $(document.body);
-					dialog = $('<div id='+ dialog_id +'></div>').appendTo(target);
+					dialog = $('<div id='+ dialog_id +' style="display:none;"></div>').appendTo(target);
 				}
 				dialog.html(res);
 				dialog.dialog(dialog_options);
+				if(dialog_class) {
+					dialog.parent().addClass(dialog_class);
+				}
 			} else if(target) {
 				res_target = $(target);
 				if(effect && $(target).css('display') != 'none') {

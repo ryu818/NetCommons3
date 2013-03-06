@@ -12,13 +12,14 @@ class ModuleSystemLink extends AppModel
 {
 	public $name = 'ModuleSystemLink';
 
-	/**
-	 * 管理権限を求める
-	 * @param   string $dirname
-	 * @param   integer $authority_id
-	 * @return  integer $hierarchy エラーの場合、false
-	 */
-	function findHierarchy($dirname, $authority_id) {
+/**
+ * 管理権限をプラグイン名称から求める
+ * @param   string  $plugin_name
+ * @param   integer $authority_id
+ * @return  integer $hierarchy エラーの場合、false
+ */
+	function findHierarchyByPluginName($plugin_name, $authority_id) {
+		$dirname = Inflector::camelize($plugin_name);
 		$nc_module = Configure::read(NC_SYSTEM_KEY.'.Modules.'.$dirname);
 		if(!isset($nc_module['Module'])) {
 			App::uses('Module', 'Model');
@@ -28,6 +29,16 @@ class ModuleSystemLink extends AppModel
 		} else {
 			$module_id = $nc_module['Module']['id'];
 		}
+		return $this->findHierarchy($module_id, $authority_id);
+	}
+
+/**
+ * 管理権限を求める
+ * @param   integer $module_id
+ * @param   integer $authority_id
+ * @return  integer $hierarchy エラーの場合、false
+ */
+	function findHierarchy($module_id, $authority_id) {
 		$conditions = array(
 			'ModuleSystemLink.authority_id' => $authority_id,
 			'ModuleSystemLink.module_id' => $module_id
@@ -42,7 +53,7 @@ class ModuleSystemLink extends AppModel
 		$module_systems_links = $this->find('first', $module_systems_link_params);
 
 		if(empty($module_systems_links['ModuleSystemLink'])) {
-			return 0;
+			return NC_AUTH_OTHER;
 		}
 
 		return intval($module_systems_links['ModuleSystemLink']['hierarchy']);

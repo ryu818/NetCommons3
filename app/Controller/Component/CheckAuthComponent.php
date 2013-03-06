@@ -100,162 +100,47 @@ class CheckAuthComponent extends Component {
  */
 	public function check() {
 		$controller = $this->_controller;
-		$this->_setControllerParams($controller);
+		//$this->_setControllerParams($controller);
+		$user = $this->Auth->user();//認証済みユーザーを取得
+		$controller_name = $controller->request->params['controller'];
+		$plugin_name = $controller->request->params['plugin'];
+		$user_id = isset($user['id']) ? intval($user['id']) : 0;
+		Configure::write(NC_SYSTEM_KEY.'.user_id', $user_id);
+		$redirect_url = ($user_id == 0) ? '/users/login' : null;
 
-		if (isset($controller->nc_block['Block'])) {
-			// 既に権限チェック済
-			return;
+		if(isset($plugin_name) && $plugin_name != 'group') {
+			$camel_plugin_name = Inflector::camelize($plugin_name);
+			$module = $controller->Module->findByDirname($camel_plugin_name);
+			if(!$module || $module['Module']['dir_name'] != $camel_plugin_name) {
+				$controller->flash(__('Content not found.'), '', 'CheckAuth.check.001', '404');
+			}
+			$controller->nc_module = $module;
+			Configure::write(NC_SYSTEM_KEY.'.Modules.'.$camel_plugin_name, $module);
 		}
 
-		//$controller->set('title_for_layout',  '');
-		$user = $this->Auth->user();//認証済みユーザーを取得
-
-		$user_id = isset($user['id']) ? intval($user['id']) : 0;
-		$lang = $this->Session->read(NC_CONFIG_KEY.'.'.'language');
-		$system_flag = _OFF;
-
-		$authority_id = isset($user['authority_id']) ? intval($user['authority_id']) : NC_AUTH_OTHER;
-
-		$url = $controller->request->url;
-
-		$permalink = isset($controller->request->params['permalink']) ? $controller->request->params['permalink'] : '';
-
-		$block_id = isset($controller->request->params['block_id']) ? intval($controller->request->params['block_id']) : 0;
-		$data_page_id = !empty($controller->request->data[$this->requestPageId]) ? $controller->request->data[$this->requestPageId] : 0;
-		$named_page_id = !empty($controller->request->named[$this->requestPageId]) ? $controller->request->named[$this->requestPageId] : 0;
-		$url_page_id = !empty($controller->request->query[$this->requestPageId]) ? $controller->request->query[$this->requestPageId] : 0;
-		$page_id = !empty($data_page_id) ? $data_page_id : (!empty($named_page_id) ? $named_page_id : (!empty($url_page_id) ? $url_page_id : 0));
-
-		$plugin_name = $controller->request->params['plugin'];
-		$controller_name = $controller->request->params['controller'];
-		$action_name = $controller->request->params['action'];
-
-		$permalink = trim($permalink, '/');
-
-		Configure::write(NC_SYSTEM_KEY.'.permalink', $permalink);
-		Configure::write(NC_SYSTEM_KEY.'.user_id', $user_id);
-		$controller->id = '_'. $block_id;
-		$controller->block_id = $block_id;
-
-		if($user_id == 0)
-			$redirect_url = '/users/login';
-		else
-			$redirect_url = null;
-
-		if(!preg_match($this->prohibitionURL, $url)) {
-			if($block_id > 0) {
-				$block = $this->_getBlock($controller, $block_id, $user_id);
-				if($block === false || !isset($block['Block'])) {
-					// 置いているpluginが異なる
-					$controller->flash(__('Content not found.'), '', 'CheckAuth.001', '404');
-					return ;
-				}
-				$controller->nc_block = $block;
-
-				$active_page = $controller->Page->findById($block['Block']['page_id']);
-				if(!$active_page) {
-					// ブロックIDに対応したページが存在しない
-					$controller->flash(__('Page not found.'), $redirect_url, 'CheckAuth.002', '404');
-					return ;
-				}
-
-				//
-				// title
-				//
-				//if(isset($block['Block']['title'])) {
-				//	// TODO:Module.module_nameも考慮するべき？
-				//	$controller->set('title_for_layout',  $block['Block']['title']);
-				//}
+		if($plugin_name == 'page' || $controller_name == 'pages' || $controller_name == 'group' || $module['Module']['system_flag'] == _OFF) {
+			// 一般系モジュール
+			if(!$this->checkGeneral()) {
+				return;
 			}
-
-			$result = $this->_getPage($controller, $permalink, $page_id, $user_id, $lang);
-
-			if($result === false) {
-				$page = false;
-				$center_page = false;
-			} else {
-				list($center_page, $page) = $result;
+		} else {
+			// 管理系モジュール
+			if(!$this->checkAdmin($module['Module']['id'])) {
+				return;
 			}
-			Configure::write(NC_SYSTEM_KEY.'.'.'center_page', $center_page);
-			if($this->chkMovedPermanently && isset($active_page) && $active_page['Page']['position_flag'] &&
-				($page === false || $page['Page']['id'] != $active_page['Page']['id'])) {
-				// パーマリンクからのPageとblock_idのはってあるページが一致しなければエラー
-				// ３０１をかえして、その後、移動後のページへ遷移させる
-				// TODO:中央カラムのみにはってあるブロックのみチェックしているが、ヘッダーのブロックのチェックもするべき
-				$redirect_url = preg_replace('$^'.$permalink.'$i', $active_page['Page']['permalink'], $url);
-				$controller->flash(__('Moved Permanently.'), $redirect_url, 'CheckAuth.003', '301');
-				return ;
-			}
-
-			if($page === false || $center_page === false) {
-				// ページが存在しない
-				$controller->flash(__('Page not found.'), $redirect_url, 'CheckAuth.004', '404');
-				return ;
-			}
-
-			$controller->nc_page = isset($active_page) ? $active_page : $page;	// blockから取得できるPage優先
-			$controller->nc_current_page = $page;								// pageから取得できるPage
-			if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_DISABLE ||
-					($page['Page']['display_flag'] == NC_DISPLAY_FLAG_OFF && $page['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF)) {
-				$controller->flash(__('Content not found.'), $redirect_url, 'CheckAuth.005', '404');
-				return ;
-			}
-
-			// PageとBlockのhierarchyの低いほうをセット
-			$page_hierarchy = (isset($page) && !is_null($page['Authority']['hierarchy'])) ? intval($page['Authority']['hierarchy']) : NC_AUTH_OTHER;
-			$block_hierarchy = (isset($block) && !is_null($block['Block']['hierarchy'])) ? intval($block['Block']['hierarchy']) : $page_hierarchy;
-			$controller->hierarchy = min($block_hierarchy, $page_hierarchy);
-
-			if(isset($block) && !is_null($block['Content']['master_id'])) {
-				$controller->content_id = intval($block['Content']['master_id']);
-			}
-
-			/*if($plugin_name != '' && $plugin_name != 'group') {// && $plugin_name != 'block'
-				// plugin
-				$module = $this->_getModule($controller, $plugin_name, $authority_id);
-				if($module === false) {
-					$controller->flash(__('Content not found.'), '', 'CheckAuth.006', 404);
-					return ;
-				}
-				if($block && $block['Block']['module_id'] != $module['Module']['id']) {
-					// block_idから取得するpluginと、plugin_nameから取得したpluginの名前が一致しない。
-					$controller->flash(__('Unauthorized request.<br />Please reload the page.'), '', 'CheckAuth.005', '400');
-					return ;
-				}
-			}*/
-			// TODO:test センターカラム以外のpege_idも入ってくる可能性あるため、修正予定。
-			//$center_page = $page;
-
-			$controller->page_id = isset($block['Block']['page_id']) ? intval(($block['Block']['page_id'])) : intval($page['Page']['id']);
-
-			//TODO:test
-			/*
-			 * ページ
-			 */
-			if($controller_name == 'pages') {
-				// test
-				$page_id_arr = array($page['Page']['id'], 5, 6, 7, 8);
-				// ページ内のカラムページのリストをセット
-				$controller->page_id_arr = $page_id_arr;
-			}
-			$controller->page_id = $page['Page']['id'];
-
-			// TODO:ログインに遷移する場合、以下を記述
-			//$controller->Auth->deny();
 		}
 
 		if($controller->request->header('X-NC-PAGE') || ($controller->request->params['plugin'] == '' && $controller->request->params['controller'] == 'pages')) {
 			Configure::write(NC_SYSTEM_KEY.'.block_type', 'blocks');
 		}
 
-
 		/*
 		 * Setting Mode
-		 */
+		*/
 		$mode = $this->Session->read(NC_SYSTEM_KEY.'.mode');
 		if($controller->hierarchy >= NC_AUTH_MIN_CHIEF) {
 			if(isset($controller->request->query['setting_mode']) &&
-				!is_null($controller->request->query['setting_mode'])) {
+					!is_null($controller->request->query['setting_mode'])) {
 				switch ($controller->request->query['setting_mode']) {
 					case NC_GENERAL_MODE:
 						$this->Session->delete(NC_SYSTEM_KEY.'.mode');
@@ -267,14 +152,6 @@ class CheckAuthComponent extends Component {
 			}
 		} else if($user_id == 0 && !empty($mode)) {
 			$this->Session->delete(NC_SYSTEM_KEY.'.mode');
-		}
-
-		// block_idチェック
-		if($this->chkBlockId) {
-			if((!isset($block_id) || $block_id == 0) && !$system_flag) {
-				$controller->flash(__('Content not found.'), $redirect_url, 'CheckAuth.006', '404');
-				return;
-			}
 		}
 
 		// 権限チェック
@@ -290,10 +167,10 @@ class CheckAuthComponent extends Component {
 			} else {
 				// コミュニティ
 				$params = array(
-					'fields' => array(
-						'Community.publication_range_flag'
-					),
-					'conditions' => array('room_id' => $page['Page']['root_id']),
+						'fields' => array(
+								'Community.publication_range_flag'
+						),
+						'conditions' => array('room_id' => $page['Page']['root_id']),
 				);
 				$current_community = $controller->Community->find('first', $params);
 				if($current_community['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_ALL) {
@@ -305,22 +182,171 @@ class CheckAuthComponent extends Component {
 			}
 		}
 
-		if(!$this->chkAuth($controller->hierarchy)) {
+		if(!$this->checkAuth($controller->hierarchy)) {
 			if($user_id == 0) {
 				$this->Session->setFlash(__('Forbidden permission to access the page.'), 'default', array(), 'auth');
 			}
-			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.007', '403');
+			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.check.003', '403');
 			return;
 		}
 
 		// 権限チェック(会員権限)
-		if(!$this->chkUserAuth($user['hierarchy'])) {
+		if(!$this->checkUserAuth($user['hierarchy'])) {
 			if($user_id == 0) {
 				$this->Session->setFlash(__('Forbidden permission to access the page.'), 'default', array(), 'auth');
 			}
-			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.008', '403');
+			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.check.004', '403');
 			return;
 		}
+	}
+
+/**
+ * 管理系権限チェック
+ *
+ * @param   integer $module_id
+ * @return  boolean
+ * @since   v 3.0.0.0
+ */
+	public function checkAdmin($module_id) {
+		$controller = $this->_controller;
+		$user = $this->Auth->user();
+		$user_id = isset($user['id']) ? intval($user['id']) : 0;
+		$redirect_url = ($user_id == 0) ? '/users/login' : null;
+		$url = $controller->request->url;
+		$authority_id = isset($user['authority_id']) ? intval($user['authority_id']) : NC_AUTH_OTHER;
+
+		// メンバ変数セット
+		$controller->id = '_system'. $module_id;
+		$controller->module_id = $module_id;
+
+		$controller->hierarchy = $controller->ModuleSystemLink->findHierarchy($module_id, $authority_id);
+
+		return true;
+	}
+
+/**
+ * 一般系系権限チェック
+ *
+ * @param   Model Module $module
+ * @return  boolean
+ * @since   v 3.0.0.0
+ */
+	public function checkGeneral() {
+		$controller = $this->_controller;
+		$user = $this->Auth->user();
+		$user_id = isset($user['id']) ? intval($user['id']) : 0;
+		$this->_setControllerParams($controller);
+		if (isset($controller->nc_block['Block'])) {
+			// 既に権限チェック済 - PageからrequestActionよりブロックを表示した場合
+			return true;
+		}
+		$redirect_url = ($user_id == 0) ? '/users/login' : null;
+		$url = $controller->request->url;
+
+		$permalink = isset($controller->request->params['permalink']) ? $controller->request->params['permalink'] : '';
+		$block_id = isset($controller->request->params['block_id']) ? intval($controller->request->params['block_id']) : 0;
+		$data_page_id = !empty($controller->request->data[$this->requestPageId]) ? $controller->request->data[$this->requestPageId] : 0;
+		$named_page_id = !empty($controller->request->named[$this->requestPageId]) ? $controller->request->named[$this->requestPageId] : 0;
+		$url_page_id = !empty($controller->request->query[$this->requestPageId]) ? $controller->request->query[$this->requestPageId] : 0;
+		$page_id = !empty($data_page_id) ? $data_page_id : (!empty($named_page_id) ? $named_page_id : (!empty($url_page_id) ? $url_page_id : 0));
+
+		$controller_name = $controller->request->params['controller'];
+		$action_name = $controller->request->params['action'];
+		$lang = $this->Session->read(NC_CONFIG_KEY.'.'.'language');
+
+		$permalink = trim($permalink, '/');
+		Configure::write(NC_SYSTEM_KEY.'.permalink', $permalink);
+
+		// メンバ変数セット
+		$controller->id = '_'. $block_id;
+		$controller->block_id = $block_id;
+
+		if(!preg_match($this->prohibitionURL, $url)) {
+			if($block_id > 0) {
+				$block =  $controller->Block->findAuthById($block_id, $user_id);
+				if($block === false || !isset($block['Block'])) {
+					// 置いているpluginが異なる
+					$controller->flash(__('Content not found.'), '', 'CheckAuth.checkGeneral.001', '404');
+					return false;
+				}
+				$controller->nc_block = $block;
+
+				$active_page = $controller->Page->findById($block['Block']['page_id']);
+				if(!$active_page) {
+					// ブロックIDに対応したページが存在しない
+					$controller->flash(__('Page not found.'), $redirect_url, 'CheckAuth.checkGeneral.002', '404');
+					return false;
+				}
+			}
+
+			$result = $this->_getPage($controller, $permalink, $page_id, $user_id, $lang);
+
+			if($result === false) {
+				$page = false;
+				$center_page = false;
+			} else {
+				list($center_page, $page) = $result;
+			}
+			Configure::write(NC_SYSTEM_KEY.'.'.'center_page', $center_page);
+			if($this->chkMovedPermanently && isset($active_page) && $active_page['Page']['position_flag'] &&
+					($page === false || $page['Page']['id'] != $active_page['Page']['id'])) {
+				// パーマリンクからのPageとblock_idのはってあるページが一致しなければエラー
+				// ３０１をかえして、その後、移動後のページへ遷移させる
+				// TODO:中央カラムのみにはってあるブロックのみチェックしているが、ヘッダーのブロックのチェックもするべき
+				$redirect_url = preg_replace('$^'.$permalink.'$i', $active_page['Page']['permalink'], $url);
+				$controller->flash(__('Moved Permanently.'), $redirect_url, 'CheckAuth.checkGeneral.003', '301');
+				return false;
+			}
+
+			if($page === false || $center_page === false) {
+				// ページが存在しない
+				$controller->flash(__('Page not found.'), $redirect_url, 'CheckAuth.checkGeneral.004', '404');
+				return false;
+			}
+
+			$controller->nc_page = isset($active_page) ? $active_page : $page;	// blockから取得できるPage優先
+			$controller->nc_current_page = $page;								// pageから取得できるPage
+			if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_DISABLE ||
+					($page['Page']['display_flag'] == NC_DISPLAY_FLAG_OFF && $page['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF)) {
+				$controller->flash(__('Content not found.'), $redirect_url, 'CheckAuth.checkGeneral.005', '404');
+				return false;
+			}
+
+			// PageとBlockのhierarchyの低いほうをセット
+			$page_hierarchy = (isset($page) && !is_null($page['Authority']['hierarchy'])) ? intval($page['Authority']['hierarchy']) : NC_AUTH_OTHER;
+			$block_hierarchy = (isset($block) && !is_null($block['Block']['hierarchy'])) ? intval($block['Block']['hierarchy']) : $page_hierarchy;
+			$controller->hierarchy = min($block_hierarchy, $page_hierarchy);
+
+			if(isset($block) && !is_null($block['Content']['master_id'])) {
+				$controller->content_id = intval($block['Content']['master_id']);
+			}
+
+			$controller->page_id = isset($block['Block']['page_id']) ? intval(($block['Block']['page_id'])) : intval($page['Page']['id']);
+
+			//TODO:test
+			/*
+			 * ページ
+			*/
+			if($controller_name == 'pages') {
+				// test
+				$page_id_arr = array($page['Page']['id'], 5, 6, 7, 8);
+				// ページ内のカラムページのリストをセット
+				$controller->page_id_arr = $page_id_arr;
+			}
+			//$controller->page_id = $page['Page']['id'];
+
+			// TODO:ログインに遷移する場合、以下を記述
+			//$controller->Auth->deny();
+		}
+
+		// block_idチェック
+		if($this->chkBlockId) {
+			if(!isset($block_id) || $block_id == 0) {
+				$controller->flash(__('Content not found.'), $redirect_url, 'CheckAuth.checkGeneral.006', '404');
+				return false;
+			}
+		}
+		return true;
 	}
 
 /**
@@ -331,7 +357,7 @@ class CheckAuthComponent extends Component {
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	public function chkAuth($hierarchy, $allowAuth = null) {
+	public function checkAuth($hierarchy, $allowAuth = null) {
 		if(!isset($allowAuth)) {
 			$allowAuth = ($this->allowAuth == null) ? NC_AUTH_OTHER : $this->allowAuth;
 		}
@@ -351,7 +377,7 @@ class CheckAuthComponent extends Component {
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	public function chkUserAuth($hierarchy, $allowUserAuth = null) {
+	public function checkUserAuth($hierarchy, $allowUserAuth = null) {
 		if(!isset($allowUserAuth)) {
 			$allowUserAuth = ($this->allowUserAuth == null) ? NC_AUTH_OTHER : $this->allowUserAuth;
 		}
@@ -361,39 +387,6 @@ class CheckAuthComponent extends Component {
 		}
 		return true;
 	}
-
-/**
- * Module取得
- *
- * @param   Controller $controller Instantiating controller
- * @param   string  $url
- * @param   string  $dir_name
- * @param   integer $authority_id
- * @return  array($module_id, $system_flag) エラーの場合、false
- * @since   v 3.0.0.0
- */
-	/*protected function _getModule(Controller $controller, $plugin_name, $authority_id) {
-		$modules = array();
-		if(isset($controller->request->params['modules'])) {
-			$modules =  $controller->request->params['modules'];
-			if(isset($modules[$plugin_name])) {
-				return $modules[$plugin_name];
-			}
-		}
-		//if($plugin_name == 'blocks' || $plugin_name == 'contents') {
-		//	$module = $controller->Module->findByDirname($plugin_name);
-		//} else {
-			$module = $controller->Module->findByDirname($plugin_name, $authority_id);
-		//}
-		if(empty($module['Module'])) {
-			return false;
-		}
-		$modules[$plugin_name] = $module;
-
-		$controller->request->offsetSet('modules', $modules);
-
-		return $module;
-	}*/
 
 /**
  * Page取得
@@ -527,26 +520,6 @@ class CheckAuthComponent extends Component {
 		$page = $controller->Page->afterFindIds($page, $user_id);
 
 		return array($center_page, $page);
-	}
-
-/**
- * Block取得
- * <pre>
- * Page情報を取得する
- * </pre>
- *
- * @param   Controller $controller Instantiating controller
- * @param   integer $block_id
- * @param   integer $user_id
- * @return  array $block エラーの場合、false
- * @since   v 3.0.0.0
- */
-	protected function _getBlock(Controller $controller, $block_id, $user_id) {
-		$block =  $controller->Block->findAuthById($block_id, $user_id);
-		if(!isset($block)) {
-			return false;
-		}
-		return $block;
 	}
 
 	protected function _setControllerParams(Controller $controller) {

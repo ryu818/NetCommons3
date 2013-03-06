@@ -59,7 +59,7 @@ class PageMenuComponent extends Component {
 			}
 		}
 
-		$admin_hierarchy = $this->_controller->ModuleSystemLink->findHierarchy(Inflector::camelize($request->params['plugin']), $login_user['authority_id']);
+		$admin_hierarchy = $this->_controller->ModuleSystemLink->findHierarchyByPluginName($request->params['plugin'], $login_user['authority_id']);
 		if($admin_hierarchy < NC_AUTH_MIN_GENERAL) {
 			$this->_controller->flash(__('Forbidden permission to access the page.'), null, 'PageMenu.validatorPage.003', '403');
 			return false;
@@ -73,7 +73,7 @@ class PageMenuComponent extends Component {
 			return false;
 		}
 
-		if(!$this->chkAuth($admin_hierarchy, $page, $parent_page)) {
+		if(!$this->checkAuth($admin_hierarchy, $page, $parent_page)) {
 			$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPage.005', '400');
 			return false;
 		}
@@ -100,14 +100,14 @@ class PageMenuComponent extends Component {
 	 * @return boolean
 	 * @since   v 3.0.0.0
 	 */
-	public function chkAuth($admin_hierarchy, $page = null, $parent_page = null) {
+	public function checkAuth($admin_hierarchy, $page = null, $parent_page = null) {
 		$is_auth_ok = false;
 		if($admin_hierarchy >= NC_AUTH_MIN_ADMIN) {
 			$is_auth_ok = true;
 		}
 
 		$chk_page = isset($parent_page) ? $parent_page : $page;
-		if(!$is_auth_ok && !$this->_controller->CheckAuth->chkAuth($chk_page['Authority']['hierarchy'], NC_AUTH_CHIEF)) {
+		if(!$is_auth_ok && !$this->_controller->CheckAuth->checkAuth($chk_page['Authority']['hierarchy'], NC_AUTH_CHIEF)) {
 			return false;
 		}
 
@@ -250,7 +250,7 @@ class PageMenuComponent extends Component {
 		$user_id = $this->_controller->Auth->user('id');
 
 		// 移動先権限チェック
-		if($page['Page']['thread_num'] != 1 && !$this->_controller->CheckAuth->chkAuth($parent_page['Authority']['hierarchy'], NC_AUTH_CHIEF)) {
+		if($page['Page']['thread_num'] != 1 && !$this->_controller->CheckAuth->checkAuth($parent_page['Authority']['hierarchy'], NC_AUTH_CHIEF)) {
 			$this->_controller->flash(__('Forbidden permission to access the page.'), null, 'PageMenu.validatorMovePage.001', '400');
 			return false;
 		}
@@ -962,7 +962,7 @@ class PageMenuComponent extends Component {
 					$this->_controller->flash(__('Forbidden permission to access the page.'), null, 'PageMenu/operatePage.003', '403');
 					return false;
 				}
-			} else if(!$this->chkAuth($admin_hierarchy, $move_page, $move_parent_page)) {
+			} else if(!$this->checkAuth($admin_hierarchy, $move_page, $move_parent_page)) {
 				$this->_controller->flash(__('Forbidden permission to access the page.'), null, 'PageMenu/operatePage.004', '403');
 				return false;
 			}

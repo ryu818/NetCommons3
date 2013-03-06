@@ -28,13 +28,6 @@ class BlockStyleController extends BlockAppController {
 	public $components = array('CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF));
 
 /**
- * Model Block Content Module
- *
- * @var integer
- */
-	public $nc_block = null;
-
-/**
  * ブロックスタイル画面
  * @param   void
  * @return  void

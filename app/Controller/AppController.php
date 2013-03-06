@@ -125,7 +125,9 @@ class AppController extends Controller {
 	{
 		parent::beforeFilter();
 
-		$this->Common->initializeAuth();
+		$controller_name = $this->request->params['controller'];
+		$block_type = isset($this->request->params['block_type']) ? $this->request->params['block_type'] : null;
+    	$this->Common->initializeAuth();
 
 		if ($this->request->is('ajax')) {
 			$this->layout = 'ajax';
@@ -155,7 +157,10 @@ class AppController extends Controller {
     	}
 
     	// 権限チェック
-    	if ($this->Components->enabled('Auth')) {
+    	//if($block_type == 'active-controls') {
+    	//	// 管理系モジュール
+    	//} else
+    	if ($controller_name != 'controls' && $this->Components->enabled('Auth')) {
     		$this->CheckAuth->check();
     	}
 	}

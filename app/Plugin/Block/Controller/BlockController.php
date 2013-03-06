@@ -17,9 +17,6 @@ class BlockController extends BlockAppController {
 	public $components = array('Block.BlockMove', 'CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF, 'checkOrder' => array("request", "url")));
 	public $uses = array('Block.BlockOperation');
 
-	public $nc_block = array();
-	public $nc_page = array();
-
 /**
  * 実行前処理
  * @param   void

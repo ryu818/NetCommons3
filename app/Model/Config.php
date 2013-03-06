@@ -19,6 +19,14 @@ class Config extends AppModel
 		)
 	);*/
 
+/**
+ * afterFind
+ *
+ * @param  array   $results
+ * @param  boolean $primary
+ * @return array $results
+ * @since   v 3.0.0.0
+ */
 	public function afterFind($results, $primary = false) {
 		$ret = array();
 		//$single_flag = false;
@@ -64,5 +72,31 @@ class Config extends AppModel
 			//return $buf_ret;
 		//}
 		return $ret;
+	}
+
+/**
+ * Version情報取得
+ *
+ * @param  void
+ * @return string
+ * @since   v 3.0.0.0
+ */
+	public function getVersion() {
+		$conditions = array(
+			'name' => 'version',
+			'cat_id' => NC_SYSTEM_CATID
+		);
+		$params = array(
+			'fields' => array(
+				'Config.name',
+				'Config.value'
+			),
+			'conditions' => $conditions
+		);
+		$configs = $this->find('all', $params);
+		if(isset($configs['version'])) {
+			return $configs['version'];
+		}
+		return NC_VERSION;
 	}
 }

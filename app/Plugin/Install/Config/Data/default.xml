@@ -160,7 +160,7 @@
         <column name="display_from_date">NULL</column>
         <column name="display_to_date">NULL</column>
         <column name="theme_name"></column>
-        <column name="temp_name">default</column>
+        <column name="temp_name"></column>
         <column name="left_margin">8</column>
         <column name="right_margin">8</column>
         <column name="top_margin">8</column>
@@ -192,7 +192,7 @@
         <column name="display_from_date">NULL</column>
         <column name="display_to_date">NULL</column>
         <column name="theme_name">None</column>
-        <column name="temp_name">default</column>
+        <column name="temp_name"></column>
         <column name="left_margin">8</column>
         <column name="right_margin">8</column>
         <column name="top_margin">8</column>
@@ -224,7 +224,7 @@
         <column name="display_from_date">NULL</column>
         <column name="display_to_date">NULL</column>
         <column name="theme_name"></column>
-        <column name="temp_name">default</column>
+        <column name="temp_name"></column>
         <column name="left_margin">8</column>
         <column name="right_margin">8</column>
         <column name="top_margin">8</column>
@@ -256,7 +256,7 @@
         <column name="display_from_date">NULL</column>
         <column name="display_to_date">NULL</column>
         <column name="theme_name"></column>
-        <column name="temp_name">default</column>
+        <column name="temp_name"></column>
         <column name="left_margin">8</column>
         <column name="right_margin">8</column>
         <column name="top_margin">8</column>
@@ -288,7 +288,7 @@
         <column name="display_from_date">NULL</column>
         <column name="display_to_date">NULL</column>
         <column name="theme_name"></column>
-        <column name="temp_name">default</column>
+        <column name="temp_name"></column>
         <column name="left_margin">8</column>
         <column name="right_margin">8</column>
         <column name="top_margin">8</column>
@@ -320,7 +320,7 @@
         <column name="display_from_date">NULL</column>
         <column name="display_to_date">NULL</column>
         <column name="theme_name"></column>
-        <column name="temp_name">default</column>
+        <column name="temp_name"></column>
         <column name="left_margin">8</column>
         <column name="right_margin">8</column>
         <column name="top_margin">8</column>
@@ -352,7 +352,7 @@
         <column name="display_from_date">NULL</column>
         <column name="display_to_date">NULL</column>
         <column name="theme_name"></column>
-        <column name="temp_name">default</column>
+        <column name="temp_name"></column>
         <column name="left_margin">8</column>
         <column name="right_margin">8</column>
         <column name="top_margin">8</column>
@@ -384,7 +384,7 @@
         <column name="display_from_date">NULL</column>
         <column name="display_to_date">NULL</column>
         <column name="theme_name"></column>
-        <column name="temp_name">default</column>
+        <column name="temp_name"></column>
         <column name="left_margin">8</column>
         <column name="right_margin">8</column>
         <column name="top_margin">8</column>
@@ -416,7 +416,7 @@
         <column name="display_from_date">NULL</column>
         <column name="display_to_date">NULL</column>
         <column name="theme_name"></column>
-        <column name="temp_name">default</column>
+        <column name="temp_name"></column>
         <column name="left_margin">8</column>
         <column name="right_margin">8</column>
         <column name="top_margin">8</column>
@@ -448,7 +448,7 @@
         <column name="display_from_date">NULL</column>
         <column name="display_to_date">NULL</column>
         <column name="theme_name"></column>
-        <column name="temp_name">default</column>
+        <column name="temp_name"></column>
         <column name="left_margin">8</column>
         <column name="right_margin">8</column>
         <column name="top_margin">8</column>
@@ -480,7 +480,7 @@
         <column name="display_from_date">NULL</column>
         <column name="display_to_date">NULL</column>
         <column name="theme_name">None</column>
-        <column name="temp_name">default</column>
+        <column name="temp_name"></column>
         <column name="left_margin">8</column>
         <column name="right_margin">8</column>
         <column name="top_margin">8</column>
@@ -512,7 +512,7 @@
         <column name="display_from_date">NULL</column>
         <column name="display_to_date">NULL</column>
         <column name="theme_name">None</column>
-        <column name="temp_name">default</column>
+        <column name="temp_name"></column>
         <column name="left_margin">8</column>
         <column name="right_margin">8</column>
         <column name="top_margin">8</column>
@@ -544,7 +544,7 @@
         <column name="display_from_date">NULL</column>
         <column name="display_to_date">NULL</column>
         <column name="theme_name">None</column>
-        <column name="temp_name">default</column>
+        <column name="temp_name"></column>
         <column name="left_margin">8</column>
         <column name="right_margin">8</column>
         <column name="top_margin">8</column>
@@ -576,7 +576,7 @@
         <column name="display_from_date">NULL</column>
         <column name="display_to_date">NULL</column>
         <column name="theme_name">None</column>
-        <column name="temp_name">default</column>
+        <column name="temp_name"></column>
         <column name="left_margin">8</column>
         <column name="right_margin">8</column>
         <column name="top_margin">8</column>
@@ -608,7 +608,7 @@
         <column name="display_from_date">NULL</column>
         <column name="display_to_date">NULL</column>
         <column name="theme_name"></column>
-        <column name="temp_name">default</column>
+        <column name="temp_name"></column>
         <column name="left_margin">8</column>
         <column name="right_margin">8</column>
         <column name="top_margin">8</column>
@@ -640,7 +640,7 @@
         <column name="display_from_date">NULL</column>
         <column name="display_to_date">NULL</column>
         <column name="theme_name">None</column>
-        <column name="temp_name">default</column>
+        <column name="temp_name"></column>
         <column name="left_margin">8</column>
         <column name="right_margin">8</column>
         <column name="top_margin">8</column>
@@ -672,7 +672,7 @@
         <column name="display_from_date">NULL</column>
         <column name="display_to_date">NULL</column>
         <column name="theme_name"></column>
-        <column name="temp_name">default</column>
+        <column name="temp_name"></column>
         <column name="left_margin">8</column>
         <column name="right_margin">8</column>
         <column name="top_margin">8</column>
@@ -704,7 +704,7 @@
         <column name="display_from_date">NULL</column>
         <column name="display_to_date">NULL</column>
         <column name="theme_name"></column>
-        <column name="temp_name">default</column>
+        <column name="temp_name"></column>
         <column name="left_margin">8</column>
         <column name="right_margin">8</column>
         <column name="top_margin">8</column>
@@ -736,7 +736,7 @@
         <column name="display_from_date">NULL</column>
         <column name="display_to_date">NULL</column>
         <column name="theme_name">None</column>
-        <column name="temp_name">default</column>
+        <column name="temp_name"></column>
         <column name="left_margin">8</column>
         <column name="right_margin">8</column>
         <column name="top_margin">8</column>

@@ -56,7 +56,7 @@ class AppPluginController extends AppController
 		$this->getEventManager()->dispatch(new CakeEvent('Controller.initialize', $this));
 		$this->getEventManager()->dispatch(new CakeEvent('Controller.startup', $this));
 
-		if(isset($this->nc_block) && !isset($this->nc_block['Content']['id'])) {
+		if(!empty($this->nc_block) && !isset($this->nc_block['Content']['id'])) {
 			// Contentテーブルにデータなし
 			$this->set('nc_error_flag' , true);
 			$this->set('show_frame', isset($this->Frame) ? $this->Frame : true);
@@ -76,20 +76,32 @@ class AppPluginController extends AppController
 	{
 		parent::beforeRender();
 
-		if(isset($this->request->params['block_id'])) {
+		if(isset($this->id) && !isset($this->viewVars['id'])) {
+			$this->set('id', $this->id);
+		}
+		if(isset($this->block_id) && !isset($this->viewVars['block_id'])) {
+			$this->set('block_id', $this->block_id);
+		}
+		if(isset($this->module_id) && !isset($this->viewVars['module_id'])) {
+			$this->set('module_id', $this->module_id);
+		}
+		/*if(isset($this->request->params['block_id'])) {
 			$this->set('block_id', $this->request->params['block_id']);
 			$this->set('id', '_'.$this->request->params['block_id']);
 		} else if(isset($this->request->params['module_id'])) {
-			$this->set('block_id', $this->request->params['module_id']);
+			$this->set('module_id', $this->request->params['module_id']);
 			$this->set('id', '_'.$this->request->params['module_id']);
+		}*/
+		if(!empty($this->nc_module) && !isset($this->viewVars['module'])) {
+			$this->set('module', $this->nc_module);
 		}
-		if(isset($this->nc_block) && !isset($this->viewVars['block'])) {
+		if(!empty($this->nc_block) && !isset($this->viewVars['block'])) {
 			if($this->nc_block['Block']['temp_name'] != '') {
 				$this->theme = $this->nc_block['Block']['temp_name'];
 			}
 			$this->set('block', $this->nc_block);
 		}
-		if(isset($this->nc_page) && !isset($this->viewVars['page'])) {
+		if(!empty($this->nc_page) && !isset($this->viewVars['page'])) {
 			$this->set('page', $this->nc_page);
 		}
 		if(isset($this->hierarchy) && $this->hierarchy >= NC_AUTH_MIN_CHIEF) {

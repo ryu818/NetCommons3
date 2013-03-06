@@ -22,13 +22,6 @@ class BlockOperationController extends BlockAppController {
 	public $components = array('CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF, 'chkMovedPermanently' => false, 'checkOrder' => array("request", "url")));
 
 /**
- * Model Block Content Module
- *
- * @var integer
- */
-	public $nc_block = null;
-
-/**
  * ブロックコピー
  * @param   void
  * @return  void

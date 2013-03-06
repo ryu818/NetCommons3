@@ -150,7 +150,7 @@ class PageMenuController extends PageAppController {
 	public function add_community($current_page_id) {
 		$user = $this->Auth->user();
 		// モデレータ以上
-		$admin_hierarchy = $this->ModuleSystemLink->findHierarchy(Inflector::camelize($this->request->params['plugin']), $user['authority_id']);
+		$admin_hierarchy = $this->ModuleSystemLink->findHierarchyByPluginName($this->request->params['plugin'], $user['authority_id']);
 		if($admin_hierarchy <= NC_AUTH_GENERAL || !$this->request->is('post')) {
 			$this->flash(__('Forbidden permission to access the page.'), null, 'PageMenu/add_community.001', '403');
 			return;
