@@ -49,7 +49,7 @@ class ControlsController extends AppController {
 
 		$referer = $this->referer();
 		$base_url = Router::url('/', true);
-		if(preg_match('/^'.preg_quote($base_url, '/').'/', $referer)) {
+		if(preg_match('/^'.preg_quote($base_url, '/').'/', $referer) && !preg_match('/\/users\/login$/', $referer)) {
 			$this->set('referer', $referer);
 		} else {
 			$this->set('referer', $base_url);
