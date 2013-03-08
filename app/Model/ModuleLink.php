@@ -76,6 +76,9 @@ class ModuleLink extends AppModel
  * @since   v 3.0.0.0
  */
 	public function afterFind($results) {
+		if(!isset($results[0]['Module']['dir_name'])) {
+			return $results;
+		}
 
 		$ret_room_id = array();
 		$ret_authority_id = array();
@@ -83,7 +86,6 @@ class ModuleLink extends AppModel
 		$ret_space_type = array();
 
 		$locale = Configure::read(NC_SYSTEM_KEY.'.locale');
-
 		foreach ($results as $key => $val) {
 			// 1.みているroom_idのデータ(ルーム)
 			// 2.みているspace_type, authority_id(会員権限)のデータ(マイポータル、マイルーム)
@@ -127,6 +129,23 @@ class ModuleLink extends AppModel
  */
 	public function isAddModule($page, $module_id) {
 		// TODO:未作成 常にtrue
+		return true;
+	}
+
+/**
+ * module_idよりModuleSystemLinkデータ削除
+ *
+ * @param  integer $module_id
+ * @return boolean
+ * @since   v 3.0.0.0
+ */
+	public function deleteByModuleId($module_id) {
+		$conditions = array(
+			"ModuleLink.module_id" => $module_id
+		);
+		if(!$this->deleteAll($conditions)) {
+			return false;
+		}
 		return true;
 	}
 }

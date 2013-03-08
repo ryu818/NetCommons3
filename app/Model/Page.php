@@ -680,13 +680,14 @@ class Page extends AppModel
 /**
  * ルーム（ページ）削除処理
  * @param mixed $id ID of record to delete
- * @param boolean $all_delete コンテンツもすべて削除するかどうか
+ * @param boolean $all_delete コンテンツもすべて削除するかどうか（NC_DELETE_MOVE_PARENTの場合、コンテンツを親のコンテンツへ）
  * @param Model Page $child_pages 指定されていなければ取得
+ * @param integer $parent_room_id $all_delete NC_DELETE_MOVE_PARENTの場合の振り替え先room_id
  * @param boolean $is_recursive 再帰的に呼ばれたかどうか
  * @return boolean True on success
  * @since   v 3.0.0.0
  */
-	public function deletePage($id = null, $all_delete = _OFF, $child_pages = null, $is_recursive = false) {
+	public function deletePage($id = null, $all_delete = _OFF, $child_pages = null, $parent_room_id = null, $is_recursive = false) {
 		if (!empty($id)) {
 			$this->id = $id;
 		}
@@ -695,6 +696,11 @@ class Page extends AppModel
 		$page = $this->findById($id);
 		if(!$page) {
 			return false;
+		}
+
+		if($all_delete == NC_DELETE_MOVE_PARENT && !isset($parent_room_id)) {
+			$parent_page = $this->findById($page['Page']['parent_id']);
+			$parent_room_id = isset($parent_page['Page']) ? $parent_page['Page']['room_id'] : 0;
 		}
 
 		/*
@@ -708,7 +714,7 @@ class Page extends AppModel
 				$blocks = array($blocks);
 			}
 			foreach($blocks as $block) {
-				$Block->deleteBlock($block, $all_delete);
+				$Block->deleteBlock($block, $all_delete, $parent_room_id, true);
 			}
 		}
 
@@ -719,9 +725,8 @@ class Page extends AppModel
 				$child_pages = $this->findChilds('all', $page, $login_user_id);
 			}
 			foreach($child_pages as $child_page) {
-				if(!$this->deletePage($child_page['Page']['id'], $all_delete, null, true)) {
-					$this->flash(__('Failed to delete the database, (%s).', 'pages'), null, 'PageMenu/delete.003', '500');
-					return;
+				if(!$this->deletePage($child_page['Page']['id'], $all_delete, null, $parent_room_id, true)) {
+					return false;
 				}
 			}
 			//前詰め処理
@@ -834,6 +839,22 @@ class Page extends AppModel
 							return false;
 						}
 					}
+				}
+			}
+
+			// ブロックとして配置していない該当ルームのコンテンツを親ルームがあれば、そちらへ移動、なければ完全に削除。
+			App::uses('Content', 'Model');
+			$Content = new Content();
+			$params = array(
+				'conditions' => array(
+					"Content.room_id" => $page['Page']['room_id']
+				)
+			);
+
+			$delete_contents = $Content->find('all', $params);
+			if(count($delete_contents) > 0) {
+				foreach($delete_contents as $delete_content) {
+					$Content->deleteContent($delete_content, $all_delete, $parent_room_id);
 				}
 			}
 		}

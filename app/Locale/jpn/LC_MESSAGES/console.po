@@ -1,0 +1,32 @@
+msgid  	"Module Manager"
+msgstr 	"モジュール管理"
+
+msgid  	"Install the module."
+msgstr 	"モジュールのインストールを行います。"
+msgid  	"Updating the module."
+msgstr 	"モジュールのアップデートを行います。"
+msgid  	"Uninstall the module."
+msgstr 	"モジュールのアンイストールを行います。"
+msgid  	"Updating All module."
+msgstr 	"すべてのモジュールのアップデートを行います。"
+
+msgid  	"The plugin to use."
+msgstr 	"モジュール名を指定"
+
+msgid  	"Force \"module\" to install."
+msgstr 	"確認メッセージなしでインストールする。"
+
+msgid  	"Force \"module\" to update."
+msgstr 	"確認メッセージなしでアップデートする。"
+
+msgid  	"Force \"module\" to uninstall."
+msgstr 	"確認メッセージなしでアンインストールする。"
+
+msgid  	"Please specify the module name."
+msgstr 	"モジュール名を指定して下さい。"
+
+msgid  	"Error"
+msgstr 	"エラー"
+
+msgid  	"Failed to %s."
+msgstr 	"%s処理に失敗しました。"

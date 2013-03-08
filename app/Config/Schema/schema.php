@@ -561,7 +561,7 @@ class AppSchema extends CakeSchema {
 	);
 	public $uploads = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
-		'parent_content_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'content_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'module_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'unique_id' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 40, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'file_name' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),

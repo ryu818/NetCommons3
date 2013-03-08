@@ -82,7 +82,7 @@ msgid  	"If you want to delete the top page, please run after deleting all the p
 msgstr 	"トップページを削除する場合、本ルームのページをすべて削除後に実行してください。<br />削除できません。"
 msgid  	"Because the [%s] page is locked, I can't be deleted. Please run after unlock the page."
 msgstr  "[%s]ページがロックされているため、削除できません。ページのロックを解除後に実行してください。"
-msgid  	"I'm already running. Please try again at a later time."
+msgid  	"You are already running. Please try again at a later time."
 msgstr  "既に実行中の可能性があります。時間をおいてからやり直してください。"
 
 msgid  	"Lower pages"

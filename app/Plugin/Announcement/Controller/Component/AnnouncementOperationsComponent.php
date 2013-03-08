@@ -132,38 +132,4 @@ class AnnouncementOperationsComponent extends Object {
 //	public function move($from_block, $to_block, $from_content, $to_content, $from_page, $to_page) {
 //		return true;
 //	}
-
-/**
- * モジュールインストール時に呼ばれる関数
- *
- * @param   integer $module_id
- * @return  boolean
- * @since   v 3.0.0.0
- */
-//	public function install($module_id) {
-//		return true;
-//	}
-
-/**
- * モジュールアップデート時に呼ばれる関数
- *
- * @param   integer $module_id
- * @return  boolean
- * @since   v 3.0.0.0
- */
-//	public function update($module_id) {
-//		return true;
-//	}
-
-/**
- * モジュールアンインストール時に呼ばれる関数
- *
- * @param   integer $module_id
- * @return  boolean
- * @since   v 3.0.0.0
- */
-//	public function uninstall($module_id) {
-//		return true;
-//	}
-
 }

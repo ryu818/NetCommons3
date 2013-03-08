@@ -53,7 +53,7 @@ class Module extends AppModel
 		}
 
 		foreach ($results as $key => $result) {
-			if(!isset($result['Module']['id'])) {
+			if(!isset($result['Module']['dir_name'])) {
 				continue;
 			}
 			$dir_name = $result['Module']['dir_name'];

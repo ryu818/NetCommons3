@@ -1,0 +1,30 @@
+/**
+ * モジュール管理 Css
+ *
+ * @copyright     Copyright 2012, NetCommons Project
+ * @package       Plugin.Announcement.webroot.js
+ * @author        Noriko Arai,Ryuji Masukawa
+ * @since         v 3.0.0.0
+ * @license       http://www.netcommons.org/license.txt  NetCommons License
+ */
+.module-dialog {
+	width: 630px !important;
+}
+
+#module-init-tab-list {
+	padding : 2px !important;
+}
+
+.module-allupdate {
+	padding:10px 10px 0 0;
+	text-align:right;
+}
+
+.module-current-version {
+	font-weight:bold;
+	border:1px solid #ccc;
+	padding:2px;
+	margin:2px;
+	text-align:center;
+	background-color:#eee;
+}

@@ -957,7 +957,7 @@
 		delBlockConfirm: function(event, block_id, all_delete_flag, confirm) {
 			var t = this;
 
-			var all_delete = (all_delete_flag) ? __d('pages', 'I completely delete it.') : null;
+			var all_delete = (all_delete_flag) ? __d('pages', 'You completely delete it.') : null;
 			var pos = $(event.target).offset();
 			var ok = __('Ok') ,cancel = __('Cancel');
 

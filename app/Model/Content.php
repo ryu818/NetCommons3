@@ -47,12 +47,12 @@ class Content extends AppModel
 		return $val;
 	}
 
-	/**
-	 * Contentモデル共通Fields文
-	 * @param   void
-	 * @return  array   $fields
-	 * @since   v 3.0.0.0
-	 */
+/**
+ * Contentモデル共通Fields文
+ * @param   void
+ * @return  array   $fields
+ * @since   v 3.0.0.0
+ */
 	protected function _getFieldsArray() {
 		return array(
 			'Content.*',
@@ -62,12 +62,12 @@ class Content extends AppModel
 		);
 	}
 
-	/**
-	 * Contentモデル共通JOIN文
-	 * @param   integer $user_id
-	 * @return  array   $joins
-	 * @since   v 3.0.0.0
-	 */
+/**
+ * Contentモデル共通JOIN文
+ * @param   integer $user_id
+ * @return  array   $joins
+ * @since   v 3.0.0.0
+ */
 	protected function _getJoinsArray($user_id) {
 		$ret = array(
 			array("type" => "LEFT",
@@ -93,5 +93,135 @@ class Content extends AppModel
 			)
 		);
 		return $ret;
+	}
+
+/**
+ * コンテンツ削除処理
+ *
+ * @param   Model Content  $content
+ * @param   boolean $mode _OFF:ショートカットのみ削除。_ON. 強制的に削除 NC_DELETE_MOVE_PARENT.自動で親のルームがあれば、そちらのものとする。ショートカットは削除。
+ * @param   integer $parent_room_id $all_delete NC_DELETE_MOVE_PARENTの場合の振り替え先room_id
+ * @return	boolean true or false
+ * @since   v 3.0.0.0
+ */
+	public function deleteContent($content, $all_delete = _OFF, $parent_room_id = null) {
+		App::uses('Page', 'Model');
+		App::uses('Upload', 'Model');
+		$Page = new Page();
+		$Upload = new Upload();
+
+		$content_id = $content['Content']['id'];
+		$module_id = $content['Content']['module_id'];
+		$master_id = $content['Content']['master_id'];
+		$room_id = $content['Content']['room_id'];
+		if($module_id == 0 || !$content['Content']['is_master']) {
+			// group化ブロック、または、権限を付与されたショートカット
+			$ret = $this->delete($content_id);
+			$Upload->deleteByContentId($content_id);
+			return $ret;
+		}
+		if($all_delete == _OFF) {
+			return true;
+		}
+
+		if($all_delete == NC_DELETE_MOVE_PARENT && !isset($parent_room_id)) {
+			$page = $Page->findById($room_id);
+			$parent_page = $Page->findById($page['Page']['parent_id']);
+			$parent_room_id = isset($parent_page['Page']) ? $parent_page['Page']['room_id'] : 0;
+		}
+
+		// -------------------------------------
+		// --- 削除関数                      ---
+		// -------------------------------------
+		if($all_delete == _ON) {
+			if(isset($content['Module'])) {
+				$module['Module'] = $content['Module'];
+			} else {
+				App::uses('Module', 'Model');
+				$Module = new Module();
+				$module = $Module->findById($module_id);
+			}
+			$plugin = $module['Module']['dir_name'];
+			App::uses($plugin.'OperationsComponent', 'Plugin/'.$plugin.'/Controller/Component');
+			$class_name = $plugin.'OperationsComponent';
+			if(class_exists($class_name) && method_exists($class_name,'delete')) {
+				eval('$class = new '.$class_name.'();');
+				$class->startup();
+
+				// 削除アクション
+				$ret = $class->delete($content);
+				if(!$ret) {
+					return false;
+				}
+			}
+			$this->delete($content_id);
+			$Upload->deleteByContentId($content_id);
+		} else if($content['Content']['room_id'] != $parent_room_id) {
+			// 親のルームの持ち物に変換し、親のルーム内の権限を付与したショートカットを解除
+			if(!$this->cancelShortcutParentRoom($content_id, $parent_room_id)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+/**
+ * 親のルームの持ち物に変換し、親ルームの該当コンテンツにおける権限を付与したショートカットを解除
+ * ルーム削除（コンテンツ削除）時に親のルームの物に変換される場合、親ルームの削除コンテンツに対する権限を付与したショートカットを解除する必要があるため
+ *
+ * @param   integer $content_id
+ * @param   integer $parent_room_id
+ * @return	boolean true or false
+ * @since   v 3.0.0.0
+ */
+	public function cancelShortcutParentRoom($content_id, $parent_room_id) {
+		$fields = array('Content.room_id'=> $parent_room_id);
+		$conditions = array(
+			"Content.id" => $content_id
+		);
+		if(!$this->updateAll($fields, $conditions)) {
+			return false;
+		}
+
+		// 親のルーム内のショートカットを解除
+		$cancel_contents_list = $this->findCancelShortcut($content_id, $parent_room_id);
+		if(count($cancel_contents_list) > 0) {
+			$this->delete($cancel_contents_list);
+			App::uses('Block', 'Model');
+			$Block = new Block();
+			$fields = array(
+				'Block.content_id' => $content_id
+			);
+			$conditions = array(
+				'Block.content_id' => $cancel_contents_list
+			);
+			if(!$Block->updateAll($fields, $conditions)) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+/**
+ * 解除対象のコンテンツ一覧を取得する
+ * ルーム削除（コンテンツ削除）時に親のルームの物に変換される場合、親ルームの削除コンテンツに対する権限を付与したショートカットを解除する必要があるため
+ *
+ * @param   integer $content_id
+ * @param   integer $parent_room_id
+ * @return	boolean true or false
+ * @since   v 3.0.0.0
+ */
+	protected function findCancelShortcut($content_id, $parent_room_id) {
+		$params = array(
+			'fields' => array('Content.id'),
+			'conditions' => array(
+				'Content.master_id' => $content_id,
+				'Content.is_master' => _OFF,
+				'Content.room_id' => $parent_room_id
+			)
+		);
+
+		return $this->find('list', $params);
 	}
 }

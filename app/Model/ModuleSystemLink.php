@@ -58,4 +58,21 @@ class ModuleSystemLink extends AppModel
 
 		return intval($module_systems_links['ModuleSystemLink']['hierarchy']);
 	}
+
+	/**
+	 * module_idよりModuleSystemLinkデータ削除
+	 *
+	 * @param  integer $module_id
+	 * @return boolean
+	 * @since   v 3.0.0.0
+	 */
+	public function deleteByModuleId($module_id) {
+		$conditions = array(
+			"ModuleSystemLink.module_id" => $module_id
+		);
+		if(!$this->deleteAll($conditions)) {
+			return false;
+		}
+		return true;
+	}
 }

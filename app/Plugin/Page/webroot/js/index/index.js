@@ -364,6 +364,7 @@
 			// ページ削除
 			root_menu.on('ajax:beforeSend','.pages-menu-delete-icon',function(e, url) {
 				var li = $($(e.target).attr('data-ajax-data')),page_id = li.attr('data-id'), room_id = li.attr('data-room-id');
+				var is_top = li.attr('data-is-top');
 				var a = $('a.pages-menu-edit-title:first', li), title = $.trim(a.html());
 				var ok = __('Ok') ,cancel = __('Cancel');
 				var pos = $(e.target).offset(), _buttons = {}, default_params = {
@@ -384,7 +385,7 @@
 							$(this).remove();
 						};
 						params = $.extend({buttons: _sub_buttons}, default_params);
-						$('<div></div>').html(__d('pages', 'I can\'t be undone completely removed. <br />Are you sure you want to delete?'))
+						$('<div></div>').html(__d('pages', 'You can\'t be undone completely removed. <br />Are you sure you want to delete?'))
 							.appendTo($(document.body)).dialog(params);
 					} else {
 						dletePage(url, page_id, 0, default_params);
@@ -397,8 +398,8 @@
 				params = $.extend({buttons: _buttons}, default_params);
 				body = __('Deleting %s. <br />Are you sure to proceed?', title) + '<div><label for="pages-menu-all-delete">'+
 							'<input id="pages-menu-all-delete" type="checkbox" name="all_delete" value="1" '+
-							((page_id == room_id) ? 'disabled="disabled" checked="checked" ' : '') + '/>&nbsp;'+
-							__d('pages', 'I completely delete it.')+
+							((is_top == '1' && page_id == room_id) ? 'disabled="disabled" checked="checked" ' : '') + '/>&nbsp;'+
+							__d('pages', 'You completely delete it.')+
 							'</label></div>';
 
 				$('<div></div>').html(body).appendTo($(document.body)).dialog(params);

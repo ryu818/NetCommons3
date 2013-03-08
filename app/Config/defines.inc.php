@@ -11,7 +11,7 @@ if (!defined('CUSTOM')) {
 /**
  * ディレクトリ定義
  */
-define('NC_UPLOADS_DIR',      ROOT. '/uploads/');
+define('NC_UPLOADS_DIR',      ROOT. DS. 'uploads'. DS);
 
 define('NC_MODINFO_FILENAME',     'modinfo.ini');
 
@@ -205,6 +205,9 @@ define('NC_ITEM_TYPE_FILE',         "file");
 
 //-----------------システム管理者ID-------------------------------------------
 define('NC_SYSTEM_USER_ID',       1);
+
+//-----------------DELETE-------------------------------------------
+define('NC_DELETE_MOVE_PARENT',       2);	// 子グループを削除する場合、親のコンテンツへ
 /**
  * Mode
  */

@@ -561,14 +561,22 @@ class PageMenuController extends PageAppController {
 		if($current_page['Page']['id'] == $this->page_id) {
 			$is_redirect = true;
 		}
-		if($current_page['Page']['id'] == $current_page['Page']['room_id']) {
+
+		if($current_page['Page']['root_id'] != $current_page['Page']['room_id']) {
+			// 親のルームがあれば、ルームが含まれていても親の持ち物に変換
+			if($all_delete == _OFF) {
+				$all_delete = NC_DELETE_MOVE_PARENT;
+			}
+		} else if($current_page['Page']['id'] == $current_page['Page']['room_id']) {
 			// ルームならば必ずすべて削除。
 			$all_delete = _ON;
 		}
 		$parent_page = null;
+		$parent_room_id = null;
 		if($current_page['Page']['root_id'] != $current_page['Page']['room_id']) {
 			// 子グループならば親の権限に従う
 			$parent_page = $this->Page->findAuthById($current_page['Page']['parent_id'], $user_id);
+			$parent_room_id = $parent_page['Page']['room_id'];
 		}
 
 		// 権限チェック
@@ -590,7 +598,7 @@ class PageMenuController extends PageAppController {
 		}
 
 		// 削除処理
-		if(!$this->Page->deletePage($current_page['Page']['id'], $all_delete, $child_pages)) {
+		if(!$this->Page->deletePage($current_page['Page']['id'], $all_delete, $child_pages, $parent_room_id)) {
 			$this->flash(__('Failed to delete the database, (%s).', 'pages'), null, 'PageMenu/delete.004', '500');
 			return;
 		}
@@ -653,7 +661,7 @@ class PageMenuController extends PageAppController {
 		$hash_key = $this->PageMenu->getOperationKey($page['Page']['id'], $page['DropPage']['id']);
 		if($this->TempData->read($hash_key) !== false) {
 			// 既に実行中
-			$this->flash(__d('page', 'I\'m already running. Please try again at a later time.'), null, 'PageMenu/chgsequence.002', '200');
+			$this->flash(__d('page', 'You are already running. Please try again at a later time.'), null, 'PageMenu/chgsequence.002', '200');
 			return;
 		}
 
@@ -712,6 +720,7 @@ class PageMenuController extends PageAppController {
 		if(!$admin_hierarchy) {
 			return;
 		}
+		$buf_parent_page = isset($parent_page) ? $parent_page : $this->Page->findAuthById($page['Page']['parent_id'], $user_id);
 
 		$auth_list = $this->Authority->findAuthSelectHtml();
 		if($this->request->is('post')) {
@@ -765,7 +774,7 @@ class PageMenuController extends PageAppController {
 				}
 				if($page['Page']['parent_id'] > 0) {
 					// 権限の割り当てで、子ルームを割り当てると、そこにはってあったブロックの変更処理
-					$result = $this->PageBlock->addAuthBlock($page_id_list_arr, $parent_page['Page']['room_id']);
+					$result = $this->PageBlock->addAuthBlock($page_id_list_arr, $buf_parent_page['Page']['room_id']);
 				}
 				$page['Page']['room_id'] = $page['Page']['id'];
 			}

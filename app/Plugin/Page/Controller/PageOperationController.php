@@ -139,7 +139,7 @@ class PageOperationController extends PageAppController {
 		$hash_key = $this->PageMenu->getOperationKey($copy_page_id, $move_page_id);
 		if($this->TempData->read($hash_key) !== false) {
 			// 既に実行中
-			$this->flash(__d('page', 'I\'m already running. Please try again at a later time.'), null, 'PageOperation.'.$this->action.'.001', '200');
+			$this->flash(__d('page', 'You are already running. Please try again at a later time.'), null, 'PageOperation.'.$this->action.'.001', '200');
 			return;
 		}
 

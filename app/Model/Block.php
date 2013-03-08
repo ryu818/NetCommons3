@@ -521,11 +521,13 @@ class Block extends AppModel
  * 再帰的に処理
  *
  * @param object  $block
- * @param boolean $all_delete コンテンツもすべて削除するかどうか
+ * @param boolean $all_delete コンテンツもすべて削除するかどうか（NC_DELETE_MOVE_PARENTの場合、コンテンツを親のコンテンツへ）
+ * @param integer $parent_room_id $all_delete NC_DELETE_MOVE_PARENTの場合の振り替え先room_id
+ * @param boolean $is_page ページ削除から呼ばれたかどうか
  * @return	boolean true or false
  * @since   v 3.0.0.0
  **/
-	public function deleteBlock($block, $all_delete = _OFF)
+	public function deleteBlock($block, $all_delete = _OFF, $parent_room_id = null, $is_delete_page = false)
 	{
 		App::uses('Content', 'Model');
 		$Content = new Content();
@@ -546,17 +548,19 @@ class Block extends AppModel
 			// --- 子供に位置するモジュール削除   ---
 			// --------------------------------------
 			//子供取得
-			$child_blocks = $this->find('all', array(
-				'recursive' => -1,
-				'conditions' => array(
-					'Block.parent_id' => $block['Block']['id']
-				)
-			));
-			foreach($child_blocks as $child_block) {
-				//再帰処理
-				$ret = $this->deleteBlock($child_block);
-				if(!$ret) {
-					return false;
+			if(!$is_delete_page) {		// ページから削除する場合は、再帰的に削除する必要なし。
+				$child_blocks = $this->find('all', array(
+					'recursive' => -1,
+					'conditions' => array(
+						'Block.parent_id' => $block['Block']['id']
+					)
+				));
+				foreach($child_blocks as $child_block) {
+					//再帰処理
+					$ret = $this->deleteBlock($child_block, $all_delete, $parent_room_id, $is_delete_page);
+					if(!$ret) {
+						return false;
+					}
 				}
 			}
 		} else {
@@ -585,7 +589,7 @@ class Block extends AppModel
 						}
 					}
 
-					if($all_delete &&
+					if($content['Content']['is_master'] && $all_delete == _ON &&
 						$page['Page']['room_id'] == $content['Content']['room_id'] && method_exists($class_name, 'delete')) {
 						// 削除アクション
 						$ret = $class->delete($content);
@@ -596,11 +600,16 @@ class Block extends AppModel
 				}
 
 				if(!$content['Content']['is_master'] ||
-					($all_delete && $page['Page']['room_id'] == $content['Content']['room_id'])) {
+					($all_delete == _ON && $page['Page']['room_id'] == $content['Content']['room_id'])) {
 
 					// 権限が付与されたショートカットか、ショートカットではない場合
-					// コンテンツがなくてもエラーとしない
+					// コンテンツがなくてもエラーとしない(コンテンツ一覧からコンテンツを削除後にブロック削除を行うとエラーとなるため)
 					$Content->delete($block['Block']['content_id']);
+				} else if(isset($parent_room_id) && $all_delete == NC_DELETE_MOVE_PARENT && $content['Content']['room_id'] != $parent_room_id) {
+					// 親のルームの持ち物に変換し、親のルーム内の権限を付与したショートカットを解除
+					if(!$Content->cancelShortcutParentRoom($content_id, $parent_room_id)) {
+						return false;
+					}
 				}
 			}
 		}
