@@ -129,6 +129,10 @@ class Content extends AppModel
 			$parent_page = $Page->findById($page['Page']['parent_id']);
 			$parent_room_id = isset($parent_page['Page']) ? $parent_page['Page']['room_id'] : 0;
 		}
+		if($parent_room_id == 0) {
+			// 移動先のルームがないため完全に削除。
+			$all_delete = _ON;
+		}
 
 		// -------------------------------------
 		// --- 削除関数                      ---
@@ -223,5 +227,26 @@ class Content extends AppModel
 		);
 
 		return $this->find('list', $params);
+	}
+
+/**
+ * Removes record for given ID. If no ID is given, the current ID is used. Returns true on success.
+ * master_idも等しいものを削除。
+ *
+ * @param mixed $id ID of record to delete
+ * @param boolean $cascade Set to true to delete records that depend on this record
+ * @return boolean True on success
+ * @access public
+ */
+	public function delete($id = null, $cascade = true) {
+		$ret = parent::delete($id, $cascade);
+		if($ret === false) {
+			return $ret;
+		}
+		$conditions = array(
+			"Content.master_id" => $id
+		);
+		$this->deleteAll($conditions);
+		return $ret;
 	}
 }

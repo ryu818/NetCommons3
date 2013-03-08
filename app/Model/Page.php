@@ -854,7 +854,7 @@ class Page extends AppModel
 			$delete_contents = $Content->find('all', $params);
 			if(count($delete_contents) > 0) {
 				foreach($delete_contents as $delete_content) {
-					$Content->deleteContent($delete_content, $all_delete, $parent_room_id);
+					$Content->deleteContent($delete_content, NC_DELETE_MOVE_PARENT, $parent_room_id);	// $all_delete
 				}
 			}
 		}
