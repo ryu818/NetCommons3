@@ -57,6 +57,7 @@ class AppPluginController extends AppController
 		$this->getEventManager()->dispatch(new CakeEvent('Controller.startup', $this));
 
 		if(!empty($this->nc_block)) {
+			$is_error = false;
 			if(!isset($this->nc_block['Content']['id'])) {
 				$this->set('name', __('Content removed.'));
 				$is_error = true;
