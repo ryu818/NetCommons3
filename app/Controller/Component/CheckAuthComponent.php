@@ -119,7 +119,8 @@ class CheckAuthComponent extends Component {
 			Configure::write(NC_SYSTEM_KEY.'.Modules.'.$camel_plugin_name, $module);
 		}
 
-		if($plugin_name == 'page' || $controller_name == 'pages' || $controller_name == 'group' || $module['Module']['system_flag'] == _OFF) {
+		if($plugin_name == 'page' || $controller_name == 'pages' || $controller_name == 'group' ||
+				$controller_name == 'users' || $module['Module']['system_flag'] == _OFF) {
 			// 一般系モジュール
 			if(!$this->checkGeneral()) {
 				return;

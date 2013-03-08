@@ -56,16 +56,21 @@ class AppPluginController extends AppController
 		$this->getEventManager()->dispatch(new CakeEvent('Controller.initialize', $this));
 		$this->getEventManager()->dispatch(new CakeEvent('Controller.startup', $this));
 
-		if(!empty($this->nc_block) && (!isset($this->nc_block['Content']['id']) || !isset($this->nc_block['Module']['id']))) {
-			$this->set('nc_error_flag' , true);
-			$this->set('show_frame', isset($this->Frame) ? $this->Frame : true);
+		if(!empty($this->nc_block)) {
 			if(!isset($this->nc_block['Content']['id'])) {
 				$this->set('name', __('Content removed.'));
-			} else {
+				$is_error = true;
+			} else if(!isset($this->nc_block['Module']['id']) &&
+					isset($this->request->params['plugin']) && $this->request->params['plugin'] != 'group') {
 				$this->set('name', __('Module uninstalled.'));
+				$is_error = true;
 			}
-			$this->render("/Errors/block_error");
-			return false;
+			if($is_error) {
+				$this->set('nc_error_flag' , true);
+				$this->set('show_frame', isset($this->Frame) ? $this->Frame : true);
+				$this->render("/Errors/block_error");
+				return false;
+			}
 		}
 	}
 
