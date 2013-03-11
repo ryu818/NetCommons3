@@ -40,7 +40,7 @@
 									'id' => "nc-block-style-show-title".$block_id,
 									'value' => _ON,
 									'checked' => ($block['Block']['show_title']) ? 'checked' : false,
-									'label' =>'&nbsp;'.__d('block', 'To hide the block name.'),
+									'label' =>'&nbsp;'.__d('block', 'Show the block name.'),
 									'type' => 'checkbox'
 								);
 								echo $this->Form->input('Block.show_title', $settings);

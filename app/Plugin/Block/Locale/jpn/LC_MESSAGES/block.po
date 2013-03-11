@@ -28,8 +28,8 @@ msgstr 	"移動、ショートカット作成、ペースト先のページに�
 ## ブロックスタイル
 msgid  	"Block title"
 msgstr 	"ブロック名称"
-msgid  	"To hide the block name."
-msgstr 	"ブロック名称を非表示にする。"
+msgid  	"Show the block name."
+msgstr 	"ブロック名称を表示する。"
 msgid  	"Default setting following the page theme."
 msgstr 	"ページテーマにより自動的に選択"
 msgid  	"Minimum width"
