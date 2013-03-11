@@ -695,41 +695,101 @@ class ModuleAdmin extends AppModel {
 			return $prefix.__d('module', '[%s] does not found.', h($module_temp_name_path));
 		}
 
-		$controller_action = $module['Module']['ini']['controller_action'];
-		$controller_action_arr = explode('/', $controller_action);
-		$plugin = Inflector::camelize($controller_action_arr[0]);
-		if($plugin != $module['Module']['dir_name'] ||
-				!preg_match("/^[0-9a-zA-Z_\/]+$/", $controller_action)) {
-			return $prefix.__('Unauthorized pattern for %s.', 'controller_action');
+		$result = $this->fileExistsController($plugin_path, $module['Module']['dir_name'], $module['Module']['ini']['controller_action']);
+		if($result !== true) {
+			return $prefix.$result;
 		}
-
-		/*$plugin = Inflector::camelize($controller_action_arr[0]);
-		$controller = $controller_action_arr[1];
-		//$action = $controller_action_arr[2];
-		$module_controller_path = $plugin_path . 'Controller'. DS . $controller.'Controller.php';
-		if(!file_exists(NC_DIR.$module_controller_path)) {
-			return $prefix.__d('module', '[%s] does not found.', h($module_controller_path));
-		}*/
-
 
 		// edit_controller_actionチェック
 		if(isset($module['Module']['ini']['edit_controller_action'])) {
-			$edit_controller_action = $module['Module']['ini']['edit_controller_action'];
-			$edit_controller_action_arr = explode('/', $edit_controller_action);
-			$edit_plugin = Inflector::camelize($edit_controller_action_arr[0]);
-			if($edit_plugin != $module['Module']['dir_name'] ||
-					!preg_match("/^[0-9a-zA-Z_\/]+$/", $edit_controller_action)) {
-				return $prefix.__('Unauthorized pattern for %s.', 'edit_controller_action');
+			$result = $this->fileExistsController($plugin_path, $module['Module']['dir_name'], $module['Module']['ini']['edit_controller_action'], true);
+			if($result !== true) {
+				return $prefix.$result;
 			}
-			/*$edit_plugin = $edit_controller_action_arr[0];
-			$edit_controller = $edit_controller_action_arr[1];
-			//$action = $controller_action_arr[2];
-			$edit_module_controller_path = $plugin_path . 'Controller'. DS . $edit_controller.'Controller.php';
-			if(!file_exists(NC_DIR.$edit_module_controller_path)) {
-				return $prefix.__d('module', '[%s] does not found.', h($edit_module_controller_path));
-			}*/
 		}
 
+		return true;
+	}
+
+/**
+ * コントローラファイルの存在チェック
+ *
+ * @param string $plugin_path
+ * @param string $dir_name
+ * @param string $controller_action
+ * @param boolean $is_edit
+ * @return boolean true or error message
+ */
+	protected function fileExistsController($plugin_path, $dir_name, $controller_action, $is_edit = false) {
+		$controller_action_arr = explode('/', $controller_action);
+		$plugin = Inflector::camelize($controller_action_arr[0]);
+		if($plugin != $dir_name ||
+				!preg_match("/^[0-9a-zA-Z_\/]+$/", $controller_action)) {
+			return __('Unauthorized pattern for %s.', 'controller_action');
+		}
+
+		$app_module_controller_path = $plugin_path . 'Controller'. DS . $plugin.'AppController.php';
+		if(file_exists($app_module_controller_path)) {
+			include_once $app_module_controller_path;
+		}
+
+		$controller = Inflector::camelize($controller_action_arr[0]);
+		$action = isset($controller_action_arr[1]) ? $controller_action_arr[1] : '';
+		$sub_action = isset($controller_action_arr[2]) ? $controller_action_arr[2] : '';
+
+		$is_file_exists = false;
+		$is_class_exists = false;
+		$is_method_exists = false;
+		$class_name = $controller.'Controller';
+		$module_controller_path = $plugin_path . 'Controller'. DS . $class_name.'.php';
+		if(file_exists($module_controller_path)) {
+			$is_file_exists = true;
+			include_once $module_controller_path;
+			if(class_exists($class_name)) {
+				$is_class_exists = true;
+				if($action != '') {
+					if(method_exists($class_name, $action)) {
+						$is_method_exists = true;
+					}
+				} else if(method_exists($class_name, 'index')) {
+					$is_method_exists = true;
+				}
+			}
+		}
+		if(!$is_method_exists && $action != '') {
+			$is_file_exists = false;
+			$is_class_exists = false;
+			$is_method_exists = false;
+			$sub_class_name = $controller.Inflector::camelize($action).'Controller';
+			$edit_module_controller_path = $plugin_path . 'Controller'. DS . $sub_class_name.'.php';
+			if(file_exists($edit_module_controller_path)) {
+				$is_file_exists = true;
+				include_once $edit_module_controller_path;
+				if(class_exists($sub_class_name)) {
+					$is_class_exists = true;
+					if($sub_action != '') {
+						if(method_exists($sub_class_name, $sub_action)) {
+							$is_method_exists = true;
+						}
+					} else if(method_exists($sub_class_name, 'index')) {
+						$is_method_exists = true;
+					}
+				}
+			}
+		}
+		if($is_edit) {
+			$class_name = $sub_class_name;
+			$action = $sub_action;
+			$module_controller_path = $edit_module_controller_path;
+		}
+		if($is_file_exists && !$is_class_exists) {
+			return __d('module', '[%s] does not found in the [%s].', h($class_name), h($module_controller_path));
+		} else if($is_class_exists && !$is_method_exists) {
+			$action = ($action == '') ? 'index' : $action;
+			return __d('module', '[%s] does not found in the [%s].', h($class_name).'::'.$action, h($module_controller_path));
+		} else if(!$is_file_exists) {
+			return __d('module', '[%s] does not found.', h($module_controller_path));
+		}
 		return true;
 	}
 
@@ -914,8 +974,10 @@ class ModuleAdmin extends AppModel {
 		$create = array();
 
 		if (!$table) {
-			foreach ($Schema->tables as $table => $fields) {
-				$create[$table] = $db->createSchema($Schema, $table);
+			if(isset($Schema->tables)) {
+				foreach ($Schema->tables as $table => $fields) {
+					$create[$table] = $db->createSchema($Schema, $table);
+				}
 			}
 		} elseif (isset($Schema->tables[$table])) {
 			$create[$table] = $db->createSchema($Schema, $table);
@@ -945,8 +1007,10 @@ class ModuleAdmin extends AppModel {
 		$drop = array();
 
 		if (!$table) {
-			foreach ($Schema->tables as $table => $fields) {
-				$drop[$table] = $db->dropSchema($Schema, $table);
+			if(isset($Schema->tables)) {
+				foreach ($Schema->tables as $table => $fields) {
+					$drop[$table] = $db->dropSchema($Schema, $table);
+				}
 			}
 		} elseif (isset($Schema->tables[$table])) {
 			$drop[$table] = $db->dropSchema($Schema, $table);
