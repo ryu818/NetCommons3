@@ -57,7 +57,7 @@ class Content extends AppModel
 		return array(
 			'Content.*',
 			'Page.thread_num','Page.room_id','Page.root_id','Page.space_type',
-			'Module.id','Module.controller_action','Module.edit_controller_action','Module.dir_name','Module.content_has_one',
+			'Module.id','Module.controller_action','Module.edit_controller_action','Module.style_controller_action','Module.dir_name','Module.content_has_one',
 			'Authority.id','Authority.hierarchy'
 		);
 	}

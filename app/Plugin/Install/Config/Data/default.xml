@@ -5353,6 +5353,7 @@ e-mail：{X-EMAIL}
         <column name="disposition_flag">1</column>
         <column name="controller_action">announcement</column>
         <column name="edit_controller_action">announcement/edit</column>
+        <column name="style_controller_action"></column>
         <column name="display_sequence">1</column>
         <column name="module_icon"></column>
         <column name="temp_name">default</column>
@@ -5372,6 +5373,7 @@ e-mail：{X-EMAIL}
         <column name="disposition_flag">0</column>
         <column name="controller_action">page</column>
         <column name="edit_controller_action"></column>
+        <column name="style_controller_action"></column>
         <column name="display_sequence">0</column>
         <column name="module_icon"></column>
         <column name="temp_name">default</column>

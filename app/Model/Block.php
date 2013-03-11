@@ -308,6 +308,7 @@ class Block extends AppModel
 		//$val['Block']['url'] = $val['Content']['url'];
 		$val['Block']['dir_name'] = $val['Module']['dir_name'];
 		$val['Block']['edit_controller_action'] = $val['Module']['edit_controller_action'];
+		$val['Block']['style_controller_action'] = $val['Module']['style_controller_action'];
 
 		$val['Block']['hierarchy'] = $val['Authority']['hierarchy'];
 		if($val['Block']['title'] != '') {
@@ -458,7 +459,7 @@ class Block extends AppModel
 			'Block.*',
 			'Page.thread_num','Page.room_id','Page.root_id','Page.space_type',
 			'Content.id','Content.module_id','Content.title','Content.is_master','Content.master_id','Content.room_id','Content.accept_flag','Content.url',
-			'Module.id','Module.controller_action','Module.edit_controller_action','Module.dir_name','Module.content_has_one',
+			'Module.id','Module.controller_action','Module.edit_controller_action','Module.style_controller_action','Module.dir_name','Module.content_has_one',
 			'Authority.id','Authority.hierarchy'
 		);
 	}

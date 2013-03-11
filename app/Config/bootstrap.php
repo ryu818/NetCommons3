@@ -224,7 +224,7 @@ App::build(array(
 	'Frame'                    => array(CUSTOM . 'Frame' . DS, APP . 'Frame' . DS),
 ), App::RESET);
 
-CakePlugin::loadAll();	// Loads all plugins at once
+CakePlugin::loadAll(array(array('routes' => true)));	// Loads all plugins at once		// array(array('routes' => true))     'Blog' => array('routes' => true)
 
 Configure::write('Session', array(
 	'defaults' => 'database',

@@ -374,6 +374,7 @@ class ModuleAdmin extends AppModel {
 			'disposition_flag',
 			'controller_action',
 			'edit_controller_action',
+			'style_controller_action',
 			'module_icon',
 			'temp_name',
 			'content_has_one',
@@ -703,6 +704,14 @@ class ModuleAdmin extends AppModel {
 		// edit_controller_actionチェック
 		if(isset($module['Module']['ini']['edit_controller_action'])) {
 			$result = $this->fileExistsController($plugin_path, $module['Module']['dir_name'], $module['Module']['ini']['edit_controller_action'], true);
+			if($result !== true) {
+				return $prefix.$result;
+			}
+		}
+
+		// style_controller_actionチェック
+		if(isset($module['Module']['ini']['style_controller_action'])) {
+			$result = $this->fileExistsController($plugin_path, $module['Module']['dir_name'], $module['Module']['ini']['style_controller_action'], true);
 			if($result !== true) {
 				return $prefix.$result;
 			}

@@ -57,7 +57,7 @@ if(defined('NC_INSTALLED') && NC_INSTALLED == false) {
  * how to customize the loading of plugin routes.
  */
 CakePlugin::routes();
-$prefixes = Router::prefixes();
+// $prefixes = Router::prefixes();
 
 Router::connect(
 	'/users/:action/*',
@@ -75,7 +75,7 @@ if ($plugins = CakePlugin::loaded()) {
 		$plugins[$key] = Inflector::underscore($value);
 	}
 	$pluginPattern = implode('|', $plugins);
-	$match = array('plugin' => $pluginPattern);
+	//$match = array('plugin' => $pluginPattern);
 	$pluginParams = array('routeClass' => 'MyCakeRoute', 'plugin' => $pluginPattern);
 
 	/*foreach ($prefixes as $prefix) {
@@ -204,7 +204,7 @@ if ($namedConfig['rules'] === false) {
 	Router::connectNamed(true);
 }
 
-unset($namedConfig, $params, $indexParams, $prefix, $prefixes, $pluginParams, $match,
+unset($namedConfig, $params, $indexParams, $prefix, $pluginParams, // $prefixes, $match,
 		$pluginPattern, $plugins, $key, $value);
 
 /**
