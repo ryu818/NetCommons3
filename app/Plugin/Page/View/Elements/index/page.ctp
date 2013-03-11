@@ -27,7 +27,7 @@
 				}
 			}
 		?>
-		<li class="dd-item<?php if($tooltip_title != ''): ?> nc-tooltip<?php endif; ?>" data-id="<?php echo(h($page['Page']['id'])); ?>"<?php echo($tooltip_title); ?>>
+		<li id="pages-menu-item-<?php echo(h($page['Page']['id'])); ?>" class="dd-item<?php if($tooltip_title != ''): ?> nc-tooltip<?php endif; ?>" data-id="<?php echo(h($page['Page']['id'])); ?>"<?php echo($tooltip_title); ?>>
 			<div class="pages-menu-handle <?php echo($class); ?><?php if($page['Page']['id'] == $page_id): ?> highlight<?php endif; ?><?php if($page['Page']['thread_num'] == 1): ?> pages-menu-handle-top<?php endif; ?>">
 			<a href="<?php echo($this->webroot); ?><?php echo($page['Page']['permalink'].$parameter); ?>" title="<?php echo(h($page['Page']['page_name'])); ?>">
 				<?php echo(h($page['Page']['page_name'])); ?>

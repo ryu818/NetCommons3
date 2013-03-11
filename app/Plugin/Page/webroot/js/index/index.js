@@ -104,8 +104,11 @@
 		};
 
 		var tab = this;
-
-		var active_li = $('#pages-menu-edit-item-' + active_page_id);
+		if(!(is_edit)) {
+			var active_li = $('#pages-menu-item-' + active_page_id);
+		} else {
+			var active_li = $('#pages-menu-edit-item-' + active_page_id);
+		}
 		var options = {
 			active          : active_page_id,
 			activeItemClass : 'highlight'
@@ -162,7 +165,7 @@
 		});
 
 		chgLimit();
-
+console.log(active_li);
 		// スクロール
 		setTimeout(function(){
 			slideTarget(active_li, active_tab_name);
