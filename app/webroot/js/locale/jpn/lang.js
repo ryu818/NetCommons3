@@ -34,7 +34,8 @@ $._lang['pages'] = {
 }
 
 $._lang['block'] = {
-	'Block style': 'ブロックスタイル'
+	'Block style': 'ブロックスタイル',
+	'Display style': '表示方法変更'
 }
 
 $._lang['nc_wysiwyg'] = {

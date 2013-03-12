@@ -75,9 +75,9 @@
 
 			// ブロックスタイル
 
-			$('#nc-block-style-link' + id).on('ajax:beforeSend', function(e, url) {
+			$('#nc-block-style-link' + id +',#nc-block-display-style-link' + id).on('ajax:beforeSend', function(e, url) {
 				var a = $(e.target);
-				var dialog_id = a.attr('data-block-style-dialog-id');
+				var dialog_id = ($(this).attr('id') == 'nc-block-style-link' + id) ? a.attr('data-block-style-dialog-id') : a.attr('data-block-display-style-dialog-id');
 				var style_dialog = $('#' + dialog_id);
 				if(style_dialog.get(0)) {
 					// 既に表示中
@@ -87,14 +87,35 @@
 				}
 				return url;
 			}).on('ajax:success', function(e, res) {
+				var block_style =false;
+				if($(this).attr('id') == 'nc-block-style-link' + id) {
+					block_style =true;
+				}
 				var a = $(e.target), pos = a.offset(), style_dialog;
+				var dialog_id = (block_style) ? a.attr('data-block-style-dialog-id') : a.attr('data-block-display-style-dialog-id');
 				var params = {
-					title: __d('block', 'Block style'),
-					resizable: false,
-					width: 400,
-		            position: [e.pageX - $(window).scrollLeft(), e.pageY - $(window).scrollTop()]
+					title: (block_style) ? __d('block', 'Block style') : __d('block', 'Display style'),
+					position: [e.pageX - $(window).scrollLeft(), e.pageY - $(window).scrollTop()],
+					show: 'blind',
+					show: {
+							effect: 'slide',
+							complete: function() {
+								var w = style_dialog.children(':first').attr('data-width');
+								var h = style_dialog.children(':first').attr('data-height');
+								if(parseInt(w) > 0) {
+									style_dialog.dialog('option','width',parseInt(w));
+								}
+								if(parseInt(h) > 0) {
+									style_dialog.dialog('option','height',parseInt(h));
+								}
+							}
+					},
+					hide: 'blind'
 				};
-				var dialog_id = a.attr('data-block-style-dialog-id');
+				if(block_style) {
+					params['width'] = 400;
+					params['resizable'] = false;
+				}
 				style_dialog = $('<div id="' + dialog_id + '" class="nc-block-style-dialog"></div>').html(res).dialog(params);
 				$(this).parents('.nc-drop-down:first').hide();
 			});
@@ -1115,6 +1136,15 @@
 			var show_target = (target.hasClass('nc-block-move')) ? target.next() : target.prev();
 			target.slideUp();
 			show_target.slideDown();
+			e.preventDefault();
+		},
+		toggleOperation: function(e, id) {
+			//var pos = $(e.target).position();
+			$('#nc-block-header-operation' + id).toggle().css({
+				'zIndex':$.Common.blockZIndex++,
+				'right': '-55px',
+				'top' :  '30px'
+			});
 			e.preventDefault();
 		}
 	}

@@ -255,6 +255,8 @@ msgstr 	"DBの削除に失敗しました(%s)"
 
 msgid  	"Block style"
 msgstr 	"ブロックスタイル"
+msgid  	"Display style"
+msgstr 	"表示方法変更"
 msgid  	"General setting"
 msgstr 	"一般設定"
 msgid  	"Theme"

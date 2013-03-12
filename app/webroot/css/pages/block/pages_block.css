@@ -105,7 +105,6 @@ span.nc-block-header-page-name {
 	position:absolute;
 	left:30px;
 	top:6px;
-	width:80%;
 	overflow:hidden;
 }
 
@@ -243,10 +242,15 @@ li.nc-block-header-list-icon a.nc-block-toolbox-link:hover {
 
 ul.nc-cancel-toolbox {
 	width:30px;
+	right:2px;
 }
 
-/*
+
 ul.nc-shortcut-toolbox {
 	width:65px;
+	right:2px;
 }
-*/
+
+.nc-block-style-dialog {
+	padding : 2px !important;
+}

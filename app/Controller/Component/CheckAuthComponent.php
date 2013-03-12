@@ -136,26 +136,6 @@ class CheckAuthComponent extends Component {
 			Configure::write(NC_SYSTEM_KEY.'.block_type', 'blocks');
 		}
 
-		/*
-		 * Setting Mode
-		*/
-		$mode = $this->Session->read(NC_SYSTEM_KEY.'.mode');
-		if($controller->hierarchy >= NC_AUTH_MIN_CHIEF) {
-			if(isset($controller->request->query['setting_mode']) &&
-					!is_null($controller->request->query['setting_mode'])) {
-				switch ($controller->request->query['setting_mode']) {
-					case NC_GENERAL_MODE:
-						$this->Session->delete(NC_SYSTEM_KEY.'.mode');
-						break;
-					case NC_BLOCK_MODE:
-						$this->Session->write(NC_SYSTEM_KEY.'.mode', NC_BLOCK_MODE);
-						break;
-				}
-			}
-		} else if($user_id == 0 && !empty($mode)) {
-			$this->Session->delete(NC_SYSTEM_KEY.'.mode');
-		}
-
 		// 権限チェック
 		if(!isset($this->allowAuth) && isset($page['Page'])) {
 			if($page['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC) {
@@ -192,12 +172,26 @@ class CheckAuthComponent extends Component {
 			return;
 		}
 
+
+		if(isset($controller->nc_block['Block']) && !$controller->nc_block['Block']['is_master']) {
+			// 編集画面なのに権限を付与したショートカットならばエラー。ただし、ショートカット先が主坦ならばエラーとしない。
+			$content =  $controller->Content->findAuthById($controller->nc_block['Block']['master_id'], $user_id);
+			$ret = $this->checkAuth($content['Authority']['hierarchy'], NC_AUTH_CHIEF);
+			if($controller->nc_is_edit && !$ret) {
+				$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.check.004', '403');
+				return;
+			}
+		} else {
+			$ret = $this->checkAuth($controller->hierarchy, NC_AUTH_CHIEF);
+		}
+		$controller->nc_show_edit = $ret;
+
 		// 権限チェック(会員権限)
 		if(!$this->checkUserAuth($user['hierarchy'])) {
 			if($user_id == 0) {
 				$this->Session->setFlash(__('Forbidden permission to access the page.'), 'default', array(), 'auth');
 			}
-			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.check.004', '403');
+			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.check.005', '403');
 			return;
 		}
 	}
@@ -348,6 +342,27 @@ class CheckAuthComponent extends Component {
 				return false;
 			}
 		}
+
+		/**
+		 * Setting Mode
+		 */
+		$mode = $this->Session->read(NC_SYSTEM_KEY.'.mode');
+		if($controller->hierarchy >= NC_AUTH_MIN_CHIEF) {
+			if(isset($controller->request->query['setting_mode']) &&
+					!is_null($controller->request->query['setting_mode'])) {
+				switch ($controller->request->query['setting_mode']) {
+					case NC_GENERAL_MODE:
+						$this->Session->delete(NC_SYSTEM_KEY.'.mode');
+						break;
+					case NC_BLOCK_MODE:
+						$this->Session->write(NC_SYSTEM_KEY.'.mode', NC_BLOCK_MODE);
+						break;
+				}
+			}
+		} else if($user_id == 0 && !empty($mode)) {
+			$this->Session->delete(NC_SYSTEM_KEY.'.mode');
+		}
+
 		return true;
 	}
 

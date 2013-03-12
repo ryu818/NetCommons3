@@ -23,7 +23,7 @@ class AppPluginController extends AppController
  * Default:false
  * @var boolean
  */
-	public $is_edit = false;
+	public $nc_is_edit = false;
 
 	public $viewClass = 'Plugin';
 
@@ -118,7 +118,8 @@ class AppPluginController extends AppController
 		} else {
 			$this->set('is_chief', _OFF);
 		}
-		$this->set('is_edit', $this->is_edit);
+		$this->set('nc_is_edit', $this->nc_is_edit);
+		$this->set('nc_show_edit', $this->nc_show_edit);
 		$this->set('content_id', $this->content_id);
 	}
 }

@@ -30,7 +30,7 @@ class AnnouncementEditController extends AnnouncementAppController {
  * Default:false
  * @var boolean
  */
-	public $is_edit = true;
+	public $nc_is_edit = true;
 
 /**
  * Component name

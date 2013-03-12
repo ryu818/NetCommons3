@@ -1,6 +1,9 @@
 <?php
 if(isset($nc_error_flag) && $nc_error_flag) {
-	$cancel_class_name = 'nc-cancel-toolbox';
+	$add_class_name = 'nc-cancel-toolbox';
+
+} else if(!$nc_show_edit) {
+	$add_class_name = 'nc-shortcut-toolbox';
 }
 /* 削除アクションがあるかどうか */
 if($page['Page']['room_id'] != $block['Content']['room_id'] || !$block['Content']['is_master']) {
@@ -19,7 +22,7 @@ if($page['Page']['room_id'] != $block['Content']['room_id'] || !$block['Content'
 		$all_delete = _OFF;
 	}
 }
-if($is_edit) {
+if($nc_is_edit) {
 	$title =  __('Quit');
 	$controller_action = $block['Module']['controller_action'];
 	$edit_class_name = "nc-block-header-setting-end-icon";
@@ -45,8 +48,9 @@ if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 			<?php echo($block['Block']['title']); ?>
 			<?php echo($this->element('Frame/block_published_lbl')); ?>
 		</span>
-		<ul class="nc-block-toolbox<?php if(isset($cancel_class_name)){ echo(' '. $cancel_class_name); }?>">
-			<?php if(!isset($cancel_class_name)): ?>
+		<ul class="nc-block-toolbox<?php if(isset($add_class_name)){ echo(' '. $add_class_name); }?>">
+			<?php if(!isset($add_class_name) || $add_class_name != 'nc-cancel-toolbox'): ?>
+			<?php if($nc_show_edit): ?>
 			<li class="<?php echo($edit_class_name); ?>">
 				<?php
 				$controller_arr = explode('/', $controller_action, 2);
@@ -63,31 +67,11 @@ if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 					)
 				); ?>
 			</li>
+			<?php endif; ?>
 			<li class="nc-block-header-list-icon">
-				<a href="#" onclick="$('#nc-block-header-operation<?php echo($id); ?>').toggle().css('zIndex', $.Common.blockZIndex++);return false;" title="<?php echo(__('Operation'));?>" class="nc-block-toolbox-link nc-tooltip">
+				<a href="#" onclick="$.PagesBlock.toggleOperation(event, '<?php echo($id); ?>');return false;" title="<?php echo(__('Operation'));?>" class="nc-block-toolbox-link nc-tooltip">
 				</a>
-				<div id="nc-block-header-operation<?php echo($id); ?>" class="nc-drop-down">
-					<ul>
-						<li class="nc-drop-down-border">
-							<?php
-								/* TODO:lock_authority_idが入力されているロックされたブロックはコピー不可とする */
-								echo $this->Html->link(__('Copy'), array('plugin' => 'block', 'controller' => 'block_operation', 'action' => 'copy', 'block_id' => $block['Block']['id']),
-								array('title' => __('Copy'), 'id' => 'nc-block-header-copy'.$id, 'class' => 'link hover-highlight','data-ajax' => '', 'data-ajax-type' => 'post'));
-							?>
-						</li>
-						<li>
-							<?php
-								echo $this->Html->link(__('Block style'), array('plugin' => 'block', 'controller' => 'block_style', 'action' => 'index', 'block_id' => $block['Block']['id']),
-								array('title' => __('Block style'), 'id' => 'nc-block-style-link'.$id, 'class' => 'link hover-highlight','data-ajax' => '', 'data-block-style-dialog-id' => 'nc-block-style-dialog'.$block['Block']['id']));
-							?>
-						</li>
-						<li>
-							<a class="link hover-highlight" href="#">
-								<?php /* TODO:未実装 */ echo(__('Contents list'));?>
-							</a>
-						</li>
-					</ul>
-				</div>
+
 			</li>
 			<?php endif; ?>
 			<li class="nc-block-header-close-icon">
@@ -101,4 +85,40 @@ if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 			<span class="nc-arrow"></span>
 		</a>
 	</div>
+</div>
+<div id="nc-block-header-operation<?php echo($id); ?>" class="nc-drop-down">
+	<ul>
+		<li class="nc-drop-down-border">
+			<?php
+				/* TODO:lock_authority_idが入力されているロックされたブロックはコピー不可とする */
+								echo $this->Html->link(__('Copy'), array('plugin' => 'block', 'controller' => 'block_operation', 'action' => 'copy', 'block_id' => $block['Block']['id']),
+								array('title' => __('Copy'), 'id' => 'nc-block-header-copy'.$id, 'class' => 'link hover-highlight','data-ajax' => '', 'data-ajax-type' => 'post'));
+							?>
+		</li>
+		<li>
+			<?php
+				echo $this->Html->link(__('Block style'), array('plugin' => 'block', 'controller' => 'block_style', 'action' => 'index', 'block_id' => $block['Block']['id']),
+						array('title' => __('Block style'), 'id' => 'nc-block-style-link'.$id, 'class' => 'link hover-highlight','data-ajax' => '', 'data-block-style-dialog-id' => 'nc-block-style-dialog'.$block['Block']['id']));
+			?>
+		</li>
+		<?php if($hierarchy >= NC_AUTH_MIN_CHIEF && $block['Module']['style_controller_action'] != '' && !isset($nc_error_flag)): ?>
+		<li>
+			<?php
+				$params = array('block_id' => $block['Block']['id']);	// 'block_type' => 'active-blocks',
+				$controller_arr = explode('/', $block['Module']['style_controller_action'], 2);
+				$params['plugin'] = $params['controller'] = $controller_arr[0];
+				if(isset($controller_arr[1])) {
+					$params['action'] = $controller_arr[1];
+				}
+				echo $this->Html->link(__('Display style'), $params,
+						array('title' => __('Display style'), 'id' => 'nc-block-display-style-link'.$id, 'class' => 'link hover-highlight','data-ajax' => '', 'data-block-display-style-dialog-id' => 'nc-block-display-style-dialog'.$block['Block']['id']));
+			?>
+		</li>
+		<?php endif; ?>
+		<li>
+			<a class="link hover-highlight" href="#">
+				<?php /* TODO:未実装 */ echo(__('Contents list'));?>
+			</a>
+		</li>
+	</ul>
 </div>

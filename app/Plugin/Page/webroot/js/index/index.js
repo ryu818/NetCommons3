@@ -165,7 +165,7 @@
 		});
 
 		chgLimit();
-console.log(active_li);
+
 		// スクロール
 		setTimeout(function(){
 			slideTarget(active_li, active_tab_name);
