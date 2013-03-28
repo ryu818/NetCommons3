@@ -7615,7 +7615,7 @@ jQuery.extend({
 					data = data.replace(re_log,"");
 				}
 			}
-			// InitComponentでformatCallackが設定される前のError
+			// InitComponentでformatCallbackが設定される前のError
 			var logger_block = data.match(re_sys_error);
 			if(logger_block) {
 				content = $.trim(logger_block[0]);

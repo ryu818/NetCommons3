@@ -73,7 +73,7 @@ class InitComponent extends Component {
 				Configure::write(NC_SYSTEM_KEY.'.form_post_values', $form_post_values);
 			}
 
-			$this->_format = Debugger::addFormat('js', array('callback' => array($this, 'formatCallack')));
+			$this->_format = Debugger::addFormat('js', array('callback' => array($this, 'formatCallback')));
 		}
 
 
@@ -88,7 +88,7 @@ class InitComponent extends Component {
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function formatCallack($data, $strings) {
+	public function formatCallback($data, $strings) {
 		$insertOpts = array('before' => '{:', 'after' => '}');
 		$error = String::insert($this->_format['error'], $strings + $data, $insertOpts);
 
