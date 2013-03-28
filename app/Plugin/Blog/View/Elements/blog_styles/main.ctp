@@ -22,7 +22,7 @@ $this->start('widget_content');
 			BLOG_POSITION_COMMENTS_LAST => __d('blog', 'Last'),
 			BLOG_POSITION_COMMENTS_FIRST => __d('blog', 'First'),
 		),
-		'selected' => intval($blog_style['BlogStyle']['position_comments']),
+		'selected' => isset($blog_style['BlogStyle']['position_comments']) ? intval($blog_style['BlogStyle']['position_comments']) : BLOG_POSITION_COMMENTS_LAST,
 		'label' => __d('blog', 'Display position of comments'),
 		'id' => $top_id.'_'. $blog_style['BlogStyle']['widget_type'].'_position_comments',
 		'class' => 'blog-style-widget-single-input'
@@ -33,7 +33,7 @@ $this->start('widget_content');
 			BLOG_ORDER_COMMENTS_OLDEST => __d('blog', 'Oldest'),
 			BLOG_ORDER_COMMENTS_NEWEST => __d('blog', 'Newest'),
 		),
-		'selected' => intval($blog_style['BlogStyle']['order_comments']),
+		'selected' => isset($blog_style['BlogStyle']['order_comments']) ? intval($blog_style['BlogStyle']['order_comments']) : BLOG_ORDER_COMMENTS_OLDEST,
 		'label' => __d('blog', 'Order of comments'),
 		'id' => $top_id.'_'. $blog_style['BlogStyle']['widget_type'].'_order_comments',
 		'class' => 'blog-style-widget-single-input'

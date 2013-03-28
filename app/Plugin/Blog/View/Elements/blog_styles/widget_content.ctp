@@ -12,7 +12,7 @@
 	);
 	echo $this->Form->end();
 ?>
-<?php if($this->request->is('post') && count($this->validationErrors['BlogStyle']) > 0): ?>
+<?php if($this->request->is('post') && count($this->validationErrors['BlogStyle']) == 0): ?>
 <script>
 $.Common.reloadBlock(null, '<?php echo($id);?>');
 $.BlogStyles.clickWidgetChancel(null, $('#<?php echo($top_id);?>'));

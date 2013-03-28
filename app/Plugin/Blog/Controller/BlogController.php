@@ -44,16 +44,23 @@ class BlogController extends BlogAppController {
 		// TODO:is_future=_ONのものを検索し、既に過去になっていたら、termマスタのcountを更新　is_future=_OFFへ
 
 		$params = array(
-			'conditions' => array('block_id' => $this->block_id, 'display_flag' => _ON));
+			'conditions' => array('block_id' => $this->block_id, 'OR' => array('widget_type' => BLOG_WIDGET_TYPE_MAIN, 'display_flag' => _ON))
+		);
 		$blog_styles = $this->BlogStyle->find('all', $params);
 		if(empty($blog_styles)) {
 			// コンテンツ一覧から表示
 			$blog_styles = $this->BlogStyle->findDefault();
 		}
+
 		foreach($blog_styles as $blog_style) {
 			switch($blog_style['BlogStyle']['widget_type']) {
 				case BLOG_WIDGET_TYPE_MAIN:
-					$this->_main($this->content_id, $blog_style['BlogStyle']['visible_item']);
+					if($blog_style['BlogStyle']['display_flag']) {
+						$this->_main($this->content_id, $blog_style['BlogStyle']['visible_item']);
+					} else {
+						$limit = !empty($this->request->named['limit']) ? intval($this->request->named['limit']) : $blog_style['BlogStyle']['visible_item'];
+						$this->set('limit', $limit);
+					}
 					break;
 				case BLOG_WIDGET_TYPE_RECENT_POSTS:
 					$this->_recentPosts($this->content_id, $blog_style['BlogStyle']['visible_item']);

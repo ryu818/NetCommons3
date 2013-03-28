@@ -21,7 +21,7 @@ $this->start('widget_content');
 
 	echo $this->Form->input('BlogStyle.show_post_count',array(
     	'type' => 'checkbox',
-		'checked' => ($blog_style['BlogStyle']['show_post_count']) ? true : false,
+		'checked' => (isset($blog_style['BlogStyle']['show_post_count']) && $blog_style['BlogStyle']['show_post_count']) ? true : false,
 		'label' => __d('blog', 'Show post counts.'),
         'id' => $top_id.'_'. $blog_style['BlogStyle']['widget_type'].'_show_post_count',
 		'class' => 'blog-style-widget-single-input'
@@ -29,7 +29,7 @@ $this->start('widget_content');
 
 	echo $this->Form->input('BlogStyle.show_hierarchy',array(
     	'type' => 'checkbox',
-		'checked' => ($blog_style['BlogStyle']['show_hierarchy']) ? true : false,
+		'checked' => (isset($blog_style['BlogStyle']['show_hierarchy']) && $blog_style['BlogStyle']['show_hierarchy']) ? true : false,
 		'label' => __d('blog', 'Show hierarchy.'),
         'id' => $top_id.'_'. $blog_style['BlogStyle']['widget_type'].'_show_hierarchy',
 		'class' => 'blog-style-widget-single-input'

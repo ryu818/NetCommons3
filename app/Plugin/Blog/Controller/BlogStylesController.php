@@ -30,14 +30,13 @@ class BlogStylesController extends BlogAppController {
 		$params = array('conditions' => array('block_id' => $this->block_id));
 		$blog_styles = $this->BlogStyle->find('all', $params);
 		if(empty($blog_styles)) {
-			$blog_styles = $this->BlogStyle->findDefault(0, true);
+			$blog_styles = $this->BlogStyle->findDefault($this->block_id, true);
 			if($blog_styles === false) {
-				$this->flash(__('Failed to register the database, (%s).', 'contents'), null, 'BlogStyles.index.001', '500');
+				$this->flash(__('Failed to register the database, (%s).', 'blog_styles'), null, 'BlogStyles.index.001', '500');
 				return;
 			}
-		} else {
-			$blog_styles = $this->BlogStyle->afterFindColRow($blog_styles);
 		}
+		$blog_styles = $this->BlogStyle->afterFindColRow($blog_styles);
 
 		if($this->request->is('post')) {
 			if(!isset($this->request->data['widget_type']) || !isset($this->request->data['col_num']) || !isset($this->request->data['row_num'])) {

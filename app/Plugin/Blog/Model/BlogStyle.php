@@ -27,6 +27,8 @@ class BlogStyle extends AppModel
  */
 	public $validate_main = array();
 
+	public $initInsert = false;
+
 /**
  * バリデート処理
  * @param   void
@@ -282,15 +284,21 @@ class BlogStyle extends AppModel
  * @since   v 3.0.0.0
  */
 	public function beforeSave($options = array()) {
+		if($this->initInsert) {
+			return true;
+		}
 		if(isset($this->validate_options[$this->data['BlogStyle']['widget_type']])) {
 			$this->validate = $this->validate_options[$this->data['BlogStyle']['widget_type']];
 			if(!$this->validates()) {
+				var_dump($options);
 				return false;
 			}
 			$serialize_options = array();
 			foreach($this->validate as $key => $v) {
-				$serialize_options[$key] = $this->data['BlogStyle'][$key];
-				unset($this->data['BlogStyle'][$key]);
+				if(isset($this->data['BlogStyle'][$key])) {
+					$serialize_options[$key] = $this->data['BlogStyle'][$key];
+					unset($this->data['BlogStyle'][$key]);
+				}
 			}
 			$this->data['BlogStyle']['options'] = serialize($serialize_options);
 			$this->validate = $this->validate_main;
@@ -320,7 +328,7 @@ class BlogStyle extends AppModel
  * @since   v 3.0.0.0
  */
 	public function findDefault($block_id = 0, $insert_flag = false) {
-		$rets =  array(
+		$blog_styles =  array(
 			array('BlogStyle' => array(
 				'block_id' => $block_id,
 				'widget_type' => BLOG_WIDGET_TYPE_NUMBER_POSTS,
@@ -407,6 +415,7 @@ class BlogStyle extends AppModel
 		if($insert_flag) {
 			// 初期データInsert
 			// 表示方法変更画面　最初の表示でInsert
+			$this->initInsert = true;
 			foreach($blog_styles as $blog_style) {
 				$this->create();
 				if(!$this->save($blog_style)) {
@@ -415,7 +424,7 @@ class BlogStyle extends AppModel
 			}
 		}
 
-		return $rets;
+		return $blog_styles;
 	}
 
 /**
@@ -448,7 +457,7 @@ class BlogStyle extends AppModel
 			}
 			unset($val['BlogStyle']['options']);
 
-			if($is_show_main && $val['BlogStyle']['col_num'] == 2) {
+			if($is_show_main && isset($col_num) && $val['BlogStyle']['col_num'] == 2) {
 				if((isset($val['BlogStyle']['display_type']) &&
 						$val['BlogStyle']['widget_type'] == BLOG_WIDGET_TYPE_CATEGORIES &&
 						$val['BlogStyle']['display_type'] == BLOG_DISPLAY_TYPE_SELECTBOX) ||
