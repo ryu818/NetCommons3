@@ -33,7 +33,7 @@
 				&nbsp;|&nbsp;
 				<?php echo(__d('blog', 'Author:')); ?>
 				<?php
-					echo $this->Html->link($post['BlogPost']['created_user_name'], array('plugin' => 'blog', 'controller' => 'blog', 'action' => 'author', $post['BlogPost']['created_user_id']),
+					echo $this->Html->link($post['BlogPost']['created_user_name'], array('plugin' => 'blog', 'controller' => 'blog', 'action' => 'index','author', $post['BlogPost']['created_user_id']),
 						array('title' => __d('blog', 'View all posts by %s', $post['BlogPost']['created_user_name']),
 							'rel' => 'author'));
 				?>
