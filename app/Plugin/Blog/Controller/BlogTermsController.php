@@ -29,10 +29,12 @@ class BlogTermsController extends BlogAppController {
 	public function add_category($post_id = null) {
 		// TODO:権限チェック未作成
 		if($this->request->is('post')) {
-			if(!isset($this->request->data['BlogTerm']['name']) || !isset($this->request->data['BlogTerm']['parent'])) {
+			if(!isset($this->request->data['BlogTerm']['name'])) {
 				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogTerms.add_category.001', '500');
 				return;
 			}
+
+			$parent = !isset($this->request->data['BlogTerm']['parent']) ? 0 : intval($this->request->data['BlogTerm']['parent']);
 
 			$blog_term = array('BlogTerm' => array(
 				'id' => 0,
@@ -41,7 +43,7 @@ class BlogTermsController extends BlogAppController {
 				'slug' => $this->request->data['BlogTerm']['name'],
 				'taxonomy' => 'category',
 				'checked' => _OFF,
-				'parent' => intval($this->request->data['BlogTerm']['parent']),
+				'parent' => $parent,
 				'count' => 0
 			));
 
