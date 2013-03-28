@@ -105,7 +105,9 @@ class CheckAuthComponent extends Component {
 		$controller_name = $controller->request->params['controller'];
 		$plugin_name = $controller->request->params['plugin'];
 		$user_id = isset($user['id']) ? intval($user['id']) : 0;
+		$handle = isset($user['handle']) ? $user['handle'] : '';
 		Configure::write(NC_SYSTEM_KEY.'.user_id', $user_id);
+		Configure::write(NC_SYSTEM_KEY.'.handle', $handle);
 		$redirect_url = ($user_id == 0) ? '/users/login' : null;
 
 		if(isset($plugin_name) && $plugin_name != 'group') {

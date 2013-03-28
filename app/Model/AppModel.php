@@ -31,4 +31,95 @@ App::uses('Model', 'Model');
  * @package       app.Model
  */
 class AppModel extends Model {
+/**
+ * Saves model data (based on white-list, if supplied) to the database. By
+ * default, validation occurs before save.
+ *
+ * created_user_id, modified_user_id, created_user_name, modified_user_nameを自動でセット
+ *
+ * @param array $data Data to save.
+ * @param boolean|array $validate Either a boolean, or an array.
+ *   If a boolean, indicates whether or not to validate before saving.
+ *   If an array, allows control of validate, callbacks, and fieldList
+ * @param array $fieldList List of fields to allow to be written
+ * @return mixed On success Model::$data if its not empty or true, false on failure
+ * @link http://book.cakephp.org/2.0/en/models/saving-your-data.html
+ */
+	public function save($data = null, $validate = true, $fieldList = array()) {
+		$fields = array();
+		if (isset($data[$this->alias])) {
+			$fields = array_keys($data[$this->alias]);
+		}
+		@error_log(print_r($fields,true)."\n", 3, LOGS . '/exportWWW.txt');
+		$id = Configure::read(NC_SYSTEM_KEY.'.user_id');
+		$usename = Configure::read(NC_SYSTEM_KEY.'.handle');
+
+		if ($this->hasField('created_user_id') && (!in_array('created_user_id', $fields) || !isset($data[$this->alias]['created_user_id']))) {
+			if(count($fieldList) > 0)
+				$fieldList[] = 'created_user_id';
+			$data[$this->alias]['created_user_id'] = $id;
+		}
+		if ($this->hasField('modified_user_id')) {
+			if(count($fieldList) > 0)
+				$fieldList[] = 'modified_user_id';
+			$data[$this->alias]['modified_user_id'] = $id;
+		}
+		// TODO:グリニッジにして登録するかどうかを検討
+		//if ($this->hasField('created') && (!in_array('created', $fields) || !isset($data[$this->alias]['created']))) {
+		//	$data[$this->alias]['created'] = gmdate(NC_VALIDATOR_DATE_TIME);
+		//}
+
+		if ($this->hasField('created_user_name') && (!in_array('created_user_name', $fields) || !isset($data[$this->alias]['created_user_name']))) {
+			if(count($fieldList) > 0)
+				$fieldList[] = 'created_user_name';
+			$data[$this->alias]['created_user_name'] = $usename;
+		}
+		if ($this->hasField('modified_user_name')) {
+			if(count($fieldList) > 0)
+				$fieldList[] = 'modified_user_name';
+			$data[$this->alias]['modified_user_name'] = $usename;
+		}
+		// TODO:グリニッジにして登録するかどうかを検討
+		//if ($this->hasField('modified')) {
+		//	$data[$this->alias]['modified'] = gmdate(NC_VALIDATOR_DATE_TIME);
+		//}
+
+		/*if (isset($this->data) && isset($this->data[$this->name]))
+		 unset($this->data[$this->name]['modified']);
+		if (isset($data) && isset($data[$this->name]))
+			unset($data[$this->name]['modified']);*/
+		@error_log(print_r($fieldList,true)."\n", 3, LOGS . '/exportWWW.txt');
+		return parent::save($data, $validate, $fieldList);
+	}
+
+/**
+ * Saves the value of a single field to the database, based on the current
+ * model ID.
+ *
+ * modified_user_id, modified_user_nameを自動でセット
+ *
+ * @param string $name Name of the table field
+ * @param mixed $value Value of the field
+ * @param boolean|array $validate Either a boolean, or an array.
+ *   If a boolean, indicates whether or not to validate before saving.
+ *   If an array, allows control of 'validate' and 'callbacks' options.
+ * @return boolean See Model::save()
+ * @see Model::save()
+ * @link http://book.cakephp.org/2.0/en/models/saving-your-data.html#model-savefield-string-fieldname-string-fieldvalue-validate-false
+ */
+	public function saveField($name, $value, $validate = false) {
+		$id = $this->id;
+		$this->create(false);
+
+		if (is_array($validate)) {
+			$options = array_merge(array('validate' => false, 'fieldList' => array($name)), $validate);
+		} else {
+			$options = array('validate' => $validate, 'fieldList' => array($name));
+		}
+		$options['fieldList'][] = 'modified';
+		$options['fieldList'][] = 'modified_user_id';
+		$options['fieldList'][] = 'modified_user_name';
+		return $this->save(array($this->alias => array($this->primaryKey => $id, $name => $value)), $options);
+	}
+
 }
