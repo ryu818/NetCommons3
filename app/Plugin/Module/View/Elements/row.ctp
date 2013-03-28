@@ -19,7 +19,7 @@
 				?>
 			<?php endif; ?>
 			<?php if (!isset($module['Module']['install_flag']) && (!isset($module['Module']['ini']['uninstall_flag']) || $module['Module']['ini']['uninstall_flag'] == _ON)): ?>
-				<?php echo(__('&nbsp;&nbsp;|&nbsp;&nbsp;'));?>
+				&nbsp;&nbsp;|&nbsp;&nbsp;
 				<?php $confirm = $this->Js->escape(__d('module', 'Uninstalling the module %s.<br />Are you sure to proceed?', $module['Module']['module_name'])); ?>
 				<?php $confirm_again = $this->Js->escape(__d('module', 'All the data stored in %s will vanish.<br/>Are you sure to proceed?', $module['Module']['module_name'])); ?>
 				<?php
@@ -28,7 +28,7 @@
 				?>
 			<?php endif; ?>
 			<?php if (!isset($module['Module']['install_flag']) && (!isset($module['Module']['ini']['uninstall_flag']) || $module['Module']['ini']['uninstall_flag'] == _ON) && $module['Module']['disposition_flag'] == _ON): ?>
-				<?php echo(__('&nbsp;&nbsp;|&nbsp;&nbsp;'));?>
+				&nbsp;&nbsp;|&nbsp;&nbsp;
 				<?php /* TODO:未作成 */ ?>
 				<a href="#" onclick="return false;">
 					<?php echo(__d('module', 'Authority setting'));?>

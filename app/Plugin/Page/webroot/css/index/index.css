@@ -206,11 +206,6 @@ input.pages-menu-edit-title {
 	min-width:230px;
 }
 
-/* ページ移動 */
-.pages-menu-paginator-outer {
-	padding: 0 0 5px 0;
-}
-
 /* ページ追加・編集 */
 .pages-menu-edit-view {
 	display: block;

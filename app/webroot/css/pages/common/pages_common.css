@@ -16,24 +16,6 @@
     z-index: 990;
 }
 
-.nc-panel-color {
-	background-color: #ffffff;
-/* Firefox */
-    background-image: -moz-linear-gradient(center top , #ffffff, #f8f8f8);
-/* Webkit */
-    background: -webkit-gradient(
-        linear,
-        center top,
-        center bottom,
-        from(#ffffff),
-        to(#f8f8f8)
-        );
-/* IE */
-    filter:progid:DXImageTransform.Microsoft.gradient
-        (startColorstr=#ffffffff,endColorstr=#fff8f8f8);
-    zoom: 1;
-}
-
 .nc-hmenu-arrow {
 	text-align:center;
 	top:44px;

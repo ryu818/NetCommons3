@@ -76,7 +76,7 @@ $is_controls = ($this->request->controller == 'controls') ? true : false;
 </div>
 <?php
 $show_page_setting = false;
-$params = array('plugin' => 'page', 'controller' => 'page', 'action' => 'index');
+$params = array('plugin' => 'page', 'controller' => 'page', 'action' => 'index', 'block_id' => '');
 $options = array('return');
 if(!$is_controls && isset($page_menu)) {
 	$show_page_setting = true;

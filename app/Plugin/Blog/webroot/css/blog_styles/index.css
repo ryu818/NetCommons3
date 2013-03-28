@@ -1,0 +1,85 @@
+/* 表示方法変更 */
+.blog-style-widget-area {
+	width:275px;
+	padding:0 5px;
+}
+
+.blog-style-widget-area-title {
+	border-style: solid;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-width: 1px;
+    border-color: #dfdfdf;
+}
+
+.blog-style-widget-area-title-sub {
+	padding: 2px 0 2px 10px;
+	cursor: pointer;
+}
+
+.blog-style-widget-item {
+	cursor: move;
+}
+
+.blog-style-widget-area-title h3 {
+    font-weight: normal;
+    margin: 0;
+    overflow: hidden;
+    padding: 8px 10px;
+    white-space: nowrap;
+}
+
+.blog-style-widget-area-title h4 {
+	font-weight: normal;
+    margin: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline;
+}
+
+.blog-style-widget-area-content-parent {
+	min-height: 400px;
+}
+.blog-style-widget-area-content {
+	border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-style: none solid solid;
+    border-width: 0 1px 1px;
+
+    padding: 10px;
+
+    background-color: #fcfcfc;
+    border-color: #dfdfdf;
+}
+
+.blog-style-widget-area-outer {
+	padding: 5px 0;
+}
+
+a.blog-style-display-flag {
+	padding: 0 6px 0 3px;
+	text-decoration : none;
+}
+
+a.blog-style-arrow {
+	display: block;
+    width: 15px;
+    float:right;
+}
+
+.blog-style-widget-area-content .ui-state-highlight {
+	height: 1.5em;
+	line-height: 1.3em;
+	margin: 5px 0;
+}
+.blog-style-widget-area-content .input {
+	padding: 1px 0;
+}
+
+.blog-style-widget-single-input {
+	margin: 0 4px 0 5px;
+}
+
+select.blog-style-widget-single-input {
+	width:110px;
+}

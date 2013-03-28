@@ -10,6 +10,23 @@
  */
 class ValidationBehavior extends ModelBehavior {
 /**
+ * 複数カラム重複チェック
+ *
+ * @param   Model $Model
+ * @param   array    $data
+ * @param   array    $fields
+ * @return  boolean
+ * @access	@since   v 3.0.0.0
+ */
+	public function isUniqueWith(Model $Model, $data, $fields) {
+		if (!is_array($fields)) {
+			$fields = array($fields);
+		}
+		$fields = array_merge($data, $fields);
+		return $Model->isUnique($fields, false);
+	}
+
+/**
  * テーマ存在チェック
  *
  * @param   Model $Model
@@ -17,7 +34,7 @@ class ValidationBehavior extends ModelBehavior {
  * @return  boolean
  * @access	@since   v 3.0.0.0
  */
-	function existsTheme(Model $Model, $data) {
+	public function existsTheme(Model $Model, $data) {
 		$values = array_values($data);
 		$theme_name = $values[0];
 		if($theme_name == '') {
@@ -50,7 +67,7 @@ class ValidationBehavior extends ModelBehavior {
  * @return  string theme_path or boolean false
  * @access	@since   v 3.0.0.0
  */
-    function getThemePath(Model $Model, $theme_name = null) {
+    public function getThemePath(Model $Model, $theme_name = null) {
     	if(isset($theme_name)) {
 			$theme_arr = explode('.', $theme_name);
 			$theme_path = $theme_arr[0];

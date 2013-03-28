@@ -174,8 +174,8 @@ class Module extends AppModel
  * @return boolean
  */
 	public function isOperationAction($dir_name, $action) {
-		App::uses($dir_name.'OperationsComponent', 'Plugin/'.$dir_name.'/Controller/Component');
-		$class_name = $dir_name.'OperationsComponent';
+		App::uses($dir_name.'OperationComponent', 'Plugin/'.$dir_name.'/Controller/Component');
+		$class_name = $dir_name.'OperationComponent';
 		if(!class_exists($class_name) || !method_exists($class_name, $action)) {
 			// ショートカットと移動は関数がなくてもエラーとしない
 			return false;
@@ -192,9 +192,9 @@ class Module extends AppModel
  * @since   v 3.0.0.0
  */
 	public function operationAction($dir_name, $action, $args) {
-		$class_name = $dir_name.'OperationsComponent';
+		$class_name = $dir_name.'OperationComponent';
 		if(!class_exists($class_name)) {
-			App::uses($dir_name.'OperationsComponent', 'Plugin/'.$dir_name.'/Controller/Component');
+			App::uses($dir_name.'OperationComponent', 'Plugin/'.$dir_name.'/Controller/Component');
 			if(!class_exists($class_name)) {
 				// isOperationActionで確認するため、ここではエラーにはしない。
 				return true;

@@ -44,11 +44,6 @@ msgstr 	"ページ追加"
 msgid  	"Create community"
 msgstr 	"コミュニティー作成"
 
-msgid  	"To public"
-msgstr 	"公開にする"
-msgid  	"To private"
-msgstr 	"非公開にする"
-
 msgid  	"Delete room"
 msgstr 	"ルーム削除"
 msgid  	"Delete page"

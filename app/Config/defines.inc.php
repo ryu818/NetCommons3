@@ -33,8 +33,8 @@ define('NC_DB_DATE_FORMAT', 'Y-m-d H:i:s');
 define('NC_VALIDATOR_DATE_TIME', "YmdHis");
 
 //-----------------長さチェック用-------------------------------------------
-define('NC_VALIDATOR_TITLE_LEN', 40);
-define('NC_VALIDATOR_MAIL_LEN', 256);
+define('NC_VALIDATOR_TITLE_LEN', 100);
+define('NC_VALIDATOR_VARCHAR_LEN', 255);
 define('NC_VALIDATOR_TEXTAREA_LEN', 1000);
 define('NC_VALIDATOR_WYSIWYG_LEN', 60000);
 
@@ -78,13 +78,20 @@ define('NC_SYSTEM_KEY', 'System');
 //-----------------権限(authorities.myportal_use_flag)------------------------------------
 define('NC_MYPORTAL_USE_NOT', 0);			// 使用しない
 define('NC_MYPORTAL_USE_ALL', 1);			// すべて公開
-define('NC_MYPORTAL_NOT_MEMBERS', 2);		// ログイン会員のみ公開(allow_myportal _viewing_authorityの権限以上で閲覧可能とする[主坦、モデレータ、一般、ゲスト])
+define('NC_MYPORTAL_MEMBERS', 2);			// ログイン会員のみ公開(allow_myportal_viewing_authorityの権限以上で閲覧可能とする[主坦、モデレータ、一般、ゲスト])
 
 //-----------------display_flag-------------------------------------------
 
-define('NC_DISPLAY_FLAG_OFF', 0);
-define('NC_DISPLAY_FLAG_ON', 1);
+define('NC_DISPLAY_FLAG_OFF', 0);		// 非公開
+define('NC_DISPLAY_FLAG_ON', 1);		// 公開中
 define('NC_DISPLAY_FLAG_DISABLE', 2);	// 利用不可
+
+//-----------------status-------------------------------------------
+
+define("NC_STATUS_PUBLISH",   0);		// 公開中
+define("NC_STATUS_TEMPORARY", 1);		// 一時保存中
+define("NC_STATUS_PRIVATE",   2);		// 非公開
+define("NC_STATUS_MEMBERS",   3);		// 会員のみ公開
 
 //-----------------community publication_range_flag-------------------------------------------
 
@@ -214,6 +221,9 @@ define('NC_DELETE_MOVE_PARENT',       2);	// 子グループを削除する場�
 define('NC_GENERAL_MODE', 0);
 define('NC_BLOCK_MODE', 1);
 
+//-----------------ページ送り：リストを5ページ分まで表示----------------------
+define('NC_PAGINATE_VIEWS', 5);
+
 //-----------------アップロード関連-------------------------------------------
 define("NC_ALLOW_ATTACHMENT_NO", 0);
 define("NC_ALLOW_ATTACHMENT_IMAGE" ,1);
@@ -248,3 +258,5 @@ define("NC_THEME_INIFILE",             "theme.ini");
 define("NC_ASSET_PREFIX", 'application-');
 define("NC_ASSET_GC_PROBABILITY", 100);	// JS、CSSファイルガーベージコレクション発生確率(Page表示時：100回に一度)
 define("NC_ASSET_GC_LIFETIME", 604800);		// JS、CSSファイル保持期間（デフォルト1週間）
+//-----------------Htmlarea 履歴-------------------------------------------
+define("NC_REVISION_RETENTION_NUMBER", 20);		// 履歴の保存最大個数を超えた場合、古いものから削除

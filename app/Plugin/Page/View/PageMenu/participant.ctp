@@ -21,7 +21,7 @@
 	<?php
 		if($page['Page']['id'] == $page['Page']['room_id'] && $page['Page']['thread_num'] > 1) {
 			$deallocation = $this->Form->button(__d('page', 'Unassign members'), array('name' => 'deallocation', 'class' => 'common-btn common-btn-light', 'type' => 'button',
-				'data-ajax-url' => $this->Html->url(array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'deallocation', $page['Page']['id'])),
+				'data-ajax-url' => $this->Html->url(array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'deallocation', $page['Page']['id'])),
 				'data-ajax-replace' => '#pages-menu-edit-item-'.$page['Page']['id'],
 				'data-ajax-confirm' => h(__d('page','Unassign members of [%s]. Are you sure?',$page['Page']['page_name'])),'data-ajax-type' => 'post'
 			));
@@ -31,7 +31,7 @@
 		echo $this->Html->div('submit',
 			$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'common-btn')).
 			$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
-				'onclick' => "$.PageMenu.hideDetail(".$page['Page']['id'].");", 'data-ajax-url' => $this->Html->url(array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'participant_cancel', $page['Page']['id'])),
+				'onclick' => "$.PageMenu.hideDetail(".$page['Page']['id'].");", 'data-ajax-url' => $this->Html->url(array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'participant_cancel', $page['Page']['id'])),
 				'data-ajax' => '#pages-menu-edit-participant-tmp')).$deallocation
 		);
 		echo $this->Form->end();
@@ -47,7 +47,7 @@ $(function(){
 	$("#pages-menu-edit-participant-grid-<?php echo($page['Page']['id']);?>").flexigrid
     (
         {
-            url: '<?php echo($this->Html->url(array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'participant_detail', $page['Page']['id']))); ?>',
+            url: '<?php echo($this->Html->url(array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'participant_detail', $page['Page']['id']))); ?>',
             method: 'POST',
             dataType: 'json',
             showToggleBtn: false,

@@ -57,6 +57,7 @@ class MyFormHelper extends FormHelper {
  *  Add Start Ryuji.M
  * - `popup`      bool   default false ポップアップ表示するかどうか。位置の指定は現状できない。
  * - `selector`   string default null targetのjquery.selector targetがtext,textareaならば、変更されたら削除。targetがselectならば、change,その他のinputタグならば、click時に削除。
+ * 							trueと指定すれば、それ自身
  * - `close`      bool   default true trueならば×ボタンを付与。
  *
  *  Add End
@@ -79,7 +80,7 @@ class MyFormHelper extends FormHelper {
 				unset($text['attributes']);
 			}
 		}
-		$defaults = array('wrap' => true, 'class' => 'error-message', 'escape' => true, 'popup' => false, 'selector' => '', 'close' => true);
+		$defaults = array('wrap' => true, 'class' => 'error-message clearfix', 'escape' => true, 'popup' => false, 'selector' => '', 'close' => true);
 		$options = array_merge($defaults, $options);
 		$close = $options['close'];
 		$popup = $options['popup'];
@@ -111,7 +112,7 @@ class MyFormHelper extends FormHelper {
 			} else {
 				$class = $options['class'];
 			}
-			$str = '<div class="table-cell">'.$str. '</div><a href="#" class="message-close" role="button" onclick="$(this).parents(\'.'.$class.':first\').remove(); return false;"><span class="ui-icon ui-icon-closethick">close</span></a>' ;
+			$str = '<div class="display-inline">'.$str. '</div><a href="#" class="message-close" role="button" onclick="$(this).parents(\'.'.$class.':first\').remove(); return false;"><span class="ui-icon ui-icon-closethick">close</span></a>' ;
 		}
 		if($buf_wrap !== false) {
 			$tag = is_string($buf_wrap) ? $buf_wrap : 'div';
@@ -124,9 +125,26 @@ class MyFormHelper extends FormHelper {
 			$str = $this->Html->div('popup-message', $str, $popup_options);
 		}
 		if($selector) {
+			if($selector === true) {
+				$selector = "$('#".$uuid."').prev()";
+			}
 			$str .= $this->Html->scriptBlock("$.Common.closeAlert(".$selector.", $('#".$uuid."'));");
 			//$str .= $this->Html->scriptBlock("$.Common.closeAlert('".$this->Js->escape($selector)."', $('#".$uuid."'));");
 		}
 		return $str;
+	}
+
+/**
+ * 権限[主坦 モデレータ 一般]スライダー表示
+ * @param   string $fieldName A field name, like "Modelname.fieldname"
+ * @param   array  $options Array of HTML attributes.
+ * 	### Options:
+ * - `disable`      boolean  defaul:false 無効にするかどうか
+ *
+ * @return  string
+ * @since   v 3.0.0.0
+ */
+	public function authoritySlider($fieldName, $options = array()) {
+		return $this->_View->element('/common/authority_slider', array('fieldName' => $fieldName, 'options' => $options));
 	}
 }

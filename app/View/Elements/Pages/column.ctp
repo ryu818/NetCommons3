@@ -12,10 +12,8 @@
 				$params = array('block_type' => 'active-blocks', 'block_id' => $block['Block']['id']);
 				$requestActionOptions = array('return');
 				if(!empty($this->params['active_plugin']) && $block['Block']['id'] == $this->params['block_id']) {
-					$title = $this->fetch('title');
-					$title = (isset($title) && $title != '') ? $title : h($block['Block']['title']);
-					$this->assign('title', $title);
-
+					$is_active = true;
+					Configure::delete(NC_SYSTEM_KEY.'.nc_not_active');
 					$params['plugin'] = $this->params['active_plugin'];
 					$params['controller'] = empty($this->params['active_controller']) ? $params['plugin'] : $this->params['active_controller'];
 					$params['action'] = empty($this->params['active_action']) ? '' : $this->params['active_action'];
@@ -26,6 +24,8 @@
 						$options['data'] = $this->params->data;
 					}
 				} else {
+					$is_active = false;
+					Configure::write(NC_SYSTEM_KEY.'.nc_not_active' , true);
 					$controller_arr = explode('/', $block['Block']['controller_action'], 2);
 					$params['plugin'] = $params['controller'] = $controller_arr[0];
 					if(isset($controller_arr[1])) {
@@ -39,7 +39,11 @@
 					Configure::write(NC_SYSTEM_KEY.'.blocks', $blocks);
 				}
 				$c = trim($this->requestAction($params, $requestActionOptions));
-
+				if($is_active) {
+					$block_title = $this->fetch('block_title');
+					$block_title = (isset($block_title) && $block_title != '') ? $block_title : h($block['Block']['title']);
+					$this->element('Pages/title_assign', array('block_title' => $block_title));
+				}
 				if(preg_match(NC_DOCTYPE_STR, $c)) {
 					// モジュール内部にエラー等、DOCTYPEから出力するものあり
 					exit;

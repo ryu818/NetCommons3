@@ -15,6 +15,77 @@ class Content extends AppModel
 	public $actsAs = array('Page');
 
 /**
+ * バリデート処理
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function __construct() {
+		parent::__construct();
+
+		/*
+		 * エラーメッセージ設定
+		*/
+		$this->validate = array(
+			'module_id' => array(
+				'numeric' => array(
+					'rule' => array('numeric'),
+					'required' => true,
+					'allowEmpty' => false,
+					'message' => __('The input must be a number.')
+				)
+			),
+			'title' => array(
+				'notEmpty'  => array(
+					'rule' => array('notEmpty'),
+					'last' => true,
+					'required' => true,
+					'message' => __('Please be sure to input.')
+				),
+				'maxlength'  => array(
+					'rule' => array('maxLength', NC_VALIDATOR_BLOCK_TITLE_LEN),
+					'last' => false ,
+					'message' => __('The input must be up to %s characters.', NC_VALIDATOR_BLOCK_TITLE_LEN)
+				)
+			),
+			'is_master' => array(
+				'boolean'  => array(
+					'rule' => array('boolean'),
+					'last' => true,
+					'required' => true,
+					'allowEmpty' => false,
+					'message' => __('The input must be a boolean.')
+				)
+			),
+			'master_id' => array(
+				'numeric' => array(
+					'rule' => array('numeric'),
+					'required' => true,
+					'allowEmpty' => false,
+					'message' => __('The input must be a number.')
+				)
+			),
+			'room_id' => array(
+				'numeric' => array(
+					'rule' => array('numeric'),
+					'required' => true,
+					'allowEmpty' => false,
+					'message' => __('The input must be a number.')
+				)
+			),
+			'accept_flag' => array(
+				'boolean'  => array(
+					'rule' => array('boolean'),
+					'last' => true,
+					'required' => true,
+					'allowEmpty' => false,
+					'message' => __('The input must be a boolean.')
+				)
+			),
+		);
+	}
+
+/**
  * content_id,user_idから該当コンテンツを取得
  * @param   integer   $content_id
  * @param   integer   $user_id
@@ -146,8 +217,8 @@ class Content extends AppModel
 				$module = $Module->findById($module_id);
 			}
 			$plugin = $module['Module']['dir_name'];
-			App::uses($plugin.'OperationsComponent', 'Plugin/'.$plugin.'/Controller/Component');
-			$class_name = $plugin.'OperationsComponent';
+			App::uses($plugin.'OperationComponent', 'Plugin/'.$plugin.'/Controller/Component');
+			$class_name = $plugin.'OperationComponent';
 			if(class_exists($class_name) && method_exists($class_name,'delete')) {
 				eval('$class = new '.$class_name.'();');
 				$class->startup();

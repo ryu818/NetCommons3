@@ -142,25 +142,25 @@
 	<div class="pages-menu-room <?php echo($class); ?>-room"></div>
 	<?php endif; ?>
 	<?php
-	echo $this->Form->create(null, array('url' => array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'edit'), 'id' => 'PagesMenuForm-'.$page['Page']['id'], 'class' => 'pages-menu-edit-form','data-ajax-replace' => '#pages-menu-edit-item-'.$page['Page']['id']));
+	echo $this->Form->create(null, array('url' => array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'edit'), 'id' => 'PagesMenuForm-'.$page['Page']['id'], 'class' => 'pages-menu-edit-form','data-ajax-replace' => '#pages-menu-edit-item-'.$page['Page']['id']));
 	?>
 	<input type="hidden" name="data[Page][id]" value="<?php echo(intval($page['Page']['id'])); ?>" />
 	<div class="dd-drag-content pages-menu-edit-content clearfix">
 		<?php if($is_display): ?>
 			<?php if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_ON): ?>
-				<a class="pages-menu-display-flag" href="#" title="<?php echo(__d('page', 'To private')); ?>">
-					<img class="icon" alt="<?php echo(__d('page', 'To private')); ?>" src="<?php echo($this->webroot); ?>/img/icons/base/on.gif" />
+				<a class="pages-menu-display-flag" href="#" title="<?php echo(__('To private')); ?>">
+					<img class="icon" alt="<?php echo(__('To private')); ?>" src="<?php echo($this->webroot); ?>/img/icons/base/on.gif" data-alt="<?php echo(__('To public')); ?>" />
 				</a>
 			<?php else: ?>
-				<a class="pages-menu-display-flag"  href="#" title="<?php echo(__d('page', 'To public')); ?>">
-					<img class="icon" alt="<?php echo(__d('page', 'To public')); ?>" src="<?php echo($this->webroot); ?>/img/icons/base/off.gif" />
+				<a class="pages-menu-display-flag"  href="#" title="<?php echo(__('To public')); ?>">
+					<img class="icon" alt="<?php echo(__('To public')); ?>" src="<?php echo($this->webroot); ?>/img/icons/base/off.gif" data-alt="<?php echo(__('To private')); ?>" />
 				</a>
 			<?php endif; ?>
 		<?php else: ?>
 			<?php if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_ON): ?>
-				<img class="icon disable-lbl" alt="<?php echo(__d('page', 'To private')); ?>" src="<?php echo($this->webroot); ?>/img/icons/base/on.gif" />
+				<img class="icon disable-lbl" alt="<?php echo(__('To private')); ?>" src="<?php echo($this->webroot); ?>/img/icons/base/on.gif" />
 			<?php else: ?>
-				<img class="icon disable-lbl" alt="<?php echo(__d('page', 'To public')); ?>" src="<?php echo($this->webroot); ?>/img/icons/base/off.gif" />
+				<img class="icon disable-lbl" alt="<?php echo(__('To public')); ?>" src="<?php echo($this->webroot); ?>/img/icons/base/off.gif" />
 			<?php endif; ?>
 		<?php endif; ?>
 		<input type="hidden" name="data[Page][display_flag]" value="<?php echo(intval($page['Page']['display_flag'])); ?>" />
@@ -232,7 +232,7 @@
 	<div class="pages-menu-edit-operation clearfix"<?php if($page['Page']['id'] != $page_id): ?> style="display:none;"<?php endif; ?>>
 	<?php
 		if($is_edit_detail) {
-			echo $this->Html->link('', array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'detail'),
+			echo $this->Html->link('', array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'detail'),
 				array('title' => __('Edit'), 'class' => 'pages-menu-edit-icon' . ' nc-tooltip',
 				'data-ajax' => '#pages-menu-edit-detail-'.$page['Page']['id'], 'data-page-edit-id' => $page['Page']['id']));
 		} else {
@@ -263,7 +263,7 @@
 				'onclick' => 'return false;'));
 		}
 		if($is_delete) {
-			echo $this->Html->link('', array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'delete'),
+			echo $this->Html->link('', array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'delete'),
 				array('title' => ($page['Page']['id'] == $page['Page']['room_id']) ? __d('page', 'Delete room') : __d('page', 'Delete page'), 'class' => 'pages-menu-delete-icon' . ' nc-tooltip',
 				'data-ajax-replace' => '#pages-menu-edit-item-'.$page['Page']['id'], 'data-ajax-type' => 'POST', 'data-ajax-data' => '#pages-menu-edit-item-' . $page['Page']['id']));
 		} else {

@@ -93,6 +93,7 @@ div.top-description {
 }
 .note {
     background-color: #f3f3f3;
+    font-size:0.7rem;
 }
 
 /* highlight */
@@ -156,6 +157,11 @@ a.hover-highlight:active {
 /* IE */
     filter:progid:DXImageTransform.Microsoft.gradient
         (startColorstr=#ffffffff,endColorstr=#ffffffcc);
+}
+
+.common-btn-min {
+	min-width: auto;
+	padding: 2px 10px 1px 10px;
 }
 
 .common-btn_disable {

@@ -23,7 +23,7 @@ class AppPluginController extends AppController
  * Default:false
  * @var boolean
  */
-	public $nc_is_edit = false;
+	protected $nc_is_edit = false;
 
 	public $viewClass = 'Plugin';
 
@@ -104,19 +104,19 @@ class AppPluginController extends AppController
 		if(!empty($this->nc_module) && !isset($this->viewVars['module'])) {
 			$this->set('module', $this->nc_module);
 		}
-		if(!empty($this->nc_block) && !isset($this->viewVars['block'])) {
+		if(!empty($this->nc_block)) {
 			if($this->nc_block['Block']['temp_name'] != '') {
 				$this->theme = $this->nc_block['Block']['temp_name'];
 			}
-			$this->set('block', $this->nc_block);
+			if(!isset($this->viewVars['block'])) {
+				$this->set('block', $this->nc_block);
+			}
 		}
 		if(!empty($this->nc_page) && !isset($this->viewVars['page'])) {
 			$this->set('page', $this->nc_page);
 		}
-		if(isset($this->hierarchy) && $this->hierarchy >= NC_AUTH_MIN_CHIEF) {
-			$this->set('is_chief', _ON);
-		} else {
-			$this->set('is_chief', _OFF);
+		if(isset($this->is_chief) && !isset($this->viewVars['is_chief'])) {
+			$this->set('is_chief', $this->is_chief);
 		}
 		$this->set('nc_is_edit', $this->nc_is_edit);
 		$this->set('nc_show_edit', $this->nc_show_edit);

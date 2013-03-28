@@ -21,7 +21,7 @@ class Block extends AppModel
 	public $actsAs = array('Page', 'TimeZone', 'Validation');
 
 	// 公開日付をsaveする前に変換するかどうかのフラグ
-	public $autoConvert = true;
+	// public $autoConvert = true;
 
 /**
  * バリデート処理
@@ -38,23 +38,23 @@ class Block extends AppModel
 		$this->validate = array(
 			'page_id' => array(
 				'numeric' => array(
-									'rule' => array('numeric'),
-									'allowEmpty' => false,
-									'message' => __('The input must be a number.')
+								'rule' => array('numeric'),
+								'allowEmpty' => false,
+								'message' => __('The input must be a number.')
 							)
 			),
 			'content_id' => array(
 					'numeric' => array(
-							'rule' => array('numeric'),
-							'allowEmpty' => false,
-							'message' => __('The input must be a number.')
+						'rule' => array('numeric'),
+						'allowEmpty' => false,
+						'message' => __('The input must be a number.')
 					)
 			),
 			'module_id' => array(
 					'numeric' => array(
-							'rule' => array('numeric'),
-							'allowEmpty' => false,
-							'message' => __('The input must be a number.')
+						'rule' => array('numeric'),
+						'allowEmpty' => false,
+						'message' => __('The input must be a number.')
 					)
 			),
 			'title' => array(
@@ -85,7 +85,7 @@ class Block extends AppModel
 									'last' => true,
 									'required' => true,
 									'allowEmpty' => false,
-									'message' => __('Unauthorized pattern for %s.', __('Publishing setting'))
+									'message' => __('The input must be a boolean.')
 								)
 			),
 			'display_from_date' => array(
@@ -96,42 +96,42 @@ class Block extends AppModel
 					'message' => __('Unauthorized pattern for %s.', __('Date-time'))
 				),
 				'pastDateTime'  => array(
-						'rule' => array('pastDateTime'),
-						'last' => true,
-						'allowEmpty' => true,
-						'message' => __('%s in the past can not be input.', __('Date-time'))
+					'rule' => array('pastDateTime'),
+					'last' => true,
+					'allowEmpty' => true,
+					'message' => __('%s in the past can not be input.', __('Date-time'))
 				),
 				'invalidDisplayFromDate'  => array(
-						'rule' => array('invalidDisplayFromDate'),
-						'last' => true,
-						'allowEmpty' => true,
-						'message' => __('Because the page is not a private, You can\'t set a publish date.')
+					'rule' => array('invalidDisplayFromDate'),
+					'last' => true,
+					'allowEmpty' => true,
+					'message' => __('Because the page is not a private, You can\'t set a publish date.')
 				),
 			),
 			'display_to_date' => array(
 				'datetime'  => array(
-						'rule' => array('datetime'),
-						'last' => true,
-						'allowEmpty' => true,
-						'message' => __('Unauthorized pattern for %s.', __('Date-time'))
+					'rule' => array('datetime'),
+					'last' => true,
+					'allowEmpty' => true,
+					'message' => __('Unauthorized pattern for %s.', __('Date-time'))
 				),
 				'pastDateTime'  => array(
-						'rule' => array('pastDateTime'),
-						'last' => true,
-						'allowEmpty' => true,
-						'message' => __('%s in the past can not be input.', __('Date-time'))
+					'rule' => array('pastDateTime'),
+					'last' => true,
+					'allowEmpty' => true,
+					'message' => __('%s in the past can not be input.', __('Date-time'))
 				),
 				'invalidDisplayToDate'  => array(
-						'rule' => array('invalidDisplayToDate'),
-						'last' => true,
-						'allowEmpty' => true,
-						'message' => __('Because the page is not published, You can\'t set a closed date.')
+					'rule' => array('invalidDisplayToDate'),
+					'last' => true,
+					'allowEmpty' => true,
+					'message' => __('Because the page is not published, You can\'t set a closed date.')
 				),
 				'invalidDisplayFromToDate'  => array(
-						'rule' => array('invalidDisplayFromToDate'),
-						'last' => true,
-						'allowEmpty' => true,
-						'message' => __('Please input in [publish date < closed date].')
+					'rule' => array('invalidDisplayFromToDate'),
+					'last' => true,
+					'allowEmpty' => true,
+					'message' => __('Please input in [publish date < closed date].')
 				),
 			),
 			/* TODO:未作成
@@ -209,9 +209,9 @@ class Block extends AppModel
  * @since   v 3.0.0.0
  */
 	public function beforeSave($options = array()) {
-		if(!$this->autoConvert) {
-			return true;
-		}
+		//if(!$this->autoConvert) {
+		//	return true;
+		//}
 		if (!empty($this->data['Block']['display_from_date']) ) {
 			$this->data['Block']['display_from_date'] = $this->date($this->data['Block']['display_from_date']);
 		}
@@ -577,8 +577,8 @@ class Block extends AppModel
 			if(!empty($module['Module'])) {
 				// ルームが異なるコンテンツは削除アクションを行わない。
 				$plugin = $module['Module']['dir_name'];
-				App::uses($plugin.'OperationsComponent', 'Plugin/'.$plugin.'/Controller/Component');
-				$class_name = $plugin.'OperationsComponent';
+				App::uses($plugin.'OperationComponent', 'Plugin/'.$plugin.'/Controller/Component');
+				$class_name = $plugin.'OperationComponent';
 				if(class_exists($class_name)) {
 					eval('$class = new '.$class_name.'();');
 					$class->startup();

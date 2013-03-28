@@ -88,9 +88,8 @@
 											if($community_params['community']['Community']['participate_flag'] == NC_PARTICIPATE_FLAG_ONLY_USER) {
 												$disable = true;
 											}
-											echo($this->element('/Commons/authority_slider', array('id' => "pages-menu-community-invite-authority-".$page['Page']['id'], 'disable' => $disable)));
+											echo $this->Form->authoritySlider('Community.invite_hierarchy', array('id' => "pages-menu-community-invite-authority-".$page['Page']['id'].'-' ,'disable' => $disable, 'value' => $community_params['community']['Community']['invite_hierarchy']));
 										?>
-										<input type="hidden" name="data[Community][invite_authority]" value="<?php echo(intval($community_params['community']['Community']['invite_authority'])); ?>" />
 									</div>
 								</div>
 							</dd>
@@ -166,7 +165,7 @@
 		<input type="button" class="common-btn" name="cancel" value="<?php echo(__('Cancel')); ?>" onclick="$('#pages-menu-edit-detail-<?php echo($page['Page']['id']);?>').slideUp(300);" />
 
 
-		<input type="button" class="common-btn common-btn-light" name="participant" value="<?php echo(__d('page','Edit members')); ?>" data-page-edit-id=<?php echo($page['Page']['id']);?> data-ajax-url="<?php echo($this->Html->url(array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'participant', $page['Page']['id']))); ?>" data-ajax-replace="#pages-menu-edit-participant-<?php echo($page['Page']['id']);?>" />
+		<input type="button" class="common-btn common-btn-light" name="participant" value="<?php echo(__d('page','Edit members')); ?>" data-page-edit-id=<?php echo($page['Page']['id']);?> data-ajax-url="<?php echo($this->Html->url(array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'participant', $page['Page']['id']))); ?>" data-ajax-replace="#pages-menu-edit-participant-<?php echo($page['Page']['id']);?>" />
 
 	</div>
 </div>

@@ -40,7 +40,7 @@ if(isset($is_edit) && $is_edit == _ON){
 	<?php
 	if($is_add_community) {
 		$class_postfix = ($active_tab == 0) ? ' pages-menu-btn-disable' : '';
-		echo $this->Html->link(__d('page', 'Add community'), array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'add_community'),
+		echo $this->Html->link(__d('page', 'Add community'), array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'add_community'),
 			array('title' => __d('page', 'Add community'), 'id' => 'pages-menu-add-community-btn' ,
 			'class' => 'pages-menu-btn'. $class_postfix,
 			'data-ajax-replace' => '#pages-menu-add-community-temp', 'data-ajax-type' => 'POST'));
@@ -48,7 +48,7 @@ if(isset($is_edit) && $is_edit == _ON){
 	 ?>
 	<?php
 	$class_postfix = (!$is_add) ? ' pages-menu-btn-disable' : '';
-	echo $this->Html->link(__d('page', 'Add page'), array('plugin' => 'page', 'controller' => 'page_menu', 'action' => 'add'),
+	echo $this->Html->link(__d('page', 'Add page'), array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'add'),
 		array('title' => __d('page', 'Add page'), 'id' => 'pages-menu-add-btn' ,
 		'class' => 'pages-menu-btn'. $class_postfix,
 		'data-ajax-replace' => '#pages-menu-add-temp', 'data-ajax-type' => 'POST'));
@@ -131,7 +131,7 @@ if(isset($is_edit) && $is_edit == _ON){
 				<?php endforeach; ?>
 			</select>
 		</div>
-		<?php echo($this->element('index/paginator', array('views' => $views))); ?>
+		<?php echo($this->element('/common/paginator', array('add_params' => array('data-ajax-replace' => '#nc-pages-setting-dialog'),'views' => $views))); ?>
 		<?php
 			$thread_num = 1;
 			$parent_id = NC_TOP_GROUP_ID;
@@ -154,7 +154,7 @@ if(isset($is_edit) && $is_edit == _ON){
 				<?php endif; ?>
 			</ol>
 		<?php endif; ?>
-		<?php echo($this->element('index/paginator', array('views' => $views))); ?>
+		<?php echo($this->element('/common/paginator', array('add_params' => array('data-ajax-replace' => '#nc-pages-setting-dialog'),'views' => $views))); ?>
 	</div>
 </div>
 <?php

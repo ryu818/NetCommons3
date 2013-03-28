@@ -11,6 +11,7 @@
 	$.Common ={
 		zIndex : 2000,
 		blockZIndex : 1000,
+		// data-pjax属性の値をtargetとしてhrefタグのURLを用いてAjaxでデータを取得し、targetを置換する。
 		//
 		// data-ajax属性の値をtargetとしてhrefタグのURLを用いてAjaxでデータを取得する。
 		// data-ajax-replace属性ならば、targetと入れ替える。
@@ -361,21 +362,34 @@
 		// ・エラーがおこった最初のエレメントにフォーカスを移動する。
 		// TODO:WYSIWYGには対応していない。
 		closeAlert : function(input, alert) {
-			var t = this, i =0,text
-			$.each( input, function() {
+			var t = this, i =0,text;
+			$.each( $(input), function() {
 				var child = $(this), form, focus;
-				if (child.is(':hidden,:button,:submit,:reset,:image') || child.css('display') == 'none') {
+				if (child.is(':button,:submit,:reset,:image') || child.css('display') == 'none') {
 					return;
 				}
 				if(i == 0) {
 					form = child.parents('form:first');
 					if(form.get(0)) {
-						focus = $(':focus', form);
-						if(!focus.get(0)) {
-							if (child.is(':text,:password,textarea')) {
-								child.select();
-							} else {
-								child.focus();
+						if (child.is(':hidden')) {
+							setTimeout(function(){
+								focus = $(':focus', form);
+								if(!focus.get(0)) {
+									if (child.is(':text,:password,textarea')) {
+										child.select();
+									} else {
+										child.focus();
+									}
+								}
+							}, 500);
+						} else {
+							focus = $(':focus', form);
+							if(!focus.get(0)) {
+								if (child.is(':text,:password,textarea')) {
+									child.select();
+								} else {
+									child.focus();
+								}
 							}
 						}
 					}
@@ -472,24 +486,45 @@
 			$.ajax(ajax_options);
 		},
 		/* 権限[主坦　モデレータ　一般]スライダー */
-		sliderAuthority: function(id, input_selector, disable) {
-			var slider = $('#' + id);
-			var input = $(input_selector);
-			if(!slider.get(0)) return false;
-			if(!input.get(0)) {
-				input = slider.next();
+		sliderAuthority: function(id, disable) {console.log(id);
+			var _hierarchy = function(authority_id) {
+				var  h = 0;
+				switch (authority_id)
+				{
+					case 2 : h = '301'; break;
+					case 3 : h = '201'; break;
+					case 4 : h = '101'; break;
+				}
+				return h;
 			}
+			var _authority_id = function(h) {
+				var authority_id = 2;
+				switch (h)
+				{
+					case '301' : authority_id = 2; break;
+					case '201' : authority_id = 3; break;
+					case '101' : authority_id = 4; break;
+				}
+				console.log(authority_id);
+				return authority_id;
+			}
+			var input = $('#' + id);
+			if(!input.get(0)) return false;
+			var slider = input.next();
+
 			if(!input.get(0) || input.get(0).tagName.toLowerCase() != 'input') {
 				return false;
 			}
+			console.log($(input).val());
 			slider.slider({
 				'min'    : 2,
 				'max'    : 4,
-				'value'  : $(input).val(),
+				'value'  : _authority_id($(input).val()),
 				'animate': 'fast',
 				'range'  : 'min',
 				'change': function( event, ui ) {
-					$(input).val($(this).slider( "option", "value" ));
+					var authority_id = $(this).slider( "option", "value" );
+					$(input).val(_hierarchy(authority_id));
 				}
 			});
 			if(disable) {

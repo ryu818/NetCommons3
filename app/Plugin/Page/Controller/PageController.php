@@ -178,6 +178,7 @@ class PageController extends PageAppController {
 			} else if($center_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
 				$community_page = $this->Page->findById($center_page['Page']['root_id']);
 			}
+
 			if(isset($community_page) && $community_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
 				$this->paginate['page'] = ceil(intval($community_page['Page']['display_sequence'])/$this->paginate['limit']);
 				$sel_active_tab = 1;
@@ -243,7 +244,7 @@ class PageController extends PageAppController {
 				// コミュニティーならば
 				$ret = $this->Community->getCommunityData($center_page['Page']['room_id']);
 				if($ret === false) {
-					$this->flash(__('Failed to obtain the database, (%s).', 'communities'), null, 'PageMenu/detail.002', '500');
+					$this->flash(__('Failed to obtain the database, (%s).', 'communities'), null, 'Page/index.004', '500');
 					return;
 				}
 				list($community, $community_lang, $community_tag) = $ret;

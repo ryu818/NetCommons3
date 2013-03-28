@@ -1,0 +1,514 @@
+<?php
+$this->extend('/Frame/block');
+?>
+<div id="blog-edits<?php echo($id); ?>" style="display:none;">
+	<?php
+		echo $this->Form->create(null, array('data-pjax' => '#'.$id));
+	?>
+	<div id="blog-edits-tab<?php echo($id); ?>">
+		<ul>
+			<li><a href="#blog-edits-tab-init<?php echo($id); ?>"><span><?php echo(__('General setting'));?></span></a></li>
+			<li><a href="#blog-edits-tab-comment<?php echo($id); ?>"><span><?php echo(__d('blog', 'Comment setting'));?></span></a></li>
+			<li><a href="#blog-edits-tab-trackback<?php echo($id); ?>"><span><?php echo(__d('blog', 'Trackback setting'));?></span></a></li>
+			<li><a href="#blog-edits-tab-approval<?php echo($id); ?>"><span><?php echo(__('Approved Settings'));?></span></a></li>
+		</ul>
+		<div id="blog-edits-tab-init<?php echo($id); ?>">
+			<?php /* 一般設定 */ ?>
+			<fieldset class="form">
+				<ul class="lists blog-edits-lists">
+					<li>
+						<dl>
+							<dt>
+								<?php
+									echo $this->Form->label('Content.title', __d('blog', 'Blog name'));
+								?>
+							</dt>
+							<dd>
+								<?php
+									$settings = array(
+										'type' => 'text',
+										'value' => $block['Content']['title'],
+										'label' => false,
+										'div' => false,
+										'maxlength' => NC_VALIDATOR_BLOCK_TITLE_LEN,
+										'size' => 35,
+										'error' => array('attributes' => array(
+											'selector' => true
+										))
+									);
+									echo $this->Form->input('Content.title', $settings);
+								?>
+							</dd>
+						</dl>
+					</li>
+					<li>
+						<dl>
+							<dt>
+								<?php
+									echo $this->Form->label('Blog.post_hierarchy', __d('blog', 'Authority to post root articles'));
+								?>
+							</dt>
+							<dd>
+								<?php
+									echo $this->Form->authoritySlider('Blog.post_hierarchy', array('value' => $blog['Blog']['post_hierarchy']));
+								?>
+							</dd>
+						</dl>
+					</li>
+					<li>
+						<dl>
+							<dt>
+								<?php
+									echo $this->Form->label('Blog.term_hierarchy', __d('blog', 'Authority to allow addition of a new category,tag.'));
+								?>
+							</dt>
+							<dd>
+								<?php
+									echo $this->Form->authoritySlider('Blog.term_hierarchy', array('value' => $blog['Blog']['term_hierarchy']));
+								?>
+							</dd>
+						</dl>
+					</li>
+					<li>
+						<dl>
+							<dt>
+								<?php
+									echo $this->Form->label('Blog.vote_flag', __d('blog', 'Allow votes?'));
+								?>
+							</dt>
+							<dd>
+								<?php
+									echo $this->Form->input('Blog.vote_flag',array(
+										'type' => 'radio',
+										'options' => array(_ON => __('Yes'), _OFF => __('No')),
+										'value' => intval($blog['Blog']['vote_flag']),
+										'div' => false,
+										'legend' => false,
+									));
+								?>
+							</dd>
+						</dl>
+					</li>
+					<li>
+						<dl>
+							<dt>
+								<?php
+									echo $this->Form->label('Blog.sns_flag', __d('blog', 'Allow Twitter,Facebook icon'));
+								?>
+							</dt>
+							<dd>
+								<?php
+									echo $this->Form->input('Blog.sns_flag',array(
+										'type' => 'radio',
+										'options' => array(_ON => __('Yes'), _OFF => __('No')),
+										'value' => intval($blog['Blog']['sns_flag']),
+										'div' => false,
+										'legend' => false,
+									));
+								?>
+							</dd>
+						</dl>
+					</li>
+					<li>
+						<dl>
+							<dt>
+								<?php
+									echo $this->Form->label('Blog.new_period', __d('blog', 'Period to show with &quot; new &quot; icon'));
+								?>
+							</dt>
+							<dd>
+								<?php
+									echo $this->Form->input('Blog.new_period', array(
+										'options' => array(
+											0 => __('None'),
+											1 => __d('blog', '%1$s day(s)', 1),
+											2 => __d('blog', '%1$s day(s)', 2),
+											3 => __d('blog', '%1$s day(s)', 3),
+											5 => __d('blog', '%1$s day(s)', 5),
+											7 => __d('blog', '%1$s day(s)', 7),
+											30 => __d('blog', '%1$s day(s)', 30),
+										),
+										'selected' => intval($blog['Blog']['new_period']),
+										'label' => false,
+										'div' => false,
+									));
+								?>
+							</dd>
+						</dl>
+					</li>
+					<li>
+						<dl>
+							<dt>
+								<?php
+									echo $this->Form->label('Blog.mail_flag', __d('blog', 'Deliver e-mail when posting?'));
+								?>
+							</dt>
+							<dd>
+								<?php
+									echo $this->Form->input('Blog.mail_flag',array(
+										'type' => 'radio',
+										'options' => array(_ON => __d('blog', 'Email delivery when posting.'), _OFF => __d('blog', 'Email not delivery when posting.')),
+										'value' => intval($blog['Blog']['mail_flag']),
+										'div' => false,
+										'legend' => false,
+									));
+								?>
+								<div class="hr">
+								<?php
+									echo $this->Form->label('Blog.mail_hierarchy', __d('blog', 'Notify whom? :'));
+									echo $this->Form->authoritySlider('Blog.mail_hierarchy', array('value' => $blog['Blog']['mail_hierarchy']));
+									$settings = array(
+										'type' => 'text',
+										'value' => $blog['Blog']['mail_subject'],
+										'label' => __d('blog', 'E-mail Subject:'),
+										'maxlength' => NC_VALIDATOR_TITLE_LEN,
+										'size' => 35,
+										'error' => array('attributes' => array(
+											'selector' => true
+										))
+									);
+									echo $this->Form->input('Blog.mail_subject', $settings);
+									$settings = array(
+										'type' => 'textarea',
+										'escape' => false,
+										'value' => $blog['Blog']['mail_body'],
+										'label' => __d('blog', 'Message：'),
+										'error' => array('attributes' => array(
+											'selector' => true
+										))
+									);
+									echo $this->Form->input('Blog.mail_body', $settings);
+								?>
+								<div class="note">
+									<?php echo __d('blog', 'You may use the following keywords in the title and content of the message, <br />{X-SITE_NAME},{X-ROOM},<br />{X-BLOG_NAME},{X-CATEGORY_NAME},{X-SUBJECT},{X-USER},<br />{X-TO_DATE}、{X-BODY}、{X-URL}<br /><br />Each keyword will be translated to <br />site name, room name, <br />Blog title, category, title of the article, creator<br />timestamp, article and url.');?>
+								</div>
+								</div>
+							</dd>
+						</dl>
+					</li>
+				</ul>
+			</fieldset>
+		</div>
+		<div id="blog-edits-tab-comment<?php echo($id); ?>">
+			<?php /* コメント設定 */ ?>
+			<fieldset class="form">
+				<ul class="lists blog-edits-lists">
+					<li>
+						<dl>
+							<dt>
+								<?php
+									echo $this->Form->label('Blog.comment_flag', __d('blog', 'Allow replies?'));
+								?>
+							</dt>
+							<dd>
+								<?php
+									echo $this->Form->input('Blog.comment_flag',array(
+										'type' => 'radio',
+										'options' => array(_ON => __('Yes'), _OFF => __('No')),
+										'value' => intval($blog['Blog']['comment_flag']),
+										'div' => false,
+										'legend' => false,
+									));
+									?>
+									<div class="hr">
+									<?php
+									echo $this->Form->input('Blog.comment_members',array(
+										'type' => 'checkbox',
+										'value' => intval($blog['Blog']['comment_members']),
+										'label' => __d('blog', 'Users must be logged in to comment.'),
+									));
+									echo $this->Form->input('Blog.comment_required_name',array(
+										'type' => 'checkbox',
+										'value' => intval($blog['Blog']['comment_required_name']),
+										'label' => __d('blog', 'For non-members, comment author must fill out name and e-mail.'),
+									));
+									echo $this->Form->input('Blog.comment_image_auth',array(
+										'type' => 'checkbox',
+										'value' => intval($blog['Blog']['comment_image_auth']),
+										'label' => __d('blog', 'Use image authentication?'),
+									));
+									?>
+									</div>
+							</dd>
+						</dl>
+					</li>
+					<li>
+						<dl>
+							<dt>
+								<?php
+									echo $this->Form->label('Blog.comment_hierarchy', __d('blog', 'Authority to post comments'));
+								?>
+							</dt>
+							<dd>
+								<?php
+									echo $this->Form->authoritySlider('Blog.comment_hierarchy', array('value' => $blog['Blog']['comment_hierarchy']));
+								?>
+							</dd>
+						</dl>
+					</li>
+					<li>
+						<dl>
+							<dt>
+								<?php
+									echo $this->Form->label('Blog.mail_flag', __d('blog', 'Deliver e-mail when posting?'));
+								?>
+							</dt>
+							<dd>
+								<?php
+									echo $this->Form->input('Blog.comment_mail_flag',array(
+										'type' => 'radio',
+										'options' => array(_ON => __d('blog', 'Email delivery when commenting.'), _OFF => __d('blog', 'Email not delivery when commenting.')),
+										'value' => intval($blog['Blog']['comment_mail_flag']),
+										'div' => false,
+										'legend' => false,
+									));
+								?>
+								<div class="hr">
+								<?php
+									echo $this->Form->label('Blog.comment_mail_hierarchy', __d('blog', 'Notify whom? :'));
+									echo $this->Form->authoritySlider('Blog.comment_mail_hierarchy', array('value' => $blog['Blog']['comment_mail_hierarchy']));
+									$settings = array(
+										'type' => 'text',
+										'value' => $blog['Blog']['comment_mail_subject'],
+										'label' => __d('blog', 'E-mail Subject:'),
+										'maxlength' => NC_VALIDATOR_TITLE_LEN,
+										'size' => 35,
+										'error' => array('attributes' => array(
+											'selector' => true
+										))
+									);
+									echo $this->Form->input('Blog.comment_mail_subject', $settings);
+									$settings = array(
+										'type' => 'textarea',
+										'escape' => false,
+										'value' => $blog['Blog']['comment_mail_body'],
+										'label' => __d('blog', 'Message：'),
+										'error' => array('attributes' => array(
+											'selector' => true
+										))
+									);
+									echo $this->Form->input('Blog.comment_mail_body', $settings);
+								?>
+								<div class="note">
+									<?php echo __d('blog', 'You may use the following keywords in the title and content of the message, <br />{X-SITE_NAME},{X-ROOM},<br />{X-BLOG_NAME},{X-CATEGORY_NAME},{X-SUBJECT},{X-USER},<br />{X-TO_DATE}、{X-BODY}、{X-URL}<br /><br />Each keyword will be translated to <br />site name, room name, <br />Blog title, category, title of the article, creator<br />timestamp, article and url.');?>
+								</div>
+								</div>
+							</dd>
+						</dl>
+					</li>
+				</ul>
+			</fieldset>
+		</div>
+		<div id="blog-edits-tab-trackback<?php echo($id); ?>">
+			<?php /* トラックバック設定 */ ?>
+			<fieldset class="form">
+				<ul class="lists blog-edits-lists">
+					<li>
+						<dl>
+							<dt>
+								<?php
+									echo $this->Form->label('Blog.trackback_transmit_flag', __d('blog', 'Allow trackbacks?'));
+								?>
+							</dt>
+							<dd>
+								<?php
+									echo $this->Form->input('Blog.trackback_transmit_flag',array(
+										'type' => 'checkbox',
+										'value' => intval($blog['Blog']['trackback_transmit_flag']),
+										'label' => __d('blog', 'Transmit trackbacks?'),
+									));
+								?>
+								<div class="hr">
+								<?php
+									echo $this->Form->input('Blog.trackback_transmit_article',array(
+										'type' => 'checkbox',
+										'value' => intval($blog['Blog']['trackback_transmit_article']),
+										'label' => __d('blog', 'Attempt to trackbacks any blogs linked to from the article.'),
+									));
+									$settings = array(
+										'type' => 'text',
+										'value' => $blog['Blog']['transmit_blog_name'],
+										'label' => __d('blog', 'Sending title'),
+										'div' => false,
+										'maxlength' => NC_VALIDATOR_TITLE_LEN,
+										'size' => 35,
+										'error' => array('attributes' => array(
+											'selector' => true
+										))
+									);
+									echo $this->Form->input('Blog.transmit_blog_name', $settings);
+								?>
+								<div class="note">
+									<?php echo __d('blog', 'You may use the following keywords when sending trackbacks.<br />{X-USER}：username<br />{X-SITE_NAME}：site name');?>
+								</div>
+								</div>
+								<div class="hr"></div>
+								<?php
+									echo $this->Form->input('Blog.trackback_receive_flag',array(
+										'type' => 'checkbox',
+										'value' => intval($blog['Blog']['trackback_receive_flag']),
+										'label' => __d('blog', 'Recieve trackbacks?'),
+									));
+								?>
+							</dd>
+						</dl>
+					</li>
+				</ul>
+			</fieldset>
+		</div>
+		<div id="blog-edits-tab-approval<?php echo($id); ?>">
+			<?php /* 承認機能設定 */ ?>
+			<fieldset class="form">
+				<ul class="lists blog-edits-lists">
+					<li>
+						<dl>
+							<dt>
+								<?php
+									echo $this->Form->label('Blog.approved_flag', __d('blog', 'Post approval setting'));
+								?>
+							</dt>
+							<dd>
+								<?php
+									echo $this->Form->input('Blog.approved_flag',array(
+										'type' => 'radio',
+										'options' => array(_ON => __d('blog', 'Need room manager approval'), _OFF => __d('blog', 'Automatic approval')),
+										'value' => intval($blog['Blog']['approved_flag']),
+										'div' => false,
+										'legend' => false,
+									));
+								?>
+							</dd>
+						</dl>
+					</li>
+					<li>
+						<dl>
+							<dt>
+								<?php
+									echo $this->Form->label('Blog.approved_mail_flag', __d('blog', 'Announce mail setting'));
+								?>
+							</dt>
+							<dd>
+								<?php
+									echo $this->Form->input('Blog.approved_mail_flag',array(
+										'type' => 'radio',
+										'options' => array(_ON => __d('blog', 'Send'), _OFF => __d('blog', 'Not send')),
+										'value' => intval($blog['Blog']['approved_mail_flag']),
+										'div' => false,
+										'legend' => false,
+									));
+								?>
+								<div class="hr">
+								<?php
+									$settings = array(
+										'type' => 'text',
+										'value' => $blog['Blog']['approved_mail_subject'],
+										'label' => __d('blog', 'E-mail Subject:'),
+										'maxlength' => NC_VALIDATOR_TITLE_LEN,
+										'size' => 35,
+										'error' => array('attributes' => array(
+											'selector' => true
+										))
+									);
+									echo $this->Form->input('Blog.approved_mail_subject', $settings);
+									$settings = array(
+										'type' => 'textarea',
+										'escape' => false,
+										'value' => $blog['Blog']['approved_mail_body'],
+										'label' => __d('blog', 'Message：'),
+										'error' => array('attributes' => array(
+											'selector' => true
+										))
+									);
+									echo $this->Form->input('Blog.approved_mail_body', $settings);
+								?>
+								</div>
+							</dd>
+						</dl>
+					</li>
+					<li>
+						<dl>
+							<dt>
+								<?php
+									echo $this->Form->label('Blog.comment_approved_flag', __d('blog', 'Comment, trackback approval setting'));
+								?>
+							</dt>
+							<dd>
+								<?php
+									echo $this->Form->input('Blog.comment_approved_flag',array(
+										'type' => 'radio',
+										'options' => array(_ON => __d('blog', 'Need room manager approval'), _OFF => __d('blog', 'Automatic approval')),
+										'value' => intval($blog['Blog']['comment_approved_flag']),
+										'div' => false,
+										'legend' => false,
+									));
+								?>
+							</dd>
+						</dl>
+					</li>
+					<li>
+						<dl>
+							<dt>
+								<?php
+									echo $this->Form->label('Blog.comment_approved_mail_flag', __d('blog', 'Comment, trackback announce mail setting'));
+								?>
+							</dt>
+							<dd>
+								<?php
+									echo $this->Form->input('Blog.comment_approved_mail_flag',array(
+										'type' => 'radio',
+										'options' => array(_ON => __d('blog', 'Send'), _OFF => __d('blog', 'Not send')),
+										'value' => intval($blog['Blog']['comment_approved_mail_flag']),
+										'div' => false,
+										'legend' => false,
+									));
+								?>
+								<div class="hr">
+								<?php
+									$settings = array(
+										'type' => 'text',
+										'value' => $blog['Blog']['comment_approved_mail_subject'],
+										'label' => __d('blog', 'E-mail Subject:'),
+										'maxlength' => NC_VALIDATOR_TITLE_LEN,
+										'size' => 35,
+										'error' => array('attributes' => array(
+											'selector' => true
+										))
+									);
+									echo $this->Form->input('Blog.comment_approved_mail_subject', $settings);
+									$settings = array(
+										'type' => 'textarea',
+										'escape' => false,
+										'value' => $blog['Blog']['comment_approved_mail_body'],
+										'label' => __d('blog', 'Message：'),
+										'error' => array('attributes' => array(
+											'selector' => true
+										))
+									);
+									echo $this->Form->input('Blog.comment_approved_mail_body', $settings);
+								?>
+								</div>
+							</dd>
+						</dl>
+					</li>
+				</ul>
+			</fieldset>
+		</div>
+	</div>
+	<?php
+		echo $this->Html->div('submit',
+			$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'common-btn', 'type' => 'submit')).
+			$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
+				'data-pjax' => '#'.$id, 'data-url' =>  $this->Html->url(array('controller' => 'blog'))))
+		);
+		echo $this->Form->end();
+	?>
+<?php
+	echo $this->Html->css('Blog.blog_edits/index');
+	echo $this->Html->script('Blog.blog_edits/index');
+?>
+<script>
+$(function(){
+	$('#blog-edits<?php echo($id); ?>').BlogEdits('<?php echo($id);?>'<?php if(isset($active_tab)){ echo(','.$active_tab); }?>);
+});
+</script>
+</div>

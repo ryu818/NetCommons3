@@ -191,7 +191,7 @@
 				return;
 			}
 			// 表示順変更
-			var url = $.Common.urlBlock(0, 'page/menu/chgsequence');
+			var url = $.Common.urlBlock(0, 'page/menus/chgsequence');
 			var data = {'data[Page][id]': page_id, 'data[DropPage][id]': drop_page_id, 'position': position};
 			var ret = null;
 			var li = $('#pages-menu-edit-item-' + drop_page_id);
@@ -508,13 +508,13 @@
 
 				var page_id = li.attr('data-id');
 				var setDisplay = null;
-				var url = $.Common.urlBlock(0, 'page/menu/display');
+				var url = $.Common.urlBlock(0, 'page/menus/display');
 				e.preventDefault();
 				e.stopPropagation();
 
 				$('[name=data\\[Page\\]\\[display_flag\\]]', li).each(function(){
 					var display = $(this);
-					var a = display.prev(),img;
+					var a = display.prev(),img,alt, pre_alt;
 
 					if(a.get(0).tagName == 'A') {
 						img = a.children(':first');
@@ -526,6 +526,11 @@
 					}
 					display.val(setDisplay);
 					if(img.get(0)) {
+						alt = img.attr('data-alt');
+						pre_alt = img.attr('alt');
+						img.attr('alt', alt);
+						img.parent().attr('title', alt);
+						img.attr('data-alt', pre_alt);
 						if(setDisplay == 0) {
 							img.attr('src', img.attr('src').replace("on.gif", "off.gif"));
 						} else {
@@ -712,9 +717,9 @@
 			$('input[name="data[Community][participate_flag]"]', tab).change(function(e){
 				var target = $(this);
 				if(target.val() == '0') {
-					$('#pages-menu-community-invite-authority-' + id).slider( "disable" );
+					$('#pages-menu-community-invite-authority-' + id + '-slider').slider( "disable" );
 				} else {
-					$('#pages-menu-community-invite-authority-' + id).slider( "enable" );
+					$('#pages-menu-community-invite-authority-' + id + '-slider').slider( "enable" );
 				}
 			});
 		},

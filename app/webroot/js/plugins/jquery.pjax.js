@@ -86,7 +86,7 @@ function handleClick(event, container, options) {
     return
   }
   var defaults = {
-    url: $(link).attr('href'),
+    url: (typeof $(link).attr('href') == 'undefined') ? $(link).attr('data-url') : $(link).attr('href'),
     container: $(link).attr('data-pjax'),
     target: link,
     fragment: null
@@ -105,7 +105,7 @@ function handleClick(event, container, options) {
 function disableHandleClick(event, container, options) {
 	var link = event.currentTarget
 	var defaults = {
-	    url: $(link).attr('href'),
+	    url: (typeof $(link).attr('href') == 'undefined') ? $(link).attr('data-url') : $(link).attr('href'),
 	    container: $(link).attr('data-pjax') ? $(link).attr('data-pjax') : container,
 	    target: link,
 	    fragment: null

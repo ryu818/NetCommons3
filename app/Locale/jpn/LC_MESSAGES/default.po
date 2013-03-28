@@ -8,6 +8,9 @@ msgstr 	"リセット"
 msgid  	"Apply"
 msgstr 	"適用"
 
+msgid  	"Save temporally"
+msgstr 	"一時保存"
+
 msgid  	"Note"
 msgstr 	"注釈"
 
@@ -36,6 +39,13 @@ msgstr 	"検索"
 msgid  	"Close"
 msgstr 	"閉じる"
 
+msgid	"Add Post"
+msgstr	"新規投稿"
+msgid	"Edit Post"
+msgstr	"投稿の編集"
+msgid	"Delete Post"
+msgstr	"投稿の削除"
+
 msgid  	"Continue"
 msgstr 	"続けて登録"
 
@@ -56,6 +66,11 @@ msgstr 	"非公開"
 msgid  	"Private content"
 msgstr 	"コンテンツ非公開"
 
+msgid  	"To public"
+msgstr 	"公開にする"
+msgid  	"To private"
+msgstr 	"非公開にする"
+
 msgid  	"Yes"
 msgstr 	"はい"
 msgid  	"No"
@@ -66,6 +81,12 @@ msgstr 	"%sを削除します。<br />よろしいですか？"
 
 msgid  	"Detail setting"
 msgstr 	"詳細設定"
+
+msgid  	"Detail"
+msgstr 	"詳細"
+
+msgid  	"Title"
+msgstr 	"タイトル"
 
 msgid  	"Date"
 msgstr 	"日付"
@@ -96,7 +117,7 @@ msgid  	"Published until from [%s] to [%s]"
 msgstr 	"[%s]～[%s]まで公開"
 
 msgid  	"Content not found."
-msgstr 	"指定したコンテンツは、存在しません。"
+msgstr 	"指定したコンテンツを見つけられませんでした。"
 msgid  	"Content removed."
 msgstr 	"指定したコンテンツは、削除されました。"
 msgid  	"Module uninstalled."
@@ -189,7 +210,7 @@ msgstr 	"不正な文字列が含まれています。"
 msgid  	"Unavailable string is used by the system."
 msgstr 	"システムで使用不可な文字列が使用されています。"
 msgid  	"The same name is already in use.Please choose another one."
-msgstr 	"同名の名称が同じ階層に存在しています。"
+msgstr 	"同名の名称が存在しています。"
 
 msgid  	"Failed to send the mail."
 msgstr 	"メールの送信に失敗しました。"
@@ -261,6 +282,8 @@ msgid  	"General setting"
 msgstr 	"一般設定"
 msgid  	"Theme"
 msgstr 	"テーマ"
+msgid	"Approved Settings"
+msgstr	"承認機能設定"
 
 msgid  	"Pages settings"
 msgstr 	"ページ設定"
@@ -295,12 +318,16 @@ msgid  	"{:start} - {:end} of {:count}"
 msgstr 	"{:start} - {:end} ({:count}件中)"
 msgid  	"px"
 msgstr 	"px"
+msgid  	"To list"
+msgstr 	"一覧へ戻る"
 
 msgid  	"Results per page"
 msgstr 	"表示件数"
 #TODO:英語のほうでは、"%s"と訳すべき
 msgid  	"%s cases"
 msgstr 	"%s件"
+msgid  	"All"
+msgstr 	"すべて"
 
 msgid 	"Expand All"
 msgstr 	"すべて展開"
@@ -414,6 +441,9 @@ msgstr 	"English"
 msgid  	"Not specified"
 msgstr 	"指定なし"
 
+msgid  	"None"
+msgstr 	"なし"
+
 msgid  	"Home"
 msgstr 	"ホーム"
 
@@ -485,6 +515,9 @@ msgstr "H:i:s"
 msgid  	"H:i"
 msgstr 	"H:i"
 
+msgid  	"h:i A"
+msgstr 	"h:i A"
+
 msgid  	"Y-m-d H:i:s"
 msgstr 	"Y/m/d H:i:s"
 
@@ -493,6 +526,17 @@ msgstr 	"Y/m/d H:i"
 
 msgid  	"y-m-d H:i:s"
 msgstr 	"y/m/d H:i:s"
+
+## 日時フォーマット(漢字)
+msgid  	"(Y-m-d)"
+msgstr 	"Y年m月d日"
+msgid  	"(Y-m)"
+msgstr 	"Y年m月"
+msgid  	"(Y)"
+msgstr 	"Y年"
+
+msgid "(%1$s-%2$s)"
+msgstr 	"%1$s年%2$s月"
 
 ## 新規カラム追加
 msgid  	"Leftcolumn"

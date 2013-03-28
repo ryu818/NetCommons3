@@ -48,8 +48,10 @@ class AppController extends Controller {
 
 	public $hierarchy = null;
 
+	public $is_chief = null;
+
 	public $components = array(
-		'Init', 'SetConfigs', 'Session', 'Common', 'CheckAuth', 'Auth',
+		'Init', 'SetConfig', 'Session', 'Common', 'CheckAuth', 'Auth',
 	);
 	// 'DebugKit.Toolbar','Cookie', 'RequestHandler'
 
@@ -61,6 +63,7 @@ class AppController extends Controller {
         'Html' => array(
             'className' => 'MyHtml'
         ),
+		'Text',
 		'Js',
         'Token',
 		'TimeZone',
@@ -148,7 +151,7 @@ class AppController extends Controller {
     	}
     	// Configセット
     	if ($this->Components->enabled('Auth')) {
-    		$this->SetConfigs->set();
+    		$this->SetConfig->set();
     	}
 
     	$is_closed_site = Configure::read(NC_CONFIG_KEY.'.'.'is_closed_site');

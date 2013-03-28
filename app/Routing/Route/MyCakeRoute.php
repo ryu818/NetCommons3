@@ -90,9 +90,9 @@ class MyCakeRoute extends CakeRoute {
 		}
 		// Conrtollerがあるかどうか判断し、なければ、Actionとする。
 		// コントローラ名は常にpluginName + controllerにて判断する。
-		// 例：active-blocks/(block_id)/announcement/edit
-		//     -> Plugin/AnnouncementEditController.phpがあれば、AnnouncementEditController->indexメソッドへ
-		//     -> なければ、Plugin/AnnouncementController.php->editメソッドへ
+		// 例：active-blocks/(block_id)/announcement/edits
+		//     -> Plugin/AnnouncementEditsController.phpがあれば、AnnouncementEditsController->indexメソッドへ
+		//     -> なければ、Plugin/AnnouncementsController.php->editメソッドへ
 		if(isset($route['active_plugin'])) {
 			$plugin_name = 'active_plugin';
 			$controller_name = 'active_controller';
@@ -209,6 +209,12 @@ class MyCakeRoute extends CakeRoute {
 				$url['permalink'] = $permalink;
 			} else {
 				$url['permalink'] = '';
+			}
+		}
+		if(!isset($url['block_id'])) {
+			$block_id = Configure::read(NC_SYSTEM_KEY.'.block_id');
+			if(isset($block_id) && intval($block_id) > 0) {
+				$url['block_id'] = $block_id;
 			}
 		}
 		if(isset($url['controller'])) {

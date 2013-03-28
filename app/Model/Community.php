@@ -55,15 +55,20 @@ class Community extends AppModel
 					'message' => __('The input must be a number bigger than %d and less than %d.', NC_PARTICIPATE_FLAG_ONLY_USER, NC_PARTICIPATE_FLAG_FREE)
 				)
 			),
-			'invite_authority' => array(
+			'invite_hierarchy' => array(
 				'numeric' => array(
 					'rule' => array('numeric'),
 					'required' => true,
 					'message' => __('The input must be a number.')
 				),
-				'range' => array(
-					'rule' => array('range', NC_AUTH_CHIEF_ID - 1, NC_AUTH_GENERAL_ID + 1),
-					'message' => __('The input must be a number bigger than %d and less than %d.', NC_AUTH_CHIEF_ID, NC_AUTH_GENERAL_ID)
+				'inList' => array(
+					'rule' => array('inList', array(
+						(string) NC_AUTH_MIN_GENERAL,
+						(string) NC_AUTH_MIN_MODERATE,
+						(string) NC_AUTH_MIN_CHIEF,
+					)),
+					'allowEmpty' => false,
+					'message' => __('It contains an invalid string.')
 				)
 			),
 			'participate_notice_flag' => array(
@@ -75,15 +80,20 @@ class Community extends AppModel
 					'message' => __('The input must be a boolean.')
 				)
 			),
-			'participate_notice_authority' => array(
+			'participate_notice_hierarchy' => array(
 				'numeric' => array(
 					'rule' => array('numeric'),
 					'required' => true,
 					'message' => __('The input must be a number.')
 				),
-				'range' => array(
-					'rule' => array('range', NC_AUTH_CHIEF_ID - 1, NC_AUTH_GENERAL_ID + 1),
-					'message' => __('The input must be a number bigger than %d and less than %d.', NC_AUTH_CHIEF_ID, NC_AUTH_GENERAL_ID)
+				'inList' => array(
+					'rule' => array('inList', array(
+						(string) NC_AUTH_MIN_GENERAL,
+						(string) NC_AUTH_MIN_MODERATE,
+						(string) NC_AUTH_MIN_CHIEF,
+					)),
+					'allowEmpty' => false,
+					'message' => __('It contains an invalid string.')
 				)
 			),
 			'resign_notice_flag' => array(
@@ -95,15 +105,20 @@ class Community extends AppModel
 					'message' => __('The input must be a boolean.')
 				)
 			),
-			'resign_notice_authority' => array(
+			'resign_notice_hierarchy' => array(
 				'numeric' => array(
 					'rule' => array('numeric'),
 					'required' => true,
 					'message' => __('The input must be a number.')
 				),
-				'range' => array(
-					'rule' => array('range', NC_AUTH_CHIEF_ID - 1, NC_AUTH_GENERAL_ID + 1),
-					'message' => __('The input must be a number bigger than %d and less than %d.', NC_AUTH_CHIEF_ID, NC_AUTH_GENERAL_ID)
+				'inList' => array(
+					'rule' => array('inList', array(
+						(string) NC_AUTH_MIN_GENERAL,
+						(string) NC_AUTH_MIN_MODERATE,
+						(string) NC_AUTH_MIN_CHIEF,
+					)),
+					'allowEmpty' => false,
+					'message' => __('It contains an invalid string.')
 				)
 			),
 		);
@@ -126,11 +141,11 @@ class Community extends AppModel
 		$data['Community']['publication_authority'] = NC_AUTH_GUEST_ID;
 		// TODO:Configにコミュニティーのデフォルトの参加受付の仕方を変更できるフラグから設定する。
 		$data['Community']['participate_flag'] = NC_PARTICIPATE_FLAG_ONLY_USER;
-		$data['Community']['invite_authority'] = NC_AUTH_CHIEF_ID;
+		$data['Community']['invite_hierarchy'] = NC_AUTH_MIN_CHIEF;
 		$data['Community']['participate_notice_flag'] = _ON;
-		$data['Community']['participate_notice_authority'] = NC_AUTH_CHIEF_ID;
+		$data['Community']['participate_notice_hierarchy'] = NC_AUTH_MIN_CHIEF;
 		$data['Community']['resign_notice_flag'] = _ON;
-		$data['Community']['resign_notice_authority'] = NC_AUTH_CHIEF_ID;
+		$data['Community']['resign_notice_hierarchy'] = NC_AUTH_MIN_CHIEF;
 
 		return $data;
 	}

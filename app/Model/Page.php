@@ -116,42 +116,42 @@ class Page extends AppModel
 						'message' => __('Unauthorized pattern for %s.', __('Date-time'))
 					),
 					'pastDateTime'  => array(
-							'rule' => array('pastDateTime'),
-							'last' => true,
-							'allowEmpty' => true,
-							'message' => __('%s in the past can not be input.', __('Date-time'))
+						'rule' => array('pastDateTime'),
+						'last' => true,
+						'allowEmpty' => true,
+						'message' => __('%s in the past can not be input.', __('Date-time'))
 					),
 					'invalidDisplayFromDate'  => array(
-							'rule' => array('invalidDisplayFromDate'),
-							'last' => true,
-							'allowEmpty' => true,
-							'message' => __('Because the page is not a private, You can\'t set a publish date.')
+						'rule' => array('invalidDisplayFromDate'),
+						'last' => true,
+						'allowEmpty' => true,
+						'message' => __('Because the page is not a private, You can\'t set a publish date.')
 					),
 				),
 				'display_to_date' => array(
 					'datetime'  => array(
-							'rule' => array('datetime'),
-							'last' => true,
-							'allowEmpty' => true,
-							'message' => __('Unauthorized pattern for %s.', __('Date-time'))
+						'rule' => array('datetime'),
+						'last' => true,
+						'allowEmpty' => true,
+						'message' => __('Unauthorized pattern for %s.', __('Date-time'))
 					),
 					'pastDateTime'  => array(
-							'rule' => array('pastDateTime'),
-							'last' => true,
-							'allowEmpty' => true,
-							'message' => __('%s in the past can not be input.', __('Date-time'))
+						'rule' => array('pastDateTime'),
+						'last' => true,
+						'allowEmpty' => true,
+						'message' => __('%s in the past can not be input.', __('Date-time'))
 					),
 					'invalidDisplayToDate'  => array(
-							'rule' => array('invalidDisplayToDate'),
-							'last' => true,
-							'allowEmpty' => true,
-							'message' => __('Because the page is not published, You can\'t set a closed date.')
+						'rule' => array('invalidDisplayToDate'),
+						'last' => true,
+						'allowEmpty' => true,
+						'message' => __('Because the page is not published, You can\'t set a closed date.')
 					),
 					'invalidDisplayFromToDate'  => array(
-							'rule' => array('invalidDisplayFromToDate'),
-							'last' => true,
-							'allowEmpty' => true,
-							'message' => __('Please input in [publish date < closed date].')
+						'rule' => array('invalidDisplayFromToDate'),
+						'last' => true,
+						'allowEmpty' => true,
+						'message' => __('Please input in [publish date < closed date].')
 					),
 				),
 				'display_apply_subpage' => array(

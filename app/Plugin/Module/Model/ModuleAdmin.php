@@ -769,7 +769,7 @@ class ModuleAdmin extends AppModel {
 			$is_file_exists = false;
 			$is_class_exists = false;
 			$is_method_exists = false;
-			$sub_class_name = $controller.Inflector::camelize($action).'Controller';
+			$sub_class_name = Inflector::camelize($controller_action_arr[0]).Inflector::camelize(Inflector::pluralize($action)).'Controller';
 			$edit_module_controller_path = $plugin_path . 'Controller'. DS . $sub_class_name.'.php';
 			if(file_exists($edit_module_controller_path)) {
 				$is_file_exists = true;

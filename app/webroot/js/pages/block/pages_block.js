@@ -75,9 +75,9 @@
 
 			// ブロックスタイル
 
-			$('#nc-block-style-link' + id +',#nc-block-display-style-link' + id).on('ajax:beforeSend', function(e, url) {
+			$('#nc-block-styles-link' + id +',#nc-block-display-styles-link' + id).on('ajax:beforeSend', function(e, url) {
 				var a = $(e.target);
-				var dialog_id = ($(this).attr('id') == 'nc-block-style-link' + id) ? a.attr('data-block-style-dialog-id') : a.attr('data-block-display-style-dialog-id');
+				var dialog_id = ($(this).attr('id') == 'nc-block-styles-link' + id) ? a.attr('data-block-styles-dialog-id') : a.attr('data-block-display-styles-dialog-id');
 				var style_dialog = $('#' + dialog_id);
 				if(style_dialog.get(0)) {
 					// 既に表示中
@@ -87,36 +87,34 @@
 				}
 				return url;
 			}).on('ajax:success', function(e, res) {
-				var block_style =false;
-				if($(this).attr('id') == 'nc-block-style-link' + id) {
+				var block_style =false,w,h;
+				if($(this).attr('id') == 'nc-block-styles-link' + id) {
 					block_style =true;
 				}
 				var a = $(e.target), pos = a.offset(), style_dialog;
-				var dialog_id = (block_style) ? a.attr('data-block-style-dialog-id') : a.attr('data-block-display-style-dialog-id');
+				var dialog_id = (block_style) ? a.attr('data-block-styles-dialog-id') : a.attr('data-block-display-styles-dialog-id');
 				var params = {
 					title: (block_style) ? __d('block', 'Block style') : __d('block', 'Display style'),
 					position: [e.pageX - $(window).scrollLeft(), e.pageY - $(window).scrollTop()],
 					show: 'blind',
-					show: {
-							effect: 'slide',
-							complete: function() {
-								var w = style_dialog.children(':first').attr('data-width');
-								var h = style_dialog.children(':first').attr('data-height');
-								if(parseInt(w) > 0) {
-									style_dialog.dialog('option','width',parseInt(w));
-								}
-								if(parseInt(h) > 0) {
-									style_dialog.dialog('option','height',parseInt(h));
-								}
-							}
-					},
 					hide: 'blind'
 				};
 				if(block_style) {
 					params['width'] = 400;
 					params['resizable'] = false;
 				}
-				style_dialog = $('<div id="' + dialog_id + '" class="nc-block-style-dialog"></div>').html(res).dialog(params);
+				style_dialog = $('<div id="' + dialog_id + '" class="nc-block-styles-dialog"></div>').html(res);
+				w = style_dialog.children(':first').attr('data-width');
+				h = style_dialog.children(':first').attr('data-height');
+				if(parseInt(w) > 0) {
+					params['width'] = parseInt(w);
+					//style_dialog.dialog('option','width',parseInt(w));
+				}
+				if(parseInt(h) > 0) {
+					params['height'] = parseInt(h);
+					//style_dialog.dialog('option','height',parseInt(h));
+				}
+				style_dialog.dialog(params);
 				$(this).parents('.nc-drop-down:first').hide();
 			});
 
@@ -359,7 +357,7 @@
 						// 変更なし
 						return;
 					}
-					$.post($('#nc-block-style-link' + id).attr('href'),
+					$.post($('#nc-block-styles-link' + id).attr('href'),
 						params
 					);
 				}

@@ -26,7 +26,7 @@
 ?>
 <script>
 	$(function () {
-		$(document).pjax('a[data-pjax]');
+		$(document).pjax('a[data-pjax],input[data-pjax],button[data-pjax]');
 		$(document).on("submit", "form[data-pjax],form[data-ajax],form[data-ajax-replace]", function (e) {
 			$.Common.ajax(e, $(this));
 		});

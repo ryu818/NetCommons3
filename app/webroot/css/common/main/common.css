@@ -7,6 +7,12 @@
     font-family: "ＭＳ Ｐゴシック", "MS PGothic", Sans-Serif;
 }
 
+input[type="checkbox"], input[type="radio"] {
+	margin: 3px;
+    vertical-align: text-top;
+    padding:0;
+}
+
 /* 共通クラス */
 .none {
 	display:none !important;
@@ -110,6 +116,10 @@
 .table-cell {
 	display:table-cell;
 }
+/* タイトル */
+input.nc-title {
+    width: 360px;
+}
 /* 時間 */
 input.nc-datetime {
     width: 135px !important;
@@ -134,9 +144,9 @@ input.nc-time {
 	/* left:0; */
 }
 .message-close {
-	display: table-cell;
 	vertical-align:middle;
 	padding:5px;
+	float:right;
 }
 
 .popup-message .message-close {
@@ -146,6 +156,7 @@ input.nc-time {
 	right:2px;
 	border-radius:4px;
 	padding:0;
+	float:normal;
 }
 
 .error-message {
@@ -279,6 +290,10 @@ img.icon {
 }
 
 /* ページ移動 */
+div.nc-paginator-outer {
+	padding: 3px 0;
+}
+
 ul.nc-paginator {
 	list-style-type: none;
 	margin: 0;
@@ -411,9 +426,53 @@ ul.lists li dl dd {
     /*width : 200px;*/
 }
 
+/* パネル背景 */
+.nc-panel-color {
+	background-color: #ffffff;
+	background-image: linear-gradient(center top , #ffffff, #f8f8f8);
+/* Firefox */
+    background-image: -moz-linear-gradient(center top , #ffffff, #f8f8f8);
+/* Webkit */
+    background: -webkit-gradient(
+        linear,
+        center top,
+        center bottom,
+        from(#ffffff),
+        to(#f8f8f8)
+        );
+/* IE */
+    filter:progid:DXImageTransform.Microsoft.gradient
+        (startColorstr=#ffffffff,endColorstr=#fff8f8f8);
+    zoom: 1;
+}
+
+/* タイトル背景 */
+.nc-title-color {
+	background-color: #f1f1f1;
+	box-shadow: 0 1px 0 #fff inset;
+    text-shadow: 0 1px 0 #fff;
+
+    background-image: linear-gradient(to top, #ececec, #f9f9f9);
+/* Firefox */
+    background-image: -moz-linear-gradient(to top, #ececec, #f9f9f9);
+/* Webkit */
+    background: -webkit-gradient(
+        linear,
+        center top,
+        center bottom,
+        from(#ececec),
+        to(#f9f9f9)
+        );
+/* IE */
+    filter:progid:DXImageTransform.Microsoft.gradient
+        (startColorstr=#ffececec,endColorstr=#fff9f9f9);
+    zoom: 1;
+}
+
 /* 権限スライドバー [主坦- モデレータ - 一般] */
 .authority-slider {
 	width:150px;
+	margin: 0 10px 30px 10px;
 }
 .authority-slider-labels-outer {
 	position: relative;
@@ -474,15 +533,31 @@ pre.cake-debug {
 	overflow: auto;
 	position: relative;
 }
-p.nc-log-post,p.nc-log-get {
+a.nc-log-title {
 	font-weight:bold;
-	padding: 3px 10px;
 	background-color: #ffffff;
-	border: 1px solid #cccccc;
-	margin: 5px 0 5px 10px;
+	border-style: solid;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-width: 1px;
+    border-color: #dfdfdf;
+	margin: 5px 0 0 10px;
+	padding: 0 5px;
+	display:block;
 }
-p.nc-log-post span {
+a.nc-log-post-title {
 	color:#0000ff;
+}
+pre.nc-log-post,pre.nc-log-get {
+	font-weight:bold;
+	padding: 3px 20px;
+	background-color: #ffffff;
+	margin: 0 0 5px 10px;
+	border-color: #dfdfdf;
+	border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-style: none solid solid;
+    border-width: 0 1px 1px;
 }
 td.nc-log-save, .nc-log td.nc-log-post {
 	background-color: #d5ffe6;

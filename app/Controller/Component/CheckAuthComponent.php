@@ -149,10 +149,10 @@ class CheckAuthComponent extends Component {
 			} else {
 				// コミュニティ
 				$params = array(
-						'fields' => array(
-								'Community.publication_range_flag'
-						),
-						'conditions' => array('room_id' => $page['Page']['root_id']),
+					'fields' => array(
+						'Community.publication_range_flag'
+					),
+					'conditions' => array('room_id' => $page['Page']['root_id']),
 				);
 				$current_community = $controller->Community->find('first', $params);
 				if($current_community['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_ALL) {
@@ -193,6 +193,12 @@ class CheckAuthComponent extends Component {
 			}
 			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.check.005', '403');
 			return;
+		}
+
+		if($controller->hierarchy >= NC_AUTH_MIN_CHIEF) {
+			$controller->is_chief = true;
+		} else {
+			$controller->is_chief = false;
 		}
 	}
 
@@ -252,6 +258,7 @@ class CheckAuthComponent extends Component {
 
 		$permalink = trim($permalink, '/');
 		Configure::write(NC_SYSTEM_KEY.'.permalink', $permalink);
+		Configure::write(NC_SYSTEM_KEY.'.block_id', $block_id);
 
 		// メンバ変数セット
 		$controller->id = '_'. $block_id;
@@ -558,6 +565,7 @@ class CheckAuthComponent extends Component {
 
 			$controller->id = '_'.intval($block['Block']['id']);
 			$controller->block_id = intval($block['Block']['id']);
+			Configure::write(NC_SYSTEM_KEY.'.block_id', intval($block['Block']['id']));
 
 			if(!is_null($block['Block']['hierarchy'])) {
 				$controller->hierarchy = intval($block['Block']['hierarchy']);

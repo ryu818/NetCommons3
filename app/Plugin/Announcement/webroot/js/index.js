@@ -11,7 +11,7 @@
 	$.fn.Announcement = function(id) {
 		var t = this, content;
 		var block_id = $('#' + id).attr('data-block');
-		var url = $.Common.urlBlock(block_id, 'announcement/edit');
+		var url = $.Common.urlBlock(block_id, 'announcement/edits');
 		content = $('#'+id+'-content');
 		content.dblclick(function(event) {
 			$.pjax.click(event, t, {'url': url});

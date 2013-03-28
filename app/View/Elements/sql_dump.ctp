@@ -50,8 +50,8 @@ if (Configure::read('debug') != 1 && isset($current_urls) && count($current_urls
 	$pre_post_str = null;
 	foreach($current_urls as $key => $current_url) {
 		if($key == 0) {
-			$header_log .= '<div><a href="#" onclick="$(this).parents(\'.nc-log:first\').next().toggle();return false;">'.__('Show', true).'</a>';
-			$header_log .= '&nbsp;|&nbsp;<a href="#" onclick="$(this).parents(\'.nc-log:first\').next().remove();$(this).parents(\'.nc-log:first\').remove();return false;">'.__('Delete', true).'</a>';
+			$header_log .= '<div><a href="#" onclick="$(this).parents(\'.nc-log:first\').next().toggle();return false;">'.__('Detail').'</a>';
+			$header_log .= '&nbsp;|&nbsp;<a href="#" onclick="$(this).parents(\'.nc-log:first\').next().remove();$(this).parents(\'.nc-log:first\').remove();return false;">'.__('Delete').'</a>';
 		} else {
 			$header_log .= '<div style="padding:0 0 0 20px;">';
 		}
@@ -67,14 +67,14 @@ if (Configure::read('debug') != 1 && isset($current_urls) && count($current_urls
 		if (isset($form_get_values[$key])):
 			$get_str = (string)var_export(h($form_get_values[$key]), true);
 			if($get_str != $pre_get_str) {
-				$header_log .= '<p class="nc-log-get"><span class="bold">GET :</span>'.$get_str.'</p>';
+				$header_log .= '<a class="nc-log-title nc-title-color" href="#" onclick="$(this).next().slideToggle(); return false;">GET :</a><pre class="nc-log-get">'.$get_str.'</pre>';
 			}
 			$pre_get_str = $get_str;
 		endif;
 		if (isset($form_post_values[$key])):
 			$post_str = (string)var_export(h($form_post_values[$key]), true);
 			if($post_str != $pre_post_str) {
-				$header_log .= '<p class="nc-log-post"><span class="bold">POST:</span>'.$post_str.'</p>';
+				$header_log .= '<a class="nc-log-title nc-log-post-title nc-title-color" href="#" onclick="$(this).next().slideToggle(); return false;">POST:</a><pre class="nc-log-post">'.$post_str.'</pre>';
 			}
 			$pre_post_str = $post_str;
 		endif;
