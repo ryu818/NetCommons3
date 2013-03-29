@@ -100,7 +100,8 @@ class BlogTermLink extends AppModel
 					if(!$BlogTerm->save($blog_term)) {
 						return false;
 					}
-					$tag_name;
+					$blog_term['BlogTerm']['id'] = $BlogTerm->id;
+					$blog_terms[] = $blog_term;
 				}
 			}
 		}
