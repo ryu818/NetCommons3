@@ -41,7 +41,6 @@ class Authority extends AppModel
 									'rule' => array('boolean'),
 									'last' => true,
 									'required' => true,
-									'allowEmpty' => false,
 									'message' => __('The input must be a boolean.')
 								)
 			),
@@ -63,7 +62,6 @@ class Authority extends AppModel
 									'rule' => array('numeric'),
 									'last' => true,
 									'required' => true,
-									'allowEmpty' => false,
 									'message' => __('The input must be a number.')
 								)
 			),
@@ -73,7 +71,6 @@ class Authority extends AppModel
 									'rule' => array('boolean'),
 									'last' => true,
 									'required' => false,
-									'allowEmpty' => true,
 									'message' => __('The input must be a boolean.')
 								)
 			),
@@ -83,7 +80,6 @@ class Authority extends AppModel
 									'rule' => array('boolean'),
 									'last' => true,
 									'required' => false,
-									'allowEmpty' => true,
 									'message' => __('The input must be a boolean.')
 								)
 			),
@@ -93,7 +89,6 @@ class Authority extends AppModel
 									'rule' => array('boolean'),
 									'last' => true,
 									'required' => false,
-									'allowEmpty' => true,
 									'message' => __('The input must be a boolean.')
 								)
 			),
@@ -103,7 +98,6 @@ class Authority extends AppModel
 									'rule' => array('boolean'),
 									'last' => true,
 									'required' => false,
-									'allowEmpty' => true,
 									'message' => __('The input must be a boolean.')
 								)
 			),
@@ -113,7 +107,6 @@ class Authority extends AppModel
 									'rule' => array('boolean'),
 									'last' => true,
 									'required' => false,
-									'allowEmpty' => true,
 									'message' => __('The input must be a boolean.')
 								)
 			),
@@ -123,7 +116,6 @@ class Authority extends AppModel
 									'rule' => array('boolean'),
 									'last' => true,
 									'required' => true,
-									'allowEmpty' => false,
 									'message' => __('The input must be a boolean.')
 								)
 			),
@@ -155,7 +147,6 @@ class Authority extends AppModel
 									'rule' => array('boolean'),
 									'last' => true,
 									'required' => true,
-									'allowEmpty' => false,
 									'message' => __('The input must be a boolean.')
 								)
 			),
@@ -173,7 +164,6 @@ class Authority extends AppModel
 									'rule' => array('boolean'),
 									'last' => true,
 									'required' => false,
-									'allowEmpty' => true,
 									'message' => __('The input must be a boolean.')
 								)
 			),
@@ -183,7 +173,6 @@ class Authority extends AppModel
 									'rule' => array('boolean'),
 									'last' => true,
 									'required' => false,
-									'allowEmpty' => true,
 									'message' => __('The input must be a boolean.')
 								)
 			),
@@ -193,7 +182,6 @@ class Authority extends AppModel
 									'rule' => array('boolean'),
 									'last' => true,
 									'required' => false,
-									'allowEmpty' => true,
 									'message' => __('The input must be a boolean.')
 								)
 			),
@@ -203,7 +191,6 @@ class Authority extends AppModel
 									'rule' => array('boolean'),
 									'last' => true,
 									'required' => false,
-									'allowEmpty' => true,
 									'message' => __('The input must be a boolean.')
 								)
 			)

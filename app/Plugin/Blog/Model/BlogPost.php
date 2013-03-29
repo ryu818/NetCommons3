@@ -80,7 +80,6 @@ class BlogPost extends AppModel
 					'rule' => array('boolean'),
 					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a boolean.')
 				)
 			),
@@ -123,28 +122,28 @@ class BlogPost extends AppModel
 			),
 			//'vote',
 			'status' => array(
-				'numeric' => array(
-					'rule' => array('numeric'),
+				'boolean'  => array(
+					'rule' => array('boolean'),
+					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
-					'message' => __('The input must be a number.')
+					'message' => __('The input must be a boolean.')
 				),
-				'inList' => array(
+				/*'inList' => array(
 					'rule' => array('inList', array(
 						NC_STATUS_PUBLISH,
 						NC_STATUS_TEMPORARY,
 					), false),
 					'allowEmpty' => false,
 					'message' => __('It contains an invalid string.')
-				)
+				)*/
 			),
 			// TODO:未使用の可能性あり
 			'approved_flag' => array(
-				'numeric' => array(
-					'rule' => array('numeric'),
+				'boolean'  => array(
+					'rule' => array('boolean'),
+					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
-					'message' => __('The input must be a number.')
+					'message' => __('The input must be a boolean.')
 				),
 			),
 			'post_password' => array(
@@ -158,7 +157,6 @@ class BlogPost extends AppModel
 				'numeric' => array(
 					'rule' => array('numeric'),
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a number.')
 				),
 			),
@@ -166,7 +164,6 @@ class BlogPost extends AppModel
 				'numeric' => array(
 					'rule' => array('numeric'),
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a number.')
 				),
 			),
@@ -174,7 +171,6 @@ class BlogPost extends AppModel
 				'numeric' => array(
 					'rule' => array('numeric'),
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a number.')
 				),
 			),
@@ -182,7 +178,6 @@ class BlogPost extends AppModel
 				'numeric' => array(
 					'rule' => array('numeric'),
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a number.')
 				),
 			),
@@ -190,7 +185,6 @@ class BlogPost extends AppModel
 				'numeric' => array(
 					'rule' => array('numeric'),
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a number.')
 				),
 			),

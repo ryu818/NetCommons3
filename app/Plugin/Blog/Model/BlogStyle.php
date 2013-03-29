@@ -48,7 +48,7 @@ class BlogStyle extends AppModel
 			'display_post_date' => array(	// 投稿日を表示するかいなか
 				'boolean'  => array(
 					'rule' => array('boolean'),
-					'allowEmpty' => false,
+					'required' => true,
 					'message' => __('The input must be a boolean.')
 				)
 			),
@@ -58,7 +58,6 @@ class BlogStyle extends AppModel
 				'numeric' => array(
 					'rule' => array('numeric'),
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a number.')
 				),
 				'minLength'  => array(
@@ -89,7 +88,7 @@ class BlogStyle extends AppModel
 			'threaded_comments' => array(	// コメントをスレッド (入れ子) 形式にする。
 				'boolean'  => array(
 					'rule' => array('boolean'),
-					'allowEmpty' => false,
+					'required' => true,
 					'message' => __('The input must be a boolean.')
 				)
 			),
@@ -108,7 +107,7 @@ class BlogStyle extends AppModel
 			'show_post_count' => array(	// 投稿数を表示
 				'boolean'  => array(
 					'rule' => array('boolean'),
-					'allowEmpty' => false,
+					'required' => true,
 					'message' => __('The input must be a boolean.')
 				)
 			),
@@ -127,14 +126,14 @@ class BlogStyle extends AppModel
 			'show_post_count' => array(	// 投稿数を表示
 				'boolean'  => array(
 					'rule' => array('boolean'),
-					'allowEmpty' => false,
+					'required' => true,
 					'message' => __('The input must be a boolean.')
 				)
 			),
 			'show_hierarchy' => array(	// 階層を表示
 				'boolean'  => array(
 					'rule' => array('boolean'),
-					'allowEmpty' => false,
+					'required' => true,
 					'message' => __('The input must be a boolean.')
 				)
 			),
@@ -224,7 +223,6 @@ class BlogStyle extends AppModel
 					'rule' => array('boolean'),
 					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a boolean.')
 				)
 			),
@@ -266,7 +264,6 @@ class BlogStyle extends AppModel
 				'numeric' => array(
 					'rule' => array('numeric'),
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a number.')
 				),
 				'minLength'  => array(
@@ -290,7 +287,6 @@ class BlogStyle extends AppModel
 		if(isset($this->validate_options[$this->data['BlogStyle']['widget_type']])) {
 			$this->validate = $this->validate_options[$this->data['BlogStyle']['widget_type']];
 			if(!$this->validates()) {
-				var_dump($options);
 				return false;
 			}
 			$serialize_options = array();

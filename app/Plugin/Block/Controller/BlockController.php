@@ -103,7 +103,7 @@ class BlockController extends BlockAppController {
 			$this->flash(__('Failed to execute the %s.', __($title)), null, 'add_block.006', '500');
 			return;
 		}
-		list($ins_block, $ins_content) = $ins_ret;
+		list($operation_ret, $ins_block, $ins_content) = $ins_ret;
 
 		$last_id = $ins_block['Block']['id'];
 		$ins_block['Block']['row_num'] = 0;
@@ -126,6 +126,11 @@ class BlockController extends BlockAppController {
 				$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'add_block.009', '500');
 				return;
 			}
+		}
+
+		if($operation_ret === false) {
+			$this->flash(__('Failed to execute the %s.', __($title)), null, 'add_block.010', '500');
+			return;
 		}
 
 		if(!empty($this->request->params['requested']) && !empty($copy_block_id)) {

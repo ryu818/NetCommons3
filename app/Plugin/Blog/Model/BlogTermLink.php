@@ -136,6 +136,7 @@ class BlogTermLink extends AppModel
 				// 追加(マスタは既に追加済)
 				$blog_term_link = array(
 					'BlogTermLink' => array(
+						'content_id' => $content_id,
 						'blog_post_id' => $blog_post_id,
 						'blog_term_id' => $blog_term['BlogTerm']['id']
 					)

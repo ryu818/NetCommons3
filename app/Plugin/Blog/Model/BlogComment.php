@@ -18,7 +18,7 @@ class BlogComment extends AppModel
 		'BlogPost'      => array('type' => 'INNER'),
 		'Content'      => array(
 			'type' => 'INNER',
-			'fields' => array('Content.title')
+			'fields' => array()
 		),
 		'PageUserLink' => array(
 			'foreignKey'    => '',
@@ -80,7 +80,6 @@ class BlogComment extends AppModel
 				'numeric' => array(
 					'rule' => array('numeric'),
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a number.')
 				),
 			),
@@ -138,7 +137,6 @@ class BlogComment extends AppModel
 					'rule' => array('boolean'),
 					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a boolean.')
 				),
 			),

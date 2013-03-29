@@ -83,7 +83,6 @@ class Page extends AppModel
 				'position_flag' => array(
 					'boolean'  => array(
 						'rule' => array('boolean'),
-						'allowEmpty' => false,
 						'message' => __('The input must be a boolean.')
 					)
 				),
@@ -103,7 +102,6 @@ class Page extends AppModel
 						'rule' => array('boolean'),
 						'last' => true,
 						'required' => true,
-						'allowEmpty' => false,
 						'message' => __('Unauthorized pattern for %s.', __('Publishing setting'))
 					)
 				),
@@ -158,7 +156,7 @@ class Page extends AppModel
 					'boolean'  => array(
 						'rule' => array('boolean'),
 						'last' => true,
-						'allowEmpty' => true,
+						'required' => true,
 						'message' => __('It contains an invalid string.')
 					)
 				),

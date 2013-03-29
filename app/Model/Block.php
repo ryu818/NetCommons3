@@ -74,7 +74,7 @@ class Block extends AppModel
 				'boolean'  => array(
 									'rule' => array('boolean'),
 									'last' => true,
-									'allowEmpty' => false,
+									'required' => true,
 									'message' => __('The input must be a boolean.')
 								)
 			),
@@ -84,7 +84,6 @@ class Block extends AppModel
 									'rule' => array('boolean'),
 									'last' => true,
 									'required' => true,
-									'allowEmpty' => false,
 									'message' => __('The input must be a boolean.')
 								)
 			),
@@ -584,7 +583,7 @@ class Block extends AppModel
 					$class->startup();
 					if(method_exists($class_name,'delete_block')) {
 						// ブロック削除アクション
-						$ret = $class->delete_block($block);
+						$ret = $class->delete_block($block, $content, $page);
 						if(!$ret) {
 							return false;
 						}

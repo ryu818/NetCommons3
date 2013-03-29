@@ -53,7 +53,6 @@ class Content extends AppModel
 					'rule' => array('boolean'),
 					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a boolean.')
 				)
 			),
@@ -78,7 +77,6 @@ class Content extends AppModel
 					'rule' => array('boolean'),
 					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a boolean.')
 				)
 			),

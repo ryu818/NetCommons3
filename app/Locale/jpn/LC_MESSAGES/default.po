@@ -253,6 +253,8 @@ msgid  	"Paste"
 msgstr 	"ペースト"
 msgid  	"Cancel copy"
 msgstr 	"コピーキャンセル"
+msgid  	"Shortcut"
+msgstr 	"ショートカット"
 
 
 msgid  	"Allow the room authority to view and edit."

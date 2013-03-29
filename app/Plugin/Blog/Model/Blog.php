@@ -72,7 +72,6 @@ class Blog extends AppModel
 					'rule' => array('boolean'),
 					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a boolean.')
 				)
 			),
@@ -81,7 +80,6 @@ class Blog extends AppModel
 					'rule' => array('boolean'),
 					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a boolean.')
 				)
 			),
@@ -89,7 +87,6 @@ class Blog extends AppModel
 				'numeric' => array(
 					'rule' => array('numeric'),
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a number.')
 				),
 				'minLength'  => array(
@@ -102,7 +99,6 @@ class Blog extends AppModel
 					'rule' => array('boolean'),
 					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a boolean.')
 				)
 			),
@@ -143,16 +139,14 @@ class Blog extends AppModel
 					'rule' => array('boolean'),
 					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a boolean.')
 				)
 			),
-			'comment_members' => array(
+			'comment_members_only' => array(
 				'boolean'  => array(
 					'rule' => array('boolean'),
 					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a boolean.')
 				)
 			),
@@ -161,7 +155,6 @@ class Blog extends AppModel
 					'rule' => array('boolean'),
 					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a boolean.')
 				)
 			),
@@ -170,7 +163,6 @@ class Blog extends AppModel
 					'rule' => array('boolean'),
 					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a boolean.')
 				)
 			),
@@ -195,7 +187,6 @@ class Blog extends AppModel
 					'rule' => array('boolean'),
 					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a boolean.')
 				)
 			),
@@ -236,7 +227,6 @@ class Blog extends AppModel
 					'rule' => array('boolean'),
 					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a boolean.')
 				)
 			),
@@ -245,7 +235,6 @@ class Blog extends AppModel
 					'rule' => array('boolean'),
 					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a boolean.')
 				)
 			),
@@ -254,7 +243,6 @@ class Blog extends AppModel
 					'rule' => array('boolean'),
 					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a boolean.')
 				)
 			),
@@ -273,7 +261,6 @@ class Blog extends AppModel
 					'rule' => array('boolean'),
 					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a boolean.')
 				)
 			),
@@ -282,7 +269,6 @@ class Blog extends AppModel
 					'rule' => array('boolean'),
 					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a boolean.')
 				)
 			),
@@ -307,7 +293,6 @@ class Blog extends AppModel
 					'rule' => array('boolean'),
 					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a boolean.')
 				)
 			),
@@ -316,7 +301,6 @@ class Blog extends AppModel
 					'rule' => array('boolean'),
 					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a boolean.')
 				)
 			),
@@ -385,7 +369,7 @@ class Blog extends AppModel
 				'mail_subject' => __d('blog', "[{X-SITE_NAME}]Blog({X-ROOM} {X-BLOG_NAME} {X-SUBJECT})"),
 				'mail_body' => __d('blog', "You are receiving this email because a message was posted to Blog.\nRoom's name:{X-ROOM}\nBlog title:{X-BLOG_NAME}\ntitle:{X-SUBJECT}\nuser:{X-USER}\ndate:{X-TO_DATE}\n\n\n{X-BODY}\n\nClick on the link below to reply to this article.\n{X-URL}"),
 				'comment_flag' => _ON,
-				'comment_members' => _ON,
+				'comment_members_only' => _ON,
 				'comment_required_name' => _ON,
 				'comment_image_auth' => _OFF,
 				'comment_hierarchy' => NC_AUTH_MIN_GENERAL,

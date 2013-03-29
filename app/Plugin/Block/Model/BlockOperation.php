@@ -115,7 +115,7 @@ class BlockOperation extends AppModel {
  * @param  Model Page    $page(ペースト、ショートカット、移動、作成用):追加先ページ
  * @param  integer       $new_root_id ページのペースト、ショートカット作成、移動時 root_id
  * @param  integer       $new_parent_id ページのペースト、ショートカット作成、移動時 parent_id
- * @return false or array(Model Block   $ins_block, Model Content   $ins_content)
+ * @return false or array(, Model Block   $ins_block, Model Content   $ins_content)
  * @since  v 3.0.0.0
  */
 	public function addBlock($action, $pre_page, $module, $block = null, $content = null, $shortcut_flag = null, $page = null, $new_root_id = null, $new_parent_id = null) {
@@ -358,12 +358,13 @@ class BlockOperation extends AppModel {
 			}
 			if($action != 'move' || $pre_page['Page']['room_id'] != $page['Page']['room_id']) {
 				// 移動は異なるルームへの移動のみmoveアクションを呼ぶ
+				// エラー時でも処理を続けるため、$ins_block、$ins_contentを返す。
 				if(!$Module->operationAction($module['Module']['dir_name'], $action, $args)) {
-					return false;
+					return array(false, $ins_block, $ins_content);
 				}
 			}
 		}
 
-		return array($ins_block, $ins_content);
+		return array(true, $ins_block, $ins_content);
 	}
 }

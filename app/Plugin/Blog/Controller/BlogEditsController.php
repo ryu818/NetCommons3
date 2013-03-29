@@ -57,7 +57,7 @@ class BlogEditsController extends BlogAppController {
 			$fieldLists = array(
 				0 => array('post_hierarchy', 'term_hierarchy', 'vote_flag', 'term_hierarchy', 'sns_flag', 'new_period',
 							'mail_flag', 'mail_subject', 'mail_body',),
-				1 => array('comment_flag', 'comment_members', 'comment_required_name', 'comment_image_auth', 'comment_hierarchy',
+				1 => array('comment_flag', 'comment_members_only', 'comment_required_name', 'comment_image_auth', 'comment_hierarchy',
 							'comment_mail_flag', 'comment_mail_hierarchy', 'comment_mail_subject', 'comment_mail_body',),
 				2 => array('trackback_transmit_flag', 'trackback_transmit_article', 'trackback_receive_flag', 'transmit_blog_name',),
 				3 => array('approved_flag', 'approved_mail_flag', 'approved_mail_subject', 'approved_mail_body',

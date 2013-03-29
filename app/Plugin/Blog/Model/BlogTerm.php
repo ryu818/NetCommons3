@@ -51,7 +51,7 @@ class BlogTerm extends AppModel
 					'message' => __('The input must be up to %s characters.', NC_VALIDATOR_TITLE_LEN)
 				),
 				'isUniqueWith'  => array(
-					'rule' => array('isUniqueWith', array('name', 'taxonomy')),
+					'rule' => array('isUniqueWith', array('content_id', 'name', 'taxonomy')),
 					'message' => __('The same name is already in use.Please choose another one.')
 				),
 			),
@@ -87,7 +87,6 @@ class BlogTerm extends AppModel
 					'rule' => array('boolean'),
 					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
 					'message' => __('The input must be a boolean.')
 				)
 			),

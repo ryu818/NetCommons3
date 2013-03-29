@@ -212,9 +212,9 @@ $this->extend('/Frame/block');
 									?>
 									<div class="hr">
 									<?php
-									echo $this->Form->input('Blog.comment_members',array(
+									echo $this->Form->input('Blog.comment_members_only',array(
 										'type' => 'checkbox',
-										'value' => intval($blog['Blog']['comment_members']),
+										'value' => intval($blog['Blog']['comment_members_only']),
 										'label' => __d('blog', 'Users must be logged in to comment.'),
 									));
 									echo $this->Form->input('Blog.comment_required_name',array(
