@@ -113,12 +113,6 @@ define('NC_SPACE_TYPE_MYPORTAL', 2);
 define('NC_SPACE_TYPE_PRIVATE', 3);
 define('NC_SPACE_TYPE_GROUP', 4);
 
-//-----------------accept_flag-------------------------------------------
-
-define('NC_ACCEPT_FLAG_OFF', 0);
-define('NC_ACCEPT_FLAG_ON', 1);
-// define('NC_SPACE_TYPE_PENDING', 2);	// TODO:承認機能は未実装
-
 //-----------------room_id-------------------------------------------
 
 define('NC_PUBLIC_ROOM_ID', 9);

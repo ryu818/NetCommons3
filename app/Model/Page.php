@@ -160,6 +160,14 @@ class Page extends AppModel
 						'message' => __('It contains an invalid string.')
 					)
 				),
+				'approved_flag' => array(
+					'boolean'  => array(
+						'rule' => array('boolean'),
+						'last' => true,
+						'required' => true,
+						'message' => __('It contains an invalid string.')
+					)
+				),
 		);
 	}
 

@@ -2303,7 +2303,8 @@ e-mail：{X-EMAIL}
         <column name="is_master">1</column>
         <column name="master_id">1</column>
         <column name="room_id">9</column>
-        <column name="accept_flag">1</column>
+        <column name="display_flag">1</column>
+        <column name="approved_flag">1</column>
         <column name="url"></column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
@@ -2319,7 +2320,8 @@ e-mail：{X-EMAIL}
         <column name="is_master">1</column>
         <column name="master_id">2</column>
         <column name="room_id">9</column>
-        <column name="accept_flag">1</column>
+        <column name="display_flag">1</column>
+        <column name="approved_flag">1</column>
         <column name="url"></column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>

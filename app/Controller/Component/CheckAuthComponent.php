@@ -57,6 +57,11 @@ class CheckAuthComponent extends Component {
 	public $chkMovedPermanently = true;
 
 /**
+ * block_idのプラグイン名称とパスからのプラグイン名称が一致しているかどうかのチェックするかどうか
+ * @var boolean
+ */
+	public $chkPlugin = true;
+/**
  * 一般モジュールでblock_idをチェックするかどうか
  * @var boolean
  */
@@ -254,6 +259,7 @@ class CheckAuthComponent extends Component {
 		$url_page_id = !empty($controller->request->query[$this->requestPageId]) ? $controller->request->query[$this->requestPageId] : 0;
 		$page_id = !empty($data_page_id) ? $data_page_id : (!empty($named_page_id) ? $named_page_id : (!empty($url_page_id) ? $url_page_id : 0));
 
+		$plugin_name = $controller->request->params['plugin'];
 		$controller_name = $controller->request->params['controller'];
 		$action_name = $controller->request->params['action'];
 		$lang = $this->Session->read(NC_CONFIG_KEY.'.'.'language');
@@ -274,12 +280,18 @@ class CheckAuthComponent extends Component {
 					$controller->flash(__('Content not found.'), '', 'CheckAuth.checkGeneral.001', '404');
 					return false;
 				}
+				if($this->chkPlugin && $block['Module']['dir_name'] != Inflector::camelize($plugin_name)) {
+					// 置いているpluginが異なる（dir_nameから）
+					$controller->flash(__('Content not found.'), '', 'CheckAuth.checkGeneral.002', '404');
+					return false;
+				}
+
 				$controller->nc_block = $block;
 
 				$active_page = $controller->Page->findById($block['Block']['page_id']);
 				if(!$active_page) {
 					// ブロックIDに対応したページが存在しない
-					$controller->flash(__('Page not found.'), $redirect_url, 'CheckAuth.checkGeneral.002', '404');
+					$controller->flash(__('Page not found.'), $redirect_url, 'CheckAuth.checkGeneral.003', '404');
 					return false;
 				}
 			}
@@ -299,13 +311,13 @@ class CheckAuthComponent extends Component {
 				// ３０１をかえして、その後、移動後のページへ遷移させる
 				// TODO:中央カラムのみにはってあるブロックのみチェックしているが、ヘッダーのブロックのチェックもするべき
 				$redirect_url = preg_replace('$^'.$permalink.'$i', $active_page['Page']['permalink'], $url);
-				$controller->flash(__('Moved Permanently.'), $redirect_url, 'CheckAuth.checkGeneral.003', '301');
+				$controller->flash(__('Moved Permanently.'), $redirect_url, 'CheckAuth.checkGeneral.004', '301');
 				return false;
 			}
 
 			if($page === false || $center_page === false) {
 				// ページが存在しない
-				$controller->flash(__('Page not found.'), $redirect_url, 'CheckAuth.checkGeneral.004', '404');
+				$controller->flash(__('Page not found.'), $redirect_url, 'CheckAuth.checkGeneral.005', '404');
 				return false;
 			}
 
@@ -313,7 +325,7 @@ class CheckAuthComponent extends Component {
 			$controller->nc_current_page = $page;								// pageから取得できるPage
 			if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_DISABLE ||
 					($page['Page']['display_flag'] == NC_DISPLAY_FLAG_OFF && $page['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF)) {
-				$controller->flash(__('Content not found.'), $redirect_url, 'CheckAuth.checkGeneral.005', '404');
+				$controller->flash(__('Content not found.'), $redirect_url, 'CheckAuth.checkGeneral.006', '404');
 				return false;
 			}
 
@@ -347,7 +359,7 @@ class CheckAuthComponent extends Component {
 		// block_idチェック
 		if($this->chkBlockId) {
 			if(!isset($block_id) || $block_id == 0) {
-				$controller->flash(__('Content not found.'), $redirect_url, 'CheckAuth.checkGeneral.006', '404');
+				$controller->flash(__('Content not found.'), $redirect_url, 'CheckAuth.checkGeneral.007', '404');
 				return false;
 			}
 		}

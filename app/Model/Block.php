@@ -271,8 +271,8 @@ class Block extends AppModel
 			$this->save($val, true, array('display_flag', 'display_from_date', 'display_to_date'));
 		}
 
-		if($check_auth && isset($val['Content']['accept_flag']) &&
-			(($val['Content']['accept_flag'] != NC_ACCEPT_FLAG_ON || $val['Block']['display_flag'] == _OFF) && $val['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF)) {
+		if($check_auth && isset($val['Content']['display_flag']) &&
+			(($val['Content']['display_flag'] != NC_DISPLAY_FLAG_ON || $val['Block']['display_flag'] == _OFF) && $val['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF)) {
 			// 非公開
 			return;
 		}
@@ -303,7 +303,6 @@ class Block extends AppModel
 		$val['Block']['room_id'] = $val['Content']['room_id'];
 		$val['Block']['is_master'] = $val['Content']['is_master'];
 		$val['Block']['master_id'] = $val['Content']['master_id'];
-		$val['Block']['accept_flag'] = isset($val['Content']['accept_flag']) ? $val['Content']['accept_flag'] : NC_ACCEPT_FLAG_ON;
 		//$val['Block']['url'] = $val['Content']['url'];
 		$val['Block']['dir_name'] = $val['Module']['dir_name'];
 		$val['Block']['edit_controller_action'] = $val['Module']['edit_controller_action'];
@@ -457,7 +456,7 @@ class Block extends AppModel
 		return array(
 			'Block.*',
 			'Page.thread_num','Page.room_id','Page.root_id','Page.space_type',
-			'Content.id','Content.module_id','Content.title','Content.is_master','Content.master_id','Content.room_id','Content.accept_flag','Content.url',
+			'Content.id','Content.module_id','Content.title','Content.is_master','Content.master_id','Content.room_id','Content.display_flag','Content.approved_flag','Content.url',
 			'Module.id','Module.controller_action','Module.edit_controller_action','Module.style_controller_action','Module.dir_name','Module.content_has_one',
 			'Authority.id','Authority.hierarchy'
 		);

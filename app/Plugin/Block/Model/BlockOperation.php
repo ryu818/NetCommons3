@@ -152,7 +152,7 @@ class BlockOperation extends AppModel {
 			 * 		Block.content_id 新規に取得しないで、ショートカット元のcontent_idを付与
 			 * 		Contentは追加しない。
 			 *  ・ペースト、ショートカットの作成（表示中のルーム権限より閲覧・編集権限を付与する。）
-			 * 		Contentは新規追加するが、ショートカット元のContentの中身(title,is_master, master_id,accept_flag,url)はコピー
+			 * 		Contentは新規追加するが、ショートカット元のContentの中身(title,is_master, master_id,display_flag,approved_flag,url)はコピー
 			 * 			room_idはショートカット先のroom_id
 			 */
 			if(!$content['Content']['is_master'] &&
@@ -187,7 +187,8 @@ class BlockOperation extends AppModel {
 						'title' => $content['Content']['title'],
 						'is_master' => ($shortcut_flag === _ON) ? _OFF : $content['Content']['is_master'],
 						'room_id' => $page['Page']['room_id'],
-						'accept_flag' => $content['Content']['accept_flag'],
+						'display_flag' => $content['Content']['display_flag'],
+						'approved_flag' => $content['Content']['approved_flag'],
 						'url' => $content['Content']['url']
 					)
 				);
@@ -222,7 +223,8 @@ class BlockOperation extends AppModel {
 					'title' => $module['Module']['module_name'],
 					'is_master' => _ON,
 					'room_id' => $page['Page']['room_id'],
-					'accept_flag' => NC_ACCEPT_FLAG_ON,
+					'display_flag' => NC_DISPLAY_FLAG_ON,
+					'approved_flag' => _ON,
 					'url' => ''
 				)
 			);

@@ -19,7 +19,7 @@ class BlockOperationsController extends BlockAppController {
  *
  * @var array
  */
-	public $components = array('CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF, 'chkMovedPermanently' => false, 'checkOrder' => array("request", "url")));
+	public $components = array('CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF, 'chkMovedPermanently' => false, 'chkPlugin' => false, 'checkOrder' => array("request", "url")));
 
 /**
  * ブロックコピー

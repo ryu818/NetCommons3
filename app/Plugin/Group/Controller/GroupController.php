@@ -1,7 +1,18 @@
 <?php
+/**
+ * GroupControllerクラス
+ *
+ * <pre>
+ * グループ化ブロック
+ * </pre>
+ *
+ * @copyright     Copyright 2012, NetCommons Project
+ * @package       App.Plugin.Controller
+ * @author        Noriko Arai,Ryuji Masukawa
+ * @since         v 3.0.0.0
+ * @license       http://www.netcommons.org/license.txt  NetCommons License
+ */
 class GroupController extends GroupAppController {
-
-	public $nc_blocks = array();
 
 	public function index() {
 		$user_id = $this->Auth->user('id');

@@ -25,7 +25,7 @@ class BlockStylesController extends BlockAppController {
  *
  * @var array
  */
-	public $components = array('CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF));
+	public $components = array('CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF, 'chkPlugin' => false));
 
 /**
  * ブロックスタイル画面

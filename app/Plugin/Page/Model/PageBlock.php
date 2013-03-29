@@ -100,7 +100,8 @@ class PageBlock extends AppModel {
 						'is_master' => _OFF,
 						'master_id' => $block['Content']['id'],
 						'room_id' => $addauth_room_id,
-						'accept_flag' => $block['Content']['accept_flag'],
+						'display_flag' => $block['Content']['display_flag'],
+						'approved_flag' => $block['Content']['approved_flag'],
 						'url' => $block['Content']['url']
 					);
 					if(!$Content->save($ins_content)) {

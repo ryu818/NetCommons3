@@ -72,7 +72,15 @@ class Content extends AppModel
 					'message' => __('The input must be a number.')
 				)
 			),
-			'accept_flag' => array(
+			'display_flag' => array(
+				'boolean'  => array(
+					'rule' => array('boolean'),
+					'last' => true,
+					'required' => true,
+					'message' => __('The input must be a boolean.')
+				)
+			),
+			'approved_flag' => array(
 				'boolean'  => array(
 					'rule' => array('boolean'),
 					'last' => true,

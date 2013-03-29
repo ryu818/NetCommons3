@@ -14,7 +14,7 @@
  */
 class BlockController extends BlockAppController {
 
-	public $components = array('Block.BlockMove', 'CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF, 'checkOrder' => array("request", "url")));
+	public $components = array('Block.BlockMove', 'CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF, 'chkPlugin' => false, 'checkOrder' => array("request", "url")));
 	public $uses = array('Block.BlockOperation');
 
 /**
@@ -451,7 +451,8 @@ class BlockController extends BlockAppController {
 					'is_master' => _ON,
 					'title' => __d('block', 'New group'),
 					'room_id' => $page['Page']['room_id'],
-					'accept_flag' => NC_ACCEPT_FLAG_ON,
+					'display_flag' => NC_DISPLAY_FLAG_ON,
+					'approved_flag' => _ON,
 					'url' => ''
 				);
 				$this->Content->create();
