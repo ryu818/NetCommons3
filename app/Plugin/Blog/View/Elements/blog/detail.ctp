@@ -10,6 +10,8 @@
 	$date = date(__('(Y-m-d)'), $int_post_date);
 	$time = date(__('h:i A'), $int_post_date);
 	$date_atom = $this->Time->toAtom($int_post_date);
+
+	$is_edit = $this->CheckAuth->isEdit($hierarchy, $post['Authority']['hierarchy']);
 ?>
 <article class="blog-post">
 	<header class="blog-entry-header">
@@ -44,15 +46,20 @@
 			<?php /* TODO:Twitter facebook等のアイコン */ ?>
 		</div>
 	</header>
+	<?php if($is_edit): ?>
+	<div class="blog-entry-content blog-entry-content-highlight" data-edit-id="#blog-edit-link<?php echo($id.'-'.$post['BlogPost']['id']); ?>">
+	<?php else: ?>
 	<div class="blog-entry-content">
+	<?php endif; ?>
 		<?php echo ($post['Htmlarea']['content']);?>
 	</div>
 	<footer class="blog-entry-meta">
 		<span class="blog-edit-link">
+			<?php if($is_edit): ?>
 			<?php
 				echo $this->Html->link(__('Edit'),
 					array('controller' => 'blog_posts', 'action' => 'index', $post['BlogPost']['id']),
-					array('title' =>__('Edit Post'), 'data-pjax' => '#'.$id
+					array('id' => 'blog-edit-link'.$id.'-'.$post['BlogPost']['id'], 'title' =>__('Edit Post'), 'data-pjax' => '#'.$id
 				));
 			?>
 			&nbsp;|&nbsp;
@@ -63,6 +70,7 @@
 				));
 			?>
 			&nbsp;|&nbsp;
+			<?php endif; ?>
 			<?php
 				echo $this->Html->link(__d('blog', 'Vote'),
 					array('controller' => 'blog', 'action' => 'vote', $post['BlogPost']['id']),
@@ -70,7 +78,6 @@
 				));
 			?>
 			&nbsp;|&nbsp;
-
 		</span>
 		<span class="blog-comments-link">
 			<?php

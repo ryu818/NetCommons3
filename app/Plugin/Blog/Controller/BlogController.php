@@ -18,7 +18,7 @@ class BlogController extends BlogAppController {
  * @var   array
  * @since   v 3.0.0.0
  */
-	public $helpers = array('Time');	// TODO:TimeZoneヘルパーをTimeで置き換えられるかどうか検証する
+	public $helpers = array('Time', 'CheckAuth');	// TODO:TimeZoneヘルパーをTimeで置き換えられるかどうか検証する
 
 /**
  * Pagination
@@ -26,7 +26,7 @@ class BlogController extends BlogAppController {
  * @since   v 3.0.0.0
  */
 	public $paginate = array(
-		'fields' => array('BlogPost.*', 'Htmlarea.content'),
+		'fields' => array('BlogPost.*', 'Htmlarea.content', 'Authority.hierarchy'),
 		'order' => array(
 			'BlogPost.post_date' => 'DESC',
 			'BlogPost.id' => 'DESC',
