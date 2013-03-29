@@ -259,7 +259,7 @@ class CheckAuthComponent extends Component {
 		$url_page_id = !empty($controller->request->query[$this->requestPageId]) ? $controller->request->query[$this->requestPageId] : 0;
 		$page_id = !empty($data_page_id) ? $data_page_id : (!empty($named_page_id) ? $named_page_id : (!empty($url_page_id) ? $url_page_id : 0));
 
-		$plugin_name = $controller->request->params['plugin'];
+		$plugin_name = isset($controller->request->params['plugin']) ? $controller->request->params['plugin'] : $controller->request->params['active_plugin'];
 		$controller_name = $controller->request->params['controller'];
 		$action_name = $controller->request->params['action'];
 		$lang = $this->Session->read(NC_CONFIG_KEY.'.'.'language');
