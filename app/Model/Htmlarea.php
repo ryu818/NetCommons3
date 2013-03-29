@@ -65,14 +65,6 @@ class Htmlarea extends AppModel
 				);
 				$this->updateAll($fields, $conditions);
 
-				$htmlarea = $this->findById($revision_parent);
-				if($htmlarea[$this->alias]['content'] == $this->data[$this->alias]['content']) {
-					// コンテンツ変更なし。1つ前のヒストリー削除
-					$this->delete($revision_parent);
-					$this->id = $id;
-					return;
-				}
-
 				// revision_parentを0に最更新
 				$fields = array(
 					$this->alias.'.revision_parent' => 0
@@ -82,6 +74,14 @@ class Htmlarea extends AppModel
 					$this->alias.".id" => $this->id
 				);
 				$this->updateAll($fields, $conditions);
+
+				$htmlarea = $this->findById($revision_parent);
+				if($htmlarea[$this->alias]['content'] == $this->data[$this->alias]['content']) {
+					// コンテンツ変更なし。1つ前のヒストリー削除
+					$this->delete($revision_parent);
+					$this->id = $id;
+					return;
+				}
 
 				// 履歴の保存最大個数を超えた場合、古いものから削除
 				$params = array(
