@@ -60,7 +60,7 @@ class AnnouncementEditsController extends AnnouncementAppController {
 				'content_id' => $this->content_id,
 				'content' => $this->request->data['Htmlarea']['content']
 			);
-			$fieldListContent = array('title');
+			$fieldListContent = array('title', 'display_flag');
 			$fieldListHtml = array('content_id', 'content');
 			$this->Content->set($content);
 			$this->Htmlarea->set($htmlarea);

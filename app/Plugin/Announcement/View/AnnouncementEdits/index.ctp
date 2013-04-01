@@ -13,7 +13,7 @@ echo $this->Form->create(null, array('data-pjax' => '#'.$id));
 			<dl>
 				<dt>
 					<?php
-						echo $this->Form->label('Content.title', __d('blog', 'Blog name'));
+						echo $this->Form->label('Content.title', __('Title'));
 					?>
 				</dt>
 				<dd>
