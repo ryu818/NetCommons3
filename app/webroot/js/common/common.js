@@ -13,7 +13,7 @@
 		blockZIndex : 1000,
 		// data-pjax属性の値をtargetとしてhrefタグのURLを用いてAjaxでデータを取得し、targetを置換する。
 		//
-		// data-ajax属性の値をtargetとしてhrefタグのURLを用いてAjaxでデータを取得する。
+		// data-ajax属性の値をtargetとしてhrefタグのURLを用いてAjaxでデータを取得し、targetにinnerHtmlを行う。
 		// data-ajax-replace属性ならば、targetと入れ替える。
 		//
 		// data-ajax-url:URL default：href属性から取得

@@ -145,6 +145,7 @@ class BlockController extends BlockAppController {
 		if(isset($controller_arr[1])) {
 			$params['action'] = $controller_arr[1];
 		}
+		$params['?'] = array('_nc_include_css' => 1);
 		$this->redirect($params);
 	}
 

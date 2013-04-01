@@ -95,8 +95,12 @@ if($block['Block']['display_flag'] == NC_DISPLAY_FLAG_OFF) {
 		<?php
 			/* 基本、echoしてないため、テーマのCSSはAjaxで表示する際は読み込まれない。 */
 			$block_css = $this->Html->css($theme_name, null, array('frame' => true));
-			if(isset($this->request->query['_nc_include_css']) && $this->request->query['_nc_include_css']) {
-				echo $block_css;
+
+			if((isset($this->request->query['_nc_include_css']) && $this->request->query['_nc_include_css']) ||
+				(isset($this->request->data['_nc_include_css']) && $this->request->data['_nc_include_css'])) {
+				echo '<script>$(function(){';
+				echo "$('head').get(0).appendChild($('".trim($block_css)."').get(0));";
+				echo '});</script>';
 			}
 		?>
 	</div>
