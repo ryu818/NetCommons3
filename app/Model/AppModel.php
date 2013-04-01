@@ -50,7 +50,6 @@ class AppModel extends Model {
 		if (isset($data[$this->alias])) {
 			$fields = array_keys($data[$this->alias]);
 		}
-		@error_log(print_r($fields,true)."\n", 3, LOGS . '/exportWWW.txt');
 		$id = Configure::read(NC_SYSTEM_KEY.'.user_id');
 		$usename = Configure::read(NC_SYSTEM_KEY.'.handle');
 
@@ -88,7 +87,6 @@ class AppModel extends Model {
 		 unset($this->data[$this->name]['modified']);
 		if (isset($data) && isset($data[$this->name]))
 			unset($data[$this->name]['modified']);*/
-		@error_log(print_r($fieldList,true)."\n", 3, LOGS . '/exportWWW.txt');
 		return parent::save($data, $validate, $fieldList);
 	}
 
