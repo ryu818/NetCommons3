@@ -92,7 +92,7 @@ class BlockOperation extends AppModel {
 		$ins_block['Block']['display_from_date'] = null;
 		$ins_block['Block']['display_to_date'] = null;
 		$ins_block['Block']['controller_action'] = 'group';
-		$ins_block['Block']['theme_name'] = 'None';
+		$ins_block['Block']['theme_name'] = 'NoneFrame';
 		$ins_block['Block']['temp_name'] = '';
 		$ins_block['Block']['left_margin'] = 8;
 		$ins_block['Block']['right_margin'] = 8;
@@ -217,17 +217,31 @@ class BlockOperation extends AppModel {
 			}
 		} else {
 			// ブロック追加時
+
+
 			$ins_content = array(
 				'Content' => array(
 					'module_id' => $module['Module']['id'],
 					'title' => $module['Module']['module_name'],
 					'is_master' => _ON,
 					'room_id' => $page['Page']['room_id'],
-					'display_flag' => NC_DISPLAY_FLAG_ON,
+					'display_flag' => NC_DISPLAY_FLAG_DISABLE,
 					'approved_flag' => _ON,
 					'url' => ''
 				)
 			);
+			$Content->set($ins_content);
+			$content_title = $buf_content_title = $module['Module']['module_name'];
+			$count = 0;
+			while(1) {
+				if(!$Content->isUniqueWith(array(), array('title' => $content_title, 'room_id'))) {
+					$count++;
+					$content_title = $buf_content_title. '-' . $count;
+				} else {
+					break;
+				}
+			}
+			$ins_content['Content']['title'] = $content_title;
 			$ins_ret = $Content->save($ins_content);
 			if(!$ins_ret) {
 				return false;
