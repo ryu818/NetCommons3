@@ -6,7 +6,7 @@
 	</ul>
 	<div id="nc-block-styles-tab-init<?php echo($block_id); ?>" class="nc-block-styles-init-outer">
 		<?php
-			echo $this->Form->create(null, array('id' => 'BlockIndexForm'.$block_id, 'data-ajax-replace' => '#nc-block-style'.$block_id));
+			echo $this->Form->create('BlockStyle', array('id' => 'BlockIndexForm'.$block_id, 'data-ajax-replace' => '#nc-block-style'.$block_id));
 			$locale = Configure::read(NC_SYSTEM_KEY.'.locale');
 		?>
 		<fieldset class="form">
@@ -325,7 +325,7 @@
 	<div id="nc-block-styles-tab-theme<?php echo($block_id); ?>" class="nc-block-styles-theme-outer">
 		<?php /* ブロックテーマ */ ?>
 		<?php
-			echo $this->Form->create(null, array('id' => 'BlockIndexFormTheme'.$block_id, 'data-ajax-replace' => '#nc-block-styles'.$block_id));
+			echo $this->Form->create('BlockStyle', array('id' => 'BlockIndexFormTheme'.$block_id, 'data-ajax-replace' => '#nc-block-styles'.$block_id));
 			$act_category_cnt = -1
 		?>
 		<div class="nc-block-styles-theme-selected highlight">
@@ -339,7 +339,7 @@
 					'options' => array(
 						_ON => "&nbsp;".__d('block', 'Default setting following the page theme.')
 					),
-					'onclick' => "$.BlockStyles.clickTheme($('#BlockIndexFormTheme" . $block_id . "'), '', '#nc-block-styles-theme-name-".$block_id."');"
+					'onclick' => "$.BlockStyles.clickTheme(event, $('#BlockIndexFormTheme" . $block_id . "'), '', '#nc-block-styles-theme-name-".$block_id."');"
 				);
 				echo $this->Form->input('is_page_theme_apply', $settings);
 			?>
@@ -357,7 +357,7 @@
 									$theme_dir_name = $theme_arr[0];
 								?>
 								<div class="float-left">
-									<a href="#" onclick="$.BlockStyles.clickTheme($('#BlockIndexFormTheme<?php echo($block_id); ?>'), '<?php echo($theme_key); ?>', '#nc-block-styles-theme-name-<?php echo($block_id); ?>'); $(this.form).submit();" class="display-block hover-highlight<?php if ($block['Block']['theme_name'] == $theme_key): ?> highlight<?php $act_category_cnt = $category_cnt; ?><?php endif; ?>">
+									<a href="#" onclick="$.BlockStyles.clickTheme(event, $('#BlockIndexFormTheme<?php echo($block_id); ?>'), '<?php echo($theme_key); ?>', '#nc-block-styles-theme-name-<?php echo($block_id); ?>'); " class="display-block hover-highlight<?php if ($block['Block']['theme_name'] == $theme_key): ?> highlight<?php $act_category_cnt = $category_cnt; ?><?php endif; ?>">
 										<img class="nc-block-styles-theme-img nc-tooltip" title="<?php echo($theme_name); ?>" alt="<?php echo($theme_name); ?>" src="<?php echo($this->webroot); ?>frame/<?php echo(Inflector::underscore($theme_dir_name)); ?>/img/<?php echo($image_path[$theme_key]); ?>" />
 									</a>
 								</div>

@@ -66,12 +66,13 @@
 			}
 		},
 		/* テーマクリック */
-		clickTheme: function(form, theme_name, input) {
+		clickTheme: function(e, form, theme_name, input) {
 			if($(input).val() == theme_name) {
 				return false;
 			}
 			$(input).val(theme_name);
 			$(form).submit();
+			e.preventDefault();
 		}
 	}
 })(jQuery);
