@@ -15,5 +15,5 @@ class PageAppController extends AppPluginController {
 	 *
 	 * @var array
 	 */
-	public $components = array('CheckAuth' => array('chkBlockId' => false));
+	public $components = array('CheckAuth' => array('chkPlugin' => false, 'chkBlockId' => false));
 }
