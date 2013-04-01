@@ -204,7 +204,7 @@ class AppSchema extends CakeSchema {
 		'is_master' => array('type' => 'integer', 'null' => false, 'default' => '1', 'length' => 3),
 		'master_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'room_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
-		'display_flag' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
+		'display_flag' => array('type' => 'integer', 'null' => false, 'default' => '1', 'length' => 2),
 		'approved_flag' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
 		'url' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),

@@ -6,7 +6,7 @@ if(isset($nc_error_flag) && $nc_error_flag) {
 	$add_class_name = 'nc-shortcut-toolbox';
 }
 /* 削除アクションがあるかどうか */
-if($page['Page']['room_id'] != $block['Content']['room_id'] || !$block['Content']['is_master']) {
+if($page['Page']['room_id'] != $block['Content']['room_id'] || !$block['Content']['is_master'] || $block['Content']['display_flag'] == NC_DISPLAY_FLAG_DISABLE) {
 	$all_delete = _OFF;	// ショートカット
 } else {
 	App::uses($block['Module']['dir_name'].'OperationComponent', 'Plugin/'.$block['Module']['dir_name'].'/Controller/Component');
@@ -115,10 +115,12 @@ if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 			?>
 		</li>
 		<?php endif; ?>
+		<?php /* TODO:コンテンツ一覧を表示する必要がないモジュールも存在する予定 */ ?>
 		<li>
-			<a class="link hover-highlight" href="#">
-				<?php /* TODO:未実装 */ echo(__('Contents list'));?>
-			</a>
+			<?php
+				echo $this->Html->link(__('Contents list'), array('plugin' => 'content', 'controller' => 'content', 'action' => 'index'),
+						array('title' => __('Contents list'), 'id' => 'nc-block-contents-list-link'.$id, 'class' => 'link hover-highlight','data-ajax' => '', 'data-block-contents-list-dialog-id' => 'nc-block-contents-list-dialog'.$block['Block']['id']));
+			?>
 		</li>
 	</ul>
 </div>

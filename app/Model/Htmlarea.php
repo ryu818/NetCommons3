@@ -32,7 +32,7 @@ class Htmlarea extends AppModel
 	}
 
 	public function beforeValidate($options = array()) {
-		if(isset($this->data['Htmlarea']['content']) && preg_match('/^\s*<div><\/div>\s*$/iu', $this->data['Htmlarea']['content']) || preg_match('/^\s*<br\s*\/?>\s*$/iu', $this->data['Htmlarea']['content'])) {
+		if(isset($this->data['Htmlarea']['content']) && (preg_match('/^\s*<div><\/div>\s*$/iu', $this->data['Htmlarea']['content']) || preg_match('/^\s*<br\s*\/?>\s*$/iu', $this->data['Htmlarea']['content']))) {
 			$this->data['Htmlarea']['content'] = "";
 		}
 		//$this->data['Htmlarea']['content'] = $this->cleanHTML($this->data['Htmlarea']['content']);

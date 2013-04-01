@@ -98,11 +98,19 @@ class Page extends AppModel
 					)
 				),
 				'display_flag' => array(
-					'boolean'  => array(
-						'rule' => array('boolean'),
-						'last' => true,
+					'numeric' => array(
+						'rule' => array('numeric'),
 						'required' => true,
-						'message' => __('Unauthorized pattern for %s.', __('Publishing setting'))
+						'message' => __('The input must be a number.')
+					),
+					'inList' => array(
+						'rule' => array('inList', array(
+							NC_DISPLAY_FLAG_OFF,
+							NC_DISPLAY_FLAG_ON,
+							NC_DISPLAY_FLAG_DISABLE,
+						), false),
+						'allowEmpty' => false,
+						'message' => __('It contains an invalid string.')
 					)
 				),
 

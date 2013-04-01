@@ -48,16 +48,40 @@ class AnnouncementEditsController extends AnnouncementAppController {
 	public function index() {
 		$htmlarea = $this->Htmlarea->findByContentId($this->content_id);
 		if ($this->request->is('post')) {
-			$data = array(
+			$content['Content'] = array(
+				'id' => $this->content_id,
+				'title' => $this->request->data['Content']['title'],
+				'display_flag' => NC_DISPLAY_FLAG_ON,
+			);
+
+
+			$htmlarea['Htmlarea'] = array(
 				'id' => isset($htmlarea['Htmlarea']['id']) ? $htmlarea['Htmlarea']['id'] : null,
 				'content_id' => $this->content_id,
 				'content' => $this->request->data['Htmlarea']['content']
 			);
-			if ($this->Htmlarea->save($data)) {
-				$this->Session->setFlash(__('Your post has been saved.'));
-				$this->redirect(array('plugin' => 'announcement', 'controller' => 'announcement', 'block_id' => $this->block_id, '#' => $this->id));
+			$fieldListContent = array('title');
+			$fieldListHtml = array('content_id', 'content');
+			$this->Content->set($content);
+			$this->Htmlarea->set($htmlarea);
+
+			if($this->Content->validates(array('fieldList' => $fieldListContent)) && $this->Htmlarea->validates(array('fieldList' => $fieldListHtml))) {
+				if (!$this->Content->save($content, false, $fieldListContent)) {
+					$this->flash(__('Failed to register the database, (%s).', 'content'), null, 'AnnouncementEdits.index.001', '500');
+					return;
+				}
+				if (!$this->Htmlarea->save($htmlarea, false, $fieldListHtml) ) {
+					$this->flash(__('Failed to register the database, (%s).', 'htmlarea'), null, 'AnnouncementEdits.index.002', '500');
+					return;
+				}
+
+				if(empty($htmlarea['Blog']['id'])) {
+					$this->Session->setFlash(__('Has been successfully registered.'));
+				} else {
+					$this->Session->setFlash(__('Has been successfully updated.'));
+				}
+				$this->redirect(array('plugin' => 'announcement', 'controller' => 'announcement', '#' => $this->id));
 			}
-			$htmlarea['Htmlarea'] = $data;
 		}
 
 		$this->set('htmlarea', $htmlarea);

@@ -75,31 +75,51 @@
 
 			// ブロックスタイル
 
-			$('#nc-block-styles-link' + id +',#nc-block-display-styles-link' + id).on('ajax:beforeSend', function(e, url) {
-				var a = $(e.target);
-				var dialog_id = ($(this).attr('id') == 'nc-block-styles-link' + id) ? a.attr('data-block-styles-dialog-id') : a.attr('data-block-display-styles-dialog-id');
+			$('#nc-block-styles-link' + id +',#nc-block-display-styles-link' + id+',#nc-block-contents-list-link' + id).on('ajax:beforeSend', function(e, url) {
+				var a = $(e.target), dialog_id, is_content_list = false;
+				if($(this).attr('id') == 'nc-block-styles-link' + id) {
+					dialog_id = a.attr('data-block-styles-dialog-id');
+				} else if($(this).attr('id') == 'nc-block-display-styles-link' + id) {
+					dialog_id = a.attr('data-block-display-styles-dialog-id');
+				} else {
+					dialog_id = a.attr('data-block-contents-list-dialog-id');
+					is_content_list = true;
+				}
 				var style_dialog = $('#' + dialog_id);
 				if(style_dialog.get(0)) {
 					// 既に表示中
-					style_dialog.dialog('open');
-					$(this).parents('.nc-drop-down:first').hide();
-					return false;
+					if(is_content_list) {
+						style_dialog.remove();
+					} else {
+						style_dialog.dialog('open');
+						$(this).parents('.nc-drop-down:first').hide();
+						return false;
+					}
 				}
 				return url;
 			}).on('ajax:success', function(e, res) {
-				var block_style =false,w,h;
+				var title ='',w,h;
 				if($(this).attr('id') == 'nc-block-styles-link' + id) {
 					block_style =true;
 				}
-				var a = $(e.target), pos = a.offset(), style_dialog;
-				var dialog_id = (block_style) ? a.attr('data-block-styles-dialog-id') : a.attr('data-block-display-styles-dialog-id');
+				var a = $(e.target), pos = a.offset(), style_dialog, dialog_id;
+				if($(this).attr('id') == 'nc-block-styles-link' + id) {
+					dialog_id = a.attr('data-block-styles-dialog-id');
+					title = 'Block style';
+				} else if($(this).attr('id') == 'nc-block-display-styles-link' + id) {
+					dialog_id = a.attr('data-block-display-styles-dialog-id');
+					title = 'Display style';
+				} else {
+					dialog_id = a.attr('data-block-contents-list-dialog-id');
+					title = 'Content list'
+				}
 				var params = {
-					title: (block_style) ? __d('block', 'Block style') : __d('block', 'Display style'),
+					title: __d('block', title),
 					position: [e.pageX - $(window).scrollLeft(), e.pageY - $(window).scrollTop()],
 					show: 'blind',
 					hide: 'blind'
 				};
-				if(block_style) {
+				if(title == 'Block style') {
 					params['width'] = 400;
 					params['resizable'] = false;
 				}

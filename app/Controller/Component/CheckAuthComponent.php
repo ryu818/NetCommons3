@@ -281,7 +281,7 @@ class CheckAuthComponent extends Component {
 					$controller->flash(__('Content not found.'), '', 'CheckAuth.checkGeneral.001', '404');
 					return false;
 				}
-				if($this->chkPlugin && $block['Module']['dir_name'] != Inflector::camelize($plugin_name)) {
+				if($this->chkPlugin && $plugin_name != 'group' && $block['Module']['dir_name'] != Inflector::camelize($plugin_name)) {
 					// 置いているpluginが異なる（dir_nameから）
 					$controller->flash(__('Content not found.'), '', 'CheckAuth.checkGeneral.002', '404');
 					return false;

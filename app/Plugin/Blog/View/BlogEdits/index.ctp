@@ -3,7 +3,7 @@ $this->extend('/Frame/block');
 ?>
 <div id="blog-edits<?php echo($id); ?>" style="display:none;">
 	<?php
-		echo $this->Form->create(null, array('data-pjax' => '#'.$id));
+		echo $this->Form->create('Blog', array('data-pjax' => '#'.$id));
 	?>
 	<div id="blog-edits-tab<?php echo($id); ?>">
 		<ul>
@@ -31,6 +31,7 @@ $this->extend('/Frame/block');
 										'label' => false,
 										'div' => false,
 										'maxlength' => NC_VALIDATOR_BLOCK_TITLE_LEN,
+										'class' => 'nc-title',
 										'size' => 35,
 										'error' => array('attributes' => array(
 											'selector' => true

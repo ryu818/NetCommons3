@@ -598,7 +598,7 @@ class Block extends AppModel
 					}
 				}
 				if(isset($content['Content'])) {
-					if(!$content['Content']['is_master'] ||
+					if($content['Content']['display_flag'] == NC_DISPLAY_FLAG_DISABLE || !$content['Content']['is_master'] ||
 						($all_delete == _ON && $page['Page']['room_id'] == $content['Content']['room_id'])) {
 
 						// 権限が付与されたショートカットか、ショートカットではない場合
