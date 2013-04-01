@@ -279,15 +279,19 @@ class BlogPost extends AppModel
 			$separator = '<';
 		}
 
-		return array('OR' => array(
-			array(
-				'BlogPost.status' => NC_STATUS_PUBLISH,
-				'BlogPost.post_date <=' => $this->nowDate(),
-				// TODO:approved_flag 未使用になるかも
-			),
-			'Authority.hierarchy '.$separator => $hierarchy,
-			'BlogPost.created_user_id' => $user_id,
-		));
+		return array(
+			'BlogPost.content_id' => $content_id,
+			'OR' => array(
+				array(
+					'BlogPost.status' => NC_STATUS_PUBLISH,
+					'BlogPost.post_date <=' => $this->nowDate(),
+					// TODO:approved_flag 未使用になるかも
+				),
+
+				'Authority.hierarchy '.$separator => $hierarchy,
+				'BlogPost.created_user_id' => $user_id,
+			)
+		);
 	}
 
 /**
