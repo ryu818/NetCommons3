@@ -63,10 +63,10 @@ class Community extends AppModel
 				),
 				'inList' => array(
 					'rule' => array('inList', array(
-						(string) NC_AUTH_MIN_GENERAL,
-						(string) NC_AUTH_MIN_MODERATE,
-						(string) NC_AUTH_MIN_CHIEF,
-					)),
+						NC_AUTH_MIN_GENERAL,
+						NC_AUTH_MIN_MODERATE,
+						NC_AUTH_MIN_CHIEF,
+					), false),
 					'allowEmpty' => false,
 					'message' => __('It contains an invalid string.')
 				)
@@ -87,10 +87,10 @@ class Community extends AppModel
 				),
 				'inList' => array(
 					'rule' => array('inList', array(
-						(string) NC_AUTH_MIN_GENERAL,
-						(string) NC_AUTH_MIN_MODERATE,
-						(string) NC_AUTH_MIN_CHIEF,
-					)),
+						NC_AUTH_MIN_GENERAL,
+						NC_AUTH_MIN_MODERATE,
+						NC_AUTH_MIN_CHIEF,
+					), false),
 					'allowEmpty' => false,
 					'message' => __('It contains an invalid string.')
 				)
@@ -111,10 +111,10 @@ class Community extends AppModel
 				),
 				'inList' => array(
 					'rule' => array('inList', array(
-						(string) NC_AUTH_MIN_GENERAL,
-						(string) NC_AUTH_MIN_MODERATE,
-						(string) NC_AUTH_MIN_CHIEF,
-					)),
+						NC_AUTH_MIN_GENERAL,
+						NC_AUTH_MIN_MODERATE,
+						NC_AUTH_MIN_CHIEF,
+					), false),
 					'allowEmpty' => false,
 					'message' => __('It contains an invalid string.')
 				)
