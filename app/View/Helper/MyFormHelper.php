@@ -80,7 +80,7 @@ class MyFormHelper extends FormHelper {
 				unset($text['attributes']);
 			}
 		}
-		$defaults = array('wrap' => true, 'class' => 'error-message clearfix', 'escape' => true, 'popup' => false, 'selector' => '', 'close' => true);
+		$defaults = array('wrap' => true, 'class' => 'error-message', 'escape' => true, 'popup' => false, 'selector' => '', 'close' => true);
 		$options = array_merge($defaults, $options);
 		$close = $options['close'];
 		$popup = $options['popup'];
@@ -101,6 +101,9 @@ class MyFormHelper extends FormHelper {
 		$buf_wrap = $options['wrap'];
 		$options['wrap'] = false;
 
+		$class = $options['class'];
+		$options['class'] .= ' clearfix';
+
 		$str = parent::error($field, $text, $options);
 		if( !$str ) {
 			return $str;
@@ -110,7 +113,7 @@ class MyFormHelper extends FormHelper {
 			if($popup == true) {
 				$class = 'popup-message';
 			} else {
-				$class = $options['class'];
+				$class = $class;
 			}
 			$str = '<div class="display-inline">'.$str. '</div><a href="#" class="message-close" role="button" onclick="$(this).parents(\'.'.$class.':first\').remove(); return false;"><span class="ui-icon ui-icon-closethick">close</span></a>' ;
 		}
