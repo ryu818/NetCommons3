@@ -37,6 +37,7 @@
 		//
 		ajax : function(e, a, confirm) {
 			var data_pjax, top, url, data, input_type, type, ret;
+			a = $(a);
 			var target_pjax = a.attr("data-pjax");
 			var confirm = (typeof confirm == "undefined") ? a.attr("data-ajax-confirm") : confirm;
 			if(a.hasClass('disable-lbl')) {
@@ -505,7 +506,6 @@
 					case '201' : authority_id = 3; break;
 					case '101' : authority_id = 4; break;
 				}
-				console.log(authority_id);
 				return authority_id;
 			}
 			var input = $('#' + id);
@@ -515,7 +515,7 @@
 			if(!input.get(0) || input.get(0).tagName.toLowerCase() != 'input') {
 				return false;
 			}
-			console.log($(input).val());
+
 			slider.slider({
 				'min'    : 2,
 				'max'    : 4,
