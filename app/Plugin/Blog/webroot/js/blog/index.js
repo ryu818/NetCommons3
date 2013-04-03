@@ -21,7 +21,8 @@
 
 		// コンテンツdblclick処理
 		$('div.blog-entry-content-highlight', $(this)).dblclick(function(event) {
-			$($(this).attr('data-edit-id')).click();
+			// jqueryのclick()イベントをfireしてもhrefまで実行してくれないため、get(0).click()とする。
+			$($(this).attr('data-edit-id')).get(0).click();
 		}).hover(function() {
 			$(this).stop(false, true).effect("highlight", {}, 2000);
 		}, function(){});
