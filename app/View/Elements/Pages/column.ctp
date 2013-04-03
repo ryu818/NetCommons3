@@ -20,8 +20,8 @@
 					$requestActionOptions['query'] = $this->params->query;
 					$requestActionOptions['named'] = $this->params->named;
 					$requestActionOptions['pass'] = $this->params->pass;
-					if ($this->params->is('post')) {
-						$options['data'] = $this->params->data;
+					if ($this->request->is('post')) {
+						$requestActionOptions['data'] = $this->request->data;
 					}
 				} else {
 					$is_active = false;

@@ -988,11 +988,12 @@ function disable() {
   $.pjax.enable = enable
   $.pjax.disable = $.noop
 //Edit Start Ryuji.M 非対応ブラウザでは、Aタグではないと遷移されないため、修正。
+// IE9以下でsubmitもできなくなっていたため修正。
   $.pjax.click = disableHandleClick
-  //$.pjax.submit = disableHandleSubmit
+  $.pjax.submit = null;
   //$.pjax.click = $.noop
+  //$.pjax.submit = $.noop
 //Edit End Ryuji.M
-  $.pjax.submit = $.noop
 
   $.pjax.reload = window.location.reload
   $(window).unbind('popstate.pjax', onPjaxPopstate)

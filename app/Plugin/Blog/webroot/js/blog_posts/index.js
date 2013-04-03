@@ -85,7 +85,9 @@
 			if(e.keyCode != 13 && e.type != 'click' && e.type != 'submit') {
 				return;
 			}
-			e.preventDefault();
+			if(e.type != 'submit') {
+				e.preventDefault();
+			}
 			var tag_names = $('#blog-post-tag-names' + id);
 			var tags_select = $('#blog-posts-tags-select' + id);
 			var tag_names_arr = tag_names.val().split(",");
