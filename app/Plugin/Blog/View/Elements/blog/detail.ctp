@@ -1,23 +1,15 @@
 <?php
 	$title = $post['BlogPost']['title'];
 	$permalink = $post['BlogPost']['permalink'];
-	$post_date = $this->TimeZone->date($post['BlogPost']['post_date']);
-	$int_post_date = strtotime($post_date);
 
-	$year = date('Y', $int_post_date);
-	$month = date('m', $int_post_date);
-	$day = date('d', $int_post_date);
-	$date = date(__('(Y-m-d)'), $int_post_date);
-	$time = date(__('h:i A'), $int_post_date);
-	$date_atom = $this->Time->toAtom($int_post_date);
-
+	$dates = $this->TimeZone->date_values($post['BlogPost']['post_date']);
 	$is_edit = $this->CheckAuth->isEdit($hierarchy, $post['Authority']['hierarchy']);
 ?>
 <article class="blog-post">
 	<header class="blog-entry-header">
 		<h1 class="blog-entry-title">
 			<?php
-				echo $this->Html->link($title, array('plugin' => 'blog', 'controller' => 'blog', $year, $month, $day, $permalink, '#' => $id),
+				echo $this->Html->link($title, array('plugin' => 'blog', 'controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], $permalink, '#' => $id),
 					array('title' => __d('blog', 'Permalink to %s', $title),
 					'rel' => 'bookmark'));
 				/* TODO:New記号 */
@@ -26,9 +18,9 @@
 		<div class="blog-entry-meta">
 			<?php echo(__d('blog', 'Submitted on:')); ?>
 			<?php
-				echo $this->Html->link('<time datetime="' . $date_atom . '" class="blog-entry-date">'.$date.'</time>',
-					array('plugin' => 'blog', 'controller' => 'blog', $year, $month, $day, '#' => $id),
-					array('title' =>$time,
+				echo $this->Html->link('<time datetime="' . $dates['atom_date'] . '" class="blog-entry-date">'.$dates['date'].'</time>',
+					array('plugin' => 'blog', 'controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], '#' => $id),
+					array('title' =>$dates['time'],
 					'rel' => 'bookmark', 'escape' => false));
 			?>
 			<span class="blog-by-author">
@@ -85,13 +77,13 @@
 			?>
 			&nbsp;|&nbsp;
 			<?php
-				echo $this->Html->link(__d('blog', 'Comments(%s)', intval($post['BlogPost']['comment_count'])), array('controller' => 'blog', $year, $month, $day, $permalink, '#' => $id.'_comments'),
+				echo $this->Html->link(__d('blog', 'Comments(%s)', intval($post['BlogPost']['comment_count'])), array('controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], $permalink, '#' => $id.'_comments'),
 					array('title' => __d('blog', 'Comment on %s', $title),
 					'rel' => 'bookmark'));
 			?>
 			&nbsp;|&nbsp;
 			<?php
-				echo $this->Html->link(__d('blog', 'Trackbacks(%s)', intval($post['BlogPost']['trackback_count'])), array('controller' => 'blog', $year, $month, $day, $permalink, '#' => $id.'_trackbacks'),
+				echo $this->Html->link(__d('blog', 'Trackbacks(%s)', intval($post['BlogPost']['trackback_count'])), array('controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], $permalink, '#' => $id.'_trackbacks'),
 					array('title' => __d('blog', 'Trackback on %s', $title),
 					'rel' => 'bookmark'));
 			?>
@@ -109,14 +101,9 @@
 			if(isset($blog_prev_post['BlogPost'])) {
 				$title = $blog_prev_post['BlogPost']['title'];
 				$permalink = $blog_prev_post['BlogPost']['permalink'];
-				$post_date = $this->TimeZone->date($blog_prev_post['BlogPost']['post_date']);
-				$int_post_date = strtotime($post_date);
+				$prev_dates = $this->TimeZone->date_values($blog_prev_post['BlogPost']['post_date']);
 
-				$year = date('Y', $int_post_date);
-				$month = date('m', $int_post_date);
-				$day = date('d', $int_post_date);
-
-				echo $this->Html->link('<span>'.h(__('<')).'</span>'.h($title), array('plugin' => 'blog', 'controller' => 'blog', $year, $month, $day, $permalink, '#' => $id),
+				echo $this->Html->link('<span>'.h(__('<')).'</span>'.h($title), array('plugin' => 'blog', 'controller' => 'blog', $prev_dates['year'], $prev_dates['month'], $prev_dates['day'], $permalink, '#' => $id),
 					array('title' => __d('blog', 'Permalink to %s', $title),
 					'rel' => 'prev','escape' => false));
 			}
@@ -127,14 +114,9 @@
 			if(isset($blog_next_post['BlogPost'])) {
 				$title = $blog_next_post['BlogPost']['title'];
 				$permalink = $blog_next_post['BlogPost']['permalink'];
-				$post_date = $this->TimeZone->date($blog_next_post['BlogPost']['post_date']);
-				$int_post_date = strtotime($post_date);
+				$next_dates = $this->TimeZone->date_values($blog_next_post['BlogPost']['post_date']);
 
-				$year = date('Y', $int_post_date);
-				$month = date('m', $int_post_date);
-				$day = date('d', $int_post_date);
-
-				echo $this->Html->link(h($title).'<span>'.h(__('>')).'</span>', array('plugin' => 'blog', 'controller' => 'blog', $year, $month, $day, $permalink, '#' => $id),
+				echo $this->Html->link(h($title).'<span>'.h(__('>')).'</span>', array('plugin' => 'blog', 'controller' => 'blog', $next_dates['year'], $next_dates['month'], $next_dates['day'], $permalink, '#' => $id),
 					array('title' => __d('blog', 'Permalink to %s', $title),
 					'rel' => 'prev','escape' => false));
 			}

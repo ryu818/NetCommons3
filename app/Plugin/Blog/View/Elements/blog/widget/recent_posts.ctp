@@ -8,16 +8,11 @@
 			<?php
 				$title = $post['BlogPost']['title'];
 				$permalink = $post['BlogPost']['permalink'];
-				$post_date = $this->TimeZone->date($post['BlogPost']['post_date']);
-				$int_post_date = strtotime($post_date);
-
-				$year = date('Y', $int_post_date);
-				$month = date('m', $int_post_date);
-				$day = date('d', $int_post_date);
+				$dates = $this->TimeZone->date_values($post['BlogPost']['post_date']);
 			?>
 			<li>
 			<?php
-				echo $this->Html->link($title, array('plugin' => 'blog', 'controller' => 'blog', $year, $month, $day, $permalink, '#' => $id),
+				echo $this->Html->link($title, array('plugin' => 'blog', 'controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], $permalink, '#' => $id),
 					array('title' => __d('blog', 'Permalink to %s', $title),
 				));
 			?>

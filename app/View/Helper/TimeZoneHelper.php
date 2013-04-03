@@ -10,11 +10,14 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 class TimeZoneHelper extends AppHelper {
+
+	public $helpers = array('Time');
+
 /**
  * タイムゾーンで変換し、日付を表示
  * @param   $time nullならば現在の時刻
  * @param   $format nullならば__('Y-m-d H:i:s')
- * @return  void
+ * @return  string Date format
  * @since   v 3.0.0.0
  */
 	public function date($time = null, $format = null) {
@@ -37,6 +40,27 @@ class TimeZoneHelper extends AppHelper {
 						intval(substr($time, 4, 2)), intval(substr($time, 6, 2)), intval(substr($time, 0, 4)));
 
 		return date($format, $int_time);
+    }
+/**
+ * タイムゾーンで変換し、日付を年、月、日、日付、時間、Atom, Full形式で取得
+ * @param   $time nullならば現在の時刻
+ * @param   $format nullならば__('Y-m-d H:i:s')
+ * @return  array key: year, month, day, date,time, atom_date, full_date(__('Y-m-d H:i:s'))
+ * @since   v 3.0.0.0
+ */
+    public function date_values($time = null) {
+		$post_date = $this->date($time);
+		$int_post_date = strtotime($post_date);
+
+		return array(
+			'year' => date('Y', $int_post_date),
+			'month' => date('m', $int_post_date),
+			'day' => date('d', $int_post_date),
+			'date' => date(__('(Y-m-d)'), $int_post_date),
+			'time' => date(__('h:i A'), $int_post_date),
+			'atom_date' => $this->Time->toAtom($int_post_date),
+			'full_date' => $post_date,
+		);
     }
 
 /**
