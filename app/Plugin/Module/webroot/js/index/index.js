@@ -37,7 +37,7 @@
 			var type_input = $(form_str + ' [name=type]');
 			var dir_name_input = $(form_str + ' [name=dir_name]');
 
-			e.preventDefault();
+			$.Event(e).preventDefault();
 
 			if(confirm) {
 				var ok = __('Ok') ,cancel = __('Cancel');

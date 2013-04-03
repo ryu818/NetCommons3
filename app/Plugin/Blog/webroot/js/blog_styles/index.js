@@ -51,7 +51,7 @@
 				$(this).parents('.blog-style-widget-area-outer:first').children('.blog-style-widget-area-content:first').slideToggle();
 			}
 			state = false;
-			e.preventDefault();
+			$.Event(e).preventDefault();
 		});
 	};
 
@@ -87,15 +87,15 @@
 				}
 			);
 
-			e.preventDefault();
-			e.stopPropagation();
+			$.Event(e).preventDefault();
+			$.Event(e).stopPropagation();
 		},
 
 		// ウジェット編集画面 - キャンセルクリック
 		clickWidgetChancel : function(e, input) {
 			var item = $(input).parents('.blog-style-widget-area-outer:first');
 			$('.blog-style-widget-area-title:first', item).click();
-			e.preventDefault();
+			$.Event(e).preventDefault();
 		}
 	}
 })(jQuery);

@@ -27,7 +27,7 @@
 		// 編集画面表示・非表示
 		items.click(function(e){
 			$(this).parents('.blog-style-widget-area:first').children('.blog-style-widget-area-content:first').slideToggle();
-			e.preventDefault();
+			$.Event(e).preventDefault();
 		});
 
 		sel_tags.chosen();
@@ -51,7 +51,7 @@
 			add_category_outer.prev().click(function(e){
 				$(this).next().slideToggle();
 				add_category.focus();
-				e.preventDefault();
+				$.Event(e).preventDefault();
 			});
 		},
 		// カテゴリー追加
@@ -69,7 +69,7 @@
 			params[parent_select_category.attr('name')] = parent_select_category.val();
 			params[sel_categories.attr('name')] = sel_categories.trigger("liszt:updated").val();
 
-			e.preventDefault();
+			$.Event(e).preventDefault();
 
 			$.post(url,
 				params,
@@ -86,7 +86,7 @@
 				return;
 			}
 			if(e.type != 'submit') {
-				e.preventDefault();
+				$.Event(e).preventDefault();
 			}
 			var tag_names = $('#blog-post-tag-names' + id);
 			var tags_select = $('#blog-posts-tags-select' + id);

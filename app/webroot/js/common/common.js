@@ -48,7 +48,8 @@
 				var ok = __('Ok') ,cancel = __('Cancel');
 				var default_params = {
 					resizable: false,
-		            modal: true
+		            modal: true,
+		            position: [e.pageX - $(window).scrollLeft(), e.pageY - $(window).scrollTop()]
 				}, _buttons = {}, params = new Object();
 				_buttons[ok] = function(){
 					$( this ).remove();
@@ -137,26 +138,25 @@
 				return false;
 			}
 
-			if(typeof dialog_options == 'string') {
-				dialog_options = $.parseJSON(dialog_options);
-				if(dialog_options['position'] && dialog_options['position'] == 'mouse') {
-					dialog_options['position'] = [e.pageX - $(window).scrollLeft(), e.pageY - $(window).scrollTop()];
-				}
-
-			}
-
-			if(dialog_options) {
-				if(effect) {
-					dialog_options['show'] = effect;
-					dialog_options['hide'] = effect;
-				}
-				if(typeof dialog_options['resizable'] == 'undefined') {
-					dialog_options['resizable'] = false;
-				}
-				dialog_options = $.extend({}, {zIndex: ++$.Common.zIndex}, dialog_options);
-			}
-
 			if (dialog_id) {
+				if(typeof dialog_options == 'string') {
+					dialog_options = $.parseJSON(dialog_options);
+					if(dialog_options['position'] && dialog_options['position'] == 'mouse') {
+						dialog_options['position'] = [e.pageX - $(window).scrollLeft(), e.pageY - $(window).scrollTop()];
+					}
+
+				}
+
+				if(dialog_options) {
+					if(effect) {
+						dialog_options['show'] = effect;
+						dialog_options['hide'] = effect;
+					}
+					if(typeof dialog_options['resizable'] == 'undefined') {
+						dialog_options['resizable'] = false;
+					}
+					dialog_options = $.extend({}, {zIndex: ++$.Common.zIndex}, dialog_options);
+				}
 				dialog = $('#' + dialog_id);
 				if(!dialog.get(0)) {
 					target = (target) ? target : $(document.body);

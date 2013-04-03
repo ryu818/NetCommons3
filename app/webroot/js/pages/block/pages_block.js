@@ -154,8 +154,8 @@
 						delete t.groups[id];
 					}
 					t.toggleGroup();
-					//e.preventDefault();
-					e.stopPropagation();
+					//$.Event(e).preventDefault();
+					$.Event(e).stopPropagation();
 				});
 				block.draggable({
 					//opacity  : 0.8,    //ドラッグ時の不透明度
@@ -896,8 +896,8 @@
 			var first_id = null, i = 0, block = null, block_id = null;
 			var show_count_el = null;
 
-			e.preventDefault();
-			e.stopPropagation();
+			$.Event(e).preventDefault();
+			$.Event(e).stopPropagation();
 
 			if (!$.Common.confirm(__d('pages', 'groupConfirm'))) return false;
 
@@ -949,8 +949,8 @@
 			var params = new Object(), i = 0;
 			var show_count_el = null;
 
-			e.preventDefault();
-			e.stopPropagation();
+			$.Event(e).preventDefault();
+			$.Event(e).stopPropagation();
 
 			params['cancel_groups'] = new Array();
 			$.each(t.groups, function(k, el) {
@@ -1026,8 +1026,8 @@
 				position: [pos.left+20 - $(window).scrollLeft() ,pos.top+20 - $(window).scrollTop()],
     		});
 
-			event.preventDefault();
-			event.stopPropagation();
+			$.Event(event).preventDefault();
+			$.Event(event).stopPropagation();
 		},
 		addBlock: function( sel_el, module_id ) {
 			var t = this, params = new Object(), show_count_el = null;
@@ -1154,7 +1154,7 @@
 			var show_target = (target.hasClass('nc-block-move')) ? target.next() : target.prev();
 			target.slideUp();
 			show_target.slideDown();
-			e.preventDefault();
+			$.Event(e).preventDefault();
 		},
 		toggleOperation: function(e, id) {
 			//var pos = $(e.target).position();
@@ -1163,7 +1163,7 @@
 				'right': '-55px',
 				'top' :  '30px'
 			});
-			e.preventDefault();
+			$.Event(e).preventDefault();
 		}
 	}
 })(jQuery);

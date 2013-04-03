@@ -72,7 +72,7 @@
 			}
 			$(input).val(theme_name);
 			$(form).submit();
-			e.preventDefault();
+			$.Event(e).preventDefault();
 		}
 	}
 })(jQuery);

@@ -89,7 +89,7 @@
 	// ページ共通
 	$.PagesCommon ={
 		showLogin: function(e, url) {
-			e.preventDefault();
+			$.Event(e).preventDefault();
 			$.Common.showDialog('nc_login_dialog', {'url' : url}, {'title' : __('Login')});
 		},
 		showPageSetting: function(e, url) {
@@ -98,7 +98,7 @@
 			var close_url = a.attr('data-page-setting-url');
 			var show_url = a.attr('href');
 
-			e.preventDefault();
+			$.Event(e).preventDefault();
 			var dialog_outer_el = $('#' + id);
 			var dialog_el = dialog_outer_el.children(':first');
 			var arrow_outer = $('#nc-pages-setting-arrow-outer');

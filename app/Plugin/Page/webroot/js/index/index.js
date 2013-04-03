@@ -346,7 +346,7 @@
 				if(copy_page_id > 0) {
 					$('.pages-menu-other-icon:first', target).addClass('pages-menu-edit-highlight-icon');
 				}
-				e.preventDefault();
+				$.Event(e).preventDefault();
 			});
 
 			// コミュニティー追加
@@ -361,7 +361,7 @@
 				if (res) {
 					location.href = res;
 				}
-				e.preventDefault();
+				$.Event(e).preventDefault();
 			});
 
 			// ページ削除
@@ -452,8 +452,8 @@
 
 				// スクロール
 				slideTarget(target, active_tab_name, scroll_target);
-				e.preventDefault();		// ajax:success後の$.Common.ajaxの後処理をキャンセル
-				e.stopPropagation();	// formのajax:successイベントキャンセル
+				$.Event(e).preventDefault();		// ajax:success後の$.Common.ajaxの後処理をキャンセル
+				$.Event(e).stopPropagation();	// formのajax:successイベントキャンセル
 			});
 
 			// ページ編集・参加者修正登録
@@ -492,7 +492,7 @@
 				var page_id = li.attr('data-id');
 				active_li = target;
 				addEventNestable(active_tab_name, root_menu, target, page_id);
-				e.preventDefault();
+				$.Event(e).preventDefault();
 			});
 
 			// ページ公開・非公開
@@ -509,8 +509,8 @@
 				var page_id = li.attr('data-id');
 				var setDisplay = null;
 				var url = $.Common.urlBlock(0, 'page/menus/display');
-				e.preventDefault();
-				e.stopPropagation();
+				$.Event(e).preventDefault();
+				$.Event(e).stopPropagation();
 
 				$('[name=data\\[Page\\]\\[display_flag\\]]', li).each(function(){
 					var display = $(this);
@@ -578,8 +578,8 @@
 				}
 				sel_active_tab = active_tab;
 
-				e.preventDefault();
-				e.stopPropagation();
+				$.Event(e).preventDefault();
+				$.Event(e).stopPropagation();
 				$('.pages-menu-edit-content', tab).each(function(){
 					$(this).removeClass(options.activeItemClass);
 					var li = $(this).parents('li:first');
@@ -680,8 +680,8 @@
 			}
 			$.PageMenu.closeOtherOperation();
 
-			e.preventDefault();
-			e.stopPropagation();
+			$.Event(e).preventDefault();
+			$.Event(e).stopPropagation();
 		});
 
 	};
@@ -929,8 +929,8 @@
 			}
 
 			list.attr('data-id', page_id).css(params).toggle();
-			e.preventDefault();
-			e.stopPropagation();
+			$.Event(e).preventDefault();
+			$.Event(e).stopPropagation();
 		},
 
 /**
@@ -947,7 +947,7 @@
 			var copy_is_top = li.attr('data-is-top');
 			var a = $('a.pages-menu-edit-title:first', li);
 			if($(e.target).hasClass('disable-lbl')) {
-				e.preventDefault();
+				$.Event(e).preventDefault();
 				return;
 			}
 			//list.attr('data-id', copy_page_id);
@@ -960,7 +960,7 @@
 
 			$('#pages-menu-edit-other-operation-title').html('['+$(e.target).html() + ']' + a.html());
 
-			//e.preventDefault();
+			//$.Event(e).preventDefault();
 		},
 /**
  * その他操作 Cancel Click
