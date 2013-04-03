@@ -86,7 +86,7 @@ function handleClick(event, container, options) {
     return
   }
   var defaults = {
-    url: (typeof $(link).attr('href') == 'undefined') ? $(link).attr('data-url') : $(link).attr('href'),
+    url: (typeof $(link).attr('href') == 'undefined') ? $(link).attr('data-ajax-url') : $(link).attr('href'),
     container: $(link).attr('data-pjax'),
     target: link,
     fragment: null
@@ -105,7 +105,7 @@ function handleClick(event, container, options) {
 function disableHandleClick(event, container, options) {
 	var link = event.currentTarget
 	var defaults = {
-	    url: (typeof $(link).attr('href') == 'undefined') ? $(link).attr('data-url') : $(link).attr('href'),
+	    url: (typeof $(link).attr('href') == 'undefined') ? $(link).attr('data-ajax-url') : $(link).attr('href'),
 	    container: $(link).attr('data-pjax') ? $(link).attr('data-pjax') : container,
 	    target: link,
 	    fragment: null
@@ -417,7 +417,7 @@ function pjax(options) {
 // ・javascriptが動作しない状態で履歴が戻ってしまう。
 // ・highlight等のeffectが実行中に履歴をとってしまうため、戻るボタンで、highlightされた状態で戻ってしまう。
       //$('*', context).stop(false, true);
-      cachePush(pjax.state.id, stripPjaxParam(context.attr('data-url')) + '#'+context.attr('id'), context.attr('id'))
+      cachePush(pjax.state.id, stripPjaxParam(context.attr('data-ajax-url')) + '#'+context.attr('id'), context.attr('id'))
       // Cache current container element before replacing it
       //cachePush(pjax.state.id, context.clone().contents())
 //Edit End Ryuji.M
@@ -481,14 +481,14 @@ function onPjaxPopstate(event) {
 
 			// Cache current container before replacement and inform the
 			// cache which direction the history shifted.
-			var url = chg_container.attr('data-url');
+			var url = chg_container.attr('data-ajax-url');
 			if($._block_type == 'blocks') {
 				if(url.match(re)) {
 					url = RegExp.$1 + '/blocks/' + RegExp.$2;
 				}
 			}
 			cachePop(direction, pjax.state.id, stripPjaxParam(url), cacheMappingId[state.id])	// + chg_container_id
-			//cachePop(direction, pjax.state.id, container.attr('data-url'), container.attr('id'))
+			//cachePop(direction, pjax.state.id, container.attr('data-ajax-url'), container.attr('id'))
 		} //else {
 			// Page was reloaded but we have an existing history entry.
 			// Set it to our initial state.

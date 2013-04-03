@@ -62,7 +62,7 @@
 			var add_category_outer = $('#blog-posts-add-category-outer' + id);
 			var add_category = $('.blog-posts-add-text', add_category_outer);
 			var parent_select_category = $('#blog-posts-categories-parent-select' + id);
-			var url = add_category.attr('data-url');
+			var url = add_category.attr('data-ajax-url');
 			var sel_categories = $('#blog-posts-categories-select' + id);
 			var params = new Object();
 			params[add_category.attr('name')] = add_category.val();

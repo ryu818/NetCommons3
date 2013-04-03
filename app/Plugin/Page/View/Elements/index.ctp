@@ -55,7 +55,7 @@ if(isset($is_edit) && $is_edit == _ON){
 	 ?>
 </div>
 <?php endif; ?>
-<div id="pages-menu-tab" data-url="<?php echo $this->Html->url(array('plugin' => 'page', 'controller' => 'page', 'action' => 'index'));?>">
+<div id="pages-menu-tab" data-ajax-url="<?php echo $this->Html->url(array('plugin' => 'page', 'controller' => 'page', 'action' => 'index'));?>">
 	<ul data-pages-header="true">
 		<li><a href="#pages-menu-page"><span><?php echo(__d('page', 'Page list'));?></span></a></li>
 		<li><a href="#pages-menu-community"><span><?php echo(__d('page', 'Participation community'));?></span></a></li>

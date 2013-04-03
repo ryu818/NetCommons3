@@ -35,7 +35,7 @@
 					'row_num' : ui.item.parent().children('div').index(ui.item) + 1
 				};
 				state = true;
-				$.post(top_el.attr('data-url'),
+				$.post(top_el.attr('data-ajax-url'),
 					params,
 					function(res){
 						// メインブロックリロード

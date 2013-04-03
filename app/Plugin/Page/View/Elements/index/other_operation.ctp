@@ -1,4 +1,4 @@
-<div id="pages-menu-edit-other-operation" class="nc-drop-down"<?php if($copy_page_id > 0){ echo(' data-copy-page-id="'.intval($copy_page_id).'"'.' data-id="'.intval($copy_page_id).'"'.' data-copy-space-type="'.$copy_page['Page']['space_type'].'"'.' data-copy-is-top="'.(($copy_page['Page']['thread_num'] <= 1) ? _ON : _OFF).'"');} ?> data-url="<?php echo $this->Html->url(array('plugin' => 'page', 'controller' => 'page_operations', 'action' => 'check'));?>">
+<div id="pages-menu-edit-other-operation" class="nc-drop-down"<?php if($copy_page_id > 0){ echo(' data-copy-page-id="'.intval($copy_page_id).'"'.' data-id="'.intval($copy_page_id).'"'.' data-copy-space-type="'.$copy_page['Page']['space_type'].'"'.' data-copy-is-top="'.(($copy_page['Page']['thread_num'] <= 1) ? _ON : _OFF).'"');} ?> data-ajax-url="<?php echo $this->Html->url(array('plugin' => 'page', 'controller' => 'page_operations', 'action' => 'check'));?>">
 	<ul>
 		<li id="pages-menu-edit-other-operation-title" class="nc-drop-down-border" data-operation="copy-after">
 			<?php /* コピー後タイトル */  ?>

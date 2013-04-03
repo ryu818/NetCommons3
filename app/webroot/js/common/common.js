@@ -233,7 +233,7 @@
 		reloadBlock : function(e, id, data, pjax) {
 			pjax = (typeof pjax == 'undefined') ? false : pjax
 			var block = (typeof id == 'string') ? $('#' + id) : $(id),re, params = new Object();
-			var url = block.attr('data-url');
+			var url = block.attr('data-ajax-url');
 			if($._block_type == 'blocks') {
 				re = new RegExp("/active-blocks/", 'i');
 				url = url.replace(re, "/" + $._block_type + "/");
@@ -487,7 +487,7 @@
 			$.ajax(ajax_options);
 		},
 		/* 権限[主坦　モデレータ　一般]スライダー */
-		sliderAuthority: function(id, disable) {console.log(id);
+		sliderAuthority: function(id, disable) {
 			var _hierarchy = function(authority_id) {
 				var  h = 0;
 				switch (authority_id)

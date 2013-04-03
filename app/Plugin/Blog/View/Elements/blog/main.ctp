@@ -81,7 +81,7 @@ if(isset($detail_type)) {
 		/* 一覧へ戻る */
 		echo $this->Html->div('btn-bottom',
 			$this->Form->button(__('To list'), array('name' => 'list', 'class' => 'common-btn', 'type' => 'button',
-			'data-pjax' => '#'.$id, 'data-url' =>  $this->Html->url(array('plugin' => 'blog', 'controller' => 'blog'))))
+			'data-pjax' => '#'.$id, 'data-ajax-url' =>  $this->Html->url(array('plugin' => 'blog', 'controller' => 'blog'))))
 		);
 	?>
 <?php endif; ?>

@@ -2,7 +2,7 @@
 	<div class="top-description">
 		<?php echo(__d('blog', 'You drag & drop the title bar to where you want to place the sidebar / main area. In addition, you can edit widget, click on their title bars to expand them.')); ?>
 	</div>
-	<div id="blog-style-widget-area<?php echo($id); ?>" class="table-row" data-url="<?php echo($this->Html->url()); ?>">
+	<div id="blog-style-widget-area<?php echo($id); ?>" class="table-row" data-ajax-url="<?php echo($this->Html->url()); ?>">
 		<div class="blog-style-widget-area table-cell" data-col-num="1">
 			<div class="blog-style-widget-area-title nc-panel-color">
 				<h3><?php echo(__d('blog', 'Left sidebar')); ?></h3>

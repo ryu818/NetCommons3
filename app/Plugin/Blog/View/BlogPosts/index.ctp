@@ -120,7 +120,7 @@ echo $this->Form->create('BlogPost', array('data-pjax' => '#'.$id));
 			'type' => 'button', 'onclick' => "$('#BlogPostIsTemporally".$id."').val(1);$(this.form).submit();")).
 		$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'common-btn', 'type' => 'submit')).
 		$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
-			'data-pjax' => '#'.$id, 'data-url' =>  $this->Html->url(array('controller' => 'blog'))))
+			'data-pjax' => '#'.$id, 'data-ajax-url' =>  $this->Html->url(array('controller' => 'blog'))))
 );
 ?>
 </div>

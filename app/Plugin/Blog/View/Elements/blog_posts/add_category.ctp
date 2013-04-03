@@ -33,7 +33,7 @@
 				'error' => array('attributes' => array(
 					'selector' => true
 				)),
-				'data-url' =>  $this->Html->url(array('controller' => 'blog_terms', 'action' => 'add_category', $post_id)),
+				'data-ajax-url' =>  $this->Html->url(array('controller' => 'blog_terms', 'action' => 'add_category', $post_id)),
 				'onkeypress' => "$.BlogPosts.addCategory(event, '".$id."');"
 			);
 			echo $this->Form->input('BlogTerm.name', $settings);

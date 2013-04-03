@@ -216,7 +216,7 @@
 							_buttons[ok] = function(){
 								data['is_confirm'] = 1;
 								var list = $('#pages-menu-edit-other-operation');
-								var check_url = list.attr('data-url') + '/' + page_id + '?page_id=' + drop_page_id;
+								var check_url = list.attr('data-ajax-url') + '/' + page_id + '?page_id=' + drop_page_id;
 								var timer = $.PageMenu.showProgressbar(check_url, params);
 								$.ajax({
 									type: "POST",
@@ -1073,7 +1073,7 @@
 		operationPage: function(url, postfix_url, params) {
 			var list = $('#pages-menu-edit-other-operation');
 			var page_id = list.attr('data-id');
-			var check_url = list.attr('data-url');
+			var check_url = list.attr('data-ajax-url');
 
 			var timer = $.PageMenu.showProgressbar(check_url + postfix_url, params);
 
@@ -1103,7 +1103,7 @@
  */
 		reload: function(page_id, is_edit) {
 			var tab = $('#pages-menu-tab'), is_edit = (is_edit) ? is_edit : 1;
-			$.get(tab.attr('data-url') + '?is_edit='+is_edit+'&page_id=' + page_id, function(res) {
+			$.get(tab.attr('data-ajax-url') + '?is_edit='+is_edit+'&page_id=' + page_id, function(res) {
 				$('#nc-pages-setting-dialog').replaceWith(res);
 			});
 		}
