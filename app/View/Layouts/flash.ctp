@@ -26,7 +26,7 @@
 <?php
 if(Configure::read('debug') == _OFF) {
 	echo "<script>".
-	"$(function(){setTimeout(function(){var location_str = '".h($url)."';location.href=location_str.replace(/&amp;/ig,\"&\");}, ".$pause."*1000);});".
+	"setTimeout(function(){var location_str = '".h($url)."';location.href=location_str.replace(/&amp;/ig,\"&\");}, ".$pause."*1000);".
 	"</script>";
 }
 ?>
