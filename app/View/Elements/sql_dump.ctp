@@ -17,13 +17,12 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 //echo('<span class="nc-log-second"> ('.(sprintf('%01.04f', round(microtime(true) - TIME_START, 4))).'s)</span>');	// debugモードOFFでの時間計測表示
-if (!class_exists('ConnectionManager') || Configure::read('debug') < 2) {
-	return false;
+if (!class_exists('ConnectionManager') || Configure::read('debug') == 0) {
+	return;
 }
 $noLogs = !isset($logs);
 if ($noLogs):
 	$sources = ConnectionManager::sourceList();
-
 	$logs = array();
 	foreach ($sources as $source):
 		$db = ConnectionManager::getDataSource($source);
@@ -32,6 +31,11 @@ if ($noLogs):
 		endif;
 		$logs[$source] = $db->getLog();
 	endforeach;
+	$sqls = Configure::read(NC_SYSTEM_KEY.'.sqls');
+	$method_type = Configure::read(NC_SYSTEM_KEY.'.method_type');
+	if(isset($sqls)) {
+		$logs = array_merge_recursive($sqls, $logs);
+	}
 	//$php_logs = Debugger::getLog();
 	$php_logs = Configure::read(NC_SYSTEM_KEY.'.php_logs');
 	$current_urls = Configure::read(NC_SYSTEM_KEY.'.current_urls');
@@ -40,18 +44,20 @@ if ($noLogs):
 	$nc_execute_start_times = Configure::read(NC_SYSTEM_KEY.'.nc_execute_start_times');
 	$nc_execute_end_times = Configure::read(NC_SYSTEM_KEY.'.nc_execute_end_times');
 endif;
-$header_log = '<table class="nc-log"><tr><td class="nc-php-log'.(($this->request->is('post')) ? ' nc-log-post' : '').'">';
+$header_log = '<table class="nc-log"><tr><td class="nc-php-log'.(($this->request->is('post') || $method_type == 'post') ? ' nc-log-post' : '').'">';
 if (count($php_logs) > 0):
 	for($i = 0; $i < count($php_logs); $i++) {
 		$header_log .= $php_logs[$i]."\n";
 	}
 endif;
-if (Configure::read('debug') != 1 && isset($current_urls) && count($current_urls) > 0):
+if (isset($current_urls) && count($current_urls) > 0):
 	$pre_post_str = null;
 	foreach($current_urls as $key => $current_url) {
 		if($key == 0) {
-			$header_log .= '<div><a href="#" onclick="$(this).parents(\'.nc-log:first\').next().toggle();return false;">'.__('Detail').'</a>';
-			$header_log .= '&nbsp;|&nbsp;<a href="#" onclick="$(this).parents(\'.nc-log:first\').next().remove();$(this).parents(\'.nc-log:first\').remove();return false;">'.__('Delete').'</a>';
+			if(Configure::read('debug') == 2) {
+				$header_log .= '<div><a href="#" onclick="$(this).parents(\'.nc-log:first\').next().toggle();return false;">'.__('Detail').'</a>&nbsp;|&nbsp;';
+			}
+			$header_log .= '<a href="#" onclick="$(this).parents(\'.nc-log:first\').next().remove();$(this).parents(\'.nc-log:first\').remove();return false;">'.__('Delete').'</a>';
 		} else {
 			$header_log .= '<div style="padding:0 0 0 20px;">';
 		}

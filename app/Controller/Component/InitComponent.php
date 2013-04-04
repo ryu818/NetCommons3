@@ -37,40 +37,58 @@ class InitComponent extends Component {
  */
 	public function initialize(Controller $controller) {
 		if(Configure::read('debug') != _OFF) {
-			$global_count = Configure::read(NC_SYSTEM_KEY.'.global_count');
-			if($global_count === null) {
-				$global_count = 0;
+			$globalCount = $this->Session->read(NC_SYSTEM_KEY.'.debug.global_count');
+			if(isset($globalCount)) {
+				$sessCurrentUrls = $this->Session->read(NC_SYSTEM_KEY.'.debug.current_urls');
+				$sessFormPostValues = $this->Session->read(NC_SYSTEM_KEY.'.debug.form_post_values');
+				$sessFormGetValues = $this->Session->read(NC_SYSTEM_KEY.'.debug.form_get_values');
+				Configure::write(NC_SYSTEM_KEY.'.sqls', $this->Session->read(NC_SYSTEM_KEY.'.debug.sqls'));
+				Configure::write(NC_SYSTEM_KEY.'.method_type', $this->Session->read(NC_SYSTEM_KEY.'.debug.method_type'));
+				$this->Session->delete(NC_SYSTEM_KEY.'.debug');
 			} else {
-				$global_count++;
+				$globalCount = Configure::read(NC_SYSTEM_KEY.'.global_count');
 			}
-			Configure::write(NC_SYSTEM_KEY.'.global_count', $global_count);
-
-			$current_url = rawurldecode($controller->here);
-			$current_urls = Configure::read(NC_SYSTEM_KEY.'.current_urls');
-			if(!isset($current_urls)) {
-				$current_urls = array($current_url);
+			if($globalCount === null) {
+				$globalCount = 0;
 			} else {
-				$current_urls[] = $current_url;
+				$globalCount++;
 			}
-			Configure::write(NC_SYSTEM_KEY.'.current_urls', $current_urls);
-			if(!empty($controller->request->query)) {
-				$form_get_values = Configure::read(NC_SYSTEM_KEY.'.form_get_values');
-				if(!isset($form_get_values)) {
-					$form_get_values = array($controller->request->query);
-				} else {
-					$form_get_values[] = $controller->request->query;
-				}
-				Configure::write(NC_SYSTEM_KEY.'.form_get_values', $form_get_values);
+			Configure::write(NC_SYSTEM_KEY.'.global_count', $globalCount);
 
+			$currentUrl = rawurldecode($controller->here);
+			$currentUrls = Configure::read(NC_SYSTEM_KEY.'.current_urls');
+			if(!isset($currentUrls)) {
+				$currentUrls = array($currentUrl);
+			} else {
+				$currentUrls[] = $currentUrl;
 			}
-			if(!empty($controller->request->data)) {
-				$form_post_values = Configure::read(NC_SYSTEM_KEY.'.form_post_values');
-				if(!isset($form_post_values)) {
-					$form_post_values = array($controller->request->data);
+
+			if(isset($sessCurrentUrls)) {
+				$currentUrls = array_merge($sessCurrentUrls, $currentUrls);
+			}
+
+			Configure::write(NC_SYSTEM_KEY.'.current_urls', $currentUrls);
+			if(isset($sessFormGetValues)) {
+				Configure::write(NC_SYSTEM_KEY.'.form_get_values', $sessFormGetValues);
+			} else if(!empty($controller->request->query)) {
+				$formGetValues = Configure::read(NC_SYSTEM_KEY.'.form_get_values');
+				if(!isset($formGetValues)) {
+					$formGetValues = array($controller->request->query);
 				} else {
-					$form_post_values[] = $controller->request->data;
+					$formGetValues[] = $controller->request->query;
 				}
-				Configure::write(NC_SYSTEM_KEY.'.form_post_values', $form_post_values);
+				Configure::write(NC_SYSTEM_KEY.'.form_get_values', $formGetValues);
+			}
+			if(isset($sessFormPostValues)) {
+				Configure::write(NC_SYSTEM_KEY.'.form_post_values', $sessFormPostValues);
+			} else if(!empty($controller->request->data)) {
+				$formPostValues = Configure::read(NC_SYSTEM_KEY.'.form_post_values');
+				if(!isset($formPostValues)) {
+					$formPostValues = array($controller->request->data);
+				} else {
+					$formPostValues[] = $controller->request->data;
+				}
+				Configure::write(NC_SYSTEM_KEY.'.form_post_values', $formPostValues);
 			}
 
 			$this->_format = Debugger::addFormat('js', array('callback' => array($this, 'formatCallback')));
@@ -92,12 +110,12 @@ class InitComponent extends Component {
 		$insertOpts = array('before' => '{:', 'after' => '}');
 		$error = String::insert($this->_format['error'], $strings + $data, $insertOpts);
 
-		$php_logs = Configure::read(NC_SYSTEM_KEY.'.php_logs');
-		if(!isset($php_logs)) {
-			$php_logs = array($error);
+		$phpLogs = Configure::read(NC_SYSTEM_KEY.'.php_logs');
+		if(!isset($phpLogs)) {
+			$phpLogs = array($error);
 		} else {
-			$php_logs[] = $error;
+			$phpLogs[] = $error;
 		}
-		Configure::write(NC_SYSTEM_KEY.'.php_logs', $php_logs);
+		Configure::write(NC_SYSTEM_KEY.'.php_logs', $phpLogs);
 	}
 }

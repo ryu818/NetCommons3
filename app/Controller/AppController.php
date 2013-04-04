@@ -92,8 +92,8 @@ class AppController extends Controller {
 		/*
 		 * 同じ処理を何度も実行させないため
 		 */
-		$config_language = Configure::read(NC_CONFIG_KEY.'.'.'config_language');
-		if(isset($config_language)) {
+		$configLanguage = Configure::read(NC_CONFIG_KEY.'.'.'config_language');
+		if(isset($configLanguage)) {
 			return;
 		}
 
@@ -128,8 +128,8 @@ class AppController extends Controller {
 	{
 		parent::beforeFilter();
 
-		$controller_name = $this->request->params['controller'];
-		$block_type = isset($this->request->params['block_type']) ? $this->request->params['block_type'] : null;
+		$controllerName = $this->request->params['controller'];
+		//$blockType = isset($this->request->params['block_type']) ? $this->request->params['block_type'] : null;
     	$this->Common->initializeAuth();
 
 		if ($this->request->is('ajax')) {
@@ -137,14 +137,14 @@ class AppController extends Controller {
 		}
 
     	if ($this->request->is('ajax')) {
-    		$plugin_name = isset($this->request->params['plugin']) ? $this->request->params['plugin'] :
+    		$pluginName = isset($this->request->params['plugin']) ? $this->request->params['plugin'] :
     		(isset($this->request->params['active_plugin']) ? $this->request->params['active_plugin'] : '');
-    		if($plugin_name != '') {
+    		if($pluginName != '') {
     			// ajaxの場合、blocksのリンクが含まれていれば、active-blocksに置換する。
-    			$replace_url = preg_replace('/(.*)\/blocks\/([0-9]*)/i', '$1/active-blocks/$2', $this->request->here);
-    			if($replace_url != $this->request->here) {
-    				$replace_url = preg_replace('%^'.$this->request->webroot.'%i', '', $replace_url);
-    				echo $this->requestAction($replace_url, array('return', 'bare' => 0, 'requested' => 0));
+    			$replaceUrl = preg_replace('/(.*)\/blocks\/([0-9]*)/i', '$1/active-blocks/$2', $this->request->here);
+    			if($replaceUrl != $this->request->here) {
+    				$replaceUrl = preg_replace('%^'.$this->request->webroot.'%i', '', $replaceUrl);
+    				echo $this->requestAction($replaceUrl, array('return', 'bare' => 0, 'requested' => 0));
     				$this->_stop();
     			}
     		}
@@ -154,16 +154,16 @@ class AppController extends Controller {
     		$this->SetConfig->set();
     	}
 
-    	$is_closed_site = Configure::read(NC_CONFIG_KEY.'.'.'is_closed_site');
-    	if(!$is_closed_site) {
+    	$isClosedSite = Configure::read(NC_CONFIG_KEY.'.'.'is_closed_site');
+    	if(!$isClosedSite) {
     		$this->Auth->allow();
     	}
 
     	// 権限チェック
-    	//if($block_type == 'active-controls') {
+    	//if($blockType == 'active-controls') {
     	//	// 管理系モジュール
     	//} else
-    	if ($controller_name != 'controls' && $this->Components->enabled('Auth')) {
+    	if ($controllerName != 'controls' && $this->Components->enabled('Auth')) {
     		$this->CheckAuth->check();
     	}
 	}
@@ -198,7 +198,7 @@ class AppController extends Controller {
  * リダイレクト画面表示
  * @param string  $message          エラーメッセージ
  * @param string  $url              リダイレクトURL
- * @param string  $error_id_str     エラーID
+ * @param string  $errorIdStr     エラーID
  * @param string  $status           Optional HTTP status code (eg: 404) default: 200
  * @param integer $pause            リダイレクト画面表示時間(秒) default 2秒
  * @param string  $layout			レイアウト名称
@@ -206,7 +206,7 @@ class AppController extends Controller {
  * @return void Renders flash layout
  * @link http://book.cakephp.org/2.0/en/controllers.html#Controller::flash
  */
-	public function flash($message, $url, $error_id_str = '', $status = '200', $pause = 2, $layout = 'flash', $exit = true) {
+	public function flash($message, $url, $errorIdStr = '', $status = '200', $pause = 2, $layout = 'flash', $exit = true) {
 		$this->autoRender = false;
 
 		///404 Not Found 403 Forbidden 400 Bad Request
@@ -234,7 +234,7 @@ class AppController extends Controller {
 		$this->set('pause', $pause);
 		$this->set('page_title', $message);
 		if(Configure::read('debug') != _OFF) {
-			$this->set('error_id_str', $error_id_str);
+			$this->set('error_id_str', $errorIdStr);
 		} else {
 			$this->set('error_id_str', '');
 		}
@@ -256,6 +256,7 @@ class AppController extends Controller {
  * <pre>
  * ・リダイレクト時にもDEBUG情報を出力するように修正。
  * ・pjaxならば、header Locationではなく、「X-PJAX-Location」ヘッダーを返し、そのURLを見て、再度、pjaxを呼ぶように修正。
+ * 		そうすることで、URL欄を適切にリダイレクト先のURLに変換できるため。
  * </pre>
  *
  * @param string|array $url A string or array-based URL pointing to another location within the app,
@@ -290,9 +291,29 @@ class AppController extends Controller {
 				}
 				$this->response->header('X-PJAX-Location', $this->Common->linkEncode(Router::url($url, true)));
 			} else {
+				if(Configure::read('debug') != 0) {
+					$globalCount = Configure::read(NC_SYSTEM_KEY.'.global_count');
+					$currentUrls = Configure::read(NC_SYSTEM_KEY.'.current_urls');
+					$formGetValues = Configure::read(NC_SYSTEM_KEY.'.form_get_values');
+					$formPostValues = Configure::read(NC_SYSTEM_KEY.'.form_post_values');
+					$this->Session->write(NC_SYSTEM_KEY.'.debug.global_count', $globalCount);
+					$this->Session->write(NC_SYSTEM_KEY.'.debug.current_urls', $currentUrls);
+					$this->Session->write(NC_SYSTEM_KEY.'.debug.form_get_values', $formGetValues);
+					$this->Session->write(NC_SYSTEM_KEY.'.debug.form_post_values', $formPostValues);
+					if($this->request->is('post')) {
+						$this->Session->write(NC_SYSTEM_KEY.'.debug.method_type', 'post');
+					}
+					$sources = ConnectionManager::sourceList();
+					$logs = array();
+					foreach($sources as $source) {
+						$db = ConnectionManager::getDataSource($source);
+						$logs[$source] = $db->getLog();
+					}
+					$this->Session->write(NC_SYSTEM_KEY.'.debug.sqls', $logs);
+				}
 				$this->response->header('Location', Router::url($url, true));
 			}
-			//$this->response->header('Location', Router::url($url, true));
+			// $this->response->header('Location', Router::url($url, true));
 // Edit End Ryuji.M
 		}
 
@@ -309,7 +330,7 @@ class AppController extends Controller {
 
 		if ($exit) {
 // Add Start Ryuji.M
-			if (Configure::read('debug') != 0) {
+			if ($this->request->header('X-PJAX') && Configure::read('debug') != 0) {
 				$this->render(false, 'redirect');
 			}
 // Add End Ryuji.M
@@ -325,13 +346,13 @@ class AppController extends Controller {
  */
 	protected function _setExecuteTimes($name = 'nc_execute_start_times') {
 		if(Configure::read('debug') != _OFF && isset($this->request->params['requested'])) {
-			$nc_execute_times = Configure::read(NC_SYSTEM_KEY. '.'. $name);
-			if(!isset($nc_execute_times)) {
-				$nc_execute_times = array(microtime(true));
+			$ncExecuteTimes = Configure::read(NC_SYSTEM_KEY. '.'. $name);
+			if(!isset($ncExecuteTimes)) {
+				$ncExecuteTimes = array(microtime(true));
 			} else {
-				$nc_execute_times[] = microtime(true);
+				$ncExecuteTimes[] = microtime(true);
 			}
-			Configure::write(NC_SYSTEM_KEY. '.'. $name, $nc_execute_times);
+			Configure::write(NC_SYSTEM_KEY. '.'. $name, $ncExecuteTimes);
 		}
 	}
 }
