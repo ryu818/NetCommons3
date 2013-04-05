@@ -292,4 +292,31 @@ class BlogController extends BlogAppController {
 	protected function _rss($content_id) {
 
 	}
+
+/**
+ * 投票数カウントアップ
+ * @param   integer $postId
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function vote($postId = null){
+
+		if(empty($postId) || !$this->request->is('post')) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Blog.vote.001', '500');
+			return;
+		}
+
+		$userId = $this->Auth->user('id');
+		// behaviorを利用して更新
+		if(!$this->BlogPost->voting($postId, $userId)){
+			$this->flash(__('Failed to update the database, (%s).', 'blog_posts'), null, 'BlogPost.vote.002', '500');
+			return;
+		}
+		$this->Session->setFlash(__('Has been successfully updated.'));
+		$this->Session->write('Blog.vote.'.$userId.'.'.$postId, true);
+
+		$blogPost = $this->BlogPost->findById($postId);
+		$this->set('blog_post', $blogPost);
+		$this->render('Elements/blog/detail_footer');
+	}
 }

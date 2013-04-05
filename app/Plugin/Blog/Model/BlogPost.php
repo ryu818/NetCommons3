@@ -12,7 +12,7 @@ class BlogPost extends AppModel
 {
 	public $name = 'BlogPost';
 
-	public $actsAs = array('TimeZone', 'Validation');
+	public $actsAs = array('TimeZone', 'Validation', 'Common');
 
 	public $belongsTo = array(
 		'Htmlarea'     => array('type' => 'INNER'),

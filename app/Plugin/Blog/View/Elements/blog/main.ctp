@@ -66,7 +66,7 @@ if(isset($detail_type)) {
 	<?php endif; ?>
 	<?php echo($this->element('/common/paginator')); ?>
 	<?php foreach ($blog_posts as $post): ?>
-		<?php echo($this->element('blog/detail', array('post' => $post, 'detail_type' => isset($detail_type) ? $detail_type : null))); ?>
+		<?php echo($this->element('blog/detail', array('blog_post' => $post, 'detail_type' => isset($detail_type) ? $detail_type : null))); ?>
 	<?php endforeach; ?>
 	<?php echo($this->element('/common/paginator')); ?>
 <?php else: ?>
