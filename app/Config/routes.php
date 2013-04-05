@@ -89,7 +89,6 @@ if ($plugins = CakePlugin::loaded()) {
 	Router::connect('/:plugin/:controller', array('action' => 'index'), $match);
 	Router::connect('/:plugin/:controller/:action/*', array(), $match);*/
 
-
 	Router::connect(
 		':permalink/:block_type/:block_id/:plugin/:controller/:action/*',
 		array(),
@@ -120,7 +119,35 @@ if ($plugins = CakePlugin::loaded()) {
 		) + $pluginParams
 	);
 
-	/* block_idが指定なしにplugin表示 */
+	/* 参照（ブロックID指定なしでプラグイン表示：主坦以外表示不可。強制的にゲスト権限へ。） */
+	Router::connect(
+		'/:block_type/:content_id/:plugin/:controller/:action/*',
+		array('block_type' => 'active-contents'),
+		array(
+			'block_type' => 'active-contents',
+			'content_id' => '[0-9]*',
+		) + $pluginParams
+	);
+
+	Router::connect(
+		'/:block_type/:content_id/:plugin/:controller',
+		array('block_type' => 'active-contents'),
+		array(
+			'block_type' => 'active-contents',
+			'content_id' => '[0-9]*',
+		) + $pluginParams
+	);
+
+	Router::connect(
+		'/:block_type/:content_id/:plugin',
+		array('block_type' => 'active-contents'),
+		array(
+			'block_type' => 'active-contents',
+			'content_id' => '[0-9]*',
+		) + $pluginParams
+	);
+
+	/* ページ設定 block_idが指定なしにplugin表示 */
 	Router::connect(
 		':permalink/:block_type/:plugin/:controller/:action/*',
 		array(),
@@ -148,11 +175,35 @@ if ($plugins = CakePlugin::loaded()) {
 		) + $pluginParams
 	);
 
-	Router::connect(
+	/* 管理系モジュール */
+	/*Router::connect(
 		'/:block_type/:plugin/*',
 		array(),
 		array(
 			'block_type' => 'active-controls',
+		) + $pluginParams
+	);*/
+	Router::connect(
+		'/:block_type/:plugin/:controller/:action/*',
+		array(),
+		array(
+			'block_type' => 'active-controls'
+		) + $pluginParams
+	);
+
+	Router::connect(
+		'/:block_type/:plugin/:controller',
+		array(),
+		array(
+			'block_type' => 'active-controls'
+		) + $pluginParams
+	);
+
+	Router::connect(
+		'/:block_type/:plugin',
+		array(),
+		array(
+			'block_type' => 'active-controls'
 		) + $pluginParams
 	);
 }

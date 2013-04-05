@@ -126,7 +126,7 @@ class Content extends AppModel
  * @since   v 3.0.0.0
  */
 	public function afterFindDefault($val, $user_id) {
-		if(!isset($val['Authority']['hierarchy'])) {
+		if(isset($val['Content']['id']) && !isset($val['Authority']['hierarchy'])) {
 			$val['Authority']['hierarchy'] = $this->getDefaultHierarchy($val, $user_id);
 		}
 		return $val;

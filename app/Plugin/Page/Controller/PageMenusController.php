@@ -614,11 +614,9 @@ class PageMenusController extends PageAppController {
 			}
 			if(isset($permalink)) {
 				$permalink = $this->Page->getPermalink($permalink, $current_page['Page']['space_type']);
-				//$redirect_url = Router::url('/', true). $permalink . 'blocks/page/index?is_edit=1';
 				$redirect_url = Router::url(array('permalink' => $permalink, 'plugin' => 'page', 'controller' => 'page', '?' => 'is_edit=1'));
 
 			} else {
-				//$redirect_url = Router::url('/', true). 'blocks/page/index?is_edit=1';
 				$redirect_url = Router::url(array('permalink' => '', 'plugin' => 'page', 'controller' => 'page', '?' => 'is_edit=1'));
 			}
 			echo "<script>location.href='".$redirect_url."';</script>";

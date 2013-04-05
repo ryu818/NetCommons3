@@ -144,7 +144,6 @@
 					if(dialog_options['position'] && dialog_options['position'] == 'mouse') {
 						dialog_options['position'] = [e.pageX - $(window).scrollLeft(), e.pageY - $(window).scrollTop()];
 					}
-
 				}
 
 				if(dialog_options) {
@@ -180,7 +179,7 @@
 			} else if(replace_target) {
 				res_target = $();
 				res_other_target = $();
-				buf_res_target = $(res);
+				buf_res_target = $($.trim(res));
 				buf_res_target.each(function(){
 					if (this.nodeType == 1 && $(this).is(replace_target)) {
 						res_target.push(this);

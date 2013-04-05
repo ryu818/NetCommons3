@@ -1,5 +1,5 @@
 /**
- * ブログ表示方法変更 js
+ * ブログ js
  *
  * @copyright     Copyright 2012, NetCommons Project
  * @package       Plugin.Announcement.webroot.js

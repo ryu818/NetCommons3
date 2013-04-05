@@ -62,7 +62,8 @@ class AppPluginController extends AppController
 				$this->set('name', __('Content removed.'));
 				$is_error = true;
 			} else if(!isset($this->nc_block['Module']['id']) &&
-					isset($this->request->params['plugin']) && $this->request->params['plugin'] != 'group') {
+					isset($this->request->params['plugin']) && $this->request->params['plugin'] != 'group'
+					 && $this->request->params['plugin'] != 'content' && $this->request->params['plugin'] != 'block') {
 				$this->set('name', __('Module uninstalled.'));
 				$is_error = true;
 			}
@@ -105,7 +106,7 @@ class AppPluginController extends AppController
 			$this->set('module', $this->nc_module);
 		}
 		if(!empty($this->nc_block)) {
-			if($this->nc_block['Block']['temp_name'] != '') {
+			if(isset($this->nc_block['Block']) && $this->nc_block['Block']['temp_name'] != '') {
 				$this->theme = $this->nc_block['Block']['temp_name'];
 			}
 			if(!isset($this->viewVars['block'])) {

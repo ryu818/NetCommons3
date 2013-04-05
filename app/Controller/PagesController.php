@@ -84,7 +84,7 @@ class PagesController extends AppController {
 		$pages_list = $this->Page->findBreadcrumb($pages[$this->page_id_arr[0]], $user_id);
 
 		// ページスタイル情報を取得
-		// TODO ノードを基に取得
+		// TODO: ノードを基に取得
 
 		//$page_style = $this->PageStyle->findByStylePageId($center_page['Page']['id']);
 		$add_modules = array();

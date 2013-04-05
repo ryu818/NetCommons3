@@ -300,9 +300,16 @@ class Block extends AppModel
 		}
 
 		// array_merge();
-		$val['Block']['room_id'] = $val['Content']['room_id'];
-		$val['Block']['is_master'] = $val['Content']['is_master'];
-		$val['Block']['master_id'] = $val['Content']['master_id'];
+		if(isset($val['Content']['id'])) {
+			$val['Block']['room_id'] = $val['Content']['room_id'];
+			$val['Block']['is_master'] = $val['Content']['is_master'];
+			$val['Block']['master_id'] = $val['Content']['master_id'];
+		} else {
+			$val['Block']['room_id'] = $val['Page']['room_id'];
+			$val['Block']['is_master'] = _ON;
+			$val['Block']['master_id'] = 0;
+		}
+
 		//$val['Block']['url'] = $val['Content']['url'];
 		$val['Block']['dir_name'] = $val['Module']['dir_name'];
 		$val['Block']['edit_controller_action'] = $val['Module']['edit_controller_action'];

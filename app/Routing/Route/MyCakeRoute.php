@@ -203,18 +203,24 @@ class MyCakeRoute extends CakeRoute {
 	 * @return mixed either false or a string url.
 	 */
 	public function match($url) {
-		if(!isset($url['permalink'])) {
-			$permalink = Configure::read(NC_SYSTEM_KEY.'.permalink');
-			if($permalink) {
-				$url['permalink'] = $permalink;
-			} else {
-				$url['permalink'] = '';
-			}
+		if(isset($url['plugin']) && !isset($url['block_type'])) {
+			$block_type = Configure::read(NC_SYSTEM_KEY.'.block_type');
+			$url['block_type'] = isset($block_type) ? $block_type : 'active-blocks';
 		}
-		if(!isset($url['block_id'])) {
+
+		if($url['block_type'] != 'active-controls' && $url['block_type'] != 'active-contents' && !isset($url['block_id'])) {
 			$block_id = Configure::read(NC_SYSTEM_KEY.'.block_id');
 			if(isset($block_id) && intval($block_id) > 0) {
 				$url['block_id'] = $block_id;
+			}
+		}
+		if(isset($url['block_id']) && $url['block_id'] == 0) {
+			unset($url['block_id']);
+		}
+		if($url['block_type'] == 'active-contents' && !isset($url['content_id'])) {
+			$content_id = Configure::read(NC_SYSTEM_KEY.'.content_id');
+			if(isset($content_id) && intval($content_id) > 0) {
+				$url['content_id'] = $content_id;
 			}
 		}
 		if(isset($url['controller'])) {
@@ -228,9 +234,13 @@ class MyCakeRoute extends CakeRoute {
 			}
 		}
 
-		if(isset($url['plugin']) && !isset($url['block_type'])) {
-			$block_type = Configure::read(NC_SYSTEM_KEY.'.block_type');
-			$url['block_type'] = isset($block_type) ? $block_type : 'active-blocks';
+		if($url['block_type'] != 'active-controls' && $url['block_type'] != 'active-contents' && !isset($url['permalink'])) {
+			$permalink = Configure::read(NC_SYSTEM_KEY.'.permalink');
+			if($permalink) {
+				$url['permalink'] = $permalink;
+			} else {
+				$url['permalink'] = '';
+			}
 		}
 
 		if(isset($url['action']) && $url['action'] == 'index') {
