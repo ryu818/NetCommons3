@@ -26,8 +26,11 @@
 		&nbsp;|&nbsp;
 		<?php
 			echo $this->Html->link(__('Delete'),
-				array('controller' => 'blog_posts', 'action' => 'delete', $blog_post['BlogPost']['id']),
-				array('title' =>__('Delete Post'), 'data-pjax' => '#'.$id
+				array('plugin' => 'blog', 'controller' => 'blog_posts', 'action' => 'delete', $blog_post['BlogPost']['id']),
+				array('title' =>__('Delete Post'),
+						'data-ajax-confirm' => __('Deleting %s. <br />Are you sure to proceed?',$blog_post['BlogPost']['title']),
+						'data-ajax-replace' => '#_'.$blog_post['BlogPost']['content_id'],
+						'data-ajax-type' => 'post'
 			));
 		?>
 		&nbsp;|&nbsp;

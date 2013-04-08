@@ -12,7 +12,7 @@ class BlogTerm extends AppModel
 {
 	public $name = 'BlogTerm';
 
-	public $actsAs = array('Validation');
+	public $actsAs = array('Validation', 'Common');
 
 	public $order = array("BlogTerm.count" => "DESC", "BlogTerm.id" => "DESC");
 

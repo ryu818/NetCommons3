@@ -237,7 +237,7 @@ class BlogPost extends AppModel
 				'htmlarea_id' => 0,
 				'vote' => null,
 				'status' => NC_STATUS_PUBLISH,
-				'approved_flag' => _OFF,
+				'approved_flag' => _ON,
 				'post_password' => '',
 				'trackback_link' => '',
 				'comment_count' => 0,

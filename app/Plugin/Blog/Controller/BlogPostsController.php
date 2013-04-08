@@ -90,13 +90,12 @@ class BlogPostsController extends BlogAppController {
 			$blog_post['BlogPost']['content_id'] = $this->content_id;
 			$blog_post['BlogPost']['permalink'] = $blog_post['BlogPost']['title'];	// TODO:仮でtitleをセット
 			$blog_post['BlogPost']['status'] = ($is_temporally) ? NC_STATUS_TEMPORARY : NC_STATUS_PUBLISH;
-			$blog_post['BlogPost']['approved_flag'] = _OFF;	// TODO:仮でセット
 			$blog_post['BlogPost']['htmlarea_id'] = 0;
 
 			$blog_post['Htmlarea']['content'] = $this->request->data['Htmlarea']['content'];
 
 			$fieldList = array(
-				'content_id', 'post_date', 'title', 'permalink', 'icon_name', 'htmlarea_id', 'status', 'approved_flag', 'post_password', 'trackback_link',
+				'content_id', 'post_date', 'title', 'permalink', 'icon_name', 'htmlarea_id', 'status', 'post_password', 'trackback_link',
 			);
 
 			$htmlarea = array(
@@ -176,5 +175,59 @@ class BlogPostsController extends BlogAppController {
 		$this->set('categories', $categories);
 		$this->set('tags', $tags);
 		$this->set('post_id', $post_id);
+	}
+
+	/**
+	 * ブログ記事削除
+	 * @param   integer $postId
+	 * @return  void
+	 * @since   v 3.0.0.0
+	 */
+	public function delete($postId = null) {
+		if(empty($postId) || !$this->request->is('post')) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPost.delete.001', '500');
+			return;
+		}
+
+		// コメント削除
+		$delConditions = array('BlogComment.blog_post_id'=>$postId);
+		if(!$this->BlogComment->deleteAll($delConditions)){
+			$this->flash(__('Failed to delete the database, (%s).', 'blog_comments'), null, 'BlogPost.delete.002', '500');
+			return;
+		}
+
+		// 一般会員が閲覧できるカウント数のカウントダウン
+		$blogPost = $this->BlogPost->findById($postId);
+		if($blogPost['BlogPost']['is_future'] != _ON && $blogPost['BlogPost']['status'] != NC_STATUS_TEMPORARY  && $blogPost['BlogPost']['approved_flag'] != _OFF){
+			$termLinks = $this->BlogTermLink->findAllByBlogPostId($postId);
+			if($termLinks){
+				// blogに結びつくすべてのtermがカウントダウン対象
+				$termIds = array();
+				foreach ($termLinks as $key => $termLink){
+					array_push($termIds, $termLink['BlogTermLink']['blog_term_id']);
+				}
+				$cntdown_conditions = array('BlogTerm.id'=>$termIds);
+				if(!$this->BlogTerm->decrementSeq($cntdown_conditions, 'count')){
+					$this->flash(__('Failed to update the database, (%s).', 'blog_term_links'), null, 'BlogPost.delete.003', '500');
+					return;
+				}
+			}
+		}
+
+		// タームリンク削除
+		$delConditions = array('BlogTermLink.blog_post_id'=>$postId);
+		if(!$this->BlogTermLink->deleteAll($delConditions)){
+			$this->flash(__('Failed to delete the database, (%s).', 'blog_term_links'), null, 'BlogPost.delete.004', '500');
+			return;
+		}
+
+		// blog削除
+		$delConditions = array('BlogPost.id'=>$postId);
+		if(!$this->BlogPost->deleteAll($delConditions)){
+			$this->flash(__('Failed to delete the database, (%s).', 'blog_posts'), null, 'BlogPost.delete.005', '500');
+			return;
+		}
+
+		$this->redirect(array('controller' => 'blog', 'action'=> 'index'));
 	}
 }
