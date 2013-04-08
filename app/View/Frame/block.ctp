@@ -1,6 +1,25 @@
 <?php
 $nc_mode = $this->Session->read(NC_SYSTEM_KEY.'.mode');
 $content = $this->fetch('content');
+$current_url = $this->here;
+if(count($this->params->query) > 0) {
+	$query = '';
+	foreach($this->params->query as $k => $v) {
+		if(substr($k, 0, 1) == '_') {
+			// 先頭「_」のものはURLに加えない。
+			continue;
+		}
+		$query .= ($query == '') ? '?' : '&';
+		$query .= $k. '='. $v;
+	}
+	$current_url .= $query;
+}
+if($this->request->params['block_type'] == 'active-contents') {
+	echo '<div id="'.$id.'" class="nc-active-content" data-block="0" data-action="'.$block['Module']['controller_action'].'" data-ajax-url="'.h($current_url).'">'.
+			$content.
+		'</div>';
+	return;
+}
 if($content == '') {
 	if($hierarchy < NC_AUTH_MIN_CHIEF) {
 		// コンテンツが空で、主坦以下の権限ならば、非表示にする。
@@ -54,20 +73,7 @@ if($pos !== false) {
 	$theme_name = $block['Block']['theme_name'].'.block';
 }
 $block['Block']['theme_name'] = 'th-' . str_replace('.', '-', Inflector::underscore($block['Block']['theme_name']));	// th-(frame_name)-(color_dir)
-$current_url = $this->here;
-if(count($this->params->query) > 0) {
-	$query = '';
-	foreach($this->params->query as $k => $v) {
-		if(substr($k, 0, 1) == '_') {
-			// 先頭「_」のものはURLに加えない。
-			continue;
-		}
-		$query .= ($query == '') ? '?' : '&';
-		$query .= $k. '='. $v;
-	}
-	$current_url .= $query;
-}
-if($block['Block']['display_flag'] == NC_DISPLAY_FLAG_OFF) {
+if($block['Block']['display_flag'] == NC_DISPLAY_FLAG_OFF || $block['Content']['display_flag'] == NC_DISPLAY_FLAG_OFF) {
 	$class_name .= ' nonpublic';
 } else if(!empty($block['Block']['display_to_date']) && $nc_mode == NC_BLOCK_MODE) {
     $class_name .= ' to-nonpublic';

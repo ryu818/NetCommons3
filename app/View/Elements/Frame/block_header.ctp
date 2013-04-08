@@ -5,11 +5,11 @@ if(isset($nc_error_flag) && $nc_error_flag) {
 } else if(!$nc_show_edit) {
 	$add_class_name = 'nc-shortcut-toolbox';
 }
-/* 削除アクションがあるかどうか */
 if($page['Page']['room_id'] != $block['Content']['room_id'] || !$block['Content']['is_master'] || $block['Content']['display_flag'] == NC_DISPLAY_FLAG_DISABLE) {
 	$all_delete = _OFF;	// ショートカット
 } else {
-	App::uses($block['Module']['dir_name'].'OperationComponent', 'Plugin/'.$block['Module']['dir_name'].'/Controller/Component');
+	/* TODO:後にコメント部分を削除 削除アクションがあるかどうか：削除アクションがなくてもContentテーブルを削除するだけで完全に削除を許す。 */
+	/*App::uses($block['Module']['dir_name'].'OperationComponent', 'Plugin/'.$block['Module']['dir_name'].'/Controller/Component');
 	$operation_class_name = $block['Module']['dir_name'].'OperationComponent';
 	if(class_exists($operation_class_name) && method_exists($operation_class_name, 'delete')) {
 		// ブロック削除アクション
@@ -17,6 +17,8 @@ if($page['Page']['room_id'] != $block['Content']['room_id'] || !$block['Content'
 	} else {
 		$all_delete = _OFF;
 	}
+	*/
+	$all_delete = _ON;
 	// ブロック追加し、削除するときにContentが存在しなければ「完全に削除する。」非表示
 	if(!isset($block['Content'])) {
 		$all_delete = _OFF;
@@ -45,7 +47,7 @@ if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 			<span class="nc-arrow-up"></span>
 		</a>
 		<span id="nc-block-header-page-name<?php echo($id); ?>" class="nc-block-header-page-name<?php if($tooltip_title != ''): ?> nc-tooltip<?php endif; ?>"<?php echo($tooltip_title); ?>>
-			<?php echo($block['Block']['title']); ?>
+			<?php echo(h($block['Block']['title'])); ?>
 			<?php echo($this->element('Frame/block_published_lbl')); ?>
 		</span>
 		<ul class="nc-block-toolbox<?php if(isset($add_class_name)){ echo(' '. $add_class_name); }?>">
@@ -116,11 +118,13 @@ if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 		</li>
 		<?php endif; ?>
 		<?php /* TODO:コンテンツ一覧を表示する必要がないモジュールも存在する予定 */ ?>
+		<?php if($block['Block']['controller_action'] != 'group'): ?>
 		<li>
 			<?php
-				echo $this->Html->link(__('Contents list'), array('plugin' => 'content', 'controller' => 'content', 'action' => 'index'),
+				echo $this->Html->link(__('Contents list'), array('plugin' => 'content', 'controller' => 'content', 'action' => 'index', 'block_id' => $block['Block']['id']),
 						array('title' => __('Contents list'), 'id' => 'nc-block-contents-list-link'.$id, 'class' => 'link hover-highlight','data-ajax' => '', 'data-block-contents-list-dialog-id' => 'nc-block-contents-list-dialog'.$block['Block']['id']));
 			?>
 		</li>
+		<?php endif; ?>
 	</ul>
 </div>

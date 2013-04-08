@@ -251,7 +251,7 @@ class PageMenuComponent extends Component {
 
 		// 移動先権限チェック
 		if($page['Page']['thread_num'] != 1 && !$this->_controller->CheckAuth->checkAuth($parent_page['Authority']['hierarchy'], NC_AUTH_CHIEF)) {
-			$this->_controller->flash(__('Forbidden permission to access the page.'), null, 'PageMenu.validatorMovePage.001', '400');
+			$this->_controller->flash(__('Forbidden permission to access the page.'), null, 'PageMenu.validatorMovePage.001', '403');
 			return false;
 		}
 

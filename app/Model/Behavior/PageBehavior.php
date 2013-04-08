@@ -44,8 +44,8 @@ class PageBehavior extends ModelBehavior {
 						} else {
 							App::uses('User', 'Model');
 							$User = new User();
-							$conditions = array('private_page_id' => $page['id']);
-							$user = $this->find( 'first', array('conditions' => $conditions, 'recursive' => -1) );
+							$conditions = array('User.private_page_id' => $page['id']);
+							$user = $User->find( 'first', array('conditions' => $conditions, 'recursive' => -1) );
 							$page['page_name'] = __('Private room of %s', $user['User']['handle']);
 						}
 					}

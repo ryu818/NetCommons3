@@ -112,6 +112,7 @@ class PageController extends PageAppController {
 
 		include_once dirname(dirname(__FILE__)).'/Config/defines.inc.php';
 
+		$center_page = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');
 		$login_user = $this->Auth->user();
 		$user_id = $login_user['id'];
 
@@ -120,7 +121,7 @@ class PageController extends PageAppController {
 		$active_tab = isset($this->request->query['active_tab']) ? intval($this->request->query['active_tab']) : null;
 		$limit = !empty($this->request->named['limit']) ? intval($this->request->named['limit']) : PAGES_COMMUNITY_LIMIT;
 		$views = !empty($this->request->named['views']) ? intval($this->request->named['views']) : PAGES_COMMUNITY_VIEWS;
-		$page_id = isset($this->request->query['page_id']) ? intval($this->request->query['page_id']) : intval($this->page_id);
+		$page_id = isset($this->request->query['page_id']) ? intval($this->request->query['page_id']) : (isset($center_page) ? $center_page['Page']['id'] : null);
 
 		// 言語切替
 		$languages = $this->Language->findLists();
@@ -149,7 +150,6 @@ class PageController extends PageAppController {
 		);
 
 		// カレント会員取得
-		$center_page = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');
 		$current_user = $this->User->currentUser($center_page, $login_user);
 		if($current_user === false) {
 			$this->flash(__('Failed to obtain the database, (%s).','users'), null, 'Page/index.001', '500');

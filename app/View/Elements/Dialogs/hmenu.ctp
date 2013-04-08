@@ -12,6 +12,7 @@ if($nc_mode == NC_BLOCK_MODE){
 	$setting_class = 'nc-hmenu-setting-btn';
 	$setting_mode = NC_BLOCK_MODE;
 }
+// ページ設定
 $page_menu = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.action');
 if(isset($page_menu)) {
 	$action = "close";
@@ -32,7 +33,7 @@ $is_controls = ($this->request->controller == 'controls') ? true : false;
 			</li>
 			<?php if(!$is_controls): ?>
 			<li class="nc-hmenu-li">
-				<?php echo $this->Html->link(__('Pages settings'), array('plugin' => 'page', 'controller' => 'page', 'action' => $action), array('id' => 'nc-pages-setting', 'class' => 'nc-hmenu-menu-a', 'aria-haspopup' => 'true', 'data-page-setting-url' => $this->Html->url(array('plugin' => 'page',  'controller' => 'page', 'action' => $sub_action)))); ?>
+				<?php echo $this->Html->link(__('Pages settings'), array('plugin' => 'page', 'controller' => 'page', 'action' => $action, 'block_id' => 0), array('id' => 'nc-pages-setting', 'class' => 'nc-hmenu-menu-a', 'aria-haspopup' => 'true', 'data-page-setting-url' => $this->Html->url(array('plugin' => 'page',  'controller' => 'page', 'action' => $sub_action)))); ?>
 			</li>
 			<li class="nc-hmenu-li">
 				<div id="nc-pages-menu-path">
@@ -76,7 +77,7 @@ $is_controls = ($this->request->controller == 'controls') ? true : false;
 </div>
 <?php
 $show_page_setting = false;
-$params = array('plugin' => 'page', 'controller' => 'page', 'action' => 'index', 'block_id' => '');
+$params = array('plugin' => 'page', 'controller' => 'page', 'action' => 'index', 'block_id' => 0);
 $options = array('return');
 if(!$is_controls && isset($page_menu)) {
 	$show_page_setting = true;

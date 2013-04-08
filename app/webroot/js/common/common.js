@@ -20,7 +20,7 @@
 		// data-ajax-type: post or get
 		// data-ajax-effect: 遷移時effect default：fold
 		// data-ajax-confirm: メッセージをValueに設定すると確認ダイアログ表示
-		// data-ajax-dialog-id: ダイアログとして表示する場合、指定dialogTopのid属性
+		// data-ajax-dialog: ダイアログとして表示する場合、true trueの場合、data-ajaxが指定dialogTopのid属性となる。
 		// data-ajax-dialog-class: ダイアログとして表示した場合のダイアログクラス名
 		// data-ajax-dialog-options: ダイアログとして表示した場合のダイアログオプション jquery dialogのoptionsをhash配列を文字列に変換したもの
 		//		"position" : "mouse"指定があればマウス位置にダイアログ表示
@@ -118,27 +118,27 @@
 		ajaxSuccess : function(a, res, params, e) {
 			var target,replace_target,effect;
 			var buf_a, res_target, res_other_target, buf_res_target, effect_cnt = 0, effect_index = -1;
-			var dialog_id, dialog_title, dialog_options, dialog;
+			var dialog_title, dialog_options, dialog;
 			a = $(a);
 			if (params) {
-				var target = params['data-ajax'];
+				target = params['data-ajax'];
 				replace_target = params['data-ajax-replace'];
 				effect = params['data-ajax-effect'];
-				dialog_id = params['data-ajax-dialog-id'];
+				dialog = params['data-ajax-dialog'];
 				dialog_class = params['data-ajax-dialog-class'];
 				dialog_options = params['data-ajax-dialog-options'];
 			} else if(a.get(0)) {
 				target = a.attr("data-ajax");
 				replace_target = a.attr("data-ajax-replace");
 				effect = a.attr("data-ajax-effect") ? a.attr("data-ajax-effect") : null;
-				dialog_id = a.attr("data-ajax-dialog-id");
+				dialog = a.attr("data-ajax-dialog");
 				dialog_class = a.attr("data-ajax-dialog-class");
 				dialog_options = a.attr("data-ajax-dialog-options");
 			} else {
 				return false;
 			}
 
-			if (dialog_id) {
+			if (dialog == 'true' || dialog == true) {
 				if(typeof dialog_options == 'string') {
 					dialog_options = $.parseJSON(dialog_options);
 					if(dialog_options['position'] && dialog_options['position'] == 'mouse') {
@@ -156,10 +156,9 @@
 					}
 					dialog_options = $.extend({}, {zIndex: ++$.Common.zIndex}, dialog_options);
 				}
-				dialog = $('#' + dialog_id);
+				dialog = $(target);
 				if(!dialog.get(0)) {
-					target = (target) ? target : $(document.body);
-					dialog = $('<div id='+ dialog_id +' style="display:none;"></div>').appendTo(target);
+					dialog = $('<div id='+ target.slice(1) +' style="display:none;"></div>').appendTo($(document.body));
 				}
 				dialog.html(res);
 				dialog.dialog(dialog_options);
@@ -229,10 +228,12 @@
 		},
 
 		// ブロックリロード処理
-		reloadBlock : function(e, id, data, pjax) {
+		reloadBlock : function(e, id, data, pjax, url) {
 			pjax = (typeof pjax == 'undefined') ? false : pjax
 			var block = (typeof id == 'string') ? $('#' + id) : $(id),re, params = new Object();
-			var url = block.attr('data-ajax-url');
+			if(!url) {
+				url = block.attr('data-ajax-url');
+			}
 			if($._block_type == 'blocks') {
 				re = new RegExp("/active-blocks/", 'i');
 				url = url.replace(re, "/" + $._block_type + "/");

@@ -141,7 +141,7 @@ class Content extends AppModel
 	protected function _getFieldsArray() {
 		return array(
 			'Content.*',
-			'Page.thread_num','Page.room_id','Page.root_id','Page.space_type',
+			'Page.id','Page.page_name','Page.thread_num','Page.room_id','Page.root_id','Page.space_type',
 			'Module.id','Module.controller_action','Module.edit_controller_action','Module.style_controller_action','Module.dir_name','Module.content_has_one',
 			'Authority.id','Authority.hierarchy'
 		);

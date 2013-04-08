@@ -225,6 +225,12 @@ img.icon {
 	vertical-align:middle;
 }
 
+/* コンテンツ一覧->参照画面の背景色 */
+.nc-active-content {
+	background-color:#fff;
+	padding:10px;
+}
+
 /* 矢印 */
 .nc-arrow {
     border-color: #565656 transparent transparent;

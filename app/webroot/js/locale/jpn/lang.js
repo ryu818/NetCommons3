@@ -36,7 +36,8 @@ $._lang['pages'] = {
 $._lang['block'] = {
 	'Block style': 'ブロックスタイル',
 	'Display style': '表示方法変更',
-	'Content list': 'コンテンツ一覧'
+	'Content list': 'コンテンツ一覧',
+	'To the placement page': '配置ページへ遷移'
 }
 
 $._lang['nc_wysiwyg'] = {

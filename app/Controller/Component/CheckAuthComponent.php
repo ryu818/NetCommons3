@@ -110,12 +110,13 @@ class CheckAuthComponent extends Component {
 		$user = $this->Auth->user();//認証済みユーザーを取得
 		$controller_name = $controller->request->params['controller'];
 		$plugin_name = $controller->request->params['plugin'];
-		$user_id = isset($user['id']) ? intval($user['id']) : 0;
+		$userId = isset($user['id']) ? intval($user['id']) : 0;
 		$handle = isset($user['handle']) ? $user['handle'] : '';
-		Configure::write(NC_SYSTEM_KEY.'.user_id', $user_id);
+		Configure::write(NC_SYSTEM_KEY.'.user_id', $userId);
 		Configure::write(NC_SYSTEM_KEY.'.handle', $handle);
-		$redirect_url = ($user_id == 0) ? '/users/login' : null;
+		$redirect_url = ($userId == 0) ? '/users/login' : null;
 		$block_type = isset($controller->request->params['block_type']) ? $controller->request->params['block_type'] : null;
+		$isActiveContent = (isset($controller->request->params['block_type']) && $controller->request->params['block_type'] == 'active-contents') ? true : false;
 
 		if(isset($plugin_name) && $plugin_name != 'group') {
 			$camel_plugin_name = Inflector::camelize($plugin_name);
@@ -176,7 +177,7 @@ class CheckAuthComponent extends Component {
 		}
 
 		if(!$this->checkAuth($controller->hierarchy)) {
-			if($user_id == 0) {
+			if($userId == 0) {
 				$this->Session->setFlash(__('Forbidden permission to access the page.'), 'default', array(), 'auth');
 			}
 			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.check.003', '403');
@@ -186,7 +187,7 @@ class CheckAuthComponent extends Component {
 
 		if(isset($controller->nc_block['Block']) && !$controller->nc_block['Block']['is_master']) {
 			// 編集画面なのに権限を付与したショートカットならばエラー。ただし、ショートカット先が主坦ならばエラーとしない。
-			$content =  $controller->Content->findAuthById($controller->nc_block['Block']['master_id'], $user_id);
+			$content =  $controller->Content->findAuthById($controller->nc_block['Block']['master_id'], $userId);
 			$ret = $this->checkAuth($content['Authority']['hierarchy'], NC_AUTH_CHIEF);
 			if($controller->nc_is_edit && !$ret) {
 				$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.check.004', '403');
@@ -197,9 +198,15 @@ class CheckAuthComponent extends Component {
 		}
 		$controller->nc_show_edit = $ret;
 
+		if($isActiveContent) {
+			// 参照のみなのでゲスト固定
+			// 権限チェック後セット
+			$controller->hierarchy = NC_AUTH_GUEST;
+		}
+
 		// 権限チェック(会員権限)
 		if(!$this->checkUserAuth($user['hierarchy'])) {
-			if($user_id == 0) {
+			if($userId == 0) {
 				$this->Session->setFlash(__('Forbidden permission to access the page.'), 'default', array(), 'auth');
 			}
 			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.check.005', '403');
@@ -223,8 +230,8 @@ class CheckAuthComponent extends Component {
 	public function checkAdmin($module_id) {
 		$controller = $this->_controller;
 		$user = $this->Auth->user();
-		$user_id = isset($user['id']) ? intval($user['id']) : 0;
-		$redirect_url = ($user_id == 0) ? '/users/login' : null;
+		$userId = isset($user['id']) ? intval($user['id']) : 0;
+		$redirect_url = ($userId == 0) ? '/users/login' : null;
 		$url = $controller->request->url;
 		$authority_id = isset($user['authority_id']) ? intval($user['authority_id']) : NC_AUTH_OTHER;
 
@@ -247,13 +254,13 @@ class CheckAuthComponent extends Component {
 	public function checkGeneral() {
 		$controller = $this->_controller;
 		$user = $this->Auth->user();
-		$user_id = isset($user['id']) ? intval($user['id']) : 0;
+		$userId = isset($user['id']) ? intval($user['id']) : 0;
 		$this->_setControllerParams($controller);
 		if (isset($controller->nc_block['Block'])) {
 			// 既に権限チェック済 - PageからrequestActionよりブロックを表示した場合
 			return true;
 		}
-		$redirect_url = ($user_id == 0) ? '/users/login' : null;
+		$redirect_url = ($userId == 0) ? '/users/login' : null;
 		$url = $controller->request->url;
 
 		$permalink = isset($controller->request->params['permalink']) ? $controller->request->params['permalink'] : '';
@@ -281,9 +288,9 @@ class CheckAuthComponent extends Component {
 		if(!preg_match($this->prohibitionURL, $url)) {
 			if($isActiveContent) {
 				// Contentのみの表示は主担に限る
-				$this->allowUserAuth = NC_AUTH_CHIEF;
+				$this->allowAuth = NC_AUTH_CHIEF;
 				$contentId = isset($controller->request->params['content_id']) ? intval($controller->request->params['content_id']) : 0;
-				$content =  $controller->Content->findAuthById($contentId, $user_id);
+				$content =  $controller->Content->findAuthById($contentId, $userId);
 				if(!isset($content['Content'])) {
 					// 置いているpluginが異なる
 					$controller->flash(__('Content not found.'), '', 'CheckAuth.checkGeneral.001', '404');
@@ -295,8 +302,10 @@ class CheckAuthComponent extends Component {
 					$controller->flash(__('Content not found.'), '', 'CheckAuth.checkGeneral.002', '404');
 					return false;
 				}
-				// 参照のみなのでゲスト固定
-				$controller->hierarchy = NC_AUTH_GUEST;
+				$page = $controller->Page->findAuthById($content['Content']['room_id'], $userId);
+				if(isset($page['Authority']['hierarchy'])) {
+					$controller->hierarchy = $page['Authority']['hierarchy'];
+				}
 
 				//$content['Block']['id'] = 0;
 				$controller->nc_block = $content;
@@ -305,15 +314,15 @@ class CheckAuthComponent extends Component {
 
 			} else {
 				if($block_id > 0) {
-					$block =  $controller->Block->findAuthById($block_id, $user_id);
+					$block =  $controller->Block->findAuthById($block_id, $userId);
 					if($block === false || !isset($block['Block'])) {
 						// 置いているpluginが異なる
-						$controller->flash(__('Content not found.'), '', 'CheckAuth.checkGeneral.001', '404');
+						$controller->flash(__('Content not found.'), '', 'CheckAuth.checkGeneral.003', '404');
 						return false;
 					}
 					if($this->chkPlugin && $plugin_name != 'group' && $block['Module']['dir_name'] != Inflector::camelize($plugin_name)) {
 						// 置いているpluginが異なる（dir_nameから）
-						$controller->flash(__('Content not found.'), '', 'CheckAuth.checkGeneral.002', '404');
+						$controller->flash(__('Content not found.'), '', 'CheckAuth.checkGeneral.004', '404');
 						return false;
 					}
 
@@ -322,12 +331,12 @@ class CheckAuthComponent extends Component {
 					$active_page = $controller->Page->findById($block['Block']['page_id']);
 					if(!$active_page) {
 						// ブロックIDに対応したページが存在しない
-						$controller->flash(__('Page not found.'), $redirect_url, 'CheckAuth.checkGeneral.003', '404');
+						$controller->flash(__('Page not found.'), $redirect_url, 'CheckAuth.checkGeneral.005', '404');
 						return false;
 					}
 				}
 
-				$result = $this->_getPage($controller, $permalink, $page_id, $user_id, $lang);
+				$result = $this->_getPage($controller, $permalink, $page_id, $userId, $lang);
 
 				if($result === false) {
 					$page = false;
@@ -342,13 +351,13 @@ class CheckAuthComponent extends Component {
 					// ３０１をかえして、その後、移動後のページへ遷移させる
 					// TODO:中央カラムのみにはってあるブロックのみチェックしているが、ヘッダーのブロックのチェックもするべき
 					$redirect_url = preg_replace('$^'.$permalink.'$i', $active_page['Page']['permalink'], $url);
-					$controller->flash(__('Moved Permanently.'), $redirect_url, 'CheckAuth.checkGeneral.004', '301');
+					$controller->flash(__('Moved Permanently.'), $redirect_url, 'CheckAuth.checkGeneral.006', '301');
 					return false;
 				}
 
 				if($page === false || $center_page === false) {
 					// ページが存在しない
-					$controller->flash(__('Page not found.'), $redirect_url, 'CheckAuth.checkGeneral.005', '404');
+					$controller->flash(__('Page not found.'), $redirect_url, 'CheckAuth.checkGeneral.007', '404');
 					return false;
 				}
 
@@ -356,7 +365,7 @@ class CheckAuthComponent extends Component {
 				$controller->nc_current_page = $page;								// pageから取得できるPage
 				if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_DISABLE ||
 						($page['Page']['display_flag'] == NC_DISPLAY_FLAG_OFF && $page['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF)) {
-					$controller->flash(__('Content not found.'), $redirect_url, 'CheckAuth.checkGeneral.006', '404');
+					$controller->flash(__('Content not found.'), $redirect_url, 'CheckAuth.checkGeneral.008', '404');
 					return false;
 				}
 
@@ -390,7 +399,7 @@ class CheckAuthComponent extends Component {
 		// block_idチェック
 		if($this->chkBlockId && !$isActiveContent) {
 			if(!isset($block_id) || $block_id == 0) {
-				$controller->flash(__('Content not found.'), $redirect_url, 'CheckAuth.checkGeneral.007', '404');
+				$controller->flash(__('Content not found.'), $redirect_url, 'CheckAuth.checkGeneral.009', '404');
 				return false;
 			}
 		}
@@ -411,7 +420,7 @@ class CheckAuthComponent extends Component {
 						break;
 				}
 			}
-		} else if($user_id == 0 && !empty($mode)) {
+		} else if($userId == 0 && !empty($mode)) {
 			$this->Session->delete(NC_SYSTEM_KEY.'.mode');
 		}
 
@@ -431,7 +440,6 @@ class CheckAuthComponent extends Component {
 			$allowAuth = ($this->allowAuth == null) ? NC_AUTH_OTHER : $this->allowAuth;
 		}
 		$allowAuth = $this->_getMinAuth($allowAuth);
-
 		if($hierarchy < $allowAuth) {	// $page_id != 0 &&
 			return false;
 		}
@@ -465,16 +473,16 @@ class CheckAuthComponent extends Component {
  *
  * @param   Controller $controller Instantiating controller
  * @param   string  $permalink
- * @param   integer $user_id
+ * @param   integer $userId
  * @param   string  $lang
  * @return  array ($center_page, $page) エラーの場合、false
  * @since   v 3.0.0.0
  */
-	protected function _getPage(Controller $controller, $permalink, $page_id, $user_id, $lang) {
+	protected function _getPage(Controller $controller, $permalink, $page_id, $userId, $lang) {
 		$page = null;
 		$request_page = null;
 		$center_page = false;
-		if(empty($user_id)) {
+		if(empty($userId)) {
 			$page_params = array(
 				'fields' => array(
 					'Page.*'
@@ -492,7 +500,7 @@ class CheckAuthComponent extends Component {
 						"table" => "page_user_links",
 						"alias" => "PageUserLink",
 						"conditions" => "`Page`.`room_id`=`PageUserLink`.`room_id`".
-							" AND `PageUserLink`.`user_id` =".$user_id
+							" AND `PageUserLink`.`user_id` =".$userId
 						),
 					array(
 						"type" => "LEFT",
@@ -586,7 +594,7 @@ class CheckAuthComponent extends Component {
 		if(!isset($page)) {
 			return false;
 		}
-		$page = $controller->Page->afterFindIds($page, $user_id);
+		$page = $controller->Page->afterFindIds($page, $userId);
 
 		return array($center_page, $page);
 	}

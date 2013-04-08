@@ -159,10 +159,10 @@
 	z-index:2;
 }
 
-.nc-block-header-shortcut-show div {
+.nc-block-header-shortcut-show * {
 	background:url("../../img/pages/block/shortcut.gif") no-repeat scroll left top transparent;
 }
 
-.nc-block-header-shortcut-edit div {
+.nc-block-header-shortcut-edit * {
 	background:url("../../img/pages/block/shortcut_edit.gif") no-repeat scroll left top transparent;
 }
