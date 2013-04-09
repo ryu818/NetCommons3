@@ -27,11 +27,8 @@
 				'block_id' => $val['Block']['id'],
 				'#' => '_'.$val['Block']['id']
 			);
-			$controllerArr = explode('/', $val['Block']['controller_action'], 2);
-			$params['plugin'] = $params['controller'] = $controllerArr[0];
-			if(isset($controllerArr[1])) {
-				$params['action'] = $controllerArr[1];
-			}
+			$params = array_merge($params, $this->Common->explodeControllerAction($val['Block']['controller_action']));
+
 			$urlParams = array(
 				'permalink' => $val['Page']['permalink'],
 				'plugin' => null,

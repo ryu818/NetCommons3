@@ -69,12 +69,7 @@
 
 			<?php
 				if(isset($active_controller_action)){
-					$params = array();
-					$controllerArr = explode('/', $active_controller_action, 2);
-					$params['plugin'] = $params['controller'] = $controllerArr[0];
-					if(isset($controllerArr[1])) {
-						$params['action'] = $controllerArr[1];
-					}
+					$params = $this->Common->explodeControllerAction($active_controller_action);
 					$params['module_id'] = null;
 					$activeUrl = $this->Html->url($params);
 				}

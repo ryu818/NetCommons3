@@ -59,11 +59,7 @@
 			'block_type' => 'active-contents',
 			'content_id' => $val['Content']['id']
 		);
-		$controllerArr = explode('/', $val['Module']['controller_action'], 2);
-		$params['plugin'] = $params['controller'] = $controllerArr[0];
-		if(isset($controllerArr[1])) {
-			$params['action'] = $controllerArr[1];
-		}
+		$params = array_merge($params, $this->Common->explodeControllerAction($val['Module']['controller_action']));
 		$adminStr .= $this->Html->link(__('Reference'),
 			$params,
 			array(

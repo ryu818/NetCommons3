@@ -246,4 +246,27 @@ class CommonComponent extends Component {
     	if (!empty($ta['fragment'])) { $ta['fragment']='#'.$ta['fragment']; }
     	return implode('', array($ta['scheme'], $ta['user'], $ta['pass'], $ta['host'], $ta['port'], $ta['path'], $ta['query'], $ta['fragment']));
     }
+
+/**
+ * Page.controller_actionを分解し、配列を返す
+ * @param   string  $controllerAction
+ * @return  array   $params['plugin', 'controller', 'action']
+ * @since   v 3.0.0.0
+ */
+	public function explodeControllerAction($controllerAction) {
+		// TODO:CommonHelperにも同様のメソッドあり
+		//App::uses('CommonHelper', 'View/Helper');
+		//$commonHelper = new CommonHelper(new View());
+		//return $commonHelper->explodeControllerAction($controllerAction);
+		$params = array();
+		$controllerArr = explode('/', $controllerAction, 3);
+		$params['plugin'] = $params['controller'] = $controllerArr[0];
+		if(isset($controllerArr[2])) {
+			$params['controller'] = $controllerArr[1];
+			$params['action'] = $controllerArr[2];
+		} elseif(isset($controllerArr[1])) {
+			$params['controller'] = $controllerArr[1];
+		}
+		return $params;
+	}
 }

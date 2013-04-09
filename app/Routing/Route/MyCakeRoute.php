@@ -92,7 +92,7 @@ class MyCakeRoute extends CakeRoute {
 		// コントローラ名は常にpluginName + controllerにて判断する。
 		// 例：active-blocks/(block_id)/announcement/edits
 		//     -> Plugin/AnnouncementEditsController.phpがあれば、AnnouncementEditsController->indexメソッドへ
-		//     -> なければ、Plugin/AnnouncementsController.php->editメソッドへ
+		//     -> なければ、Plugin/AnnouncementsController.php->editsメソッドへ
 		if(isset($route['active_plugin'])) {
 			$plugin_name = 'active_plugin';
 			$controller_name = 'active_controller';

@@ -56,13 +56,19 @@ if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 			<?php if($nc_show_edit): ?>
 			<li class="<?php echo($edit_class_name); ?>">
 				<?php
-				$controller_arr = explode('/', $controller_action, 2);
+				$controller_arr = explode('/', $controller_action, 3);
 				$plugin = $controller = $controller_arr[0];
-				$action = null;
-				if(isset($controller_arr[1])) {
-					$action = $controller_arr[1];
+				if(isset($controller_arr[2])) {
+					$controller = $controller_arr[1];
+					$action = $controller_arr[2];
+				} elseif(isset($controller_arr[1])) {
+					$controller = $controller_arr[1];
+					$action = null;
 				}
-				echo $this->Html->link('', array('block_id' => $block_id, 'plugin' => $plugin, 'controller' => $controller, 'action' => $action, '#' => $id),
+				$params = $this->Common->explodeControllerAction($controller_action);
+				$params['block_id'] = $block_id;
+				$params['#'] = $id;
+				echo $this->Html->link('', $params,
 					array(
 						'title' => $title,
 						'class' => 'nc-block-toolbox-link nc-tooltip',
@@ -94,25 +100,22 @@ if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 		<li class="nc-drop-down-border">
 			<?php
 				/* TODO:lock_authority_idが入力されているロックされたブロックはコピー不可とする */
-								echo $this->Html->link(__('Copy'), array('plugin' => 'block', 'controller' => 'block_operations', 'action' => 'copy', 'block_id' => $block['Block']['id']),
+								echo $this->Html->link(__('Copy'), array('plugin' => 'block', 'controller' => 'operations', 'action' => 'copy', 'block_id' => $block['Block']['id']),
 								array('title' => __('Copy'), 'id' => 'nc-block-header-copy'.$id, 'class' => 'link hover-highlight','data-ajax' => '', 'data-ajax-type' => 'post'));
 							?>
 		</li>
 		<li>
 			<?php
-				echo $this->Html->link(__('Block style'), array('plugin' => 'block', 'controller' => 'block_styles', 'action' => 'index', 'block_id' => $block['Block']['id']),
+				echo $this->Html->link(__('Block style'), array('plugin' => 'block', 'controller' => 'styles', 'action' => 'index', 'block_id' => $block['Block']['id']),
 						array('title' => __('Block style'), 'id' => 'nc-block-styles-link'.$id, 'class' => 'link hover-highlight','data-ajax' => '', 'data-block-styles-dialog-id' => 'nc-block-styles-dialog'.$block['Block']['id']));
 			?>
 		</li>
 		<?php if($hierarchy >= NC_AUTH_MIN_CHIEF && $block['Module']['style_controller_action'] != '' && !isset($nc_error_flag)): ?>
 		<li>
 			<?php
-				$params = array('block_id' => $block['Block']['id']);	// 'block_type' => 'active-blocks',
-				$controller_arr = explode('/', $block['Module']['style_controller_action'], 2);
-				$params['plugin'] = $params['controller'] = $controller_arr[0];
-				if(isset($controller_arr[1])) {
-					$params['action'] = $controller_arr[1];
-				}
+				$params = $this->Common->explodeControllerAction($block['Module']['style_controller_action']);
+				$params['block_id'] = $block_id;
+
 				echo $this->Html->link(__('Display style'), $params,
 						array('title' => __('Display style'), 'id' => 'nc-block-display-styles-link'.$id, 'class' => 'link hover-highlight','data-ajax' => '', 'data-block-display-styles-dialog-id' => 'nc-block-display-styles-dialog'.$block['Block']['id']));
 			?>

@@ -125,7 +125,7 @@ if ($plugins = CakePlugin::loaded()) {
 		array('block_type' => 'active-contents'),
 		array(
 			'block_type' => 'active-contents',
-			'content_id' => '[0-9]*',
+			'content_id' => '[0-9]+',
 		) + $pluginParams
 	);
 
@@ -134,7 +134,7 @@ if ($plugins = CakePlugin::loaded()) {
 		array('block_type' => 'active-contents'),
 		array(
 			'block_type' => 'active-contents',
-			'content_id' => '[0-9]*',
+			'content_id' => '[0-9]+',
 		) + $pluginParams
 	);
 
@@ -143,7 +143,7 @@ if ($plugins = CakePlugin::loaded()) {
 		array('block_type' => 'active-contents'),
 		array(
 			'block_type' => 'active-contents',
-			'content_id' => '[0-9]*',
+			'content_id' => '[0-9]+',
 		) + $pluginParams
 	);
 
@@ -228,7 +228,7 @@ Router::connect(
 		'active_plugin' => '\/?[^\/]*',
 		'active_controller' => '\/?[^\/]*',
 		'active_action' => '\/?[^\/]*'
-	) + $pluginParams
+	) + array('routeClass' => $pluginParams['routeClass'], 'active_plugin' => $pluginParams['plugin'])
 );
 
 /**

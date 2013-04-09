@@ -54,7 +54,11 @@ class AppController extends Controller {
 		'Init', 'SetConfig', 'Session', 'Common', 'CheckAuth', 'Auth',
 	);
 	// 'DebugKit.Toolbar','Cookie', 'RequestHandler'
-
+/**
+ * Helper name
+ *
+ * @var array
+ */
 	public $helpers = array(
         'Session',
         'Form' => array(
@@ -67,8 +71,8 @@ class AppController extends Controller {
 		'Js',
         'Token',
 		'TimeZone',
+		'Common',
     );
-    // , 'Common',
 
     public $uses = array('Page', 'Block', 'Content', 'Module', 'Language', 'Config', 'Authority',
     		'User', 'Passport', 'PageStyle', 'ModuleLink', 'ModuleSystemLink', 'Community', 'Asset');

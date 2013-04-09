@@ -26,11 +26,7 @@
 				} else {
 					$is_active = false;
 					Configure::write(NC_SYSTEM_KEY.'.nc_not_active' , true);
-					$controller_arr = explode('/', $block['Block']['controller_action'], 2);
-					$params['plugin'] = $params['controller'] = $controller_arr[0];
-					if(isset($controller_arr[1])) {
-						$params['action'] = $controller_arr[1];
-					}
+					$params = array_merge($params, $this->Common->explodeControllerAction($block['Block']['controller_action']));
 				}
 
 				Configure::write(NC_SYSTEM_KEY.'.block', $block);
@@ -38,6 +34,7 @@
 				if($block['Block']['controller_action'] == "group") {
 					Configure::write(NC_SYSTEM_KEY.'.blocks', $blocks);
 				}
+
 				$c = trim($this->requestAction($params, $requestActionOptions));
 				if($is_active) {
 					$block_title = $this->fetch('block_title');

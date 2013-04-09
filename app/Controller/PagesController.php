@@ -39,11 +39,11 @@ class PagesController extends AppController {
  */
 	public $uses = array('ModuleLink', 'PageStyle');
 
-	/**
-	 * Component name
-	 *
-	 * @var array
-	 */
+/**
+ * Component name
+ *
+ * @var array
+ */
 	public $components = array('CheckAuth' => array('chkBlockId' => false, 'chkPlugin' => false));
 
 /**
