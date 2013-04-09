@@ -14,6 +14,9 @@
 			$title .= __d('content', 'Origin of content').':'.h($val['Page']['page_name']);
 
 			$titlePostfix .= '<span class="nc-content-shortcut-edit nc-block-header-shortcut-edit"><span></span></span>';
+			$confirm ='Deleting the only shortcut[%1$s]. Are you sure to proceed?';
+		} else {
+			$confirm ='Deleting the content[%1$s]. You can not be undone. Are you sure to proceed?';
 		}
 		if($title != '') {
 			$title = ' title="' . $title . '"';
@@ -111,7 +114,7 @@
 			array(
 				'title' =>__('Delete'), 'data-ajax-replace' => '#nc-content-top'.$id,
 				'data-ajax-type' => 'POST',
-				'data-ajax-confirm' => __d('content', 'Deleting the content[%1$s]. You can not be undone. Are you sure to proceed?', $val['Content']['title']),
+				'data-ajax-confirm' => __d('content', $confirm, $val['Content']['title']),
 			)
 		);
 

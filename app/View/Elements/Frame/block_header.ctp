@@ -5,7 +5,8 @@ if(isset($nc_error_flag) && $nc_error_flag) {
 } else if(!$nc_show_edit) {
 	$add_class_name = 'nc-shortcut-toolbox';
 }
-if($page['Page']['room_id'] != $block['Content']['room_id'] || !$block['Content']['is_master'] || $block['Content']['display_flag'] == NC_DISPLAY_FLAG_DISABLE) {
+if($page['Page']['room_id'] != $block['Content']['room_id'] || !$block['Content']['is_master'] ||
+	(isset($block['Content']['display_flag']) && $block['Content']['display_flag'] == NC_DISPLAY_FLAG_DISABLE)) {
 	$all_delete = _OFF;	// ショートカット
 } else {
 	/* TODO:後にコメント部分を削除 削除アクションがあるかどうか：削除アクションがなくてもContentテーブルを削除するだけで完全に削除を許す。 */
@@ -121,7 +122,7 @@ if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 		<?php if($block['Block']['controller_action'] != 'group'): ?>
 		<li>
 			<?php
-				echo $this->Html->link(__('Contents list'), array('plugin' => 'content', 'controller' => 'content', 'action' => 'index', 'block_id' => $block['Block']['id']),
+				echo $this->Html->link(__('Contents list'), array('plugin' => 'content', 'controller' => 'content', 'action' => 'index', 'block_id' => $block['Block']['id'], $page['Page']['room_id']),
 						array('title' => __('Contents list'), 'id' => 'nc-block-contents-list-link'.$id, 'class' => 'link hover-highlight','data-ajax' => '', 'data-block-contents-list-dialog-id' => 'nc-block-contents-list-dialog'.$block['Block']['id']));
 			?>
 		</li>

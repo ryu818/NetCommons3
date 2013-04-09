@@ -1,6 +1,6 @@
 <div id="nc-content-top<?php echo($id); ?>" data-width="750">
 	<?php
-		echo $this->Form->create('Content', array('type' => 'post', 'id' => 'FormContent'.$id, 'data-ajax-replace' => '#nc-content-top'.$id));
+		echo $this->Form->create('Content', array('url' => array('controller' => 'content',isset($active_room_id) ? $active_room_id : null),'type' => 'post', 'id' => 'FormContent'.$id, 'data-ajax-replace' => '#nc-content-top'.$id));
 	?>
 	<div class="top-description">
 		<?php
@@ -9,7 +9,7 @@
 	</div>
 	<div class="nc-content-selection-outer">
 		<label for="nc-content-sel-module<?php echo($id); ?>"><?php echo __d('content', 'Selection module'); ?></label>
-		<select id="nc-content-sel-module<?php echo($id); ?>" class="nc-content-sel-module nc-content-sel" name="sel_module" data-ajax-url="<?php echo($this->Html->url(array('module_id' => null))); ?>">
+		<select id="nc-content-sel-module<?php echo($id); ?>" class="nc-content-sel-module nc-content-sel" name="sel_module" data-ajax-url="<?php echo($this->Html->url(array('controller' => 'content',isset($active_room_id) ? $active_room_id : null, 'module_id' => null))); ?>">
 			<option value="0"><?php echo(__('All')); ?></option>
 		<?php foreach ($modules as $module_id => $module): ?>
 			<option<?php if($active_module_id == $module_id): ?> selected="selected"<?php endif; ?> value="<?php echo($module_id); ?>"><?php echo(h($module['Module']['module_name'])); ?></option>
@@ -28,23 +28,25 @@
 		*/
 	?>
 	<?php
+
 		echo $this->Html->div('btn-bottom',
 			$this->Form->button(__('Close'), array('name' => 'close', 'class' => 'common-btn', 'type' => 'button',
 				'onclick' => '$(\'#nc-block-contents-list-dialog'.$block_id.'\').dialog(\'close\'); return false;'))
 		);
+		//$all_checked = $this->Form->button(__('Select All'), array('name' => 'all_checked', 'class' => 'common-btn common-btn-min', 'type' => 'button', 'onclick' => ""));
+
+		echo $this->Form->end();
 	?>
 	<?php
 		echo $this->Html->css(array('plugins/flexigrid', 'Content.content/index'));
 		echo $this->Html->script(array('plugins/flexigrid','Content.content/index'));
-
-		//$all_checked = $this->Form->button(__('Select All'), array('name' => 'all_checked', 'class' => 'common-btn common-btn-min', 'type' => 'button', 'onclick' => ""));
 	?>
 	<script>
 		$(function(){
 			setTimeout(function(){
 				// resizeのアイコンを適切な位置に移動させるため、setTimeout
 				$("#nc-content-table<?php echo($id);?>").flexigrid ({
-					url: '<?php echo($this->Html->url(array('action' => 'content_list','active_content_id' => $active_content_id, 'module_id' => $active_module_id))); ?>',
+					url: '<?php echo($this->Html->url(array('action' => 'content_list','active_content_id' => $active_content_id, 'active_room_id' => $active_room_id, 'module_id' => $active_module_id))); ?>',
 					method: 'POST',
 					dataType: 'json',
 					showToggleBtn: false,
@@ -66,9 +68,9 @@
 			}, 100);
 
 			<?php
-				if(isset($activeControllerAction)){
+				if(isset($active_controller_action)){
 					$params = array();
-					$controllerArr = explode('/', $activeControllerAction, 2);
+					$controllerArr = explode('/', $active_controller_action, 2);
 					$params['plugin'] = $params['controller'] = $controllerArr[0];
 					if(isset($controllerArr[1])) {
 						$params['action'] = $controllerArr[1];

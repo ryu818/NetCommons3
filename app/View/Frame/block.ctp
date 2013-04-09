@@ -73,7 +73,7 @@ if($pos !== false) {
 	$theme_name = $block['Block']['theme_name'].'.block';
 }
 $block['Block']['theme_name'] = 'th-' . str_replace('.', '-', Inflector::underscore($block['Block']['theme_name']));	// th-(frame_name)-(color_dir)
-if($block['Block']['display_flag'] == NC_DISPLAY_FLAG_OFF || $block['Content']['display_flag'] == NC_DISPLAY_FLAG_OFF) {
+if($block['Block']['display_flag'] == NC_DISPLAY_FLAG_OFF || (isset($block['Content']['display_flag']) && $block['Content']['display_flag'] == NC_DISPLAY_FLAG_OFF)) {
 	$class_name .= ' nonpublic';
 } else if(!empty($block['Block']['display_to_date']) && $nc_mode == NC_BLOCK_MODE) {
     $class_name .= ' to-nonpublic';

@@ -29,12 +29,12 @@ class ContentController extends ContentAppController {
 
 /**
  * コンテンツ一覧表示
- * @param   integer $reload_block_id	reloadするblockのblock_id
- * 					削除コンテンツがページにはってあれば、そのブロックをリロードするため
+ * @param   integer $activeRoomId	表示するルームID
+ *						Activeなコンテンツを削除した場合、再描画できなくなるため。
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function index($reload_block_id = null) {
+	public function index($activeRoomId = null) {
 		$user = $this->Auth->user();
 		$authorityId = isset($user['authority_id']) ? $user['authority_id'] : 0;
 
@@ -43,6 +43,9 @@ class ContentController extends ContentAppController {
 			return;
 		}
 		$activeModuleId = isset($this->request->named['module_id']) ? intval($this->request->named['module_id']) : $this->nc_block['Module']['id'];
+
+		// 削除コンテンツがページにはってあれば、そのブロックをリロードするため
+		$reloadBlockId = isset($this->request->named['reload_block_id']) ? intval($this->request->named['reload_block_id']) : null;
 		$activeContentId = $this->nc_block['Block']['content_id'];
 
 		if($this->request->is('post')) {
@@ -53,7 +56,7 @@ class ContentController extends ContentAppController {
 			$activeContentId = $this->request->data['Content']['id'];
 			$activeContent = $this->Content->findById($activeContentId);
 			$activeModule = isset($activeContent['Content']['module_id']) ? $this->Module->findById($activeContent['Content']['module_id']) : null;
-			if(!isset($activeContent['Content']) || !isset($activeModule['Module']) || $selContent['Content']['display_flag'] == NC_DISPLAY_FLAG_DISABLE
+			if(!isset($activeContent['Content']) || !isset($activeModule['Module']) || $activeContent['Content']['display_flag'] == NC_DISPLAY_FLAG_DISABLE
 				|| $activeContent['Content']['module_id'] == 0 || $activeModule['Module']['system_flag'] == _ON) {
 				$this->flash(__('Content not found.'), null, 'Content.index.003', '404');
 				return;
@@ -94,8 +97,8 @@ class ContentController extends ContentAppController {
 				$this->Session->setFlash(__('Has been successfully updated.'));
 				$this->set('active_controller_action', $activeModule['Module']['controller_action']);
 			}
-		} else if(isset($reload_block_id)) {
-			$reloadBlock = $this->Block->findById($reload_block_id);
+		} else if(isset($reloadBlockId)) {
+			$reloadBlock = $this->Block->findById($reloadBlockId);
 			if(isset($reloadBlock['Block'])) {
 				$this->set('active_id', '_'. $reloadBlock['Block']['id']);
 			}
@@ -103,13 +106,14 @@ class ContentController extends ContentAppController {
 
 		if(!isset($activeContent)) {
 			$activeContent = $this->Content->findById($activeContentId);
-			if(!isset($activeContent['Content']['id'])) {
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Content.index.006', '500');
+			if(!isset($activeRoomId) && !isset($activeContent['Content']['id'])) {
+				$this->flash(__('No Content.'), null, 'Content.index.006', '404');
 				return;
 			}
+			$activeRoomId = !isset($activeRoomId) ? $activeContent['Content']['room_id'] : $activeRoomId;
 		}
 
-		$activeRoom = $this->Page->findById($activeContent['Content']['room_id']);
+		$activeRoom = $this->Page->findById($activeRoomId);
 		if(!isset($activeRoom['Page']['id'])) {
 			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Content.index.007', '500');
 			return;
@@ -119,6 +123,8 @@ class ContentController extends ContentAppController {
 		$this->set('room_name', $activeRoom['Page']['page_name']);
 		// モジュール一覧
 		$this->set('active_module_id', $activeModuleId);
+		$this->set('active_room_id', $activeRoomId);
+
 		$this->set('active_content_id', $activeContentId);
 		$this->set('modules', $this->ModuleLink->findModulelinks($this->nc_page['Page']['room_id'], $authorityId, $this->nc_page['Page']['space_type']));
 	}
@@ -143,7 +149,12 @@ class ContentController extends ContentAppController {
 		$pageNum = intval($this->request->data['page']) == 0 ? 1 : intval($this->request->data['page']);
 		$moduleId = isset($this->request->named['module_id']) ? intval($this->request->named['module_id']) : $this->nc_block['Block']['module_id'];
 
+		$activeRoomId = $this->request->named['active_room_id'];
 		$activeContentId = isset($this->request->named['active_content_id']) ? intval($this->request->named['active_content_id']) : $this->content_id;
+		if(!isset($activeRoomId)) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Content.content_list.001', '500');
+			return;
+		}
 
 		$order = null;
 		if(!empty($sortname) && ($sortname != "title" || $sortorder != "asc")) {
@@ -152,10 +163,9 @@ class ContentController extends ContentAppController {
 				'Content.id' => $sortorder
 			);
 		}
-		$roomId = $this->nc_block['Content']['room_id'];
 		$approvedFlag = _ON; 								// TODO:固定
 
-		list($total, $contents) = $this->ContentList->findContents($userId, $roomId, $pageNum, $rp, $order, $activeContentId, $moduleId, $approvedFlag);
+		list($total, $contents) = $this->ContentList->findContents($userId, $activeRoomId, $pageNum, $rp, $order, $activeContentId, $moduleId, $approvedFlag);
 		$this->set('page_num', $pageNum);
 		$this->set('total', $total);
 		$this->set('contents', $contents);
@@ -292,11 +302,11 @@ class ContentController extends ContentAppController {
 		$this->Session->setFlash(__('Has been successfully deleted.'));
 
 		// 現在のページに配置されているブロックならば、再描画。
-		$block = $this->Block->findByContentId($contentId);
-		if(isset($block['Block']['id'])) {
-			$this->redirect(array('action' => 'index', $block['Block']['id']));
+		// TODO:現在のページのカレントブロック以外については複数ある場合もあるため、再描画さしていない。
+		if(isset($this->nc_block['Block']['content_id']) == $contentId) {
+			$this->redirect(array('action' => 'index', $content['Content']['room_id'], 'reload_block_id' => $this->nc_block['Block']['id']));
 		} else {
-			$this->redirect(array('action' => 'index'));
+			$this->redirect(array('action' => 'index', $content['Content']['room_id']));
 		}
 	}
 }
