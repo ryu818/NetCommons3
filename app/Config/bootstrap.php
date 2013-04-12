@@ -167,7 +167,3 @@ Configure::write('Session', array(
         'session.gc_divisor' => 100
     )*/
 ));
-
-// エラーの場合、layoutを強制的にdefaultに戻すため
-App::import('Lib', 'AppExceptionRenderer');
-Configure::write('Exception.renderer', 'AppExceptionRenderer');
