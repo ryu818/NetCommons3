@@ -26,11 +26,10 @@
 ?>
 <script>
 	$(function () {
-		$(document).pjax('a[data-pjax],input[data-pjax],button[data-pjax]');
 		$(document).on("submit", "form[data-pjax],form[data-ajax],form[data-ajax-replace]", function (e) {
 			$.Common.ajax(e, $(this));
 		});
-		$(document).on("click", "a[data-ajax],a[data-ajax-replace],input[data-ajax],input[data-ajax-replace],button[data-ajax],button[data-ajax-replace]", function (e) {
+		$(document).on("click", "a[data-ajax],a[data-ajax-replace],a[data-pjax],input[data-ajax],input[data-ajax-replace],input[data-pjax],button[data-ajax],button[data-ajax-replace],button[data-pjax]", function (e) {
 			$.Common.ajax(e, $(this));
 		});
 
