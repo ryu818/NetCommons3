@@ -11,9 +11,9 @@
 	$.Common ={
 		zIndex : 2000,
 		blockZIndex : 1000,
-		// data-pjax属性の値をtargetとしてhrefタグのURLを用いてAjaxでデータを取得し、targetを置換する。
-		//
-		// data-ajax属性の値をtargetとしてhrefタグのURLを用いてAjaxでデータを取得し、targetにinnerHtmlを行う。
+		// data-pjax属性の値を targetとして置換する。その際、リクエストしたURLに変更される。
+		//		TODO:pjaxをブロックTopエレメント以外で使用するとBack、Forwordの動作が動かなく可能性が高い。
+		// data-ajax属性の値をtargetとして、targetにinnerHtmlを行う。
 		// data-ajax-replace属性ならば、targetと入れ替える。
 		//
 		// data-ajax-url:URL default：href属性から取得
@@ -36,7 +36,7 @@
 		//     });
 		//
 		ajax : function(e, a, confirm) {
-			var data_pjax, top, url, data, input_type, type, ret;
+			var data_pjax, top, url, data, input_type, type, params, is_form, ret;
 			a = $(a);
 			var target_pjax = a.attr("data-pjax");
 			var confirm = (typeof confirm == "undefined") ? a.attr("data-ajax-confirm") : confirm;
@@ -64,53 +64,57 @@
 				return;
 			}
 
+			if(a.get(0).tagName.toLowerCase() == 'form') {
+				input_type = 'POST';
+				url = a.attr('action');
+				data = a.serializeArray();
+				is_form = true;
+			} else {
+				input_type = 'GET';
+				url = a.attr('href');
+				data = {};
+				is_form = false;
+			}
+			type = a.attr("data-ajax-type");
+			url = a.attr("data-ajax-url") ? a.attr("data-ajax-url") : url;
+			ret = $.Common.fire('ajax:beforeSend', [url, data], a, e);
+			if (!ret) {
+				e.preventDefault();
+				return false
+			}
+			if(ret !== true) {
+				if(typeof ret == "string") {
+					url = ret;
+				} else if(ret['url']) {
+					url = ret['url'];
+					data = ret['data'] ? ret['data'] : data;
+				} else {
+					url = ret[0];
+					data = ret[0];
+				}
+			}
+			params = {
+				type: (type == 'GET' || type == 'get' || type == 'POST' || type == 'post') ? type : input_type,
+				url: url,
+				data: data,
+				success: function(res, status, xhr){
+					if (!$.Common.fire('ajax:success', [res, e, status, xhr], a,e)) {
+						return false
+					}
+					$.Common.ajaxSuccess(a, res, null, e);
+				}
+			}
+
 			if(target_pjax) {
 				// pjax
-				// TODO:pjaxにはeffect等が対応していない。
 				top = $(target_pjax);
-				if(top.get(0)) {
-					$.pjax.submit(e, top);
+				if(is_form) {
+					$.pjax.submit(e, top, params);
+				} else {
+					$.pjax.click(e, top, params);
 				}
 			} else {
-				if(a.get(0).tagName.toLowerCase() == 'form') {
-					input_type = 'POST';
-					url = a.attr('action');
-					data = a.serializeArray();
-				} else {
-					input_type = 'GET';
-					url = a.attr('href');
-					data = {};
-				}
-
-				ret = $.Common.fire('ajax:beforeSend', [url, data], a, e);
-				if (!ret) {
-					e.preventDefault();
-					return false
-				}
-				if(ret !== true) {
-					if(typeof ret == "string") {
-						url = ret;
-					} else if(ret['url']) {
-						url = ret['url'];
-						data = ret['data'] ? ret['data'] : data;
-					} else {
-						url = ret[0];
-						data = ret[0];
-					}
-				}
-				type = a.attr("data-ajax-type");
-				url = a.attr("data-ajax-url") ? a.attr("data-ajax-url") : url;
-				$.ajax({
-					type: (type == 'GET' || type == 'get' || type == 'POST' || type == 'post') ? type : input_type,
-					url: url,
-					data: data,
-					success: function(res, status, xhr){
-						if (!$.Common.fire('ajax:success', [res, e, status, xhr], a,e)) {
-							return false
-						}
-						$.Common.ajaxSuccess(a, res, null, e);
-					}
-	 			});
+				$.ajax(params);
 			}
 			e.preventDefault();
 		},

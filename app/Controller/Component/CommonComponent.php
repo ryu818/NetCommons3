@@ -240,7 +240,7 @@ class CommonComponent extends Component {
     			$tu.=rawurlencode($tok).'/';
     			$tok=strtok("\\/");
     		}
-    		$ta['path']='/'.trim($tu, '/');
+    		$ta['path']='/'.trim(str_replace('%3A', ':', $tu), '/');	// :はnamed属性で使用するため再変換。
     	}
     	if (!empty($ta['query'])) { $ta['query']='?'.$ta['query']; }
     	if (!empty($ta['fragment'])) { $ta['fragment']='#'.$ta['fragment']; }

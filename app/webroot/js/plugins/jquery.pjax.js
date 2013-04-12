@@ -28,6 +28,7 @@
 //
 // Returns the jQuery object
 // TODO:v1.2.0 お知らせ編集->決定->戻る->戻る->進む->進むでお知らせの元の画面に戻るはずが、遷移しない。現状、対処しない。
+// TODO:$.Commonから呼ぶように修正したため、余分なコードがある ([pjax:]関連のtriggerは廃止する?)
 function fnPjax(selector, container, options) {
   var context = this
   return this.on('click.pjax', selector, function(event) {
@@ -89,7 +90,8 @@ function handleClick(event, container, options) {
     url: (typeof $(link).attr('href') == 'undefined') ? $(link).attr('data-ajax-url') : $(link).attr('href'),
     container: $(link).attr('data-pjax'),
     target: link,
-    fragment: null
+    fragment: null,
+    type: (typeof $(link).attr('data-ajax-type') != 'undefined') ? $(link).attr('data-ajax-type') : 'GET'
   }
   options = $.extend({}, defaults, options)
   var url = _convertPluginUrl(options['container'], options['url'])
@@ -101,7 +103,6 @@ function handleClick(event, container, options) {
 //Edit End Ryuji.M
 }
 //Add Start Ryuji.M 非対応ブラウザでは、Aタグではないと遷移されないため、修正。
-// TODO:submit時に動作するかどうかは未検証。
 function disableHandleClick(event, container, options) {
 	var link = event.currentTarget
 	var defaults = {
@@ -267,12 +268,18 @@ function pjax(options) {
           if(url) {
         	  var re_url = new RegExp("^"+ $.Common.quote($._full_base_url) , 'i');
               var buf_url = url.replace(re_url, '');
+              var hash_str = null;
               if(url != buf_url) {
                   url = $._base_url + buf_url;
               }
-              var hash_str = pjax.options.url.match(/.*(#.*)/i);
+
               pjax.options.type = 'GET';
-              pjax.options.url = url + RegExp.$1;
+              if(!url.match(/.*(#.*)/i)) {
+              	hash_str = pjax.options.url.match(/.*(#.*)/i);
+              	pjax.options.url = url + RegExp.$1;
+              } else {
+              	pjax.options.url = url;
+              }
               pjax.options.data = {};
               pjax.options.id = pjax.state.id;
               pjax.options.replace = true;
