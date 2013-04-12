@@ -105,7 +105,7 @@
 				}
 			}
 
-			if(target_pjax) {
+			if(target_pjax && $.support.pjax) {
 				// pjax
 				top = $(target_pjax);
 				if(is_form) {
@@ -114,6 +114,16 @@
 					$.pjax.click(e, top, params);
 				}
 			} else {
+				if(target_pjax) {
+					if(is_form || (type != 'post' && type != 'POST')) {	// a.attr('href') == url &&
+						if(a.attr('href') != url) {
+							location.href = url;
+						}
+						return;
+					}
+					a.attr('data-ajax-replace', a.attr('data-pjax'));
+					a.removeAttr('data-pjax');
+				}
 				$.ajax(params);
 			}
 			e.preventDefault();
