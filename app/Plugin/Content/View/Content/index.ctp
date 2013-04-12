@@ -1,6 +1,6 @@
 <div id="nc-content-top<?php echo($id); ?>" data-width="750">
 	<?php
-		echo $this->Form->create('Content', array('url' => array('controller' => 'content',isset($active_room_id) ? $active_room_id : null),'type' => 'post', 'id' => 'FormContent'.$id, 'data-ajax-replace' => '#nc-content-top'.$id));
+		echo $this->Form->create('Content', array('url' => array(isset($active_room_id) ? $active_room_id : null),'type' => 'post', 'id' => 'FormContent'.$id, 'data-ajax-replace' => '#nc-content-top'.$id));
 	?>
 	<div class="top-description">
 		<?php
@@ -9,7 +9,7 @@
 	</div>
 	<div class="nc-content-selection-outer">
 		<label for="nc-content-sel-module<?php echo($id); ?>"><?php echo __d('content', 'Selection module'); ?></label>
-		<select id="nc-content-sel-module<?php echo($id); ?>" class="nc-content-sel-module nc-content-sel" name="sel_module" data-ajax-url="<?php echo($this->Html->url(array('controller' => 'content',isset($active_room_id) ? $active_room_id : null, 'module_id' => null))); ?>">
+		<select id="nc-content-sel-module<?php echo($id); ?>" class="nc-content-sel-module nc-content-sel" name="sel_module" data-ajax-url="<?php echo($this->Html->url(array(isset($active_room_id) ? $active_room_id : null, 'module_id' => null))); ?>">
 			<option value="0"><?php echo(__('All')); ?></option>
 		<?php foreach ($modules as $module_id => $module): ?>
 			<option<?php if($active_module_id == $module_id): ?> selected="selected"<?php endif; ?> value="<?php echo($module_id); ?>"><?php echo(h($module['Module']['module_name'])); ?></option>

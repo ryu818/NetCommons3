@@ -39,13 +39,173 @@ class MyFormHelper extends FormHelper {
 	 * @link http://book.cakephp.org/2.0/en/core-libraries/helpers/form.html#options-for-create
 	 */
 	public function create($model = null, $options = array()) {
+// Add Start Ryuji.M
+// id属性、name属性付け替え
 		if (!isset($options['id']) && isset($this->_View->viewVars['id'])) {
 			$options['id'] = $this->domId('Form');
 		}
 		if (!isset($options['name']) && isset($options['id'])) {
 			$options['name'] = $options['id'];
 		}
-		return parent::create($model, $options);
+// Add End Ryuji.M
+
+		$created = $id = false;
+		$append = '';
+
+		if (is_array($model) && empty($options)) {
+			$options = $model;
+			$model = null;
+		}
+
+		if (empty($model) && $model !== false && !empty($this->request->params['models'])) {
+			$model = key($this->request->params['models']);
+		} elseif (empty($model) && empty($this->request->params['models'])) {
+			$model = false;
+		}
+		$this->defaultModel = $model;
+
+		$key = null;
+		if ($model !== false) {
+			list($plugin, $model) = pluginSplit($model, true);
+			$key = $this->_introspectModel($plugin . $model, 'key');
+			$this->setEntity($model, true);
+		}
+
+		if ($model !== false && $key) {
+			$recordExists = (
+			isset($this->request->data[$model]) &&
+			!empty($this->request->data[$model][$key]) &&
+			!is_array($this->request->data[$model][$key])
+			);
+
+			if ($recordExists) {
+				$created = true;
+				$id = $this->request->data[$model][$key];
+			}
+		}
+
+		$options = array_merge(array(
+			'type' => ($created && empty($options['action'])) ? 'put' : 'post',
+			'action' => null,
+			'url' => null,
+			'default' => true,
+			'encoding' => strtolower(Configure::read('App.encoding')),
+			'inputDefaults' => array()),
+		$options);
+		$this->inputDefaults($options['inputDefaults']);
+		unset($options['inputDefaults']);
+
+		if (!isset($options['id'])) {
+			$domId = isset($options['action']) ? $options['action'] : $this->request['action'];
+			$options['id'] = $this->domId($domId . 'Form');
+		}
+
+		if ($options['action'] === null && $options['url'] === null) {
+			$options['action'] = $this->request->here(false);
+		} elseif (empty($options['url']) || is_array($options['url'])) {
+			if (empty($options['url']['controller'])) {
+// Edit Start Ryuji.M
+// model名とプラグイン名がいっしょならば、controller名を複数形にしない
+				$plugin = null;
+				if ($this->plugin) {
+					$plugin = $this->plugin;
+				}
+				if (!empty($model)) {
+					if($this->plugin == $model) {
+						$options['url']['controller'] = Inflector::underscore($model);
+					} else {
+						$options['url']['controller'] = Inflector::underscore(Inflector::pluralize($model));
+					}
+				} elseif (!empty($this->request->params['controller'])) {
+					$options['url']['controller'] = Inflector::underscore($this->request->params['controller']);
+				}
+				//if (!empty($model)) {
+				//	$options['url']['controller'] = Inflector::underscore(Inflector::pluralize($model));
+				//} elseif (!empty($this->request->params['controller'])) {
+				//	$options['url']['controller'] = Inflector::underscore($this->request->params['controller']);
+				//}
+// Edit End Ryuji.M
+			}
+// Add Start Ryuji.M
+// #個所付与
+			if($this->plugin && !isset($options['url']['#']) && isset($this->_View->viewVars['id'])) {
+				$options['url']['#'] = $this->_View->viewVars['id'];
+			}
+// Add End Ryuji.M
+			if (empty($options['action'])) {
+				$options['action'] = $this->request->params['action'];
+			}
+
+			$plugin = null;
+			if ($this->plugin) {
+				$plugin = Inflector::underscore($this->plugin);
+			}
+			$actionDefaults = array(
+				'plugin' => $plugin,
+				'controller' => $this->_View->viewPath,
+				'action' => $options['action'],
+			);
+			$options['action'] = array_merge($actionDefaults, (array)$options['url']);
+			if (empty($options['action'][0]) && !empty($id)) {
+				$options['action'][0] = $id;
+			}
+		} elseif (is_string($options['url'])) {
+			$options['action'] = $options['url'];
+		}
+		unset($options['url']);
+
+		switch (strtolower($options['type'])) {
+			case 'get':
+				$htmlAttributes['method'] = 'get';
+				break;
+			case 'file':
+				$htmlAttributes['enctype'] = 'multipart/form-data';
+				$options['type'] = ($created) ? 'put' : 'post';
+			case 'post':
+			case 'put':
+			case 'delete':
+				$append .= $this->hidden('_method', array(
+				'name' => '_method', 'value' => strtoupper($options['type']), 'id' => null,
+				'secure' => self::SECURE_SKIP
+				));
+			default:
+				$htmlAttributes['method'] = 'post';
+				break;
+		}
+		$this->requestType = strtolower($options['type']);
+
+		$action = $this->url($options['action']);
+		unset($options['type'], $options['action']);
+
+		if (!$options['default']) {
+			if (!isset($options['onsubmit'])) {
+				$options['onsubmit'] = '';
+			}
+			$htmlAttributes['onsubmit'] = $options['onsubmit'] . 'event.returnValue = false; return false;';
+		}
+		unset($options['default']);
+
+		if (!empty($options['encoding'])) {
+			$htmlAttributes['accept-charset'] = $options['encoding'];
+			unset($options['encoding']);
+		}
+
+		$htmlAttributes = array_merge($options, $htmlAttributes);
+
+		$this->fields = array();
+		if ($this->requestType !== 'get') {
+			$append .= $this->_csrfField();
+		}
+
+		if (!empty($append)) {
+			$append = $this->Html->useTag('hiddenblock', $append);
+		}
+
+		if ($model !== false) {
+			$this->setEntity($model, true);
+			$this->_introspectModel($model, 'fields');
+		}
+		return $this->Html->useTag('form', $action, $htmlAttributes) . $append;
 	}
 
 /**
