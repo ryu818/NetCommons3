@@ -28,7 +28,7 @@
 				);
 				/* TODO: 会員のリンク先は未定義、会員情報を表示させる */
 				$user = $this->Html->link($post['BlogComment']['created_user_name'], '#',
-					array('title' => $post['BlogComment']['created_user_name']));
+					array('title' => $post['BlogComment']['created_user_name'], 'data-pjax' => '#'.$id));
 				echo(__d('blog', '%1$s on %2$s', $user, $comment));
 			?>
 		</li>

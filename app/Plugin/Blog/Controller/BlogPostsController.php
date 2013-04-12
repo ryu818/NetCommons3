@@ -88,7 +88,7 @@ class BlogPostsController extends BlogAppController {
 			$htmlarea_id = $blog_post['BlogPost']['htmlarea_id'];
 			$blog_post['BlogPost'] = array_merge($blog_post['BlogPost'], $this->request->data['BlogPost']);
 			$blog_post['BlogPost']['content_id'] = $this->content_id;
-			$blog_post['BlogPost']['permalink'] = $blog_post['BlogPost']['title'];	// TODO:仮でtitleをセット
+			$blog_post['BlogPost']['permalink'] = $blog_post['BlogPost']['title'];	// TODO:仮でtitleをセット「「/,:」等の記号を取り除いたり同じタイトルがあればリネームしたりすること。」
 			$blog_post['BlogPost']['status'] = ($is_temporally) ? NC_STATUS_TEMPORARY : NC_STATUS_PUBLISH;
 			$blog_post['BlogPost']['htmlarea_id'] = 0;
 
@@ -157,9 +157,17 @@ class BlogPostsController extends BlogAppController {
 
 				if(!$is_temporally) {
 					// 決定の場合、リダイレクト
-					$this->redirect(array('controller' => 'blog', '#' => $this->id));
+					$backId = 'blog-post' . $this->id. '-' . $this->BlogPost->id;
+					$editUrl = array('controller' => 'blog', '#' => $backId);
+					if(isset($this->request->query['back_query'])) {
+						$editUrl = array_merge($backUrl, explode('/', $this->request->query['back_query']));
+					}
+					$editUrl['limit'] = isset($this->request->query['back_limit']) ? $this->request->query['back_limit'] : null;
+					$editUrl['page'] = isset($this->request->query['back_page']) ? $this->request->query['back_page'] : null;
+					$this->redirect($editUrl);
 					return;
 				} else if(!isset($post_id)) {
+					// 新規投稿ならば、編集画面にするためリダイレクト
 					$this->redirect(array('controller' => 'blog_posts', $this->BlogPost->id, '#' => $this->id));
 					return;
 				}
@@ -177,12 +185,12 @@ class BlogPostsController extends BlogAppController {
 		$this->set('post_id', $post_id);
 	}
 
-	/**
-	 * ブログ記事削除
-	 * @param   integer $postId
-	 * @return  void
-	 * @since   v 3.0.0.0
-	 */
+/**
+ * ブログ記事削除
+ * @param   integer $postId
+ * @return  void
+ * @since   v 3.0.0.0
+ */
 	public function delete($postId = null) {
 		if(empty($postId) || !$this->request->is('post')) {
 			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPost.delete.001', '500');
@@ -191,7 +199,7 @@ class BlogPostsController extends BlogAppController {
 
 		// コメント削除
 		$delConditions = array('BlogComment.blog_post_id'=>$postId);
-		if(!$this->BlogComment->deleteAll($delConditions)){
+		if(!$this->BlogComment->deleteAll($delConditions, false)){
 			$this->flash(__('Failed to delete the database, (%s).', 'blog_comments'), null, 'BlogPost.delete.002', '500');
 			return;
 		}
@@ -228,6 +236,90 @@ class BlogPostsController extends BlogAppController {
 			return;
 		}
 
-		$this->redirect(array('controller' => 'blog', 'action'=> 'index'));
+		// リダイレクト
+		$this->redirect($this->_getRedirectUrl($this->id, $this->block_id, $blogPost['BlogPost']['content_id'], $this->hierarchy));
+	}
+
+/**
+ * ブログ記事削除時リダイレクトURL取得
+ * 		現在のページ上にほかの記事があれば、そのページへ
+ * 		なければ、1ペー目へリダイレクト
+ * @param   integer $id
+ * @param   integer $blockId
+ * @param   integer $contentId
+ * @param   integer $hierarchy
+ * @return  array $redirectUrl
+ * @since   v 3.0.0.0
+ */
+	protected function _getRedirectUrl($id, $blockId, $contentId, $hierarchy) {
+		$userId = $this->Auth->user('id');
+		$redirectUrl = array('controller' => 'blog', 'action'=> 'index', '#' => $id);
+		$joins = array();
+		$page = isset($this->request->query['back_page']) ? intval($this->request->query['back_page']) : 1;
+		if(isset($this->request->query['back_query'])) {
+			$redirectUrl = array_merge($redirectUrl, explode('/', $this->request->query['back_query']));
+			if(isset($redirectUrl[0])) {
+				$requestConditions = array();
+				if(preg_match('/[0-9]+/', $redirectUrl[0])) {
+					$requestConditions = array('year' => $redirectUrl[0]);
+					if(isset($redirectUrl[1])) {
+						$requestConditions = array('month' => $redirectUrl[1]);
+					}
+					if(isset($redirectUrl[2])) {
+						$requestConditions = array('day' => $redirectUrl[2]);
+					}
+					if(isset($redirectUrl[3])) {
+						$requestConditions = array('subject' => $redirectUrl[3]);
+					}
+				} else if(isset($redirectUrl[1])) {
+					switch($redirectUrl[0]) {
+						case 'author':
+						case 'tag':
+						case 'category':
+						case 'keyword':
+							$requestConditions = array($redirectUrl[0] => $redirectUrl[1]);
+							break;
+					}
+				}
+				if(count($requestConditions) > 0) {
+					list($addParams, $joins) = $this->BlogPost->getPaginateConditions($requestConditions);
+				}
+			}
+		}
+		if(isset($page) && $page > 1) {
+			$limit = $redirectUrl['limit'] = isset($this->request->query['back_limit']) ? $this->request->query['back_limit'] : null;
+			if(!isset($limit)) {
+				$params = array(
+					'fields' => array('BlogStyle.visible_item'),
+					'conditions' => array('BlogStyle.block_id' => $blockId, 'BlogStyle.widget_type' => BLOG_WIDGET_TYPE_MAIN),
+					'order' => null,
+				);
+				$blog_style = $this->BlogStyle->find('first', $params);
+				if(isset($blog_style['BlogStyle'])) {
+					$limit = $blog_style['BlogStyle']['visible_item'];
+				} else {
+					$limit = BLOG_DEFAULT_VISIBLE_ITEM;
+				}
+			}
+			$conditions = $this->BlogPost->getConditions($contentId, $userId, $hierarchy);
+			if(isset($addParams)) {
+				$conditions = array_merge($conditions, $addParams);
+			}
+			$redirectBlogPosts = $this->BlogPost->find('all', array(
+				'fields' => array('BlogPost.id'),
+				'conditions' => $conditions,
+				'joins' => $joins,
+				'page' => $page,
+				'limit' => $limit,
+				'recursive' => -1
+			));
+			if(count($redirectBlogPosts) > 0) {
+				$redirectUrl['page'] = $page;
+			} else if($page > 2) {
+				// 1ページ前を表示
+				$redirectUrl['page'] = $page - 1;
+			}
+		}
+		return $redirectUrl;
 	}
 }

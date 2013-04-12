@@ -192,6 +192,19 @@ a.hover-highlight:active {
 	text-align:center;
 	white-space: nowrap;
 }
+/* 一覧へ戻る */
+.link-bottom {
+	margin:5px 0;
+	padding:10px;
+	text-align:center;
+	white-space: nowrap;
+}
+.link-back {
+	text-align:center;
+	border:1px solid #aaaaaa;
+	border-radius: 3px;
+	padding:5px 10px;
+}
 
 /* Form  */
 fieldset.form input[type="text"], fieldset.form input[type="password"], fieldset.form textarea,input.text,.dropdown {

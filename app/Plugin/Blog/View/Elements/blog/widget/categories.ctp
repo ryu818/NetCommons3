@@ -17,7 +17,7 @@
 		} else {
 			$values[$this->Html->url($url_arr)] = $this->Html->link($title,
 				$url_arr,
-				array('title' => $title)
+				array('title' => $title, 'data-pjax' => '#'.$id)
 			);
 		}
 	}
@@ -28,6 +28,7 @@
 		'values' => $values,
 		'name' => 'categories',
 		'value' => $this->Html->url(array('category',(isset($category) ? $category : null), 'limit' => $limit, '#' => $id)),
+		'data-pjax' => '#'.$id,
 	);
 	if(!isset($type)) {
 		$params['title'] =__d('blog', 'Categories');

@@ -34,7 +34,8 @@
 					'selector' => true
 				)),
 				'data-ajax-url' =>  $this->Html->url(array('controller' => 'blog_terms', 'action' => 'add_category', $post_id)),
-				'onkeypress' => "$.BlogPosts.addCategory(event, '".$id."');"
+				'onkeypress' => "$.BlogPosts.addCategory(event, '".$id."');",
+				'required' => false,
 			);
 			echo $this->Form->input('BlogTerm.name', $settings);
 		?>

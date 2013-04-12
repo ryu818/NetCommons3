@@ -14,9 +14,15 @@ if(isset($blog_posts_terms[$post_id])) {
 		if($str != '') {
 			$str .= __d('blog', ',');
 		}
-		$str .= $this->Html->link($blog_term['BlogTerm']['name'], array('plugin' => 'blog', 'controller' => 'blog', 'action' => 'index', $taxonomy, $blog_term['BlogTerm']['slug']),
-				array('title' => __d('blog', 'View all posts by %s', $blog_term['BlogTerm']['name']),
-				'rel' => 'category tag', 'class' => 'blog-term'));
+		$str .= $this->Html->link($blog_term['BlogTerm']['name'], array(
+					'plugin' => 'blog', 'controller' => 'blog', 'action' => 'index',
+					$taxonomy,
+					$blog_term['BlogTerm']['slug'],
+					'limit' => $limit,
+					'#' => $id
+				),
+				array('title' => __d('blog', 'View all posts by %s', $blog_term['BlogTerm']['name']), 'data-pjax' => '#'.$id,
+				'rel' => 'tag', 'class' => 'blog-term'));
 	}
 }
 if($str != '') {

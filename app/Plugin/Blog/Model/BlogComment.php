@@ -14,29 +14,6 @@ class BlogComment extends AppModel
 
 	public $order = array("BlogComment.created" => "ASC");
 
-	public $belongsTo = array(
-		'BlogPost'      => array('type' => 'INNER'),
-		'Content'      => array(
-			'type' => 'INNER',
-			'fields' => array()
-		),
-		'PageUserLink' => array(
-			'foreignKey'    => '',
-			'fields' => array(),
-			'conditions' => array(
-				'BlogPost.created_user_id = PageUserLink.user_id',
-				'Content.room_id = PageUserLink.room_id'
-			)
-		),
-		'Authority'    => array(
-			'foreignKey'    => '',
-			'fields' => array('Authority.hierarchy'),
-			'conditions' => array(
-				'PageUserLink.authority_id = Authority.id',
-			)
-		),
-	);
-
 /**
  * バリデート処理
  * @param   void
@@ -159,9 +136,36 @@ class BlogComment extends AppModel
 	public function recentComments($content_id, $visible_item, $conditions = array()) {
 		$params = array(
 			'fields' => array('BlogComment.*', 'BlogPost.post_date', 'BlogPost.title', 'BlogPost.permalink'),
-			'conditions' => $conditions,	//array('BlogComment.content_id' => $content_id),
+			'conditions' => $conditions,
 			'limit' => intval($visible_item),
-			'page' => 1
+			'page' => 1,
+			'joins' => array(
+				array(
+					"type" => "INNER",
+					"table" => "blog_posts",
+					"alias" => "BlogPost",
+					"conditions" => "`BlogComment`.`blog_post_id`=`BlogPost`.`id`"
+				),
+				array(
+					"type" => "INNER",
+					"table" => "contents",
+					"alias" => "Content",
+					"conditions" => "`BlogComment`.`content_id`=`Content`.`id`"
+				),
+				array(
+					"type" => "LEFT",
+					"table" => "page_user_links",
+					"alias" => "PageUserLink",
+					"conditions" => "`BlogPost`.`created_user_id`=`PageUserLink`.`user_id`".
+						" AND `Content`.`room_id`=`PageUserLink`.`room_id`"
+				),
+				array(
+					"type" => "LEFT",
+					"table" => "authorities",
+					"alias" => "Authority",
+					"conditions" => "`Authority`.id``=`PageUserLink`.`authority_id`"
+				)
+			)
 		);
 		return $this->find('all', $params);
 	}

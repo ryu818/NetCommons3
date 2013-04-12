@@ -258,7 +258,7 @@ class BlogPost extends AppModel
 	}
 
 /**
- * 投稿一覧のconditions取得
+ * 表示可能投稿一覧のconditions取得
  * @param   integer $content_id
  * @param   integer $user_id
  * @param   integer $hierarchy
@@ -295,6 +295,68 @@ class BlogPost extends AppModel
 	}
 
 /**
+ * メイン部分の投稿のPaginateの追加conditions, joins取得
+ * @param   array $requestConditions
+ * 				$requestConditions {
+ * 					'subject',
+ * 					'year',
+ * 					'month',
+ * 					'day',
+ * 					'author',
+ * 					'tag',
+ * 					'category',
+ * 					'keyword',		// TODO:未対応
+ * 				}
+ * @return  array($addParams = array(), $joins = array())
+ * @since   v 3.0.0.0
+ */
+	public function getPaginateConditions($requestConditions = array()) {
+		$addParams = array();
+		$joins = array();
+		if(isset($requestConditions['subject'])) {
+			$addParams['BlogPost.permalink'] = $requestConditions['subject'];
+		} else {
+			if(isset($requestConditions['year']) && isset($requestConditions['month']) && isset($requestConditions['day'])) {
+				$addParams['BlogPost.post_date >='] = gmdate( 'Y-m-d H:i:s', strtotime($requestConditions['year'].$requestConditions['month'].$requestConditions['day'].'000000') );
+				$addParams['BlogPost.post_date <'] = gmdate( 'Y-m-d H:i:s', strtotime('+1 day', strtotime($requestConditions['year'].$requestConditions['month'].$requestConditions['day'].'000000')) );
+			} else if(isset($requestConditions['year']) && isset($requestConditions['month'])) {
+				$addParams['BlogPost.post_date >='] = gmdate( 'Y-m-d H:i:s', strtotime($requestConditions['year'].$requestConditions['month'].'01'.'000000') );
+				$addParams['BlogPost.post_date <'] = gmdate( 'Y-m-d H:i:s', strtotime('+1 month', strtotime($requestConditions['year'].$requestConditions['month'].'01'.'000000')) );
+			} else if(isset($requestConditions['year'])) {
+				$addParams['BlogPost.post_date >='] = gmdate( 'Y-m-d H:i:s', strtotime($requestConditions['year'].'01'.'01'.'000000') );
+				$addParams['BlogPost.post_date <'] = gmdate( 'Y-m-d H:i:s', strtotime('+1 year', strtotime($requestConditions['year'].'01'.'01'.'000000')) );
+			} else if(isset($requestConditions['author'])) {
+				$addParams['BlogPost.created_user_id'] = intval($requestConditions['author']);
+			} else if(isset($requestConditions['tag']) || isset($requestConditions['category'])) {
+				if(isset($requestConditions['tag'])) {
+					$taxonomy = 'tag';
+					$name = $requestConditions['tag'];
+				} else {
+					$taxonomy = 'category';
+					$name = $requestConditions['category'];
+				}
+				$joins[] = array(
+					'type' => 'INNER',
+					'alias' => 'BlogTermLink',
+					'table' => 'blog_term_links',
+					'conditions' => 'BlogPost.id = BlogTermLink.blog_post_id'
+				);
+				$joins[] = array(
+					'type' => 'INNER',
+					'alias' => 'BlogTerm',
+					'table' => 'blog_terms',
+					'conditions' => array(
+						'BlogTermLink.blog_term_id = BlogTerm.id',
+						'BlogTerm.slug' => $name,
+						'BlogTerm.taxonomy' => $taxonomy
+					)
+				);
+			}
+		}
+		return array($addParams, $joins);
+	}
+
+/**
  * アーカイブ表示
  * @param   integer $content_id
  * @param   integer $visible_item
@@ -318,5 +380,63 @@ class BlogPost extends AppModel
 			'page' => 1
 		);
 		return $this->find('all', $params);
+	}
+
+/**
+ * カレントの記事の前の記事を取得
+ * @param   Model BlogPost  カレントの
+ * @param   integer $userId
+ * @param   integer $hierarchy
+ * @return  Model BlogPost
+ * @since   v 3.0.0.0
+ */
+	public function findPrev($currentBlogPost, $userId, $hierarchy) {
+		$params = array();
+		$prevConditions = $this->getConditions($currentBlogPost['BlogPost']['content_id'], $userId, $hierarchy);
+
+		// 前の記事取得
+		$prevConditions['OR'] = array(
+			array(
+				'BlogPost.post_date' => $currentBlogPost['BlogPost']['post_date'],
+				'BlogPost.id >' => $currentBlogPost['BlogPost']['id'],
+			),
+			'BlogPost.post_date >' => $currentBlogPost['BlogPost']['post_date'],
+		);
+		$params['conditions'] = $prevConditions;
+		$params['order'] = array(
+			'BlogPost.post_date' => 'ASC',
+			'BlogPost.id' => 'ASC',
+		);
+
+		return $this->find('first', $params);
+	}
+
+/**
+ * カレントの記事の次の記事を取得
+ * @param   Model BlogPost  カレントの
+ * @param   integer $userId
+ * @param   integer $hierarchy
+ * @return  Model BlogPost
+ * @since   v 3.0.0.0
+ */
+	public function findNext($currentBlogPost, $userId, $hierarchy) {
+		$params = array();
+		$nextConditions = $this->getConditions($currentBlogPost['BlogPost']['content_id'], $userId, $hierarchy);
+
+		// 前の記事取得
+		$nextConditions['OR'] = array(
+			array(
+				'BlogPost.post_date' => $currentBlogPost['BlogPost']['post_date'],
+				'BlogPost.id <' => $currentBlogPost['BlogPost']['id'],
+			),
+			'BlogPost.post_date <' => $currentBlogPost['BlogPost']['post_date'],
+		);
+		$params['conditions'] = $nextConditions;
+		$params['order'] = array(
+			'BlogPost.post_date' => 'DESC',
+			'BlogPost.id' => 'DESC',
+		);
+
+		return $this->find('first', $params);
 	}
 }

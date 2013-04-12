@@ -12,7 +12,8 @@
 			'div' => false,
 			'id' => false,
 			'style' => ($class=='blog-widget blog-widget-number-posts') ? 'width:80px' : 'width:120px',
-			'class' => 'blog-widget-selectbox'
+			'class' => 'blog-widget-selectbox',
+			'data-pjax' => '#'.$id,
 		));
 	?>
 </aside>

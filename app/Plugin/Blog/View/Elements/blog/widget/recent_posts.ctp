@@ -12,8 +12,11 @@
 			?>
 			<li>
 			<?php
-				echo $this->Html->link($title, array('plugin' => 'blog', 'controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], $permalink, '#' => $id),
+				echo $this->Html->link($title, array(
+						'plugin' => 'blog', 'controller' => 'blog', $dates['year'], $dates['month'], $dates['day'],
+						$permalink, '#' => $id),
 					array('title' => __d('blog', 'Permalink to %s', $title),
+					'data-pjax' => '#'.$id,
 				));
 			?>
 			</li>

@@ -1,11 +1,17 @@
 <?php /* TODO:新規投稿権限があれば表示すること。*/ ?>
-<?php if(isset($blog['Blog']) && (empty($detail_type) || $detail_type != 'subject')): ?>
+<?php if(isset($blog['Blog']) && (!isset($search_subject) || $detail_type != 'subject')): ?>
 <div class="blog-add-link">
 	<?php
+		$addUrl = array(
+			'controller' => 'blog_posts', 'action' => 'index', '#' => $id
+		);
+		if(isset($backQuery) && count($backQuery) > 0) {
+			$addUrl['?'] = $backQuery;
+		}
 		echo $this->Html->link(__('Add Post'),
-			array('controller' => 'blog_posts', 'action' => 'index', '#' => $id),
-			array('title' =>__('Add Post'),
-		));
+			$addUrl,
+			array('title' =>__('Add Post'), 'data-pjax' => '#'.$id)
+		);
 	?>
 </div>
 <?php endif; ?>
@@ -45,6 +51,7 @@ if(isset($detail_type)) {
 	}
 	$this->element('Pages/title_assign', array('title' => $sub_title));
 }
+$queryOptions = array('url' => array('#' => $id), 'data-pjax' => '#'.$id);
 ?>
 <?php if(!empty($detail_type) && $detail_type != 'none' && $detail_type != 'subject'): ?>
 	<?php /* アーカイブタイトル */ ?>
@@ -64,11 +71,11 @@ if(isset($detail_type)) {
 			<?php endif; ?>
 		<?php endforeach; ?>
 	<?php endif; ?>
-	<?php echo($this->element('/common/paginator')); ?>
+	<?php echo($this->element('/common/paginator', array('options' => $queryOptions))); ?>
 	<?php foreach ($blog_posts as $post): ?>
 		<?php echo($this->element('blog/detail', array('blog_post' => $post, 'detail_type' => isset($detail_type) ? $detail_type : null))); ?>
 	<?php endforeach; ?>
-	<?php echo($this->element('/common/paginator')); ?>
+	<?php echo($this->element('/common/paginator', array('options' => $queryOptions))); ?>
 <?php else: ?>
 	<div class="blog-post-not-found">
 		<?php
@@ -79,9 +86,21 @@ if(isset($detail_type)) {
 <?php if(isset($detail_type)): ?>
 	<?php
 		/* 一覧へ戻る */
-		echo $this->Html->div('btn-bottom',
-			$this->Form->button(__('To list'), array('name' => 'list', 'class' => 'common-btn', 'type' => 'button',
-			'data-pjax' => '#'.$id, 'data-ajax-url' =>  $this->Html->url(array('plugin' => 'blog', 'controller' => 'blog'))))
+		if($detail_type == 'subject') {
+			$backId = 'blog-post' . $id. '-' . $blog_posts[0]['BlogPost']['id'];
+		} else {
+			$backId = $id;
+		}
+		$backUrl = array('controller' => 'blog', '#' => $backId);
+		if(isset($this->request->query['back_query'])) {
+			$backUrl = array_merge($backUrl, explode('/', $this->request->query['back_query']));
+		}
+		$backUrl['limit'] = isset($this->request->query['back_limit']) ? $this->request->query['back_limit'] : null;
+		$backUrl['page'] = isset($this->request->query['back_page']) ? $this->request->query['back_page'] : null;
+
+		echo $this->Html->div('link-bottom', $this->Html->link(__('To list'), $backUrl,
+			array('title' => __('To list'),'data-pjax' => '#'.$id, 'class' => 'link-back',
+			'rel' => 'prev'))
 		);
 	?>
 <?php endif; ?>

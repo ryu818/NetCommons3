@@ -5,12 +5,19 @@
 	$dates = $this->TimeZone->date_values($blog_post['BlogPost']['post_date']);
 	$isEdit = $this->CheckAuth->isEdit($hierarchy, $blog_post['Authority']['hierarchy']);
 ?>
-<article class="blog-post">
+<article class="blog-post" id="blog-post<?php echo($id.'-'.$blog_post['BlogPost']['id']); ?>">
 	<header class="blog-entry-header">
 		<h1 class="blog-entry-title">
 			<?php
-				echo $this->Html->link($title, array('plugin' => 'blog', 'controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], $permalink, '#' => $id),
-					array('title' => __d('blog', 'Permalink to %s', $title),
+				$titleUrl = array(
+					'plugin' => 'blog', 'controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], $permalink, '#' => $id
+				);
+				if(isset($backQuery) && count($backQuery) > 0) {
+					$titleUrl['?'] = $backQuery;
+				}
+
+				echo $this->Html->link($title, $titleUrl,
+					array('title' => __d('blog', 'Permalink to %s', $title),'data-pjax' => '#'.$id,
 					'rel' => 'bookmark'));
 				/* TODO:New記号 */
 			?>
@@ -19,16 +26,21 @@
 			<?php echo(__d('blog', 'Submitted on:')); ?>
 			<?php
 				echo $this->Html->link('<time datetime="' . $dates['atom_date'] . '" class="blog-entry-date">'.$dates['date'].'</time>',
-					array('plugin' => 'blog', 'controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], '#' => $id),
-					array('title' =>$dates['time'],
+					array('plugin' => 'blog', 'controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], 'limit' => $limit, '#' => $id),
+					array('title' =>$dates['time'], 'data-pjax' => '#'.$id,
 					'rel' => 'bookmark', 'escape' => false));
 			?>
 			<span class="blog-by-author">
 				&nbsp;|&nbsp;
 				<?php echo(__d('blog', 'Author:')); ?>
 				<?php
-					echo $this->Html->link($blog_post['BlogPost']['created_user_name'], array('plugin' => 'blog', 'controller' => 'blog', 'action' => 'index','author', $blog_post['BlogPost']['created_user_id']),
-						array('title' => __d('blog', 'View all posts by %s', $blog_post['BlogPost']['created_user_name']),
+					echo $this->Html->link($blog_post['BlogPost']['created_user_name'], array(
+							'plugin' => 'blog', 'controller' => 'blog', 'action' => 'index',
+							'author', $blog_post['BlogPost']['created_user_id'],
+							'limit' => $limit,
+							'#' => $id
+						),
+						array('title' => __d('blog', 'View all posts by %s', $blog_post['BlogPost']['created_user_name']), 'data-pjax' => '#'.$id,
 							'rel' => 'author'));
 				?>
 			</span>
@@ -65,7 +77,7 @@
 				$prevEates = $this->TimeZone->date_values($blog_prev_post['BlogPost']['post_date']);
 
 				echo $this->Html->link('<span>'.h(__('<')).'</span>'.h($title), array('plugin' => 'blog', 'controller' => 'blog', $prevEates['year'], $prevEates['month'], $prevEates['day'], $permalink, '#' => $id),
-					array('title' => __d('blog', 'Permalink to %s', $title),
+					array('title' => __d('blog', 'Permalink to %s', $title), 'data-pjax' => '#'.$id,
 					'rel' => 'prev','escape' => false));
 			}
 		?>
@@ -78,7 +90,7 @@
 				$nextDates = $this->TimeZone->date_values($blog_next_post['BlogPost']['post_date']);
 
 				echo $this->Html->link(h($title).'<span>'.h(__('>')).'</span>', array('plugin' => 'blog', 'controller' => 'blog', $nextDates['year'], $nextDates['month'], $nextDates['day'], $permalink, '#' => $id),
-					array('title' => __d('blog', 'Permalink to %s', $title),
+					array('title' => __d('blog', 'Permalink to %s', $title), 'data-pjax' => '#'.$id,
 					'rel' => 'prev','escape' => false));
 			}
 		?>

@@ -103,121 +103,102 @@ class BlogController extends BlogAppController {
 
 /**
  * メイン記事表示
- * @param   integer $content_id
- * @param   integer $visible_item
+ * @param   integer $contentId
+ * @param   integer $visibleItem
  * @return  void
  * @since   v 3.0.0.0
  */
-	protected function _main($content_id, $visible_item) {
-		$add_params = array();
-		$user_id = $this->Auth->user('id');
-		$limit = !empty($this->request->named['limit']) ? intval($this->request->named['limit']) : $visible_item;
+	protected function _main($contentId, $visibleItem) {
+		$addParams = array();
+		$backQuery = array();
+		$userId = $this->Auth->user('id');
+		$page = !empty($this->request->named['page']) ? intval($this->request->named['page']) : 1;
+		$limit = !empty($this->request->named['limit']) ? intval($this->request->named['limit']) : $visibleItem;
 		$taxonomy = (isset($this->request->params['taxonomy'])) ? $this->request->params['taxonomy'] : null;
 		$name = (isset($this->request->params['name'])) ? $this->request->params['name'] : null;
 
-
-		if(isset($this->request->params['subject'])) {
+		$requestConditions = array(
+			'subject' => isset($this->request->params['subject']) ? $this->request->params['subject'] : null,
+			'year' => isset($this->request->params['year']) ? $this->request->params['year'] : null,
+			'month' => isset($this->request->params['month']) ? $this->request->params['month'] : null,
+			'day' => isset($this->request->params['day']) ? $this->request->params['day'] : null,
+			'author' => isset($this->request->params['author']) ? $this->request->params['author'] : null,
+			'tag' => null,
+			'category' => null,
+			'keyword' => isset($this->request->params['keyword']) ? $this->request->params['keyword'] : null,		// TODO:未対応
+		);
+		if(preg_match('/:/', $requestConditions['subject'])) {
+			// :が含まれていれば、page: Or limit: とみなしスルー
+			$requestConditions['subject'] = null;
+		}
+		if(isset($requestConditions['subject'])) {
 			$this->set('detail_type', 'subject');
-			$add_params['BlogPost.permalink'] = $this->request->params['subject'];
-		} else {
-			if(isset($this->request->params['year']) && isset($this->request->params['month']) && isset($this->request->params['day'])) {
-				$this->set('detail_type', 'day');
-				$add_params['BlogPost.post_date >='] = gmdate( 'Y-m-d H:i:s', strtotime($this->request->params['year'].$this->request->params['month'].$this->request->params['day'].'000000') );
-				$add_params['BlogPost.post_date <'] = gmdate( 'Y-m-d H:i:s', strtotime('+1 day', strtotime($this->request->params['year'].$this->request->params['month'].$this->request->params['day'].'000000')) );
-			} else if(isset($this->request->params['year']) && isset($this->request->params['month'])) {
-				$this->set('detail_type', 'month');
-				$add_params['BlogPost.post_date >='] = gmdate( 'Y-m-d H:i:s', strtotime($this->request->params['year'].$this->request->params['month'].'01'.'000000') );
-				$add_params['BlogPost.post_date <'] = gmdate( 'Y-m-d H:i:s', strtotime('+1 month', strtotime($this->request->params['year'].$this->request->params['month'].'01'.'000000')) );
-			} else if(isset($this->request->params['year'])) {
-				$this->set('detail_type', 'year');
-				$add_params['BlogPost.post_date >='] = gmdate( 'Y-m-d H:i:s', strtotime($this->request->params['year'].'01'.'01'.'000000') );
-				$add_params['BlogPost.post_date <'] = gmdate( 'Y-m-d H:i:s', strtotime('+1 year', strtotime($this->request->params['year'].'01'.'01'.'000000')) );
-			} else if(isset($this->request->params['author'])) {
-				$this->set('detail_type', 'author');
-				$add_params['BlogPost.created_user_id'] = intval($this->request->params['author']);
-			} else if(isset($taxonomy) && isset($name)) {
-				if($taxonomy == 'tag') {
-					$this->set('detail_type', 'tag');
-				} else {
-					$this->set('detail_type', 'category');
-				}
-				$this->paginate['fields'][]= 'BlogTerm.name';
-				//$this->paginate['fields'][]= 'BlogTerm.slug';
-				$this->paginate['joins'][] = array(
-						'type' => 'INNER',
-						'alias' => 'BlogTermLink',
-						'table' => 'blog_term_links',
-						'conditions' => 'BlogPost.id = BlogTermLink.blog_post_id'
-				);
-				$this->paginate['joins'][] = array(
-					'type' => 'INNER',
-					'alias' => 'BlogTerm',
-					'table' => 'blog_terms',
-					'conditions' => array(
-						'BlogTermLink.blog_term_id = BlogTerm.id',
-						'BlogTerm.slug' => $name,
-						'BlogTerm.taxonomy' => $taxonomy
-					)
-				);
+		} else if(isset($requestConditions['year']) && isset($requestConditions['month']) && isset($requestConditions['day'])) {
+			$backQuery['back_query'] = $requestConditions['year'] . '/' . $requestConditions['month'] . '/' . $requestConditions['day'];
+			$this->set('detail_type', 'day');
+		} else if(isset($requestConditions['year']) && isset($requestConditions['month'])) {
+			$backQuery['back_query'] = $requestConditions['year'] . '/' . $requestConditions['month'];
+			$this->set('detail_type', 'month');
+		} else if(isset($requestConditions['year'])) {
+			$backQuery['back_query'] = $requestConditions['year'];
+			$this->set('detail_type', 'year');
+		} else if(isset($requestConditions['author'])) {
+			$backQuery['back_query'] = 'author/' . $requestConditions['author'];
+			$this->set('detail_type', 'author');
+		} else if(isset($taxonomy) && isset($name)) {
+			if($taxonomy == 'tag') {
+				$backQuery['back_query'] = 'tag/' . $name;
+				$this->set('detail_type', 'tag');
+				$requestConditions['tag'] = $name;
+			} else {
+				$backQuery['back_query'] = 'category/' . $name;
+				$this->set('detail_type', 'category');
+				$requestConditions['category'] = $name;
 			}
 		}
 
-		$this->paginate['conditions'] = $this->BlogPost->getConditions($content_id, $user_id, $this->hierarchy);
+		list($addParams, $this->paginate['joins']) = $this->BlogPost->getPaginateConditions($requestConditions);
+		$this->paginate['conditions'] = $this->BlogPost->getConditions($contentId, $userId, $this->hierarchy);
 
 		$this->paginate['limit'] = $limit;
-		$blog_posts = $this->paginate('BlogPost',$add_params);
-		if(count($add_params) > 0 && count($blog_posts) == 0) {
+		$blogPosts = $this->paginate('BlogPost',$addParams);
+		if(count($addParams) > 0 && count($blogPosts) == 0) {
 			$this->set('detail_type', 'none');
 		}
-		$this->set('blog_posts', $blog_posts);
-		$this->set('blog_posts_terms', $this->BlogTerm->findByBlogPosts($blog_posts));
+		$this->set('blog_posts', $blogPosts);
+		$this->set('blog_posts_terms', $this->BlogTerm->findByBlogPosts($blogPosts));
 		$this->set('limit', $limit);
-
-		if($taxonomy == 'category') {
-			$this->set('category', $name);
-		} else {
-			$this->set('tag', $name);
+		//編集の決定,編集のキャンセル,記事詳細等の一覧へ戻る, 記事削除（リダイレクト先で使用）の戻り先をセット
+		if($limit != $visibleItem) {
+			$backQuery['back_limit'] = $limit;
 		}
+		if($page != 1) {
+			$backQuery['back_page'] = $page;
+		}
+		$this->set('backQuery', $backQuery);
 
-		if(isset($blog_posts[0]) && isset($this->request->params['subject'])) {
-			$next_conditions = $prev_conditions = $this->BlogPost->getConditions($content_id, $user_id, $this->hierarchy);
-			$params = array();
-
+		if(isset($blogPosts[0]) && isset($this->request->params['subject'])) {
 			// 前の記事取得
-			$prev_conditions['BlogPost.id >'] = $blog_posts[0]['BlogPost']['id'];
-			$prev_conditions['BlogPost.post_date >='] = $blog_posts[0]['BlogPost']['post_date'];
-			$params['conditions'] = $prev_conditions;
-			$params['order'] = array(
-				'BlogPost.post_date' => 'ASC',
-				'BlogPost.id' => 'ASC',
-			);
-			$this->set('blog_prev_post', $this->BlogPost->find('first', $params));
+			$this->set('blog_prev_post', $this->BlogPost->findPrev($blogPosts[0], $userId, $this->hierarchy));
 
 			// 次の記事取得
-			$next_conditions['BlogPost.id <'] = $blog_posts[0]['BlogPost']['id'];
-			$next_conditions['BlogPost.post_date <='] = $blog_posts[0]['BlogPost']['post_date'];
-			$params['conditions'] = $next_conditions;
-			$params['order'] = array(
-				'BlogPost.post_date' => 'DESC',
-				'BlogPost.id' => 'DESC',
-			);
-			$this->set('blog_next_post', $this->BlogPost->find('first', $params));
+			$this->set('blog_next_post', $this->BlogPost->findNext($blogPosts[0], $userId, $this->hierarchy));
 		}
 	}
 
 /**
  * 最近の投稿表示
- * @param   integer $content_id
- * @param   integer $visible_item
+ * @param   integer $contentId
+ * @param   integer $visibleItem
  * @return  void
  * @since   v 3.0.0.0
  */
-	protected function _recentPosts($content_id, $visible_item) {
-		$user_id = $this->Auth->user('id');
+	protected function _recentPosts($contentId, $visibleItem) {
+		$userId = $this->Auth->user('id');
 		$params = array(
-			'conditions' => $this->BlogPost->getConditions($content_id, $user_id, $this->hierarchy),
+			'conditions' => $this->BlogPost->getConditions($contentId, $userId, $this->hierarchy),
 			'order' => $this->paginate['order'],
-			'limit' => intval($visible_item),
+			'limit' => intval($visibleItem),
 			'page' => 1
 		);
 		$this->set('blog_recent_posts', $this->BlogPost->find('all', $params));
@@ -225,71 +206,71 @@ class BlogController extends BlogAppController {
 
 /**
  * 最近のコメント表示
- * @param   integer $content_id
- * @param   integer $visible_item
+ * @param   integer $contentId
+ * @param   integer $visibleItem
  * @return  void
  * @since   v 3.0.0.0
  */
-	protected function _recentComments($content_id, $visible_item) {
-		$user_id = $this->Auth->user('id');
-		$this->set('blog_recent_comments', $this->BlogComment->recentComments($content_id, $visible_item, $this->BlogPost->getConditions($content_id, $user_id, $this->hierarchy)));
+	protected function _recentComments($contentId, $visibleItem) {
+		$userId = $this->Auth->user('id');
+		$this->set('blog_recent_comments', $this->BlogComment->recentComments($contentId, $visibleItem, $this->BlogPost->getConditions($contentId, $userId, $this->hierarchy)));
 	}
 
 /**
  * アーカイブ表示
- * @param   integer $content_id
- * @param   integer $visible_item
+ * @param   integer $contentId
+ * @param   integer $visibleItem
  * @return  void
  * @since   v 3.0.0.0
  */
-	protected function _archives($content_id, $visible_item) {
-		$user_id = $this->Auth->user('id');
-		$this->set('blog_archives', $this->BlogPost->findArchives($content_id, $visible_item, $user_id, $this->hierarchy));
+	protected function _archives($contentId, $visibleItem) {
+		$userId = $this->Auth->user('id');
+		$this->set('blog_archives', $this->BlogPost->findArchives($contentId, $visibleItem, $userId, $this->hierarchy));
 	}
 
 /**
  * カテゴリー表示
- * @param   integer $content_id
- * @param   integer $visible_item
+ * @param   integer $contentId
+ * @param   integer $visibleItem
  * @return  void
  * @since   v 3.0.0.0
  */
-	protected function _categories($content_id, $visible_item) {
-		$this->set('blog_categories', $this->BlogTerm->findTerms($content_id, $visible_item, 'category'));
+	protected function _categories($contentId, $visibleItem) {
+		$this->set('blog_categories', $this->BlogTerm->findTerms($contentId, $visibleItem, 'category'));
 	}
 
 /**
  * タグ表示
- * @param   integer $content_id
- * @param   integer $visible_item
+ * @param   integer $contentId
+ * @param   integer $visibleItem
  * @param   string  $taxonomy category or tag
  * @return  void
  * @since   v 3.0.0.0
  */
-	protected function _tags($content_id, $visible_item, $taxonomy = 'tag') {
+	protected function _tags($contentId, $visibleItem, $taxonomy = 'tag') {
 		$this->set('blog_tag_taxonomy', $taxonomy);
-		$this->set('blog_tags', $this->BlogTerm->findTerms($content_id, $visible_item, $taxonomy));
+		$this->set('blog_tags', $this->BlogTerm->findTerms($contentId, $visibleItem, $taxonomy));
 	}
 
 /**
  * カレンダー表示
- * @param   integer $content_id
- * @param   integer $visible_item
+ * @param   integer $contentId
+ * @param   integer $visibleItem
  * @return  void
  * @since   v 3.0.0.0
  */
-	protected function _calendar($content_id) {
+	protected function _calendar($contentId) {
 
 	}
 
 /**
  * RSS表示
- * @param   integer $content_id
- * @param   integer $visible_item
+ * @param   integer $contentId
+ * @param   integer $visibleItem
  * @return  void
  * @since   v 3.0.0.0
  */
-	protected function _rss($content_id) {
+	protected function _rss($contentId) {
 
 	}
 

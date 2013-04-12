@@ -13,8 +13,8 @@
 		var chgLimit = function() {
 			// 表示件数
 			$('select.blog-widget-selectbox:visible', $('#' + id)).chosen({disable_search : true}).change( function(e){
-				var limit_url = $(this).val();
-				location.href = limit_url;
+				$(e.target).attr('data-ajax-url', $(this).val());
+				$.Common.ajax(e, $(this));
 			} );
 		};
 		chgLimit();

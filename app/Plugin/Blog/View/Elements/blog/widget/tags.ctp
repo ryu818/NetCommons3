@@ -24,7 +24,7 @@
 		} else {
 			$values[$this->Html->url($url_arr)] = $this->Html->link($title,
 				$url_arr,
-				array('title' => $title)
+				array('title' => $title, 'data-pjax' => '#'.$id)
 			);
 		}
 	}
@@ -35,6 +35,7 @@
 		'values' => $values,
 		'name' => 'tags',
 		'value' => $this->Html->url(array($blog_tag_taxonomy, $name, 'limit' => $limit, '#' => $id)),
+		'data-pjax' => '#'.$id,
 	);
 	if(!isset($type)) {
 		$params['title'] = $widget_title;

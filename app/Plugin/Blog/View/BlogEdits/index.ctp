@@ -499,7 +499,7 @@ $this->extend('/Frame/block');
 		echo $this->Html->div('submit',
 			$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'common-btn', 'type' => 'submit')).
 			$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
-				'data-pjax' => '#'.$id, 'data-ajax-url' =>  $this->Html->url(array('controller' => 'blog'))))
+				'data-pjax' => '#'.$id, 'data-ajax-url' =>  $this->Html->url(array('controller' => 'blog', '#' => $id))))
 		);
 		echo $this->Form->end();
 	?>

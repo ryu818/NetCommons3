@@ -77,7 +77,7 @@ echo $this->Form->create('BlogPost', array('data-pjax' => '#'.$id));
 		<li>
 			<?php
 				echo($this->Form->error('Htmlarea.content'));
-				echo $this->Form->textarea('Htmlarea.content', array('escape' => false, 'class' => 'nc-wysiwyg', 'value' => $blog_post['Htmlarea']['content']));
+				echo $this->Form->textarea('Htmlarea.content', array('escape' => false, 'required' => false, 'class' => 'nc-wysiwyg', 'value' => $blog_post['Htmlarea']['content']));
 			?>
 		</li>
 		<?php if(isset($blog['Blog']['trackback_transmit_flag'])): ?>
@@ -114,13 +114,21 @@ echo $this->Form->create('BlogPost', array('data-pjax' => '#'.$id));
 	</ul>
 </fieldset>
 <?php
+	$backId = 'blog-post' . $id. '-' . $blog_post['BlogPost']['id'];
+	$backUrl = array('controller' => 'blog', '#' => $backId);
+	if(isset($this->request->query['back_query'])) {
+		$backUrl = array_merge($backUrl, explode('/', $this->request->query['back_query']));
+	}
+	$backUrl['limit'] = isset($this->request->query['back_limit']) ? $this->request->query['back_limit'] : null;
+	$backUrl['page'] = isset($this->request->query['back_page']) ? $this->request->query['back_page'] : null;
+
 	echo $this->Form->hidden('is_temporally' , array('name' => 'is_temporally', 'value' => _OFF));
 	echo $this->Html->div('submit',
 		$this->Form->button(__('Save temporally'), array('name' => 'temporally', 'class' => 'common-btn',
 			'type' => 'button', 'onclick' => "$('#BlogPostIsTemporally".$id."').val(1);$(this.form).submit();")).
 		$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'common-btn', 'type' => 'submit')).
 		$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
-			'data-pjax' => '#'.$id, 'data-ajax-url' =>  $this->Html->url(array('controller' => 'blog'))))
+			'data-pjax' => '#'.$id, 'data-ajax-url' =>  $this->Html->url($backUrl)))
 );
 ?>
 </div>

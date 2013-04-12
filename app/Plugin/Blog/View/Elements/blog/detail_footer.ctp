@@ -18,18 +18,30 @@
 	<span class="blog-edit-link">
 		<?php if($isEdit): ?>
 		<?php
+			$editUrl = array(
+				'controller' => 'blog_posts', 'action' => 'index', $blog_post['BlogPost']['id'], '#' => $id
+			);
+			if(isset($backQuery) && count($backQuery) > 0) {
+				$editUrl['?'] = $backQuery;
+			}
 			echo $this->Html->link(__('Edit'),
-				array('controller' => 'blog_posts', 'action' => 'index', $blog_post['BlogPost']['id']),
+				$editUrl,
 				array('id' => 'blog-edit-link'.$id.'-'.$blog_post['BlogPost']['id'], 'title' =>__('Edit Post'), 'data-pjax' => '#'.$id
 			));
 		?>
 		&nbsp;|&nbsp;
 		<?php
+			$deleteUrl = array(
+				'controller' => 'blog_posts', 'action' => 'delete', $blog_post['BlogPost']['id']
+			);
+			if(isset($backQuery) && count($backQuery) > 0) {
+				$deleteUrl['?'] = $backQuery;
+			}
 			echo $this->Html->link(__('Delete'),
-				array('plugin' => 'blog', 'controller' => 'blog_posts', 'action' => 'delete', $blog_post['BlogPost']['id']),
+				$deleteUrl,
 				array('title' =>__('Delete Post'),
 						'data-ajax-confirm' => __('Deleting %s. <br />Are you sure to proceed?',$blog_post['BlogPost']['title']),
-						'data-ajax-replace' => '#_'.$blog_post['BlogPost']['content_id'],
+						'data-pjax' => '#'.$id,
 						'data-ajax-type' => 'post'
 			));
 		?>
