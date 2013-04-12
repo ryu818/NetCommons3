@@ -238,6 +238,7 @@ class CheckAuthComponent extends Component {
 		// メンバ変数セット
 		$controller->id = '_system'. $module_id;
 		$controller->module_id = $module_id;
+		Configure::write(NC_SYSTEM_KEY.'.id', $controller->id);		// $this->request->hereで使用するため
 
 		$controller->hierarchy = $controller->ModuleSystemLink->findHierarchy($module_id, $authority_id);
 
@@ -284,6 +285,7 @@ class CheckAuthComponent extends Component {
 		// メンバ変数セット
 		$controller->id = '_'. $block_id;
 		$controller->block_id = $block_id;
+		Configure::write(NC_SYSTEM_KEY.'.id', $controller->id);	// $this->request->hereで使用するため
 
 		if(!preg_match($this->prohibitionURL, $url)) {
 			if($isActiveContent) {
