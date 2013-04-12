@@ -146,7 +146,7 @@ class MyCakeRoute extends CakeRoute {
 			if (isset($route[$key])) {
 				continue;
 			}
-			if (is_integer($key)) {
+			if (is_int($key)) {
 				$route['pass'][] = $value;
 				continue;
 			}
@@ -180,7 +180,6 @@ class MyCakeRoute extends CakeRoute {
 				}
 			}
 		}
-
 		return $route;
 	}
 
