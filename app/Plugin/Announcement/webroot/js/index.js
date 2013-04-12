@@ -14,6 +14,7 @@
 		var url = $.Common.urlBlock(block_id, 'announcement/edits');
 		content = $('#'+id+'-content');
 		content.dblclick(function(event) {
+			// TODO: $.Common.ajaxに修正予定
 			$.pjax.click(event, t, {'url': url});
 		}).hover(function() {
 			content.stop(false, true).effect("highlight", {}, 2000);
