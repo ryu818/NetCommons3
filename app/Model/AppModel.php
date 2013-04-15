@@ -66,10 +66,6 @@ class AppModel extends Model {
 				$fieldList[] = 'modified_user_id';
 			$data[$this->alias]['modified_user_id'] = $id;
 		}
-		// TODO:グリニッジにして登録するかどうかを検討
-		//if ($this->hasField('created') && (!in_array('created', $fields) || !isset($data[$this->alias]['created']))) {
-		//	$data[$this->alias]['created'] = gmdate(NC_VALIDATOR_DATE_TIME);
-		//}
 
 		if ($this->hasField('created_user_name') && (!in_array('created_user_name', $fields) || !isset($data[$this->alias]['created_user_name']))) {
 			if(count($fieldList) > 0)
@@ -81,10 +77,6 @@ class AppModel extends Model {
 				$fieldList[] = 'modified_user_name';
 			$data[$this->alias]['modified_user_name'] = $usename;
 		}
-		// TODO:グリニッジにして登録するかどうかを検討
-		//if ($this->hasField('modified')) {
-		//	$data[$this->alias]['modified'] = gmdate(NC_VALIDATOR_DATE_TIME);
-		//}
 
 		/*if (isset($this->data) && isset($this->data[$this->name]))
 		 unset($this->data[$this->name]['modified']);
