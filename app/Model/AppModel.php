@@ -49,6 +49,9 @@ class AppModel extends Model {
 		$fields = array();
 		if (isset($data[$this->alias])) {
 			$fields = array_keys($data[$this->alias]);
+		} else {
+			$fields = array_keys($data);
+			$data[$this->alias] = $data;
 		}
 		$id = Configure::read(NC_SYSTEM_KEY.'.user_id');
 		$usename = Configure::read(NC_SYSTEM_KEY.'.handle');
