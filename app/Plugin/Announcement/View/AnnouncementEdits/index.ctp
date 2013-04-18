@@ -46,11 +46,14 @@ echo $this->Form->create(null, array('data-pjax' => '#'.$id));
 	</ul>
 </fieldset>
 <?php
-echo $this->Html->div('submit',
-	$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'common-btn')).
-	$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button'))
-);
-echo $this->Form->end();
+
+	echo $this->Html->div('submit',
+		$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'common-btn')).
+		$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
+			'data-pjax' => '#'.$id, 'data-ajax-url' =>  $this->Html->url(array('controller' => 'announcement', '#' => $id)))
+		)
+	);
+	echo $this->Form->end();
 ?>
 <script>
 $(function(){

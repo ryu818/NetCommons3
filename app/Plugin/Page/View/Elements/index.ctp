@@ -27,7 +27,7 @@ if(isset($is_edit) && $is_edit == _ON){
 	</div>
 	<?php endif; ?>
 	<?php if($admin_hierarchy != NC_AUTH_OTHER): ?>
-	<a id="pages-menu-edit-btn" class="nc-tooltip" title="<?php echo(h($setting)); ?>" data-tooltip-desc="<?php echo(h($tooltip_setting)); ?>" href="<?php echo($this->Html->url(array('plugin' => 'page', 'controller' => 'page', 'action' => 'index', '?' => array('is_edit' => !$is_edit)))); ?>" data-ajax-replace="#nc-pages-setting-dialog">
+	<a id="pages-menu-edit-btn" class="nc-tooltip" title="<?php echo(h($setting)); ?>" data-tooltip-desc="<?php echo(h($tooltip_setting)); ?>" href="<?php echo($this->Html->url(array('plugin' => 'page', 'controller' => 'page', 'action' => 'index', '?' => array('is_edit' => !$is_edit)))); ?>" data-ajax="#nc-pages-setting-dialog">
 		<span class="<?php echo($setting_class); ?>"></span>
 	</a>
 	<?php endif; ?>
@@ -43,7 +43,7 @@ if(isset($is_edit) && $is_edit == _ON){
 		echo $this->Html->link(__d('page', 'Add community'), array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'add_community'),
 			array('title' => __d('page', 'Add community'), 'id' => 'pages-menu-add-community-btn' ,
 			'class' => 'pages-menu-btn'. $class_postfix,
-			'data-ajax-replace' => '#pages-menu-add-community-temp', 'data-ajax-type' => 'POST'));
+			'data-ajax' => '#pages-menu-add-community-temp', 'data-ajax-type' => 'POST'));
 	}
 	 ?>
 	<?php
@@ -51,7 +51,7 @@ if(isset($is_edit) && $is_edit == _ON){
 	echo $this->Html->link(__d('page', 'Add page'), array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'add'),
 		array('title' => __d('page', 'Add page'), 'id' => 'pages-menu-add-btn' ,
 		'class' => 'pages-menu-btn'. $class_postfix,
-		'data-ajax-replace' => '#pages-menu-add-temp', 'data-ajax-type' => 'POST'));
+		'data-ajax' => '#pages-menu-add-temp', 'data-ajax-type' => 'POST'));
 	 ?>
 </div>
 <?php endif; ?>
@@ -131,7 +131,7 @@ if(isset($is_edit) && $is_edit == _ON){
 				<?php endforeach; ?>
 			</select>
 		</div>
-		<?php echo($this->element('/common/paginator', array('add_params' => array('data-ajax-replace' => '#nc-pages-setting-dialog'),'views' => $views))); ?>
+		<?php echo($this->element('/common/paginator', array('add_params' => array('data-ajax' => '#nc-pages-setting-dialog'),'views' => $views))); ?>
 		<?php
 			$thread_num = 1;
 			$parent_id = NC_TOP_GROUP_ID;
@@ -154,7 +154,7 @@ if(isset($is_edit) && $is_edit == _ON){
 				<?php endif; ?>
 			</ol>
 		<?php endif; ?>
-		<?php echo($this->element('/common/paginator', array('add_params' => array('data-ajax-replace' => '#nc-pages-setting-dialog'),'views' => $views))); ?>
+		<?php echo($this->element('/common/paginator', array('add_params' => array('data-ajax' => '#nc-pages-setting-dialog'),'views' => $views))); ?>
 	</div>
 </div>
 <?php

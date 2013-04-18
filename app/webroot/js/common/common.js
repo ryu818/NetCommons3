@@ -11,11 +11,20 @@
 	$.Common ={
 		zIndex : 2000,
 		blockZIndex : 1000,
+
+		pjaxCacheMapping : [],
+		pjaxCacheUniqueId: 0,
+		pjaxCachePointer : 0,
+		pjaxCacheBackTargetId : null,
+		pjaxPrevUrl : $._full_base_url,
+		isPopstate : false,
+		//pjaxHashChange : false,
+		//pjaxMaxCacheLength : 40,
+
 		// data-pjax属性の値を targetとして置換する。その際、リクエストしたURLに変更される。
-		//		TODO:pjaxをブロックTopエレメント以外で使用するとBack、Forwordの動作が動かなく可能性が高い。
-		// data-ajax属性の値をtargetとして、targetにinnerHtmlを行う。
-		// data-ajax-replace属性ならば、targetと入れ替える。
-		//
+		// data-ajax属性ならば、targetと入れ替える。
+		// data-ajax-inner属性の値をtargetとして、targetにinnerHtmlを行う。
+		//		data-pjax, data-pjax-inner, data-ajax, data-ajax-innerはいずれかを設定すること。
 		// data-ajax-url:URL default：href属性から取得
 		// data-ajax-type: post or get
 		// data-ajax-effect: 遷移時effect default：fold
@@ -35,49 +44,72 @@
 		//	       e.preventDefault();
 		//     });
 		//
-		ajax : function(e, a, confirm) {
-			var data_pjax, top, url, data, input_type, type, params, is_form, ret;
-			a = $(a);
-			var target_pjax = a.attr("data-pjax");
-			var confirm = (typeof confirm == "undefined") ? a.attr("data-ajax-confirm") : confirm;
-			if(a.hasClass('disable-lbl')) {
+		// params：上記属性情報をパラメータによりセットする場合、使用
+		// options：ajax時のoptions マージされる
+		ajax : function(e, el, params, options, _confirm, _force_url) {
+			var data_pjax, top, url, data, input_type, type, params, is_form, ret, data_url, default_options;
+			var target_pjax, confirm, is_pjax;
+			var $el = $(el), buf_options = options;
+			if(params != undefined && params != null) {
+				target_pjax =  params['data-pjax'];
+				confirm = (typeof _confirm == "undefined") ? params['data-ajax-confirm'] : _confirm;
+				type = params['data-ajax-type'];
+				data_url = params['data-ajax-url'];
+			} else {
+				target_pjax =  $el.attr("data-pjax");
+				confirm = (typeof _confirm == "undefined") ? $el.attr("data-ajax-confirm") : _confirm;
+				type = $el.attr("data-ajax-type");
+				data_url = $el.attr("data-ajax-url");
+			}
+			is_pjax = target_pjax && $.support.pjax && !_force_url;
+
+			if($el.hasClass('disable-lbl') && !_force_url) {
 				e.preventDefault();
 				return false;
 			}
 			if(confirm){
 				var ok = __('Ok') ,cancel = __('Cancel');
-				var default_params = {
+				var default_dialog_params = {
 					resizable: false,
 		            modal: true,
 		            position: [e.pageX - $(window).scrollLeft(), e.pageY - $(window).scrollTop()]
-				}, _buttons = {}, params = new Object();
+				}, _buttons = {}, dialog_params = new Object();
 				_buttons[ok] = function(){
 					$( this ).remove();
-					$.Common.ajax(e, a, false);
+					$.Common.ajax(e, $el, params, options, false);
 				};
 				_buttons[cancel] = function(){
 					$( this ).remove();
 				};
-				var dialog_params = $.extend({buttons: _buttons}, default_params);
+				dialog_params = $.extend({buttons: _buttons}, default_dialog_params);
 				$('<div></div>').html(confirm).dialog(dialog_params);
 				e.preventDefault();
 				return;
 			}
 
-			if(a.get(0).tagName.toLowerCase() == 'form') {
+			if($el.get(0).tagName.toLowerCase() == 'form') {
 				input_type = 'POST';
-				url = a.attr('action');
-				data = a.serializeArray();
+				url = $el.attr('action');
+				if(type == 'GET' || type == 'get') {
+					// GETならばformの値をPOSTしない。
+					data = {};
+				} else {
+					data = $el.serializeArray();
+				}
 				is_form = true;
 			} else {
 				input_type = 'GET';
-				url = a.attr('href');
+				url = $el.attr('href');
 				data = {};
 				is_form = false;
 			}
-			type = a.attr("data-ajax-type");
-			url = a.attr("data-ajax-url") ? a.attr("data-ajax-url") : url;
-			ret = $.Common.fire('ajax:beforeSend', [url, data], a, e);
+
+			if(_force_url) {
+				url = _force_url;
+			} else {
+				url = data_url ? data_url : url;
+			}
+			ret = $.Common.fire('ajax:beforeSend', [url, data], $el, e);
 			if (!ret) {
 				e.preventDefault();
 				return false
@@ -93,61 +125,153 @@
 					data = ret[0];
 				}
 			}
-			params = {
+
+			default_options = {
 				type: (type == 'GET' || type == 'get' || type == 'POST' || type == 'post') ? type : input_type,
 				url: url,
 				data: data,
 				success: function(res, status, xhr){
-					if (!$.Common.fire('ajax:success', [res, e, status, xhr], a,e)) {
+					if(is_pjax) {
+						var container = $.Common._extractContainer(res, xhr, url);
+						res = container.contents;
+						var target = $(target_pjax);
+						var target_id = target.attr('id');
+						var unique_id = $.Common.uniqueId();
+						var sub_target_id = null;
+						if($.Common.pjaxCacheBackTargetId) {
+							// ２つのブロックにおける画面遷移においては、進む、戻るで、操作中のブロックORlocation先のブロックの
+							// どちらか一方を戻す必要があるため、１つ前のlocation先のブロックIDも渡す。
+							// こちらを渡さなければ、お知らせ(編集画面) => お知らせ(編集決定) => ブログ(編集画面) => ブログ(編集決定)
+							// 戻る×４ => 進む ×４等でおかしくなる。
+							sub_target_id = $.Common.pjaxCacheBackTargetId;
+						}
+
+						$.Common._pjaxCachePush(unique_id, target_id, sub_target_id, $.Common.pjaxCachePointer);
+					}
+
+					if (!$.Common.fire('ajax:success', [res, e, status, xhr], $el, e)) {
 						return false
 					}
-					$.Common.ajaxSuccess(a, res, null, e);
-				}
-			}
+					$.Common.ajaxSuccess(e, $el, res, params);
 
-			if(target_pjax && $.support.pjax) {
-				// pjax
-				top = $(target_pjax);
-				if(is_form) {
-					$.pjax.submit(e, top, params);
-				} else {
-					$.pjax.click(e, top, params);
-				}
-			} else {
-				if(target_pjax) {
-					if(is_form || (type != 'post' && type != 'POST')) {	// a.attr('href') == url &&
-						if(a.attr('href') != url) {
-							location.href = url;
+					if(is_pjax) {
+						var hash = $.Common.parseURL(url).hash;
+
+						var state = {
+	      					id: unique_id
+						};
+
+						//if(cache_id != target_id) {
+						//	target_pjax.attr('id', cache_id);
+						//}
+
+						$.Common.pjaxCacheUniqueId = unique_id;
+						$.Common.pjaxCachePointer++;
+						$.Common.pjaxCacheBackTargetId = target_id;
+
+						//window.location.hash = hash;
+
+						container.url =$.Common._convertPluginUrl(target, container.url);
+
+						window.history.pushState(state, container.title, container.url);
+	    				if (container.title) {
+	    					document.title = container.title;
+	    				}
+	    				$.Common.pjaxPrevUrl = location.href;
+	    				var hash_target = $(hash);
+	    				if (hash_target.length) {
+							$(window).scrollTop(hash_target.offset().top);
 						}
+	    			}
+				},
+				error: function(xhr, textStatus, errorThrown) {
+					if(!target_pjax) {
 						return;
 					}
-					a.attr('data-ajax-replace', a.attr('data-pjax'));
-					a.removeAttr('data-pjax');
+					// pjaxならば、header Locationではなく、「X-PJAX-Location」ヘッダーを返し、そのURLを見て、再度、pjaxを呼ぶように修正。
+					// リダイレクト前のURLでリダイレクト後の画面が表示されてしまうため。
+					if ( textStatus !== 'abort' ) {
+						var url = xhr.getResponseHeader('X-PJAX-Location');
+						if(url) {
+							var re_url = new RegExp("^"+ $.Common.quote($._full_base_url) , 'i');
+							var buf_url = url.replace(re_url, '');
+							var redirect_params = new Object();
+
+							if(url != buf_url) {
+								url = $._base_url + buf_url;
+							}
+
+							redirect_params['data-ajax-type'] = 'GET';
+
+							if(!url.match(/.*(#.*)/i)) {
+								location.href.match(/.*(#.*)/i);
+								redirect_params['data-ajax-url'] = url + RegExp.$1;
+							} else {
+								redirect_params['data-ajax-url'] = url;
+							}
+							redirect_params['data-pjax'] = target_pjax;
+							if(buf_options) {
+								buf_options['async'] = false;
+							} else {
+								buf_options = {async : false};
+							}
+							$.Common.ajax(e, $el, redirect_params, buf_options);
+
+							return;
+	          			}
+					}
 				}
-				$.ajax(params);
+			};
+			if(options != undefined && options != null) {
+				options = $.extend(default_options, options);
+			} else {
+				options = default_options;
 			}
+
+			if(target_pjax) {
+				if(!$.support.pjax && (is_form || (options['type'] != 'post' && options['type'] != 'POST'))) {	// $el.attr('href') == url &&
+					// pjax非対応ブラウザの場合
+					if($el.attr('href') != url) {
+						location.href = url;
+					}
+					return;
+				}
+				if(params != undefined && params != null) {
+					params['data-ajax'] = params['data-pjax'];
+					delete params['data-pjax'];
+				} else {
+					$el.attr('data-ajax', $el.attr('data-pjax'));
+					$el.removeAttr('data-pjax');
+				}
+
+				if($.support.pjax) {
+					options['beforeSend'] = function(xhr) {
+						xhr.setRequestHeader('X-PJAX', 'true');
+					};
+				}
+			}
+			$.ajax(options);
 			e.preventDefault();
 		},
-
-		ajaxSuccess : function(a, res, params, e) {
+		ajaxSuccess : function(e, el, res, params) {
 			var target,replace_target,effect;
 			var buf_a, res_target, res_other_target, buf_res_target, effect_cnt = 0, effect_index = -1;
 			var dialog_title, dialog_options, dialog;
-			a = $(a);
+			var $el = $(el);
 			if (params) {
-				target = params['data-ajax'];
-				replace_target = params['data-ajax-replace'];
+				target = params['data-ajax-inner'];
+				replace_target = params['data-ajax'];
 				effect = params['data-ajax-effect'];
 				dialog = params['data-ajax-dialog'];
 				dialog_class = params['data-ajax-dialog-class'];
 				dialog_options = params['data-ajax-dialog-options'];
-			} else if(a.get(0)) {
-				target = a.attr("data-ajax");
-				replace_target = a.attr("data-ajax-replace");
-				effect = a.attr("data-ajax-effect") ? a.attr("data-ajax-effect") : null;
-				dialog = a.attr("data-ajax-dialog");
-				dialog_class = a.attr("data-ajax-dialog-class");
-				dialog_options = a.attr("data-ajax-dialog-options");
+			} else if($el.get(0)) {
+				target = $el.attr("data-ajax-inner");
+				replace_target = $el.attr("data-ajax");
+				effect = $el.attr("data-ajax-effect") ? $el.attr("data-ajax-effect") : null;
+				dialog = $el.attr("data-ajax-dialog");
+				dialog_class = $el.attr("data-ajax-dialog-class");
+				dialog_options = $el.attr("data-ajax-dialog-options");
 			} else {
 				return false;
 			}
@@ -218,6 +342,220 @@
 			}
 			return res_target;
 		},
+		// 履歴
+		onPjaxPopstate : function(e, loc_href, loc_hash) {
+			var state = e.originalEvent.state;
+			var direction = 'back';
+			var cache = null;
+
+			loc_href = (loc_href) ? loc_href : location.href;
+			loc_hash = (loc_hash) ? loc_hash : location.hash;
+			if($.Common.isPopstate) {
+				setTimeout(function(){
+					$.Common.onPjaxPopstate(e, loc_href, loc_hash);
+				}, 300);
+				return;
+			}
+			$.Common.isPopstate = true;
+			var prev_url = $.Common.pjaxPrevUrl.replace(/#.*$/i,'').replace(/\//i,'');
+			var current_url = loc_href.replace(/#.*$/i,'').replace(/\//i,'');
+			if(prev_url == current_url) {
+				$.Common.isPopstate = false;
+				return true;
+			}
+
+			$.Common.pjaxPrevUrl = loc_href;
+
+			if(state) {
+				direction = ($.Common.pjaxCacheUniqueId < state.id) ? 'forward' : 'back';
+			}
+			if(direction == 'forward') {
+				$.Common.pjaxCachePointer++;
+			} else if($.Common.pjaxCachePointer > 0) {
+				$.Common.pjaxCachePointer--;
+			}
+
+			if($.Common.pjaxCacheMapping[$.Common.pjaxCachePointer]) {
+				cache = $.Common.pjaxCacheMapping[$.Common.pjaxCachePointer];
+			}
+
+			$.Common.pjaxCacheUniqueId = (state && state.id) ? state.id : 0;
+			if(!cache) {
+				if(loc_hash == null || $._current_url.replace(/\/$/,'').match('/' + loc_href + '$/i')) {
+					window.location.replace(loc_href);
+				} else {
+					// F5をクリック後、戻るボタンで、強制的にURLをリロードしなければならないため
+					window.location.replace(loc_href.replace(/.*(#.*)/i,''));
+					var hash_target = $(loc_hash);
+					if (hash_target.length) {
+						$(window).scrollTop(hash_target.offset().top);
+					}
+				}
+			} else {
+				// 履歴から元に戻す
+				var top = $('#' + cache.top_id);
+				var top_id = cache.top_id;
+				var contents = cache.contents;
+				var url = cache.url;
+				if(url && cache.sub_url) {
+					if(url == $('#' + top_id).attr('data-ajax-url')) {
+						url = cache.sub_url;
+						top_id = cache.sub_top_id;
+						contents = cache.sub_contents;
+					}
+				}
+
+				if(direction == 'back' && $.Common.pjaxCacheMapping.length == $.Common.pjaxCachePointer + 1) {
+					var target_id = top_id;
+					var unique_id = $.Common.uniqueId();
+					$.Common._pjaxCachePush(unique_id, target_id);
+				}
+
+				if(url) {
+					// url指定があれば、再取得
+					// WYSIWYGのような画面だと、キャッシュの画面からjavascriptを再度、実行しても同様の画面にはならないため再取得
+					top.attr('data-ajax', '#' + top_id);
+					top.removeAttr('data-pjax');
+					top.removeAttr('data-ajax-inner');
+					$.Common.ajax(e, top, null, {async : false}, false, url);
+				} else {
+					if (!$.Common.fire('ajax:success', [contents, e, status], top, e)) {
+						return false
+					}
+					$.Common.ajaxSuccess(e, top, contents, {'data-ajax': '#' + top_id});
+				}
+				document.title = cache.title;
+
+
+			}
+			$.Common.isPopstate = false;
+		},
+		_extractContainer : function(data, xhr, url) {
+			var obj = {};
+			obj.url = url;
+
+			// Attempt to parse response html into elements
+  			if (/<html/i.test(data)) {
+				var $head = $(parseHTML(data.match(/<head[^>]*>([\s\S.]*)<\/head>/i)[0]));
+				var $body = $(parseHTML(data.match(/<body[^>]*>([\s\S.]*)<\/body>/i)[0]));
+			} else {
+				var $head = $body = $($.parseHTML(data, document, true));
+			}
+
+			// If response data is empty, return fast
+			if ($body.length === 0)
+				return obj;
+
+			// If there's a <title> tag in the header, use it as
+			// the page's title.
+			obj.title = $.Common.findAll($head, 'title').last().text();
+
+			obj.contents = data;
+
+			// Trim any whitespace off the title
+			if (obj.title) {
+				obj.title = $.trim(obj.title);
+				// title remove
+				obj.contents = data.replace(/<title[^>]*>([\s\S.]*)<\/title>/i, '');
+			}
+			return obj;
+		},
+
+		_pjaxCachePush : function(id, top_id, sub_top_id, pointer) {
+			var target = $('#' + top_id);
+			var cache_contents = null;
+			var cache_url = null;
+			if(target.get(0)) {
+				cache_url = $(target.get(0)).attr('data-ajax-url');
+				if(!cache_url) {
+					cache_contents = $.Common.outerHtml(target.get(0));
+				}
+			}
+			if(sub_top_id) {
+				var sub_target = $('#' + sub_top_id);
+				var sub_cache_contents = null;
+				var sub_cache_url = null;
+				if(sub_target.get(0)) {
+					sub_cache_url = $(sub_target.get(0)).attr('data-ajax-url');
+					if(!sub_cache_url) {
+						sub_cache_contents = $.Common.outerHtml(sub_target.get(0));
+					}
+				}
+			}
+
+			if(!pointer) {
+				pointer = ($.Common.pjaxCacheMapping.length == 0) ? 0 : $.Common.pjaxCacheMapping.length;
+			} else if($.Common.pjaxCacheMapping[pointer + 1]) {
+				// pointer以降を削除(Forward分)
+				var len = $.Common.pjaxCacheMapping.length;
+				for(var i=pointer + 1 ; i < len; i++ ) {
+					$.Common.pjaxCacheMapping.pop();
+				}
+			}
+
+			// キャッシュの最大保存数を超えると削除。
+			/* while ($.Common.pjaxCacheMapping.length > $.Common.pjaxMaxCacheLength) {
+				$.Common.pjaxCacheMapping.shift();
+				if($.Common.pjaxCachePointer - 1 >= $.Common.pjaxCacheMapping.length) {
+					$.Common.pjaxCachePointer--;
+				}
+				if(pointer - 1 >= $.Common.pjaxCacheMapping.length) {
+					pointer--;
+				}
+
+			}*/
+			$.Common.pjaxCacheMapping[pointer] = {
+				id: id,
+				top_id: top_id,
+				title: document.title,
+				contents: cache_contents,
+				url: cache_url,
+				sub_top_id: sub_top_id,
+				sub_contents: sub_cache_contents,
+				sub_url: sub_cache_url
+			};
+		},
+		//もし、ページ表示中で、ブロック一般画面への遷移ならば、ページのリンク先に変換する。
+		// /xxxx/blocks/(block_id)/announcement/#_366 => /xxxx/#_366
+		_convertPluginUrl : function(container, url) {
+			if($('#container').get(0)) {	// container elementがあるかどうかでPage表示中か否かを判断
+				// Page表示中
+				var id = container.attr('id')
+				var block_id = container.attr('data-block');
+				var controller_action = container.attr('data-action');
+				if(id && block_id && controller_action) {
+					var chk_url = $._page_url + 'blocks/' + block_id + '/' + controller_action;
+					if(url == chk_url || url == chk_url + '/') {
+						return $._page_url;
+					} else if(url == chk_url + '#' + id || url == chk_url + '/#' + id) {
+						return $._page_url + '#' + id;
+					}
+				}
+			}
+			return url;
+		},
+
+		// targetのouterHtmlを取得
+		outerHtml : function(target) {
+			var buf = $(target).clone().html('');	// 内部scriptが実行する必要はないため、TopElementのみappend
+			var buf_div = $("<div>").append(buf).html($(target).html());
+			var ret = buf_div.html();
+			buf.remove();
+			buf_div.remove();
+			return ret;
+		},
+
+		uniqueId : function () {
+  			return (new Date).getTime()
+		},
+		parseURL : function(url) {
+			var a = document.createElement('a')
+			a.href = url
+			return a
+		},
+		findAll : function(elems, selector) {
+			return elems.filter(selector).add(elems.find(selector));
+		},
 
 		fire : function(type, args, content, parent_event) {
 			var event = $.Event(type);	// , { relatedTarget: target }
@@ -242,8 +580,7 @@
 		},
 
 		// ブロックリロード処理
-		reloadBlock : function(e, id, data, pjax, url) {
-			pjax = (typeof pjax == 'undefined') ? false : pjax
+		reloadBlock : function(e, id, data, url) {
 			var block = (typeof id == 'string') ? $('#' + id) : $(id),re, params = new Object();
 			if(!url) {
 				url = block.attr('data-ajax-url');
@@ -255,26 +592,19 @@
 				re = new RegExp("/blocks/", 'i');
 				url = url.replace(re, "/" + $._block_type + "/");
 			}
-			if(pjax && $.support.pjax) {
-				params['url'] = url;
-				if(data) {
-					params['data'] = data;
+			$.ajax({
+				type: 'GET',
+				url: url,
+				data: data,
+				success: function(res, status, xhr){
+					block.replaceWith(res);
+					//$.Common.ajaxSuccess(e, a, res);
 				}
-				$.pjax.click(e, block, params);
-			} else {
-				$.ajax({
-					type: 'GET',
-					url: url,
-					data: data,
-					success: function(res, status, xhr){
-						block.replaceWith(res);
-						//$.Common.ajaxSuccess(a, res);
-					}
-	 			});
-			}
+ 			});
 		},
 
 		// block_id,controller_action名称からurl取得
+		// TODO:廃止予定
 		urlBlock : function(block_id, controller_action) {
 			if(!block_id) {
 				return $._page_url + $._block_type + '/' + controller_action;
@@ -699,6 +1029,11 @@
 			return str;
 		}
 	};
+	/* 定数 */
+	$.support.pjax =
+		window.history && window.history.pushState && window.history.replaceState &&
+		// pushState isn't reliable on iOS until 5.
+		!navigator.userAgent.match(/((iPod|iPhone|iPad).+\bOS\s+[1-4]|WebApps\/.+CFNetwork)/);
 	/* グローバル関数 */
 	__ = function(name) {
 		var r = [], ret;

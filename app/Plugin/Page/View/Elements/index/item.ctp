@@ -142,7 +142,7 @@
 	<div class="pages-menu-room <?php echo($class); ?>-room"></div>
 	<?php endif; ?>
 	<?php
-	echo $this->Form->create(null, array('url' => array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'edit'), 'id' => 'PagesMenuForm-'.$page['Page']['id'], 'class' => 'pages-menu-edit-form','data-ajax-replace' => '#pages-menu-edit-item-'.$page['Page']['id']));
+	echo $this->Form->create(null, array('url' => array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'edit'), 'id' => 'PagesMenuForm-'.$page['Page']['id'], 'class' => 'pages-menu-edit-form','data-ajax' => '#pages-menu-edit-item-'.$page['Page']['id']));
 	?>
 	<input type="hidden" name="data[Page][id]" value="<?php echo(intval($page['Page']['id'])); ?>" />
 	<div class="dd-drag-content pages-menu-edit-content clearfix">
@@ -234,7 +234,7 @@
 		if($is_edit_detail) {
 			echo $this->Html->link('', array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'detail'),
 				array('title' => __('Edit'), 'class' => 'pages-menu-edit-icon' . ' nc-tooltip',
-				'data-ajax' => '#pages-menu-edit-detail-'.$page['Page']['id'], 'data-page-edit-id' => $page['Page']['id']));
+				'data-ajax-inner' => '#pages-menu-edit-detail-'.$page['Page']['id'], 'data-page-edit-id' => $page['Page']['id']));
 		} else {
 			echo $this->Html->link('', '#',
 				array('title' => __('Edit'), 'class' => 'pages-menu-edit-icon disable-lbl',
@@ -249,7 +249,7 @@
 			}
 			echo $this->Html->link('', '#',
 				array('title' => __d('page', 'Other operations'), 'class' => 'pages-menu-other-icon' . ' nc-tooltip'.$operation_class,
-				'data-ajax' => '#pages-menu-edit-view-'.$page['Page']['id'],
+				'data-ajax-inner' => '#pages-menu-edit-view-'.$page['Page']['id'],
 				'data-is-parent-chief' => $is_parent_chief,
 				'data-is-chief' => $is_chief,
 				'data-is-sel-modules' => $is_sel_modules,
@@ -265,7 +265,7 @@
 		if($is_delete) {
 			echo $this->Html->link('', array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'delete'),
 				array('title' => ($page['Page']['id'] == $page['Page']['room_id']) ? __d('page', 'Delete room') : __d('page', 'Delete page'), 'class' => 'pages-menu-delete-icon' . ' nc-tooltip',
-				'data-ajax-replace' => '#pages-menu-edit-item-'.$page['Page']['id'], 'data-ajax-type' => 'POST', 'data-ajax-data' => '#pages-menu-edit-item-' . $page['Page']['id']));
+				'data-ajax' => '#pages-menu-edit-item-'.$page['Page']['id'], 'data-ajax-type' => 'POST', 'data-ajax-data' => '#pages-menu-edit-item-' . $page['Page']['id']));
 		} else {
 			echo $this->Html->link('', '#',
 				array('title' => ($page['Page']['id'] == $page['Page']['room_id']) ? __d('page', 'Delete room') : __d('page', 'Delete page'), 'class' => 'pages-menu-delete-icon disable-lbl',

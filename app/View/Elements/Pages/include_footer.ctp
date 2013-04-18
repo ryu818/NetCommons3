@@ -11,7 +11,7 @@
 	$nc_user = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 	$nc_mode = intval($this->Session->read(NC_SYSTEM_KEY.'.'.'mode'));
 
-	$common_js = array('plugins/jquery.pjax.js', 'plugins/chosen.jquery.js');
+	$common_js = array('plugins/chosen.jquery.js');
 	if($this->params['controller'] == 'pages') {
 		$common_js[] = 'pages/common/';
 	}
@@ -26,12 +26,24 @@
 ?>
 <script>
 	$(function () {
-		$(document).on("submit", "form[data-pjax],form[data-ajax],form[data-ajax-replace]", function (e) {
+		$(document).on("submit", "form[data-pjax],form[data-ajax],form[data-ajax-inner]", function (e) {
 			$.Common.ajax(e, $(this));
 		});
-		$(document).on("click", "a[data-ajax],a[data-ajax-replace],a[data-pjax],input[data-ajax],input[data-ajax-replace],input[data-pjax],button[data-ajax],button[data-ajax-replace],button[data-pjax]", function (e) {
+		$(document).on("click", "a[data-ajax],a[data-ajax-inner],a[data-pjax],input[data-ajax],input[data-ajax-inner],input[data-pjax],button[data-ajax],button[data-ajax-inner],button[data-pjax]", function (e) {
 			$.Common.ajax(e, $(this));
 		});
+		if($.support.pjax) {
+			$(window).bind('popstate', function(e) {
+				if(!$(document.body).attr('data-onload')) {
+					return;
+				}
+				$.Common.onPjaxPopstate(e);
+			});
+			/* Chromeでonload時にもpopstateイベントが実行されるため、実行させないように対処 */
+			setTimeout(function() {
+				$(document.body).attr('data-onload', true);
+			}, 0);
+		};
 
 		var options = {items: '.nc-tooltip', track: true};
 		$( document ).tooltip(options);

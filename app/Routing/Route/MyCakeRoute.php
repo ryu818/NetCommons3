@@ -246,6 +246,7 @@ class MyCakeRoute extends CakeRoute {
 			// namedやpassの情報がはいった場合、actionを省略しない
 			$chk_url = $url;
 			unset($chk_url['block_id']);
+			unset($chk_url['block_type']);
 			unset($chk_url['permalink']);
 			unset($chk_url['plugin']);
 			unset($chk_url['controller']);

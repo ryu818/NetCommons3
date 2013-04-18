@@ -1,6 +1,6 @@
 <div id="nc-content-top<?php echo($id); ?>" data-width="750">
 	<?php
-		echo $this->Form->create('Content', array('url' => array(isset($active_room_id) ? $active_room_id : null),'type' => 'post', 'id' => 'FormContent'.$id, 'data-ajax-replace' => '#nc-content-top'.$id));
+		echo $this->Form->create('Content', array('url' => array(isset($active_room_id) ? $active_room_id : null),'type' => 'post', 'id' => 'FormContent'.$id, 'data-ajax' => '#nc-content-top'.$id));
 	?>
 	<div class="top-description">
 		<?php

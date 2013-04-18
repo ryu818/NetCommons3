@@ -54,7 +54,7 @@
 				echo $this->Html->link(__d('blog', 'Vote'),
 					array('controller' => 'blog', 'action' => 'vote', $blog_post['BlogPost']['id']),
 					array('title' =>__d('blog', 'Vote'),
-						'data-ajax-replace' => '#blog-entry-meta'.$id.'-'.$blog_post['BlogPost']['id'],
+						'data-ajax' => '#blog-entry-meta'.$id.'-'.$blog_post['BlogPost']['id'],
 						'data-ajax-type' => 'post'
 				));
 			}

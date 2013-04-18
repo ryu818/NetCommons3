@@ -165,7 +165,7 @@
 		<input type="button" class="common-btn" name="cancel" value="<?php echo(__('Cancel')); ?>" onclick="$('#pages-menu-edit-detail-<?php echo($page['Page']['id']);?>').slideUp(300);" />
 
 
-		<input type="button" class="common-btn common-btn-light" name="participant" value="<?php echo(__d('page','Edit members')); ?>" data-page-edit-id=<?php echo($page['Page']['id']);?> data-ajax-url="<?php echo($this->Html->url(array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'participant', $page['Page']['id']))); ?>" data-ajax-replace="#pages-menu-edit-participant-<?php echo($page['Page']['id']);?>" />
+		<input type="button" class="common-btn common-btn-light" name="participant" value="<?php echo(__d('page','Edit members')); ?>" data-page-edit-id=<?php echo($page['Page']['id']);?> data-ajax-url="<?php echo($this->Html->url(array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'participant', $page['Page']['id']))); ?>" data-ajax="#pages-menu-edit-participant-<?php echo($page['Page']['id']);?>" />
 
 	</div>
 </div>

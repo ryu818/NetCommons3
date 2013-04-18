@@ -10,7 +10,7 @@ echo ($this->element('Dialogs/hmenu'));
 		<?php foreach ($modules as $module): ?>
 			<?php $module_name = h($module['Module']['module_name']); ?>
 			<div class="controls-system-icon">
-				<a class="controls-system-link" href="<?php echo($this->Html->url('/').'active-controls/'.$module['Module']['controller_action']);?>" data-ajax="#_system<?php echo($module['Module']['id']); ?>" data-ajax-dialog='true' data-ajax-dialog-options='{"title" : "<?php echo($module_name); ?>","position": "mouse"}' data-ajax-effect="fold" data-ajax-dialog-class="controls-module <?php echo(Inflector::underscore($module['Module']['dir_name'])); ?>-dialog">
+				<a class="controls-system-link" href="<?php echo($this->Html->url('/').'active-controls/'.$module['Module']['controller_action']);?>" data-ajax-inner="#_system<?php echo($module['Module']['id']); ?>" data-ajax-dialog='true' data-ajax-dialog-options='{"title" : "<?php echo($module_name); ?>","position": "mouse"}' data-ajax-effect="fold" data-ajax-dialog-class="controls-module <?php echo(Inflector::underscore($module['Module']['dir_name'])); ?>-dialog">
 					<img src="<?php echo($this->webroot); ?><?php echo($module['Module']['dir_name']); ?>/img/<?php echo($module['Module']['module_icon']); ?>" alt="<?php echo($module_name); ?>" title="<?php echo($module_name); ?>" />
 					<br />
 					<div><?php echo($module_name); ?></div>

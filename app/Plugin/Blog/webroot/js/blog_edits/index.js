@@ -10,27 +10,43 @@
 ;(function($) {
 	$.fn.BlogEdits = function(id, active_tab) {
 		var hash = location.hash;
-		if(typeof active_tab == "undedined") {
-			if(hash.match(/^#blog-edits-tab-comment/)) {
-				active_tab = 1;
-			} else if(hash.match(/^#blog-edits-tab-trackback/)) {
-				active_tab = 2;
-			} else if(hash.match(/^#blog-edits-tab-approval/)) {
-				active_tab = 3;
-			}
+		if(active_tab == undefined) {
+			active_tab = getActivetab(id);
 		}
-
-		//var form = $('#Form' + id);
-		//var action = form.attr('action');
 
 		$('#blog-edits-tab' + id).tabs({
 			active: active_tab,
 			show: function(event, ui) {
-				location.hash = $(ui.tab).attr('href');
-				$(window).scrollTop($(window).scrollTop() - 75);	// タブの上にScroll移動
+				if(ui.index != 0) {
+					location.hash = $(ui.tab).attr('href');
+					$('html,body').animate({ scrollTop: $(window).scrollTop() - 75 }, 'swing');
+				}
+				active_tab = ui.index;
+			}
+		});
+		$(window).bind("hashchange", function(e){
+			// hash値が切り替わったらタブの表示を切り替える
+			var active = getActivetab(id);
+			if(active !== false) {
+				$('#blog-edits-tab' + id).tabs( "option", "active", active);
 			}
 		});
 		$(this).show();
+
+		function getActivetab(id) {
+			var hash = location.hash;
+			var active = false;
+			if(hash == '#' + id) {
+				active = 0;
+			} else if(hash == '#blog-edits-tab-comment' + id) {
+				active = 1;
+			} else if(hash == '#blog-edits-tab-trackback' + id) {
+				active = 2;
+			} else if(hash == '#blog-edits-tab-approval' + id) {
+				active = 3;
+			}
+			return active;
+		}
 
 	};
 })(jQuery);

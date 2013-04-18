@@ -6,7 +6,7 @@
 	</ul>
 	<div id="nc-block-styles-tab-init<?php echo($block_id); ?>" class="nc-block-styles-init-outer">
 		<?php
-			echo $this->Form->create('BlockStyle', array('id' => 'BlockIndexForm'.$block_id, 'data-ajax-replace' => '#nc-block-style'.$block_id));
+			echo $this->Form->create('BlockStyle', array('id' => 'BlockIndexForm'.$block_id, 'data-ajax' => '#nc-block-style'.$block_id));
 			$locale = Configure::read(NC_SYSTEM_KEY.'.locale');
 		?>
 		<fieldset class="form">
@@ -325,7 +325,7 @@
 	<div id="nc-block-styles-tab-theme<?php echo($block_id); ?>" class="nc-block-styles-theme-outer">
 		<?php /* ブロックテーマ */ ?>
 		<?php
-			echo $this->Form->create('BlockStyle', array('id' => 'BlockIndexFormTheme'.$block_id, 'data-ajax-replace' => '#nc-block-styles'.$block_id));
+			echo $this->Form->create('BlockStyle', array('id' => 'BlockIndexFormTheme'.$block_id, 'data-ajax' => '#nc-block-styles'.$block_id));
 			$act_category_cnt = -1
 		?>
 		<div class="nc-block-styles-theme-selected highlight">

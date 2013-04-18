@@ -257,8 +257,8 @@
  			return ret;
 		}).on('success', function(e, page_id, drop_page_id, position) {
 			var params = new Object();
-			params['data-ajax-replace'] = '#pages-menu-edit-item-' + page_id;
-			var target = $.Common.ajaxSuccess(null, result_response, params);
+			params['data-ajax'] = '#pages-menu-edit-item-' + page_id;
+			var target = $.Common.ajaxSuccess(e, null, result_response, params);
 			addEventNestable(active_tab_name, root_menu, target, page_id);
 			// コンテンツクリックイベント
 			$('.pages-menu-edit-content:first', target).click();
@@ -301,7 +301,7 @@
 				}
 
 				var ajax_id, page_edit, replace_ajax_id, active, dd_sequence, position;
-				ajax_id = $(this).attr('data-ajax-replace');
+				ajax_id = $(this).attr('data-ajax');
 				replace_ajax_id = ajax_id.replace(/^#/, '');
 
 				page_edit = $("<li id='"+ replace_ajax_id +"'></li>").hide();
@@ -317,7 +317,7 @@
 				return url;
 			}).on('ajax:success', function(e, res) {
 				var dd_sequence, position, insert_li;
-				var target = $.Common.ajaxSuccess(this, res);
+				var target = $.Common.ajaxSuccess(e, this, res);
 
 				dd_sequence = active_li.attr('data-dd-sequence');
 				position = 'bottom';
@@ -423,9 +423,9 @@
 						link.attr("data-page-edit-id", list_page_id);
 						if(link.parent().attr('id') == 'pages-menu-edit-other-operation-unassign-members') {
 							// 参加者解除
-							link.attr("data-ajax-replace", "#pages-menu-edit-item-" + list_page_id);
+							link.attr("data-ajax", "#pages-menu-edit-item-" + list_page_id);
 						} else {
-							link.attr("data-ajax-replace", "#pages-menu-edit-participant-" + list_page_id);
+							link.attr("data-ajax", "#pages-menu-edit-participant-" + list_page_id);
 						}
 					}
 					return url;
@@ -443,7 +443,7 @@
 					// 参加者修正
 					$.PageMenu.hideDetail(page_id);
 				}
-				var target = $.Common.ajaxSuccess(this, res);
+				var target = $.Common.ajaxSuccess(e, this, res);
 				var scroll_target = $('#pages-menu-edit-item-' + page_id);
 				$('.pages-menu-edit-content:first', scroll_target).click();
 
@@ -479,7 +479,7 @@
 				}
 
 			}).on('ajax:success','form.pages-menu-edit-form',function(e, res) {
-				var target = $.Common.ajaxSuccess(this, res);
+				var target = $.Common.ajaxSuccess(e, this, res);
 				var re_html = new RegExp("^<script>", 'i');
 				if($(this).attr('data-name') == 'participant' && !$.trim(res).match(re_html)) {
 					$.Common.showErrorDialog(res);

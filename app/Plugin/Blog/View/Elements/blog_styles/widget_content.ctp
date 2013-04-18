@@ -1,5 +1,5 @@
 <?php
-	echo $this->Form->create('BlogStyle', array('url' => array('action' => 'widget'), 'id' => $top_id, 'data-ajax-replace' => '#'.$top_id));
+	echo $this->Form->create('BlogStyle', array('url' => array('action' => 'widget'), 'id' => $top_id, 'data-ajax' => '#'.$top_id));
 ?>
 <?php echo $this->fetch('widget_content'); ?>
 <?php

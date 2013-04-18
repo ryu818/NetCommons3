@@ -17,11 +17,5 @@
 			'image'    : $.Common.urlBlock(block_id, 'announcement/image'),
 			'file'     : $.Common.urlBlock(block_id, 'announcement/file'),
 		});
-		var form = $('#Form' + id);
-
-		$('button[name="cancel"]', form).click(function(e) {
-			// TODO: $.Common.ajaxに修正予定
-			$.pjax.click(e, t, {'url': $.Common.urlBlock(block_id, 'announcement')});
-		});
 	}
 })(jQuery);

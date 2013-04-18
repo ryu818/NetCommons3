@@ -9,7 +9,7 @@ $this->extend('/Frame/block');
 	?>
 	<script>
 	$(function(){
-		$('#<?php echo($id); ?>').Announcement('<?php echo ($id);?>', <?php echo ($is_chief);?>);
+		$('#<?php echo($id); ?>').Announcement('<?php echo ($id);?>', '<?php echo($this->Html->url(array('controller' => 'edits', '#' => $id))); ?>');
 	});
 	</script>
 	<?php endif; ?>

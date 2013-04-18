@@ -76,7 +76,7 @@
 				array('action' => 'block', $val['Content']['id']),
 				array(
 					'title' =>__d('content', 'List of blocks'),
-					'data-ajax' =>'#nc-content-block-list-'.$id. '-' .$val['Content']['id'],
+					'data-ajax-inner' =>'#nc-content-block-list-'.$id. '-' .$val['Content']['id'],
 					'data-ajax-dialog' => true,
 					'data-ajax-effect' => 'fold',
 					'data-ajax-dialog-options' => '{"title" : "'.$this->Js->escape(__d('content', 'List of blocks[%1$s]', h($val['Content']['title']))).'","modal": true, "resizable": true, "autoResize": true, "width":640}',
@@ -91,7 +91,7 @@
 			array('action' => 'edit', $val['Content']['id']),
 			array(
 				'title' =>__('Edit'),
-				'data-ajax' =>'#nc-content-edit-dialog'.$id. '-' .$val['Content']['id'],
+				'data-ajax-inner' =>'#nc-content-edit-dialog'.$id. '-' .$val['Content']['id'],
 				'data-ajax-dialog' => true,
 				'data-ajax-effect' => 'fold',
 				'data-ajax-dialog-options' => '{"title" : "'.$this->Js->escape(__d('content', 'Edit content[%1$s]', h($val['Content']['title']))).'","modal": true, "resizable": true, "autoResize": true, "width":440, "position":"mouse"}',
@@ -108,7 +108,7 @@
 		$adminStr .= $this->Html->link(__('Delete'),
 			array('action' => 'delete', $val['Content']['id']),
 			array(
-				'title' =>__('Delete'), 'data-ajax-replace' => '#nc-content-top'.$id,
+				'title' =>__('Delete'), 'data-ajax' => '#nc-content-top'.$id,
 				'data-ajax-type' => 'POST',
 				'data-ajax-confirm' => __d('content', $confirm, $val['Content']['title']),
 			)

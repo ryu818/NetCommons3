@@ -3,7 +3,7 @@
 		<?php
 			echo $this->Form->create('Content', array(
 				'id' => 'FormContentEdit'.$id.'-'.$content['Content']['id'],
-				'data-ajax-replace' => '#nc-content-edit-top'.$id.'-'.$content['Content']['id']
+				'data-ajax' => '#nc-content-edit-top'.$id.'-'.$content['Content']['id']
 			));
 		?>
 		<ul class="lists">
@@ -72,7 +72,7 @@
 			<script>
 				$(function(){
 					$('[name=cancel]', $('#FormContentEdit<?php echo($id); ?>-<?php echo($content['Content']['id']); ?>')).click();
-					$.Common.reloadBlock(null, 'nc-content-top<?php echo($id); ?>', null, false, $('#FormContent<?php echo($id); ?>').attr('action'));
+					$.Common.reloadBlock(null, 'nc-content-top<?php echo($id); ?>', null, $('#FormContent<?php echo($id); ?>').attr('action'));
 					if($('#<?php echo($id); ?>').get(0)) {
 						$.Common.reloadBlock(null, '<?php echo($id); ?>');
 					}

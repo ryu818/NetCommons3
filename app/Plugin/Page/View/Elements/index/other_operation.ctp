@@ -41,19 +41,19 @@
 		<li id="pages-menu-edit-other-operation-add-members">
 			<?php
 				echo $this->Html->link(__d('page', 'Add members'), array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'participant'),
-					array('title' => __d('page', 'Add members'), 'class' => 'link hover-highlight', 'data-page-edit-id' => '','data-ajax-replace' => '#pages-menu-edit-participant'));
+					array('title' => __d('page', 'Add members'), 'class' => 'link hover-highlight', 'data-page-edit-id' => '','data-ajax' => '#pages-menu-edit-participant'));
 			?>
 		</li>
 		<li id="pages-menu-edit-other-operation-members">
 			<?php
 				echo $this->Html->link(__d('page', 'Edit members'), array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'participant'),
-					array('title' => __d('page', 'Edit members'), 'class' => 'link hover-highlight', 'data-page-edit-id' => '','data-ajax-replace' => '#pages-menu-edit-participant'));
+					array('title' => __d('page', 'Edit members'), 'class' => 'link hover-highlight', 'data-page-edit-id' => '','data-ajax' => '#pages-menu-edit-participant'));
 			?>
 		</li>
 		<li id="pages-menu-edit-other-operation-unassign-members">
 			<?php
 				echo $this->Html->link(__d('page', 'Unassign members'), array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'deallocation'),
-					array('title' => __d('page', 'Unassign members'), 'class' => 'link hover-highlight', 'data-page-edit-id' => '','data-ajax-replace' => '#pages-menu-edit-item',
+					array('title' => __d('page', 'Unassign members'), 'class' => 'link hover-highlight', 'data-page-edit-id' => '','data-ajax' => '#pages-menu-edit-item',
 						'data-ajax-confirm' => h(__d('page','Unassign members of [%s]. Are you sure?',$page['Page']['page_name'])), 'data-ajax-type' => 'post'
 				));
 			?>

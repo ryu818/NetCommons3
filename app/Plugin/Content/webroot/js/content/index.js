@@ -13,7 +13,7 @@
 
 		$("#nc-content-sel-module" + id).chosen().change(function(e){
 			$(this).attr('data-ajax-url', $(this).attr('data-ajax-url')+ '/module_id:' + $(this).val());
-			$(this).attr('data-ajax-replace', form.attr('data-ajax-replace'));
+			$(this).attr('data-ajax', form.attr('data-ajax'));
 			$.Common.ajax(e, this);
 		});
 
