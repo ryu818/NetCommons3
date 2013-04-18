@@ -624,7 +624,7 @@ class CakeRequest implements ArrayAccess {
 // #をdefault付与。
 		if(isset($this->params['plugin'])) {
 			$id = Configure::read(NC_SYSTEM_KEY.'.id');
-			if(isset($id)) {
+			if(isset($id) && $id != '_0') {
 				$url .= '#' . $id;
 			}
 		}
