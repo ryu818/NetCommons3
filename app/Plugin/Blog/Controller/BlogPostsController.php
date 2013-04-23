@@ -44,10 +44,10 @@ class BlogPostsController extends BlogAppController {
 		$isAutoRegist = false;
 		if(isset($this->request->data['auto_regist']) && $this->request->data['auto_regist']) {
 			$isAutoRegist = true;
+		}
+		if(!isset($post_id) && isset($this->request->data['autoregist_post_id']) && $this->request->data['autoregist_post_id']) {
 			// 新規投稿で自動登録の2回目以降は$post_idがセットされないためセット
-			if(isset($this->request->data['auto_regist_post_id']) && $this->request->data['auto_regist_post_id']) {
-				$post_id = $this->request->data['auto_regist_post_id'];
-			}
+			$post_id = $this->request->data['autoregist_post_id'];
 		}
 
 		$blog = $this->Blog->find('first', array('conditions' => array('content_id' => $this->content_id)));
@@ -184,7 +184,7 @@ class BlogPostsController extends BlogAppController {
 					$editUrl['page'] = isset($this->request->query['back_page']) ? $this->request->query['back_page'] : null;
 					$this->redirect($editUrl);
 					return;
-				} else if(!isset($post_id)) {
+				} else if(!isset($post_id) || isset($this->request->data['autoregist_post_id'])) {
 					// 新規投稿ならば、編集画面にするためリダイレクト
 					$this->redirect(array('controller' => 'blog_posts', $this->BlogPost->id, '#' => $this->id));
 					return;

@@ -1146,7 +1146,7 @@
 			 * toolbar作成
              */
             this.appendControls();
-            this.el = $('<div></div>').addClass('nc-wysiwyg-outer')
+            this.el = $('<div id="' + this.id + '"></div>').addClass('nc-wysiwyg-outer')
               .append(panel)
               .append( $('<div><!-- --></div>').css({ clear : 'both' }) )
               .append(editor);
@@ -1371,10 +1371,16 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			// auto regist
             if( this.options.autoRegistForm ) {
             	this.autoregist = this.content();
-				setTimeout(function() {
-					self.regist(null, null, true);
-					if (self.options.autoRegistForm && self.el && self.el[0] && self.el[0].nodeName)
-						setTimeout(arguments.callee, self.options.autoRegistTime);
+            	var unique_id = $.Common.uniqueId();
+            	this.el.attr('data-wysiwyg-unique-id', unique_id);
+            	setTimeout(function() {
+            		var buf_el = $('#' + self.id);
+            		if(unique_id == buf_el.attr('data-wysiwyg-unique-id')) {
+            			self.regist(null, null, true);
+						if (self.options.autoRegistForm && self.el && self.el[0] && self.el[0].nodeName) {
+							setTimeout(arguments.callee, self.options.autoRegistTime);
+						}
+            		}
 				}, this.options.autoRegistTime);
             }
 
@@ -2570,16 +2576,18 @@ IEで、iframe中のbodyのborderがつくから削除していると
 				t.autoregist = content;			// エラーがでても、contentがかわるまではPOSTを投げるのをやめる。
 				var data = form.serializeArray();
 				data[data.length] = {name : 'auto_regist',value : true};
-				if(t.autoregist_post_id) {
-					data[data.length] = {name : 'auto_regist_post_id',value : t.autoregist_post_id};
-				}
 				var options = {
 					data : data,
 					success : function(res, status, xhr){
 						var post_id = $.trim(res);
 						if(isFinite(post_id) && parseInt(post_id) > 0) {
 							//t.autoregist = content;
-							t.autoregist_post_id = post_id;
+							var autoregist_post_id = $(t.el).children("input[name=autoregist_post_id]:first");
+							if(!autoregist_post_id.get(0)) {
+								autoregist_post_id = $('<input type="hidden" name="autoregist_post_id" value="'+ post_id +'"/>');
+								autoregist_post_id.appendTo( t.el );
+							}
+							autoregist_post_id.val(post_id);
 							var mes = __d(['nc_wysiwyg', 'autoregist'], 'ok');
 							now = new Date();
 							h = now.getHours(), m = now.getMinutes();
@@ -2587,8 +2595,9 @@ IEで、iframe中のbodyのborderがつくから削除していると
 							var autoregist = $(t.el).children(".nc-wysiwyg-autoregist:first");
 							if(!autoregist.get(0)) {
 								autoregist = $('<div class="nc-wysiwyg-autoregist"></div>');
+								autoregist.appendTo( t.el );
 							}
-							autoregist.html(mes).appendTo( t.el );
+							autoregist.html(mes);
 						}
 					},
 					error : function(xhr, textStatus, errorThrown) {
