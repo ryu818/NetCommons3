@@ -44,9 +44,9 @@ class Htmlarea extends AppModel
 		return true;
 	}
 
-
 /**
- * 履歴更新処理
+ * 履歴更新後処理
+ * 		auto-draftは1レコードのみの登録とする（履歴情報のデータ量を減らすため）。
  * @param   array $options
  * @return  boolean
  * @since   v 3.0.0.0
@@ -81,7 +81,13 @@ class Htmlarea extends AppModel
 				$this->updateAll($fields, $conditions);
 
 				$htmlarea = $this->findById($revision_parent);
-				if($htmlarea[$this->alias]['content'] == $this->data[$this->alias]['content']) {
+				if(isset($this->data[$this->alias]['revision_name']) && $this->data[$this->alias]['revision_name'] == 'auto-draft') {
+					// auto-draftは1レコードのみの登録とする。
+					$this->deleteAll(array(
+						'revision_name' => 'auto-draft',
+						'revision_parent' => $this->id
+					));
+				} else if(($htmlarea[$this->alias]['content'] == $this->data[$this->alias]['content'])) {
 					// コンテンツ変更なし。1つ前のヒストリー削除
 					$this->delete($revision_parent);
 					$this->id = $id;

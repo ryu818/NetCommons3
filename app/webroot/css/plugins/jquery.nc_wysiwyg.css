@@ -257,10 +257,11 @@ div.nc-wysiwyg-outer div.resizebox {
 
 /* autoregist */
 .nc-wysiwyg-autoregist {
-	padding : 3px;
-	border : 0 none;
 	background-color: #d9f1fc;
-	color : #999999;
+    bottom: 28px;
+    padding: 5px;
+    position: absolute;
+    right: 9px;
 }
 /* format mes */
 .nc-wysiwyg-mes {

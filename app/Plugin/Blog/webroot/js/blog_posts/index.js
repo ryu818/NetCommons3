@@ -9,7 +9,9 @@
  */
 ;(function($) {
 	$.fn.BlogPosts = function(id, is_error) {
-		var wysiwyg = $('#HtmlareaContent'+id).nc_wysiwyg();
+		var wysiwyg = $('#HtmlareaContent'+id).nc_wysiwyg({
+			autoRegistForm : $('#Form' + id)
+		});
 		var date = $('#BlogPostPostDate' + id);
 		var area_outer = $('#blog-post-widget-area' + id);
 		var items = $('.blog-style-widget-area-title', area_outer).disableSelection();

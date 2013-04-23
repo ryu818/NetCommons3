@@ -40,6 +40,16 @@ class BlogPostsController extends BlogAppController {
 		// 		未承認の場合、最初の投稿では一時保存へ。その後、現在のstatusを引き継ぐ。
 		// TODO:email送信未実装
 
+		// 自動登録
+		$isAutoRegist = false;
+		if(isset($this->request->data['auto_regist']) && $this->request->data['auto_regist']) {
+			$isAutoRegist = true;
+			// 新規投稿で自動登録の2回目以降は$post_idがセットされないためセット
+			if(isset($this->request->data['auto_regist_post_id']) && $this->request->data['auto_regist_post_id']) {
+				$post_id = $this->request->data['auto_regist_post_id'];
+			}
+		}
+
 		$blog = $this->Blog->find('first', array('conditions' => array('content_id' => $this->content_id)));
 		if(!isset($blog['Blog'])) {
 			$this->flash(__('Content not found.'), null, 'BlogPost.index.001', '404');
@@ -62,6 +72,10 @@ class BlogPostsController extends BlogAppController {
 			$blog_term_links = array();
 			$blog_post = $this->BlogPost->findDefault($this->content_id);
 			$is_before_update_term_count = false;
+			if($isAutoRegist) {
+				// 自動登録で新規登録時は一時保存
+				$is_temporally = _ON;
+			}
 		}
 		$active_category_arr = null;
 		$active_tag_arr = null;
@@ -71,10 +85,12 @@ class BlogPostsController extends BlogAppController {
 				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPosts.index.003', '500');
 				return;
 			}
-			if(!isset($this->request->data['is_temporally']) || $this->request->data['is_temporally'] == _OFF) {
-				$is_temporally = _OFF;
-			} else {
-				$is_temporally = _ON;
+			if(!isset($is_temporally)) {
+				if(!isset($this->request->data['is_temporally']) || $this->request->data['is_temporally'] == _OFF) {
+					$is_temporally = _OFF;
+				} else {
+					$is_temporally = _ON;
+				}
 			}
 			if(isset($this->request->data['BlogPost']['id'])) {
 				// リクエストからidの変更は許さない。
@@ -83,7 +99,10 @@ class BlogPostsController extends BlogAppController {
 			$blog_post['BlogPost'] = array_merge($blog_post['BlogPost'], $this->request->data['BlogPost']);
 			$blog_post['BlogPost']['content_id'] = $this->content_id;
 			$blog_post['BlogPost']['permalink'] = $blog_post['BlogPost']['title'];	// TODO:仮でtitleをセット「「/,:」等の記号を取り除いたり同じタイトルがあればリネームしたりすること。」
-			$blog_post['BlogPost']['status'] = ($is_temporally) ? NC_STATUS_TEMPORARY : NC_STATUS_PUBLISH;
+			if(!isset($post_id) || !$isAutoRegist) {
+				// 自動登録で編集時はstatusを維持
+				$blog_post['BlogPost']['status'] = ($is_temporally) ? NC_STATUS_TEMPORARY : NC_STATUS_PUBLISH;
+			}
 
 			$blog_post['Htmlarea']['content'] = $this->request->data['Htmlarea']['content'];
 
@@ -94,7 +113,7 @@ class BlogPostsController extends BlogAppController {
 			$htmlarea = array(
 				'Htmlarea' => array(
 					'revision_parent' => $blog_post['BlogPost']['htmlarea_id'],
-					'revision_name' => ($is_temporally) ? 'draft' : 'publish',
+					'revision_name' => ($isAutoRegist) ? 'auto-draft' : (($is_temporally) ? 'draft' : 'publish'),
 					'content_id' => $this->content_id,
 					'content' => $this->request->data['Htmlarea']['content'],
 					'non_approved_content' => '',
@@ -122,14 +141,20 @@ class BlogPostsController extends BlogAppController {
 					$blog_post['BlogPost']['is_future'] = _OFF;
 				}
 
-
 				$this->BlogPost->save($blog_post, false, $fieldList);
+
+				if($isAutoRegist) {
+					// 自動登録時
+					echo $this->BlogPost->id;
+					$this->render(false);
+					return;
+				}
+
 				if(empty($blog_post['BlogPost']['id'])) {
 					$this->Session->setFlash(__('Has been successfully registered.'));
 				} else {
 					$this->Session->setFlash(__('Has been successfully updated.'));
 				}
-
 				if($blog_post['BlogPost']['is_future'] == _ON || $blog_post['BlogPost']['status'] == NC_STATUS_TEMPORARY) {
 					$is_after_update_term_count = false;
 				} else {

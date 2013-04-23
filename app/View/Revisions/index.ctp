@@ -175,18 +175,20 @@ foreach ($revisions as $revision) {
 			<td>
 				<?php
 					/* 復元 */
-					$defaultUrl = array('revision_id' => $revision['Htmlarea']['id'], '#' => $id);
-					$setUrl = isset($url) ? array_merge($defaultUrl, $url) : $defaultUrl;
-					echo $this->Html->link(
-						__('Restore'),
-						$setUrl,
-						array(
-							'title' => __('Restore'),
-							'data-pjax' => '#'.$id,
-							'data-ajax-type' => 'post',
-							'data-ajax-confirm' => __('Restoring post from %s. <br />Are you sure to proceed?', $revisionTitle),
-						)
-					);
+					if($current_revision_id != $revision['Htmlarea']['id']) {
+						$defaultUrl = array('revision_id' => $revision['Htmlarea']['id'], '#' => $id);
+						$setUrl = isset($url) ? array_merge($defaultUrl, $url) : $defaultUrl;
+						echo $this->Html->link(
+							__('Restore'),
+							$setUrl,
+							array(
+								'title' => __('Restore'),
+								'data-pjax' => '#'.$id,
+								'data-ajax-type' => 'post',
+								'data-ajax-confirm' => __('Restoring post from %s. <br />Are you sure to proceed?', $revisionTitle),
+							)
+						);
+					}
 				?>
 			</td>
 		</tr>

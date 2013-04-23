@@ -116,8 +116,7 @@ $._lang['nc_wysiwyg'] = {
     	close          : "閉じる"
     },
     autoregist : {
-    	ok             : "自動保存 ",
-    	ng             : "保存失敗 "
+    	ok             : "自動保存 "
     },
     mes        : {
     	del_js         : "scriptタグ,object(embed）タグは使用できない権限です。削除しました。",

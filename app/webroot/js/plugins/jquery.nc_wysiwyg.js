@@ -61,10 +61,8 @@
 
             controls     : [],
 
-            autoRegist   : false,			// 自動登録を行うかどうか
-            regist_time  : 60000,			// 60秒
-            regist_url   : "./regist.php",
-            regist_data  : {},
+			autoRegistForm    : false,		// 自動登録を行う場合、登録のForm Elementをセット
+			autoRegistTime    : 30000,		// 30秒
 
             formatMes    : true,             // 空のelement等のメッセージを画面上に表示するかどうか
             format_time  : 3000,				// 3秒
@@ -1371,13 +1369,13 @@ IEで、iframe中のbodyのborderがつくから削除していると
             });
 
 			// auto regist
-            if( this.options.autoRegist ) {
+            if( this.options.autoRegistForm ) {
             	this.autoregist = this.content();
 				setTimeout(function() {
 					self.regist(null, null, true);
-					if (self.options.autoRegist && self.el && self.el[0] && self.el[0].nodeName)
-						setTimeout(arguments.callee, self.options.regist_time);
-				}, this.options.regist_time);
+					if (self.options.autoRegistForm && self.el && self.el[0] && self.el[0].nodeName)
+						setTimeout(arguments.callee, self.options.autoRegistTime);
+				}, this.options.autoRegistTime);
             }
 
             return;
@@ -2567,47 +2565,42 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			t.setContent(this.editorDoc.body.innerHTML, root);
 			this.chgModeInit("html", root);
 			content = this.content(root);
-			if(!autoregist_flag || t.autoregist != content) {
-				params = {content : content};
-				$.post(t.options.regist_url,
-					$.extend(t.options.regist_data, params),
-					function(json) {
-						if(autoregist_flag) {
-							// 自動保存
-							t.autoregist = content;
-							var now, mes,options,h,m;
-							if(json[0] == 1) {
-								mes = __d(['nc_wysiwyg', 'autoregist'], 'ok');
-							} else {
-								mes = __d(['nc_wysiwyg', 'autoregist'], 'ng');
-							}
+			var form = $(t.options.autoRegistForm);
+			if(form.get(0) && (!autoregist_flag || (autoregist_flag && t.autoregist != content))) {
+				t.autoregist = content;			// エラーがでても、contentがかわるまではPOSTを投げるのをやめる。
+				var data = form.serializeArray();
+				data[data.length] = {name : 'auto_regist',value : true};
+				if(t.autoregist_post_id) {
+					data[data.length] = {name : 'auto_regist_post_id',value : t.autoregist_post_id};
+				}
+				var options = {
+					data : data,
+					success : function(res, status, xhr){
+						var post_id = $.trim(res);
+						if(isFinite(post_id) && parseInt(post_id) > 0) {
+							//t.autoregist = content;
+							t.autoregist_post_id = post_id;
+							var mes = __d(['nc_wysiwyg', 'autoregist'], 'ok');
 							now = new Date();
 							h = now.getHours(), m = now.getMinutes();
 							mes += ((h >= 10) ? h : '0'+h) + ':' + ((m >= 10) ? m : '0'+m);
-							options = {
-								id       : "nc-wysiwyg-autoregist-" + t.id,
-								className: "nc-wysiwyg-autoregist",
-								style    : {opacity : '0.8', left: "right", top : "outbottom"},
-								pos_base : t.el,
-								callback : function(e){
-									$("#nc-wysiwyg-autoregist-" + t.id).html(mes);
-									//setTimeout(function() {
-									//	if(dialog) dialog.hide();
-									//}, 5000);
-								}
-							};
-							if(!dialog)
-								dialog = $.nc_toggledialog(options);
-							dialog.show(t.el, options);
-						} else {
-							if(json[0] == 1) {
-								if ( success ) success.apply(t, json);
-							} else {
-								if ( error ) error.apply(t, json);
-								else if ( success ) success.apply(t, json);
+							var autoregist = $(t.el).children(".nc-wysiwyg-autoregist:first");
+							if(!autoregist.get(0)) {
+								autoregist = $('<div class="nc-wysiwyg-autoregist"></div>');
 							}
+							autoregist.html(mes).appendTo( t.el );
 						}
-					}, "json");
+					},
+					error : function(xhr, textStatus, errorThrown) {
+					}
+				};
+				var params = {
+					'data-ajax' : '',
+					'data-ajax-type' : 'post',
+					'data-ajax-url' : form.attr('action')
+				};
+
+				$.Common.ajax(null, null, params, options);
 			}
 		},
 

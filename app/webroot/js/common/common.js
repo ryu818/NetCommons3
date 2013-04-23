@@ -18,7 +18,6 @@
 		pjaxCacheBackTargetId : null,
 		pjaxPrevUrl : $._full_base_url,
 		isPopstate : false,
-		//pjaxHashChange : false,
 		//pjaxMaxCacheLength : 40,
 
 		// data-pjax属性の値を targetとして置換する。その際、リクエストしたURLに変更される。
@@ -64,7 +63,7 @@
 			is_pjax = target_pjax && $.support.pjax && !_force_url;
 
 			if($el.hasClass('disable-lbl') && !_force_url) {
-				e.preventDefault();
+				if(e) e.preventDefault();
 				return false;
 			}
 			if(confirm){
@@ -83,25 +82,27 @@
 				};
 				dialog_params = $.extend({buttons: _buttons}, default_dialog_params);
 				$('<div></div>').html(confirm).dialog(dialog_params);
-				e.preventDefault();
+				if(e) e.preventDefault();
 				return;
 			}
 
-			if($el.get(0).tagName.toLowerCase() == 'form') {
-				input_type = 'POST';
-				url = $el.attr('action');
-				if(type == 'GET' || type == 'get') {
-					// GETならばformの値をPOSTしない。
-					data = {};
+			if($el.get(0)) {
+				if($el.get(0).tagName.toLowerCase() == 'form') {
+					input_type = 'POST';
+					url = $el.attr('action');
+					if(type == 'GET' || type == 'get') {
+						// GETならばformの値をPOSTしない。
+						data = {};
+					} else {
+						data = $el.serializeArray();
+					}
+					is_form = true;
 				} else {
-					data = $el.serializeArray();
+					input_type = 'GET';
+					url = $el.attr('href');
+					data = {};
+					is_form = false;
 				}
-				is_form = true;
-			} else {
-				input_type = 'GET';
-				url = $el.attr('href');
-				data = {};
-				is_form = false;
 			}
 
 			if(_force_url) {
@@ -111,7 +112,7 @@
 			}
 			ret = $.Common.fire('ajax:beforeSend', [url, data], $el, e);
 			if (!ret) {
-				e.preventDefault();
+				if(e) e.preventDefault();
 				return false
 			}
 			if(ret !== true) {
@@ -251,7 +252,7 @@
 				}
 			}
 			$.ajax(options);
-			e.preventDefault();
+			if(e) e.preventDefault();
 		},
 		ajaxSuccess : function(e, el, res, params) {
 			var target,replace_target,effect;
