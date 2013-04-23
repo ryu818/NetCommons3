@@ -130,6 +130,8 @@ class MyFormHelper extends FormHelper {
 // #個所付与
 			if($this->plugin && !isset($options['url']['#']) && isset($this->_View->viewVars['id'])) {
 				$options['url']['#'] = $this->_View->viewVars['id'];
+			} else if(isset($options['url']['#']) && $options['url']['#'] == '') {
+				unset($options['url']['#']);
 			}
 // Add End Ryuji.M
 			if (empty($options['action'])) {
