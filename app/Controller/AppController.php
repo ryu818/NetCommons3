@@ -85,6 +85,7 @@ class AppController extends Controller {
  */
     public function constructClasses() {
 		$this->_setExecuteTimes();
+		$this->response->disableCache();	// 全体的にキャッシュをしないように設定。TODO:画面によってはキャッシュさせるほうがよい。
 
 		parent::constructClasses();
 
