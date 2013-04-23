@@ -23,8 +23,7 @@ echo $this->Form->create('BlogPost', array('data-pjax' => '#'.$id));
 								$post_date = date(__('Y-m-d H:i'), strtotime($blog_post['BlogPost']['post_date']));
 							}
 						} else if(!empty($blog_post['BlogPost']['post_date'])) {
-							$post_date = $this->TimeZone->date($blog_post['BlogPost']['post_date']);
-							$post_date = date(__('Y-m-d H:i'), strtotime($post_date));
+							$post_date = $this->TimeZone->date($blog_post['BlogPost']['post_date'], __('Y-m-d H:i'));
 						} else {
 							$post_date = '';
 						}
@@ -110,7 +109,6 @@ echo $this->Form->create('BlogPost', array('data-pjax' => '#'.$id));
 		</li>
 		<?php endif; ?>
 		<?php /* TODO:post_password未作成 */ ?>
-		<?php /* TODO:履歴情報未作成 */ ?>
 	</ul>
 </fieldset>
 <?php
@@ -183,6 +181,20 @@ echo $this->Form->create('BlogPost', array('data-pjax' => '#'.$id));
 			</div>
 		</div>
 	</div>
+	<?php /* 履歴情報 */ ?>
+	<?php if(count($revisions) > 0): ?>
+	<div class="blog-style-widget-area">
+		<div class="blog-style-widget-area-title nc-panel-color">
+			<h4><?php echo(__('Revisions')); ?></h4>
+			<a class="blog-style-arrow"><span class="nc-arrow"></span></a>
+		</div>
+		<div id="blog-post-widget-area-content<?php echo ($id);?>" class="blog-style-widget-area-content blog-post-widget-area-content">
+			<?php
+				echo $this->element('/common/revisions', array('url' => array($blog_post['BlogPost']['id'])));
+			?>
+		</div>
+	</div>
+	<?php endif; ?>
 </div>
 <?php
 echo $this->Form->end();

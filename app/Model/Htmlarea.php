@@ -2,6 +2,9 @@
 /**
  * Htmlareaモデル
  *
+ * revision_parentカラムに再編集時のHtmlarea.idをセットすることで履歴機能を実現
+ * （NC_REVISION_RETENTION_NUMBERを越えたデータが、古いものから10行ずつ削除している）
+ *
  * @copyright     Copyright 2012, NetCommons Project
  * @package       app.Model
  * @author        Noriko Arai,Ryuji Masukawa
@@ -13,6 +16,8 @@ class Htmlarea extends AppModel
 	public $name = 'Htmlarea';
 
 	public $validate = array();
+
+	public $actsAs = array('TimeZone');
 
 	public function __construct($id = false, $table = null, $ds = null) {
 		parent::__construct($id, $table, $ds);
@@ -65,7 +70,7 @@ class Htmlarea extends AppModel
 				);
 				$this->updateAll($fields, $conditions);
 
-				// revision_parentを0に最更新
+				// revision_parentを0に再更新
 				$fields = array(
 					$this->alias.'.revision_parent' => 0
 				);
@@ -103,4 +108,34 @@ class Htmlarea extends AppModel
 		}
 	}
 
+/**
+ * 履歴リスト取得処理
+ * @param   integer $id
+ * @param   boolean $isAll 現在のリビジョンを含めたすべてのリスト取得
+ * @return  Model Htmlareas
+ * @since   v 3.0.0.0
+ */
+	public function findRevisions($id, $isAll = false) {
+		$htmlareas = array();
+		if($id != 0) {
+			if($isAll) {
+				$conditions = array(
+					'or' => array(
+						'id' => $id,
+						'revision_parent' => $id
+					)
+
+				);
+			} else {
+				$conditions = array('revision_parent' => $id);
+			}
+			$params = array(
+				'conditions' => $conditions,
+				'order' => array('Htmlarea.created' => 'DESC', 'Htmlarea.id' => 'DESC'),
+				'limit' => NC_REVISION_SHOW_LIMIT,
+			);
+			$htmlareas = $this->find('all', $params);
+		}
+		return $htmlareas;
+	}
 }

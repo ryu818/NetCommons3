@@ -19,7 +19,7 @@ class BlogPostsController extends BlogAppController {
  *
  * @var array
  */
-	public $components = array('CheckAuth' => array('allowAuth' => NC_AUTH_GENERAL));
+	public $components = array('Revision', 'CheckAuth' => array('allowAuth' => NC_AUTH_GENERAL));
 
 /**
  * Model name
@@ -58,11 +58,6 @@ class BlogPostsController extends BlogAppController {
 			} else {
 				$is_before_update_term_count = true;
 			}
-
-			// 履歴情報 TODO:現状：未使用
-			$params = array('conditions' => array('revision_parent' => $blog_post['BlogPost']['htmlarea_id']));
-			$htmlareas = $this->Htmlarea->find('all', $params);
-			$this->set('blog_revisions', $htmlareas);
 		} else {
 			$blog_term_links = array();
 			$blog_post = $this->BlogPost->findDefault($this->content_id);
@@ -85,12 +80,10 @@ class BlogPostsController extends BlogAppController {
 				// リクエストからidの変更は許さない。
 				unset($this->request->data['BlogPost']['id']);
 			}
-			$htmlarea_id = $blog_post['BlogPost']['htmlarea_id'];
 			$blog_post['BlogPost'] = array_merge($blog_post['BlogPost'], $this->request->data['BlogPost']);
 			$blog_post['BlogPost']['content_id'] = $this->content_id;
 			$blog_post['BlogPost']['permalink'] = $blog_post['BlogPost']['title'];	// TODO:仮でtitleをセット「「/,:」等の記号を取り除いたり同じタイトルがあればリネームしたりすること。」
 			$blog_post['BlogPost']['status'] = ($is_temporally) ? NC_STATUS_TEMPORARY : NC_STATUS_PUBLISH;
-			$blog_post['BlogPost']['htmlarea_id'] = 0;
 
 			$blog_post['Htmlarea']['content'] = $this->request->data['Htmlarea']['content'];
 
@@ -100,7 +93,7 @@ class BlogPostsController extends BlogAppController {
 
 			$htmlarea = array(
 				'Htmlarea' => array(
-					'revision_parent' => $htmlarea_id,
+					'revision_parent' => $blog_post['BlogPost']['htmlarea_id'],
 					'revision_name' => ($is_temporally) ? 'draft' : 'publish',
 					'content_id' => $this->content_id,
 					'content' => $this->request->data['Htmlarea']['content'],
@@ -173,6 +166,9 @@ class BlogPostsController extends BlogAppController {
 				}
 			}
 		}
+
+		// 履歴情報
+		$this->set('revisions', $this->Htmlarea->findRevisions($blog_post['BlogPost']['htmlarea_id']));
 
 		$this->set('blog', $blog);
 		$this->set('blog_post', $blog_post);
@@ -321,5 +317,41 @@ class BlogPostsController extends BlogAppController {
 			}
 		}
 		return $redirectUrl;
+	}
+
+/**
+ * 履歴情報表示
+ * @param   integer $blogPostId
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function revision($blogPostId) {
+		$blogPost = $this->BlogPost->findById($blogPostId);
+		if(!isset($blogPost['BlogPost'])) {
+			$this->flash(__('Content not found.'), null, 'BlogPost.revision.001', '404');
+			return;
+		}
+		$cancelUrl = array('action' => 'index', $blogPostId, '#' => $this->id);
+
+		$newHtmlareaId = $this->Revision->setDatas($this->content_id, $blogPost['BlogPost']['title'], $blogPost['BlogPost']['htmlarea_id'],
+			array($blogPostId), $cancelUrl);
+		if($newHtmlareaId === false) {
+			$this->flash(__('Content not found.'), null, 'BlogPost.revision.002', '404');
+			return;
+		}
+
+		if($this->request->is('post') && $newHtmlareaId > 0) {
+			$fieldList = array(
+				'htmlarea_id',
+			);
+			$blogPost['BlogPost']['htmlarea_id'] = $newHtmlareaId;
+			if(!$this->BlogPost->save($blogPost, true, $fieldList)) {
+				$this->flash(__('Failed to update the database, (%s).', 'blog_posts'), null, 'BlogPost.revision.003', '500');
+				return;
+			}
+			$this->redirect($cancelUrl);
+			return;
+		}
+		$this->render('/Revisions/index');
 	}
 }

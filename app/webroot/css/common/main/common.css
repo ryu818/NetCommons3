@@ -504,6 +504,16 @@ ul.lists li dl dd {
 	top: -1.3em;
 }
 
+/* 履歴情報 */
+ul.nc-revisions li {
+	list-style: none outside none;
+	margin: 0;
+}
+
+ul.nc-revisions a {
+	padding: 0 10px 0 0;
+}
+
 /** Debugging **/
 table.nc-log {
 	background: #ffffff;
