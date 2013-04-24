@@ -46,7 +46,7 @@ $this->extend('/Frame/block');
 						<dl>
 							<dt>
 								<?php
-									echo $this->Form->label('Blog.post_hierarchy', __d('blog', 'Authority to post root articles'));
+									echo $this->Form->label('Blog.post_hierarchy', __('Authority to post root articles'));
 								?>
 							</dt>
 							<dd>
@@ -141,14 +141,14 @@ $this->extend('/Frame/block');
 						<dl>
 							<dt>
 								<?php
-									echo $this->Form->label('Blog.mail_flag', __d('blog', 'Deliver e-mail when posting?'));
+									echo $this->Form->label('Blog.mail_flag', __('Deliver e-mail when posting?'));
 								?>
 							</dt>
 							<dd>
 								<?php
 									echo $this->Form->input('Blog.mail_flag',array(
 										'type' => 'radio',
-										'options' => array(_ON => __d('blog', 'Email delivery when posting.'), _OFF => __d('blog', 'Email not delivery when posting.')),
+										'options' => array(_ON => __('Email delivery when posting.'), _OFF => __('Email not delivery when posting.')),
 										'value' => intval($blog['Blog']['mail_flag']),
 										'div' => false,
 										'legend' => false,
@@ -156,12 +156,12 @@ $this->extend('/Frame/block');
 								?>
 								<div class="hr">
 								<?php
-									echo $this->Form->label('Blog.mail_hierarchy', __d('blog', 'Notify whom? :'));
+									echo $this->Form->label('Blog.mail_hierarchy', __('Notify whom? :'));
 									echo $this->Form->authoritySlider('Blog.mail_hierarchy', array('value' => $blog['Blog']['mail_hierarchy']));
 									$settings = array(
 										'type' => 'text',
 										'value' => $blog['Blog']['mail_subject'],
-										'label' => __d('blog', 'E-mail Subject:'),
+										'label' => __('E-mail Subject:'),
 										'maxlength' => NC_VALIDATOR_TITLE_LEN,
 										'size' => 35,
 										'error' => array('attributes' => array(
@@ -173,7 +173,7 @@ $this->extend('/Frame/block');
 										'type' => 'textarea',
 										'escape' => false,
 										'value' => $blog['Blog']['mail_body'],
-										'label' => __d('blog', 'Message：'),
+										'label' => __('Message：'),
 										'error' => array('attributes' => array(
 											'selector' => true
 										))
@@ -266,12 +266,12 @@ $this->extend('/Frame/block');
 								?>
 								<div class="hr">
 								<?php
-									echo $this->Form->label('Blog.comment_mail_hierarchy', __d('blog', 'Notify whom? :'));
+									echo $this->Form->label('Blog.comment_mail_hierarchy', __('Notify whom? :'));
 									echo $this->Form->authoritySlider('Blog.comment_mail_hierarchy', array('value' => $blog['Blog']['comment_mail_hierarchy']));
 									$settings = array(
 										'type' => 'text',
 										'value' => $blog['Blog']['comment_mail_subject'],
-										'label' => __d('blog', 'E-mail Subject:'),
+										'label' => __('E-mail Subject:'),
 										'maxlength' => NC_VALIDATOR_TITLE_LEN,
 										'size' => 35,
 										'error' => array('attributes' => array(
@@ -283,7 +283,7 @@ $this->extend('/Frame/block');
 										'type' => 'textarea',
 										'escape' => false,
 										'value' => $blog['Blog']['comment_mail_body'],
-										'label' => __d('blog', 'Message：'),
+										'label' => __('Message：'),
 										'error' => array('attributes' => array(
 											'selector' => true
 										))
@@ -365,14 +365,14 @@ $this->extend('/Frame/block');
 						<dl>
 							<dt>
 								<?php
-									echo $this->Form->label('Blog.approved_flag', __d('blog', 'Post approval setting'));
+									echo $this->Form->label('Blog.approved_flag', __('Post approval setting'));
 								?>
 							</dt>
 							<dd>
 								<?php
 									echo $this->Form->input('Blog.approved_flag',array(
 										'type' => 'radio',
-										'options' => array(_ON => __d('blog', 'Need room manager approval'), _OFF => __d('blog', 'Automatic approval')),
+										'options' => array(_ON => __('Need room manager approval'), _OFF => __('Automatic approval')),
 										'value' => intval($blog['Blog']['approved_flag']),
 										'div' => false,
 										'legend' => false,
@@ -385,14 +385,14 @@ $this->extend('/Frame/block');
 						<dl>
 							<dt>
 								<?php
-									echo $this->Form->label('Blog.approved_mail_flag', __d('blog', 'Announce mail setting'));
+									echo $this->Form->label('Blog.approved_mail_flag', __('Announce mail setting'));
 								?>
 							</dt>
 							<dd>
 								<?php
 									echo $this->Form->input('Blog.approved_mail_flag',array(
 										'type' => 'radio',
-										'options' => array(_ON => __d('blog', 'Send'), _OFF => __d('blog', 'Not send')),
+										'options' => array(_ON => __('Send email'), _OFF => __('Not send')),
 										'value' => intval($blog['Blog']['approved_mail_flag']),
 										'div' => false,
 										'legend' => false,
@@ -403,7 +403,7 @@ $this->extend('/Frame/block');
 									$settings = array(
 										'type' => 'text',
 										'value' => $blog['Blog']['approved_mail_subject'],
-										'label' => __d('blog', 'E-mail Subject:'),
+										'label' => __('E-mail Subject:'),
 										'maxlength' => NC_VALIDATOR_TITLE_LEN,
 										'size' => 35,
 										'error' => array('attributes' => array(
@@ -415,7 +415,7 @@ $this->extend('/Frame/block');
 										'type' => 'textarea',
 										'escape' => false,
 										'value' => $blog['Blog']['approved_mail_body'],
-										'label' => __d('blog', 'Message：'),
+										'label' => __('Message：'),
 										'error' => array('attributes' => array(
 											'selector' => true
 										))
@@ -437,7 +437,7 @@ $this->extend('/Frame/block');
 								<?php
 									echo $this->Form->input('Blog.comment_approved_flag',array(
 										'type' => 'radio',
-										'options' => array(_ON => __d('blog', 'Need room manager approval'), _OFF => __d('blog', 'Automatic approval')),
+										'options' => array(_ON => __('Need room manager approval'), _OFF => __('Automatic approval')),
 										'value' => intval($blog['Blog']['comment_approved_flag']),
 										'div' => false,
 										'legend' => false,
@@ -457,7 +457,7 @@ $this->extend('/Frame/block');
 								<?php
 									echo $this->Form->input('Blog.comment_approved_mail_flag',array(
 										'type' => 'radio',
-										'options' => array(_ON => __d('blog', 'Send'), _OFF => __d('blog', 'Not send')),
+										'options' => array(_ON => __('Send email'), _OFF => __('Not send')),
 										'value' => intval($blog['Blog']['comment_approved_mail_flag']),
 										'div' => false,
 										'legend' => false,
@@ -468,7 +468,7 @@ $this->extend('/Frame/block');
 									$settings = array(
 										'type' => 'text',
 										'value' => $blog['Blog']['comment_approved_mail_subject'],
-										'label' => __d('blog', 'E-mail Subject:'),
+										'label' => __('E-mail Subject:'),
 										'maxlength' => NC_VALIDATOR_TITLE_LEN,
 										'size' => 35,
 										'error' => array('attributes' => array(
@@ -480,7 +480,7 @@ $this->extend('/Frame/block');
 										'type' => 'textarea',
 										'escape' => false,
 										'value' => $blog['Blog']['comment_approved_mail_body'],
-										'label' => __d('blog', 'Message：'),
+										'label' => __('Message：'),
 										'error' => array('attributes' => array(
 											'selector' => true
 										))
