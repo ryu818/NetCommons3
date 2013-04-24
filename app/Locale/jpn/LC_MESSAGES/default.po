@@ -63,6 +63,11 @@ msgid	"Email not delivery when posting."
 msgstr	"投稿をメールで通知しない。"
 msgid	"Email delivery when posting."
 msgstr	"投稿をメールで通知する。"
+msgid	"[{X-SITE_NAME}] [{X-CONTENT_NAME}] Post Approval completion notice"
+msgstr	"[{X-SITE_NAME}] [{X-CONTENT_NAME}] 投稿承認完了通知"
+msgid	"Your article posted to [{X-SITE_NAME}] [{X-CONTENT_NAME}] was approved.\n\nClick the link below to check the article.\n{X-URL}"
+msgstr	"[{X-SITE_NAME}] [{X-CONTENT_NAME}] における投稿の承認が完了しました。\n\n内容を確認するには下記のリンクをクリックして下さい。\n{X-URL}"
+
 
 msgid	"Authority to post root articles"
 msgstr	"記事投稿権限"
