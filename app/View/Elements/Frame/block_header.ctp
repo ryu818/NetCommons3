@@ -25,6 +25,20 @@ if($page['Page']['room_id'] != $block['Content']['room_id'] || !$block['Content'
 		$all_delete = _OFF;
 	}
 }
+$edit_controller_action = null;
+if($this->request->params['action'] == 'index') {
+	$controller_arr = explode('_', $this->request->params['controller'], 2);
+	$edit_controller_action = $controller_arr[0];
+	if(isset($controller_arr[1])) {
+		$edit_controller_action .= '/'. $controller_arr[1];
+	}
+}
+if(($block['Module']['edit_controller_action'] == $this->request->params['controller'] .'/'.$this->request->params['action']) ||
+	($block['Module']['edit_controller_action'] == $this->request->params['controller'] && $this->request->params['action'] == 'index') ||
+	($block['Module']['edit_controller_action'] == $edit_controller_action)) {
+	$nc_is_edit = true;
+}
+
 if($nc_is_edit) {
 	$title =  __('Quit');
 	$controller_action = $block['Module']['controller_action'];

@@ -132,7 +132,7 @@ class RevisionComponent extends Component {
 				'revision_name' => 'restore',
 				'content_id' => $contentId,
 				'content' => $revision['Htmlarea']['content'],
-				'non_approved_content' => '',
+				'non_approved_content' => $revision['Htmlarea']['non_approved_content'],
 			)
 		);
 

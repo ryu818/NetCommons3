@@ -109,6 +109,7 @@ class CheckAuthComponent extends Component {
 		//$this->_setControllerParams($controller);
 		$user = $this->Auth->user();//認証済みユーザーを取得
 		$controller_name = $controller->request->params['controller'];
+		$action_name = $controller->request->params['action'];
 		$plugin_name = $controller->request->params['plugin'];
 		$userId = isset($user['id']) ? intval($user['id']) : 0;
 		$handle = isset($user['handle']) ? $user['handle'] : '';
@@ -189,7 +190,23 @@ class CheckAuthComponent extends Component {
 			// 編集画面なのに権限を付与したショートカットならばエラー。ただし、ショートカット先が主坦ならばエラーとしない。
 			$content =  $controller->Content->findAuthById($controller->nc_block['Block']['master_id'], $userId);
 			$ret = $this->checkAuth($content['Authority']['hierarchy'], NC_AUTH_CHIEF);
-			if($controller->nc_is_edit && !$ret) {
+			$edit_controller_action = null;
+			if($action_name == 'index') {
+				$controller_arr = explode('_', $controller_name, 2);
+				$edit_controller_action = $controller_arr[0];
+				if(isset($controller_arr[1])) {
+					$edit_controller_action .= '/'. $controller_arr[1];
+				}
+			}
+			if(($controller->nc_block['Module']['edit_controller_action'] == $controller_name .'/'.$action_name) ||
+				($controller->nc_block['Module']['edit_controller_action'] == $controller_name && $action_name == 'index') ||
+				($controller->nc_block['Module']['edit_controller_action'] == $edit_controller_action)) {
+				$nc_is_edit = true;
+			} else {
+				$nc_is_edit = $controller->nc_is_edit;
+			}
+
+			if($nc_is_edit && !$ret) {
 				$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.check.004', '403');
 				return;
 			}

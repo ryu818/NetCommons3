@@ -21,13 +21,6 @@ class BlogEditsController extends BlogAppController {
 	public $components = array('CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF));
 
 /**
- * 編集画面か否か（セッティングモードONの場合の上部、編集ボタンをリンク先を変更するため）
- * Default:false
- * @var boolean
- */
-	protected $nc_is_edit = true;
-
-/**
  * ブログ編集画面
  * @param   void
  * @return  void
