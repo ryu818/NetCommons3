@@ -62,6 +62,7 @@ class ContentController extends ContentAppController {
 				return;
 			}
 			// 登録処理
+			$activeModuleId = $activeModule['Module']['id'];
 			$block = $this->nc_block;
 			$fieldList = array('content_id');
 			$block['Block']['content_id'] = $activeContent['Content']['id'];
