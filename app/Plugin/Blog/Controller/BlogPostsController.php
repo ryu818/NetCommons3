@@ -128,6 +128,7 @@ class BlogPostsController extends BlogAppController {
 			$this->BlogPost->set($blogPost);
 			if($this->BlogPost->validates(array('fieldList' => $fieldList)) && $this->Revision->validates(array('fieldList' => $fieldListRevision))) {
 				$this->Revision->save($revision, false, $fieldListRevision);
+				$blogPost['Revision']['id'] = $this->Revision->id;
 				if(empty($blogPost['BlogPost']['revision_group_id'])) {
 					$blogPost['BlogPost']['revision_group_id'] = $this->Revision->id;
 				}

@@ -132,6 +132,7 @@ class AnnouncementPostsController extends AnnouncementAppController {
 			$this->Announcement->set($announcement);
 			if($this->Announcement->validates(array('fieldList' => $fieldList)) && $this->Revision->validates(array('fieldList' => $fieldListRevision))) {
 				$this->Revision->save($revision, false, $fieldListRevision);
+				$announcement['Revision']['id'] = $this->Revision->id;
 				if(empty($announcement['Announcement']['revision_group_id'])) {
 					$announcement['Announcement']['revision_group_id'] = $this->Revision->id;
 				}
