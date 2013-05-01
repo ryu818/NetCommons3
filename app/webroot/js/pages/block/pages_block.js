@@ -1151,6 +1151,7 @@
 			target.slideUp();
 			show_target.slideDown();
 			$.Event(e).preventDefault();
+			$.Event(e).stopPropagation();
 		},
 		toggleOperation: function(e, id) {
 			//var pos = $(e.target).position();
