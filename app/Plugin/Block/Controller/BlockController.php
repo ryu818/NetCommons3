@@ -139,7 +139,12 @@ class BlockController extends BlockAppController {
 			return $last_id;
 		}
 
-		$params = $this->Common->explodeControllerAction($module['Module']['edit_controller_action']);
+		if(isset($module['Module']['ini']['add_block_controller_action'])) {
+			$params = $this->Common->explodeControllerAction($module['Module']['ini']['add_block_controller_action']);
+		} else {
+			$params = $this->Common->explodeControllerAction($module['Module']['edit_controller_action']);
+		}
+
 		$params['block_id'] = $last_id;
 		$params['?'] = array('_nc_include_css' => 1);
 		$this->redirect($params);
