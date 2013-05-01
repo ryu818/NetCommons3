@@ -1078,7 +1078,7 @@
 						block.remove();
 						if(target_remove)
 							target_remove.remove();
-						if(!column.children(':first').get(0)) {
+						if(!column.children(':first').hasClass('nc-block') && (column.next().hasClass('nc-column') || column.prev().hasClass('nc-column'))) {
 							column.remove();
 						}
 						show_count_el.attr('data-show-count', ++params['show_count']);
