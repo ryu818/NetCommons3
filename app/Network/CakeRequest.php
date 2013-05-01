@@ -218,7 +218,7 @@ class CakeRequest implements ArrayAccess {
 			$query = array_merge($this->params['url'], $query);
 		}
 // Add Start 先頭「_」がつかないqueryのみ追加 Ryuji.M
-		if(is_array($query)) {
+		/*if(is_array($query)) {
 			$buf_query = array();
 			foreach($query as $k => $v) {
 				if(substr($k, 0, 1) != '_') {
@@ -226,7 +226,7 @@ class CakeRequest implements ArrayAccess {
 				}
 			}
 			$query = $buf_query;
-		}
+		}*/
 // Edit End Ryuji.M
 		$this->query = $query;
 	}
