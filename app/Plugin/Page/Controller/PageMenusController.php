@@ -229,7 +229,8 @@ class PageMenusController extends PageAppController {
 		$this->Session->setFlash(__d('page','Has been successfully added community.'));
 
 		echo Router::url('/', true). $permalink . '/blocks/page/index?is_edit=1&is_detail=1';	// URL固定
-		$this->render(false);
+		// コミュニティ追加時にlocation.hrefを行うため、layoutは表示しない。そうしないと、URLに$.Common.flashが表示されてしまう。
+		$this->render(false, false);
 	}
 
 /**
