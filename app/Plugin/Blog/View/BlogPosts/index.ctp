@@ -121,7 +121,7 @@ echo $this->Form->create('BlogPost', array('data-pjax' => '#'.$id));
 	</ul>
 </fieldset>
 <?php
-	$backId = 'blog-post' . $id. '-' . $blog_post['BlogPost']['id'];
+	$backId = ($blog_post['BlogPost']['id'] == '0') ? $id : 'blog-post' . $id. '-' . $blog_post['BlogPost']['id'];
 	$backUrl = array('controller' => 'blog', '#' => $backId);
 	if(isset($this->request->query['back_query'])) {
 		$backUrl = array_merge($backUrl, explode('/', $this->request->query['back_query']));
