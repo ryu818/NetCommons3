@@ -97,13 +97,13 @@
 		<?php echo($this->element('Pages/add_block', array('id' => 'nc-add-block-headercolumn', 'add_modules' => $add_modules[$pages[$page_id_arr[1]]['Page']['room_id']], 'copy_content' => $copy_content))); ?>
 	</div>
 	<?php endif; ?>
-	<header id="headercolumn" class="nc-columns table-row"<?php if($header_style != ''): ?> style="<?php echo($header_style); ?>"<?php endif; ?> data-page='<?php echo($page_id_arr[1]); ?>' data-columns='top' data-show-count='<?php echo($pages[$page_id_arr[1]]['Page']['show_count']); ?>'>
+	<header id="headercolumn" class="nc-columns table-row"<?php if($header_style != ''): ?> style="<?php echo($header_style); ?>"<?php endif; ?> data-page='<?php echo($page_id_arr[1]); ?>' data-columns='top'>
 		<?php echo($headercolumn_str); ?>
 	</header>
 	<?php endif; ?>
 	<div class="table">
 		<?php if(isset($leftcolumn_str)): ?>
-		<div id="leftcolumn" class="nc-columns table-cell"<?php if($left_style != ''): ?> style="<?php echo($left_style); ?>"<?php endif; ?> data-page='<?php echo($page_id_arr[2]); ?>' data-columns='top' data-show-count='<?php echo($pages[$page_id_arr[2]]['Page']['show_count']); ?>'>
+		<div id="leftcolumn" class="nc-columns table-cell"<?php if($left_style != ''): ?> style="<?php echo($left_style); ?>"<?php endif; ?> data-page='<?php echo($page_id_arr[2]); ?>' data-columns='top'>
 			<?php if($nc_mode == NC_BLOCK_MODE && isset($pages[$page_id_arr[2]]) && $pages[$page_id_arr[2]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF): ?>
 			<div class="table">
 				<?php echo($this->element('Pages/add_block', array('id' => 'nc-add-block-leftcolumn', 'add_modules' => $add_modules[$pages[$page_id_arr[2]]['Page']['room_id']], 'copy_content' => $copy_content))); ?>
@@ -114,7 +114,7 @@
 			<?php endif; ?>
 		</div>
 		<?php endif; ?>
-		<div id="centercolumn" class="nc-columns table-cell" data-columns='top' data-page='<?php echo($page_id_arr[0]); ?>' data-show-count='<?php echo($pages[$page_id_arr[0]]['Page']['show_count']); ?>'>
+		<div id="centercolumn" class="nc-columns table-cell" data-columns='top' data-page='<?php echo($page_id_arr[0]); ?>'>
 			<?php if($nc_mode == NC_BLOCK_MODE && isset($pages[$page_id_arr[0]]) && $pages[$page_id_arr[0]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF): ?>
 			<div class="table">
 				<?php echo($this->element('Pages/add_block', array('id' => 'nc-add-block-centercolumn', 'add_modules' => $add_modules[$pages[$page_id_arr[0]]['Page']['room_id']], 'copy_content' => $copy_content))); ?>
@@ -125,7 +125,7 @@
 			<?php endif; ?>
 		</div>
 		<?php if(isset($rightcolumn_str)): ?>
-		<div id="rightcolumn" class="nc-columns table-cell"<?php if($right_style != ''): ?> style="<?php echo($right_style); ?>"<?php endif; ?> data-page='<?php echo($page_id_arr[3]); ?>' data-columns='top' data-show-count='<?php echo($pages[$page_id_arr[3]]['Page']['show_count']); ?>'>
+		<div id="rightcolumn" class="nc-columns table-cell"<?php if($right_style != ''): ?> style="<?php echo($right_style); ?>"<?php endif; ?> data-page='<?php echo($page_id_arr[3]); ?>' data-columns='top'>
 			<?php if($nc_mode == NC_BLOCK_MODE && isset($pages[$page_id_arr[3]]) && $pages[$page_id_arr[3]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF): ?>
 			<div class="table">
 				<?php echo($this->element('Pages/add_block', array('id' => 'nc-add-block-rightcolumn', 'add_modules' => $add_modules[$pages[$page_id_arr[3]]['Page']['room_id']], 'copy_content' => $copy_content))); ?>
@@ -143,7 +143,7 @@
 			<?php echo($this->element('Pages/add_block', array('id' => 'nc-add-block-footercolumn', 'add_modules' => $add_modules[$pages[$page_id_arr[4]]['Page']['room_id']], 'copy_content' => $copy_content))); ?>
 		</div>
 	<?php endif; ?>
-	<footer id="footercolumn" class="nc-columns table-row"<?php if($footer_style != ''): ?> style="<?php echo($footer_style); ?>"<?php endif; ?> data-page='<?php echo($page_id_arr[4]); ?>' data-columns='top' data-show-count='<?php echo($pages[$page_id_arr[4]]['Page']['show_count']); ?>'>
+	<footer id="footercolumn" class="nc-columns table-row"<?php if($footer_style != ''): ?> style="<?php echo($footer_style); ?>"<?php endif; ?> data-page='<?php echo($page_id_arr[4]); ?>' data-columns='top'>
 		<?php echo($footercolumn_str); ?>
 	</footer>
 	<?php endif; ?>

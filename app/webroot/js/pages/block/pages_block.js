@@ -242,7 +242,6 @@
 					stop:function(event, ui){
 						var block = $(this);
 						var ret = t.currentBlocks[0].hasClass('nc-block-dummy');
-						var show_count_el = null;
 						block.children('.nc-frame:first').css("opacity", 1);
 						t.currentBlocks[0].removeClass('nc-block-dummy');
 						if(ret) {
@@ -309,10 +308,9 @@
 
 							// リクエスト処理
 							var block_id = block.attr('data-block');
-							var page_id = block.parents('[data-page]:first').attr('data-page');
-							show_count_el = block.parents('[data-show-count]:first');
+							var page_id = block.attr('data-page');
 							params['page_id'] = page_id;
-							params['show_count'] = show_count_el.attr('data-show-count');
+							params['show_count'] = $._nc.show_count[page_id];
 							params['col_num'] = 1;
 							params['row_num'] = 1;
 							params['parent_id'] = 0;
@@ -342,7 +340,7 @@
 							$.post($.Common.urlBlock(block_id, 'block/' + t.insertAction),
 								params,
 								function(res){
-									show_count_el.attr('data-show-count', ++params['show_count']);
+									$._nc.show_count[page_id]++;
 								}
 							);
 
@@ -893,8 +891,7 @@
 		addGrouping: function(e) {
 			var t = this, first = true;
 			var params = new Object();
-			var first_id = null, i = 0, block = null, block_id = null;
-			var show_count_el = null;
+			var first_id = null, i = 0, block = null, block_id = null, page_id = null;
 
 			$.Event(e).preventDefault();
 			$.Event(e).stopPropagation();
@@ -911,10 +908,10 @@
 
 			block = $('#' + first_id);
 			block_id = block.attr('data-block');
+			page_id = block.attr('data-page');
 
-			show_count_el = block.parents('[data-show-count]:first');
-			params['page_id'] = show_count_el.attr('data-page');
-			params['show_count'] = show_count_el.attr('data-show-count');
+			params['page_id'] = page_id;
+			params['show_count'] = $._nc.show_count[page_id];
 
 			$.post($.Common.urlBlock(block_id, 'block/add_group'),
 				params,
@@ -937,7 +934,7 @@
 					//objs.each(function() {
 					//	$.proxy(t.initBlock($(this)), t);
 					//});
-					show_count_el.attr('data-show-count', ++params['show_count']);
+					$._nc.show_count[page_id]++;
 					t.groups = new Object();
 					t.toggleGroup();
 				}
@@ -945,9 +942,8 @@
 		},
 		/* グルーピング解除処理 */
 		cancelGrouping: function(e) {
-			var t = this, block_id = null;
+			var t = this, block_id = null, page_id = null;
 			var params = new Object(), i = 0;
-			var show_count_el = null;
 
 			$.Event(e).preventDefault();
 			$.Event(e).stopPropagation();
@@ -964,9 +960,9 @@
 				i++;
 				if(!block_id) {
 					block_id = $(el).attr('data-block');
-					show_count_el = $(el).parents('[data-show-count]:first');
-					params['page_id'] = show_count_el.attr('data-page');
-					params['show_count'] = show_count_el.attr('data-show-count');
+					page_id = $(el).attr('data-page');
+					params['page_id'] = page_id;
+					params['show_count'] = $._nc.show_count[page_id];
 				}
 			});
 			t.toggleGroup();
@@ -987,7 +983,7 @@
 								t.cancelGroupingComp($(this));
 							}
 						});
-						show_count_el.attr('data-show-count', ++params['show_count']);
+						$._nc.show_count[page_id]++;
 						t.groups = new Object();
 						t.toggleGroup();
 					}
@@ -1030,7 +1026,7 @@
 			$.Event(event).stopPropagation();
 		},
 		addBlock: function( sel_el, module_id ) {
-			var t = this, params = new Object(), show_count_el = null;
+			var t = this, params = new Object();
 			var page_el = $(sel_el).parents('[data-add-columns]:first');	// header footer
 			if(page_el.get(0)) {
 				 page_el = $('#' + page_el.attr('data-add-columns'));
@@ -1038,8 +1034,8 @@
 				// left center right
 				page_el = $(sel_el).parents('[data-page]:first');
 			}
-			params['show_count'] = page_el.attr('data-show-count');
 			params['page_id'] = page_el.attr('data-page');
+			params['show_count'] = $._nc.show_count[params['page_id']];
 			params['module_id'] = module_id;
 
 			$.post($.Common.urlBlock(null, 'block/add_block'),
@@ -1052,22 +1048,22 @@
 					} else {
 						first_column.html(res);
 					}
-					page_el.attr('data-show-count', ++params['show_count']);
+					$._nc.show_count[params['page_id']]++;
 				}
 			);
 		},
 		delBlock: function( block_id ) {
 			var t = this, all_delete = 0, params = new Object(), show_count_el = null;
 			var block = $('#_' + block_id);
+			var page_id = block.attr('data-page');
 
-			show_count_el = block.parents('[data-show-count]:first');
 			if($('#nc-confirm-dialog-mes-flag').is(':checked')) {
 				params['all_delete'] = 1;
 			} else {
 				params['all_delete'] = 0;
 			}
-			params['page_id'] = show_count_el.attr('data-page');
-			params['show_count'] = show_count_el.attr('data-show-count');
+			params['page_id'] = page_id;
+			params['show_count'] = $._nc.show_count[page_id];
 
 			$.post($.Common.urlBlock(block_id, 'block/del_block'),
 					params,
@@ -1081,7 +1077,7 @@
 						if(!column.children(':first').hasClass('nc-block') && (column.next().hasClass('nc-column') || column.prev().hasClass('nc-column'))) {
 							column.remove();
 						}
-						show_count_el.attr('data-show-count', ++params['show_count']);
+						$._nc.show_count[page_id]++;
 					}
 			);
 
@@ -1095,7 +1091,7 @@
 				disable_search : true
 			}).change( function(e){
 				var url = $(this).val();
-				var params = new Object(), show_count_el = null;
+				var params = new Object();
 				var page_el = $(this).parents('[data-add-columns]:first');	// header footer
 				if(page_el.get(0)) {
 					page_el = $('#' + page_el.attr('data-add-columns'));
@@ -1103,8 +1099,8 @@
 					// left center right
 					page_el = $(this).parents('[data-page]:first');
 				}
-				params['show_count'] = page_el.attr('data-show-count');
 				params['page_id'] = page_el.attr('data-page');
+				params['show_count'] = $._nc.show_count[params['page_id']];
 
 				$.PagesBlock.operationBlock($(this), url, params);
 			} );

@@ -48,6 +48,16 @@ echo '	$._nc.nc_wysiwyg = new Object();'."\n";
 echo '	$._nc.nc_wysiwyg[\'allow_attachment\'] = '.(isset($nc_user['allow_attachment']) ? $nc_user['allow_attachment'] : _OFF).';'."\n";
 echo '	$._nc.nc_wysiwyg[\'allow_video\'] = '.(isset($nc_user['allow_video']) ? $nc_user['allow_video'] : _OFF).';'."\n";
 echo '	$._nc.nc_wysiwyg[\'allow_js\'] = '.($nc_user['allow_htmltag_flag'] ? _ON : _OFF).';'."\n";
+echo '	$._nc.show_count = new Object();'."\n";
+if(isset($pages) && isset($page_id_arr)) {
+	echo '	$._nc.show_count['.$page_id_arr[0].'] = '.$pages[$page_id_arr[0]]['Page']['show_count'].';'."\n";
+	echo '	$._nc.show_count['.$page_id_arr[1].'] = '.$pages[$page_id_arr[1]]['Page']['show_count'].';'."\n";
+	echo '	$._nc.show_count['.$page_id_arr[2].'] = '.$pages[$page_id_arr[2]]['Page']['show_count'].';'."\n";
+	echo '	$._nc.show_count['.$page_id_arr[3].'] = '.$pages[$page_id_arr[3]]['Page']['show_count'].';'."\n";
+	echo '	$._nc.show_count['.$page_id_arr[4].'] = '.$pages[$page_id_arr[4]]['Page']['show_count'].';'."\n";
+} else if(isset($page)) {
+	echo '	$._nc.show_count['.$page['Page']['id'].'] = '.$page['Page']['show_count'].';'."\n";
+}
 ?>
 </script>
 <?php
