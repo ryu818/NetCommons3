@@ -269,7 +269,7 @@ class BlogPost extends AppModel
 				'revision_group_id' => 0,
 				'vote' => null,
 				'status' => NC_STATUS_PUBLISH,
-				'is_approved' => NC_DISPLAY_FLAG_ON,
+				'is_approved' => NC_APPROVED_FLAG_ON,
 				'pre_change_flag' => _OFF,
 				'pre_change_date' => null,
 				'post_password' => '',
