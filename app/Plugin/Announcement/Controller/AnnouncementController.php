@@ -36,9 +36,9 @@ class AnnouncementController extends AnnouncementAppController {
 		$announcement = $this->Announcement->findByContentId($this->content_id, array(
 			'Announcement.id', 'Announcement.pre_change_flag',
 			'Announcement.pre_change_date', 'Announcement.revision_group_id', 'Revision.revision_name',  'Revision.content'));
-		$announcement['Revision']['content'] = $this->RevisionList->updatePreChange($this->Announcement, $announcement);
-		$this->set('announcement', $announcement);
-
+		if(isset($announcement['Revision']['content'])) {
+			$announcement['Revision']['content'] = $this->RevisionList->updatePreChange($this->Announcement, $announcement);
+		}
 		$user_id = $this->Auth->user('id');
 		$isEdit =false;
 		if(!empty($user_id)) {
@@ -56,5 +56,6 @@ class AnnouncementController extends AnnouncementAppController {
 			$announcement['Revision']['content'] = __('Content not found.');
 		}
 		$this->set('is_edit', $isEdit);
+		$this->set('announcement', $announcement);
 	}
 }

@@ -260,7 +260,7 @@ class RevisionListComponent extends Component {
 				}
 			}
 		}
-		return $data['Revision']['content'];
+		return isset($data['Revision']['content']) ? $data['Revision']['content'] : '';
 	}
 
 /**
