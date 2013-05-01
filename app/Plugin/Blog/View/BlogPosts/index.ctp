@@ -1,4 +1,13 @@
 <?php
+/**
+ * ブログ投稿画面
+ *
+ * @copyright     Copyright 2012, NetCommons Project
+ * @package       Plugin.Blog.View
+ * @author        Noriko Arai,Ryuji Masukawa
+ * @since         v 3.0.0.0
+ * @license       http://www.netcommons.org/license.txt  NetCommons License
+ */
 $this->extend('/Frame/block');
 $locale = Configure::read(NC_SYSTEM_KEY.'.locale');
 echo $this->Form->create('BlogPost', array('data-pjax' => '#'.$id));
@@ -75,8 +84,8 @@ echo $this->Form->create('BlogPost', array('data-pjax' => '#'.$id));
 		</li>
 		<li>
 			<?php
-				echo($this->Form->error('Htmlarea.content'));
-				echo $this->Form->textarea('Htmlarea.content', array('escape' => false, 'required' => false, 'class' => 'nc-wysiwyg', 'value' => $blog_post['Htmlarea']['content']));
+				echo($this->Form->error('Revision.content'));
+				echo $this->Form->textarea('Revision.content', array('escape' => false, 'required' => false, 'class' => 'nc-wysiwyg', 'value' => $blog_post['Revision']['content']));
 			?>
 		</li>
 		<?php if(isset($blog['Blog']['trackback_transmit_flag'])): ?>
@@ -130,25 +139,25 @@ echo $this->Form->create('BlogPost', array('data-pjax' => '#'.$id));
 );
 ?>
 </div>
-<div  id="blog-post-widget-area<?php echo ($id);?>" class="blog-post-widget-area table-cell">
+<div  id="blog-post-widget-area<?php echo ($id);?>" class="nc-widget-area nc-widget-area-outer table-cell">
 	<?php /* カテゴリー、タグ */ ?>
-	<div class="blog-style-widget-area">
-		<div class="blog-style-widget-area-title nc-panel-color">
+	<div class="nc-widget-area">
+		<div class="nc-widget-area-title nc-panel-color">
 			<h4><?php echo(__d('blog', 'Categories')); ?></h4>
-			<a class="blog-style-arrow"><span class="nc-arrow"></span></a>
+			<a class="nc-widget-area-title-arrow"><span class="nc-arrow"></span></a>
 		</div>
-		<div id="blog-post-widget-area-content<?php echo ($id);?>" class="blog-style-widget-area-content blog-post-widget-area-content">
+		<div id="blog-post-widget-area-content<?php echo ($id);?>" class="nc-widget-area-content">
 			<?php
 			echo $this->element('blog_posts/add_category');
 			?>
 		</div>
 	</div>
-	<div class="blog-style-widget-area">
-		<div class="blog-style-widget-area-title nc-panel-color">
+	<div class="nc-widget-area">
+		<div class="nc-widget-area-title nc-panel-color">
 			<h4><?php echo(__d('blog', 'Tags')); ?></h4>
-			<a class="blog-style-arrow"><span class="nc-arrow"></span></a>
+			<a class="nc-widget-area-title-arrow"><span class="nc-arrow"></span></a>
 		</div>
-		<div class="blog-style-widget-area-content">
+		<div class="nc-widget-area-content">
 			<select id="blog-posts-tags-select<?php echo ($id);?>" name="data[BlogTermLink][tag_name][]" data-placeholder="<?php echo(__d('blog', 'Choose from the used tags')); ?>" multiple class="blog-posts-select">
 			<?php foreach ($tags as $tag): ?>
 				<option value="<?php echo(h($tag['BlogTerm']['name']));?>"<?php if($tag['BlogTerm']['checked']): ?> selected="selected"<?php endif; ?>><?php echo(h($tag['BlogTerm']['name']));?></option>
@@ -182,16 +191,58 @@ echo $this->Form->create('BlogPost', array('data-pjax' => '#'.$id));
 		</div>
 	</div>
 	<?php /* 履歴情報 */ ?>
-	<?php if(count($revisions) > 0): ?>
-	<div class="blog-style-widget-area">
-		<div class="blog-style-widget-area-title nc-panel-color">
+	<?php if($blog_post['BlogPost']['id'] > 0): ?>
+	<div class="nc-widget-area">
+		<div class="nc-widget-area-title nc-panel-color">
 			<h4><?php echo(__('Revisions')); ?></h4>
-			<a class="blog-style-arrow"><span class="nc-arrow"></span></a>
+			<a class="nc-widget-area-title-arrow"><span class="nc-arrow"></span></a>
 		</div>
-		<div id="blog-post-widget-area-content<?php echo ($id);?>" class="blog-style-widget-area-content blog-post-widget-area-content">
+		<div id="blog-post-widget-area-content<?php echo ($id);?>" class="nc-widget-area-content">
+			<?php if(isset($revisions) && count($revisions) > 0): ?>
 			<?php
 				echo $this->element('/common/revisions', array('url' => array($blog_post['BlogPost']['id'])));
 			?>
+			<?php endif; ?>
+			<div class="small outer">
+			<?php
+				$settings = array(
+					'value' => _ON,
+					'checked' => !empty($blog_post['BlogPost']['pre_change_flag']) ? true : false,
+					'label' =>__('You display the contents of the change before.'),
+					'type' => 'checkbox',
+					'div' => false
+				);
+				echo $this->Form->input('BlogPost.pre_change_flag', $settings);
+			?>
+			<div class="note indent"<?php if(!$this->Form->isFieldError('BlogPost.pre_change_date') && empty($blog_post['BlogPost']['pre_change_flag'])): ?> style="display:none;"<?php endif; ?>>
+				<?php
+					if($this->request->is('post') && !empty($blog_post['BlogPost']['pre_change_date'])) {
+						if($this->Form->isFieldError('BlogPost.pre_change_date')) {
+							$pre_change_date = $blog_post['BlogPost']['pre_change_date'];
+						} else {
+							$pre_change_date = date(__('Y-m-d H:i'), strtotime($blog_post['BlogPost']['pre_change_date']));
+						}
+					} else if(!empty($blog_post['BlogPost']['pre_change_date'])) {
+						$pre_change_date = $this->TimeZone->date($blog_post['BlogPost']['pre_change_date'], __('Y-m-d H:i'));
+					} else {
+						$pre_change_date = '';
+					}
+					$settings = array(
+						'type' => 'text',
+						'value' => $pre_change_date,
+						'label' => false,
+						'div' => false,
+						'maxlength' => 16,
+						'size' => 15,
+						'class' => 'nc-datetime text normal-text',
+						'error' => array('attributes' => array(
+							'selector' => true
+						)),
+					);
+					echo __('Published to %s automatically.', $this->Form->input('BlogPost.pre_change_date', $settings));
+				?>
+			</div>
+			</div>
 		</div>
 	</div>
 	<?php endif; ?>
@@ -199,7 +250,7 @@ echo $this->Form->create('BlogPost', array('data-pjax' => '#'.$id));
 <?php
 echo $this->Form->end();
 echo ($this->Html->script(array('Blog.blog_posts/index', 'plugins/jquery.nc_wysiwyg.js','plugins/jquery-ui-timepicker-addon.js', 'locale/'.$locale.'/plugins/jquery-ui-timepicker.js')));
-echo ($this->Html->css(array('Blog.blog_styles/index', 'Blog.blog_posts/index','plugins/jquery.nc_wysiwyg.css', 'plugins/jquery-ui-timepicker-addon.css')));
+echo ($this->Html->css(array('Blog.blog_posts/index','plugins/jquery.nc_wysiwyg.css', 'plugins/jquery-ui-timepicker-addon.css')));
 ?>
 <script>
 $(function(){

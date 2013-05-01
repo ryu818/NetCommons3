@@ -25,12 +25,36 @@ class AnnouncementController extends AnnouncementAppController {
  */
 	public $hierarchy = null;
 
+/**
+ * Component name
+ *
+ * @var array
+ */
+	public $components = array('RevisionList');
+
 	public function index() {
-		$htmlarea = $this->Htmlarea->findByContentId($this->content_id, array('content'));
-		if(count($htmlarea) == 0 && $this->hierarchy >= NC_AUTH_MIN_CHIEF) {
-			// コンテンツがない場合でもダブルクリックで編集させるため
-			$htmlarea['Htmlarea']['content'] = __('Content not found.');
+		$announcement = $this->Announcement->findByContentId($this->content_id, array(
+			'Announcement.id', 'Announcement.pre_change_flag',
+			'Announcement.pre_change_date', 'Announcement.revision_group_id', 'Revision.revision_name',  'Revision.content'));
+		$announcement['Revision']['content'] = $this->RevisionList->updatePreChange($this->Announcement, $announcement);
+		$this->set('announcement', $announcement);
+
+		$user_id = $this->Auth->user('id');
+		$isEdit =false;
+		if(!empty($user_id)) {
+			$announcementEdit = $this->AnnouncementEdit->findByContentId($this->content_id, array(
+				'AnnouncementEdit.post_hierarchy'));
+			if(empty($announcementEdit)) {
+				$announcementEdit = $this->AnnouncementEdit->findDefault($this->content_id);
+			}
+			if($this->hierarchy  >= $announcementEdit['AnnouncementEdit']['post_hierarchy']) {
+				$isEdit = true;
+			}
 		}
-		$this->set('htmlarea', $htmlarea);
+		if(count($announcement) == 0 && $isEdit) {
+			// コンテンツがない場合でもダブルクリックで編集させるため
+			$announcement['Revision']['content'] = __('Content not found.');
+		}
+		$this->set('is_edit', $isEdit);
 	}
 }

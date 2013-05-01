@@ -21,12 +21,19 @@ class BlogController extends BlogAppController {
 	public $helpers = array('Time', 'CheckAuth');	// TODO:TimeZoneヘルパーをTimeで置き換えられるかどうか検証する
 
 /**
+ * Component name
+ *
+ * @var array
+ */
+	public $components = array('RevisionList');
+
+/**
  * Pagination
  * @var   array
  * @since   v 3.0.0.0
  */
 	public $paginate = array(
-		'fields' => array('BlogPost.*', 'Htmlarea.content', 'Authority.hierarchy'),
+		'fields' => array('BlogPost.*', 'Revision.content', 'Revision.revision_name', 'Authority.hierarchy'),
 		'order' => array(
 			'BlogPost.post_date' => 'DESC',
 			'BlogPost.id' => 'DESC',
@@ -164,6 +171,10 @@ class BlogController extends BlogAppController {
 		$blogPosts = $this->paginate('BlogPost',$addParams);
 		if(count($addParams) > 0 && count($blogPosts) == 0) {
 			$this->set('detail_type', 'none');
+		}
+		// 変更後のデータの変換(pre_change_flag,pre_change_date)
+		foreach($blogPosts as $key => $blogPost) {
+			$blogPosts[$key]['Revision']['content'] = $this->RevisionList->updatePreChange($this->BlogPost, $blogPost);
 		}
 		$this->set('blog_posts', $blogPosts);
 		$this->set('blog_posts_terms', $this->BlogTerm->findByBlogPosts($blogPosts));

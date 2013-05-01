@@ -32,7 +32,7 @@ class Block extends AppModel
 	public function __construct() {
 		parent::__construct();
 
-				/*
+		/*
 		 * エラーメッセージ設定
 		 */
 		$this->validate = array(
@@ -94,8 +94,8 @@ class Block extends AppModel
 					'allowEmpty' => true,
 					'message' => __('Unauthorized pattern for %s.', __('Date-time'))
 				),
-				'pastDateTime'  => array(
-					'rule' => array('pastDateTime'),
+				'isFutureDateTime'  => array(
+					'rule' => array('isFutureDateTime'),
 					'last' => true,
 					'allowEmpty' => true,
 					'message' => __('%s in the past can not be input.', __('Date-time'))
@@ -114,8 +114,8 @@ class Block extends AppModel
 					'allowEmpty' => true,
 					'message' => __('Unauthorized pattern for %s.', __('Date-time'))
 				),
-				'pastDateTime'  => array(
-					'rule' => array('pastDateTime'),
+				'isFutureDateTime'  => array(
+					'rule' => array('isFutureDateTime'),
 					'last' => true,
 					'allowEmpty' => true,
 					'message' => __('%s in the past can not be input.', __('Date-time'))
@@ -272,7 +272,7 @@ class Block extends AppModel
 		}
 
 		if($check_auth && isset($val['Content']['display_flag']) &&
-			(($val['Content']['display_flag'] != NC_DISPLAY_FLAG_ON || $val['Block']['display_flag'] == _OFF) && $val['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF)) {
+			(($val['Content']['display_flag'] != NC_DISPLAY_FLAG_ON || $val['Block']['display_flag'] == NC_DISPLAY_FLAG_OFF) && $val['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF)) {
 			// 非公開
 			return;
 		}
@@ -463,7 +463,7 @@ class Block extends AppModel
 		return array(
 			'Block.*',
 			'Page.thread_num','Page.room_id','Page.root_id','Page.space_type',
-			'Content.id','Content.module_id','Content.title','Content.is_master','Content.master_id','Content.room_id','Content.display_flag','Content.approved_flag','Content.url',
+			'Content.id','Content.module_id','Content.title','Content.is_master','Content.master_id','Content.room_id','Content.display_flag','Content.is_approved','Content.url',
 			'Module.id','Module.controller_action','Module.edit_controller_action','Module.style_controller_action','Module.dir_name','Module.content_has_one',
 			'Authority.id','Authority.hierarchy'
 		);

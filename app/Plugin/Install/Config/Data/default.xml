@@ -1,286 +1,41 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <database>
-    <!-- テーブル assets -->
-    <table name="assets">
-        <column name="id">1</column>
-        <column name="url">/none_frame/css/block.css</column>
-        <column name="hash_content">dbd0468aa6921f7b4ef49da069296f2f</column>
-        <column name="plugin">Nc-Frame</column>
-        <column name="created">2013-03-28 17:04:03</column>
-        <column name="modified">2013-03-28 17:04:03</column>
-    </table>
-    <table name="assets">
-        <column name="id">2</column>
-        <column name="url">/default/css/block.css</column>
-        <column name="hash_content">599232b99a7aa47a87ea73684b46b5bd</column>
-        <column name="plugin">Nc-Frame</column>
-        <column name="created">2013-03-28 17:04:03</column>
-        <column name="modified">2013-03-28 17:04:03</column>
-    </table>
-    <table name="assets">
-        <column name="id">3</column>
-        <column name="url">/default/css/gray/block.css</column>
-        <column name="hash_content">ce318d77741f27cd61d54a92f3a28205</column>
-        <column name="plugin">Nc-Frame</column>
-        <column name="created">2013-03-28 17:04:03</column>
-        <column name="modified">2013-03-28 17:04:03</column>
-    </table>
-    <table name="assets">
-        <column name="id">4</column>
-        <column name="url">/js/jquery/</column>
-        <column name="hash_content">cbd212179002a4d4633bae11469eedf9</column>
-        <column name="plugin">Js</column>
-        <column name="created">2013-03-28 17:04:03</column>
-        <column name="modified">2013-03-28 17:04:03</column>
-    </table>
-    <table name="assets">
-        <column name="id">5</column>
-        <column name="url">/js/common/</column>
-        <column name="hash_content">75661dbdee91c3cc204d4b6368bf2d52</column>
-        <column name="plugin">Js</column>
-        <column name="created">2013-03-28 17:04:03</column>
-        <column name="modified">2013-03-28 17:04:03</column>
-    </table>
-    <table name="assets">
-        <column name="id">6</column>
-        <column name="url">/js/html5/</column>
-        <column name="hash_content">14a78b88ea5e4e734b7e2ca71ce372a5</column>
-        <column name="plugin">Js</column>
-        <column name="created">2013-03-28 17:04:03</column>
-        <column name="modified">2013-03-28 17:04:03</column>
-    </table>
-    <table name="assets">
-        <column name="id">7</column>
-        <column name="url">/js/locale/jpn/lang.js</column>
-        <column name="hash_content">59064fe5d5d5a5642770444fec4e704e</column>
-        <column name="plugin">Nc-Locale</column>
-        <column name="created">2013-03-28 17:04:03</column>
-        <column name="modified">2013-03-28 17:04:03</column>
-    </table>
-    <table name="assets">
-        <column name="id">8</column>
-        <column name="url">/js/locale/jpn/jquery/ui/jquery.ui.datepicker.js</column>
-        <column name="hash_content">484af230503a16846b16b69397e41c66</column>
-        <column name="plugin">Nc-Locale</column>
-        <column name="created">2013-03-28 17:04:03</column>
-        <column name="modified">2013-03-28 17:04:03</column>
-    </table>
-    <table name="assets">
-        <column name="id">9</column>
-        <column name="url">/css/common/vendors/</column>
-        <column name="hash_content">64497884e8ed4c21883e77f4e66de0e5</column>
-        <column name="plugin">Css</column>
-        <column name="created">2013-03-28 17:04:03</column>
-        <column name="modified">2013-03-28 17:04:03</column>
-    </table>
-    <table name="assets">
-        <column name="id">10</column>
-        <column name="url">/css/common/main/</column>
-        <column name="hash_content">e789e7d66b2d61c926bb1463938bb851</column>
-        <column name="plugin">Css</column>
-        <column name="created">2013-03-28 17:04:03</column>
-        <column name="modified">2013-03-28 17:04:03</column>
-    </table>
-    <table name="assets">
+    <!-- テーブル announcements -->
+    <table name="announcements">
         <column name="id">11</column>
-        <column name="url">/css/jquery/base/</column>
-        <column name="hash_content">19f02e3ebddb6746f0aad4fc4d23e1ad</column>
-        <column name="plugin">Css</column>
-        <column name="created">2013-03-28 17:04:03</column>
-        <column name="modified">2013-03-28 17:04:03</column>
+        <column name="content_id">18</column>
+        <column name="revision_group_id">52</column>
+        <column name="is_approved">1</column>
+        <column name="pre_change_flag">0</column>
+        <column name="pre_change_date">NULL</column>
+        <column name="created">2013-05-01 04:10:22</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-05-01 04:10:22</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
     </table>
-    <table name="assets">
-        <column name="id">12</column>
-        <column name="url">/css/common/editable/common.css</column>
-        <column name="hash_content">e9013b018da38ff9862d3357f066ed38</column>
-        <column name="plugin">Css</column>
-        <column name="created">2013-03-28 17:04:03</column>
-        <column name="modified">2013-03-28 17:04:03</column>
+    <!-- テーブル announcement_edits -->
+    <table name="announcement_edits">
+        <column name="id">7</column>
+        <column name="content_id">18</column>
+        <column name="post_hierarchy">301</column>
+        <column name="approved_flag">0</column>
+        <column name="approved_pre_change_flag">0</column>
+        <column name="approved_mail_flag">0</column>
+        <column name="approved_mail_subject">[{X-SITE_NAME}] [{X-CONTENT_NAME}] 投稿承認完了通知</column>
+        <column name="approved_mail_body">[{X-SITE_NAME}] [{X-CONTENT_NAME}] における投稿の承認が完了しました。
+
+内容を確認するには下記のリンクをクリックして下さい。
+{X-URL}</column>
+        <column name="created">2013-05-01 04:10:12</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-05-01 04:10:12</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
     </table>
-    <table name="assets">
-        <column name="id">13</column>
-        <column name="url">/css/pages/common/</column>
-        <column name="hash_content">98a2f3749977345cc79779f7ae18219f</column>
-        <column name="plugin">Css</column>
-        <column name="created">2013-03-28 17:04:03</column>
-        <column name="modified">2013-03-28 17:04:03</column>
-    </table>
-    <table name="assets">
-        <column name="id">14</column>
-        <column name="url">/css/plugins/chosen.css</column>
-        <column name="hash_content">d53b59fbe9e592f5dee2839c116d7a32</column>
-        <column name="plugin">chosen.css</column>
-        <column name="created">2013-03-28 17:04:03</column>
-        <column name="modified">2013-03-28 17:04:03</column>
-    </table>
-    <table name="assets">
-        <column name="id">15</column>
-        <column name="url">/default/css/page.css</column>
-        <column name="hash_content">c37b1811ffc72e57ba2afed363661eda</column>
-        <column name="plugin">Nc-Frame</column>
-        <column name="created">2013-03-28 17:04:03</column>
-        <column name="modified">2013-03-28 17:04:03</column>
-    </table>
-    <table name="assets">
-        <column name="id">16</column>
-        <column name="url">/default/css/gray/page.css</column>
-        <column name="hash_content">73eee9adaf31e18a00a526a97f426a43</column>
-        <column name="plugin">Nc-Frame</column>
-        <column name="created">2013-03-28 17:04:03</column>
-        <column name="modified">2013-03-28 17:04:03</column>
-    </table>
-    <table name="assets">
-        <column name="id">17</column>
-        <column name="url">/js/plugins/jquery.pjax.js</column>
-        <column name="hash_content">1be8526172d47b6e13e18d80820d867e</column>
-        <column name="plugin">jquery.pjax.js</column>
-        <column name="created">2013-03-28 17:04:03</column>
-        <column name="modified">2013-03-28 17:04:03</column>
-    </table>
-    <table name="assets">
-        <column name="id">18</column>
-        <column name="url">/js/plugins/chosen.jquery.js</column>
-        <column name="hash_content">034fe757713cc1559697f4121098645b</column>
-        <column name="plugin">chosen.jquery.js</column>
-        <column name="created">2013-03-28 17:04:03</column>
-        <column name="modified">2013-03-28 17:04:03</column>
-    </table>
-    <table name="assets">
-        <column name="id">19</column>
-        <column name="url">/js/pages/common/</column>
-        <column name="hash_content">95040b0fdbfde899a10d138981d2c384</column>
-        <column name="plugin">Js</column>
-        <column name="created">2013-03-28 17:04:03</column>
-        <column name="modified">2013-03-28 17:04:03</column>
-    </table>
-    <table name="assets">
-        <column name="id">20</column>
-        <column name="url">/js/pages/main/</column>
-        <column name="hash_content">d41d8cd98f00b204e9800998ecf8427e</column>
-        <column name="plugin">Js</column>
-        <column name="created">2013-03-28 17:04:03</column>
-        <column name="modified">2013-03-28 17:04:03</column>
-    </table>
-    <table name="assets">
-        <column name="id">21</column>
-        <column name="url">/announcement/js/index.js</column>
-        <column name="hash_content">b77a79f9769d5c58b17b6565f0e2b923</column>
-        <column name="plugin">Announcement</column>
-        <column name="created">2013-03-28 17:15:03</column>
-        <column name="modified">2013-03-28 17:15:03</column>
-    </table>
-    <table name="assets">
-        <column name="id">22</column>
-        <column name="url">/css/pages/block/</column>
-        <column name="hash_content">fbf9cc19d075829accb56da0ac773fbe</column>
-        <column name="plugin">Css</column>
-        <column name="created">2013-03-28 17:15:10</column>
-        <column name="modified">2013-03-28 17:15:10</column>
-    </table>
-    <table name="assets">
-        <column name="id">23</column>
-        <column name="url">/js/pages/block/</column>
-        <column name="hash_content">e7467f6ed8fa9a7c67da8592a296091f</column>
-        <column name="plugin">Js</column>
-        <column name="created">2013-03-28 17:15:10</column>
-        <column name="modified">2013-03-28 17:15:10</column>
-    </table>
-    <table name="assets">
-        <column name="id">24</column>
-        <column name="url">/css/plugins/jquery.nestable.css</column>
-        <column name="hash_content">89d73e4368ca16f1ec7264349914ba30</column>
-        <column name="plugin">jquery.nestable.css</column>
-        <column name="created">2013-03-28 17:15:13</column>
-        <column name="modified">2013-03-28 17:15:13</column>
-    </table>
-    <table name="assets">
-        <column name="id">25</column>
-        <column name="url">/page/css/index/index.css</column>
-        <column name="hash_content">505a0c7b27f84c13803ff9f4368ec191</column>
-        <column name="plugin">Page</column>
-        <column name="created">2013-03-28 17:15:13</column>
-        <column name="modified">2013-03-28 17:15:13</column>
-    </table>
-    <table name="assets">
-        <column name="id">26</column>
-        <column name="url">/js/plugins/jquery.nestable.js</column>
-        <column name="hash_content">7841c28161956f919ef92d3e55bbaa15</column>
-        <column name="plugin">jquery.nestable.js</column>
-        <column name="created">2013-03-28 17:15:13</column>
-        <column name="modified">2013-03-28 17:15:13</column>
-    </table>
-    <table name="assets">
-        <column name="id">27</column>
-        <column name="url">/page/js/index/index.js</column>
-        <column name="hash_content">3bbc5dc0afbd444bf7f88c4084128b7d</column>
-        <column name="plugin">Page</column>
-        <column name="created">2013-03-28 17:15:13</column>
-        <column name="modified">2013-03-28 17:15:13</column>
-    </table>
-    <table name="assets">
-        <column name="id">28</column>
-        <column name="url">/page/css/index.css</column>
-        <column name="hash_content">3c511640cb01b3d1e96228cf220e702a</column>
-        <column name="plugin">Page</column>
-        <column name="created">2013-03-28 17:15:13</column>
-        <column name="modified">2013-03-28 17:15:13</column>
-    </table>
-    <table name="assets">
-        <column name="id">29</column>
-        <column name="url">/page/js/index.js</column>
-        <column name="hash_content">70361057952711f7b1c7eb88618f8fd2</column>
-        <column name="plugin">Page</column>
-        <column name="created">2013-03-28 17:15:13</column>
-        <column name="modified">2013-03-28 17:15:13</column>
-    </table>
-    <table name="assets">
-        <column name="id">30</column>
-        <column name="url">/css/controls/index/</column>
-        <column name="hash_content">9cfb162d4612bc73790dfb7a00383ff5</column>
-        <column name="plugin">Css</column>
-        <column name="created">2013-03-28 17:15:52</column>
-        <column name="modified">2013-03-28 17:15:52</column>
-    </table>
-    <table name="assets">
-        <column name="id">31</column>
-        <column name="url">/module/css/index/</column>
-        <column name="hash_content">e0d0593436ca5025b5d8963af03544b3</column>
-        <column name="plugin">Module</column>
-        <column name="created">2013-03-28 17:15:54</column>
-        <column name="modified">2013-03-28 17:15:54</column>
-    </table>
-    <table name="assets">
-        <column name="id">32</column>
-        <column name="url">/css/plugins/flexigrid.css</column>
-        <column name="hash_content">976a75e03f2f72d82d7c96e6426cfa65</column>
-        <column name="plugin">flexigrid.css</column>
-        <column name="created">2013-03-28 17:15:54</column>
-        <column name="modified">2013-03-28 17:15:54</column>
-    </table>
-    <table name="assets">
-        <column name="id">33</column>
-        <column name="url">/module/js/index/</column>
-        <column name="hash_content">0296003d0fc9b095cfefacd43fcd9753</column>
-        <column name="plugin">Module</column>
-        <column name="created">2013-03-28 17:15:54</column>
-        <column name="modified">2013-03-28 17:15:54</column>
-    </table>
-    <table name="assets">
-        <column name="id">34</column>
-        <column name="url">/js/plugins/flexigrid.js</column>
-        <column name="hash_content">2c761cd59b9f7695bc9247d6c7d83e12</column>
-        <column name="plugin">flexigrid.js</column>
-        <column name="created">2013-03-28 17:15:54</column>
-        <column name="modified">2013-03-28 17:15:54</column>
-    </table>
-    <table name="assets">
-        <column name="id">35</column>
-        <column name="url">/css/redirect/</column>
-        <column name="hash_content">da83fff272a43589ff8e4c9df2b8ebe5</column>
-        <column name="plugin">Css</column>
-        <column name="created">2013-03-28 17:24:25</column>
-        <column name="modified">2013-03-28 17:24:25</column>
-    </table>
+    <!-- テーブル assets -->
     <!-- テーブル authorities -->
     <table name="authorities">
         <column name="id">1</column>
@@ -458,46 +213,14 @@
     </table>
     <!-- テーブル blocks -->
     <table name="blocks">
-        <column name="id">1</column>
+        <column name="id">17</column>
         <column name="page_id">12</column>
-        <column name="content_id">1</column>
-        <column name="module_id">1</column>
+        <column name="content_id">17</column>
+        <column name="module_id">5</column>
         <column name="title">{X-CONTENT}</column>
         <column name="show_title">1</column>
-        <column name="controller_action">announcement</column>
-        <column name="root_id">1</column>
-        <column name="parent_id">0</column>
-        <column name="thread_num">0</column>
-        <column name="col_num">1</column>
-        <column name="row_num">5</column>
-        <column name="display_flag">1</column>
-        <column name="display_from_date">NULL</column>
-        <column name="display_to_date">NULL</column>
-        <column name="theme_name"></column>
-        <column name="temp_name"></column>
-        <column name="left_margin">8</column>
-        <column name="right_margin">8</column>
-        <column name="top_margin">8</column>
-        <column name="bottom_margin">8</column>
-        <column name="min_width_size">400</column>
-        <column name="min_height_size">0</column>
-        <column name="lock_authority_id">0</column>
-        <column name="created">NULL</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">2012-10-17 20:14:44</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
-    </table>
-    <table name="blocks">
-        <column name="id">2</column>
-        <column name="page_id">5</column>
-        <column name="content_id">2</column>
-        <column name="module_id">1</column>
-        <column name="title">{X-CONTENT}</column>
-        <column name="show_title">0</column>
-        <column name="controller_action">announcement</column>
-        <column name="root_id">2</column>
+        <column name="controller_action">blog</column>
+        <column name="root_id">17</column>
         <column name="parent_id">0</column>
         <column name="thread_num">0</column>
         <column name="col_num">1</column>
@@ -511,22 +234,235 @@
         <column name="right_margin">8</column>
         <column name="top_margin">8</column>
         <column name="bottom_margin">8</column>
-        <column name="min_width_size">-1</column>
+        <column name="min_width_size">800</column>
         <column name="min_height_size">0</column>
         <column name="lock_authority_id">0</column>
-        <column name="created">NULL</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">NULL</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
+        <column name="created">2013-05-01 03:27:18</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-05-01 03:27:18</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="blocks">
+        <column name="id">18</column>
+        <column name="page_id">5</column>
+        <column name="content_id">18</column>
+        <column name="module_id">1</column>
+        <column name="title">{X-CONTENT}</column>
+        <column name="show_title">0</column>
+        <column name="controller_action">announcement</column>
+        <column name="root_id">18</column>
+        <column name="parent_id">0</column>
+        <column name="thread_num">0</column>
+        <column name="col_num">1</column>
+        <column name="row_num">1</column>
+        <column name="display_flag">1</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="theme_name">NoneFrame</column>
+        <column name="temp_name"></column>
+        <column name="left_margin">8</column>
+        <column name="right_margin">8</column>
+        <column name="top_margin">30</column>
+        <column name="bottom_margin">30</column>
+        <column name="min_width_size">0</column>
+        <column name="min_height_size">0</column>
+        <column name="lock_authority_id">0</column>
+        <column name="created">2013-05-01 04:09:55</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-05-01 04:09:55</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
     </table>
     <!-- テーブル blogs -->
+    <table name="blogs">
+        <column name="id">2</column>
+        <column name="content_id">17</column>
+        <column name="post_hierarchy">301</column>
+        <column name="term_hierarchy">301</column>
+        <column name="vote_flag">1</column>
+        <column name="sns_flag">1</column>
+        <column name="new_period">5</column>
+        <column name="mail_flag">0</column>
+        <column name="mail_hierarchy">301</column>
+        <column name="mail_subject">[{X-SITE_NAME}]ブログ投稿({X-ROOM} {X-CONTENT_NAME} {X-SUBJECT})</column>
+        <column name="mail_body">ブログに投稿されたのでお知らせします。
+ルーム名称:{X-ROOM}
+ブログタイトル:{X-CONTENT_NAME}
+記事タイトル:{X-SUBJECT}
+投稿者:{X-USER}
+投稿日時:{X-TO_DATE}
+
+
+{X-BODY}
+
+この記事に返信するには、下記アドレスへ。
+{X-URL}</column>
+        <column name="comment_flag">1</column>
+        <column name="comment_members_only">0</column>
+        <column name="comment_required_name">0</column>
+        <column name="comment_image_auth">0</column>
+        <column name="comment_hierarchy">101</column>
+        <column name="comment_mail_flag">0</column>
+        <column name="comment_mail_hierarchy">301</column>
+        <column name="comment_mail_subject">[{X-SITE_NAME}]ブログコメント投稿({X-ROOM} {X-CONTENT_NAME} {X-SUBJECT})</column>
+        <column name="comment_mail_body">ブログのコメントが投稿されたのでお知らせします。
+ルーム名称:{X-ROOM}
+ブログタイトル:{X-CONTENT_NAME}
+記事タイトル:{X-SUBJECT}
+投稿者:{X-USER}
+投稿日時:{X-TO_DATE}
+
+
+{X-BODY}
+
+この記事に返信するには、下記アドレスへ。
+{X-URL}</column>
+        <column name="trackback_transmit_flag">0</column>
+        <column name="trackback_transmit_article">0</column>
+        <column name="trackback_receive_flag">0</column>
+        <column name="transmit_blog_name">{X-CONTENT_NAME}-{X-SITE_NAME}</column>
+        <column name="approved_flag">0</column>
+        <column name="approved_pre_change_flag">0</column>
+        <column name="approved_mail_flag">0</column>
+        <column name="approved_mail_subject">[{X-SITE_NAME}] [{X-CONTENT_NAME}] 投稿承認完了通知</column>
+        <column name="approved_mail_body">[{X-SITE_NAME}] [{X-CONTENT_NAME}] における投稿の承認が完了しました。
+
+内容を確認するには下記のリンクをクリックして下さい。
+{X-URL}</column>
+        <column name="comment_approved_flag">0</column>
+        <column name="comment_approved_mail_flag">0</column>
+        <column name="comment_approved_mail_subject">[{X-SITE_NAME}] [{X-CONTENT_NAME}] Comment, trackback Approval completion notice</column>
+        <column name="comment_approved_mail_body">Your comment and trackback posted to [{X-SITE_NAME}] [{X-CONTENT_NAME}] was approved.
+
+Click the link below to check the article.
+{X-URL}</column>
+        <column name="created">2013-05-01 03:27:49</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-05-01 03:27:49</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
     <!-- テーブル blog_comments -->
     <!-- テーブル blog_posts -->
+    <table name="blog_posts">
+        <column name="id">3</column>
+        <column name="content_id">17</column>
+        <column name="post_date">2013-05-01 03:27:00</column>
+        <column name="is_future">0</column>
+        <column name="title">科学と文学が記述できること・できないこと</column>
+        <column name="permalink">科学と文学が記述できること・できないこと</column>
+        <column name="icon_name">NULL</column>
+        <column name="revision_group_id">49</column>
+        <column name="vote">NULL</column>
+        <column name="status">0</column>
+        <column name="is_approved">1</column>
+        <column name="pre_change_flag">0</column>
+        <column name="pre_change_date">NULL</column>
+        <column name="post_password"></column>
+        <column name="trackback_link"></column>
+        <column name="approved_comment_count">0</column>
+        <column name="comment_count">0</column>
+        <column name="approved_trackback_count">0</column>
+        <column name="trackback_count">0</column>
+        <column name="vote_count">0</column>
+        <column name="created">2013-05-01 03:28:55</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-05-01 03:28:55</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="blog_posts">
+        <column name="id">4</column>
+        <column name="content_id">17</column>
+        <column name="post_date">2013-05-01 03:29:00</column>
+        <column name="is_future">0</column>
+        <column name="title">大学生数学基本調査</column>
+        <column name="permalink">大学生数学基本調査</column>
+        <column name="icon_name">NULL</column>
+        <column name="revision_group_id">50</column>
+        <column name="vote">NULL</column>
+        <column name="status">0</column>
+        <column name="is_approved">1</column>
+        <column name="pre_change_flag">0</column>
+        <column name="pre_change_date">NULL</column>
+        <column name="post_password"></column>
+        <column name="trackback_link"></column>
+        <column name="approved_comment_count">0</column>
+        <column name="comment_count">0</column>
+        <column name="approved_trackback_count">0</column>
+        <column name="trackback_count">0</column>
+        <column name="vote_count">0</column>
+        <column name="created">2013-05-01 03:29:55</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-05-01 03:29:55</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="blog_posts">
+        <column name="id">5</column>
+        <column name="content_id">17</column>
+        <column name="post_date">2013-05-01 03:29:00</column>
+        <column name="is_future">0</column>
+        <column name="title">どうして微積分を学ぶのか。</column>
+        <column name="permalink">どうして微積分を学ぶのか。</column>
+        <column name="icon_name">NULL</column>
+        <column name="revision_group_id">51</column>
+        <column name="vote">NULL</column>
+        <column name="status">0</column>
+        <column name="is_approved">1</column>
+        <column name="pre_change_flag">0</column>
+        <column name="pre_change_date">NULL</column>
+        <column name="post_password"></column>
+        <column name="trackback_link"></column>
+        <column name="approved_comment_count">0</column>
+        <column name="comment_count">0</column>
+        <column name="approved_trackback_count">0</column>
+        <column name="trackback_count">0</column>
+        <column name="vote_count">0</column>
+        <column name="created">2013-05-01 03:30:16</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-05-01 03:30:16</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
     <!-- テーブル blog_styles -->
     <!-- テーブル blog_terms -->
+    <table name="blog_terms">
+        <column name="id">1</column>
+        <column name="content_id">17</column>
+        <column name="name">本</column>
+        <column name="slug">本</column>
+        <column name="taxonomy">category</column>
+        <column name="checked">0</column>
+        <column name="parent">0</column>
+        <column name="count">1</column>
+        <column name="created">2013-05-01 03:28:46</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-05-01 03:29:00</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
     <!-- テーブル blog_term_links -->
+    <table name="blog_term_links">
+        <column name="id">1</column>
+        <column name="content_id">17</column>
+        <column name="blog_post_id">3</column>
+        <column name="blog_term_id">1</column>
+        <column name="created">2013-05-01 03:29:00</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-05-01 03:29:00</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
     <!-- テーブル communities -->
     <!-- テーブル community_langs -->
     <!-- テーブル community_tags -->
@@ -2297,95 +2233,38 @@ e-mail：{X-EMAIL}
     </table>
     <!-- テーブル contents -->
     <table name="contents">
-        <column name="id">1</column>
-        <column name="module_id">1</column>
-        <column name="title">お知らせ1</column>
+        <column name="id">17</column>
+        <column name="module_id">5</column>
+        <column name="title">研究ブログ</column>
         <column name="is_master">1</column>
-        <column name="master_id">1</column>
+        <column name="master_id">17</column>
         <column name="room_id">9</column>
         <column name="display_flag">1</column>
-        <column name="approved_flag">1</column>
+        <column name="is_approved">1</column>
         <column name="url"></column>
-        <column name="created">NULL</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name">0</column>
-        <column name="modified">NULL</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
+        <column name="created">2013-05-01 03:27:18</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-05-01 03:27:49</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
     </table>
     <table name="contents">
-        <column name="id">2</column>
+        <column name="id">18</column>
         <column name="module_id">1</column>
-        <column name="title">お知らせ2</column>
+        <column name="title">お知らせ</column>
         <column name="is_master">1</column>
-        <column name="master_id">2</column>
+        <column name="master_id">18</column>
         <column name="room_id">9</column>
         <column name="display_flag">1</column>
-        <column name="approved_flag">1</column>
+        <column name="is_approved">1</column>
         <column name="url"></column>
-        <column name="created">NULL</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">NULL</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
-    </table>
-    <!-- テーブル htmlareas -->
-    <table name="htmlareas">
-        <column name="id">1</column>
-        <column name="revision_parent">0</column>
-        <column name="revision_name">publish</column>
-        <column name="content_id">1</column>
-        <column name="content">&lt;div style=&quot;padding:10px;width:600px;&quot;&gt;
-&lt;h2 class=&quot;bold align-center&quot; style=&quot;font-size:150%;&quot;&gt;NetCommonsのインストールが完了しました。&lt;/h2&gt;
-&lt;div class=&quot;top-description&quot;&gt;NetCommonsの画面をデザインする基本的な手順は次のとおりです。&lt;/div&gt;
-&lt;ol style=&quot;list-style-type: decimal; margin: 5px; padding: 10px; border: 1px solid rgb(204, 204, 204);&quot;&gt;
-&amp;nbsp;&amp;nbsp;
-&lt;li class=&quot;bold&quot; style=&quot;padding: 10px;&quot;&gt;セッティングモードをONにする&lt;/li&gt;
-&lt;div style=&quot;padding:10px;&quot;&gt;
-画面上部にマウスカーソルを移動すると表示されるヘッダーメニューの右上にある「
-&lt;img src=&quot;{NC_WEBROOT}img/dialogs/hmenu/setting_h.gif&quot; alt=&quot;&quot; class=&quot;icon&quot;&gt;
-セッティングモード」をクリックし、モジュール追加セレクトボックスを表示させる。
-&lt;/div&gt;
-&lt;li class=&quot;bold&quot; style=&quot;padding: 10px;&quot;&gt;モジュールを編集する。&lt;/li&gt;
-&lt;ol style=&quot;list-style-type: decimal; margin: 5px; padding: 10px;&quot;&gt;
-&lt;li&gt;新しくモジュールを追加するには、モジュール追加から追加したいモジュールを選択する。手順に従ってモジュールを編集する。&lt;/li&gt;
-&lt;li&gt;既にあるモジュールを編集するには、編集するモジュールにマウスオーバー時に表示されるスパナアイコンをクリックする。手順に従ってモジュールを編集する。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;li class=&quot;bold&quot; style=&quot;padding: 10px;&quot;&gt;ページを編集する。&lt;/li&gt;
-&lt;ol style=&quot;list-style-type: decimal; margin: 5px; padding: 10px;&quot;&gt;
-&lt;li&gt;新しくページを追加するには、上部ページメニューの「編集切替」ボタンをクリックし、「ページ追加」を行う。&lt;/li&gt;
-&lt;li&gt;ページを編集するには、ページメニューの「編集」アイコンをクリックする。&lt;/li&gt;
-&lt;/ol&gt;
-&lt;li class=&quot;bold&quot; style=&quot;padding: 10px;&quot;&gt;モジュール編集を終了する。&lt;/li&gt;
-&lt;div style=&quot;padding:10px;&quot;&gt;
-&amp;nbsp;画面右上の「
-&lt;img src=&quot;{NC_WEBROOT}img/dialogs/hmenu/setting_h_end.gif&quot; class=&quot;icon&quot;&gt;
-&amp;nbsp;セッティング終了」をクリックする。
-&lt;/div&gt;
-&lt;/ol&gt;
-&lt;/div&gt;&lt;br&gt;</column>
-        <column name="non_approved_content"></column>
-        <column name="created">NULL</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">2012-12-17 14:34:42</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
-    </table>
-    <table name="htmlareas">
-        <column name="id">2</column>
-        <column name="revision_parent">0</column>
-        <column name="revision_name">publish</column>
-        <column name="content_id">2</column>
-        <column name="content">&lt;img src=&quot;{NC_WEBROOT}img/install/logo.gif&quot; title=&quot;NetCommons&quot; alt=&quot;NetCommons&quot; /&gt;</column>
-        <column name="non_approved_content"></column>
-        <column name="created">NULL</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">NULL</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
+        <column name="created">2013-05-01 04:09:55</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-05-01 04:10:12</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
     </table>
     <!-- テーブル htmlarea_video_urls -->
     <table name="htmlarea_video_urls">
@@ -4875,6 +4754,7 @@ e-mail：{X-EMAIL}
         <column name="display_to_date">NULL</column>
         <column name="display_apply_subpage">1</column>
         <column name="display_reverse_permalink">NULL</column>
+        <column name="is_approved">1</column>
         <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
@@ -4904,6 +4784,7 @@ e-mail：{X-EMAIL}
         <column name="display_to_date">NULL</column>
         <column name="display_apply_subpage">1</column>
         <column name="display_reverse_permalink">NULL</column>
+        <column name="is_approved">1</column>
         <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
@@ -4933,6 +4814,7 @@ e-mail：{X-EMAIL}
         <column name="display_to_date">NULL</column>
         <column name="display_apply_subpage">1</column>
         <column name="display_reverse_permalink">NULL</column>
+        <column name="is_approved">1</column>
         <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
@@ -4962,6 +4844,7 @@ e-mail：{X-EMAIL}
         <column name="display_to_date">NULL</column>
         <column name="display_apply_subpage">1</column>
         <column name="display_reverse_permalink">NULL</column>
+        <column name="is_approved">1</column>
         <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
@@ -4985,19 +4868,20 @@ e-mail：{X-EMAIL}
         <column name="page_column_id">0</column>
         <column name="room_id">9</column>
         <column name="space_type">1</column>
-        <column name="show_count">2</column>
+        <column name="show_count">4</column>
         <column name="display_flag">1</column>
         <column name="display_from_date">NULL</column>
         <column name="display_to_date">NULL</column>
         <column name="display_apply_subpage">1</column>
         <column name="display_reverse_permalink">NULL</column>
+        <column name="is_approved">1</column>
         <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
-        <column name="modified">NULL</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
+        <column name="modified">2013-05-01 04:09:55</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
     </table>
     <table name="pages">
         <column name="id">6</column>
@@ -5020,6 +4904,7 @@ e-mail：{X-EMAIL}
         <column name="display_to_date">NULL</column>
         <column name="display_apply_subpage">1</column>
         <column name="display_reverse_permalink">NULL</column>
+        <column name="is_approved">1</column>
         <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
@@ -5049,6 +4934,7 @@ e-mail：{X-EMAIL}
         <column name="display_to_date">NULL</column>
         <column name="display_apply_subpage">1</column>
         <column name="display_reverse_permalink">NULL</column>
+        <column name="is_approved">1</column>
         <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
@@ -5078,6 +4964,7 @@ e-mail：{X-EMAIL}
         <column name="display_to_date">NULL</column>
         <column name="display_apply_subpage">1</column>
         <column name="display_reverse_permalink">NULL</column>
+        <column name="is_approved">1</column>
         <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
@@ -5107,6 +4994,7 @@ e-mail：{X-EMAIL}
         <column name="display_to_date">NULL</column>
         <column name="display_apply_subpage">1</column>
         <column name="display_reverse_permalink">NULL</column>
+        <column name="is_approved">1</column>
         <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
@@ -5136,6 +5024,7 @@ e-mail：{X-EMAIL}
         <column name="display_to_date">NULL</column>
         <column name="display_apply_subpage">1</column>
         <column name="display_reverse_permalink">NULL</column>
+        <column name="is_approved">1</column>
         <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
@@ -5165,6 +5054,7 @@ e-mail：{X-EMAIL}
         <column name="display_to_date">NULL</column>
         <column name="display_apply_subpage">1</column>
         <column name="display_reverse_permalink">NULL</column>
+        <column name="is_approved">1</column>
         <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
@@ -5188,17 +5078,18 @@ e-mail：{X-EMAIL}
         <column name="page_column_id">1</column>
         <column name="room_id">9</column>
         <column name="space_type">1</column>
-        <column name="show_count">54</column>
+        <column name="show_count">84</column>
         <column name="display_flag">1</column>
         <column name="display_from_date">NULL</column>
         <column name="display_to_date">NULL</column>
         <column name="display_apply_subpage">1</column>
         <column name="display_reverse_permalink">NULL</column>
+        <column name="is_approved">1</column>
         <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
-        <column name="modified">2013-03-12 18:42:00</column>
+        <column name="modified">2013-05-01 03:27:18</column>
         <column name="modified_user_id">1</column>
         <column name="modified_user_name">admin</column>
     </table>
@@ -5223,6 +5114,7 @@ e-mail：{X-EMAIL}
         <column name="display_to_date">NULL</column>
         <column name="display_apply_subpage">1</column>
         <column name="display_reverse_permalink">NULL</column>
+        <column name="is_approved">1</column>
         <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
@@ -5252,6 +5144,7 @@ e-mail：{X-EMAIL}
         <column name="display_to_date">NULL</column>
         <column name="display_apply_subpage">1</column>
         <column name="display_reverse_permalink">NULL</column>
+        <column name="is_approved">1</column>
         <column name="lock_authority_id">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
@@ -5599,12 +5492,138 @@ e-mail：{X-EMAIL}
         <column name="modified_user_id">0</column>
         <column name="modified_user_name"></column>
     </table>
+    <table name="page_user_links">
+        <column name="id">4</column>
+        <column name="room_id">9</column>
+        <column name="user_id">2</column>
+        <column name="authority_id">2</column>
+        <column name="created">2013-04-30 10:13:54</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-04-30 10:13:54</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="page_user_links">
+        <column name="id">5</column>
+        <column name="room_id">9</column>
+        <column name="user_id">3</column>
+        <column name="authority_id">3</column>
+        <column name="created">2013-05-01 03:32:22</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-05-01 03:32:22</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="page_user_links">
+        <column name="id">6</column>
+        <column name="room_id">9</column>
+        <column name="user_id">4</column>
+        <column name="authority_id">4</column>
+        <column name="created">2013-05-01 03:32:22</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-05-01 03:32:22</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
     <!-- テーブル passports -->
-    <table name="passports">
-        <column name="id">1</column>
-        <column name="user_id">1</column>
-        <column name="passport">fc63874482d4f6f4024aae20c2d7675f05d70cf1</column>
-        <column name="modified">2013-03-28 17:15:03</column>
+    <!-- テーブル revisions -->
+    <table name="revisions">
+        <column name="id">50</column>
+        <column name="group_id">50</column>
+        <column name="pointer">1</column>
+        <column name="revision_name">publish</column>
+        <column name="content_id">17</column>
+        <column name="content">日本数学会では、2011年４月から７月にかけて、全国約50の大学において計6千人の大学生（主として入試直後の大学１年生）を対象に、「大学生数学基本調査」を実施しました。&lt;br&gt;その調査報告書の概要と調査票、またそれに基づいた理事会からの提言を日本数学会のホームページで公開していますので、ご覧いただければ幸いです。&lt;br&gt;http://mathsoc.jp/comm/kyoiku/chousa2011/</column>
+        <column name="created">2013-05-01 03:29:55</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-05-01 03:29:55</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="revisions">
+        <column name="id">51</column>
+        <column name="group_id">51</column>
+        <column name="pointer">1</column>
+        <column name="revision_name">publish</column>
+        <column name="content_id">17</column>
+        <column name="content">これは、友人である竹山美宏さんの&lt;a target=&quot;_blank&quot; href=&quot;http://researchmap.jp/joqt0nch9-10423/#_10423&quot;&gt;ブログ記事&lt;/a&gt;に触発されて書いた記事です。竹山さんへコメントとして書こうかしら、と思ったのですが、長くなったので自分のところに書きます。&lt;br&gt;&lt;br&gt;最近、「なぜ微積分まで勉強しないといけないのですか？」と聞かれて、こんな風に答えました。&lt;br&gt;昨年の3月11日以降、私たちの世界は変わりました。&lt;br&gt;それまで私たちはうすぼんやりと、こんな風に考えていたんじゃないでしょうか。&lt;br&gt;「高邁な精神の科学者」なるものが世の中に存在して、専門性に応じて、正しい科学的判断をしてくれるはず。&lt;br&gt;ただし、科学者の意見は時にバランスにかけるので、「それをコントロールする能力がある官僚」なるものがいるはず。&lt;br&gt;さらに法律を通す場合には、専門家による委員会の公平かつ科学的意見を参考に市民の代表である国会議員が十分に検討してくれるはず。&lt;br&gt;それでも不公平だと感じたときには、裁判所に駆け込めば、どんなことに関しても法と論理に基づいて、公平かつ科学的にきちんと判断してくれるはず。&lt;br&gt;でも、そんなことはありませんでした。&lt;br&gt;薄々わかってましたけど。&lt;br&gt;それなのに、みんな自分の人生に忙しくて、「誰かちゃんとした人が考えてくれるはず」と思って任せてきたんですね。&lt;br&gt;&lt;br&gt;でも、この事実が白日の下に晒されて、本当に困りました。あなただって、そうでしょう？&lt;br&gt;&lt;br&gt;だっ
+て、近代の民主主義国家とは、国民が最終判断ができる、国民が付託した国会議員が合理的な判断ができる、あるいは、裁判官が公平で合理的な判断ができる、
+という前提の下ですっかり構築されちゃっているんですから。その出発点となる前提そのものが間違っていたら、今のこの社会、どうすりゃいいの。民主主義に
+代わるよさそうなものなんて、今のところ見つかりそうに、ないし。&lt;br&gt;&lt;br&gt;科学の発達は、つまり良き時代の民主主義の基盤を揺るがしているんだろうと思います。&lt;br&gt;&lt;br&gt;しかも、悪いことに、社会を取り巻くテクノロジーはますます高度化しているわけで。&lt;br&gt;ということは、私たちが「民主主義」を維持しようと思うのならば、「必要があれば」それらに関して、検討し、反対したり賛成したりしなければならない、ということになります。たぶん、ロックはそのように想定していたと思う。&lt;br&gt;だとすれば、理論上、やっぱり微積分は、市民のリテラシーとして不可欠なんだろうなぁ、とそう思うのです。&lt;br&gt;大変ですけど、がんばって微分方程式の最初くらいまでは、勉強しましょうよ、市民として。&lt;br&gt;私も微積分は苦手ですけど（苦笑）、いっしょに勉強したいと思います。&lt;br&gt;&lt;br&gt;そうお返事しました。</column>
+        <column name="created">2013-05-01 03:30:16</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-05-01 03:30:16</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="revisions">
+        <column name="id">52</column>
+        <column name="group_id">52</column>
+        <column name="pointer">1</column>
+        <column name="revision_name">publish</column>
+        <column name="content_id">18</column>
+        <column name="content">&lt;img alt=&quot;NetCommons&quot; title=&quot;NetCommons&quot; src=&quot;/dev/kohama/nc3/img/install/logo.gif&quot;&gt;</column>
+        <column name="created">2013-05-01 04:10:22</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-05-01 04:10:22</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="revisions">
+        <column name="id">49</column>
+        <column name="group_id">49</column>
+        <column name="pointer">1</column>
+        <column name="revision_name">publish</column>
+        <column name="content_id">17</column>
+        <column name="content">瀬名秀明さんの「エヴリブレス」が徳間文庫から刊行されることになり、どういうわけかSF初心者の私が「解説」を依頼されました。「エヴリブレス」のご紹介もかねて、ここに全文を掲載します。&lt;br&gt;&lt;br&gt;&lt;strong&gt;「科学と文学が記述できること・できないこと」&lt;/strong&gt;&lt;br&gt;&lt;br&gt;1956
+年の夏、ダートマス大学において集中的な会合を開くことが提案された。提案者は、後に人工知能の大御所となるジョン・マッカーシー、マーヴィン・ミンス
+キー、ナザニエル・ロチェスター、クロード・シャノン。彼らは、人間の知的活動とは何か、人間はどのように学ぶのか、その活動はコンピュータによってシ
+ミュレート可能か――こうした問いを科学として真っ向から探究することを呼びかけた。このダートマス会議によって、AI（Artificial 
+Intelligence, 
+人工知能）という分野が誕生し、科学者によってコンピュータと共棲する社会の具体的イメージが「当然起こる未来」として語られるようになったのである。&lt;br&gt;&lt;br&gt;しかし、人工知能という企ては、何も1956年に突如始まったわけではない。その起源は、近代科学そして近代哲学のスタートまでさかのぼることができる。&lt;br&gt;&lt;br&gt;ニ
+コラウス・コペルニクスやガリレオ・ガリレオより前の時代、世界は生物に喩えて説明がなされていた。石は元来、大地に属していた。だから、手を放すと、ま
+るで母を慕うように石は地に落ちる。一方、炎は太陽に属していた。だから、煙になると母である太陽を目指して、上へ上へと昇っていく。このような説明が、
+アリストテレスに始まり、レオナルド・ダ・ヴィンチに至るまで受け継がれた揺るぎなき世界観であった。&lt;br&gt;&lt;br&gt;ところが、ガリレオはそれとはまる
+で異なる方法で世界の理を表現した。それは、数学である。「一瞬」のうちに起こる落下という物理現象を、ガリレオが数式で表して見せたとき、「世界はいつ
+かすべて数式で表現できるのではないか」という、近代科学の原動力となるアイデアが生まれた。哲学者で政治学者であったホッブスは「法学要綱」さらに「リ
+ヴァイアサン」の中で、理性は計算可能であると述べ、「弱いAI」につながる概念を提示している。ここにおいて、ごく少数の公理と、計算可能な理性によっ
+て、人間が本来到達可能なすべての真なる命題に到達することを目指すという近代科学の方法論が明言されたのである。&lt;br&gt;&lt;br&gt;この近代科学の方法論
+をイデオロギーにまで膨らました張本人は、ルネ・デカルトであろう。彼は方法序説という80ページに満たない小冊子を発表することで、私たち人類を近代と
+いう時代へ、「数学記述主義」ともいえるイデオロギーの中へ放り込んだのである。一方、それに対して、デイヴィッド・ヒュームは論理のもっとも痛いところ
+を次の一文で突いた。「私の指を傷つけるよりも、全世界を破壊する方がましだ、という決断は理性に反するものではない」と。論理的整合性は、皆が同じ結論
+にたどり着くための十分条件にはなり得ない。&lt;br&gt;&lt;br&gt;だが、それは哲学における対立にしか過ぎない、と多くの「科学者」は考えた。なにしろ、「科
+学的である」とは「数学で記述できる」と「実験で確認できる」の二つとほぼ同義語として用いられており、実践者や思想家が科学者に「格上げ」されるには数
+学記述主義を受け入れるより他なかったからである。&lt;br&gt;&lt;br&gt;さて、デカルトから始めるイデオロギーを忠実に、しかも無意識に受け継いだ人が、アラ
+ン・チューリングである。彼は23歳のとき、現代のコンピュータの原理となるチューリング機械というアイデアを発表した。それはまさに、「（合理的に）わ
+かるとは、何か」に関する計算モデルであった。チューリングのアイデアに基づいて作られた現代のコンピュータとは、その意味で、「数学で世界の理は表現で
+きる」という近代科学のイデオロギーを、忠実に、また極端な形で具現化しようと試みた人工物だといえよう。&lt;br&gt;となれば、「人工知能は可能か」という問いは、デカルトやホッブスの末裔である近代合理主義と、ヒュームの末裔である経験主義のどちらが「真の世界」に近いのかを三百年の時空を超えて問うテーマだともいえる。&lt;br&gt;&lt;br&gt;&lt;br&gt;瀬
+名秀明がBrain 
+Valley以降、一貫してテーマとしてきたのも、まさにそのことだろう。コンピュータの脳であり母語である数学という言語は強靭さと柔軟さを兼ね備え、
+しかも必要に応じて成長していく。しかし、意外なところに脆さを抱えてもいる。数学が持つこれらの特性は、私たちの未来を、人工知能と共棲する私たちの未
+来を、どのように形づくるのか。彼は、その具体的なイメージを現在生み出されつつある技術から見定めたいと考えているのだろう。「エヴリブレス」でも近作
+「希望」でも、声や視野あるいは腕など、身体機能の一部を失い、それを技術によって補う人々が繰り返し登場する。これも、彼が考える「人の機能は機械に
+よって置き換えることが可能か」という問いの立て方の現れではないだろうか。&lt;br&gt;&lt;br&gt;「コンピュータは自らの意思を持たない」あるいは「コン
+ピュータには真のクリエイティビティはない」と切って捨てて、安全な場所からコンピュータと人間の境界を描くのは易い。あるいは、逆に、「コンピュータは
+人間と同じく意思と感情を持ちうる」として、それを描くのも易い。瀬名秀明が探り当てようとし、ときに信じ、ときに迷い、それでも描こうとし続けるのは、
+デカルトやヒュームそして、今、多くの科学者や哲学者が格闘している、「科学が記述できること・できないこと」の境界イメージである。&lt;br&gt;&lt;br&gt;「デ
+カルトの密室」までは、「なぜ私はそこに境界線があると思うのか」をエビデンス・ベースで硬質に描く傾向があったが、「エヴリブレス」や「希望」ではその
+緊張感がすっと消えてなくなっているように感じる。自らがこのテーマに対して持つパースペクティブに関して、作者が自信を深めている証しなのではないだろ
+うか。&lt;br&gt;&lt;br&gt;&lt;br&gt;さて、ここから先はやや雑談である。&lt;br&gt;友人である「セナさん」とお酒を飲むと、いつも彼の小説のヒロインの話にな
+る。私が「ねぇ、こんなに美人で聡明できれいな心を持っている女性が、10年も20年も音信不通になった主人公を愛して待ち続けるなんて、あり得ないわ
+よ。だって、他の人が放っておかないもの」と言うと、セナさんはやや不服そうな顔をする。「それに、名前がいつも杏子とか真理子とか栞なのね。騒々しくて
+男にだらしがない明美というヒロインの話も読んでみたい」というと、今度は困った顔をする。&lt;br&gt;彼はクールなリアリストである一方、根っからのロマンチストなのである。</column>
+        <column name="created">2013-05-01 03:28:55</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-05-01 03:28:55</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
     </table>
     <!-- テーブル sessions -->
     <!-- テーブル tags -->
@@ -5614,7 +5633,7 @@ e-mail：{X-EMAIL}
     <table name="users">
         <column name="id">1</column>
         <column name="login_id">admin</column>
-        <column name="password">dc1d97520536d2d0b81cd8f813ccd777f3784cac</column>
+        <column name="password">48e84e24852e99e9dc6cbc7221e227679ac381ff</column>
         <column name="handle">admin</column>
         <column name="username">adminさん</column>
         <column name="authority_id">1</column>
@@ -5629,22 +5648,22 @@ e-mail：{X-EMAIL}
         <column name="email"></column>
         <column name="mobile_email"></column>
         <column name="password_regist">NULL</column>
-        <column name="last_login">2013-03-28 08:15:03</column>
-        <column name="previous_login">2013-03-27 11:28:34</column>
+        <column name="last_login">2013-05-01 04:09:49</column>
+        <column name="previous_login">2013-04-30 10:24:18</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
-        <column name="modified">2013-03-28 17:15:03</column>
+        <column name="modified">2013-05-01 04:09:49</column>
         <column name="modified_user_id">0</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="users">
         <column name="id">2</column>
-        <column name="login_id">user001</column>
-        <column name="password">dc1d97520536d2d0b81cd8f813ccd777f3784cac</column>
-        <column name="handle">user001</column>
-        <column name="username">user001さん</column>
-        <column name="authority_id">4</column>
+        <column name="login_id">chief001</column>
+        <column name="password">48e84e24852e99e9dc6cbc7221e227679ac381ff</column>
+        <column name="handle">chief001</column>
+        <column name="username">chief001さん</column>
+        <column name="authority_id">2</column>
         <column name="is_active">1</column>
         <column name="permalink">user001</column>
         <column name="myportal_page_id">0</column>
@@ -5656,22 +5675,22 @@ e-mail：{X-EMAIL}
         <column name="email"></column>
         <column name="mobile_email"></column>
         <column name="password_regist">NULL</column>
-        <column name="last_login">2013-02-20 07:49:33</column>
-        <column name="previous_login">2013-02-20 07:33:22</column>
+        <column name="last_login">2013-04-30 10:23:53</column>
+        <column name="previous_login">2013-04-30 10:15:12</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
-        <column name="modified">2013-02-20 16:49:33</column>
+        <column name="modified">2013-04-30 10:23:53</column>
         <column name="modified_user_id">0</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="users">
         <column name="id">3</column>
-        <column name="login_id">user002</column>
-        <column name="password">dc1d97520536d2d0b81cd8f813ccd777f3784cac</column>
-        <column name="handle">user002</column>
-        <column name="username">user002さん</column>
-        <column name="authority_id">4</column>
+        <column name="login_id">moderator002</column>
+        <column name="password">48e84e24852e99e9dc6cbc7221e227679ac381ff</column>
+        <column name="handle">moderator002</column>
+        <column name="username">moderator002さん</column>
+        <column name="authority_id">3</column>
         <column name="is_active">1</column>
         <column name="permalink">user002</column>
         <column name="myportal_page_id">0</column>

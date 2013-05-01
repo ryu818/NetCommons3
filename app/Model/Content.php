@@ -88,7 +88,7 @@ class Content extends AppModel
 					'message' => __('It contains an invalid string.')
 				)
 			),
-			'approved_flag' => array(
+			'is_approved' => array(
 				'boolean'  => array(
 					'rule' => array('boolean'),
 					'last' => true,

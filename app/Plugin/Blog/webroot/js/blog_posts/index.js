@@ -2,20 +2,22 @@
  * ブログ記事投稿・編集 js
  *
  * @copyright     Copyright 2012, NetCommons Project
- * @package       Plugin.Announcement.webroot.js
+ * @package       Plugin.Blog.webroot.js
  * @author        Noriko Arai,Ryuji Masukawa
  * @since         v 3.0.0.0
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 ;(function($) {
 	$.fn.BlogPosts = function(id, is_error) {
-		var wysiwyg = $('#HtmlareaContent'+id).nc_wysiwyg({
+		var wysiwyg = $('#RevisionContent'+id).nc_wysiwyg({
 			autoRegistForm : $('#Form' + id)
 		});
 		var date = $('#BlogPostPostDate' + id);
 		var area_outer = $('#blog-post-widget-area' + id);
-		var items = $('.blog-style-widget-area-title', area_outer).disableSelection();
+		var items = $('.nc-widget-area-title', area_outer).disableSelection();
 		var sel_tags = $('#blog-posts-tags-select' + id);
+		var pre_change_flag = $('#BlogPostPreChangeFlag' + id);
+		var pre_date = $('#BlogPostPreChangeDate' + id);
 
 		$('#Form' + id).submit(function(e){
 			$.BlogPosts.addTags(e, id);
@@ -26,9 +28,18 @@
 			$('#BlogPostTitle' + id).select();
 		}
 
+		pre_change_flag.click(function(){
+			if(pre_change_flag.is(':checked')) {
+				pre_date.parent().slideDown();
+			} else {
+				pre_date.parent().slideUp();
+			}
+		});
+		pre_date.datetimepicker();
+
 		// 編集画面表示・非表示
 		items.click(function(e){
-			$(this).parents('.blog-style-widget-area:first').children('.blog-style-widget-area-content:first').slideToggle();
+			$(this).parents('.nc-widget-area:first').children('.nc-widget-area-content:first').slideToggle();
 			$.Event(e).preventDefault();
 		});
 

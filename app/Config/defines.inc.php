@@ -106,6 +106,12 @@ define('NC_PARTICIPATE_FLAG_INVITE', 1);			// 招待制（コミュニティー�
 define('NC_PARTICIPATE_FLAG_ACCEPT', 2);			// 承認制（主担の承認が必要）
 define('NC_PARTICIPATE_FLAG_FREE', 3);				// 参加受付制(希望者は誰でも参加可能）
 
+//-----------------is_approved-------------------------------------------
+
+define('NC_APPROVED_FLAG_OFF', 0);					// 承認待ち
+define('NC_APPROVED_FLAG_ON', 1);					// 承認済
+define('NC_APPROVED_FLAG_PRE_CHANGE', 2);			// 変更前コンテンツの表示(モジュール内投稿にのみ使用)
+
 //-----------------space_type-------------------------------------------
 
 define('NC_SPACE_TYPE_PUBLIC', 1);
@@ -250,8 +256,9 @@ define("NC_THEME_INIFILE",             "theme.ini");
 
 //-----------------JS,CSSファイル関連-------------------------------------------
 define("NC_ASSET_PREFIX", 'application-');
-define("NC_ASSET_GC_PROBABILITY", 100);	// JS、CSSファイルガーベージコレクション発生確率(Page表示時：100回に一度)
+define("NC_ASSET_GC_PROBABILITY", 100);		// JS、CSSファイルガーベージコレクション発生確率(Page表示時：100回に一度)
 define("NC_ASSET_GC_LIFETIME", 604800);		// JS、CSSファイル保持期間（デフォルト1週間）
-//-----------------Htmlarea 履歴-------------------------------------------
-define("NC_REVISION_RETENTION_NUMBER", 20);		// 履歴の保存最大個数を超えた場合、古いものから削除
-define("NC_REVISION_SHOW_LIMIT", 5);			// WYSIWYG編集画面のリビジョンの表示件数
+//-----------------Revision 履歴(リビジョン)-------------------------------------------
+define("NC_REVISION_RETENTION_NUMBER", 20);					// 履歴の保存最大個数を超えた場合、古いものから削除
+define("NC_REVISION_SHOW_LIMIT", 5);						// WYSIWYG編集画面のリビジョンの表示件数
+//define("NC_REVISION_AUTO_DRAFT_GC_LIFETIME", 2592000);		// 自動保存のデータ保持期間（デフォルト：30日）

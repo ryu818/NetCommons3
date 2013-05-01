@@ -21,7 +21,7 @@
 class Asset extends AppModel
 {
 	public $name = 'Asset';
-	public $actsAs = array('File');
+	public $actsAs = array('TimeZone', 'File');
 /**
  * URLからJs、Cssファイルのデータを読み込み
  *
@@ -79,7 +79,8 @@ class Asset extends AppModel
 			if($is_all) {
 				$this->getDataSource()->truncate($this->table);
 			} else {
-				// TODO:今後、modifiedの保存をグリニッジにした場合、動作しなくなる。
+				// TODO:未テスト
+				$rmTime = strtotime($this->nowDate("Y-m-d H:i:s")) - NC_ASSET_GC_LIFETIME;
 				$conditions = array(
 					"Asset.modified <" => date("Y-m-d H:i:s", $rmTime)
 				);

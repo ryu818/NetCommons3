@@ -219,6 +219,9 @@ fieldset.form input[type="text"], fieldset.form input[type="password"], fieldset
         (startColorstr=#fff4f4f4,endColorstr=#ffffffff);
     zoom: 1;
 }
+input.normal-text {
+	padding: 2px;
+}
 fieldset.form input:focus[type="text"], fieldset.form input:focus[type="password"], fieldset.form textarea:focus,input.text:focus,.dropdown:focus {
 	border: 1px solid #56b4ef;
 	box-shadow: 0 13px 13px rgba(82,168, 236,0.03) inset,0 0 8px 0 rgba(82,168, 236, 0.6);
@@ -226,6 +229,10 @@ fieldset.form input:focus[type="text"], fieldset.form input:focus[type="password
 	/* IE */
     filter:progid:DXImageTransform.Microsoft.gradient
         (startColorstr=#fff0f9ff,endColorstr=#ffffffff);
+}
+
+.small {
+	font-size:90%;
 }
 
 /* jquery plugin */

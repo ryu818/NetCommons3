@@ -15,7 +15,15 @@ class BlogPost extends AppModel
 	public $actsAs = array('TimeZone', 'Validation', 'Common');
 
 	public $belongsTo = array(
-		'Htmlarea'     => array('type' => 'INNER'),
+		'Revision'      => array(
+			'foreignKey'    => '',
+			'type' => 'INNER',
+			'fields' => array('Revision.group_id', 'Revision.content'),
+			'conditions' => array(
+				'BlogPost.revision_group_id = Revision.group_id',
+				'Revision.pointer' => _ON
+			),
+		),
 		'Content'      => array(
 			'type' => 'INNER',
 			'fields' => array('Content.title')
@@ -112,13 +120,12 @@ class BlogPost extends AppModel
 			'icon_name' => array(
 				// TODO:未作成 共通のバリデータに通すこと
 			),
-			'htmlarea_id' => array(
+			'revision_group_id' => array(
 				'numeric' => array(
 					'rule' => array('numeric'),
-					'required' => true,
 					'allowEmpty' => false,
 					'message' => __('The input must be a number.')
-				),
+				)
 			),
 			//'vote',
 			'status' => array(
@@ -128,22 +135,44 @@ class BlogPost extends AppModel
 					'required' => true,
 					'message' => __('The input must be a boolean.')
 				),
-				/*'inList' => array(
+			),
+			'is_approved' => array(
+				'numeric' => array(
+					'rule' => array('numeric'),
+					'required' => true,
+					'allowEmpty' => false,
+					'message' => __('The input must be a number.')
+				),
+				'inList' => array(
 					'rule' => array('inList', array(
-						NC_STATUS_PUBLISH,
-						NC_STATUS_TEMPORARY,
+						NC_APPROVED_FLAG_OFF,
+						NC_APPROVED_FLAG_ON,
+						NC_APPROVED_FLAG_PRE_CHANGE,
 					), false),
 					'allowEmpty' => false,
 					'message' => __('It contains an invalid string.')
-				)*/
+				),
 			),
-			// TODO:未使用の可能性あり
-			'approved_flag' => array(
+			'pre_change_flag' => array(
 				'boolean'  => array(
 					'rule' => array('boolean'),
 					'last' => true,
 					'required' => true,
 					'message' => __('The input must be a boolean.')
+				)
+			),
+			'pre_change_date' => array(
+				'datetime'  => array(
+					'rule' => array('datetime'),
+					'last' => true,
+					'allowEmpty' => true,
+					'message' => __('Unauthorized pattern for %s.', __('Date-time'))
+				),
+				'isFutureDateTime'  => array(
+					'rule' => array('isFutureDateTime'),
+					'last' => true,
+					'allowEmpty' => true,
+					'message' => __('%s in the past can not be input.', __('Date-time'))
 				),
 			),
 			'post_password' => array(
@@ -215,6 +244,9 @@ class BlogPost extends AppModel
 		if (!empty($this->data[$this->alias]['post_date']) ) {
 			$this->data[$this->alias]['post_date'] = $this->date($this->data[$this->alias]['post_date']);
 		}
+		if (!empty($this->data[$this->alias]['pre_change_date']) ) {
+			$this->data[$this->alias]['pre_change_date'] = $this->date($this->data[$this->alias]['pre_change_date']);
+		}
 		return true;
 	}
 
@@ -234,23 +266,21 @@ class BlogPost extends AppModel
 				'title' => '',
 				'permalink' => '',
 				'icon_name' => null,
-				'htmlarea_id' => 0,
+				'revision_group_id' => 0,
 				'vote' => null,
 				'status' => NC_STATUS_PUBLISH,
-				'approved_flag' => _ON,
+				'is_approved' => NC_DISPLAY_FLAG_ON,
+				'pre_change_flag' => _OFF,
+				'pre_change_date' => null,
 				'post_password' => '',
 				'trackback_link' => '',
 				'comment_count' => 0,
 				'trackback_count' => 0,
 				'vote_count' => 0,
 			),
-			'Htmlarea' => array(
-				//'id' => 0,
-				//'content_id' => $content_id,
-				//'revision_parent' => 0,
-				//'revision_name' => 'publish',
+			'Revision' => array(
 				'content' => '',
-				//'non_approved_content' => '',
+				'revision_name' => 'publish',
 			)
 		);
 
@@ -285,7 +315,7 @@ class BlogPost extends AppModel
 				array(
 					'BlogPost.status' => NC_STATUS_PUBLISH,
 					'BlogPost.post_date <=' => $this->nowDate(),
-					// TODO:approved_flag 未使用になるかも
+					'BlogPost.is_approved' => array(NC_APPROVED_FLAG_ON, NC_APPROVED_FLAG_PRE_CHANGE)
 				),
 
 				'Authority.hierarchy '.$separator => $hierarchy,

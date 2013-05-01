@@ -65,19 +65,22 @@ class TimeZoneBehavior extends ModelBehavior {
     }
 
 /**
- * 過去の日付かどうかチェック
+ * 未来の日付かどうかチェック(過去の日付は入力不可)
  *
  * @param   Model   $Model
  * @param   array    $data
+ * @param   boolean  $gm グリニッジに変換して比較するかどうか default:true
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	public function pastDateTime(Model $Model, $data) {
+	public function isFutureDateTime(Model $Model, $data, $gm = true) {
 		$values = array_values($data);
-    	$date_time = $values[0];
-    	$date_time = $this->date($Model, $date_time, NC_VALIDATOR_DATE_TIME);
-    	if(strtotime($date_time) <= strtotime(gmdate(NC_VALIDATOR_DATE_TIME))) {
-    		return false;
+		$date_time = $values[0];
+		if($gm) {
+	    	$date_time = $this->date($Model, $date_time, NC_VALIDATOR_DATE_TIME);
+		}
+		if(strtotime($date_time) <= strtotime(gmdate(NC_VALIDATOR_DATE_TIME))) {
+			return false;
 		}
 		return true;
 	}

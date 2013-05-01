@@ -55,7 +55,7 @@
 					</a>
 				<?php endif; ?>
 				<h4><?php echo($title); ?></h4>
-				<a class="blog-style-arrow"><span class="nc-arrow"></span></a>
+				<a class="nc-widget-area-title-arrow"><span class="nc-arrow"></span></a>
 			</div>
 			<?php if($content != ''): ?>
 			<div class="blog-style-widget-area-content" style="display:none;">

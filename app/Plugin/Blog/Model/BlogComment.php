@@ -93,23 +93,7 @@ class BlogComment extends AppModel
 					'message' => __('The input must be up to %s characters.', 100)
 				),
 			),
-			'status' => array(
-				'numeric' => array(
-					'rule' => array('numeric'),
-					'required' => true,
-					'allowEmpty' => false,
-					'message' => __('The input must be a number.')
-				),
-				'inList' => array(
-					'rule' => array('inList', array(
-						NC_STATUS_PUBLISH,
-						NC_STATUS_TEMPORARY,
-					), false),
-					'allowEmpty' => false,
-					'message' => __('It contains an invalid string.')
-				),
-			),
-			'approved_flag' => array(
+			'is_approved' => array(
 				'boolean'  => array(
 					'rule' => array('boolean'),
 					'last' => true,

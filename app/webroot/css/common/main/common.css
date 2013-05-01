@@ -202,8 +202,8 @@ div.message {
 }
 /* クリック不可リンクラベル色 */
 .nonpublic {
-	opacity:.5;
-	filter:Alpha(Opacity=50);
+	opacity:.6;
+	filter:Alpha(Opacity=60);
 }
 .to-nonpublic {
 	border: 1px dashed #fe8d9e;
@@ -218,6 +218,9 @@ textarea.nc-wysiwyg {
 
 .outer {
 	padding:0.7em;
+}
+.indent {
+	margin-left:0.8em;
 }
 
 /* アイコン画像 */
@@ -396,7 +399,7 @@ ul.nc-paginator li.current,ul.nc-paginator a:hover  {
   display: inline-block;
 }
 
-/* 編集画面リスト */
+/* リスト表示 */
 ul.lists {
 	margin:0;
 	padding:0;
@@ -432,6 +435,84 @@ ul.lists li dl dd {
     /*width : 200px;*/
 }
 
+/* 編集画面リスト */
+ul.nc-edits-lists li {
+	width: 650px;
+}
+ul.nc-edits-lists li dl dt {
+	width:220px;
+	padding:5px;
+}
+
+ul.nc-edits-lists li dl dd {
+	width:410px;
+	padding:5px;
+}
+
+ul.nc-edits-lists li dl dd input[type=radio], ul.nc-edits-lists li dl dd input[type=checkbox] {
+	margin: 0 3px 0 10px
+}
+ul.nc-edits-lists li dl dd .textarea label {
+	vertical-align: top;
+}
+ul.nc-edits-lists li dl dd textarea {
+	width:307px;
+	height:100px;
+}
+ul.nc-edits-lists li dl dd .hr {
+	padding: 5px 0 0 20px;
+}
+ul.nc-edits-lists li dl dd .hr .authority-slider {
+	margin: 10px 0 40px 20px;
+}
+
+ul.nc-edits-lists li dl dd .hr input[type=text] {
+	margin-bottom: 5px;
+}
+
+
+/* Wysiwyg右部 */
+.nc-widget-area-outer {
+	padding: 0 0.7em;
+	vertical-align:top;
+}
+.nc-widget-area {
+	vertical-align:top;
+	margin-bottom:10px;
+	width: 240px;
+}
+.nc-widget-area-content {
+	border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
+    border-style: none solid solid;
+    border-width: 0 1px 1px;
+
+    padding: 10px;
+
+    background-color: #fcfcfc;
+    border-color: #dfdfdf;
+}
+.nc-widget-area-title {
+	cursor: pointer;
+    padding: 4px 0 4px 10px;
+    border-color: #dedede;
+    border-style: solid;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-width: 1px;
+}
+.nc-widget-area-title h4 {
+    display: inline;
+    font-weight: normal;
+    margin: 0;
+    overflow: hidden;
+    white-space: nowrap;
+}
+a.nc-widget-area-title-arrow {
+	display: block;
+    width: 15px;
+    float:right;
+}
 /* パネル背景 */
 .nc-panel-color {
 	background-color: #ffffff;
@@ -512,6 +593,11 @@ ul.nc-revisions li {
 
 ul.nc-revisions a {
 	padding: 0 10px 0 0;
+}
+
+span.nc-auto-draft {
+	color: #bb2626;
+	padding: 3px 10px;
 }
 
 /** Debugging **/

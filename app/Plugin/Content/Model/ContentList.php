@@ -28,11 +28,11 @@ class ContentList extends AppModel {
  * @param   integer $order
  * @param   integer $contentId アクティブなcontentId
  * @param   integer $moduleId
- * @param   integer $approvedFlag
+ * @param   integer $isApproved
  * @return  array (integer $total, Model Contents)
  * @since   v 3.0.0.0
  */
-	public function findContents($userId, $roomId, $page = 1, $limit= 20, $order = null, $contentId = null, $moduleId = null, $approvedFlag = null) {
+	public function findContents($userId, $roomId, $page = 1, $limit= 20, $order = null, $contentId = null, $moduleId = null, $isApproved = null) {
 		$conditions = array();
 		if(isset($moduleId) && $moduleId != 0) {
 			$conditions['Content.module_id'] = $moduleId;
@@ -40,8 +40,8 @@ class ContentList extends AppModel {
 		if(isset($roomId)) {
 			$conditions['Content.room_id'] = $roomId;
 		}
-		if(isset($approvedFlag)) {
-			$conditions['Content.approved_flag'] = $approvedFlag;
+		if(isset($isApproved)) {
+			$conditions['Content.is_approved'] = $isApproved;
 		}
 		$conditions['Content.display_flag'] = array(NC_DISPLAY_FLAG_ON, NC_DISPLAY_FLAG_OFF);
 
@@ -99,7 +99,7 @@ class ContentList extends AppModel {
 		$params = array(
 			'fields' => array(
 				'Content.id','Content.module_id','Content.title','Content.is_master','Content.master_id',
-					'Content.room_id','Content.display_flag','Content.approved_flag',
+					'Content.room_id','Content.display_flag','Content.is_approved',
 				'PagesUsersLink.authority_id',
 				'Page.id, Page.page_name, Page.thread_num, Page.space_type',
 				'Page.display_sequence',

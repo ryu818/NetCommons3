@@ -312,4 +312,35 @@ class MyFormHelper extends FormHelper {
 	public function authoritySlider($fieldName, $options = array()) {
 		return $this->_View->element('/common/authority_slider', array('fieldName' => $fieldName, 'options' => $options));
 	}
+
+/**
+ * Returns if a field is required to be filled based on validation properties from the validating object.
+ *
+ * @param CakeValidationSet $validationRules
+ * @return boolean true if field is required to be filled, false otherwise
+ * TODO:allowEmpty指定がnullの場合は、required属性は付与しないように修正。
+ * チェックボックスがONならば、その下のテキストを必須入力にする場合、required=>trueのみの指定で
+ * allowEmptyは未指定にする必要があるが、自動的にrequired属性がつき必須になってしまうため。
+ * （Viewで'required'=> falseを各々で記述する方法もあるがメインを修正）
+ * また、notEmptyバリデータを使用したものもrequired属性を付与。
+ *
+ */
+	protected function _isRequiredField($validationRules) {
+		if (empty($validationRules) || count($validationRules) === 0) {
+			return false;
+		}
+
+		$isUpdate = $this->requestType === 'put';
+		foreach ($validationRules as $rule) {
+			$rule->isUpdate($isUpdate);
+			if ($rule->skip()) {
+				continue;
+			}
+// Edit Start Ryuji.M
+			//return !$rule->allowEmpty;
+			return ($rule->rule[0] == 'notEmpty' || $rule->allowEmpty === false);
+// Edit End Ryuji.M
+		}
+		return false;
+	}
 }

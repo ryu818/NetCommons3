@@ -61,12 +61,6 @@ a.blog-style-display-flag {
 	text-decoration : none;
 }
 
-a.blog-style-arrow {
-	display: block;
-    width: 15px;
-    float:right;
-}
-
 .blog-style-widget-area-content .ui-state-highlight {
 	height: 1.5em;
 	line-height: 1.3em;

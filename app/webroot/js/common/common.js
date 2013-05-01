@@ -132,6 +132,9 @@
 				url: url,
 				data: data,
 				success: function(res, status, xhr){
+					if (!$.Common.fire('ajax:success', [res, e, status, xhr], $el, e)) {
+						return false;
+					}
 					if(is_pjax) {
 						var container = $.Common._extractContainer(res, xhr, url);
 						res = container.contents;
@@ -140,7 +143,7 @@
 						var unique_id = $.Common.uniqueId();
 						var sub_target_id = null;
 						if($.Common.pjaxCacheBackTargetId) {
-							// ２つのブロックにおける画面遷移においては、進む、戻るで、操作中のブロックORlocation先のブロックの
+							// ２つのブロックにおける画面遷移においては、進む、戻るで、操作中のブロック OR location先のブロックの
 							// どちらか一方を戻す必要があるため、１つ前のlocation先のブロックIDも渡す。
 							// こちらを渡さなければ、お知らせ(編集画面) => お知らせ(編集決定) => ブログ(編集画面) => ブログ(編集決定)
 							// 戻る×４ => 進む ×４等でおかしくなる。
@@ -150,9 +153,6 @@
 						$.Common._pjaxCachePush(unique_id, target_id, sub_target_id, $.Common.pjaxCachePointer);
 					}
 
-					if (!$.Common.fire('ajax:success', [res, e, status, xhr], $el, e)) {
-						return false
-					}
 					$.Common.ajaxSuccess(e, $el, res, params);
 
 					if(is_pjax) {

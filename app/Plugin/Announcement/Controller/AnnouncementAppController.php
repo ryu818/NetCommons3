@@ -15,5 +15,5 @@ class AnnouncementAppController extends AppPluginController {
  *
  * @var array
  */
-	public $uses = array('Htmlarea');
+	public $uses = array('Announcement.Announcement', 'Announcement.AnnouncementEdit');
 }

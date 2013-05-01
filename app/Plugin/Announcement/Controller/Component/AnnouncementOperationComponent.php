@@ -16,7 +16,10 @@
 class AnnouncementOperationComponent extends Object {
 
 	public $Content = null;
-	public $Htmlarea = null;
+	public $Revision = null;
+
+	public $Announcement = null;
+	public $AnnouncementEdit = null;
 
 /**
  * 初期処理
@@ -27,10 +30,15 @@ class AnnouncementOperationComponent extends Object {
  */
 	public function startup() {
 		App::uses('Content', 'Model');
-		App::uses('Htmlarea', 'Model');
+		App::uses('Revision', 'Model');
+		App::uses('Announcement', 'Announcement.Model');
+		App::uses('AnnouncementEdit', 'Announcement.Model');
 
 		$this->Content = new Content();
-		$this->Htmlarea = new Htmlarea();
+		$this->Revision = new Revision();
+		$this->Announcement = new Announcement();
+		$this->AnnouncementEdit = new AnnouncementEdit();
+		$this->Announcement->unbindModel( array( 'belongsTo' => array_keys( $this->Announcement->belongsTo ) ) );
 	}
 
 /**
@@ -55,8 +63,16 @@ class AnnouncementOperationComponent extends Object {
  */
 	public function delete($content) {
 		if(isset($content['Content'])) {
-			$condition = array('Htmlarea.content_id' => $content['Content']['master_id']);
-			if(!$this->Htmlarea->deleteAll($condition)) {
+			$conditions = array('Announcement.content_id' => $content['Content']['master_id']);
+			if(!$this->Announcement->deleteAll($conditions)) {
+				return false;
+			}
+			$conditions = array('AnnouncementEdit.content_id' => $content['Content']['master_id']);
+			if(!$this->AnnouncementEdit->deleteAll($conditions)) {
+				return false;
+			}
+			$conditions = array('Revision.content_id' => $content['Content']['master_id']);
+			if(!$this->Revision->deleteAll($conditions)) {
 				return false;
 			}
 		}
@@ -93,12 +109,38 @@ class AnnouncementOperationComponent extends Object {
  * @since   v 3.0.0.0
  */
 	public function paste($from_block, $to_block, $from_content, $to_content, $from_page, $to_page) {
-		$htmlarea = $this->Htmlarea->findByContentId($from_content['Content']['id']);
-		if(isset($htmlarea['Htmlarea'])) {
-			unset($htmlarea['Htmlarea']['id']);
-			$htmlarea['Htmlarea']['content_id'] = $to_content['Content']['id'];
-			if(!$this->Htmlarea->save($htmlarea, false)) {
-				return false;
+		$tables = array('Revision', 'Announcement', 'AnnouncementEdit');
+		$newGroupIdArr = array();
+		$groupId = $newGroupId = 0;
+		foreach($tables as $table) {
+			$condition = array($table.'.content_id' => $from_content['Content']['master_id']);
+			$datas = $this->{$table}->find('all', array('conditions' => $condition));
+
+			foreach($datas as $data) {
+
+				if($table == 'Revision') {
+					if($groupId != $data['Revision']['group_id']) {
+						$groupId = $data['Revision']['group_id'];
+						$data['Revision']['group_id'] = 0;
+					} else {
+						$data['Revision']['group_id'] = $newGroupId;
+					}
+				} else if($table == 'Announcement') {
+					$data['Announcement']['revision_group_id'] = $newGroupIdArr[$data['Announcement']['revision_group_id']];
+				}
+
+
+				unset($data[$table]['id']);
+				$data[$table]['content_id'] = $to_content['Content']['id'];
+				$this->{$table}->create();
+				if(!$this->{$table}->save($data)) {
+					return false;
+				}
+
+				if($table == 'Revision' && $data['Revision']['group_id'] == 0) {
+					$newGroupId = $this->{$table}->id;
+					$newGroupIdArr[$groupId] = $newGroupId;
+				}
 			}
 		}
 		return true;

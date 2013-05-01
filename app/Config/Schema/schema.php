@@ -21,6 +21,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $authorities = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'authority_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 64, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
@@ -54,6 +55,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $blocks = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'page_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'key' => 'index'),
@@ -91,6 +93,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $communities = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'room_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'key' => 'index'),
@@ -115,6 +118,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $community_langs = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'room_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'key' => 'index'),
@@ -134,6 +138,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $community_tags = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'room_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'key' => 'index'),
@@ -152,6 +157,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $config_langs = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'config_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'key' => 'index'),
@@ -169,6 +175,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $configs = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'module_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'key' => 'index'),
@@ -197,6 +204,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $contents = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'module_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
@@ -205,7 +213,7 @@ class AppSchema extends CakeSchema {
 		'master_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'room_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'display_flag' => array('type' => 'integer', 'null' => false, 'default' => '1', 'length' => 2),
-		'approved_flag' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
+		'is_approved' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
 		'url' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'created_user_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
@@ -218,6 +226,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $htmlarea_video_urls = array(
 		'url' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'indexes' => array(
@@ -225,24 +234,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
-	public $htmlareas = array(
-		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
-		'revision_parent' => array('type' => 'integer', 'null' => false, 'default' => '0'),
-		'revision_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 100, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'content_id' => array('type' => 'integer', 'null' => false, 'default' => null),
-		'content' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'non_approved_content' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
-		'created_user_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
-		'created_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'modified' => array('type' => 'datetime', 'null' => true, 'default' => null),
-		'modified_user_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
-		'modified_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'indexes' => array(
-			'PRIMARY' => array('column' => 'id', 'unique' => 1)
-		),
-		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
-	);
+
 	public $item_authority_links = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'item_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'key' => 'index'),
@@ -262,6 +254,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $items = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'item_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 100, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
@@ -294,6 +287,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $languages = array(
 		'language' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 8, 'key' => 'primary', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'display_name' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
@@ -305,6 +299,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $module_links = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'space_type' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3),
@@ -323,6 +318,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $module_system_links = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'authority_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
@@ -339,6 +335,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $modules = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'dir_name' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
@@ -363,6 +360,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $page_columns = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'page_column_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'index'),
@@ -386,6 +384,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $page_metas = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'page_inf_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'index'),
@@ -408,6 +407,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $page_styles = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'style_page_id' => array('type' => 'integer', 'null' => false, 'default' => null),
@@ -428,6 +428,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $page_sum_views = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'user_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
@@ -444,6 +445,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $page_themes = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'page_style_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'index'),
@@ -477,6 +479,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $page_user_links = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'room_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'key' => 'index'),
@@ -494,6 +497,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $pages = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'root_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
@@ -515,7 +519,7 @@ class AppSchema extends CakeSchema {
 		'display_to_date' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'display_apply_subpage' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
 		'display_reverse_permalink' => array('type' => 'string', 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'approved_flag' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
+		'is_approved' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
 		'lock_authority_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'created_user_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
@@ -528,6 +532,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $passports = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'user_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
@@ -538,6 +543,27 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
+	public $revisions = array(
+		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
+		'group_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'key' => 'index'),
+		'pointer' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
+		'revision_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 100, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'content_id' => array('type' => 'integer', 'null' => false, 'default' => null),
+		'content' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
+		'created_user_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'created_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'modified' => array('type' => 'datetime', 'null' => true, 'default' => null),
+		'modified_user_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'modified_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'indexes' => array(
+			'PRIMARY' => array('column' => 'id', 'unique' => 1),
+			'group_id' => array('column' => array('group_id', 'pointer'), 'unique' => 0)
+		),
+		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
+	);
+
 	public $sessions = array(
 		'id' => array('type' => 'string', 'null' => false, 'default' => null, 'key' => 'primary', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'data' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
@@ -547,6 +573,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $tags = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'tag_value' => array('type' => 'string', 'null' => false, 'default' => null, 'key' => 'index', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
@@ -565,6 +592,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $temp_datas = array(
 		'id' => array('type' => 'string', 'null' => false, 'default' => null, 'key' => 'primary', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'data' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
@@ -574,6 +602,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $uploads = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'content_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
@@ -600,6 +629,7 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $user_item_links = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'user_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
@@ -612,11 +642,12 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $users = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'login_id' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'password' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'handle' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'handle' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 100, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'username' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 100, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'authority_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'is_active' => array('type' => 'integer', 'null' => false, 'default' => '1', 'length' => 3),
@@ -643,4 +674,5 @@ class AppSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 }

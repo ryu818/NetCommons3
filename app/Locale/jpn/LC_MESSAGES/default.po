@@ -67,11 +67,15 @@ msgid	"[{X-SITE_NAME}] [{X-CONTENT_NAME}] Post Approval completion notice"
 msgstr	"[{X-SITE_NAME}] [{X-CONTENT_NAME}] 投稿承認完了通知"
 msgid	"Your article posted to [{X-SITE_NAME}] [{X-CONTENT_NAME}] was approved.\n\nClick the link below to check the article.\n{X-URL}"
 msgstr	"[{X-SITE_NAME}] [{X-CONTENT_NAME}] における投稿の承認が完了しました。\n\n内容を確認するには下記のリンクをクリックして下さい。\n{X-URL}"
-
+msgid	"If not approved, You display the contents of the change before."
+msgstr	"未承認の場合、変更前のコンテンツを表示する。"
+msgid	"You display the contents of the change before."
+msgstr	"変更前のコンテンツを表示する。"
+msgid	"Published to %s automatically."
+msgstr	"自動的に%sに公開する。"
 
 msgid	"Authority to post root articles"
 msgstr	"記事投稿権限"
-
 
 msgid	"Date Created"
 msgstr	"作成日"
@@ -93,6 +97,9 @@ msgid  	"Operation"
 msgstr 	"操作"
 msgid  	"Reference"
 msgstr 	"参照"
+
+msgid  	"Editing..."
+msgstr 	"編集中..."
 
 msgid  	"Hide header"
 msgstr 	"ヘッダー非表示"

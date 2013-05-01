@@ -19,109 +19,104 @@ class BlogPostsController extends BlogAppController {
  *
  * @var array
  */
-	public $components = array('Revision', 'CheckAuth' => array('allowAuth' => NC_AUTH_GENERAL));
+	public $components = array('RevisionList', 'CheckAuth' => array('allowAuth' => NC_AUTH_GENERAL));
 
 /**
  * Model name
  *
  * @var array
  */
-	public $uses = array('Blog.BlogTermLink', 'Htmlarea');
+	public $uses = array('Blog.BlogTermLink', 'Revision');
 
 /**
  * ブログ記事投稿表示・登録
- * @param   integer $post_id
+ * @param   integer $postId
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function index($post_id = null) {
+	public function index($postId = null) {
 		// TODO:権限チェックが未作成
 		// TODO:承認機能未実装
-		// 		未承認の場合、最初の投稿では一時保存へ。その後、現在のstatusを引き継ぐ。
 		// TODO:email送信未実装
 
-		// 自動登録
-		$isAutoRegist = false;
-		if(isset($this->request->data['auto_regist']) && $this->request->data['auto_regist']) {
-			$isAutoRegist = true;
-		}
-		if(!isset($post_id) && isset($this->request->data['autoregist_post_id']) && $this->request->data['autoregist_post_id']) {
-			// 新規投稿で自動登録の2回目以降は$post_idがセットされないためセット
-			$post_id = $this->request->data['autoregist_post_id'];
-		}
+		// 自動保存前処理
+		$autoRegistParams = $this->RevisionList->beforeAutoRegist($postId);
+		$postId = $autoRegistParams['id'];
+		$isAutoRegist = $autoRegistParams['isAutoRegist'];
+		$status = $autoRegistParams['status'];
+		$revisionName = $autoRegistParams['revision_name'];
 
 		$blog = $this->Blog->find('first', array('conditions' => array('content_id' => $this->content_id)));
 		if(!isset($blog['Blog'])) {
-			$this->flash(__('Content not found.'), null, 'BlogPost.index.001', '404');
+			$this->flash(__('Content not found.'), null, 'BlogPosts.index.001', '404');
 			return;
 		}
 
-		if(isset($post_id)) {
+		if(isset($postId)) {
 			// 編集
-			$blog_post = $this->BlogPost->findById($post_id);
-			if(!isset($blog_post['BlogPost'])) {
-				$this->flash(__('Content not found.'), null, 'BlogPost.index.002', '404');
+			$blogPost = $this->BlogPost->findById($postId);
+			if(!isset($blogPost['BlogPost'])) {
+				$this->flash(__('Content not found.'), null, 'BlogPosts.index.002', '404');
 				return;
 			}
-			if($blog_post['BlogPost']['is_future'] == _ON || $blog_post['BlogPost']['status'] == NC_STATUS_TEMPORARY) {
-				$is_before_update_term_count = false;
+			if($blogPost['BlogPost']['is_future'] == _ON || $blogPost['BlogPost']['status'] == NC_STATUS_TEMPORARY) {
+				$isBeforeUpdateTermCount = false;
 			} else {
-				$is_before_update_term_count = true;
+				$isBeforeUpdateTermCount = true;
+			}
+
+			// 自動保存で最新のデータがあった場合、表示
+			$revision = $this->Revision->findRevisions(null, $blogPost['Revision']['group_id'], 1);
+			if(isset($revision[0])) {
+				$blogPost['Revision'] = $revision[0]['Revision'];
+			} else {
+				$blogPost['Revision'] = array('content' => '');
 			}
 		} else {
 			$blog_term_links = array();
-			$blog_post = $this->BlogPost->findDefault($this->content_id);
-			$is_before_update_term_count = false;
-			if($isAutoRegist) {
-				// 自動登録で新規登録時は一時保存
-				$is_temporally = _ON;
-			}
+			$blogPost = $this->BlogPost->findDefault($this->content_id);
+			$isBeforeUpdateTermCount = false;
 		}
 		$active_category_arr = null;
 		$active_tag_arr = null;
 		if($this->request->is('post')) {
 			// 登録処理
-			if(!isset($this->request->data['BlogPost']) || !isset($this->request->data['Htmlarea']['content'])) {
+			if(!isset($this->request->data['BlogPost']) || !isset($this->request->data['Revision']['content'])) {
 				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPosts.index.003', '500');
 				return;
 			}
-			if(!isset($is_temporally)) {
-				if(!isset($this->request->data['is_temporally']) || $this->request->data['is_temporally'] == _OFF) {
-					$is_temporally = _OFF;
-				} else {
-					$is_temporally = _ON;
-				}
-			}
-			if(isset($this->request->data['BlogPost']['id'])) {
-				// リクエストからidの変更は許さない。
-				unset($this->request->data['BlogPost']['id']);
-			}
-			$blog_post['BlogPost'] = array_merge($blog_post['BlogPost'], $this->request->data['BlogPost']);
-			$blog_post['BlogPost']['content_id'] = $this->content_id;
-			$blog_post['BlogPost']['permalink'] = $blog_post['BlogPost']['title'];	// TODO:仮でtitleをセット「「/,:」等の記号を取り除いたり同じタイトルがあればリネームしたりすること。」
-			if(!isset($post_id) || !$isAutoRegist) {
-				// 自動登録で編集時はstatusを維持
-				$blog_post['BlogPost']['status'] = ($is_temporally) ? NC_STATUS_TEMPORARY : NC_STATUS_PUBLISH;
-			}
+			unset($this->request->data['BlogPost']['id']);
+			unset($this->request->data['BlogPost']['revision_group_id']);
+			unset($this->request->data['BlogPost']['is_approved']);
+			$blogPost['BlogPost'] = array_merge($blogPost['BlogPost'], $this->request->data['BlogPost']);
+			$blogPost['BlogPost']['content_id'] = $this->content_id;
+			$blogPost['BlogPost']['permalink'] = $blogPost['BlogPost']['title'];	// TODO:仮でtitleをセット「「/,:」等の記号を取り除いたり同じタイトルがあればリネームしたりすること。」
+			$blogPost['BlogPost']['status'] = isset($status) ? $status : $blogPost['BlogPost']['status'];
 
-			$blog_post['Htmlarea']['content'] = $this->request->data['Htmlarea']['content'];
+			$blogPost['Revision']['content'] = $this->request->data['Revision']['content'];
 
 			$fieldList = array(
-				'content_id', 'post_date', 'title', 'permalink', 'icon_name', 'htmlarea_id', 'status', 'post_password', 'trackback_link',
+				'content_id', 'post_date', 'title', 'permalink', 'icon_name', 'revision_group_id', 'status', 'is_approved',
+				'post_password', 'trackback_link', 'pre_change_flag', 'pre_change_date',
 			);
 
-			$htmlarea = array(
-				'Htmlarea' => array(
-					'revision_parent' => $blog_post['BlogPost']['htmlarea_id'],
-					'revision_name' => ($isAutoRegist) ? 'auto-draft' : (($is_temporally) ? 'draft' : 'publish'),
+			$pointer = _OFF;
+			if(empty($blogPost['BlogPost']['pre_change_flag']) && ($blogPost['BlogPost']['revision_group_id'] == 0 || !$isAutoRegist)) {
+				$pointer = _ON;
+			}
+
+			$revision = array(
+				'Revision' => array(
+					'group_id' => $blogPost['BlogPost']['revision_group_id'],
+					'pointer' => $pointer,
+					'revision_name' => $revisionName,
 					'content_id' => $this->content_id,
-					'content' => $this->request->data['Htmlarea']['content'],
-					'non_approved_content' => '',
+					'content' => $this->request->data['Revision']['content'],
 				)
 			);
 
-			$fieldListHtmlarea = array(
-				'revision_parent', 'revision_name', 'content_id', 'content', 'non_approved_content',
+			$fieldListRevision = array(
+				'group_id', 'pointer', 'revision_name', 'content_id', 'content',
 			);
 
 			$active_category_arr = (isset($this->request->data['BlogTermLink']) && isset($this->request->data['BlogTermLink']['category_id'])) ?
@@ -129,52 +124,53 @@ class BlogPostsController extends BlogAppController {
 			$active_tag_arr = (isset($this->request->data['BlogTermLink']) && isset($this->request->data['BlogTermLink']['tag_name'])) ?
 				$this->request->data['BlogTermLink']['tag_name'] : array();
 
-			$this->Htmlarea->set($htmlarea);
-			$this->BlogPost->set($blog_post);
-			if($this->BlogPost->validates(array('fieldList' => $fieldList)) && $this->Htmlarea->validates(array('fieldList' => $fieldListHtmlarea))) {
-				$this->Htmlarea->save($htmlarea, false, $fieldListHtmlarea);
-				$blog_post['BlogPost']['htmlarea_id'] = $this->Htmlarea->id;
-				if(strtotime($this->BlogPost->date($blog_post['BlogPost']['post_date'])) > strtotime($this->BlogPost->nowDate())) {
+			$this->Revision->set($revision);
+			$this->BlogPost->set($blogPost);
+			if($this->BlogPost->validates(array('fieldList' => $fieldList)) && $this->Revision->validates(array('fieldList' => $fieldListRevision))) {
+				$this->Revision->save($revision, false, $fieldListRevision);
+				if(empty($blogPost['BlogPost']['revision_group_id'])) {
+					$blogPost['BlogPost']['revision_group_id'] = $this->Revision->id;
+				}
+				if(strtotime($this->BlogPost->date($blogPost['BlogPost']['post_date'])) > strtotime($this->BlogPost->nowDate())) {
 					// 未来の記事
-					$blog_post['BlogPost']['is_future'] = _ON;
+					$blogPost['BlogPost']['is_future'] = _ON;
 				} else {
-					$blog_post['BlogPost']['is_future'] = _OFF;
+					$blogPost['BlogPost']['is_future'] = _OFF;
 				}
 
-				$this->BlogPost->save($blog_post, false, $fieldList);
+				$this->BlogPost->save($blogPost, false, $fieldList);
 
 				if($isAutoRegist) {
-					// 自動登録時
-					echo $this->BlogPost->id;
-					$this->render(false);
+					// 自動保存時後処理
+					$this->RevisionList->afterAutoRegist($this->BlogPost->id);
 					return;
 				}
 
-				if(empty($blog_post['BlogPost']['id'])) {
+				if(empty($blogPost['BlogPost']['id'])) {
 					$this->Session->setFlash(__('Has been successfully registered.'));
 				} else {
 					$this->Session->setFlash(__('Has been successfully updated.'));
 				}
-				if($blog_post['BlogPost']['is_future'] == _ON || $blog_post['BlogPost']['status'] == NC_STATUS_TEMPORARY) {
+				if($blogPost['BlogPost']['is_future'] == _ON || $blogPost['BlogPost']['status'] == NC_STATUS_TEMPORARY) {
 					$is_after_update_term_count = false;
 				} else {
 					$is_after_update_term_count = true;
 				}
 				// カテゴリー登録
-				if(!$this->BlogTermLink->saveTermLinks($this->content_id, $this->BlogPost->id, $is_before_update_term_count, $is_after_update_term_count,
+				if(!$this->BlogTermLink->saveTermLinks($this->content_id, $this->BlogPost->id, $isBeforeUpdateTermCount, $is_after_update_term_count,
 					$active_category_arr, 'id', 'category')) {
-					$this->flash(__('Failed to register the database, (%s).', 'blog_term_links'), null, 'BlogPost.index.003', '500');
+					$this->flash(__('Failed to register the database, (%s).', 'blog_term_links'), null, 'BlogPosts.index.003', '500');
 					return;
 				}
 				// タグ登録
-				if(!$this->BlogTermLink->saveTermLinks($this->content_id, $this->BlogPost->id, $is_before_update_term_count, $is_after_update_term_count,
+				if(!$this->BlogTermLink->saveTermLinks($this->content_id, $this->BlogPost->id, $isBeforeUpdateTermCount, $is_after_update_term_count,
 						$active_tag_arr, 'name', 'tag')) {
-					$this->flash(__('Failed to register the database, (%s).', 'blog_term_links'), null, 'BlogPost.index.004', '500');
+					$this->flash(__('Failed to register the database, (%s).', 'blog_term_links'), null, 'BlogPosts.index.004', '500');
 					return;
 				}
 
-				if(!$is_temporally) {
-					// 決定の場合、リダイレクト
+				if($status == NC_STATUS_PUBLISH) {
+					// 決定の場合、メイン画面にリダイレクト
 					$backId = 'blog-post' . $this->id. '-' . $this->BlogPost->id;
 					$editUrl = array('controller' => 'blog', '#' => $backId);
 					if(isset($this->request->query['back_query'])) {
@@ -184,8 +180,8 @@ class BlogPostsController extends BlogAppController {
 					$editUrl['page'] = isset($this->request->query['back_page']) ? $this->request->query['back_page'] : null;
 					$this->redirect($editUrl);
 					return;
-				} else if(!isset($post_id) || isset($this->request->data['autoregist_post_id'])) {
-					// 新規投稿ならば、編集画面にするためリダイレクト
+				} else if(!isset($postId)) {
+					// 新規投稿ならば、編集画面リダイレクト
 					$this->redirect(array('controller' => 'blog_posts', $this->BlogPost->id, '#' => $this->id));
 					return;
 				}
@@ -193,17 +189,19 @@ class BlogPostsController extends BlogAppController {
 		}
 
 		// 履歴情報
-		$this->set('revisions', $this->Htmlarea->findRevisions($blog_post['BlogPost']['htmlarea_id']));
+		if(isset($blogPost['Revision']['id'])) {
+			$this->set('revisions', $this->Revision->findRevisions($blogPost['Revision']['id']));
+		}
 
 		$this->set('blog', $blog);
-		$this->set('blog_post', $blog_post);
+		$this->set('blog_post', $blogPost);
 
 		// カテゴリ一覧、タグ一覧
-		$categories = $this->BlogTerm->findCategories($this->content_id, isset($post_id) ? $post_id : null, $active_category_arr);
-		$tags = $this->BlogTerm->findTags($this->content_id, isset($post_id) ? $post_id : null, $active_tag_arr);
+		$categories = $this->BlogTerm->findCategories($this->content_id, isset($postId) ? $postId : null, $active_category_arr);
+		$tags = $this->BlogTerm->findTags($this->content_id, isset($postId) ? $postId : null, $active_tag_arr);
 		$this->set('categories', $categories);
 		$this->set('tags', $tags);
-		$this->set('post_id', $post_id);
+		$this->set('post_id', $postId);
 	}
 
 /**
@@ -214,20 +212,25 @@ class BlogPostsController extends BlogAppController {
  */
 	public function delete($postId = null) {
 		if(empty($postId) || !$this->request->is('post')) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPost.delete.001', '500');
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPosts.delete.001', '500');
+			return;
+		}
+		$blogPost = $this->BlogPost->findById($postId);
+		if(!isset($blogPost['BlogPost'])) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPosts.delete.002', '500');
 			return;
 		}
 
 		// コメント削除
 		$delConditions = array('BlogComment.blog_post_id'=>$postId);
 		if(!$this->BlogComment->deleteAll($delConditions, false)){
-			$this->flash(__('Failed to delete the database, (%s).', 'blog_comments'), null, 'BlogPost.delete.002', '500');
+			$this->flash(__('Failed to delete the database, (%s).', 'blog_comments'), null, 'BlogPosts.delete.003', '500');
 			return;
 		}
 
 		// 一般会員が閲覧できるカウント数のカウントダウン
-		$blogPost = $this->BlogPost->findById($postId);
-		if($blogPost['BlogPost']['is_future'] != _ON && $blogPost['BlogPost']['status'] != NC_STATUS_TEMPORARY  && $blogPost['BlogPost']['approved_flag'] != _OFF){
+
+		if($blogPost['BlogPost']['is_future'] != _ON && $blogPost['BlogPost']['status'] != NC_STATUS_TEMPORARY  && $blogPost['BlogPost']['is_approved'] != NC_DISPLAY_FLAG_OFF){
 			$termLinks = $this->BlogTermLink->findAllByBlogPostId($postId);
 			if($termLinks){
 				// blogに結びつくすべてのtermがカウントダウン対象
@@ -237,7 +240,7 @@ class BlogPostsController extends BlogAppController {
 				}
 				$cntdown_conditions = array('BlogTerm.id'=>$termIds);
 				if(!$this->BlogTerm->decrementSeq($cntdown_conditions, 'count')){
-					$this->flash(__('Failed to update the database, (%s).', 'blog_term_links'), null, 'BlogPost.delete.003', '500');
+					$this->flash(__('Failed to update the database, (%s).', 'blog_term_links'), null, 'BlogPosts.delete.004', '500');
 					return;
 				}
 			}
@@ -246,14 +249,20 @@ class BlogPostsController extends BlogAppController {
 		// タームリンク削除
 		$delConditions = array('BlogTermLink.blog_post_id'=>$postId);
 		if(!$this->BlogTermLink->deleteAll($delConditions)){
-			$this->flash(__('Failed to delete the database, (%s).', 'blog_term_links'), null, 'BlogPost.delete.004', '500');
+			$this->flash(__('Failed to delete the database, (%s).', 'blog_term_links'), null, 'BlogPosts.delete.005', '500');
 			return;
 		}
 
 		// blog削除
 		$delConditions = array('BlogPost.id'=>$postId);
 		if(!$this->BlogPost->deleteAll($delConditions)){
-			$this->flash(__('Failed to delete the database, (%s).', 'blog_posts'), null, 'BlogPost.delete.005', '500');
+			$this->flash(__('Failed to delete the database, (%s).', 'blog_posts'), null, 'BlogPosts.delete.006', '500');
+			return;
+		}
+
+		// revision削除
+		if(!$this->Revision->deleteRevison($blogPost['BlogPost']['revision_group_id'])){
+			$this->flash(__('Failed to delete the database, (%s).', 'revisions'), null, 'BlogPosts.delete.007', '500');
 			return;
 		}
 
@@ -353,27 +362,26 @@ class BlogPostsController extends BlogAppController {
 	public function revision($blogPostId) {
 		$blogPost = $this->BlogPost->findById($blogPostId);
 		if(!isset($blogPost['BlogPost'])) {
-			$this->flash(__('Content not found.'), null, 'BlogPost.revision.001', '404');
+			$this->flash(__('Content not found.'), null, 'BlogPosts.revision.001', '404');
 			return;
+		}
+		// 自動保存で最新のデータがあった場合、表示
+		$revision = $this->Revision->findRevisions(null, $blogPost['Revision']['group_id'], 1);
+		if(isset($revision[0])) {
+			$blogPost['Revision'] = $revision[0]['Revision'];
+		} else {
+			$blogPost['Revision'] = array('content' => '');
 		}
 		$cancelUrl = array('action' => 'index', $blogPostId, '#' => $this->id);
 
-		$newHtmlareaId = $this->Revision->setDatas($this->content_id, $blogPost['BlogPost']['title'], $blogPost['BlogPost']['htmlarea_id'],
-			array($blogPostId), $cancelUrl);
-		if($newHtmlareaId === false) {
-			$this->flash(__('Content not found.'), null, 'BlogPost.revision.002', '404');
+		$ret = $this->RevisionList->setDatas($blogPost['BlogPost']['title'], $blogPost, array($blogPostId), $cancelUrl);
+		if($ret === false) {
+			$this->flash(__('Content not found.'), null, 'BlogPosts.revision.002', '404');
 			return;
 		}
 
-		if($this->request->is('post') && $newHtmlareaId > 0) {
-			$fieldList = array(
-				'htmlarea_id',
-			);
-			$blogPost['BlogPost']['htmlarea_id'] = $newHtmlareaId;
-			if(!$this->BlogPost->save($blogPost, true, $fieldList)) {
-				$this->flash(__('Failed to update the database, (%s).', 'blog_posts'), null, 'BlogPost.revision.003', '500');
-				return;
-			}
+		if($this->request->is('post')) {
+			// TODO:復元のバリデートでそのrevision番号が本当に戻せるかどうか確認すること auto-drafutのデータ等
 			$this->redirect($cancelUrl);
 			return;
 		}

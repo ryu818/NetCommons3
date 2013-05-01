@@ -15,7 +15,7 @@ $this->extend('/Frame/block');
 		<div id="blog-edits-tab-init<?php echo($id); ?>">
 			<?php /* 一般設定 */ ?>
 			<fieldset class="form">
-				<ul class="lists blog-edits-lists">
+				<ul class="lists nc-edits-lists">
 					<li>
 						<dl>
 							<dt>
@@ -163,7 +163,7 @@ $this->extend('/Frame/block');
 										'value' => $blog['Blog']['mail_subject'],
 										'label' => __('E-mail Subject:'),
 										'maxlength' => NC_VALIDATOR_TITLE_LEN,
-										'size' => 35,
+										'size' => 23,
 										'error' => array('attributes' => array(
 											'selector' => true
 										))
@@ -193,7 +193,7 @@ $this->extend('/Frame/block');
 		<div id="blog-edits-tab-comment<?php echo($id); ?>">
 			<?php /* コメント設定 */ ?>
 			<fieldset class="form">
-				<ul class="lists blog-edits-lists">
+				<ul class="lists nc-edits-lists">
 					<li>
 						<dl>
 							<dt>
@@ -273,7 +273,7 @@ $this->extend('/Frame/block');
 										'value' => $blog['Blog']['comment_mail_subject'],
 										'label' => __('E-mail Subject:'),
 										'maxlength' => NC_VALIDATOR_TITLE_LEN,
-										'size' => 35,
+										'size' => 23,
 										'error' => array('attributes' => array(
 											'selector' => true
 										))
@@ -303,7 +303,7 @@ $this->extend('/Frame/block');
 		<div id="blog-edits-tab-trackback<?php echo($id); ?>">
 			<?php /* トラックバック設定 */ ?>
 			<fieldset class="form">
-				<ul class="lists blog-edits-lists">
+				<ul class="lists nc-edits-lists">
 					<li>
 						<dl>
 							<dt>
@@ -360,7 +360,7 @@ $this->extend('/Frame/block');
 		<div id="blog-edits-tab-approval<?php echo($id); ?>">
 			<?php /* 承認機能設定 */ ?>
 			<fieldset class="form">
-				<ul class="lists blog-edits-lists">
+				<ul class="lists nc-edits-lists">
 					<li>
 						<dl>
 							<dt>
@@ -376,6 +376,11 @@ $this->extend('/Frame/block');
 										'value' => intval($blog['Blog']['approved_flag']),
 										'div' => false,
 										'legend' => false,
+									));
+									echo $this->Form->input('Blog.approved_pre_change_flag',array(
+										'type' => 'checkbox',
+										'value' => intval($blog['Blog']['approved_pre_change_flag']),
+										'label' => __('If not approved, You display the contents of the change before.'),
 									));
 								?>
 							</dd>
@@ -405,7 +410,7 @@ $this->extend('/Frame/block');
 										'value' => $blog['Blog']['approved_mail_subject'],
 										'label' => __('E-mail Subject:'),
 										'maxlength' => NC_VALIDATOR_TITLE_LEN,
-										'size' => 35,
+										'size' => 23,
 										'error' => array('attributes' => array(
 											'selector' => true
 										))
@@ -470,7 +475,7 @@ $this->extend('/Frame/block');
 										'value' => $blog['Blog']['comment_approved_mail_subject'],
 										'label' => __('E-mail Subject:'),
 										'maxlength' => NC_VALIDATOR_TITLE_LEN,
-										'size' => 35,
+										'size' => 23,
 										'error' => array('attributes' => array(
 											'selector' => true
 										))
@@ -504,7 +509,6 @@ $this->extend('/Frame/block');
 		echo $this->Form->end();
 	?>
 <?php
-	echo $this->Html->css('Blog.blog_edits/index');
 	echo $this->Html->script('Blog.blog_edits/index');
 ?>
 <script>

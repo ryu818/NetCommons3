@@ -449,7 +449,7 @@ class BlockController extends BlockAppController {
 					'title' => __d('block', 'New group'),
 					'room_id' => $page['Page']['room_id'],
 					'display_flag' => NC_DISPLAY_FLAG_ON,
-					'approved_flag' => _ON,
+					'is_approved' => NC_DISPLAY_FLAG_ON,
 					'url' => ''
 				);
 				$this->Content->create();

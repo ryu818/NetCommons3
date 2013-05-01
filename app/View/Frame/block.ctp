@@ -1,6 +1,6 @@
 <?php
 $nc_mode = $this->Session->read(NC_SYSTEM_KEY.'.mode');
-$content = $this->fetch('content');
+$content = trim($this->fetch('content'));
 $current_url = $this->here;
 if(count($this->params->query) > 0) {
 	$query = '';

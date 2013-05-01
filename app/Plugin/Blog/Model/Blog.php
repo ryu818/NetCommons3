@@ -125,12 +125,14 @@ class Blog extends AppModel
 				),
 				'_notEmptyCondition'  => array(
 					'rule' => array('_notEmptyCondition', array('mail_flag')),
+					'required' => true,
 					'message' => __('Please be sure to input.')
 				),
 			),
 			'mail_body' => array(
 				'_notEmptyCondition'  => array(
 					'rule' => array('_notEmptyCondition', array('mail_flag')),
+					'required' => true,
 					'message' => __('Please be sure to input.')
 				),
 			),
@@ -213,13 +215,15 @@ class Blog extends AppModel
 				),
 				'_notEmptyCondition'  => array(
 					'rule' => array('_notEmptyCondition', array('comment_mail_flag')),
+					'required' => true,
 					'message' => __('Please be sure to input.')
 				),
 			),
 			'comment_mail_body' => array(
 					'_notEmptyCondition'  => array(
-							'rule' => array('_notEmptyCondition', array('comment_mail_flag')),
-							'message' => __('Please be sure to input.')
+						'rule' => array('_notEmptyCondition', array('comment_mail_flag')),
+						'required' => true,
+						'message' => __('Please be sure to input.')
 					),
 			),
 			'trackback_transmit_flag' => array(
@@ -249,6 +253,7 @@ class Blog extends AppModel
 			'transmit_blog_name' => array(
 				'_notEmptyCondition'  => array(
 					'rule' => array('_notEmptyCondition', array('trackback_transmit_flag')),
+					'required' => true,
 					'message' => __('Please be sure to input.')
 				),
 				'maxlength'  => array(
@@ -257,6 +262,14 @@ class Blog extends AppModel
 				)
 			),
 			'approved_flag' => array(
+				'boolean'  => array(
+					'rule' => array('boolean'),
+					'last' => true,
+					'required' => true,
+					'message' => __('The input must be a boolean.')
+				)
+			),
+			'approved_pre_change_flag' => array(
 				'boolean'  => array(
 					'rule' => array('boolean'),
 					'last' => true,
@@ -279,12 +292,14 @@ class Blog extends AppModel
 				),
 				'_notEmptyCondition'  => array(
 					'rule' => array('_notEmptyCondition', array('approved_flag', 'approved_mail_flag')),
+					'required' => true,
 					'message' => __('Please be sure to input.')
 				),
 			),
 			'approved_mail_body' => array(
 				'_notEmptyCondition'  => array(
 					'rule' => array('_notEmptyCondition', array('approved_flag', 'approved_mail_flag')),
+					'required' => true,
 					'message' => __('Please be sure to input.')
 				),
 			),
@@ -311,12 +326,14 @@ class Blog extends AppModel
 				),
 				'_notEmptyCondition'  => array(
 					'rule' => array('_notEmptyCondition', array('comment_approved_flag', 'comment_approved_mail_flag')),
+					'required' => true,
 					'message' => __('Please be sure to input.')
 				),
 			),
 			'comment_approved_mail_body' => array(
 				'_notEmptyCondition'  => array(
 					'rule' => array('_notEmptyCondition', array('comment_approved_flag', 'comment_approved_mail_flag')),
+					'required' => true,
 					'message' => __('Please be sure to input.')
 				),
 			),
@@ -329,6 +346,7 @@ class Blog extends AppModel
  * @param   array    $columns	$columnsのカラムの値がすべてOnならば必須
  * @return  boolean
  * @since   v 3.0.0.0
+ * TODO:共通化するべき
  */
 	public function _notEmptyCondition($check, $columns){
 		$notEmpty = true;
@@ -382,6 +400,7 @@ class Blog extends AppModel
 				'trackback_receive_flag' => _OFF,
 				'transmit_blog_name' => __d('blog', "{X-CONTENT_NAME}-{X-SITE_NAME}"),
 				'approved_flag' => _OFF,
+				'approved_pre_change_flag' => _ON,
 				'approved_mail_flag' => _OFF,
 				'approved_mail_subject' => __("[{X-SITE_NAME}] [{X-CONTENT_NAME}] Post Approval completion notice"),
 				'approved_mail_body' => __("Your article posted to [{X-SITE_NAME}] [{X-CONTENT_NAME}] was approved.\n\nClick the link below to check the article.\n{X-URL}"),

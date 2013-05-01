@@ -55,7 +55,12 @@
 	<?php else: ?>
 	<div class="blog-entry-content">
 	<?php endif; ?>
-		<?php echo ($blog_post['Htmlarea']['content']);?>
+		<?php if(isset($blog_post['Revision']['revision_name']) && $blog_post['Revision']['revision_name'] == 'auto-draft'): ?>
+			<?php /* 自動保存のものは表示しない */ ?>
+			<span class="nc-auto-draft"><?php echo __('Editing...'); ?></span>
+		<?php else: ?>
+			<?php echo ($blog_post['Revision']['content']);?>
+		<?php endif; ?>
 	</div>
 
 	<?php

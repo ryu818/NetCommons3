@@ -8,7 +8,7 @@
  * </pre>
  *
  * @copyright     Copyright 2012, NetCommons Project
- * @package       app.Plugin.Announcement.Component
+ * @package       app.Plugin.Blog.Component
  * @author        Noriko Arai,Ryuji Masukawa
  * @since         v 3.0.0.0
  * @license       http://www.netcommons.org/license.txt  NetCommons License
@@ -16,7 +16,7 @@
 class BlogOperationComponent extends Object {
 
 	public $Content = null;
-	public $Htmlarea = null;
+	public $Revision = null;
 
 	public $Blog = null;
 	public $BlogComment = null;
@@ -34,7 +34,7 @@ class BlogOperationComponent extends Object {
  */
 	public function startup() {
 		App::uses('Content', 'Model');
-		App::uses('Htmlarea', 'Model');
+		App::uses('Revision', 'Model');
 
 		App::uses('Blog', 'Blog.Model');
 		App::uses('BlogComment', 'Blog.Model');
@@ -44,7 +44,7 @@ class BlogOperationComponent extends Object {
 		App::uses('BlogTermLink', 'Blog.Model');
 
 		$this->Content = new Content();
-		$this->Htmlarea = new Htmlarea();
+		$this->Revision = new Revision();
 
 		$this->Blog = new Blog();
 		$this->BlogComment = new BlogComment();
@@ -52,6 +52,7 @@ class BlogOperationComponent extends Object {
 		$this->BlogStyle = new BlogStyle();
 		$this->BlogTerm = new BlogTerm();
 		$this->BlogTermLink = new BlogTermLink();
+		$this->BlogPost->unbindModel( array( 'belongsTo' => array_keys( $this->BlogPost->belongsTo ) ) );
 	}
 
 /**
@@ -80,7 +81,7 @@ class BlogOperationComponent extends Object {
  */
 	public function delete($content) {
 		if(isset($content['Content'])) {
-			$tables = array('Blog', 'BlogComment', 'BlogPost', 'BlogTerm', 'BlogTermLink', 'Htmlarea');
+			$tables = array('Blog', 'BlogComment', 'BlogPost', 'BlogTerm', 'BlogTermLink', 'Revision');
 			foreach($tables as $table) {
 				$condition = array($table.'.content_id' => $content['Content']['master_id']);
 				if(!$this->{$table}->deleteAll($condition)) {
@@ -138,16 +139,35 @@ class BlogOperationComponent extends Object {
 			return false;
 		}
 
-		$tables = array('Blog', 'BlogComment', 'BlogPost', 'BlogTerm', 'BlogTermLink', 'Htmlarea');
+		$newGroupIdArr = array();
+		$groupId = $newGroupId = 0;
+		$tables = array('Revision', 'Blog', 'BlogComment', 'BlogPost', 'BlogTerm', 'BlogTermLink');
 		foreach($tables as $table) {
 			$condition = array($table.'.content_id' => $from_content['Content']['master_id']);
 			$datas = $this->{$table}->find('all', array('conditions' => $condition));
 			foreach($datas as $data) {
+
+				if($table == 'Revision') {
+					if($groupId != $data['Revision']['group_id']) {
+						$groupId = $data['Revision']['group_id'];
+						$data['Revision']['group_id'] = 0;
+					} else {
+						$data['Revision']['group_id'] = $newGroupId;
+					}
+				} else if($table == 'BlogPost') {
+					$data['BlogPost']['revision_group_id'] = $newGroupIdArr[$data['BlogPost']['revision_group_id']];
+				}
+
 				unset($data[$table]['id']);
 				$data[$table]['content_id'] = $to_content['Content']['id'];
 				$this->{$table}->create();
 				if(!$this->{$table}->save($data)) {
 					return false;
+				}
+
+				if($table == 'Revision' && $data['Revision']['group_id'] == 0) {
+					$newGroupId = $this->{$table}->id;
+					$newGroupIdArr[$groupId] = $newGroupId;
 				}
 			}
 		}

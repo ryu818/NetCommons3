@@ -2,9 +2,9 @@
 /**
  * WYSIWYG内画面リビジョンリストの表示
  *
- * Model Htmlareas $revisions      :  Htmlarea->findRevisions実行結果
+ * Model Revisions $revisions      :  Revision->findRevisions実行結果
  * array $options                  :  View->linkのoptions(default: 'title' => $date, 'data-pjax' => '#'.$id ) セットするとマージする。
- * array $url                      :  View->linkのurl(default: 'action' => 'revision', 'revision_id' => $revision['Htmlarea']['id'], '#' => $id ) セットするとマージする。
+ * array $url                      :  View->linkのurl(default: 'action' => 'revision', 'revision_id' => $revision['Revision']['id'], '#' => $id ) セットするとマージする。
  *                                        投稿記事のidはセットすること デフォルトaction=revisionへリンクする。
  * @copyright     Copyright 2012, NetCommons Project
  * @package       View.Elements
@@ -17,19 +17,19 @@
 	<?php foreach ($revisions as $revision): ?>
 		<li>
 			<?php
-				$revisionTitle = $this->TimeZone->date($revision['Htmlarea']['created'], __('Y-m-d H:i'));
+				$revisionTitle = $this->TimeZone->date($revision['Revision']['created'], __('Y-m-d H:i'));
 
-				$defaultUrl = array('action' => 'revision', 'revision_id' => $revision['Htmlarea']['id'], '#' => $id,);
+				$defaultUrl = array('action' => 'revision', 'revision_id' => $revision['Revision']['id'], '#' => $id,);
 				$setUrl = isset($url) ? array_merge($defaultUrl, $url) : $defaultUrl;
 
 				$defaultOptions = array('title' => $revisionTitle, 'data-pjax' => '#'.$id);
 				$setOptions = isset($options) ? array_merge($defaultOptions, $options) : $defaultOptions;
 
 				echo $this->Html->link($revisionTitle, $setUrl, $setOptions);
-				if($revision['Htmlarea']['revision_name'] == 'auto-draft') {
+				if($revision['Revision']['revision_name'] == 'auto-draft') {
 					echo '&nbsp;'.__('[Autosave]');
 				}
-				echo ('@'.h($revision['Htmlarea']['created_user_name']));
+				echo ('@'.h($revision['Revision']['created_user_name']));
 			?>
 		</li>
 	<?php endforeach; ?>

@@ -1,0 +1,3 @@
+## 編集画面
+msgid	"Announcement name"
+msgstr	"お知らせ名称"

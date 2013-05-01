@@ -19,8 +19,7 @@ class BlogSchema extends CakeSchema {
 		'author_email' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'author_url' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'author_ip' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 100, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'status' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
-		'approved_flag' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
+		'is_approved' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
 		'blog_name' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'direction_flag' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'tb_url' => array('type' => 'text', 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
@@ -38,6 +37,7 @@ class BlogSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $blog_posts = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'content_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'key' => 'index'),
@@ -46,10 +46,12 @@ class BlogSchema extends CakeSchema {
 		'title' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'permalink' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'icon_name' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 128, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'htmlarea_id' => array('type' => 'integer', 'null' => true, 'default' => null),
+		'revision_group_id' => array('type' => 'integer', 'null' => true, 'default' => null),
 		'vote' => array('type' => 'text', 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'status' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
-		'approved_flag' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
+		'is_approved' => array('type' => 'integer', 'null' => false, 'default' => '1', 'length' => 3),
+		'pre_change_flag' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
+		'pre_change_date' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'post_password' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 20, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'trackback_link' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'approved_comment_count' => array('type' => 'integer', 'null' => false, 'default' => '0'),
@@ -70,6 +72,7 @@ class BlogSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $blog_styles = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'block_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'key' => 'index'),
@@ -91,6 +94,7 @@ class BlogSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $blog_term_links = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'content_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
@@ -108,6 +112,7 @@ class BlogSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $blog_terms = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'content_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'key' => 'index'),
@@ -131,6 +136,7 @@ class BlogSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 	public $blogs = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'content_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
@@ -157,6 +163,7 @@ class BlogSchema extends CakeSchema {
 		'trackback_receive_flag' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'transmit_blog_name' => array('type' => 'text', 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'approved_flag' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
+		'approved_pre_change_flag' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
 		'approved_mail_flag' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'approved_mail_subject' => array('type' => 'string', 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'approved_mail_body' => array('type' => 'text', 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
@@ -175,4 +182,5 @@ class BlogSchema extends CakeSchema {
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
+
 }

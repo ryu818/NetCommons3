@@ -121,8 +121,8 @@ class Page extends AppModel
 						'allowEmpty' => true,
 						'message' => __('Unauthorized pattern for %s.', __('Date-time'))
 					),
-					'pastDateTime'  => array(
-						'rule' => array('pastDateTime'),
+					'isFutureDateTime'  => array(
+						'rule' => array('isFutureDateTime'),
 						'last' => true,
 						'allowEmpty' => true,
 						'message' => __('%s in the past can not be input.', __('Date-time'))
@@ -141,8 +141,8 @@ class Page extends AppModel
 						'allowEmpty' => true,
 						'message' => __('Unauthorized pattern for %s.', __('Date-time'))
 					),
-					'pastDateTime'  => array(
-						'rule' => array('pastDateTime'),
+					'isFutureDateTime'  => array(
+						'rule' => array('isFutureDateTime'),
 						'last' => true,
 						'allowEmpty' => true,
 						'message' => __('%s in the past can not be input.', __('Date-time'))
@@ -168,7 +168,7 @@ class Page extends AppModel
 						'message' => __('It contains an invalid string.')
 					)
 				),
-				'approved_flag' => array(
+				'is_approved' => array(
 					'boolean'  => array(
 						'rule' => array('boolean'),
 						'last' => true,
