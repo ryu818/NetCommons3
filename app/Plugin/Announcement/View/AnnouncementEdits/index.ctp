@@ -47,7 +47,8 @@ $this->extend('/Frame/block');
 						));
 						echo $this->Form->input('AnnouncementEdit.approved_pre_change_flag',array(
 							'type' => 'checkbox',
-							'value' => intval($announcement_edit['AnnouncementEdit']['approved_pre_change_flag']),
+							'value' => _ON,
+							'checked' => !empty($announcement_edit['AnnouncementEdit']['approved_pre_change_flag']) ? true : false,
 							'label' => __('If not approved, You display the contents of the change before.'),
 						));
 					?>
