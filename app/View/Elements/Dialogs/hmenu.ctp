@@ -45,6 +45,15 @@ $is_controls = ($this->request->controller == 'controls') ? true : false;
 	</div>
 	<div id="nc-hmenu-r" class="nc-panel-color">
 		<ul class="nc-hmenu-ul">
+			<?php if(isset($nc_user)): ?>
+			<li class="nc-hmenu-li">
+				<?php /* TODO:リンク先が未作成 */  ?>
+				<?php
+					echo $this->Html->link($nc_user['handle'], '#',
+					array('class' => 'nc-tooltip nc-hmenu-menu-a', 'title' => __('To the Member information screen.')));
+				?>
+			</li>
+			<?php endif; ?>
 			<li class="nc-hmenu-li">
 				<?php /* コントロールパネル */ ?>
 				<?php if(!$is_controls): ?>
