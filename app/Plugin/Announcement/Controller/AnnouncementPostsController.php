@@ -89,6 +89,13 @@ class AnnouncementPostsController extends AnnouncementAppController {
 
 		if($this->request->is('post')) {
 			// 登録処理
+			$content['Content'] = array(
+				'id' => $this->content_id,
+				'title' => $this->request->data['Content']['title']
+			);
+			if($this->nc_block['Content']['display_flag'] == NC_DISPLAY_FLAG_DISABLE) {
+				$content['Content']['display_flag'] = NC_DISPLAY_FLAG_ON;
+			}
 			if(!isset($this->request->data['Revision']['content'])) {
 				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'AnnouncementPosts.index.002', '500');
 				return;
@@ -128,9 +135,12 @@ class AnnouncementPostsController extends AnnouncementAppController {
 				'group_id', 'pointer', 'revision_name', 'content_id', 'content',
 			);
 
+			$this->Content->set($content);
 			$this->Revision->set($revision);
 			$this->Announcement->set($announcement);
-			if($this->Announcement->validates(array('fieldList' => $fieldList)) && $this->Revision->validates(array('fieldList' => $fieldListRevision))) {
+			if($this->Content->validates(array('fieldList' => array('title'))) &&
+				$this->Announcement->validates(array('fieldList' => $fieldList)) && $this->Revision->validates(array('fieldList' => $fieldListRevision))) {
+				$this->Content->save($content, false, array('title', 'display_flag'));
 				$this->Revision->save($revision, false, $fieldListRevision);
 				$announcement['Revision']['id'] = $this->Revision->id;
 				if(empty($announcement['Announcement']['revision_group_id'])) {

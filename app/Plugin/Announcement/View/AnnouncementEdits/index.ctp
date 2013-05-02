@@ -19,32 +19,6 @@ $this->extend('/Frame/block');
 			<dl>
 				<dt>
 					<?php
-						echo $this->Form->label('Content.title', __d('announcement', 'Announcement name'));
-					?>
-				</dt>
-				<dd>
-					<?php
-							$settings = array(
-							'type' => 'text',
-							'value' => $block['Content']['title'],
-							'label' => false,
-							'div' => false,
-							'maxlength' => NC_VALIDATOR_BLOCK_TITLE_LEN,
-							'class' => 'nc-title',
-							'size' => 35,
-							'error' => array('attributes' => array(
-								'selector' => true
-							))
-						);
-						echo $this->Form->input('Content.title', $settings);
-					?>
-				</dd>
-			</dl>
-		</li>
-		<li>
-			<dl>
-				<dt>
-					<?php
 						echo $this->Form->label('AnnouncementEdit.post_hierarchy', __('Authority to post root articles'));
 					?>
 				</dt>

@@ -45,16 +45,12 @@ class AnnouncementEditsController extends AnnouncementAppController {
 		}
 
 		if ($this->request->is('post')) {
-			if(!isset($this->request->data['AnnouncementEdit']) || !isset($this->request->data['Content']['title'])) {
+			if(!isset($this->request->data['AnnouncementEdit'])) {
 				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'AnnouncementEdit.index.001', '500');
 				return;
 			}
 
 			// 登録処理
-			$content['Content'] = array(
-				'id' => $this->content_id,
-				'title' => $this->request->data['Content']['title']
-			);
 			$announcementEdit['AnnouncementEdit'] = array_merge($announcementEdit['AnnouncementEdit'], $this->request->data['AnnouncementEdit']);
 			$announcementEdit['AnnouncementEdit']['content_id'] = $this->content_id;
 			// エラー時：アクティブタブに移動させるため
@@ -63,10 +59,15 @@ class AnnouncementEditsController extends AnnouncementAppController {
 				'approved_mail_flag', 'approved_mail_subject', 'approved_mail_body',
 			);
 
-			$this->Content->set($content);
 			$this->AnnouncementEdit->set($announcementEdit);
-			if($this->Content->validates(array('fieldList' => array('title'))) && $this->AnnouncementEdit->validates(array('fieldList' => $fieldList))) {
-				$this->Content->save($content, false, array('title'));
+			if($this->AnnouncementEdit->validates(array('fieldList' => $fieldList))) {
+				if($this->nc_block['Content']['display_flag'] == NC_DISPLAY_FLAG_DISABLE) {
+					$content['Content'] = array(
+						'id' => $this->content_id,
+						'display_flag' => NC_DISPLAY_FLAG_ON
+					);
+					$this->Content->save($content, true, array('display_flag'));
+				}
 				$this->AnnouncementEdit->save($announcementEdit, false, $fieldList);
 				if(empty($announcementEdit['AnnouncementEdit']['id'])) {
 					$this->Session->setFlash(__('Has been successfully registered.'));

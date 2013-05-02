@@ -216,6 +216,9 @@ textarea.nc-wysiwyg {
 	visibility:hidden;
 }
 
+.top-outer {
+	margin:2.2em 0.7em 0.7em 0.7em;
+}
 .outer {
 	padding:0.7em;
 }

@@ -12,10 +12,37 @@ $this->extend('/Frame/block');
 $locale = Configure::read(NC_SYSTEM_KEY.'.locale');
 echo $this->Form->create('Announcement', array('data-pjax' => '#'.$id));
 ?>
-<div class="table widthmax">
+<div class="top-outer">
+<div class="table widthmax ">
 <div class="table-cell">
 <fieldset class="form">
 	<ul class="lists">
+		<li>
+			<dl>
+				<dt>
+					<?php
+						echo $this->Form->label('Content.title', __d('announcement', 'Announcement name'));
+					?>
+				</dt>
+				<dd>
+					<?php
+							$settings = array(
+							'type' => 'text',
+							'value' => $block['Content']['title'],
+							'label' => false,
+							'div' => false,
+							'maxlength' => NC_VALIDATOR_BLOCK_TITLE_LEN,
+							'class' => 'nc-title',
+							'size' => 35,
+							'error' => array('attributes' => array(
+								'selector' => true
+							))
+						);
+						echo $this->Form->input('Content.title', $settings);
+					?>
+				</dd>
+			</dl>
+		</li>
 		<li>
 			<?php
 				echo($this->Form->error('Revision.content'));
@@ -106,4 +133,5 @@ $(function(){
 	$('#<?php echo($id); ?>').AnnouncementPosts('<?php echo ($id);?>');
 });
 </script>
+</div>
 </div>

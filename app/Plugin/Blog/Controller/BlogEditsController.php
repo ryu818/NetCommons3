@@ -41,8 +41,11 @@ class BlogEditsController extends BlogAppController {
 			// 登録処理
 			$content['Content'] = array(
 				'id' => $this->content_id,
-				'title' => $this->request->data['Content']['title']
+				'title' => $this->request->data['Content']['title'],
 			);
+			if($this->nc_block['Content']['display_flag'] == NC_DISPLAY_FLAG_DISABLE) {
+				$content['Content']['display_flag'] = NC_DISPLAY_FLAG_ON;
+			}
 			$blog['Blog'] = array_merge($blog['Blog'], $this->request->data['Blog']);
 			$blog['Blog']['content_id'] = $this->content_id;
 			// エラー時：アクティブタブに移動させるため
@@ -60,7 +63,7 @@ class BlogEditsController extends BlogAppController {
 			$this->Content->set($content);
 			$this->Blog->set($blog);
 			if($this->Content->validates(array('fieldList' => array('title'))) && $this->Blog->validates(array('fieldList' => $fieldList))) {
-				$this->Content->save($content, false, array('title'));
+				$this->Content->save($content, false, array('title', 'display_flag'));
 				$this->Blog->save($blog, false, $fieldList);
 				if(empty($blog['Blog']['id'])) {
 					$this->Session->setFlash(__('Has been successfully registered.'));

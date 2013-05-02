@@ -223,8 +223,8 @@ class BlockOperation extends AppModel {
 					'title' => $module['Module']['module_name'],
 					'is_master' => _ON,
 					'room_id' => $page['Page']['room_id'],
-					'display_flag' => NC_DISPLAY_FLAG_ON,
-					'is_approved' => NC_DISPLAY_FLAG_ON,
+					'display_flag' => NC_DISPLAY_FLAG_DISABLE,
+					'is_approved' => NC_APPROVED_FLAG_ON,
 					'url' => ''
 				)
 			);
