@@ -548,6 +548,7 @@ class AppSchema extends CakeSchema {
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'group_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'key' => 'index'),
 		'pointer' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
+		'is_approved_pointer' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'revision_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 100, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'content_id' => array('type' => 'integer', 'null' => false, 'default' => null),
 		'content' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),

@@ -106,12 +106,6 @@ define('NC_PARTICIPATE_FLAG_INVITE', 1);			// 招待制（コミュニティー�
 define('NC_PARTICIPATE_FLAG_ACCEPT', 2);			// 承認制（主担の承認が必要）
 define('NC_PARTICIPATE_FLAG_FREE', 3);				// 参加受付制(希望者は誰でも参加可能）
 
-//-----------------is_approved-------------------------------------------
-
-define('NC_APPROVED_FLAG_OFF', 0);					// 承認待ち
-define('NC_APPROVED_FLAG_ON', 1);					// 承認済
-define('NC_APPROVED_FLAG_PRE_CHANGE', 2);			// 変更前コンテンツの表示(モジュール内投稿にのみ使用)
-
 //-----------------space_type-------------------------------------------
 
 define('NC_SPACE_TYPE_PUBLIC', 1);

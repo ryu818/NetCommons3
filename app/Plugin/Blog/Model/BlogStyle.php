@@ -338,7 +338,7 @@ class BlogStyle extends AppModel
 				'block_id' => $block_id,
 				'widget_type' => BLOG_WIDGET_TYPE_MAIN,
 				'display_flag' => _ON,
-				'options' => 'a:1:{s:21:"visible_item_comments";s:'.(count(BLOG_DEFAULT_VISIBLE_ITEM_COMMENTS) + 1).':"'.BLOG_DEFAULT_VISIBLE_ITEM_COMMENTS.'";}',
+				'options' => 'a:1:{s:21:"visible_item_comments";s:'.(strlen(BLOG_DEFAULT_VISIBLE_ITEM_COMMENTS)).':"'.BLOG_DEFAULT_VISIBLE_ITEM_COMMENTS.'";}',
 				'col_num' => 2,
 				'row_num' => 2,
 				'visible_item' => BLOG_DEFAULT_VISIBLE_ITEM

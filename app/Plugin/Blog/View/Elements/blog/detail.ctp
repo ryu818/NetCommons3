@@ -3,7 +3,12 @@
 	$permalink = $blog_post['BlogPost']['permalink'];
 
 	$dates = $this->TimeZone->date_values($blog_post['BlogPost']['post_date']);
-	$isEdit = $this->CheckAuth->isEdit($hierarchy, $blog_post['Authority']['hierarchy']);
+	$isEdit = $this->CheckAuth->isEdit($hierarchy, $blog['Blog']['post_hierarchy'], $blog_post['BlogPost']['created_user_id'],
+		$blog_post['Authority']['hierarchy']);
+	$isApprove = false;
+	if($blog_post['BlogPost']['status'] != NC_STATUS_TEMPORARY && $blog_post['BlogPost']['is_approved'] != _ON) {
+		$isApprove = true;
+	}
 ?>
 <article class="blog-post" id="blog-post<?php echo($id.'-'.$blog_post['BlogPost']['id']); ?>">
 	<header class="blog-entry-header">
@@ -21,7 +26,28 @@
 					'rel' => 'bookmark'));
 				/* TODO:New記号 */
 			?>
+			<?php if($isApprove): ?>
+				<?php
+					$approveUrl = array(
+						'controller' => 'posts', 'action' => 'approve', $blog_post['BlogPost']['id']
+					);
+					echo $this->Html->link(__('Pending'), $approveUrl, array(
+						'title' => __('Pending'),
+						'class' => 'nc-button nc-button-red small',
+						'data-ajax-inner' =>'#blog-posts-approve-'.$id,
+						'data-ajax-dialog' => true,
+						'data-ajax-effect' => 'fold',
+						'data-ajax-dialog-options' => '{"title" : "'.$this->Js->escape(__('Pending [%s]', h($title))).'","modal": true, "resizable": true, "autoResize": true, "position":"mouse", "width":"600"}',
+						'data-ajax-effect' => 'fold'
+					));
+				?>
+			<?php elseif($blog_post['BlogPost']['status'] == NC_STATUS_TEMPORARY): ?>
+				<span class="temporary">
+					<?php echo __('Temporary...'); ?>
+				</span>
+			<?php endif; ?>
 		</h1>
+
 		<div class="blog-entry-meta">
 			<?php echo(__d('blog', 'Submitted on:')); ?>
 			<?php
@@ -51,16 +77,11 @@
 		</div>
 	</header>
 	<?php if($isEdit): ?>
-	<div class="blog-entry-content blog-entry-content-highlight" data-edit-id="#blog-edit-link<?php echo($id.'-'.$blog_post['BlogPost']['id']); ?>">
+	<div class="blog-entry-content blog-entry-content-highlight" title="<?php echo __('Double-Click to edit.'); ?>" data-edit-id="#blog-edit-link<?php echo($id.'-'.$blog_post['BlogPost']['id']); ?>">
 	<?php else: ?>
 	<div class="blog-entry-content">
 	<?php endif; ?>
-		<?php if(isset($blog_post['Revision']['revision_name']) && $blog_post['Revision']['revision_name'] == 'auto-draft'): ?>
-			<?php /* 自動保存のものは表示しない */ ?>
-			<span class="nc-auto-draft"><?php echo __('Editing...'); ?></span>
-		<?php else: ?>
-			<?php echo ($blog_post['Revision']['content']);?>
-		<?php endif; ?>
+		<?php echo ($blog_post['Revision']['content']);?>
 	</div>
 
 	<?php

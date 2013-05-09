@@ -11,6 +11,11 @@
 $this->extend('/Frame/block');
 $locale = Configure::read(NC_SYSTEM_KEY.'.locale');
 echo $this->Form->create('Announcement', array('data-pjax' => '#'.$id));
+if($announcement_edit['AnnouncementEdit']['approved_flag'] == _ON && $hierarchy  <= NC_AUTH_MODERATE) {
+	$isApprovalSystem = true;
+} else {
+	$isApprovalSystem = false;
+}
 ?>
 <div class="top-outer">
 <div class="table widthmax ">
@@ -23,6 +28,16 @@ echo $this->Form->create('Announcement', array('data-pjax' => '#'.$id));
 					<?php
 						echo $this->Form->label('Content.title', __d('announcement', 'Announcement name'));
 					?>
+					<?php if($announcement['Announcement']['status'] == NC_STATUS_TEMPORARY): ?>
+						<span class="temporary">
+							<?php echo __('Temporary...'); ?>
+						</span>
+					<?php endif; ?>
+					<?php if($isApprovalSystem): ?>
+						<span class="temporary">
+							<?php echo __('Approval system'); ?>
+						</span>
+					<?php endif; ?>
 				</dt>
 				<dd>
 					<?php
@@ -80,12 +95,21 @@ echo $this->Form->create('Announcement', array('data-pjax' => '#'.$id));
 				<?php /* 変更前のコンテンツを表示する */ ?>
 				<div class="small outer">
 				<?php
+					if($isApprovalSystem) {
+						$disabled = true;
+						$preChangeFlag = ($announcement_edit['AnnouncementEdit']['approved_pre_change_flag']) ? true : false;
+					} else {
+						$preChangeFlag = ($announcement['Announcement']['pre_change_flag']) ? true : false;
+						$disabled = false;
+					}
+
 					$settings = array(
 						'value' => _ON,
-						'checked' => !empty($announcement['Announcement']['pre_change_flag']) ? true : false,
+						'checked' => $preChangeFlag,
 						'label' =>__('You display the contents of the change before.'),
 						'type' => 'checkbox',
-						'div' => false
+						'div' => false,
+						'disabled' => $disabled,
 					);
 					echo $this->Form->input('Announcement.pre_change_flag', $settings);
 				?>
@@ -93,18 +117,20 @@ echo $this->Form->create('Announcement', array('data-pjax' => '#'.$id));
 					<?php
 						if($this->request->is('post') && !empty($announcement['Announcement']['pre_change_date'])) {
 							if($this->Form->isFieldError('Announcement.pre_change_date')) {
-								$pre_change_date = $announcement['Announcement']['pre_change_date'];
+								$preChangeDate = $announcement['Announcement']['pre_change_date'];
 							} else {
-								$pre_change_date = date(__('Y-m-d H:i'), strtotime($announcement['Announcement']['pre_change_date']));
+								$preChangeDate = date(__('Y-m-d H:i'), strtotime($announcement['Announcement']['pre_change_date']));
 							}
+						} else if($isApprovalSystem) {
+							$preChangeDate = '';
 						} else if(!empty($announcement['Announcement']['pre_change_date'])) {
-							$pre_change_date = $this->TimeZone->date($announcement['Announcement']['pre_change_date'], __('Y-m-d H:i'));
+							$preChangeDate = $this->TimeZone->date($announcement['Announcement']['pre_change_date'], __('Y-m-d H:i'));
 						} else {
-							$pre_change_date = '';
+							$preChangeDate = '';
 						}
 						$settings = array(
 							'type' => 'text',
-							'value' => $pre_change_date,
+							'value' => $preChangeDate,
 							'label' => false,
 							'div' => false,
 							'maxlength' => 16,
@@ -113,6 +139,7 @@ echo $this->Form->create('Announcement', array('data-pjax' => '#'.$id));
 							'error' => array('attributes' => array(
 								'selector' => true
 							)),
+							'disabled' => $disabled,
 						);
 						echo __('Published to %s automatically.', $this->Form->input('Announcement.pre_change_date', $settings));
 					?>

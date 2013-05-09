@@ -103,6 +103,13 @@ class BlogController extends BlogAppController {
 		$blog = $this->Blog->find('first', array('conditions' => array('content_id' => $this->content_id)));
 		$this->set('blog', $blog);
 
+		$userId = $this->Auth->user('id');
+		$isAdd = false;
+		if(!empty($userId) && isset($blog['Blog'])) {
+			$isAdd = $this->CheckAuth->isEdit($this->hierarchy, $blog['Blog']['post_hierarchy']);
+		}
+		$this->set('is_add', $isAdd);
+
 		$blog_styles = $this->BlogStyle->afterFindColRow($blog_styles, true);
 
 		$this->set('blog_styles', $blog_styles);

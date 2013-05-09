@@ -11,6 +11,11 @@
 $this->extend('/Frame/block');
 $locale = Configure::read(NC_SYSTEM_KEY.'.locale');
 echo $this->Form->create('BlogPost', array('data-pjax' => '#'.$id));
+if($blog['Blog']['approved_flag'] == _ON && $hierarchy  <= NC_AUTH_MODERATE) {
+	$isApprovalSystem = true;
+} else {
+	$isApprovalSystem = false;
+}
 ?>
 <div class="table widthmax">
 <div class="table-cell">
@@ -22,6 +27,16 @@ echo $this->Form->create('BlogPost', array('data-pjax' => '#'.$id));
 					<?php
 						echo $this->Form->label('BlogPost.post_date', __('Date-time'));
 					?>
+					<?php if($blog_post['BlogPost']['status'] == NC_STATUS_TEMPORARY): ?>
+						<span class="temporary">
+							<?php echo __('Temporary...'); ?>
+						</span>
+					<?php endif; ?>
+					<?php if($isApprovalSystem): ?>
+						<span class="temporary">
+							<?php echo __('Approval system'); ?>
+						</span>
+					<?php endif; ?>
 				</dt>
 				<dd>
 					<?php
@@ -205,12 +220,21 @@ echo $this->Form->create('BlogPost', array('data-pjax' => '#'.$id));
 			<?php endif; ?>
 			<div class="small outer">
 			<?php
+				if($isApprovalSystem) {
+					$disabled = true;
+					$preChangeFlag = ($blog['Blog']['approved_pre_change_flag']) ? true : false;
+				} else {
+					$preChangeFlag = ($blog_post['BlogPost']['pre_change_flag']) ? true : false;
+					$disabled = false;
+				}
+
 				$settings = array(
 					'value' => _ON,
-					'checked' => !empty($blog_post['BlogPost']['pre_change_flag']) ? true : false,
+					'checked' => $preChangeFlag,
 					'label' =>__('You display the contents of the change before.'),
 					'type' => 'checkbox',
-					'div' => false
+					'div' => false,
+					'disabled' => $disabled,
 				);
 				echo $this->Form->input('BlogPost.pre_change_flag', $settings);
 			?>
@@ -218,18 +242,20 @@ echo $this->Form->create('BlogPost', array('data-pjax' => '#'.$id));
 				<?php
 					if($this->request->is('post') && !empty($blog_post['BlogPost']['pre_change_date'])) {
 						if($this->Form->isFieldError('BlogPost.pre_change_date')) {
-							$pre_change_date = $blog_post['BlogPost']['pre_change_date'];
+							$preChangeDate = $blog_post['BlogPost']['pre_change_date'];
 						} else {
-							$pre_change_date = date(__('Y-m-d H:i'), strtotime($blog_post['BlogPost']['pre_change_date']));
+							$preChangeDate = date(__('Y-m-d H:i'), strtotime($blog_post['BlogPost']['pre_change_date']));
 						}
+					} else if($isApprovalSystem) {
+						$preChangeDate = '';
 					} else if(!empty($blog_post['BlogPost']['pre_change_date'])) {
-						$pre_change_date = $this->TimeZone->date($blog_post['BlogPost']['pre_change_date'], __('Y-m-d H:i'));
+						$preChangeDate = $this->TimeZone->date($blog_post['BlogPost']['pre_change_date'], __('Y-m-d H:i'));
 					} else {
-						$pre_change_date = '';
+						$preChangeDate = '';
 					}
 					$settings = array(
 						'type' => 'text',
-						'value' => $pre_change_date,
+						'value' => $preChangeDate,
 						'label' => false,
 						'div' => false,
 						'maxlength' => 16,
@@ -238,6 +264,7 @@ echo $this->Form->create('BlogPost', array('data-pjax' => '#'.$id));
 						'error' => array('attributes' => array(
 							'selector' => true
 						)),
+						'disabled' => $disabled,
 					);
 					echo __('Published to %s automatically.', $this->Form->input('BlogPost.pre_change_date', $settings));
 				?>

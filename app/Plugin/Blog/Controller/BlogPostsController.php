@@ -36,7 +36,6 @@ class BlogPostsController extends BlogAppController {
  */
 	public function index($postId = null) {
 		// TODO:権限チェックが未作成
-		// TODO:承認機能未実装
 		// TODO:email送信未実装
 
 		// 自動保存前処理
@@ -65,43 +64,66 @@ class BlogPostsController extends BlogAppController {
 				$isBeforeUpdateTermCount = true;
 			}
 
-			// 自動保存で最新のデータがあった場合、表示
+			// 自動保存等で最新のデータがあった場合、表示
 			$revision = $this->Revision->findRevisions(null, $blogPost['Revision']['group_id'], 1);
 			if(isset($revision[0])) {
 				$blogPost['Revision'] = $revision[0]['Revision'];
-			} else {
-				$blogPost['Revision'] = array('content' => '');
 			}
 		} else {
 			$blog_term_links = array();
 			$blogPost = $this->BlogPost->findDefault($this->content_id);
 			$isBeforeUpdateTermCount = false;
 		}
+
+		$userId = $this->Auth->user('id');
+		$isEdit = false;
+		if(!empty($userId)) {
+			if(isset($postId)) {
+				$isEdit = $this->CheckAuth->isEdit($this->hierarchy, $blog['Blog']['post_hierarchy'], $blogPost['BlogPost']['created_user_id'],
+					$blogPost['Authority']['hierarchy']);
+			} else {
+				$isEdit = $this->CheckAuth->isEdit($this->hierarchy, $blog['Blog']['post_hierarchy']);
+			}
+		}
+
+		if (!$isEdit) {
+			$this->flash(__('Forbidden permission to access the page.'), null, 'BlogPosts.index.003', '403');
+			return;
+		}
+
 		$active_category_arr = null;
 		$active_tag_arr = null;
 		if($this->request->is('post')) {
-			// 登録処理
 			if(!isset($this->request->data['BlogPost']) || !isset($this->request->data['Revision']['content'])) {
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPosts.index.003', '500');
+				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPosts.index.004', '500');
 				return;
 			}
+			// 登録処理
 			unset($this->request->data['BlogPost']['id']);
 			unset($this->request->data['BlogPost']['revision_group_id']);
-			unset($this->request->data['BlogPost']['is_approved']);
+			unset($this->request->data['BlogPost']['status']);
+			//unset($this->request->data['BlogPost']['is_approved']);
 			$blogPost['BlogPost'] = array_merge($blogPost['BlogPost'], $this->request->data['BlogPost']);
 			$blogPost['BlogPost']['content_id'] = $this->content_id;
 			$blogPost['BlogPost']['permalink'] = $blogPost['BlogPost']['title'];	// TODO:仮でtitleをセット「「/,:」等の記号を取り除いたり同じタイトルがあればリネームしたりすること。」
 			$blogPost['BlogPost']['status'] = isset($status) ? $status : $blogPost['BlogPost']['status'];
+			$blogPost['BlogPost']['is_approved'] = _ON;
 
 			$blogPost['Revision']['content'] = $this->request->data['Revision']['content'];
 
-			$fieldList = array(
-				'content_id', 'post_date', 'title', 'permalink', 'icon_name', 'revision_group_id', 'status', 'is_approved',
-				'post_password', 'trackback_link', 'pre_change_flag', 'pre_change_date',
-			);
+			$isApproved = _ON;
+			if(!$isAutoRegist &&
+				$blog['Blog']['approved_flag'] == _ON && $this->hierarchy  <= NC_AUTH_MODERATE) {
+				// 承認機能On
+				$blogPost['BlogPost']['pre_change_flag'] = (!$isAutoRegist && $blog['Blog']['approved_pre_change_flag'] == _ON) ? _ON : _OFF;
+				$blogPost['BlogPost']['pre_change_date'] = null;
+				$blogPost['BlogPost']['is_approved'] = _OFF;
+				$isApproved = _OFF;
+			}
 
 			$pointer = _OFF;
-			if(empty($blogPost['BlogPost']['pre_change_flag']) && ($blogPost['BlogPost']['revision_group_id'] == 0 || !$isAutoRegist)) {
+			if(empty($blogPost['BlogPost']['pre_change_flag']) &&
+				(!isset($blogPost['Revision']['id']) || !$isAutoRegist)) {
 				$pointer = _ON;
 			}
 
@@ -109,14 +131,20 @@ class BlogPostsController extends BlogAppController {
 				'Revision' => array(
 					'group_id' => $blogPost['BlogPost']['revision_group_id'],
 					'pointer' => $pointer,
+					'is_approved_pointer' => ($pointer == _ON) ? $isApproved : _OFF,
 					'revision_name' => $revisionName,
 					'content_id' => $this->content_id,
-					'content' => $this->request->data['Revision']['content'],
+					'content' => $this->request->data['Revision']['content']
 				)
 			);
 
+			$fieldList = array(
+				'content_id', 'post_date', 'title', 'permalink', 'icon_name', 'revision_group_id', 'status', 'is_approved',
+				'post_password', 'trackback_link', 'pre_change_flag', 'pre_change_date',
+			);
+
 			$fieldListRevision = array(
-				'group_id', 'pointer', 'revision_name', 'content_id', 'content',
+				'group_id', 'pointer', 'is_approved_pointer', 'revision_name', 'content_id', 'content',
 			);
 
 			$active_category_arr = (isset($this->request->data['BlogTermLink']) && isset($this->request->data['BlogTermLink']['category_id'])) ?
@@ -160,13 +188,13 @@ class BlogPostsController extends BlogAppController {
 				// カテゴリー登録
 				if(!$this->BlogTermLink->saveTermLinks($this->content_id, $this->BlogPost->id, $isBeforeUpdateTermCount, $is_after_update_term_count,
 					$active_category_arr, 'id', 'category')) {
-					$this->flash(__('Failed to register the database, (%s).', 'blog_term_links'), null, 'BlogPosts.index.003', '500');
+					$this->flash(__('Failed to register the database, (%s).', 'blog_term_links'), null, 'BlogPosts.index.005', '500');
 					return;
 				}
 				// タグ登録
 				if(!$this->BlogTermLink->saveTermLinks($this->content_id, $this->BlogPost->id, $isBeforeUpdateTermCount, $is_after_update_term_count,
 						$active_tag_arr, 'name', 'tag')) {
-					$this->flash(__('Failed to register the database, (%s).', 'blog_term_links'), null, 'BlogPosts.index.004', '500');
+					$this->flash(__('Failed to register the database, (%s).', 'blog_term_links'), null, 'BlogPosts.index.006', '500');
 					return;
 				}
 
@@ -355,37 +383,64 @@ class BlogPostsController extends BlogAppController {
 	}
 
 /**
- * 履歴情報表示
- * @param   integer $blogPostId
+ * 履歴情報表示・復元処理
+ * @param   integer $postId
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function revision($blogPostId) {
-		$blogPost = $this->BlogPost->findById($blogPostId);
+	public function revision($postId) {
+		// TODO:権限チェックが未作成
+		// TODO:復元のバリデートでそのrevision番号が本当に戻せるかどうか確認すること auto-drafutのデータ等
+		$blog = $this->Blog->findByContentId($this->content_id);
+		if(!isset($blog['Blog'])) {
+			$blog = $this->Blog->findDefault($this->content_id);
+		}
+		$blogPost = $this->BlogPost->findById($postId);
 		if(!isset($blogPost['BlogPost'])) {
 			$this->flash(__('Content not found.'), null, 'BlogPosts.revision.001', '404');
 			return;
 		}
-		// 自動保存で最新のデータがあった場合、表示
-		$revision = $this->Revision->findRevisions(null, $blogPost['Revision']['group_id'], 1);
-		if(isset($revision[0])) {
-			$blogPost['Revision'] = $revision[0]['Revision'];
-		} else {
-			$blogPost['Revision'] = array('content' => '');
-		}
-		$cancelUrl = array('action' => 'index', $blogPostId, '#' => $this->id);
 
-		$ret = $this->RevisionList->setDatas($blogPost['BlogPost']['title'], $blogPost, array($blogPostId), $cancelUrl);
-		if($ret === false) {
+		$cancelUrl = array('action' => 'index', $postId, '#' => $this->id);
+		if(!$this->RevisionList->showRegist($this->nc_block['Content']['title'], array($postId), $cancelUrl,
+			$this->BlogPost, $blogPost, $this->hierarchy,
+			$blog['Blog']['approved_flag'], $blog['Blog']['approved_pre_change_flag'])) {
 			$this->flash(__('Content not found.'), null, 'BlogPosts.revision.002', '404');
-			return;
 		}
 
 		if($this->request->is('post')) {
-			// TODO:復元のバリデートでそのrevision番号が本当に戻せるかどうか確認すること auto-drafutのデータ等
+			// 復元時
 			$this->redirect($cancelUrl);
 			return;
 		}
 		$this->render('/Revisions/index');
+	}
+
+/**
+ * 承認画面表示・「承認する」、「承認しない」実行。
+ * @param   integer $postId
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function approve($postId) {
+		// TODO:記事編集権限チェックが未作成
+		$blogPost = $this->BlogPost->findById($postId);
+		if(empty($blogPost)) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPosts.approve.001', '500');
+			return;
+		}
+
+		if ($this->request->is('post') && !$this->CheckAuth->checkAuth($this->hierarchy, NC_AUTH_CHIEF)) {
+			$this->flash(__('Forbidden permission to access the page.'), null, 'BlogPosts.approve.002', '403');
+			return;
+		}
+
+		if(!$this->RevisionList->approve($this->BlogPost, $blogPost)) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPosts.approve.003', '500');
+			return;
+		}
+
+		$this->set('dialog_id', 'blog-posts-approve-'.$this->id);
+		$this->render('/Approve/index');
 	}
 }

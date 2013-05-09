@@ -144,7 +144,10 @@ class BlogOperationComponent extends Object {
 		$tables = array('Revision', 'Blog', 'BlogComment', 'BlogPost', 'BlogTerm', 'BlogTermLink');
 		foreach($tables as $table) {
 			$condition = array($table.'.content_id' => $from_content['Content']['master_id']);
-			$datas = $this->{$table}->find('all', array('conditions' => $condition));
+			$datas = $this->{$table}->find('all', array(
+				'recursive' => -1,
+				'conditions' => $condition
+			));
 			foreach($datas as $data) {
 
 				if($table == 'Revision') {

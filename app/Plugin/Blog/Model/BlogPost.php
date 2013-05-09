@@ -17,11 +17,14 @@ class BlogPost extends AppModel
 	public $belongsTo = array(
 		'Revision'      => array(
 			'foreignKey'    => '',
-			'type' => 'INNER',
-			'fields' => array('Revision.group_id', 'Revision.content'),
+			'type' => 'LEFT',
+			'fields' => array('Revision.id', 'Revision.group_id', 'Revision.content',
+				'Revision.revision_name', 'Revision.is_approved_pointer', 'Revision.created', 'Revision.created_user_id', 'Revision.created_user_name'),
 			'conditions' => array(
 				'BlogPost.revision_group_id = Revision.group_id',
-				'Revision.pointer' => _ON
+				'Revision.pointer' => _ON,
+				'Revision.revision_name !=' => 'auto-draft',
+				'Revision.is_approved_pointer' => _ON
 			),
 		),
 		'Content'      => array(
@@ -137,21 +140,12 @@ class BlogPost extends AppModel
 				),
 			),
 			'is_approved' => array(
-				'numeric' => array(
-					'rule' => array('numeric'),
+				'boolean'  => array(
+					'rule' => array('boolean'),
+					'last' => true,
 					'required' => true,
-					'allowEmpty' => false,
-					'message' => __('The input must be a number.')
-				),
-				'inList' => array(
-					'rule' => array('inList', array(
-						NC_APPROVED_FLAG_OFF,
-						NC_APPROVED_FLAG_ON,
-						NC_APPROVED_FLAG_PRE_CHANGE,
-					), false),
-					'allowEmpty' => false,
-					'message' => __('It contains an invalid string.')
-				),
+					'message' => __('The input must be a boolean.')
+				)
 			),
 			'pre_change_flag' => array(
 				'boolean'  => array(
@@ -269,7 +263,7 @@ class BlogPost extends AppModel
 				'revision_group_id' => 0,
 				'vote' => null,
 				'status' => NC_STATUS_PUBLISH,
-				'is_approved' => NC_APPROVED_FLAG_ON,
+				'is_approved' => _ON,
 				'pre_change_flag' => _OFF,
 				'pre_change_date' => null,
 				'post_password' => '',
@@ -315,7 +309,7 @@ class BlogPost extends AppModel
 				array(
 					'BlogPost.status' => NC_STATUS_PUBLISH,
 					'BlogPost.post_date <=' => $this->nowDate(),
-					'BlogPost.is_approved' => array(NC_APPROVED_FLAG_ON, NC_APPROVED_FLAG_PRE_CHANGE)
+					'BlogPost.is_approved' => _ON
 				),
 
 				'Authority.hierarchy '.$separator => $hierarchy,

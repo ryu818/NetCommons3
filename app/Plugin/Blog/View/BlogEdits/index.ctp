@@ -251,7 +251,7 @@ $this->extend('/Frame/block');
 						<dl>
 							<dt>
 								<?php
-									echo $this->Form->label('Blog.mail_flag', __d('blog', 'Deliver e-mail when posting?'));
+									echo $this->Form->label('Blog.mail_flag', __('Deliver e-mail when posting?'));
 								?>
 							</dt>
 							<dd>

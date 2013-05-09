@@ -8,7 +8,7 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 ;(function($) {
-	$.fn.Announcement = function(id, url) {
+	$.fn.Announcement = function(id, url, title) {
 		var content;
 		if(url) {
 			content = $('#'+id+'-content');
@@ -18,7 +18,7 @@
 				$.Common.ajax(e, content);
 			}).hover(function(e) {
 				content.stop(false, true).effect("highlight", {}, 2000);
-			}, function(){});
+			}, function(){}).attr('title', title);
 		}
 	}
 })(jQuery);

@@ -13,29 +13,45 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 class CheckAuthHelper extends AppHelper {
-	public $helpers = array('Form');
+	public $helpers = array('Session');
 
 /**
  * 編集権限があるかどうか
- * @param   integer $room_hierarchy ログイン会員のroomにおけるhierarchy
- * @param   integer $post_hierarchy 記事投稿者hierarchy
+ * @param   integer $roomHierarchy ログイン会員のroomにおけるhierarchy
+ * @param   integer $adminPostHierarchy 管理画面における記事投稿権限hierarchy
+ * @param   integer $postUserId 記事投稿者user_id
+ * @param   integer $postHierarchy 記事投稿者hierarchy
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	public function isEdit($room_hierarchy, $post_hierarchy) {
-		if($room_hierarchy >= NC_AUTH_MIN_MODERATE) {
-			if($room_hierarchy >= $post_hierarchy) {
-				$is_edit = true;
-			} else {
-				$is_edit = false;
-			}
-		} else {
-			if($room_hierarchy > $post_hierarchy) {
-				$is_edit = true;
-			} else {
-				$is_edit = false;
+	public function isEdit($roomHierarchy, $adminPostHierarchy = null, $postUserId = null, $postHierarchy = null) {
+		$isEdit = true;
+		if(isset($adminPostHierarchy)) {
+			if($roomHierarchy < $adminPostHierarchy) {
+				return false;
 			}
 		}
-		return $is_edit;
-    }
+		if(isset($postUserId)) {
+			$user = $this->Session->read(NC_AUTH_KEY.'.'.'User');
+			if(isset($user) && $user['id'] == $postUserId) {
+				return true;
+			}
+		}
+		if(isset($postHierarchy)) {
+			if($roomHierarchy >= NC_AUTH_MIN_MODERATE) {
+				if($roomHierarchy >= $postHierarchy) {
+					$isEdit = true;
+				} else {
+					$isEdit = false;
+				}
+			} else {
+				if($roomHierarchy > $postHierarchy) {
+					$isEdit = true;
+				} else {
+					$isEdit = false;
+				}
+			}
+		}
+		return $isEdit;
+	}
 }

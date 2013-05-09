@@ -87,23 +87,53 @@ class RevisionListComponent extends Component {
 	}
 
 /**
- * 履歴情報画面表示 リビジョン比較画面表示処理
+ * 履歴情報画面表示 リビジョン比較画面表示・復元処理
  * @param   string  $title          投稿記事のタイトル
- * @param   Model Revision          Model Revision
  * @param   array   $url            array(投稿記事のid)
  * 										・View->linkのurl(default: 'revision_id' => $revision['Revision']['id'], '#' => $id )
  *  									  セットするとマージする。
  *                                  	・Form->actionのurl(default: '#' => $id ) セットするとマージする。
  * @param   array   $cancelUrl     キャンセルクリック時、復元後戻り先
+ * @param   Model Object           記事投稿モデル $postModel(status, is_approved, revision_group_id, 'Revision')
+ * @param   Model                  記事投稿モデルデータ $postModelData(status, is_approved, revision_group_id, 'Revision')
+ * @param   integer $hierarchy
+ * @param   boolean $approved_flag
+ * @param   boolean $approved_pre_change_flag
  * @return  boolean|integer 復元時 復元revisionId
  * @since   v 3.0.0.0
  */
-	public function setDatas($title, $revision, $url, $cancelUrl) {
+	public function showRegist($title, $url, $cancelUrl, $postModel, $postModelData, $hierarchy, $approved_flag = _OFF, $approved_pre_change_flag = _OFF) {
+		$isApproved = _ON;
+		if($approved_flag == _ON && $hierarchy  <= NC_AUTH_MODERATE) {
+			$isApproved = _OFF;
+		}
+		$revision_name = ($postModelData[$postModel->alias]['status'] == NC_STATUS_TEMPORARY) ? 'draft' : 'publish';
+		// 自動保存等で最新のデータがあった場合、表示
+		$revision = $this->_controller->Revision->findRevisions(null, $postModelData[$postModel->alias]['revision_group_id'], 1);
+		if(isset($revision[0])) {
+			$postModelData['Revision'] = $revision[0]['Revision'];
+			$revision = $revision[0];
+		} else {
+			return false;
+		}
+		$postModelData['Revision']['revision_name'] = $revision_name;
+
+		if($approved_flag == _ON && $hierarchy  <= NC_AUTH_MODERATE) {
+			$isApprovalSystem = true;
+		} else {
+			$isApprovalSystem = false;
+		}
+		if($isApprovalSystem) {
+			$pointer = ($approved_pre_change_flag== _OFF) ? _ON : _OFF;
+		} else {
+			$pointer = _ON;
+		}
 		$id = $revision['Revision']['id'];
 		$groupId = $revision['Revision']['group_id'];
 
 		if($this->_controller->request->is('post') && isset($this->_controller->request->named['revision_id'])) {
-			$newRevisionId = $this->restore($this->_controller->request->named['revision_id']);
+			// 復元
+			$newRevisionId = $this->restore($postModel, $postModelData, $this->_controller->request->named['revision_id'], $revision['Revision']['revision_name'], $pointer, $isApproved);
 			if($newRevisionId === false) {
 				return false;
 			}
@@ -112,7 +142,12 @@ class RevisionListComponent extends Component {
 			$currentRevisionId = $this->_controller->request->query['current_revision_id'];
 			$revisionId = $this->_controller->request->query['revision_id'];
 			// リビジョン比較
-			$diffText = $this->compare($currentRevisionId, $revisionId);
+			$currentRevision = $this->_controller->Revision->findById($currentRevisionId);
+			$revision = $this->_controller->Revision->findById($revisionId);
+			if(!isset($currentRevision['Revision']) || !isset($revision['Revision'])) {
+				return false;
+			}
+			$diffText = $this->compare($currentRevision['Revision']['content'], $revision['Revision']['content']);
 			if($diffText === false) {
 				return false;
 			}
@@ -129,7 +164,6 @@ class RevisionListComponent extends Component {
 		$this->_controller->set('title', $title);
 		$this->_controller->set('url', $url);
 		$this->_controller->set('cancel_url', $cancelUrl);
-
 		$this->_controller->set('current_revision_id', $currentRevisionId);
 		$this->_controller->set('revision_id', $revisionId);
 		$this->_controller->set('revisions', $this->_controller->Revision->findRevisions($id, $groupId, null));
@@ -137,27 +171,120 @@ class RevisionListComponent extends Component {
 	}
 
 /**
- * リビジョン比較処理
- * @param   integer $currentRevisionId
- * @param   integer $revisionId
- * @param   string   <tr><td></td><td></td><td></td><td></td></tr>となる文字データ
+ * 承認画面表示・「承認する」、「承認しない」実行。
+ * @param   Model Object           記事投稿モデル $postModel(status, is_approved, revision_group_id, 'Revision')
+ * @param   Model                  記事投稿モデルデータ $postModelData(status, is_approved, revision_group_id, 'Revision')
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	public function compare($currentRevisionId, $revisionId) {
-		$diffText = '';
-		$currentRevision = $this->_controller->Revision->findById($currentRevisionId);
-		$revision = $this->_controller->Revision->findById($revisionId);
-		if(!isset($currentRevision['Revision']) || !isset($revision['Revision'])) {
+	public function approve($postModel, $postModelData) {
+		$conditions = array(
+			"Revision.group_id" => $postModelData[$postModel->alias]['revision_group_id'],
+			"Revision.is_approved_pointer" => _ON
+		);
+		$preRevision = $this->_controller->Revision->find('first', array('conditions' => $conditions));
+
+		$ret = $this->_controller->Revision->findRevisions(null, $postModelData[$postModel->alias]['revision_group_id'], 1);
+		if(isset($ret[0])) {
+			$revision = $ret[0];
+		} else {
 			return false;
 		}
+		if ($this->_controller->request->is('post')) {
+			if(!isset($this->_controller->request->data['revision_id']) || !isset($this->_controller->request->data['is_approve'])) {
+				return false;
+			}
+			$isApprove = $this->_controller->request->data['is_approve'];
+			$approveRevision = $this->_controller->Revision->findById($this->_controller->request->data['revision_id']);
+			if($postModelData[$postModel->alias]['revision_group_id'] != $approveRevision['Revision']['group_id']) {
+				return false;
+			}
+
+			if($isApprove) {
+				// 承認する
+				$fields = array(
+					'Revision.pointer' => _OFF
+				);
+				$conditions = array(
+					"Revision.group_id" => $postModelData[$postModel->alias]['revision_group_id'],
+					"Revision.pointer" => _ON
+				);
+				if(!$this->_controller->Revision->updateAll($fields, $conditions)) {
+					return false;
+				}
+
+				$revision_id = $this->_controller->request->data['revision_id'];
+				$fields = array(
+					'Revision.pointer' => _ON,
+					'Revision.is_approved_pointer' => _ON
+				);
+				$conditions = array(
+					"Revision.id" => $revision_id
+				);
+				if(!$this->_controller->Revision->updateAll($fields, $conditions)) {
+					return false;
+				}
+				$revision_name = $approveRevision['Revision']['revision_name'];
+			} else {
+				// 承認しない。
+
+				$revision = array(
+					'Revision' => array(
+						'group_id' => $postModelData[$postModel->alias]['revision_group_id'],
+						'pointer' => _ON,
+						'is_approved_pointer' => _ON,
+						'revision_name' => isset($preRevision['Revision']) ? $preRevision['Revision']['revision_name'] : $revision['Revision']['revision_name'],
+						'content_id' => $revision['Revision']['content_id'],
+						'content' => isset($preRevision['Revision']) ? $preRevision['Revision']['content'] : ''
+					)
+				);
+				$this->_controller->Revision->create();
+				$this->_controller->Revision->set($revision);
+				if(!$this->_controller->Revision->save($revision, ($revision['Revision']['content'] != '') ? true : false)) {
+					return false;
+				}
+				$revision['Revision']['id'] = $this->_controller->Revision->id;
+				$revision_name = isset($preRevision['Revision']) ? $preRevision['Revision']['revision_name'] : NC_STATUS_PUBLISH;
+			}
+			$postModelData[$postModel->alias]['status'] = ($revision_name == 'publish') ? NC_STATUS_PUBLISH : NC_STATUS_TEMPORARY;
+			$postModelData[$postModel->alias]['is_approved'] = _ON;
+			$postModelData[$postModel->alias]['pre_change_flag'] = _OFF;
+			$postModelData[$postModel->alias]['pre_change_date'] = null;
+			if(!$postModel->save($postModelData, true, array('status', 'is_approved', 'pre_change_flag', 'pre_change_date'))) {
+				return false;
+			}
+			if($isApprove) {
+				$this->_controller->Session->setFlash(__('Approved.'));
+			} else {
+				$this->_controller->Session->setFlash(__('Changed to unapproved.'));
+			}
+		}
+
+		if($preRevision['Revision']['id'] != $revision['Revision']['id']) {
+			$this->_controller->set('pre_approval', $preRevision);
+		}
+		$this->_controller->set('post_approval', $revision);
+
+		$this->_controller->set('diffText', $this->compare($revision['Revision']['content'], $preRevision['Revision']['content']));
+		return true;
+	}
+
+/**
+ * リビジョン比較処理
+ * @param   string $currentContent
+ * @param   string $content
+ * @return   string   <tr><td></td><td></td><td></td><td></td></tr>となる文字データ
+ * @since   v 3.0.0.0
+ */
+	public function compare($currentContent, $content) {
+		$diffText = '';
 
 		//App::uses("Text_Diff", "Vendor/pear/Text/Diff.php");
 		//App::uses("Text_Diff_Renderer_compare", "Vendor/pear/Text/Renderer/compare.php");
 		App::import('Vendor', 'Text_Diff', array('file' => 'pear/Text/Diff.php'));
 		App::import('Vendor', 'Text_Diff_Renderer_compare', array('file' => 'pear/Text/Diff/Renderer/compare.php'));
 
-		$diff = new Text_Diff('auto', array($this->_splitBlocktag($revision['Revision']['content']), $this->_splitBlocktag($currentRevision['Revision']['content'])));
+		$diff = new Text_Diff('auto', array($this->_splitBlocktag($content), $this->_splitBlocktag($currentContent)));
 
 		$renderer = new Text_Diff_Renderer_compare();	// レンダラーを変更
 		if(!$diff->isEmpty()){
@@ -169,20 +296,27 @@ class RevisionListComponent extends Component {
 
 /**
  * リビジョン復元処理
+ * @param   Model Object           記事投稿モデル $postModel(status, is_approved, revision_group_id, 'Revision')
+ * @param   Model                  記事投稿モデルデータ $postModelData(status, is_approved, revision_group_id, 'Revision')
  * @param   integer $revisionId
- * @param   array   $cancelUrl     キャンセルクリック時、復元後戻り先
+ * @param   string  $revision_name
+ * @param   boolean $pointer
+ * @param   boolean $isApproved
  * @return  boolean|integer
  * @since   v 3.0.0.0
  */
-	public function restore($revisionId) {
+	public function restore($postModel, $postModelData, $revisionId, $revision_name = 'publish', $pointer = _ON, $isApprovedPointer = _ON) {
 
 		$revision = $this->_controller->Revision->findById($revisionId);
-		$currentRevisions = $this->_controller->Revision->findRevisions($revision['Revision']['id'], $revision['Revision']['group_id'], 1);
-		if(!isset($revision['Revision']) || !isset($currentRevisions[0]['Revision'])) {
+		if(!isset($revision['Revision'])) {
 			return false;
 		}
+		//$currentRevisions = $this->_controller->Revision->findRevisions($revision['Revision']['id'], $revision['Revision']['group_id'], 1);
+		//if(!isset($revision['Revision']) || !isset($currentRevisions[0]['Revision'])) {
+		//	return false;
+		//}
 
-		if($currentRevisions[0]['Revision']['pointer'] == _ON) {
+		/*if($currentRevisions[0]['Revision']['pointer'] == _ON) {
 			$fields = array(
 				$this->_controller->Revision->alias.'.pointer' => _OFF
 			);
@@ -190,25 +324,39 @@ class RevisionListComponent extends Component {
 				$this->_controller->Revision->alias.".id" => $currentRevisions[0]['Revision']['id']
 			);
 			$this->_controller->Revision->updateAll($fields, $conditions);
-		}
+		}*/
 
 		$setRevision = array(
 			'Revision' => array(
 				'group_id' => $revision['Revision']['group_id'],
-				'pointer' => $currentRevisions[0]['Revision']['pointer'],
-				'revision_name' => 'restore',
+				'pointer' => $pointer,
+				'is_approved_pointer' => $isApprovedPointer,
+				'revision_name' => $revision_name,
 				'content_id' => $revision['Revision']['content_id'],
 				'content' => $revision['Revision']['content']
 			)
 		);
 
 		$fieldListRevision = array(
-			'group_id', 'pointer', 'revision_name', 'content_id', 'content',
+			'group_id', 'pointer', 'is_approved_pointer', 'revision_name', 'content_id', 'content',
 		);
 
-		if(!$this->_controller->Revision->save($setRevision, true, $fieldListRevision)) {
+		if(!$this->_controller->Revision->save($setRevision, ($setRevision['Revision']['content'] != '') ? true : false, $fieldListRevision)) {
 			return false;
 		}
+
+		if($this->_controller->request->is('post') && $isApprovedPointer == _OFF) {
+			$fields = array(
+				$postModel->alias.'.is_approved' => _OFF
+			);
+			$conditions = array(
+				$postModel->alias.".id" => $postModelData[$postModel->alias]['id']
+			);
+			if(!$postModel->updateAll($fields, $conditions)) {
+				return false;
+			}
+		}
+
 		$this->_controller->Session->setFlash(__('Post restored to revision from %s',
 			$this->_controller->Revision->date($revision['Revision']['created'], __('Y-m-d H:i:s'))));
 

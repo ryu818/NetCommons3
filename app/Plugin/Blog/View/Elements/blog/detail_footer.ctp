@@ -2,7 +2,8 @@
 	$title = $blog_post['BlogPost']['title'];
 	$permalink = $blog_post['BlogPost']['permalink'];
 	$dates = $this->TimeZone->date_values($blog_post['BlogPost']['post_date']);
-	$isEdit = $this->CheckAuth->isEdit($hierarchy, $blog_post['Authority']['hierarchy']);
+	$isEdit = $this->CheckAuth->isEdit($hierarchy, $blog['Blog']['post_hierarchy'], $blog_post['BlogPost']['created_user_id'],
+		$blog_post['Authority']['hierarchy']);
 
 	$user = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 	// 投票済みの場合は取得できる

@@ -114,7 +114,10 @@ class AnnouncementOperationComponent extends Object {
 		$groupId = $newGroupId = 0;
 		foreach($tables as $table) {
 			$condition = array($table.'.content_id' => $from_content['Content']['master_id']);
-			$datas = $this->{$table}->find('all', array('conditions' => $condition));
+			$datas = $this->{$table}->find('all', array(
+				'conditions' => $condition,
+				'recursive' => -1
+			));
 
 			foreach($datas as $data) {
 

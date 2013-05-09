@@ -19,6 +19,8 @@ class Revision extends AppModel
 
 	public $actsAs = array('TimeZone');
 
+	public $order = array('Revision.created' => 'DESC', 'Revision.id' => 'DESC');
+
 /**
  * バリデート処理
  * @param   void
@@ -41,7 +43,6 @@ class Revision extends AppModel
 						'publish',
 						'draft',
 						'auto-draft',
-						'restore',
 						// 'pending',
 						// 'future',
 					)),
@@ -50,6 +51,12 @@ class Revision extends AppModel
 				)
 			),
 			'pointer' => array(
+				'boolean'  => array(
+					'rule' => array('boolean'),
+					'message' => __('The input must be a boolean.')
+				)
+			),
+			'is_approved_pointer' => array(
 				'boolean'  => array(
 					'rule' => array('boolean'),
 					'message' => __('The input must be a boolean.')
@@ -103,9 +110,11 @@ class Revision extends AppModel
 			if(isset($revisions[0]) && $revisions[0][$this->alias]['content'] == $this->data[$this->alias]['content'] &&
 				$revisions[0][$this->alias]['pointer'] == $this->data[$this->alias]['pointer']) {
 				// コンテンツ変更なし。
-				if($revisions[0][$this->alias]['revision_name'] != $this->data[$this->alias]['revision_name']) {
+				if($revisions[0][$this->alias]['revision_name'] != $this->data[$this->alias]['revision_name'] ||
+					$revisions[0][$this->alias]['is_approved_pointer'] != $this->data[$this->alias]['is_approved_pointer']) {
 					$fields = array(
-						$this->alias.'.revision_name' => "'" .$this->data[$this->alias]['revision_name']."'"
+						$this->alias.'.revision_name' => "'" .$this->data[$this->alias]['revision_name']."'",
+						$this->alias.'.is_approved_pointer' => $this->data[$this->alias]['is_approved_pointer']
 					);
 					$conditions = array(
 						$this->alias.".id" => $revisions[0][$this->alias]['id']

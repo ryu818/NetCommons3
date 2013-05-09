@@ -5534,6 +5534,7 @@ e-mail：{X-EMAIL}
         <column name="id">50</column>
         <column name="group_id">50</column>
         <column name="pointer">1</column>
+        <column name="is_approved_pointer">1</column>
         <column name="revision_name">publish</column>
         <column name="content_id">17</column>
         <column name="content">日本数学会では、2011年４月から７月にかけて、全国約50の大学において計6千人の大学生（主として入試直後の大学１年生）を対象に、「大学生数学基本調査」を実施しました。&lt;br&gt;その調査報告書の概要と調査票、またそれに基づいた理事会からの提言を日本数学会のホームページで公開していますので、ご覧いただければ幸いです。&lt;br&gt;http://mathsoc.jp/comm/kyoiku/chousa2011/</column>
@@ -5548,6 +5549,7 @@ e-mail：{X-EMAIL}
         <column name="id">51</column>
         <column name="group_id">51</column>
         <column name="pointer">1</column>
+        <column name="is_approved_pointer">1</column>
         <column name="revision_name">publish</column>
         <column name="content_id">17</column>
         <column name="content">これは、友人である竹山美宏さんの&lt;a target=&quot;_blank&quot; href=&quot;http://researchmap.jp/joqt0nch9-10423/#_10423&quot;&gt;ブログ記事&lt;/a&gt;に触発されて書いた記事です。竹山さんへコメントとして書こうかしら、と思ったのですが、長くなったので自分のところに書きます。&lt;br&gt;&lt;br&gt;最近、「なぜ微積分まで勉強しないといけないのですか？」と聞かれて、こんな風に答えました。&lt;br&gt;昨年の3月11日以降、私たちの世界は変わりました。&lt;br&gt;それまで私たちはうすぼんやりと、こんな風に考えていたんじゃないでしょうか。&lt;br&gt;「高邁な精神の科学者」なるものが世の中に存在して、専門性に応じて、正しい科学的判断をしてくれるはず。&lt;br&gt;ただし、科学者の意見は時にバランスにかけるので、「それをコントロールする能力がある官僚」なるものがいるはず。&lt;br&gt;さらに法律を通す場合には、専門家による委員会の公平かつ科学的意見を参考に市民の代表である国会議員が十分に検討してくれるはず。&lt;br&gt;それでも不公平だと感じたときには、裁判所に駆け込めば、どんなことに関しても法と論理に基づいて、公平かつ科学的にきちんと判断してくれるはず。&lt;br&gt;でも、そんなことはありませんでした。&lt;br&gt;薄々わかってましたけど。&lt;br&gt;それなのに、みんな自分の人生に忙しくて、「誰かちゃんとした人が考えてくれるはず」と思って任せてきたんですね。&lt;br&gt;&lt;br&gt;でも、この事実が白日の下に晒されて、本当に困りました。あなただって、そうでしょう？&lt;br&gt;&lt;br&gt;だっ
@@ -5565,6 +5567,7 @@ e-mail：{X-EMAIL}
         <column name="id">52</column>
         <column name="group_id">52</column>
         <column name="pointer">1</column>
+        <column name="is_approved_pointer">1</column>
         <column name="revision_name">publish</column>
         <column name="content_id">18</column>
         <column name="content">&lt;img alt=&quot;NetCommons&quot; title=&quot;NetCommons&quot; src=&quot;/dev/kohama/nc3/img/install/logo.gif&quot;&gt;</column>
@@ -5579,13 +5582,14 @@ e-mail：{X-EMAIL}
         <column name="id">49</column>
         <column name="group_id">49</column>
         <column name="pointer">1</column>
+        <column name="is_approved_pointer">1</column>
         <column name="revision_name">publish</column>
         <column name="content_id">17</column>
         <column name="content">瀬名秀明さんの「エヴリブレス」が徳間文庫から刊行されることになり、どういうわけかSF初心者の私が「解説」を依頼されました。「エヴリブレス」のご紹介もかねて、ここに全文を掲載します。&lt;br&gt;&lt;br&gt;&lt;strong&gt;「科学と文学が記述できること・できないこと」&lt;/strong&gt;&lt;br&gt;&lt;br&gt;1956
 年の夏、ダートマス大学において集中的な会合を開くことが提案された。提案者は、後に人工知能の大御所となるジョン・マッカーシー、マーヴィン・ミンス
 キー、ナザニエル・ロチェスター、クロード・シャノン。彼らは、人間の知的活動とは何か、人間はどのように学ぶのか、その活動はコンピュータによってシ
-ミュレート可能か――こうした問いを科学として真っ向から探究することを呼びかけた。このダートマス会議によって、AI（Artificial 
-Intelligence, 
+ミュレート可能か――こうした問いを科学として真っ向から探究することを呼びかけた。このダートマス会議によって、AI（Artificial
+Intelligence,
 人工知能）という分野が誕生し、科学者によってコンピュータと共棲する社会の具体的イメージが「当然起こる未来」として語られるようになったのである。&lt;br&gt;&lt;br&gt;しかし、人工知能という企ては、何も1956年に突如始まったわけではない。その起源は、近代科学そして近代哲学のスタートまでさかのぼることができる。&lt;br&gt;&lt;br&gt;ニ
 コラウス・コペルニクスやガリレオ・ガリレオより前の時代、世界は生物に喩えて説明がなされていた。石は元来、大地に属していた。だから、手を放すと、ま
 るで母を慕うように石は地に落ちる。一方、炎は太陽に属していた。だから、煙になると母である太陽を目指して、上へ上へと昇っていく。このような説明が、
@@ -5603,7 +5607,7 @@ Intelligence,
 ン・チューリングである。彼は23歳のとき、現代のコンピュータの原理となるチューリング機械というアイデアを発表した。それはまさに、「（合理的に）わ
 かるとは、何か」に関する計算モデルであった。チューリングのアイデアに基づいて作られた現代のコンピュータとは、その意味で、「数学で世界の理は表現で
 きる」という近代科学のイデオロギーを、忠実に、また極端な形で具現化しようと試みた人工物だといえよう。&lt;br&gt;となれば、「人工知能は可能か」という問いは、デカルトやホッブスの末裔である近代合理主義と、ヒュームの末裔である経験主義のどちらが「真の世界」に近いのかを三百年の時空を超えて問うテーマだともいえる。&lt;br&gt;&lt;br&gt;&lt;br&gt;瀬
-名秀明がBrain 
+名秀明がBrain
 Valley以降、一貫してテーマとしてきたのも、まさにそのことだろう。コンピュータの脳であり母語である数学という言語は強靭さと柔軟さを兼ね備え、
 しかも必要に応じて成長していく。しかし、意外なところに脆さを抱えてもいる。数学が持つこれらの特性は、私たちの未来を、人工知能と共棲する私たちの未
 来を、どのように形づくるのか。彼は、その具体的なイメージを現在生み出されつつある技術から見定めたいと考えているのだろう。「エヴリブレス」でも近作
