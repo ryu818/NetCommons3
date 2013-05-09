@@ -135,6 +135,19 @@ if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 			?>
 		</li>
 		<?php endif; ?>
+		<?php
+		/* その他メニューに追加する場合、nc_other_controller_actionに対してassignする。 */
+		$nc_other_controller_action = $this->fetch('nc_other_controller_action');
+		if(isset($nc_other_controller_action)) {
+			if(is_array($nc_other_controller_action)) {
+				foreach($nc_other_controller_action as $bufControllerAction) {
+					echo '<li>'.$bufControllerAction.'</li>';
+				}
+			} else {
+				echo '<li>'.$nc_other_controller_action.'</li>';
+			}
+		}
+		?>
 		<?php /* TODO:コンテンツ一覧を表示する必要がないモジュールも存在する予定 */ ?>
 		<?php if($block['Block']['controller_action'] != 'group'): ?>
 		<li>
