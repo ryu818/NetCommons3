@@ -117,7 +117,7 @@ a.hover-highlight:active {
 	text-decoration:none;
 }
 /* ボタン - 共通 */
-.common-btn {
+.common-btn,.common-btn:active {
 	border-radius : 4px 4px 4px 4px;
 	border:1px solid #cccccc;
 	color:#686868;
@@ -131,7 +131,7 @@ a.hover-highlight:active {
 /* Firefox */
     background-image: -moz-linear-gradient(center top , #ffffff, #f8f8f8);
 /* Webkit */
-    background: -webkit-gradient(
+	background: -webkit-gradient(
         linear,
         center top,
         center bottom,
