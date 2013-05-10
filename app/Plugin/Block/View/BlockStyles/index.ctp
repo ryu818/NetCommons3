@@ -200,7 +200,8 @@
 									'type' => 'text',
 									'error' => array('attributes' => array(
 										'selector' => $this->Js->escape("$('[name=data\\[Block\\]\\[min_width_size\\]]', $('#nc-block-styles-tab-init".$block_id."'))")
-									))
+									)),
+									'required' => false,
 								);
 								if($block['Block']['min_width_size'] == BLOCK_STYLES_MIN_SIZE_AUTO || $block['Block']['min_width_size'] == BLOCK_STYLES_MIN_SIZE_100) {
 									$settings['value'] = '';
@@ -248,7 +249,8 @@
 									'type' => 'text',
 									'error' => array('attributes' => array(
 										'selector' => $this->Js->escape("$('[name=data\\[Block\\]\\[min_height_size\\]]', $('#nc-block-styles-tab-init".$block_id."'))")
-									))
+									)),
+									'required' => false,
 								);
 								if($block['Block']['min_height_size'] == BLOCK_STYLES_MIN_SIZE_AUTO || $block['Block']['min_height_size'] == BLOCK_STYLES_MIN_SIZE_100) {
 									$settings['value'] = '';
