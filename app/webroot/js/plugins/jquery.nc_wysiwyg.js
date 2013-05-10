@@ -364,7 +364,7 @@
 			                    		}
 		                    		}
 		                    		self.rangeSelect(f);
-			                    } else if($.browser.safari) {
+			                    } else if($.browser.webkit) {
 			                    	var f = self.getSelectNode();
 			                    	var formatTags = " font span b script strong em i u ins s strike sub sup ";
 			                    	if(formatTags.indexOf(" " + f.tagName.toLowerCase() + " ") != -1) {
@@ -384,7 +384,7 @@
 			                    	}
 			                    }
 			                    this.editorDoc.execCommand('removeFormat', false, []);
-			                    if($.browser.safari && f.nodeName.toLowerCase() != "body") {
+			                    if($.browser.webkit && f.nodeName.toLowerCase() != "body") {
 			                    	// Class Apple-style-spanを検索し、削除
 			                    	var remove_el_arr = [];
 			                    	var buf_f = f;
@@ -733,7 +733,7 @@
 																				self.moveToBookmark(self.bookmark);
 																			var tex_el = self.applyInlineStyle(html, null, true);
 																			self.removeDialog(self.id + "-inserttex");
-																			if($.browser.safari && n && n.get(0) && n.get(0).nodeName.toLowerCase() == 'img') {
+																			if($.browser.webkit && n && n.get(0) && n.get(0).nodeName.toLowerCase() == 'img') {
 																				$(tex_el).insertBefore(n);
 																				n.remove();
 																			}
@@ -926,7 +926,7 @@
 																self.moveToBookmark(self.bookmark);
 															var img_el = self.applyInlineStyle(html, null, true);
 															self.removeDialog(self.id + "-insertimage");
-															if($.browser.safari && e_n && e_n.get(0).nodeName.toLowerCase() == 'img') {
+															if($.browser.webkit && e_n && e_n.get(0).nodeName.toLowerCase() == 'img') {
 																$(img_el).insertBefore(e_n);
 																e_n.remove();
 															}
@@ -966,12 +966,12 @@
 																if($.browser.msie)
 																	self.moveToBookmark(self.bookmark);
 																////var img = self.currentNode ? self.currentNode : self.getSelectNode();
-																////if ($.browser.safari && img.tagName.toLowerCase() == 'img') {
+																////if ($.browser.webkit && img.tagName.toLowerCase() == 'img') {
 																////	self.rangeSelect(img);
 																////}
 																var img_el = self.applyInlineStyle(html, null, true);
 																self.closeDialogs();
-																if($.browser.safari) {// && img && img.nodeName.toLowerCase() == 'img'
+																if($.browser.webkit) {// && img && img.nodeName.toLowerCase() == 'img'
 																	$(img_el).insertBefore($(img));
 																	$(img).remove();
 																}
@@ -1232,7 +1232,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 
             $(this.editorDoc).keydown(function( e )
             {
-            	if($.browser.safari && (e.keyCode == 46 || e.keyCode == 8)) {
+            	if($.browser.webkit && (e.keyCode == 46 || e.keyCode == 8)) {
             		// １行選択してdelete(backspace)ボタン、
             		// または、1行にわたるNodeを選択してdelete(backspace)
             		// ボタンを押すと、そのelementが削除されないため対処
@@ -1305,7 +1305,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 		                    rng.pasteHTML('<br />');
 		                    rng.collapse(false);
 		                    rng.select();
-		                } else if($.browser.safari) {
+		                } else if($.browser.webkit) {
 		                	self.editorDoc.execCommand("InsertLineBreak", false, []);
 		                	var bm = self.getBookmark();
 		                	self.getWin().scrollTo(bm.scrollX, bm.scrollY+16);
@@ -1488,7 +1488,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
         {
         	body = (body == undefined) ? this.editorDoc.body : body;
         	//SCRIPTタグをinnerHTMLした場合、IEでは削除されるため
-			if($.browser.msie || $.browser.safari) {
+			if($.browser.msie || $.browser.webkit) {
 				body.innerHTML = "<br />" + newContent;
 				body.removeChild(body.firstChild);
 			} else {
@@ -1985,7 +1985,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 	            		n = n_el ;	//self.getSelectNode();
 	            		do {
 	            			if(n.nodeType == 1 && cth++ == th) {
-	            				if(($.browser.opera || $.browser.safari) && n.nodeName == 'TABLE') {
+	            				if(($.browser.opera || $.browser.webkit) && n.nodeName == 'TABLE') {
 	            					buf_n = $(n).children("TBODY")[0];
 	            					if(buf_n)
 	            						n = buf_n;
@@ -2094,7 +2094,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			                        for ( var cssProperty in control.css ) {
 										if(el[0].style[cssProperty] == undefined || el[0].style[cssProperty] == '')
 											continue;
-										if($.browser.safari && cssProperty == "fontFamily") {
+										if($.browser.webkit && cssProperty == "fontFamily") {
 											var p_key = el.css(cssProperty).toString().replace(/, /g, ",");
 										} else {
 											var p_key = el.css(cssProperty).toString();
@@ -2258,7 +2258,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 									if((name == "border" || name == "width" || name == "height")) {
 										continue;
 									}
-									if(($.browser.safari || $.browser.opera || $.browser.msie) && name == "style") {
+									if(($.browser.webkit || $.browser.opera || $.browser.msie) && name == "style") {
 										// 小文字に変換し、border部分のスタイルを整理
 										//value = value.toLowerCase();
 										split_style = value.replace(/"/g, "'").split(/;/);
@@ -2349,7 +2349,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 
 									if(name=="style" && value == "")
 										continue;
-									if(name == "class" && $.browser.safari) {
+									if(name == "class" && $.browser.webkit) {
 										var apple_re = new RegExp(/\s*Apple-style.+\s*/i);
 										value = value.replace(apple_re, '');
 										if(value == "")
@@ -2493,6 +2493,8 @@ IEで、iframe中のbodyのborderがつくから削除していると
 				return "html";
 			else if(act_btn.hasClass("preview"))
 				return "preview";
+
+			return "edit"
         },
 
         focus : function(now, callback) {
@@ -2685,7 +2687,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 
 				e = r.commonAncestorContainer;
 				if (!r.collapsed) {
-					if ($.browser.safari && s.anchorNode && s.anchorNode.nodeType == 1)
+					if ($.browser.webkit && s.anchorNode && s.anchorNode.nodeType == 1)
 						return s.anchorNode.childNodes[s.anchorOffset] || this.editorDoc.body;
 
 					if (r.startContainer == r.endContainer) {
