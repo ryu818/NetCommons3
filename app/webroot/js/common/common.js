@@ -26,7 +26,7 @@
 		//		data-pjax, data-pjax-inner, data-ajax, data-ajax-innerはいずれかを設定すること。
 		// data-ajax-url:URL default：href属性から取得
 		// data-ajax-type: post or get
-		// data-ajax-effect: 遷移時effect default：fold
+		// data-ajax-effect: 遷移時effect
 		// data-ajax-confirm: メッセージをValueに設定すると確認ダイアログ表示
 		// data-ajax-dialog: ダイアログとして表示する場合、true trueの場合、data-ajaxが指定dialogTopのid属性となる。
 		// data-ajax-dialog-class: ダイアログとして表示した場合のダイアログクラス名
