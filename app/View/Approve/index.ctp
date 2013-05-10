@@ -10,6 +10,10 @@
 			?>
 		</div>
 		<div class="nc-diff-outer">
+			<?php echo(__('Author:')); ?>
+			<?php /* TODO:後にリンクにする。 */ echo h($post_approval['Revision']['created_user_name']); ?>
+		</div>
+		<div class="nc-diff-outer">
 			<?php echo h($post_approval['Revision']['content']); ?>
 		</div>
 	<?php elseif($diffText == ''): ?>
@@ -32,6 +36,16 @@
 				?>
 			</th>
 		</thead>
+		<tr>
+			<th scope="col" colspan="2">
+				<?php echo(__('Author:')); ?>
+				<?php /* TODO:後にリンクにする。 */ echo h($post_approval['Revision']['created_user_name']); ?>
+			</th>
+			<th scope="col" colspan="2">
+				<?php echo(__('Author:')); ?>
+				<?php /* TODO:後にリンクにする。 */ echo h($post_approval['Revision']['created_user_name']); ?>
+			</th>
+		</tr>
 		<?php echo($diffText); ?>
 	</table>
 	<?php endif; ?>
