@@ -86,8 +86,10 @@ msgstr	"記事投稿権限"
 
 msgid	"Date Created"
 msgstr	"作成日"
-msgid	"Author"
+msgid	"Creator"
 msgstr	"作成者"
+msgid	"Author"
+msgstr	"投稿者"
 
 msgid	"Submitted on:"
 msgstr	"投稿日:"
