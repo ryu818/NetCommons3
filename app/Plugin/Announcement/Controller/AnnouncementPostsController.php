@@ -55,6 +55,7 @@ class AnnouncementPostsController extends AnnouncementAppController {
 	public function index($postId = null) {
 		// TODO:権限チェックが未作成
 		// TODO:email送信未実装
+		// TODO:承認処理を共通化
 
 		// 自動保存前処理
 		$autoRegistParams = $this->RevisionList->beforeAutoRegist($postId);
@@ -124,7 +125,7 @@ class AnnouncementPostsController extends AnnouncementAppController {
 			}
 
 			$pointer = _OFF;
-			if(empty($announcement['Announcement']['pre_change_flag']) &&
+			if((!isset($postId) || empty($announcement['Announcement']['pre_change_flag'])) &&
 				(!isset($announcement['Revision']['id']) || !$isAutoRegist)) {
 				$pointer = _ON;
 			}

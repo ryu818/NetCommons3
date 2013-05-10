@@ -260,12 +260,18 @@ class RevisionListComponent extends Component {
 			}
 		}
 
-		if($preRevision['Revision']['id'] != $revision['Revision']['id']) {
+		if(!isset($preRevision['Revision'])) {
+			$preContent = '';
+		} else {
+			$preContent = $preRevision['Revision']['content'];
+		}
+
+		if($preContent != '' && $preRevision['Revision']['id'] != $revision['Revision']['id']) {
 			$this->_controller->set('pre_approval', $preRevision);
 		}
 		$this->_controller->set('post_approval', $revision);
 
-		$this->_controller->set('diffText', $this->compare($revision['Revision']['content'], $preRevision['Revision']['content']));
+		$this->_controller->set('diffText', $this->compare($revision['Revision']['content'], $preContent));
 		return true;
 	}
 

@@ -37,6 +37,7 @@ class BlogPostsController extends BlogAppController {
 	public function index($postId = null) {
 		// TODO:権限チェックが未作成
 		// TODO:email送信未実装
+		// TODO:承認処理を共通化
 
 		// 自動保存前処理
 		$autoRegistParams = $this->RevisionList->beforeAutoRegist($postId);
@@ -65,7 +66,7 @@ class BlogPostsController extends BlogAppController {
 			}
 
 			// 自動保存等で最新のデータがあった場合、表示
-			$revision = $this->Revision->findRevisions(null, $blogPost['Revision']['group_id'], 1);
+			$revision = $this->Revision->findRevisions(null, $blogPost['BlogPost']['revision_group_id'], 1);
 			if(isset($revision[0])) {
 				$blogPost['Revision'] = $revision[0]['Revision'];
 			}
@@ -122,7 +123,7 @@ class BlogPostsController extends BlogAppController {
 			}
 
 			$pointer = _OFF;
-			if(empty($blogPost['BlogPost']['pre_change_flag']) &&
+			if((!isset($postId) || empty($blogPost['BlogPost']['pre_change_flag'])) &&
 				(!isset($blogPost['Revision']['id']) || !$isAutoRegist)) {
 				$pointer = _ON;
 			}
