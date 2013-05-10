@@ -419,7 +419,7 @@ class BlogPost extends AppModel
 		$prevConditions = $this->getConditions($currentBlogPost['BlogPost']['content_id'], $userId, $hierarchy);
 
 		// 前の記事取得
-		$prevConditions['OR'] = array(
+		$prevConditions[]['OR'] = array(
 			array(
 				'BlogPost.post_date' => $currentBlogPost['BlogPost']['post_date'],
 				'BlogPost.id >' => $currentBlogPost['BlogPost']['id'],
@@ -448,7 +448,7 @@ class BlogPost extends AppModel
 		$nextConditions = $this->getConditions($currentBlogPost['BlogPost']['content_id'], $userId, $hierarchy);
 
 		// 前の記事取得
-		$nextConditions['OR'] = array(
+		$nextConditions[]['OR'] = array(
 			array(
 				'BlogPost.post_date' => $currentBlogPost['BlogPost']['post_date'],
 				'BlogPost.id <' => $currentBlogPost['BlogPost']['id'],
