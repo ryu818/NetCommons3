@@ -7,6 +7,7 @@ ul.nc-wysiwyg-smiley {
 ul.nc-wysiwyg-smiley li {
 	list-style-type: none;
 	float: left;
+	clear: none;
 }
 
 ul.nc-wysiwyg-smiley li a {
