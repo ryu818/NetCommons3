@@ -904,142 +904,44 @@
 										}},
 										exec : function(e) {
 											var self = this;
-											var e_n = $(e.target);
-											var n = this.currentNode ? this.currentNode : this.getSelectNode();
-											if(n && n.nodeName.toLowerCase() == 'img') {
-												self.components.insertimageDetail.call(self, e, n);
-												return;
-											}
-											var options = {
-												id       : self.id + "-insertimage",
-												css      : [$._base_url+'css/plugins/nc_wysiwyg/insertimage.css'+'?'+$._v],
-												js       : [$._base_url+'js/plugins/nc_wysiwyg/insertimage.js'+'?'+$._v],
-												jsname   : ['$.fn.nc_insertimage'],
-												style    : {left: "right", top : "top"},
-												pos_base : self.editor,
-												callback : function(e){
-													var opts = {
-														url      : self.options.image,
-														callback : function(html) {
-															self.focus(true);
-															if($.browser.msie)
-																self.moveToBookmark(self.bookmark);
-															var img_el = self.applyInlineStyle(html, null, true);
-															self.removeDialog(self.id + "-insertimage");
-															if($.browser.webkit && e_n && e_n.get(0).nodeName.toLowerCase() == 'img') {
-																$(img_el).insertBefore(e_n);
-																e_n.remove();
-															}
-															self.addUndo();
-														},
-														cancel_callback : function() {
-										        			// キャンセル
-										        			self.removeDialog(self.id + "-insertimage");
-										        			return true;
-										        		},
-										        		wysiwyg : self
-													};
-													$("#" + self.id + "-insertimage").nc_insertimage(opts);
-												}
-											};
-											//this.toggleDialog(document.body, options);
-											self.toggleDialog($(self.panel_btns['insertimage']).children(":first"), options);
+											self.components.insertimageDetail.call(self, e);
 										},
 										components : {
-											insertimageDetail : function (e, img) {
-												var self = this,pos, sc_pos;
-												var ins_dialog = $("#" + self.id + "-insertimage");
-												//img = (img == undefined) ? $(e.target) : img;
-												// 詳細表示
+											insertimageDetail : function (e, img, type) {
+												var self = this;
+												var url = $._base_url+'active-blocks/upload';
 												var options = {
-													id       : self.id + "-insertimage",
-													css      : [$._base_url+'css/plugins/nc_wysiwyg/insertimage.css'+'?'+$._v],
-													js       : [$._base_url+'js/plugins/nc_wysiwyg/insertimage.js'+'?'+$._v],
-													jsname   : ['$.fn.nc_insertimage'],
-													effect   : "fade",
-													callback : function(){
-														var opts = {
-															url      : self.options.image,
-															img             : (typeof img == 'string' || typeof img == 'undefined') ? img : $(img).clone(),
-															callback : function(html) {
-											        			self.focus(true);
-																if($.browser.msie)
-																	self.moveToBookmark(self.bookmark);
-																////var img = self.currentNode ? self.currentNode : self.getSelectNode();
-																////if ($.browser.webkit && img.tagName.toLowerCase() == 'img') {
-																////	self.rangeSelect(img);
-																////}
-																var img_el = self.applyInlineStyle(html, null, true);
-																self.closeDialogs();
-																if($.browser.webkit) {// && img && img.nodeName.toLowerCase() == 'img'
-																	$(img_el).insertBefore($(img));
-																	$(img).remove();
-																}
-																self.addUndo();
-											        			return true;
-											        		},
-											        		cancel_callback : function() {
-											        			// キャンセル
-											        			self.removeDialog(self.id + "-insertimage");
-											        			return true;
-											        		},
-											        		wysiwyg : self
-												        };
-												        $("#" + self.id + "-insertimage").nc_insertimage(opts);
-													},
-													cancel_callback : function() {
-									        			// キャンセル
-									        			self.removeDialog(self.id + "-insertimage");
-									        			return true;
-									        		}
-												};
-												if(ins_dialog.get(0)) {
-													// TODO:ここにははいってこない？
-													options.style = {left: "outleft", top : "top"};
-													options.pos_base = ins_dialog;
-													self.showDialog(ins_dialog, options);
-												} else {
-													options.style = {left: "right", top : "top"};
-													options.pos_base = self.editor;
-													//self.toggleDialog(document.body, options);
-													self.toggleDialog($(self.panel_btns['insertimage']).children(":first"), options);
+													//width: w,
+													//height: h,
+													position: [e.pageX - $(window).scrollLeft(), e.pageY - $(window).scrollTop()],
+													modal: true,
+													resizable: true,
+													autoResize: true,
+													show:'fold',
+													hide:'fold'
 												}
+												type = (type == undefined) ? 'image' : type;
+												if(type == 'image') {
+													options['title'] = $._lang['nc_wysiwyg']['imageUploadTitle'];
+												} else {
+													options['title'] = $._lang['nc_wysiwyg']['fileUploadTitle'];
+												}
+												$.get(url, function(res) {
+													var top_id = self.id + "-insert" + type;
+													var el = $('<div>').attr('id', top_id).html(res);
+													el.dialog(options);
+													$('#' + top_id).Upload({
+														wysiwyg:self
+													});
+												});
+
 											}
 										}
 						},
 						insertfile : { visible : true,
-									   exec : function(e) {
+										exec : function(e) {
 											var self = this;
-											var options = {
-												id       : self.id + "-insertfile",
-												css      : [$._base_url+'css/plugins/nc_wysiwyg/insertfile.css'+'?'+$._v],
-												js       : [$._base_url+'js/plugins/nc_wysiwyg/insertfile.js'+'?'+$._v],
-												jsname   : ['$.fn.nc_insertfile'],
-												style    : {left: "right", top : "top"},
-												pos_base : self.editor,
-												callback : function(e){
-													var opts = {
-														url      : self.options.file,
-														callback : function(html) {
-															self.focus(true);
-															if($.browser.msie)
-																self.moveToBookmark(self.bookmark);
-															var a = self.applyInlineStyle(html, null, true);
-															self.rangeSelect(a);
-															self.removeDialog(self.id + "-insertfile");
-															self.addUndo();
-														},
-														cancel_callback : function() {
-										        			// キャンセル
-										        			self.removeDialog(self.id + "-insertfile");
-										        			return true;
-										        		}
-													};
-													$("#" + self.id + "-insertfile").nc_insertfile(opts);
-												}
-											}
-											//this.toggleDialog(document.body, options);
-											self.toggleDialog($(self.panel_btns['insertfile']).children(":first"), options);
+											self.components.insertimageDetail.call(self, e, null, 'file');
 										}
 						}
 					}
