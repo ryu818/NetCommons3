@@ -335,9 +335,9 @@
         <column name="comment_approved_flag">0</column>
         <column name="comment_approved_mail_flag">0</column>
         <column name="comment_approved_mail_subject">[{X-SITE_NAME}] [{X-CONTENT_NAME}] Comment, trackback Approval completion notice</column>
-        <column name="comment_approved_mail_body">Your comment and trackback posted to [{X-SITE_NAME}] [{X-CONTENT_NAME}] was approved.
+        <column name="comment_approved_mail_body">[{X-SITE_NAME}] [{X-CONTENT_NAME}] におけるブログのコメントとトラックバックの承認が完了しました。
 
-Click the link below to check the article.
+コメントの内容を確認するには下記のリンクをクリックして下さい。
 {X-URL}</column>
         <column name="created">2013-05-01 03:27:49</column>
         <column name="created_user_id">1</column>

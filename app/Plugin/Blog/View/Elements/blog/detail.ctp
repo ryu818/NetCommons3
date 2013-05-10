@@ -49,7 +49,7 @@
 		</h1>
 
 		<div class="blog-entry-meta">
-			<?php echo(__d('blog', 'Submitted on:')); ?>
+			<?php echo(__('Submitted on:')); ?>
 			<?php
 				echo $this->Html->link('<time datetime="' . $dates['atom_date'] . '" class="blog-entry-date">'.$dates['date'].'</time>',
 					array('plugin' => 'blog', 'controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], 'limit' => $limit, '#' => $id),
@@ -58,7 +58,7 @@
 			?>
 			<span class="blog-by-author">
 				&nbsp;|&nbsp;
-				<?php echo(__d('blog', 'Author:')); ?>
+				<?php echo(__('Author:')); ?>
 				<?php
 					echo $this->Html->link($blog_post['BlogPost']['created_user_name'], array(
 							'plugin' => 'blog', 'controller' => 'blog', 'action' => 'index',
@@ -93,7 +93,7 @@
 <?php if($detail_type == 'subject' && (isset($blog_prev_post['BlogPost']) || isset($blog_next_post['BlogPost']))): ?>
 <nav class="blog-nav-paginator">
 	<h3 class="blog-nav-title">
-		<?php echo (__d('blog', 'Post navigation')); ?>
+		<?php echo (__('Post navigation')); ?>
 	</h3>
 	<span class="blog-nav-previous">
 		<?php

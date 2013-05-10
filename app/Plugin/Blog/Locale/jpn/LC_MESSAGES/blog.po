@@ -21,24 +21,6 @@ msgstr	"タグ:"
 msgid	"View all posts by %s"
 msgstr	"%s の投稿をすべて表示"
 
-msgid	"Submitted on:"
-msgstr	"投稿日:"
-msgid	"Author:"
-msgstr	"投稿者:"
-
-msgid	"Vote"
-msgstr	"投票する"
-msgid	"Voted"
-msgstr	"投票済"
-msgid	"Voted(%s)"
-msgstr	"投票数(%s)"
-
-msgid	"Post navigation"
-msgstr	"投稿ナビゲーション"
-
-msgid	"Uncategorized"
-msgstr	"未分類"
-
 msgid	"Blog"
 msgstr	"ブログ"
 msgid	"Recent Posts"

@@ -50,11 +50,11 @@
 		<?php endif; ?>
 		<?php
 			if($isVoted){
-				echo '<span class="blog-posts-voted">'.__d('blog', 'Voted').'</span>';
+				echo '<span class="blog-posts-voted">'.__('Voted').'</span>';
 			}else{
-				echo $this->Html->link(__d('blog', 'Vote'),
+				echo $this->Html->link(__('Vote'),
 					array('controller' => 'blog', 'action' => 'vote', $blog_post['BlogPost']['id']),
-					array('title' =>__d('blog', 'Vote'),
+					array('title' =>__('Vote'),
 						'data-ajax' => '#blog-entry-meta'.$id.'-'.$blog_post['BlogPost']['id'],
 						'data-ajax-type' => 'post'
 				));
@@ -64,7 +64,7 @@
 	</span>
 	<span class="blog-comments-link">
 		<?php
-			echo(__d('blog', 'Voted(%s)', intval($blog_post['BlogPost']['vote_count'])));
+			echo(__('Voted(%s)', intval($blog_post['BlogPost']['vote_count'])));
 		?>
 		&nbsp;|&nbsp;
 		<?php
