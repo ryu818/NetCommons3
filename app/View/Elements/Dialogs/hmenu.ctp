@@ -71,7 +71,7 @@ $is_controls = ($this->request->controller == 'controls') ? true : false;
 			</li>
 			<?php if(!$is_controls && !empty($nc_user['id']) && $hierarchy >= NC_AUTH_MIN_CHIEF): ?>
 			<li class="nc-hmenu-li nc-hmenu-setting-m">
-				<a class="nc-tooltip nc-hmenu-menu-a" title="<?php echo(h($setting)); ?>" data-tooltip-desc="<?php echo(h($tooltip_setting)); ?>" href="<?php echo(rtrim($this->Html->url(), '/').'/?setting_mode='.$setting_mode); ?>">
+				<a class="nc-tooltip nc-hmenu-menu-a" title="<?php echo(h($setting)); ?>" data-tooltip-desc="<?php echo(h($tooltip_setting)); ?>" href="#" onclick="location.href= $._current_url + '?setting_mode=<?php echo($setting_mode); ?>'; return false;">
 					<span class="<?php echo($setting_class); ?>"></span>
 				</a>
 			</li>
