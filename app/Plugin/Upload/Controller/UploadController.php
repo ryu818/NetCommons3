@@ -14,7 +14,7 @@
  */
 class UploadController extends UploadAppController {
 
-	public $components = array('Block.BlockMove', 'CheckAuth' => array('chkBlockId' => false, 'chkPlugin' => false));
+	public $components = array('CheckAuth' => array('chkBlockId' => false, 'chkPlugin' => false));
 
 	public function index() {
 

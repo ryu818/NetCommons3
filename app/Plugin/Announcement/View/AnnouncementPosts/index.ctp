@@ -41,7 +41,7 @@ if($announcement_edit['AnnouncementEdit']['approved_flag'] == _ON && $hierarchy 
 				</dt>
 				<dd>
 					<?php
-							$settings = array(
+						$settings = array(
 							'type' => 'text',
 							'value' => $block['Content']['title'],
 							'label' => false,
