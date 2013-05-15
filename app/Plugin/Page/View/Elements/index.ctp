@@ -16,11 +16,11 @@ if(isset($is_edit) && $is_edit == _ON){
 	<?php echo(__d('page', 'Pages menu')); ?>
 	<?php if(!empty($languages) && count($languages) > 1): ?>
 	<div class="pages-menu-language-outer">
-		<select id="pages-menu-language" data-ajax-url="<?php echo($this->Html->url(array('plugin' => 'page', 'controller' => 'page', 'action' => 'index'))); ?>">
+		<select id="pages-menu-language">
 		<?php
 			foreach($languages as $key => $value) {
 				$selected = ($key == $lang) ? ' selected="selected"' : '';
-				echo("<option value=\"".$key."\"".$selected.">".h(__($value))."</option>\n");
+				echo("<option value=\"".$this->Html->url(array('plugin' => 'page', 'controller' => 'page', 'action' => 'index', $key))."\"".$selected.">".h(__($value))."</option>\n");
 			}
 		?>
 		</select>

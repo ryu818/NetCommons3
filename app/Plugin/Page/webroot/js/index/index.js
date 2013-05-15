@@ -176,7 +176,7 @@
 		if(lang_sel.get(0)) {
 			lang_sel.chosen({disable_search : true}).change( function(e){
 				var lang = $(this).val();
-				var url = $(this).attr('data-ajax-url') + '/' + lang + '?is_edit=' + is_edit + '&active_tab=' + active_tab;
+				var url = lang + '?is_edit=' + is_edit + '&active_tab=' + active_tab;
 				$.get(url, function(res) {
 					$('#nc-pages-setting-dialog').replaceWith(res);
 				});
