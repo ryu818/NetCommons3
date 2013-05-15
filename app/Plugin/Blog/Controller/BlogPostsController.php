@@ -161,7 +161,7 @@ class BlogPostsController extends BlogAppController {
 				if(empty($blogPost['BlogPost']['revision_group_id'])) {
 					$blogPost['BlogPost']['revision_group_id'] = $this->Revision->id;
 				}
-				if(strtotime($this->BlogPost->date($blogPost['BlogPost']['post_date'])) > strtotime($this->BlogPost->nowDate())) {
+				if(strtotime($this->BlogPost->dateUtc($blogPost['BlogPost']['post_date'])) > strtotime($this->BlogPost->nowDate())) {
 					// 未来の記事
 					$blogPost['BlogPost']['is_future'] = _ON;
 				} else {

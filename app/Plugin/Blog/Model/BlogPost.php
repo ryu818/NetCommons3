@@ -236,10 +236,10 @@ class BlogPost extends AppModel
 			$this->data[$this->alias]['permalink'] = $permalink;
 		}
 		if (!empty($this->data[$this->alias]['post_date']) ) {
-			$this->data[$this->alias]['post_date'] = $this->date($this->data[$this->alias]['post_date']);
+			$this->data[$this->alias]['post_date'] = $this->dateUtc($this->data[$this->alias]['post_date']);
 		}
 		if (!empty($this->data[$this->alias]['pre_change_date']) ) {
-			$this->data[$this->alias]['pre_change_date'] = $this->date($this->data[$this->alias]['pre_change_date']);
+			$this->data[$this->alias]['pre_change_date'] = $this->dateUtc($this->data[$this->alias]['pre_change_date']);
 		}
 		return true;
 	}

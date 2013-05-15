@@ -111,6 +111,17 @@ msgstr	"未分類"
 
 msgid  	"Note"
 msgstr 	"注釈"
+msgid	"Comment"
+msgstr	"コメント"
+
+msgid	"E-mail"
+msgstr	"メールアドレス"
+
+msgid	"URL"
+msgstr	"URL"
+
+msgid	"Name"
+msgstr	"名前"
 
 msgid  	"Add"
 msgstr 	"追加"
@@ -124,6 +135,11 @@ msgid  	"Operation"
 msgstr 	"操作"
 msgid  	"Reference"
 msgstr 	"参照"
+msgid  	"Reply"
+msgstr 	"返信"
+
+msgid  	"Editing..."
+msgstr 	"編集中..."
 
 msgid  	"Hide header"
 msgstr 	"ヘッダー非表示"
@@ -297,6 +313,8 @@ msgid  	"Please input %s."
 msgstr 	"%sは必須です。"
 msgid  	"The input must be a number."
 msgstr 	"数値を入力してください。"
+msgid  	"The input must be a %s."
+msgstr 	"%sを入力してください。"
 msgid  	"The input must be a number bigger than %d and less than %d."
 msgstr 	"%d～%dまでの数値を入力してください。"
 msgid  	"The input must be a boolean."
@@ -340,6 +358,8 @@ msgstr 	"システムで使用不可な文字列が使用されています。"
 msgid  	"The same name is already in use.Please choose another one."
 msgstr 	"同名の名称が存在しています。"
 
+msgid  	"Send to mail."
+msgstr 	"メールの送信"
 msgid  	"Failed to send the mail."
 msgstr 	"メールの送信に失敗しました。"
 
@@ -384,6 +404,10 @@ msgstr 	"コピーキャンセル"
 msgid  	"Shortcut"
 msgstr 	"ショートカット"
 
+msgid  	"Submit a comment"
+msgstr 	"コメントを送信"
+msgid  	"Delete Comment"
+msgstr 	"コメントを削除"
 
 msgid  	"Allow the room authority to view and edit."
 msgstr 	"表示中のルーム権限より閲覧・編集を許可する。"
@@ -670,6 +694,8 @@ msgid  	"y-m-d H:i:s"
 msgstr 	"y/m/d H:i:s"
 
 ## 日時フォーマット(漢字)
+msgid  	"(Y-m-d h:i A)"
+msgstr 	"Y年m月d日 h:i A"
 msgid  	"(Y-m-d)"
 msgstr 	"Y年m月d日"
 msgid  	"(Y-m)"

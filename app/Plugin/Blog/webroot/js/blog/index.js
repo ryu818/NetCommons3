@@ -27,4 +27,9 @@
 			$(this).stop(false, true).effect("highlight", {}, 2000);
 		}, function(){});
 	};
+	$.Comment ={
+		clkCmtCancel : function(id) {
+			$('#' + id + 'edit-respond').remove();
+		},
+	};
 })(jQuery);

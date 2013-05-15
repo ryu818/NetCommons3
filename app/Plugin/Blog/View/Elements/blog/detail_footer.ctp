@@ -68,13 +68,13 @@
 		?>
 		&nbsp;|&nbsp;
 		<?php
-			echo $this->Html->link(__d('blog', 'Comments(%s)', intval($blog_post['BlogPost']['comment_count'])), array('controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], $permalink, '#' => $id.'_comments'),
+			echo $this->Html->link(__d('blog', 'Comments(%s)', intval($blog_post['BlogPost']['comment_count'])), array('controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], $permalink, '#' => $id.'-comments'),
 				array('title' => __d('blog', 'Comment on %s', $title),
 				'rel' => 'bookmark'));
 		?>
 		&nbsp;|&nbsp;
 		<?php
-			echo $this->Html->link(__d('blog', 'Trackbacks(%s)', intval($blog_post['BlogPost']['trackback_count'])), array('controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], $permalink, '#' => $id.'_trackbacks'),
+			echo $this->Html->link(__d('blog', 'Trackbacks(%s)', intval($blog_post['BlogPost']['trackback_count'])), array('controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], $permalink, '#' => $id.'-trackbacks'),
 				array('title' => __d('blog', 'Trackback on %s', $title),
 				'rel' => 'bookmark'));
 		?>

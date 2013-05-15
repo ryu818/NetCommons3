@@ -13,13 +13,13 @@
 			<?php
 				/* TODO: 会員でない方からのコメントならば、rel="external nofollow"を付与 */
 				if($post['BlogComment']['comment'] != '') {
-					$post_fix = $id.'_comments';
+					$post_fix = $id.'-comments';
 					$comment_text = $this->Text->truncate(
-						($post['BlogComment']['title'] != '') ? $post['BlogComment']['title'] : $post['BlogComment']['comment'],
+						$post['BlogPost']['title'],
 						BLOG_RECENT_COMMENTS_MAX_LENGTH
 					);
 				} else {
-					$post_fix = $id.'_trackbacks';
+					$post_fix = $id.'-trackbacks';
 					/* TODO:トラックバックは未作成 */
 					$comment_text = 'TestTrackback';
 				}
@@ -27,8 +27,9 @@
 					array('title' => $comment_text)
 				);
 				/* TODO: 会員のリンク先は未定義、会員情報を表示させる */
-				$user = $this->Html->link($post['BlogComment']['created_user_name'], '#',
-					array('title' => $post['BlogComment']['created_user_name'], 'data-pjax' => '#'.$id));
+				$userName = !empty($post['BlogComment']['author']) ? $post['BlogComment']['author'] : __('Guest');
+				$user = $this->Html->link($userName, '#',
+					array('title' => $userName, 'data-pjax' => '#'.$id));
 				echo(__d('blog', '%1$s on %2$s', $user, $comment));
 			?>
 		</li>

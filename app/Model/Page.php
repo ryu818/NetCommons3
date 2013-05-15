@@ -335,10 +335,10 @@ class Page extends AppModel
 			return true;
 		}
 		if (!empty($this->data['Page']['display_from_date']) ) {
-			$this->data['Page']['display_from_date'] = $this->date($this->data['Page']['display_from_date']);
+			$this->data['Page']['display_from_date'] = $this->dateUtc($this->data['Page']['display_from_date']);
 		}
 		if (!empty($this->data['Page']['display_to_date']) ) {
-			$this->data['Page']['display_to_date'] = $this->date($this->data['Page']['display_to_date']);
+			$this->data['Page']['display_to_date'] = $this->dateUtc($this->data['Page']['display_to_date']);
 		}
 		return true;
 	}

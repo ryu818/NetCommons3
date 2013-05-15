@@ -364,7 +364,7 @@ class RevisionListComponent extends Component {
 		}
 
 		$this->_controller->Session->setFlash(__('Post restored to revision from %s',
-			$this->_controller->Revision->date($revision['Revision']['created'], __('Y-m-d H:i:s'))));
+			$this->_controller->Revision->dateUtc($revision['Revision']['created'], __('Y-m-d H:i:s'))));
 
 		return $this->_controller->Revision->id;
 	}

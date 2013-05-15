@@ -125,7 +125,7 @@ class Announcement extends AppModel
  */
 	public function beforeSave($options = array()) {
 		if (!empty($this->data[$this->alias]['pre_change_date']) ) {
-			$this->data[$this->alias]['pre_change_date'] = $this->date($this->data[$this->alias]['pre_change_date']);
+			$this->data[$this->alias]['pre_change_date'] = $this->dateUtc($this->data[$this->alias]['pre_change_date']);
 		}
 		return true;
 	}

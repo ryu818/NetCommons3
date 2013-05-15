@@ -56,8 +56,9 @@ define("BLOG_DEFAULT_TAGS_VISIBLE_ITEM", 10);				// 表示件数(タグ)
 
 define("BLOG_VISIBLE_ITEM_SELECTBOX", '1|5|10|20|50|100');			// ブログ表示件数セレクトボックスvalue
 define("BLOG_VISIBLE_ITEM_ALL_SELECTBOX", '1|5|10|20|50|100|0');	// ブログ表示件数セレクトボックスvalue(0:すべて)
-define("BLOG_DEFAULT_VISIBLE_ITEM_COMMENTS", 20);					// コメントの表示数デフォルト値
+define("BLOG_DEFAULT_VISIBLE_ITEM_COMMENTS", 5);					// コメントの表示数デフォルト値
 
 //-----------BlogComments----------------------------------------
 define("BLOG_RECENT_COMMENTS_MAX_LENGTH", 10);					// 最近のコメントの切り取る文字数
+define("BLOG_COMMENTS_MAX_DEPTH", 5);					// コメント返信の深さ
 

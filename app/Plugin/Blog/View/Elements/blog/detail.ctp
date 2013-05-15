@@ -123,4 +123,6 @@
 	</span>
 </nav>
 <?php endif; ?>
-<?php /* TODO:コメント投稿、コメント一覧 */ ?>
+<?php if(isset($detail_type) && $detail_type == 'subject'): ?>
+	<?php echo $this->element('blog/comment', array('blog_post' => $blog_post)); ?>
+<?php endif; ?>

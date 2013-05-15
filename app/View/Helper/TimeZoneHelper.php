@@ -20,6 +20,7 @@ class TimeZoneHelper extends AppHelper {
  * @return  string Date format
  * @since   v 3.0.0.0
  */
+	// TODO:TimeZoneBehaviorと同一ファンクション
 	public function date($time = null, $format = null) {
 		if($format === null) {
 	    	$format =  __('Y-m-d H:i:s');

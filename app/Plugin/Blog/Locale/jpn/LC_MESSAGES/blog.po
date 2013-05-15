@@ -10,6 +10,9 @@ msgstr	"%s へのトラックバック"
 msgid	"Comments(%s)"
 msgstr	"コメント(%s)"
 
+msgid	"Leave a comments"
+msgstr	"コメントを書く"
+
 msgid	"Trackbacks(%s)"
 msgstr	"トラックバック(%s)"
 

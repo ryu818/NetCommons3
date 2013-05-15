@@ -175,7 +175,21 @@ class BlogController extends BlogAppController {
 		$this->paginate['conditions'] = $this->BlogPost->getConditions($contentId, $userId, $this->hierarchy);
 
 		$this->paginate['limit'] = $limit;
-		$blogPosts = $this->paginate('BlogPost',$addParams);
+		if(isset($requestConditions['subject'])) {
+			$params = $this->paginate;
+			$params['conditions'] = array_merge($this->paginate['conditions'], $addParams);
+			$params['limit'] = 1;
+			$params['page'] = 1;
+
+			$blogPosts = $this->BlogPost->find('all',$params);
+
+			// コメント取得
+			if(isset($blogPosts[0])) {
+				$this->_comments($blogPosts[0]);
+			}
+		} else {
+			$blogPosts = $this->paginate('BlogPost',$addParams);
+		}
 		if(count($addParams) > 0 && count($blogPosts) == 0) {
 			$this->set('detail_type', 'none');
 		}
@@ -205,6 +219,139 @@ class BlogController extends BlogAppController {
 	}
 
 /**
+ * コメント表示、追加、編集、返信
+ * @param   integer $contentId
+ * @param   integer $postId
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	protected function _comments($blogPost) {
+		// TODO:コメント数のカウントアップ未実装
+		if($this->request->is('post')) {
+			if(!empty($this->request->data['BlogComment']['comment_id'])) {
+				$mode = 'edit';
+			} elseif (!empty($this->request->data['BlogComment']['parent_id'])) {
+				$mode = 'reply';
+			} else {
+				$mode = 'add';
+			}
+			$userId = $this->Auth->user('id');
+			if($mode == 'edit') {
+				// 編集
+				$comment = $this->BlogComment->findById( $this->request->data['BlogComment']['comment_id']);
+
+				if(!isset($comment['BlogComment'])) {
+					$this->flash(__('Content not found.'), null, 'Blog.comments.002', '404');
+					return;
+				}
+			} else {
+				// 新規または返信
+				$comment = $this->BlogComment->findDefault($this->content_id, $blogPost['BlogPost']['id']);
+
+				$comment['BlogComment']['parent_id'] = $this->request->data['BlogComment']['parent_id'];
+				$comment['BlogComment']['author_ip'] = $this->request->clientIp(false);
+				if(empty($userId)) {
+					$comment['BlogComment']['author'] = $this->request->data['BlogComment']['author'];
+				} else {
+					$comment['BlogComment']['author'] = $this->Auth->user('handle');
+				}
+			}
+
+			if(empty($userId)) {
+				$comment['BlogComment']['author_email'] = $this->request->data['BlogComment']['author_email'];
+				// TODO:URLは入力値のコンバート処理が必要 example.com → http://example.com　wordpressでは実装されている
+				$comment['BlogComment']['author_url'] = $this->request->data['BlogComment']['author_url'];
+			}
+			$comment['BlogComment']['comment'] = $this->request->data['BlogComment']['comment'];
+
+			$fieldList = array(
+					'content_id', 'blog_post_id', 'parent_id', 'comment', 'author', 'author_email', 'author_url', 'author_ip',
+			);
+			$this->BlogComment->set($comment);
+			if($this->BlogComment->validates(array('fieldList' => $fieldList))) {
+				$this->BlogComment->Behaviors->attach('Tree', array(
+						'scope' => array('BlogComment.blog_post_id' => $blogPost['BlogPost']['id'])
+				));
+				if(!$this->BlogComment->save($comment, false, $fieldList)) {
+					$this->flash(__('Failed to register the database, (%s).', 'blog_comments'), null, 'Blog.comments.003', '500');
+					return;
+				}
+
+				if(empty($comment['BlogComment']['id'])) {
+					$this->Session->setFlash(__('Has been successfully registered.'));
+				} else {
+					$this->Session->setFlash(__('Has been successfully updated.'));
+				}
+				$savedId = $this->BlogComment->id;
+			}
+
+		} else {
+			// コメント入力フォームの表示内容取得
+			if(isset($this->request->named['comment_edit'])) {
+				$comment = $this->BlogComment->findById($this->request->named['comment_edit']);
+				if(!isset($comment['BlogComment'])) {
+					$this->flash(__('Content not found.'), null, 'Blog.comments.004', '404');
+					return;
+				}
+			} else {
+				$comment = $this->BlogComment->findDefault($this->content_id, $blogPost['BlogPost']['id']);
+				if(isset($this->request->named['comment_reply'])) {
+					$comment['BlogComment']['parent_id'] = $this->request->named['comment_reply'];
+				}
+			}
+		}
+		// 送信フォーム内容取得
+		$this->set('comment', $comment);
+
+		// コメントのrootを元にページングを設定
+		$this->paginate = array('threaded');
+		$this->paginate['limit'] = BLOG_DEFAULT_VISIBLE_ITEM_COMMENTS;
+		$rootComments = $this->paginate($this->BlogComment, $this->BlogComment->getPaginateConditions($blogPost['BlogPost']['id']));
+
+		// saveがうまくいっていた場合はリダイレクト（ファンクション内でページングを利用）
+		if(!empty($savedId)) {
+			$this->redirect($this->_getCommentRedirectUrl($blogPost['BlogPost']['id'], $mode, $savedId));
+		}
+
+		// コメントのrootを親とするtreeを取得
+		$blogCommentsTree = $this->BlogComment->findCommentTree($rootComments);
+		$this->set('blog_comments_tree', $blogCommentsTree);
+
+		// コメント投稿において、投稿者名とメールアドレスが、必須か否かを取得
+		$blog = $this->Blog->findByContentId($this->content_id);
+		$this->set('is_required_name', $blog['Blog']['comment_required_name']);
+
+	}
+
+/**
+ * コメント編集、返信、新規登録成功時のリダイレクト先URL取得
+ *  内部で$this->request->params['paging']の内容を利用しています
+ * @param   integer $postId
+ * @param   string  $mode 'edit'コメント編集時、'reply'コメント返信時、'add'新規コメント追加時
+ * @param   integer $commentId saveしたコメントのid
+ * @return  array
+ * @since   v 3.0.0.0
+ */
+	protected function _getCommentRedirectUrl($postId, $mode, $commentId) {
+		$blogPost = $this->BlogPost->findById($postId);
+
+		$permalink = $blogPost['BlogPost']['permalink'];
+		$blogDates = strtotime($this->BlogPost->date($blogPost['BlogPost']['post_date']));
+		$id = $this->id. '-comment-' .$commentId;
+
+		if($mode == 'add'){
+			// ページネーションから全ページ数を取得
+			$page = isset($this->request->params['paging']['BlogComment']['pageCount']) ? $this->request->params['paging']['BlogComment']['pageCount'] : 1;
+		}else{
+			$page = isset($this->request->query['comment_back_page']) ? $this->request->query['comment_back_page'] : 1;
+		}
+
+		return array('plugin' => 'blog', 'controller' => 'blog', 'action'=>'index',
+				date('Y', $blogDates), date('m', $blogDates), date('d', $blogDates),
+				$permalink, 'page' => $page,'#' => $id);
+	}
+
+/**
  * 最近の投稿表示
  * @param   integer $contentId
  * @param   integer $visibleItem
@@ -215,7 +362,10 @@ class BlogController extends BlogAppController {
 		$userId = $this->Auth->user('id');
 		$params = array(
 			'conditions' => $this->BlogPost->getConditions($contentId, $userId, $this->hierarchy),
-			'order' => $this->paginate['order'],
+			'order' => array(
+				'BlogPost.post_date' => 'DESC',
+				'BlogPost.id' => 'DESC',
+			),
 			'limit' => intval($visibleItem),
 			'page' => 1
 		);

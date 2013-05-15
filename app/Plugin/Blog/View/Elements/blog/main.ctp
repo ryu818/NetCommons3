@@ -71,11 +71,19 @@ $queryOptions = array('url' => array('#' => $id), 'data-pjax' => '#'.$id);
 			<?php endif; ?>
 		<?php endforeach; ?>
 	<?php endif; ?>
-	<?php echo($this->element('/common/paginator', array('options' => $queryOptions))); ?>
+	<?php
+		if(!isset($detail_type) || $detail_type != 'subject') {
+			echo($this->element('/common/paginator', array('options' => $queryOptions)));
+		}
+	?>
 	<?php foreach ($blog_posts as $post): ?>
 		<?php echo($this->element('blog/detail', array('blog_post' => $post, 'detail_type' => isset($detail_type) ? $detail_type : null))); ?>
 	<?php endforeach; ?>
-	<?php echo($this->element('/common/paginator', array('options' => $queryOptions))); ?>
+	<?php
+		if(!isset($detail_type) || $detail_type != 'subject') {
+			echo($this->element('/common/paginator', array('options' => $queryOptions)));
+		}
+	?>
 <?php else: ?>
 	<div class="blog-post-not-found">
 		<?php
