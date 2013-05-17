@@ -295,7 +295,8 @@ class AppController extends Controller {
 				if (!$status) {
 					$this->response->statusCode('302');
 				}
-				$this->response->header('X-PJAX-Location', $this->Common->linkEncode(Router::url($url, true)));
+				$this->response->header('X-PJAX-Location', Router::url($url, true));
+				//$this->response->header('X-PJAX-Location', $this->Common->linkEncode(Router::url($url, true)));
 			} else {
 				if(Configure::read('debug') != 0) {
 					$globalCount = Configure::read(NC_SYSTEM_KEY.'.global_count');
