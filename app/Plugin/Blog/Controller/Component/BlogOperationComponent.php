@@ -198,64 +198,6 @@ class BlogOperationComponent extends Object {
 		return true;
 	}
 
-	protected function aaaa($table, $master_id) {
-		$condition = array($table.'.content_id' => $from_content['Content']['master_id']);
-		return $this->{$table}->find('all', array(
-				'recursive' => -1,
-				'conditions' => $condition
-		));
-	}
-
-	protected function bbbb($table, $data) {
-		unset($data[$table]['id']);
-		//$data[$table]['content_id'] = $to_content['Content']['id'];
-		$this->{$table}->create();
-		return $this->{$table}->save($data);
-	}
-
-	public function paste2222($from_block, $to_block, $from_content, $to_content, $from_page, $to_page) {
-		if(!$this->shortcut($from_block, $to_block, $from_content, $to_content, $from_page, $to_page)) {
-			return false;
-		}
-
-		$newGroupIdArr = array();
-		$groupId = $newGroupId = 0;
-		$tables = array('Revision', 'Blog', 'BlogPost', 'BlogComment', 'BlogTerm', 'BlogTermLink');
-		foreach($tables as $table) {
-			$condition = array($table.'.content_id' => $from_content['Content']['master_id']);
-			$datas = $this->{$table}->find('all', array(
-				'recursive' => -1,
-				'conditions' => $condition
-			));
-			foreach($datas as $data) {
-
-				if($table == 'Revision') {
-					if($groupId != $data['Revision']['group_id']) {
-						$groupId = $data['Revision']['group_id'];
-						$data['Revision']['group_id'] = 0;
-					} else {
-						$data['Revision']['group_id'] = $newGroupId;
-					}
-				} else if($table == 'BlogPost') {
-					$data['BlogPost']['revision_group_id'] = $newGroupIdArr[$data['BlogPost']['revision_group_id']];
-				}
-
-				unset($data[$table]['id']);
-				$data[$table]['content_id'] = $to_content['Content']['id'];
-				$this->{$table}->create();
-				if(!$this->{$table}->save($data)) {
-					return false;
-				}
-
-				if($table == 'Revision' && $data['Revision']['group_id'] == 0) {
-					$newGroupId = $this->{$table}->id;
-					$newGroupIdArr[$groupId] = $newGroupId;
-				}
-			}
-		}
-		return true;
-	}
-
 /**
  * ブロック追加実行時に呼ばれる関数
  *

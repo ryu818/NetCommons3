@@ -282,27 +282,7 @@ class BlogController extends BlogAppController {
 					$this->Session->setFlash(__('Has been successfully updated.'));
 				}
 				$savedId = $this->BlogComment->id;
-				$redirectUrl = $this->BlogCommon->getDetailRedirectUrl($blogPost, $mode, $savedId);
 
-				// 新着・検索
-				$archive = array(
-					'Archive' => array(
-						'parent_model_name' => 'BlogPost',
-						'parent_id' => $blogPost['BlogPost']['id'],
-						'module_id' => $this->module_id,
-						'content_id' => $this->content_id,
-						'model_name' => 'BlogComment',
-						'unique_id' => $this->BlogComment->id,
-						'is_approved' => $comment['BlogComment']['is_approved'],
-						'title' => $blogPost['BlogPost']['title'],
-						'content' => $comment['BlogComment']['comment'],
-						'url' => $redirectUrl,
-					)
-				);
-				if(!$this->Archive->saveAuto($this->params, $archive)) {
-					$this->flash(__('Failed to update the database, (%s).', 'archives'), null, 'Blog.comments.004', '500');
-					return;
-				}
 			}
 
 		} else {
@@ -310,7 +290,7 @@ class BlogController extends BlogAppController {
 			if(isset($this->request->named['comment_edit'])) {
 				$comment = $this->BlogComment->findById($this->request->named['comment_edit']);
 				if(!isset($comment['BlogComment'])) {
-					$this->flash(__('Content not found.'), null, 'Blog.comments.005', '404');
+					$this->flash(__('Content not found.'), null, 'Blog.comments.004', '404');
 					return;
 				}
 			} else {
@@ -325,11 +305,38 @@ class BlogController extends BlogAppController {
 
 		// コメントのrootを元にページングを設定
 		$this->paginate = array('threaded');
-		$this->paginate['limit'] = BLOG_DEFAULT_VISIBLE_ITEM_COMMENTS;
+		// コメント表示上限数取得
+		$blogStyleOptions = $this->BlogStyle->findOptions($this->block_id, BLOG_WIDGET_TYPE_MAIN);
+		if(!empty($blogStyleOptions)) {
+			$this->paginate['limit'] = $blogStyleOptions['BlogStyle']['visible_item_comments'];
+		} else {
+			$this->paginate['limit'] = BLOG_DEFAULT_VISIBLE_ITEM_COMMENTS;
+		}
 		$rootComments = $this->paginate($this->BlogComment, $this->BlogComment->getPaginateConditions($blogPost['BlogPost']['id']));
 
 		// saveがうまくいっていた場合はリダイレクト（ファンクション内でページングを利用）
 		if(!empty($savedId)) {
+			$redirectUrl = $this->BlogCommon->getDetailRedirectUrl($blogPost, $mode, $savedId);
+
+			// 新着・検索
+			$archive = array(
+				'Archive' => array(
+					'parent_model_name' => 'BlogPost',
+					'parent_id' => $blogPost['BlogPost']['id'],
+					'module_id' => $this->module_id,
+					'content_id' => $this->content_id,
+					'model_name' => 'BlogComment',
+					'unique_id' => $this->BlogComment->id,
+					'is_approved' => $comment['BlogComment']['is_approved'],
+					'title' => $blogPost['BlogPost']['title'],
+					'content' => $comment['BlogComment']['comment'],
+					'url' => $redirectUrl,
+				)
+			);
+			if(!$this->Archive->saveAuto($this->params, $archive)) {
+				$this->flash(__('Failed to update the database, (%s).', 'archives'), null, 'Blog.comments.005', '500');
+				return;
+			}
 			$this->redirect($redirectUrl);
 		}
 

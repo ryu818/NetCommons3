@@ -547,4 +547,24 @@ class BlogStyle extends AppModel
 		$ret = $this->updateAll($fields, $conditions);
 		return $ret;
 	}
+
+/**
+ * Optionsをアンシリアライズして取得
+ *
+ * @param  integer $blockId
+ * @param  integer  $widgetType
+ * @return array
+ * @since   v 3.0.0.0
+ */
+	public function findOptions($blockId, $widgetType) {
+
+		$blogStyle = $this->find('first', array('conditions' => array('block_id' => $blockId, 'widget_type' => $widgetType)));
+		$unserializeOptions = (isset($blogStyle['BlogStyle']) && $blogStyle['BlogStyle']['options'] != '')? unserialize($blogStyle['BlogStyle']['options']) : null;
+		if(is_array($unserializeOptions)) {
+			unset($blogStyle['BlogStyle']['options']);
+			$blogStyle['BlogStyle'] = array_merge($blogStyle['BlogStyle'], $unserializeOptions);
+		}
+
+		return $blogStyle;
+	}
 }

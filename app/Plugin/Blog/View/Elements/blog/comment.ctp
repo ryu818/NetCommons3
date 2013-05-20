@@ -1,13 +1,10 @@
 <article id="<?php echo $id?>-comments" class="blog-comment-group">
 	<?php
 		//TODO:権限　編集時の権限追加　ヒエラルキが上位のものか（一般の中で上下がついたら？？）自分のコメント　ゲストのコメントはモデレタ以上が編集可能
-		//TODO:コメントを投稿するとブラウザのURL部分の日本語が壊れる
-		//TODO:ブログのコンテンツをコピーしてもコメント群はコピーされない
-		//TODO:コメントの表示数の設定値に未対応
 	?>
 
 	<?php
-		$queryOptions = array('url' => array('#' => $id. '-comments'));
+		$queryOptions = array('url' => array('#' => $id. '-comments'), 'data-pjax' => '#'.$id);
 	?>
 
 	<?php if (!empty($blog_comments_tree)): ?>

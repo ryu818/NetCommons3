@@ -77,13 +77,21 @@ class BlogCommentsController extends BlogAppController {
 			$id = $this->id. '-comments';
 		}
 
+		// コメント表示上限数取得
+		$blogStyleOptions = $this->BlogStyle->findOptions($this->block_id, BLOG_WIDGET_TYPE_MAIN);
+		if(!empty($blogStyleOptions)) {
+			$commentLimit = $blogStyleOptions['BlogStyle']['visible_item_comments'];
+		} else {
+			$commentLimit = BLOG_DEFAULT_VISIBLE_ITEM_COMMENTS;
+		}
+
 		$page = isset($this->request->query['comment_back_page']) ? $this->request->query['comment_back_page'] : 1;
 
 		$redirectBlogComments = $this->BlogComment->find('all', array(
 			'fields' => array('BlogComment.id'),
 			'conditions' => $this->BlogComment->getPaginateConditions($blogPostId),
 			'page' => $page,
-			'limit' => BLOG_DEFAULT_VISIBLE_ITEM_COMMENTS,
+			'limit' => $commentLimit,
 			'recursive' => -1
 		));
 		if(count($redirectBlogComments) == 0 && $page >= 2) {
