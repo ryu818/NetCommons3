@@ -53,8 +53,10 @@ class AppModel extends Model {
 			$fields = array_keys($data);
 			$data[$this->alias] = $data;
 		}
-		$id = Configure::read(NC_SYSTEM_KEY.'.user_id');
-		$usename = Configure::read(NC_SYSTEM_KEY.'.handle');
+		$user = Configure::read(NC_SYSTEM_KEY.'.user');
+
+		$id = $user['id'];
+		$usename = $user['handle'];
 
 		if ($this->hasField('created_user_id') && (!in_array('created_user_id', $fields) || !isset($data[$this->alias]['created_user_id']))) {
 			if(count($fieldList) > 0)

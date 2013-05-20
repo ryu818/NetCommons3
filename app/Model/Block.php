@@ -491,7 +491,7 @@ class Block extends AppModel
 			array("type" => "LEFT",
 				"table" => "authorities",
 				"alias" => "Authority",
-				"conditions" => "`Authority`.id``=`PageUserLink`.`authority_id`"
+				"conditions" => "`Authority`.`id`=`PageUserLink`.`authority_id`"
 			),
 			array("type" => "LEFT",
 				"table" => "pages",

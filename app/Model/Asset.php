@@ -25,7 +25,6 @@ class Asset extends AppModel
 /**
  * URLからJs、Cssファイルのデータを読み込み
  *
-
  * @param  array   $options
  * 						url
  * 						plugin

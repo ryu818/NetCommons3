@@ -121,6 +121,7 @@ class Revision extends AppModel
 					);
 					$this->updateAll($fields, $conditions);
 				}
+				$this->id = $revisions[0][$this->alias]['id'];
 				return false;
 			}
 		}
@@ -189,12 +190,12 @@ class Revision extends AppModel
 			}
 
 			// 自動保存（auto-draft）による履歴情報の削除で、1人につきNC_REVISION_RETENTION_NUMBER件までとする
-			$user_id = Configure::read(NC_SYSTEM_KEY.'.user_id');
+			$user = Configure::read(NC_SYSTEM_KEY.'.user');
 			$params = array(
 				'conditions' => array(
 					$this->alias.'.pointer' => _OFF,
 					$this->alias.'.revision_name' => 'auto-draft',
-					$this->alias.'.created_user_id' => $user_id,
+					$this->alias.'.created_user_id' => $user['id'],
 				),
 				'offset' => NC_REVISION_RETENTION_NUMBER,
 				'limit'  => 10,								// 10行単位
@@ -218,7 +219,8 @@ class Revision extends AppModel
  * @since   v 3.0.0.0
  */
 	public function findRevisions($id, $groupId = false, $limit = NC_REVISION_SHOW_LIMIT, $outsideAutoDraft = false) {
-		$user_id = Configure::read(NC_SYSTEM_KEY.'.user_id');
+		$user = Configure::read(NC_SYSTEM_KEY.'.user');
+		$userId = $user['id'];
 		$revisions = array();
 
 		if(!$groupId) {
@@ -242,7 +244,7 @@ class Revision extends AppModel
 					$conditions = array(
 						'group_id' => $currentGroupId,
 						'or' => array(
-							'created_user_id' => $user_id,
+							'created_user_id' => $userId,
 							'revision_name !=' => 'auto-draft',
 						)
 					);
@@ -259,7 +261,7 @@ class Revision extends AppModel
 						'id !=' => $id,
 						'group_id' => $currentGroupId,
 						'or' => array(
-							'created_user_id' => $user_id,
+							'created_user_id' => $userId,
 							'revision_name !=' => 'auto-draft',
 						)
 					);

@@ -164,7 +164,7 @@ class Content extends AppModel
 			array("type" => "LEFT",
 				"table" => "authorities",
 				"alias" => "Authority",
-				"conditions" => "`Authority`.id``=`PageUserLink`.`authority_id`"
+				"conditions" => "`Authority`.`id`=`PageUserLink`.`authority_id`"
 			),
 			array("type" => "LEFT",
 				"table" => "pages",
@@ -321,7 +321,7 @@ class Content extends AppModel
  * @param mixed $id ID of record to delete
  * @param boolean $cascade Set to true to delete records that depend on this record
  * @return boolean True on success
- * @access public
+ * @since   v 3.0.0.0
  */
 	public function delete($id = null, $cascade = true) {
 		$ret = parent::delete($id, $cascade);

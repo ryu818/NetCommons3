@@ -111,10 +111,25 @@ class CheckAuthComponent extends Component {
 		$controller_name = $controller->request->params['controller'];
 		$action_name = $controller->request->params['action'];
 		$plugin_name = $controller->request->params['plugin'];
+
 		$userId = isset($user['id']) ? intval($user['id']) : 0;
 		$handle = isset($user['handle']) ? $user['handle'] : '';
-		Configure::write(NC_SYSTEM_KEY.'.user_id', $userId);
-		Configure::write(NC_SYSTEM_KEY.'.handle', $handle);
+
+		Configure::write(NC_SYSTEM_KEY.'.isLogin', isset($user['id']) ? true : false);
+
+		if(!isset($user['id'])) {
+			$user = array(
+				'id' => 0,
+				'handle' => '',
+				'hierarchy' => NC_AUTH_OTHER,
+				'myportal_page_id' => 0,
+				'private_page_id' => 0,
+				'myportal_use_flag' => _OFF,
+				'allow_myportal_viewing_hierarchy' => NC_AUTH_OTHER,
+				'private_use_flag' => _OFF,
+			);
+		}
+		Configure::write(NC_SYSTEM_KEY.'.user', $user);
 		$redirect_url = ($userId == 0) ? '/users/login' : null;
 		$block_type = isset($controller->request->params['block_type']) ? $controller->request->params['block_type'] : null;
 		$isActiveContent = (isset($controller->request->params['block_type']) && $controller->request->params['block_type'] == 'active-contents') ? true : false;
@@ -153,12 +168,33 @@ class CheckAuthComponent extends Component {
 		if(!isset($this->allowAuth) && isset($page['Page'])) {
 			if($page['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC) {
 				$this->allowAuth = NC_AUTH_OTHER;
-			} else if($page['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
-				// TODO:Configにマイポータルを公開か、ログイン会員のみかどうかをもつ必要あり
-				// 現状、常に公開
-				$this->allowAuth = NC_AUTH_OTHER;
-			} else if($page['Page']['space_type'] == NC_SPACE_TYPE_PRIVATE) {
-				$this->allowAuth = NC_AUTH_GUEST;;
+			} else if($page['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL ||
+				$page['Page']['space_type'] == NC_SPACE_TYPE_PRIVATE) {
+				$currentUser = $this->_controller->User->currentUser($page, $loginUser);
+				if(!isset($currentUser['User'])) {
+					// 不参加
+					$controller->hierarchy = NC_AUTH_OTHER;
+				} else {
+					if($page['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
+						if($currentUser['Authority']['myportal_use_flag'] == NC_MYPORTAL_USE_ALL) {
+							// 参加
+							$this->allowAuth = NC_AUTH_OTHER;
+						} else if($currentUser['Authority']['myportal_use_flag'] == NC_MYPORTAL_MEMBERS) {
+							$this->allowAuth = $currentUser['Authority']['allow_myportal_viewing_hierarchy'];
+						} else {
+							// 不参加
+							$controller->hierarchy = NC_AUTH_OTHER;
+						}
+					} else {
+						if($currentUser['Authority']['private_use_flag'] == _ON) {
+							// 参加
+							$this->allowAuth = NC_AUTH_OTHER;
+						} else {
+							// 不参加
+							$controller->hierarchy = NC_AUTH_OTHER;
+						}
+					}
+				}
 			} else {
 				// コミュニティ
 				$params = array(
@@ -344,8 +380,8 @@ class CheckAuthComponent extends Component {
 						$controller->flash(__('Content not found.'), '', 'CheckAuth.checkGeneral.004', '404');
 						return false;
 					}
-
 					$controller->nc_block = $block;
+					$controller->module_id = $block['Block']['module_id'];
 
 					$active_page = $controller->Page->findById($block['Block']['page_id']);
 					if(!$active_page) {
@@ -369,7 +405,13 @@ class CheckAuthComponent extends Component {
 					// パーマリンクからのPageとblock_idのはってあるページが一致しなければエラー
 					// ３０１をかえして、その後、移動後のページへ遷移させる
 					// TODO:中央カラムのみにはってあるブロックのみチェックしているが、ヘッダーのブロックのチェックもするべき
-					$redirect_url = preg_replace('$^'.$permalink.'$i', $active_page['Page']['permalink'], $url);
+					$activePermalink = $controller->Page->getPermalink($active_page['Page']['permalink'], $active_page['Page']['space_type']);
+					if($permalink == '') {
+						$redirect_url = $activePermalink. '/' .$url;
+					} else {
+						$redirect_url = preg_replace('$^'.$permalink.'$i', $activePermalink, $url);
+					}
+					$redirect_url .= '#_'.$block_id;
 					$controller->flash(__('Moved Permanently.'), $redirect_url, 'CheckAuth.checkGeneral.006', '301');
 					return false;
 				}
@@ -525,7 +567,7 @@ class CheckAuthComponent extends Component {
 						"type" => "LEFT",
 						"table" => "authorities",
 						"alias" => "Authority",
-						"conditions" => "`Authority`.id``=`PageUserLink`.`authority_id`"
+						"conditions" => "`Authority`.`id`=`PageUserLink`.`authority_id`"
 					)
 				)
 			);
@@ -637,6 +679,7 @@ class CheckAuthComponent extends Component {
 
 			$controller->id = '_'.intval($block['Block']['id']);
 			$controller->block_id = intval($block['Block']['id']);
+			$controller->module_id = intval($block['Block']['id']);
 			Configure::write(NC_SYSTEM_KEY.'.block_id', intval($block['Block']['id']));
 
 			if(!is_null($block['Block']['hierarchy'])) {

@@ -305,22 +305,25 @@ class User extends AppModel
  * マイポータル、マイルームのページ情報から、その会員情報を取得する。
  * マイポータル、マイルーム以外ならば'' エラーならばfalse
  * @param   array $page
- * @param   array $login_user
- * @return  mixed '' or false or $user
+ * @param   array $loginUser
+ * @return  mixed ''|false|$user
  * @since   v 3.0.0.0
  */
-    public function currentUser($page, $login_user = null) {
+    public function currentUser($page, $loginUser = null) {
     	$user = array();
     	if($page['Page']['space_type'] != NC_SPACE_TYPE_MYPORTAL && $page['Page']['space_type'] != NC_SPACE_TYPE_PRIVATE) {
     		return '';
     	}
 
     	$buf_permalink_arr = explode('/', $page['Page']['permalink']);
-    	if(!isset($login_user['permalink']) || $buf_permalink_arr[0] != $login_user['permalink']) {
-    		$conditions = array('permalink' => $buf_permalink_arr[0]);
-    		$user = $this->find( 'first', array('conditions' => $conditions, 'recursive' => -1) );
+    	if(!isset($loginUser['permalink']) || $buf_permalink_arr[0] != $loginUser['permalink']) {
+    		$conditions = array('User.permalink' => $buf_permalink_arr[0]);
+    		$user = $this->find( 'first', array(
+    			'conditions' => $conditions,
+    			'recursive' => -1
+    		) );
     	} else {
-    		$user['User'] = $login_user;
+    		$user['User'] = $loginUser;
     	}
     	if(!isset($user['User']))
     		return false;
@@ -373,19 +376,19 @@ class User extends AppModel
 				"type" => "LEFT",
 				"table" => "authorities",
 				"alias" => "Authority",
-				"conditions" => "`Authority`.id``=`PageUserLink`.`authority_id`"
+				"conditions" => "`Authority`.`id`=`PageUserLink`.`authority_id`"
 			),
 			array(
 				"type" => "INNER",
 				"table" => "authorities",
 				"alias" => "UserAuthority",
-				"conditions" => "`UserAuthority`.id``=`User`.`authority_id`"
+				"conditions" => "`UserAuthority`.`id`=`User`.`authority_id`"
 			),
 			array(
 				"type" => "LEFT",
 				"table" => "pages",
 				"alias" => "Page",
-				"conditions" => "`Page`.id``=`PageUserLink`.`room_id`"
+				"conditions" => "`Page`.`id`=`PageUserLink`.`room_id`"
 			)
 		);
 
@@ -411,7 +414,7 @@ class User extends AppModel
 				"type" => "LEFT",
 				"table" => "authorities",
 				"alias" => "AuthorityParent",
-				"conditions" => "`AuthorityParent`.id``=`PageUserLinkParent`.`authority_id`"
+				"conditions" => "`AuthorityParent`.`id`=`PageUserLinkParent`.`authority_id`"
 			);
 		}
 
