@@ -19,7 +19,7 @@ class BlogPostsController extends BlogAppController {
  *
  * @var array
  */
-	public $components = array('RevisionList', 'CheckAuth' => array('allowAuth' => NC_AUTH_GENERAL));
+	public $components = array('Blog.BlogCommon', 'RevisionList', 'CheckAuth' => array('allowAuth' => NC_AUTH_GENERAL));
 
 /**
  * Model name
@@ -64,7 +64,7 @@ class BlogPostsController extends BlogAppController {
 			} else {
 				$isBeforeUpdateTermCount = true;
 			}
-
+			$beforeContent = $blogPost['Revision']['content'];
 			// 自動保存等で最新のデータがあった場合、表示
 			$revision = $this->Revision->findRevisions(null, $blogPost['BlogPost']['revision_group_id'], 1);
 			if(isset($revision[0])) {
@@ -74,6 +74,7 @@ class BlogPostsController extends BlogAppController {
 			$blog_term_links = array();
 			$blogPost = $this->BlogPost->findDefault($this->content_id);
 			$isBeforeUpdateTermCount = false;
+			$beforeContent = '';
 		}
 
 		$userId = $this->Auth->user('id');
@@ -161,7 +162,8 @@ class BlogPostsController extends BlogAppController {
 				if(empty($blogPost['BlogPost']['revision_group_id'])) {
 					$blogPost['BlogPost']['revision_group_id'] = $this->Revision->id;
 				}
-				if(strtotime($this->BlogPost->dateUtc($blogPost['BlogPost']['post_date'])) > strtotime($this->BlogPost->nowDate())) {
+				$postDateUtc = $this->BlogPost->dateUtc($blogPost['BlogPost']['post_date']);
+				if(strtotime($postDateUtc) > strtotime($this->BlogPost->nowDate())) {
 					// 未来の記事
 					$blogPost['BlogPost']['is_future'] = _ON;
 				} else {
@@ -196,6 +198,26 @@ class BlogPostsController extends BlogAppController {
 				if(!$this->BlogTermLink->saveTermLinks($this->content_id, $this->BlogPost->id, $isBeforeUpdateTermCount, $is_after_update_term_count,
 						$active_tag_arr, 'name', 'tag')) {
 					$this->flash(__('Failed to register the database, (%s).', 'blog_term_links'), null, 'BlogPosts.index.006', '500');
+					return;
+				}
+
+				// 新着・検索
+				$archive = array(
+					'Archive' => array(
+						'module_id' => $this->module_id,
+						'content_id' => $this->content_id,
+						'model_name' => 'BlogPost',
+						'unique_id' => $this->BlogPost->id,
+						'status' => $blogPost['BlogPost']['status'],
+						'is_approved' => $blogPost['BlogPost']['is_approved'],
+						'title' => $blogPost['BlogPost']['title'],
+						'content' => ($blogPost['BlogPost']['pre_change_flag']) ?  strip_tags($beforeContent) : strip_tags($revision['Revision']['content']),
+						'url' => $this->BlogCommon->getDetailRedirectUrl($blogPost),
+						'creared' => $postDateUtc,
+					)
+				);
+				if(!$this->Archive->saveAuto($this->params, $archive)) {
+					$this->flash(__('Failed to update the database, (%s).', 'archives'), null, 'AnnouncementPosts.index.003', '500');
 					return;
 				}
 
@@ -284,8 +306,7 @@ class BlogPostsController extends BlogAppController {
 		}
 
 		// blog削除
-		$delConditions = array('BlogPost.id'=>$postId);
-		if(!$this->BlogPost->deleteAll($delConditions)){
+		if(!$this->BlogPost->delete($postId)){
 			$this->flash(__('Failed to delete the database, (%s).', 'blog_posts'), null, 'BlogPosts.delete.006', '500');
 			return;
 		}

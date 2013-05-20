@@ -8,6 +8,36 @@ class AppSchema extends CakeSchema {
 	public function after($event = array()) {
 	}
 
+	public $archives = array(
+		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
+		'parent_model_name' => array('type' => 'string', 'null' => false, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'parent_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'module_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'index'),
+		'content_id' => array('type' => 'integer', 'null' => false, 'default' => null),
+		'model_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'unique_id' => array('type' => 'integer', 'null' => false, 'default' => null),
+		'status' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
+		'is_approved' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
+		'group_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'access_hierarchy' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'count' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'title' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'content' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'search_content' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'url' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
+		'created_user_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'created_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'modified' => array('type' => 'datetime', 'null' => true, 'default' => null),
+		'modified_user_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'modified_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'indexes' => array(
+			'PRIMARY' => array('column' => 'id', 'unique' => 1),
+			'module_id' => array('column' => array('module_id', 'model_name', 'unique_id'), 'unique' => 0)
+		),
+		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
+	);
+
 	public $assets = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'url' => array('type' => 'string', 'null' => false, 'default' => null, 'key' => 'unique', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
@@ -28,7 +58,7 @@ class AppSchema extends CakeSchema {
 		'system_flag' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'hierarchy' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'myportal_use_flag' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3),
-		'allow_myportal_viewing_authority' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'allow_myportal_viewing_hierarchy' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'private_use_flag' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3),
 		'public_createroom_flag' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'group_createroom_flag' => array('type' => 'boolean', 'null' => false, 'default' => '0'),

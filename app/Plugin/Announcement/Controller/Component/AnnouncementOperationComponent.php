@@ -31,11 +31,13 @@ class AnnouncementOperationComponent extends Object {
 	public function startup() {
 		App::uses('Content', 'Model');
 		App::uses('Revision', 'Model');
+		App::uses('Archive', 'Model');
 		App::uses('Announcement', 'Announcement.Model');
 		App::uses('AnnouncementEdit', 'Announcement.Model');
 
 		$this->Content = new Content();
 		$this->Revision = new Revision();
+		$this->Archive = new Archive();
 		$this->Announcement = new Announcement();
 		$this->AnnouncementEdit = new AnnouncementEdit();
 		$this->Announcement->unbindModel( array( 'belongsTo' => array_keys( $this->Announcement->belongsTo ) ) );
@@ -63,17 +65,12 @@ class AnnouncementOperationComponent extends Object {
  */
 	public function delete($content) {
 		if(isset($content['Content'])) {
-			$conditions = array('Announcement.content_id' => $content['Content']['master_id']);
-			if(!$this->Announcement->deleteAll($conditions)) {
-				return false;
-			}
-			$conditions = array('AnnouncementEdit.content_id' => $content['Content']['master_id']);
-			if(!$this->AnnouncementEdit->deleteAll($conditions)) {
-				return false;
-			}
-			$conditions = array('Revision.content_id' => $content['Content']['master_id']);
-			if(!$this->Revision->deleteAll($conditions)) {
-				return false;
+			$tables = array('Revision', 'Archive','Announcement', 'AnnouncementEdit');
+			foreach($tables as $table) {
+				$condition = array($table.'.content_id' => $content['Content']['master_id']);
+				if(!$this->{$table}->deleteAll($condition)) {
+					return false;
+				}
 			}
 		}
 		return true;
@@ -109,7 +106,7 @@ class AnnouncementOperationComponent extends Object {
  * @since   v 3.0.0.0
  */
 	public function paste($from_block, $to_block, $from_content, $to_content, $from_page, $to_page) {
-		$tables = array('Revision', 'Announcement', 'AnnouncementEdit');
+		$tables = array('Revision', 'Archive', 'Announcement', 'AnnouncementEdit');
 		$newGroupIdArr = array();
 		$groupId = $newGroupId = 0;
 		foreach($tables as $table) {

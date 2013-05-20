@@ -25,7 +25,7 @@ class BlogController extends BlogAppController {
  *
  * @var array
  */
-	public $components = array('RevisionList');
+	public $components = array('Blog.BlogCommon', 'RevisionList');
 
 /**
  * Pagination
@@ -220,8 +220,7 @@ class BlogController extends BlogAppController {
 
 /**
  * コメント表示、追加、編集、返信
- * @param   integer $contentId
- * @param   integer $postId
+ * @param   Model BlogPost $blogPost
  * @return  void
  * @since   v 3.0.0.0
  */
@@ -270,7 +269,7 @@ class BlogController extends BlogAppController {
 			$this->BlogComment->set($comment);
 			if($this->BlogComment->validates(array('fieldList' => $fieldList))) {
 				$this->BlogComment->Behaviors->attach('Tree', array(
-						'scope' => array('BlogComment.blog_post_id' => $blogPost['BlogPost']['id'])
+					'scope' => array('BlogComment.blog_post_id' => $blogPost['BlogPost']['id'])
 				));
 				if(!$this->BlogComment->save($comment, false, $fieldList)) {
 					$this->flash(__('Failed to register the database, (%s).', 'blog_comments'), null, 'Blog.comments.003', '500');
@@ -283,6 +282,27 @@ class BlogController extends BlogAppController {
 					$this->Session->setFlash(__('Has been successfully updated.'));
 				}
 				$savedId = $this->BlogComment->id;
+				$redirectUrl = $this->BlogCommon->getDetailRedirectUrl($blogPost, $mode, $savedId);
+
+				// 新着・検索
+				$archive = array(
+					'Archive' => array(
+						'parent_model_name' => 'BlogPost',
+						'parent_id' => $blogPost['BlogPost']['id'],
+						'module_id' => $this->module_id,
+						'content_id' => $this->content_id,
+						'model_name' => 'BlogComment',
+						'unique_id' => $this->BlogComment->id,
+						'is_approved' => $comment['BlogComment']['is_approved'],
+						'title' => $blogPost['BlogPost']['title'],
+						'content' => $comment['BlogComment']['comment'],
+						'url' => $redirectUrl,
+					)
+				);
+				if(!$this->Archive->saveAuto($this->params, $archive)) {
+					$this->flash(__('Failed to update the database, (%s).', 'archives'), null, 'Blog.comments.004', '500');
+					return;
+				}
 			}
 
 		} else {
@@ -290,7 +310,7 @@ class BlogController extends BlogAppController {
 			if(isset($this->request->named['comment_edit'])) {
 				$comment = $this->BlogComment->findById($this->request->named['comment_edit']);
 				if(!isset($comment['BlogComment'])) {
-					$this->flash(__('Content not found.'), null, 'Blog.comments.004', '404');
+					$this->flash(__('Content not found.'), null, 'Blog.comments.005', '404');
 					return;
 				}
 			} else {
@@ -310,7 +330,7 @@ class BlogController extends BlogAppController {
 
 		// saveがうまくいっていた場合はリダイレクト（ファンクション内でページングを利用）
 		if(!empty($savedId)) {
-			$this->redirect($this->_getCommentRedirectUrl($blogPost['BlogPost']['id'], $mode, $savedId));
+			$this->redirect($redirectUrl);
 		}
 
 		// コメントのrootを親とするtreeを取得
@@ -321,34 +341,6 @@ class BlogController extends BlogAppController {
 		$blog = $this->Blog->findByContentId($this->content_id);
 		$this->set('is_required_name', $blog['Blog']['comment_required_name']);
 
-	}
-
-/**
- * コメント編集、返信、新規登録成功時のリダイレクト先URL取得
- *  内部で$this->request->params['paging']の内容を利用しています
- * @param   integer $postId
- * @param   string  $mode 'edit'コメント編集時、'reply'コメント返信時、'add'新規コメント追加時
- * @param   integer $commentId saveしたコメントのid
- * @return  array
- * @since   v 3.0.0.0
- */
-	protected function _getCommentRedirectUrl($postId, $mode, $commentId) {
-		$blogPost = $this->BlogPost->findById($postId);
-
-		$permalink = $blogPost['BlogPost']['permalink'];
-		$blogDates = strtotime($this->BlogPost->date($blogPost['BlogPost']['post_date']));
-		$id = $this->id. '-comment-' .$commentId;
-
-		if($mode == 'add'){
-			// ページネーションから全ページ数を取得
-			$page = isset($this->request->params['paging']['BlogComment']['pageCount']) ? $this->request->params['paging']['BlogComment']['pageCount'] : 1;
-		}else{
-			$page = isset($this->request->query['comment_back_page']) ? $this->request->query['comment_back_page'] : 1;
-		}
-
-		return array('plugin' => 'blog', 'controller' => 'blog', 'action'=>'index',
-				date('Y', $blogDates), date('m', $blogDates), date('d', $blogDates),
-				$permalink, 'page' => $page,'#' => $id);
 	}
 
 /**

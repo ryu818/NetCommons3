@@ -35,6 +35,7 @@ class BlogOperationComponent extends Object {
 	public function startup() {
 		App::uses('Content', 'Model');
 		App::uses('Revision', 'Model');
+		App::uses('Archive', 'Model');
 
 		App::uses('Blog', 'Blog.Model');
 		App::uses('BlogComment', 'Blog.Model');
@@ -45,6 +46,7 @@ class BlogOperationComponent extends Object {
 
 		$this->Content = new Content();
 		$this->Revision = new Revision();
+		$this->Archive = new Archive();
 
 		$this->Blog = new Blog();
 		$this->BlogComment = new BlogComment();
@@ -81,7 +83,7 @@ class BlogOperationComponent extends Object {
  */
 	public function delete($content) {
 		if(isset($content['Content'])) {
-			$tables = array('Blog', 'BlogComment', 'BlogPost', 'BlogTerm', 'BlogTermLink', 'Revision');
+			$tables = array('Revision', 'Archive', 'Blog', 'BlogComment', 'BlogPost', 'BlogTerm', 'BlogTermLink');
 			foreach($tables as $table) {
 				$condition = array($table.'.content_id' => $content['Content']['master_id']);
 				if(!$this->{$table}->deleteAll($condition)) {
@@ -141,7 +143,7 @@ class BlogOperationComponent extends Object {
 
 		$newGroupIdArr = array();
 		$groupId = $newGroupId = 0;
-		$tables = array('Revision', 'Blog', 'BlogComment', 'BlogPost', 'BlogTerm', 'BlogTermLink');
+		$tables = array('Revision', 'Archive', 'Blog', 'BlogComment', 'BlogPost', 'BlogTerm', 'BlogTermLink');
 		foreach($tables as $table) {
 			$condition = array($table.'.content_id' => $from_content['Content']['master_id']);
 			$datas = $this->{$table}->find('all', array(

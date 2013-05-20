@@ -43,7 +43,7 @@
         <column name="system_flag">1</column>
         <column name="hierarchy">500</column>
         <column name="myportal_use_flag">0</column>
-        <column name="allow_myportal_viewing_authority">0</column>
+        <column name="allow_myportal_viewing_hierarchy">0</column>
         <column name="private_use_flag">1</column>
         <column name="public_createroom_flag">1</column>
         <column name="group_createroom_flag">1</column>
@@ -72,7 +72,7 @@
         <column name="system_flag">1</column>
         <column name="hierarchy">350</column>
         <column name="myportal_use_flag">0</column>
-        <column name="allow_myportal_viewing_authority">0</column>
+        <column name="allow_myportal_viewing_hierarchy">0</column>
         <column name="private_use_flag">1</column>
         <column name="public_createroom_flag">0</column>
         <column name="group_createroom_flag">0</column>
@@ -101,7 +101,7 @@
         <column name="system_flag">1</column>
         <column name="hierarchy">250</column>
         <column name="myportal_use_flag">0</column>
-        <column name="allow_myportal_viewing_authority">0</column>
+        <column name="allow_myportal_viewing_hierarchy">0</column>
         <column name="private_use_flag">1</column>
         <column name="public_createroom_flag">0</column>
         <column name="group_createroom_flag">0</column>
@@ -130,7 +130,7 @@
         <column name="system_flag">1</column>
         <column name="hierarchy">150</column>
         <column name="myportal_use_flag">1</column>
-        <column name="allow_myportal_viewing_authority">0</column>
+        <column name="allow_myportal_viewing_hierarchy">0</column>
         <column name="private_use_flag">1</column>
         <column name="public_createroom_flag">0</column>
         <column name="group_createroom_flag">1</column>
@@ -159,7 +159,7 @@
         <column name="system_flag">1</column>
         <column name="hierarchy">1</column>
         <column name="myportal_use_flag">0</column>
-        <column name="allow_myportal_viewing_authority">0</column>
+        <column name="allow_myportal_viewing_hierarchy">0</column>
         <column name="private_use_flag">0</column>
         <column name="public_createroom_flag">0</column>
         <column name="group_createroom_flag">0</column>
@@ -188,7 +188,7 @@
         <column name="system_flag">0</column>
         <column name="hierarchy">253</column>
         <column name="myportal_use_flag">0</column>
-        <column name="allow_myportal_viewing_authority">0</column>
+        <column name="allow_myportal_viewing_hierarchy">0</column>
         <column name="private_use_flag">1</column>
         <column name="public_createroom_flag">0</column>
         <column name="group_createroom_flag">0</column>

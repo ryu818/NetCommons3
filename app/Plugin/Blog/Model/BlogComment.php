@@ -120,6 +120,21 @@ class BlogComment extends AppModel
 	}
 
 /**
+ * beforeDelete
+ * @param   void
+ * @return  boolean
+ * @since   v 3.0.0.0
+ */
+	public function beforeDelete() {
+		App::uses('Archive', 'Model');
+		$Archive = new Archive();
+		// アーカイブ削除
+		if(!$Archive->deleteUnique($this->alias, $this->id)) {
+			return false;
+		}
+		return true;
+	}
+/**
  * 最近のコメント取得
  *
  * @param   integer $content_id
@@ -158,7 +173,7 @@ class BlogComment extends AppModel
 					"type" => "LEFT",
 					"table" => "authorities",
 					"alias" => "Authority",
-					"conditions" => "`Authority`.id``=`PageUserLink`.`authority_id`"
+					"conditions" => "`Authority`.`id`=`PageUserLink`.`authority_id`"
 				)
 			),
 			'order' => array('BlogComment.created' => 'DESC')
@@ -207,7 +222,7 @@ class BlogComment extends AppModel
  * @since   v 3.0.0.0
  */
 	public function beforeValidate($options = array()) {
-		if(isset($this->data['BlogComment']['content_id']) && !Configure::read(NC_SYSTEM_KEY.'.user_id')){
+		if(isset($this->data['BlogComment']['content_id']) && !Configure::read(NC_SYSTEM_KEY.'.isLogin')){
 			App::uses('Blog', 'Blog.Model');
 			$this->Blog = new Blog();
 			$blog = $this->Blog->findByContentId($this->data['BlogComment']['content_id']);

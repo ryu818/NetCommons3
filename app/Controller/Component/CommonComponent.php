@@ -53,7 +53,7 @@ class CommonComponent extends Component {
 									'id', 'login_id', 'handle', 'username', 'authority_id',
 									'permalink', 'myportal_page_id', 'private_page_id', 'avatar',
 									'lang', 'timezone_offset', 'email', 'mobile_email', 'last_login',
-									'Authority.hierarchy', 'Authority.myportal_use_flag', 'Authority.private_use_flag',
+									'Authority.hierarchy', 'Authority.myportal_use_flag', 'Authority.allow_myportal_viewing_hierarchy', 'Authority.private_use_flag',
 									'Authority.public_createroom_flag', 'Authority.group_createroom_flag', 'Authority.myportal_createroom_flag',
 									'Authority.private_createroom_flag', 'Authority.allow_htmltag_flag', 'Authority.allow_layout_flag',
 									'Authority.allow_attachment', 'Authority.allow_video', 'Authority.change_leftcolumn_flag',
@@ -64,9 +64,9 @@ class CommonComponent extends Component {
 		//$this->_controller->Auth->allow('login');
 
 		//権限が無いactionを実行した際のエラーメッセージ
-        $this->_controller->Auth->authError = __('Forbidden permission to access the page.');
-        //ログイン後にリダイレクトするURL
-        //$this->_controller->Auth->loginRedirect = '/users/index';
+		$this->_controller->Auth->authError = __('Forbidden permission to access the page.');
+		//ログイン後にリダイレクトするURL
+		//$this->_controller->Auth->loginRedirect = '/users/index';
 	}
 
 	public function autoLogin($configs) {

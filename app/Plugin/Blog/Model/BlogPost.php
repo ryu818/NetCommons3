@@ -245,6 +245,22 @@ class BlogPost extends AppModel
 	}
 
 /**
+ * beforeDelete
+ * @param   void
+ * @return  boolean
+ * @since   v 3.0.0.0
+ */
+	public function beforeDelete() {
+		App::uses('Archive', 'Model');
+		$Archive = new Archive();
+		// アーカイブ削除
+		if(!$Archive->deleteParent($this->alias, $this->id)) {
+			return false;
+		}
+		return true;
+	}
+
+/**
  * 記事投稿時初期値
  * @param   integer $content_id
  * @return  Model BlogPost

@@ -253,6 +253,22 @@ class RevisionListComponent extends Component {
 			if(!$postModel->save($postModelData, true, array('status', 'is_approved', 'pre_change_flag', 'pre_change_date'))) {
 				return false;
 			}
+
+			// 新着・検索
+			$archive = array(
+				'Archive' => array(
+					'model_name' => $postModel->alias,
+					'unique_id' => $postModelData[$postModel->alias]['id'],
+					'status' => isset($postModelData[$postModel->alias]['status']) ? $postModelData[$postModel->alias]['status'] : NC_STATUS_PUBLISH,
+					'is_approved' => isset($postModelData[$postModel->alias]['is_approved']) ? $postModelData[$postModel->alias]['is_approved'] : _ON,
+					'content' => ($isApprove) ? strip_tags($revision['Revision']['content']) : strip_tags($revision['Revision']['content']),
+				)
+			);
+			if(!$this->_controller->Archive->saveAuto($this->_controller->params, $archive)) {
+				return false;
+			}
+
+
 			if($isApprove) {
 				$this->_controller->Session->setFlash(__('Approved.'));
 			} else {
@@ -351,9 +367,11 @@ class RevisionListComponent extends Component {
 			return false;
 		}
 
+		$isApproved = isset($postModelData[$postModel->alias]['is_approved']) ? $postModelData[$postModel->alias]['is_approved'] : _ON;
 		if($this->_controller->request->is('post') && $isApprovedPointer == _OFF) {
+			$isApproved = _OFF;
 			$fields = array(
-				$postModel->alias.'.is_approved' => _OFF
+				$postModel->alias.'.is_approved' => $isApproved
 			);
 			$conditions = array(
 				$postModel->alias.".id" => $postModelData[$postModel->alias]['id']
@@ -361,6 +379,22 @@ class RevisionListComponent extends Component {
 			if(!$postModel->updateAll($fields, $conditions)) {
 				return false;
 			}
+		}
+
+		// 新着・検索
+		$archive = array(
+			'Archive' => array(
+				'model_name' => $postModel->alias,
+				'unique_id' => $postModelData[$postModel->alias]['id'],
+				'status' => isset($postModelData[$postModel->alias]['status']) ? $postModelData[$postModel->alias]['status'] : NC_STATUS_PUBLISH,
+				'is_approved' => $isApproved,
+			)
+		);
+		if(empty($postModelData[$postModel->alias]['pre_change_flag'])) {
+			$archive['Archive']['content'] = strip_tags($revision['Revision']['content']);
+		}
+		if(!$this->_controller->Archive->saveAuto($this->_controller->params, $archive)) {
+			return false;
 		}
 
 		$this->_controller->Session->setFlash(__('Post restored to revision from %s',

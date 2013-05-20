@@ -76,6 +76,7 @@ class AnnouncementPostsController extends AnnouncementAppController {
 				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'AnnouncementPosts.index.001', '500');
 				return;
 			}
+			$beforeContent = $announcement['Revision']['content'];
 			// 自動保存等で最新のデータがあった場合、表示
 			$revision = $this->Revision->findRevisions(null, $announcement['Announcement']['revision_group_id'], 1);
 			if(isset($revision[0])) {
@@ -83,6 +84,7 @@ class AnnouncementPostsController extends AnnouncementAppController {
 			}
 		} else {
 			$announcement = $this->Announcement->findDefault($this->content_id);
+			$beforeContent = '';
 		}
 
 		if($this->request->is('post')) {
@@ -169,6 +171,26 @@ class AnnouncementPostsController extends AnnouncementAppController {
 					return;
 				}
 
+				// 新着・検索
+				$archive = array(
+					'Archive' => array(
+						'module_id' => $this->module_id,
+						'content_id' => $this->content_id,
+						'model_name' => 'Announcement',
+						'unique_id' => $this->Announcement->id,
+						'status' => $announcement['Announcement']['status'],
+						'is_approved' => $announcement['Announcement']['is_approved'],
+						'title' => $content['Content']['title'],
+						'content' => ($announcement['Announcement']['pre_change_flag']) ?  strip_tags($beforeContent) : strip_tags($revision['Revision']['content']),
+						'url' => array('controller' => 'announcement', '#' => $this->id),
+					)
+				);
+				if(!$this->Archive->saveAuto($this->params, $archive)) {
+					$this->flash(__('Failed to update the database, (%s).', 'archives'), null, 'AnnouncementPosts.index.003', '500');
+					return;
+				}
+
+				// メッセージ表示
 				if(empty($announcement['Announcement']['id'])) {
 					$this->Session->setFlash(__('Has been successfully registered.'));
 				} else {

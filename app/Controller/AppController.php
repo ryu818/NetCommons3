@@ -75,7 +75,7 @@ class AppController extends Controller {
     );
 
     public $uses = array('Page', 'Block', 'Content', 'Module', 'Language', 'Config', 'Authority',
-    		'User', 'Passport', 'PageStyle', 'ModuleLink', 'ModuleSystemLink', 'Community', 'Asset');
+    		'User', 'Passport', 'PageStyle', 'ModuleLink', 'ModuleSystemLink', 'Community', 'Asset', 'Archive');
     // , 'User', 'PageStyle', 'PageColumn', 'PageInf', 'SumPageView'
 /**
  * 初期処理
@@ -296,7 +296,6 @@ class AppController extends Controller {
 					$this->response->statusCode('302');
 				}
 				$this->response->header('X-PJAX-Location', Router::url($url, true));
-				//$this->response->header('X-PJAX-Location', $this->Common->linkEncode(Router::url($url, true)));
 			} else {
 				if(Configure::read('debug') != 0) {
 					$globalCount = Configure::read(NC_SYSTEM_KEY.'.global_count');

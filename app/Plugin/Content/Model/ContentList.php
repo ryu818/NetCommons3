@@ -55,17 +55,17 @@ class ContentList extends AppModel {
 			array("type" => "INNER",
 				"table" => "authorities",
 				"alias" => "Authority",
-				"conditions" => "`Authority`.id``=`PagesUsersLink`.`authority_id`"
+				"conditions" => "`Authority`.`id`=`PagesUsersLink`.`authority_id`"
 			),
 			array("type" => "INNER",
 				"table" => "modules",
 				"alias" => "Module",
-				"conditions" => "`Module`.id``=`Content`.`module_id`"
+				"conditions" => "`Module`.`id`=`Content`.`module_id`"
 			),
 			array("type" => "LEFT",
 				"table" => "pages",
 				"alias" => "Page",
-				"conditions" => "`Page`.id``=`Content`.`room_id`"
+				"conditions" => "`Page`.`id`=`Content`.`room_id`"
 			),
 			array("type" => "LEFT",
 				"table" => "contents",
