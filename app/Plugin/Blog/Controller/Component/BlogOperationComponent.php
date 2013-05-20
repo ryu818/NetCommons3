@@ -149,7 +149,7 @@ class BlogOperationComponent extends Object {
 		$newCommentIdArr = array();
 		$newGroupIdArr = array();
 		$groupId = $newGroupId = 0;
-		$tables = array('Revision', 'Archive', 'Blog', 'BlogPost', 'BlogComment', 'BlogTerm', 'BlogTermLink');
+		$tables = array('Revision', 'Blog', 'BlogPost', 'BlogComment', 'BlogTerm', 'BlogTermLink', 'Archive');
 		foreach($tables as $table) {
 			$condition = array($table.'.content_id' => $from_content['Content']['master_id']);
 			$datas = $this->{$table}->find('all', array(
@@ -158,24 +158,30 @@ class BlogOperationComponent extends Object {
 				'order' => array($this->{$table}->primaryKey => 'ASC')
 			));
 			foreach($datas as $data) {
+				$beforeId = $data[$table]['id'];
 				if($table == 'Revision') {
-					if($groupId != $data['Revision']['group_id']) {
-						$groupId = $data['Revision']['group_id'];
-						$data['Revision']['group_id'] = 0;
+					if($groupId != $data[$table]['group_id']) {
+						$groupId = $data[$table]['group_id'];
+						$data[$table]['group_id'] = 0;
 					} else {
-						$data['Revision']['group_id'] = $newGroupId;
+						$data[$table]['group_id'] = $newGroupId;
 					}
 				} else if($table == 'BlogPost') {
-					$data['BlogPost']['revision_group_id'] = $newGroupIdArr[$data['BlogPost']['revision_group_id']];
-					$beforeId = $data['BlogPost']['id'];
+					$data[$table]['revision_group_id'] = $newGroupIdArr[$data[$table]['revision_group_id']];
 				} else if($table == 'BlogComment') {
-					$beforeId = $data['BlogComment']['id'];
-					if(!isset($newPostIdArr[$data['BlogComment']['blog_post_id']])) {
+					if(!isset($newPostIdArr[$data[$table]['blog_post_id']])) {
 						continue;
 					}
-					$data['BlogComment']['blog_post_id'] = $newPostIdArr[$data['BlogComment']['blog_post_id']];
-					if(isset($data['BlogComment']['parent_id']) && isset($newCommentIdArr[$data['BlogComment']['parent_id']])) {
-						$data['BlogComment']['parent_id'] = $newCommentIdArr[$data['BlogComment']['parent_id']];
+					$data[$table]['blog_post_id'] = $newPostIdArr[$data[$table]['blog_post_id']];
+					if(isset($data[$table]['parent_id']) && isset($newCommentIdArr[$data[$table]['parent_id']])) {
+						$data[$table]['parent_id'] = $newCommentIdArr[$data[$table]['parent_id']];
+					}
+				} else if($table == 'Archive') {
+					if($data[$table]['model_name'] == 'BlogPost') {
+						$data[$table]['parent_id'] = $data[$table]['unique_id'] = $newPostIdArr[$data[$table]['parent_id']];
+					} else {
+						$data[$table]['parent_id'] = $newPostIdArr[$data[$table]['parent_id']];
+						$data[$table]['unique_id'] = $newCommentIdArr[$data[$table]['unique_id']];
 					}
 				}
 

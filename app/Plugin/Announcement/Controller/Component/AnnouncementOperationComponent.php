@@ -106,8 +106,9 @@ class AnnouncementOperationComponent extends Object {
  * @since   v 3.0.0.0
  */
 	public function paste($from_block, $to_block, $from_content, $to_content, $from_page, $to_page) {
-		$tables = array('Revision', 'Archive', 'Announcement', 'AnnouncementEdit');
+		$tables = array('Revision', 'Announcement', 'AnnouncementEdit', 'Archive');
 		$newGroupIdArr = array();
+		$newArchiveUniqueIdArr = array();
 		$groupId = $newGroupId = 0;
 		foreach($tables as $table) {
 			$condition = array($table.'.content_id' => $from_content['Content']['master_id']);
@@ -119,17 +120,18 @@ class AnnouncementOperationComponent extends Object {
 			foreach($datas as $data) {
 
 				if($table == 'Revision') {
-					if($groupId != $data['Revision']['group_id']) {
-						$groupId = $data['Revision']['group_id'];
-						$data['Revision']['group_id'] = 0;
+					if($groupId != $data[$table]['group_id']) {
+						$groupId = $data[$table]['group_id'];
+						$data[$table]['group_id'] = 0;
 					} else {
-						$data['Revision']['group_id'] = $newGroupId;
+						$data[$table]['group_id'] = $newGroupId;
 					}
-				} else if($table == 'Announcement') {
-					$data['Announcement']['revision_group_id'] = $newGroupIdArr[$data['Announcement']['revision_group_id']];
+					} else if($table == 'Announcement') {
+					$data[$table]['revision_group_id'] = $newGroupIdArr[$data[$table]['revision_group_id']];
+				} else if($table == 'Archive') {
+					$data[$table]['parent_id'] = $data[$table]['unique_id'] = $newArchiveUniqueIdArr[$data[$table]['unique_id']];
 				}
-
-
+				$id = $data[$table]['id'];
 				unset($data[$table]['id']);
 				$data[$table]['content_id'] = $to_content['Content']['id'];
 				$this->{$table}->create();
@@ -137,9 +139,11 @@ class AnnouncementOperationComponent extends Object {
 					return false;
 				}
 
-				if($table == 'Revision' && $data['Revision']['group_id'] == 0) {
+				if($table == 'Revision' && $data[$table]['group_id'] == 0) {
 					$newGroupId = $this->{$table}->id;
 					$newGroupIdArr[$groupId] = $newGroupId;
+				} else if($table == 'Announcement') {
+					$newArchiveUniqueIdArr[$id] = $this->{$table}->id;;
 				}
 			}
 		}
