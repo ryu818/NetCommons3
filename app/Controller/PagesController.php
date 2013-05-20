@@ -44,7 +44,7 @@ class PagesController extends AppController {
  *
  * @var array
  */
-	public $components = array('CheckAuth' => array('chkBlockId' => false, 'chkPlugin' => false));
+	public $components = array('CheckAuth' => array('chkBlockId' => false));
 
 /**
  * 中央カラムのpage_id
