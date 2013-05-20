@@ -156,22 +156,22 @@ class ModuleAdmin extends AppModel {
 /**
  * モジュールインストール処理
  *
- * @param  string $dir_name
- * @return array (success_mes, error_mes)
+ * @param  string $dirName
+ * @return array (successMes, errorMes)
  * @since   v 3.0.0.0
  */
-	public function installModule($dir_name) {
+	public function installModule($dirName) {
 		App::uses('Module', 'Model');
 		$Module = new Module();
-		$success_mes = array();
-		$error_mes = array();
-		if(empty($dir_name)) {
-			$error_mes[] = __d('module', 'Module %s:', h($dir_name)).__('Unauthorized request.<br />Please reload the page.');
-			return array($success_mes, $error_mes);
+		$successMes = array();
+		$errorMes = array();
+		if(empty($dirName)) {
+			$errorMes[] = __d('module', 'Module %s:', h($dirName)).__('Unauthorized request.<br />Please reload the page.');
+			return array($successMes, $errorMes);
 		}
 
 		$module = array();
-		$module['Module']['dir_name'] = $dir_name;
+		$module['Module']['dir_name'] = $dirName;
 		$module = $this->afterFind($module);
 		$module_name = $module['Module']['module_name'];
 		$prefix = __d('module', 'Module %s:', h($module_name));
@@ -181,16 +181,16 @@ class ModuleAdmin extends AppModel {
 		// ----------------------------------------------
 		$result = $this->check($module);
 		if($result !== true) {
-			$error_mes[] = $result;
-			return array($success_mes, $error_mes);
+			$errorMes[] = $result;
+			return array($successMes, $errorMes);
 		}
 
 		// ------------------------------------------------------------
 		// --- 同一のディレクトリ名で既に登録されていないかチェック ---
 		// ------------------------------------------------------------
-		if($Module->findByDirname($dir_name) !== false) {
-			$error_mes[] = $prefix.__d('module', 'This module is already installed.');
-			return array($success_mes, $error_mes);
+		if($Module->findByDirname($dirName) !== false) {
+			$errorMes[] = $prefix.__d('module', 'This module is already installed.');
+			return array($successMes, $errorMes);
 		}
 
 		$default_enable_flag = isset($module['Module']['ini']['default_enable_flag']) ? intval($module['Module']['ini']['default_enable_flag']) : _OFF;
@@ -214,21 +214,21 @@ class ModuleAdmin extends AppModel {
 		$this->set($module);
 		if(!$this->save($module)) {
 			if(count($this->validationErrors) == 0) {
-				$error_mes[] = $prefix.__('Failed to register the database, (%s).','modules');
+				$errorMes[] = $prefix.__('Failed to register the database, (%s).','modules');
 			} else {
 				foreach($this->validationErrors as $field => $errors) {
-					$error_mes[] = $prefix.$errors[0];	// 最初の１つ目
+					$errorMes[] = $prefix.$errors[0];	// 最初の１つ目
 				}
 			}
-			return array($success_mes, $error_mes);
+			return array($successMes, $errorMes);
 		}
 		$module_id = $this->id;
 
 		// ----------------------------------------------
 		// --- スキーマ実行(create)	 ---
 		// ----------------------------------------------
-		if(!$this->createSchema($dir_name, $prefix, $error_mes)) {
-			return array($success_mes, $error_mes);
+		if(!$this->createSchema($dirName, $prefix, $errorMes)) {
+			return array($successMes, $errorMes);
 		}
 
 
@@ -238,40 +238,41 @@ class ModuleAdmin extends AppModel {
 		if($module['Module']['system_flag']) {
 			// module_system_links Insert
 			if(!$this->saveModuleSystemLinkAdmin($module_id)) {
-				$error_mes[] = $prefix.__('Failed to register the database, (%s).','module_system_links');
-				return array($success_mes, $error_mes);
+				$errorMes[] = $prefix.__('Failed to register the database, (%s).','module_system_links');
+				return array($successMes, $errorMes);
 			}
 		} else {
 			// module_links Insert(default_enable_flagを見て、insert)
 			if(!$this->saveModuleLinkDefaultEnableFlag($module_id, $default_enable_flag)) {
-				$error_mes[] = $prefix.__('Failed to register the database, (%s).','module_links');
-				return array($success_mes, $error_mes);
+				$errorMes[] = $prefix.__('Failed to register the database, (%s).','module_links');
+				return array($successMes, $errorMes);
 			}
 		}
 
-		$success_mes[] = $prefix.__d('module', 'Install was successful.');
-		return array($success_mes, $error_mes);
+		$successMes[] = $prefix.__d('module', 'Install was successful.');
+		return array($successMes, $errorMes);
 	}
 
 /**
  * モジュールアップデート処理
  *
- * @param  string   $dir_name
- * @return array (success_mes, error_mes)
+ * @param  array    $tables
+ * @param  string   $dirName
+ * @return array (successMes, error_mes)
  * @since   v 3.0.0.0
  */
-	public function updateModule($dir_name) {
+	public function updateModule($tables, $dirName) {
 		App::uses('Sanitize', 'Utility');
 		App::uses('ModuleSystemLink', 'Model');
 		App::uses('ModuleLink', 'Model');
 		$ModuleLink = new ModuleLink();
 		$ModuleSystemLink = new ModuleSystemLink();
 
-		$success_mes = array();
-		$error_mes = array();
-		$module = $this->_getModule($dir_name, $error_mes);
+		$successMes = array();
+		$errorMes = array();
+		$module = $this->_getModule($dirName, $errorMes);
 		if($module === false) {
-			return array($success_mes, $error_mes);
+			return array($successMes, $errorMes);
 		}
 		$module_id = $module['Module']['id'];
 		$plugin_name = Inflector::camelize($module['Module']['dir_name']);
@@ -282,8 +283,8 @@ class ModuleAdmin extends AppModel {
 		// ----------------------------------------------
 		$result = $this->check($module);
 		if($result !== true) {
-			$error_mes[] = $result;
-			return array($success_mes, $error_mes);
+			$errorMes[] = $result;
+			return array($successMes, $errorMes);
 		}
 
 		// ----------------------------------------------
@@ -303,8 +304,8 @@ class ModuleAdmin extends AppModel {
 				"Block.module_id" => $module_id
 			);
 			if(!$Block->updateAll($fields, $conditions)) {
-				$error_mes[] = $prefix.__('Failed to update the database, (%s).','blocks');
-				return array($success_mes, $error_mes);
+				$errorMes[] = $prefix.__('Failed to update the database, (%s).','blocks');
+				return array($successMes, $errorMes);
 			}
 		}
 
@@ -316,8 +317,8 @@ class ModuleAdmin extends AppModel {
 				 *    配置不可能モジュールの場合
 				 */
 				if(!$ModuleSystemLink->deleteByModuleId($module_id)) {
-					$error_mes[] = $prefix.__('Failed to delete the database, (%s).','module_system_links');
-					return array($success_mes, $error_mes);
+					$errorMes[] = $prefix.__('Failed to delete the database, (%s).','module_system_links');
+					return array($successMes, $errorMes);
 				}
 			} else {
 				/**
@@ -325,8 +326,8 @@ class ModuleAdmin extends AppModel {
 				 *    配置不可能モジュールの場合
 				 */
 				if(!$ModuleLink->deleteByModuleId($module_id)) {
-					$error_mes[] = $prefix.__('Failed to delete the database, (%s).','module_links');
-					return array($success_mes, $error_mes);
+					$errorMes[] = $prefix.__('Failed to delete the database, (%s).','module_links');
+					return array($successMes, $errorMes);
 				}
 			}
 		}
@@ -336,24 +337,24 @@ class ModuleAdmin extends AppModel {
 			if($module['Module']['system_flag'] == _ON) {
 				// module_links Delete
 				if(!$ModuleLink->deleteByModuleId($module_id)) {
-					$error_mes[] = $prefix.__('Failed to delete the database, (%s).','module_links');
-					return array($success_mes, $error_mes);
+					$errorMes[] = $prefix.__('Failed to delete the database, (%s).','module_links');
+					return array($successMes, $errorMes);
 				}
 				// module_system_links Insert
 				if(!$this->saveModuleSystemLinkAdmin($module_id)) {
-					$error_mes[] = $prefix.__('Failed to register the database, (%s).','module_system_links');
-					return array($success_mes, $error_mes);
+					$errorMes[] = $prefix.__('Failed to register the database, (%s).','module_system_links');
+					return array($successMes, $errorMes);
 				}
 			} else {
 				// module_system_links Delete
 				if(!$ModuleSystemLink->deleteByModuleId($module_id)) {
-					$error_mes[] = $prefix.__('Failed to delete the database, (%s).','module_system_links');
-					return array($success_mes, $error_mes);
+					$errorMes[] = $prefix.__('Failed to delete the database, (%s).','module_system_links');
+					return array($successMes, $errorMes);
 				}
 				// module_links Insert(default_enable_flagを見て、insert)
 				if(!$this->saveModuleLinkDefaultEnableFlag($module_id, $default_enable_flag)) {
-					$error_mes[] = $prefix.__('Failed to register the database, (%s).','module_links');
-					return array($success_mes, $error_mes);
+					$errorMes[] = $prefix.__('Failed to register the database, (%s).','module_links');
+					return array($successMes, $errorMes);
 				}
 			}
 		}
@@ -381,36 +382,44 @@ class ModuleAdmin extends AppModel {
 		);
 		if(!$this->save($module, true, $fieldList)) {
 			if(count($this->validationErrors) == 0) {
-				$error_mes[] = $prefix.__('Failed to update the database, (%s).','modules');
+				$errorMes[] = $prefix.__('Failed to update the database, (%s).','modules');
 			} else {
 				foreach($this->validationErrors as $field => $errors) {
-					$error_mes[] = $prefix.$errors[0];	// 最初の１つ目
+					$errorMes[] = $prefix.$errors[0];	// 最初の１つ目
 				}
 			}
-			return array($success_mes, $error_mes);
+			return array($successMes, $errorMes);
 		}
 
 		// ----------------------------------------------
 		// --- Assetの削除処理                      ---
 		// ----------------------------------------------
-		if(!$this->_deleteAsset($plugin_name, $error_mes)) {
-			return array($success_mes, $error_mes);
+		if(!$this->_deleteAsset($plugin_name, $errorMes)) {
+			return array($successMes, $errorMes);
 		}
 
 		// ----------------------------------------------
 		// --- スキーマ実行(update)	 ---
 		// ----------------------------------------------
-		if(!$this->updateSchema($dir_name, $prefix, $error_mes)) {
-			return array($success_mes, $error_mes);
+		if(!$this->updateSchema($dirName, $prefix, $errorMes, $tables)) {
+			return array($successMes, $errorMes);
 		}
 
-		$success_mes[] = $prefix.__d('module', 'Update was successful.');
-		return array($success_mes, $error_mes);
+		$successMes[] = $prefix.__d('module', 'Update was successful.');
+		return array($successMes, $errorMes);
 	}
 
-	public function updateAllModule() {
-		$success_mes = array();
-		$error_mes = array();
+/**
+ * モジュール一括アップデート処理
+ *
+ * @param  array    $tables
+ * @return array (successMes, error_mes)
+ * @since   v 3.0.0.0
+ */
+	public function updateAllModule($tables) {
+		$successMes = array();
+		$errorMes = array();
+		$prefix = '';
 
 		// ----------------------------------------------
 		// --- Assetの全削除処理                      ---
@@ -418,6 +427,13 @@ class ModuleAdmin extends AppModel {
 		App::uses('Asset', 'Model');
 		$Asset = new Asset();
 		$Asset->gc(null, true, true);
+
+		// ----------------------------------------------
+		// --- スキーマ実行(update)	 ---
+		// ----------------------------------------------
+		if(!$this->updateSchema(null, $prefix, $errorMes, $tables)) {
+			return array($successMes, $errorMes);
+		}
 
 		$params = array(
 			'fields' => array(
@@ -430,15 +446,15 @@ class ModuleAdmin extends AppModel {
 		);
 		$modules = $this->find('list', $params);
 		if(count($modules) > 0) {
-			foreach($modules as $dir_name) {
-				list($buf_success_mes, $buf_error_mes) = $this->updateModule($dir_name);
-				$success_mes = array_merge($success_mes, $buf_success_mes);
-				$error_mes = array_merge($error_mes, $buf_error_mes);
+			foreach($modules as $dirName) {
+				list($buf_successMes, $buf_error_mes) = $this->updateModule($tables, $dirName);
+				$successMes = array_merge($successMes, $buf_successMes);
+				$errorMes = array_merge($errorMes, $buf_error_mes);
 			}
 		}
 
-		if(count($error_mes) > 0) {
-			return array($success_mes, $error_mes);
+		if(count($errorMes) > 0) {
+			return array($successMes, $errorMes);
 		}
 
 		// ----------------------------------------------
@@ -450,22 +466,22 @@ class ModuleAdmin extends AppModel {
 			'Config.value'=> '"'.NC_VERSION.'"'
 		);
 		if(!$Config->updateAll($fields, array('Config.name' => 'version', 'Config.cat_id' => NC_SYSTEM_CATID))) {
-			$error_mes[] = $prefix.__('Failed to update the database, (%s).','configs');
-			return array($success_mes, $error_mes);
+			$errorMes[] = $prefix.__('Failed to update the database, (%s).','configs');
+			return array($successMes, $errorMes);
 		}
 
-		$success_mes[] = __d('module', 'All update was successful.');
-		return array($success_mes, $error_mes);
+		$successMes[] = __d('module', 'All update was successful.');
+		return array($successMes, $errorMes);
 	}
 
 /**
  * モジュールアンインストール処理
  *
- * @param  string   $dir_name
- * @return array (success_mes, error_mes)
+ * @param  string   $dirName
+ * @return array (successMes, error_mes)
  * @since   v 3.0.0.0
  */
-	public function uninstallModule($dir_name) {
+	public function uninstallModule($dirName) {
 		App::uses('Sanitize', 'Utility');
 		App::uses('Module', 'Model');
 		App::uses('Content', 'Model');
@@ -478,11 +494,11 @@ class ModuleAdmin extends AppModel {
 		$ModuleSystemLink = new ModuleSystemLink();
 		$Upload = new Upload();
 
-		$success_mes = array();
-		$error_mes = array();
-		$module = $this->_getModule($dir_name, $error_mes);
+		$successMes = array();
+		$errorMes = array();
+		$module = $this->_getModule($dirName, $errorMes);
 		if($module === false) {
-			return array($success_mes, $error_mes);
+			return array($successMes, $errorMes);
 		}
 		$module_id = $module['Module']['id'];
 		$plugin_name = Inflector::camelize($module['Module']['dir_name']);
@@ -492,8 +508,8 @@ class ModuleAdmin extends AppModel {
 		// ----------------------------------------------
 		// --- スキーマ実行(update)	 ---
 		// ----------------------------------------------
-		if(!$this->dropSchema($dir_name, $prefix, $error_mes)) {
-			return array($success_mes, $error_mes);
+		if(!$this->dropSchema($dirName, $prefix, $errorMes)) {
+			return array($successMes, $errorMes);
 		}
 
 		// ------------------------------------------------------
@@ -523,8 +539,8 @@ class ModuleAdmin extends AppModel {
 		if(isset($blocks[0])) {
 			foreach($blocks as $block) {
 				if(!$Block->deleteBlock($block)) {
-					$error_mes[] = $prefix.__d('module', 'Failed to %s.',t __d('module', 'Delete block')
-					return array($success_mes, $error_mes);
+					$errorMes[] = $prefix.__d('module', 'Failed to %s.',t __d('module', 'Delete block')
+					return array($successMes, $errorMes);
 				}
 			}
 		}*/
@@ -545,8 +561,8 @@ class ModuleAdmin extends AppModel {
 		if(isset($contents)) {
 			foreach($contents as $content) {
 				if(!$Content->deleteContent($content, _ON)) {
-					$error_mes[] = $prefix.__d('module', 'Failed to %s.', __d('module', 'Delete content'));
-					return array($success_mes, $error_mes);
+					$errorMes[] = $prefix.__d('module', 'Failed to %s.', __d('module', 'Delete content'));
+					return array($successMes, $errorMes);
 				}
 			}
 		}
@@ -554,15 +570,15 @@ class ModuleAdmin extends AppModel {
 		// ------------------------------------------------------
 		// --- アップロードテーブルのデータ削除＆ファイル削除 ---
 		// ------------------------------------------------------
-		if(is_dir(NC_UPLOADS_DIR.$dir_name) && !$this->File->delDir(NC_UPLOADS_DIR.$dir_name)) {
+		if(is_dir(NC_UPLOADS_DIR.$dirName) && !$this->File->delDir(NC_UPLOADS_DIR.$dirName)) {
 			// upload file
-			$error_mes[] = $prefix.__d('module', 'Failed to %s.', __d('module', 'Delete upload file'));
-			return array($success_mes, $error_mes);
+			$errorMes[] = $prefix.__d('module', 'Failed to %s.', __d('module', 'Delete upload file'));
+			return array($successMes, $errorMes);
 		}
 		$condition = array('Upload.module_id' => $module_id);
 		if(!$Upload->deleteAll($condition)) {
-			$error_mes[] = $prefix.__('Failed to delete the database, (%s).','uploads');
-			return array($success_mes, $error_mes);
+			$errorMes[] = $prefix.__('Failed to delete the database, (%s).','uploads');
+			return array($successMes, $errorMes);
 		}
 
 		// ------------------------------------------------------
@@ -572,30 +588,30 @@ class ModuleAdmin extends AppModel {
 		if($module['Module']['system_flag']) {
 			// module_system_links Delete
 			if(!$ModuleSystemLink->deleteByModuleId($module_id)) {
-				$error_mes[] = $prefix.__('Failed to delete the database, (%s).','module_system_links');
-				return array($success_mes, $error_mes);
+				$errorMes[] = $prefix.__('Failed to delete the database, (%s).','module_system_links');
+				return array($successMes, $errorMes);
 			}
 		} else {
 			// module_links Delete
 			if(!$ModuleLink->deleteByModuleId($module_id)) {
-				$error_mes[] = $prefix.__('Failed to delete the database, (%s).','module_links');
-				return array($success_mes, $error_mes);
+				$errorMes[] = $prefix.__('Failed to delete the database, (%s).','module_links');
+				return array($successMes, $errorMes);
 			}
 		}
 
 		// ----------------------------------------------
 		// --- Assetの削除処理                      ---
 		// ----------------------------------------------
-		if(!$this->_deleteAsset($plugin_name, $error_mes)) {
-			return array($success_mes, $error_mes);
+		if(!$this->_deleteAsset($plugin_name, $errorMes)) {
+			return array($successMes, $errorMes);
 		}
 
 		// ------------------------------------------------------
 		// --- モジュールテーブルのデータ削除                ---
 		// ------------------------------------------------------
 		if(!$Module->delete($module_id)) {
-			$error_mes[] = $prefix.__('Failed to delete the database, (%s).','modules');
-			return array($success_mes, $error_mes);
+			$errorMes[] = $prefix.__('Failed to delete the database, (%s).','modules');
+			return array($successMes, $errorMes);
 		}
 		$displayseq_fields = array('Module.display_sequence'=>'Module.display_sequence-1');
 		$displayseq_conditions = array(
@@ -603,33 +619,33 @@ class ModuleAdmin extends AppModel {
 			"Module.display_sequence >=" => $module['Module']['display_sequence']
 		);
 		if(!$Module->updateAll($displayseq_fields, $displayseq_conditions)) {
-			$error_mes[] = $prefix.__('Failed to update the database, (%s).','modules');
-			return array($success_mes, $error_mes);
+			$errorMes[] = $prefix.__('Failed to update the database, (%s).','modules');
+			return array($successMes, $errorMes);
 		}
 
-		$success_mes[] = $prefix.__d('module', 'Uninstall was successful.');
-		return array($success_mes, $error_mes);
+		$successMes[] = $prefix.__d('module', 'Uninstall was successful.');
+		return array($successMes, $errorMes);
 	}
 
 /**
  * モジュールデータ取得
- * @param string $dir_name
- * @param array  $success_mes
- * @param array  $error_mes
+ * @param string $dirName
+ * @param array  $successMes
+ * @param array  $errorMes
  * @return mixed Model Module $module or boolean false
  * @since   v 3.0.0.0
  */
-	private function _getModule($dir_name, &$error_mes) {
+	private function _getModule($dirName, &$errorMes) {
 		App::uses('Module', 'Model');
 		$Module = new Module();
 
-		if(empty($dir_name)) {
-			$error_mes[] = __('Unauthorized request.<br />Please reload the page.');
+		if(empty($dirName)) {
+			$errorMes[] = __('Unauthorized request.<br />Please reload the page.');
 			return false;
 		}
-		$module = $Module->findByDirname($dir_name);
+		$module = $Module->findByDirname($dirName);
 		if(!$module) {
-			$error_mes[] = __('Unauthorized request.<br />Please reload the page.');
+			$errorMes[] = __('Unauthorized request.<br />Please reload the page.');
 			return false;
 		}
 		return $module;
@@ -638,19 +654,19 @@ class ModuleAdmin extends AppModel {
 /**
  * Assetの削除処理
  * @param string $plugin_name
- * @param array  $success_mes
- * @param array  $error_mes
+ * @param array  $successMes
+ * @param array  $errorMes
  * @return mixed Model Module $module or boolean false
  * @since   v 3.0.0.0
  */
-	private function _deleteAsset($plugin_name, &$error_mes) {
+	private function _deleteAsset($plugin_name, &$errorMes) {
 		App::uses('Asset', 'Model');
 		$Asset = new Asset();
 		$conditions = array(
 			"Asset.plugin" => $plugin_name
 		);
 		if(!$Asset->deleteAll($conditions)) {
-			$error_mes[] = $prefix.__('Failed to delete the database, (%s).','asset');
+			$errorMes[] = $prefix.__('Failed to delete the database, (%s).','asset');
 			return false;
 		}
 		return true;
@@ -724,15 +740,15 @@ class ModuleAdmin extends AppModel {
  * コントローラファイルの存在チェック
  *
  * @param string $plugin_path
- * @param string $dir_name
+ * @param string $dirName
  * @param string $controller_action
  * @param boolean $is_edit
  * @return boolean true or error message
  */
-	protected function fileExistsController($plugin_path, $dir_name, $controller_action, $is_edit = false) {
+	protected function fileExistsController($plugin_path, $dirName, $controller_action, $is_edit = false) {
 		$controller_action_arr = explode('/', $controller_action);
 		$plugin = Inflector::camelize($controller_action_arr[0]);
-		if($plugin != $dir_name ||
+		if($plugin != $dirName ||
 				!preg_match("/^[0-9a-zA-Z_\/]+$/", $controller_action)) {
 			return __('Unauthorized pattern for %s.', 'controller_action');
 		}
@@ -908,14 +924,14 @@ class ModuleAdmin extends AppModel {
  * <pre>
  * SchemaShellのcreateメソッドのモジュール管理バージョン(Create)
  * </pre>
- * @param  string $dir_name
+ * @param  string $dirName
  * @param string $prefix
- * @param array $error_mes
+ * @param array $errorMes
  * @return boolean
  */
-	public function createSchema($dir_name, $prefix, &$error_mes) {
-		$Schema = $this->_loadSchema($dir_name);
-		return $this->_createSchema($Schema, $prefix, $error_mes);
+	public function createSchema($dirName, $prefix, &$errorMes) {
+		$Schema = $this->_loadSchema($dirName);
+		return $this->_createSchema($Schema, $prefix, $errorMes);
 	}
 
 /**
@@ -923,14 +939,14 @@ class ModuleAdmin extends AppModel {
  * <pre>
  * SchemaShellのcreateメソッドのモジュール管理バージョン(Drop)
  * </pre>
- * @param  string $dir_name
+ * @param  string $dirName
  * @param string $prefix
- * @param array $error_mes
+ * @param array $errorMes
  * @return boolean
  */
-	public function dropSchema($dir_name, $prefix, &$error_mes) {
-		$Schema = $this->_loadSchema($dir_name);
-		return $this->_dropSchema($Schema, $prefix, $error_mes);
+	public function dropSchema($dirName, $prefix, &$errorMes) {
+		$Schema = $this->_loadSchema($dirName);
+		return $this->_dropSchema($Schema, $prefix, $errorMes);
 	}
 
 /**
@@ -938,14 +954,15 @@ class ModuleAdmin extends AppModel {
  * <pre>
  * SchemaShellのupdateメソッドのモジュール管理バージョン
  * </pre>
- * @param  string $dir_name
+ * @param  array  $tables
+ * @param  string $dirName
  * @param string $prefix
- * @param array $error_mes
+ * @param array $errorMes
  * @return boolean
  */
-	public function updateSchema($dir_name, $prefix, &$error_mes) {
-		$Schema = $this->_loadSchema($dir_name);
-		return $this->_updateSchema($Schema, $prefix, $error_mes);
+	public function updateSchema($dirName, $prefix, &$errorMes, $tables) {
+		$Schema = $this->_loadSchema($dirName);
+		return $this->_updateSchema($Schema, $prefix, $errorMes, null, $tables);
 	}
 
 /**
@@ -953,12 +970,16 @@ class ModuleAdmin extends AppModel {
  * <pre>
  * SchemaShellの_loadSchemaメソッドのモジュール管理バージョン
  * </pre>
- * @param  string $dir_name
+ * @param  string $dirName
  * @return boolean
  */
-	protected function _loadSchema($dir_name) {
-		$name = $plugin = $dir_name;
-		$options = array('name' => $name, 'plugin' => $plugin);
+	protected function _loadSchema($dirName = null) {
+		$name = $plugin = $dirName;
+		if(isset($name)) {
+			$options = array('name' => $name, 'plugin' => $plugin);
+		} else {
+			$options = array('name' => 'App', 'file' => 'schema.php', 'path' => APP . 'Config' . DS. 'Schema');
+		}
 		$Schema = $this->Schema->load($options);
 		if (!$Schema) {
 			return false;
@@ -973,11 +994,12 @@ class ModuleAdmin extends AppModel {
  * </pre>
  * @param CakeSchema $Schema
  * @param string $prefix
- * @param array $error_mes
+ * @param array $errorMes
  * @param string $table
+ * @param array $tables
  * @return void
  */
-	protected function _createSchema($Schema, $prefix, &$error_mes, $table = null) {
+	protected function _createSchema($Schema, $prefix, &$errorMes, $table = null, $tables = array()) {
 		$db = ConnectionManager::getDataSource($this->useDbConfig);
 
 		$create = array();
@@ -985,17 +1007,25 @@ class ModuleAdmin extends AppModel {
 		if (!$table) {
 			if(isset($Schema->tables)) {
 				foreach ($Schema->tables as $table => $fields) {
-					$create[$table] = $db->createSchema($Schema, $table);
+					if (count($tables) == 0 || !in_array($this->tablePrefix.$table, $tables)) {
+						$create[$table] = $db->createSchema($Schema, $table);
+					}
 				}
 			}
-		} elseif (isset($Schema->tables[$table])) {
+		} elseif (isset($Schema->tables[$table]) && (count($tables) == 0 || !in_array($this->tablePrefix.$table, $tables))) {
 			$create[$table] = $db->createSchema($Schema, $table);
 		}
 		if (empty($create)) {
-			return true;
+			if(!isset($Schema->tables)) {
+				// テーブルが存在しないならば、常にtrue
+				return true;
+			} else {
+				// テーブルがあるが、既に存在している場合、false
+				return false;
+			}
 		}
 
-		return $this->_runSchema($create, 'create', $Schema, $prefix, $error_mes);
+		return $this->_runSchema($create, 'create', $Schema, $prefix, $errorMes);
 	}
 
 /**
@@ -1006,11 +1036,11 @@ class ModuleAdmin extends AppModel {
  * </pre>
  * @param CakeSchema $Schema
  * @param string $prefix
- * @param array $error_mes
+ * @param array $errorMes
  * @param string $table
  * @return void
  */
-	protected function _dropSchema($Schema, $prefix, &$error_mes, $table = null) {
+	protected function _dropSchema($Schema, $prefix, &$errorMes, $table = null) {
 		$db = ConnectionManager::getDataSource($this->useDbConfig);
 
 		$drop = array();
@@ -1028,7 +1058,7 @@ class ModuleAdmin extends AppModel {
 			return true;
 		}
 
-		return $this->_runSchema($drop, 'drop', $Schema, $prefix, $error_mes);
+		return $this->_runSchema($drop, 'drop', $Schema, $prefix, $errorMes);
 	}
 
 /**
@@ -1041,11 +1071,12 @@ class ModuleAdmin extends AppModel {
  *
  * @param CakeSchema $Schema
  * @param string $prefix
- * @param array $error_mes
+ * @param array $errorMes
  * @param string $table
+ * @param array $tables
  * @return boolean
  */
-	protected function _updateSchema(&$Schema, $prefix, &$error_mes, $table = null) {
+	protected function _updateSchema(&$Schema, $prefix, &$errorMes, $table = null, $tables = array()) {
 		$db = ConnectionManager::getDataSource($this->useDbConfig);
 
 		//$this->out(__d('cake_console', 'Comparing Database to Schema...'));
@@ -1061,17 +1092,21 @@ class ModuleAdmin extends AppModel {
 
 		if (empty($table)) {
 			foreach ($compare as $table => $changes) {
-				$contents[$table] = $db->alterSchema(array($table => $changes), $table);
+				if(!$this->_createSchema($Schema, $prefix, $errorMes, $table, $tables)) {
+					$contents[$table] = $db->alterSchema(array($table => $changes), $table);
+				}
 			}
 		} elseif (isset($compare[$table])) {
-			$contents[$table] = $db->alterSchema(array($table => $compare[$table]), $table);
+			if(!$this->_createSchema($Schema, $prefix, $errorMes, $table, $tables)) {
+				$contents[$table] = $db->alterSchema(array($table => $compare[$table]), $table);
+			}
 		}
 
 		if (empty($contents)) {
 			return true;
 		}
 
-		return $this->_runSchema($contents, 'update', $Schema, $prefix, $error_mes);
+		return $this->_runSchema($contents, 'update', $Schema, $prefix, $errorMes);
 	}
 /**
  * Runs sql from _create() or _update()
@@ -1084,10 +1119,10 @@ class ModuleAdmin extends AppModel {
  * @param string $event     'create' or 'update' or 'drop'
  * @param CakeSchema $Schema
  * @param string $prefix
- * @param array $error_mes
+ * @param array $errorMes
  * @return boolean
  */
-	protected function _runSchema($contents, $event, &$Schema, $prefix, &$error_mes) {
+	protected function _runSchema($contents, $event, &$Schema, $prefix, &$errorMes) {
 		if (empty($contents)) {
 			return true;
 		}
@@ -1113,7 +1148,7 @@ class ModuleAdmin extends AppModel {
 			} else {
 				if (!$Schema->before(array($event => $table))) {
 					$is_error = true;
-					$error_mes[] = $prefix.__d('module', 'Failed to %s.', $title);
+					$errorMes[] = $prefix.__d('module', 'Failed to %s.', $title);
 					continue;
 				}
 				$error = null;
@@ -1127,7 +1162,7 @@ class ModuleAdmin extends AppModel {
 
 				if (!empty($error)) {
 					$is_error = true;
-					$error_mes[] = $prefix.$error;
+					$errorMes[] = $prefix.$error;
 				} //else {
 				//	$this->out(__d('cake_console', '%s updated.', $table));
 				//}

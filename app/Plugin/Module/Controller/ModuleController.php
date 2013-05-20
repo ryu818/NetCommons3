@@ -26,6 +26,8 @@ class ModuleController extends AppPluginController {
 	public function index() {
 		if($this->request->is('post')) {
 			// 登録処理
+			$db = ConnectionManager::getDataSource($this->ModuleAdmin->useDbConfig);
+			$tables = $db->listSources();
 			$dir_name = isset($this->request->data['dir_name']) ? $this->request->data['dir_name'] : '';
 			$type = isset($this->request->data['type']) ? $this->request->data['type'] : '';
 			switch($type) {
@@ -33,10 +35,10 @@ class ModuleController extends AppPluginController {
 					$result = $this->ModuleAdmin->installModule($dir_name);
 					break;
 				case 'update':
-					$result = $this->ModuleAdmin->updateModule($dir_name);
+					$result = $this->ModuleAdmin->updateModule($tables, $dir_name);
 					break;
 				case 'update-all':
-					$result = $this->ModuleAdmin->updateAllModule();
+					$result = $this->ModuleAdmin->updateAllModule($tables);
 					break;
 				case 'uninstall':
 					$result = $this->ModuleAdmin->uninstallModule($dir_name);

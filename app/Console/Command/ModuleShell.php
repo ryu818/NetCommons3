@@ -183,7 +183,10 @@ class ModuleShell extends AppShell {
 			}
 		}
 
-		list($success_mes, $error_mes) = $this->ModuleAdmin->updateModule($this->params['plugin']);
+		$db = ConnectionManager::getDataSource($this->ModuleAdmin->useDbConfig);
+		$tables = $db->listSources();
+
+		list($success_mes, $error_mes) = $this->ModuleAdmin->updateModule($tables, $this->params['plugin']);
 		foreach($success_mes as $success) {
 			$this->out(str_replace('<br />', '',$success));
 		}
@@ -212,7 +215,10 @@ class ModuleShell extends AppShell {
 			}
 		}
 
-		list($success_mes, $error_mes) = $this->ModuleAdmin->updateAllModule();
+		$db = ConnectionManager::getDataSource($this->ModuleAdmin->useDbConfig);
+		$tables = $db->listSources();
+
+		list($success_mes, $error_mes) = $this->ModuleAdmin->updateAllModule($tables);
 		foreach($success_mes as $success) {
 			$this->out(str_replace('<br />', '',$success));
 		}
