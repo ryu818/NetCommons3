@@ -236,7 +236,7 @@ class MyCakeRoute extends CakeRoute {
 		if(isset($url['block_type']) && $url['block_type'] != 'active-controls' && $url['block_type'] != 'active-contents' && !isset($url['permalink'])) {
 			$permalink = Configure::read(NC_SYSTEM_KEY.'.permalink');
 			if($permalink) {
-				$url['permalink'] = $permalink;
+				$url['permalink'] = str_replace('%2F', '/', urlencode($permalink));
 			} else {
 				$url['permalink'] = '';
 			}
