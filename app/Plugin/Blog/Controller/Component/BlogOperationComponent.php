@@ -140,10 +140,87 @@ class BlogOperationComponent extends Object {
 		if(!$this->shortcut($from_block, $to_block, $from_content, $to_content, $from_page, $to_page)) {
 			return false;
 		}
+		// lftとrghtの自動設定をやめるためにTreeBehaviorを無効化
+		if ($this->BlogComment->Behaviors->enabled('Tree')) {
+			$this->BlogComment->Behaviors->disable('Tree');
+		}
+
+		$newPostIdArr = array();
+		$newCommentIdArr = array();
+		$newGroupIdArr = array();
+		$groupId = $newGroupId = 0;
+		$tables = array('Revision', 'Archive', 'Blog', 'BlogPost', 'BlogComment', 'BlogTerm', 'BlogTermLink');
+		foreach($tables as $table) {
+			$condition = array($table.'.content_id' => $from_content['Content']['master_id']);
+			$datas = $this->{$table}->find('all', array(
+				'recursive' => -1,
+				'conditions' => $condition,
+				'order' => array($this->{$table}->primaryKey => 'ASC')
+			));
+			foreach($datas as $data) {
+				if($table == 'Revision') {
+					if($groupId != $data['Revision']['group_id']) {
+						$groupId = $data['Revision']['group_id'];
+						$data['Revision']['group_id'] = 0;
+					} else {
+						$data['Revision']['group_id'] = $newGroupId;
+					}
+				} else if($table == 'BlogPost') {
+					$data['BlogPost']['revision_group_id'] = $newGroupIdArr[$data['BlogPost']['revision_group_id']];
+					$beforeId = $data['BlogPost']['id'];
+				} else if($table == 'BlogComment') {
+					$beforeId = $data['BlogComment']['id'];
+					if(!isset($newPostIdArr[$data['BlogComment']['blog_post_id']])) {
+						continue;
+					}
+					$data['BlogComment']['blog_post_id'] = $newPostIdArr[$data['BlogComment']['blog_post_id']];
+					if(isset($data['BlogComment']['parent_id']) && isset($newCommentIdArr[$data['BlogComment']['parent_id']])) {
+						$data['BlogComment']['parent_id'] = $newCommentIdArr[$data['BlogComment']['parent_id']];
+					}
+				}
+
+				unset($data[$table]['id']);
+				$data[$table]['content_id'] = $to_content['Content']['id'];
+				$this->{$table}->create();
+				if(!$this->{$table}->save($data)) {
+					return false;
+				}
+				if($table == 'BlogPost') {
+					$newPostIdArr[$beforeId] = $this->{$table}->id;
+				} else if($table == 'BlogComment') {
+					$newCommentIdArr[$beforeId] = $this->{$table}->id;
+				} else if($table == 'Revision' && $data['Revision']['group_id'] == 0) {
+					$newGroupId = $this->{$table}->id;
+					$newGroupIdArr[$groupId] = $newGroupId;
+				}
+			}
+		}
+		return true;
+	}
+
+	protected function aaaa($table, $master_id) {
+		$condition = array($table.'.content_id' => $from_content['Content']['master_id']);
+		return $this->{$table}->find('all', array(
+				'recursive' => -1,
+				'conditions' => $condition
+		));
+	}
+
+	protected function bbbb($table, $data) {
+		unset($data[$table]['id']);
+		//$data[$table]['content_id'] = $to_content['Content']['id'];
+		$this->{$table}->create();
+		return $this->{$table}->save($data);
+	}
+
+	public function paste2222($from_block, $to_block, $from_content, $to_content, $from_page, $to_page) {
+		if(!$this->shortcut($from_block, $to_block, $from_content, $to_content, $from_page, $to_page)) {
+			return false;
+		}
 
 		$newGroupIdArr = array();
 		$groupId = $newGroupId = 0;
-		$tables = array('Revision', 'Archive', 'Blog', 'BlogComment', 'BlogPost', 'BlogTerm', 'BlogTermLink');
+		$tables = array('Revision', 'Blog', 'BlogPost', 'BlogComment', 'BlogTerm', 'BlogTermLink');
 		foreach($tables as $table) {
 			$condition = array($table.'.content_id' => $from_content['Content']['master_id']);
 			$datas = $this->{$table}->find('all', array(
