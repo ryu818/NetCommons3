@@ -141,8 +141,10 @@ class BlockController extends BlockAppController {
 
 		if(isset($module['Module']['ini']['add_block_controller_action'])) {
 			$params = $this->Common->explodeControllerAction($module['Module']['ini']['add_block_controller_action']);
-		} else {
+		} else if(isset($module['Module']['ini']['edit_controller_action'])) {
 			$params = $this->Common->explodeControllerAction($module['Module']['edit_controller_action']);
+		} else {
+			$params = $this->Common->explodeControllerAction($module['Module']['controller_action']);
 		}
 
 		$params['block_id'] = $last_id;

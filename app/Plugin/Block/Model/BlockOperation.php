@@ -223,7 +223,8 @@ class BlockOperation extends AppModel {
 					'title' => $module['Module']['module_name'],
 					'is_master' => _ON,
 					'room_id' => $page['Page']['room_id'],
-					'display_flag' => NC_DISPLAY_FLAG_DISABLE,
+					'display_flag' => (isset($module['Module']['ini']['add_block_disable']) && $module['Module']['ini']['add_block_disable'] == _ON)
+						? NC_DISPLAY_FLAG_DISABLE : NC_DISPLAY_FLAG_ON,
 					'is_approved' => _ON,
 					'url' => ''
 				)
