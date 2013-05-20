@@ -94,7 +94,7 @@ class BlockList extends AppModel {
 					array("type" => "LEFT",
 						"table" => "pages",
 						"alias" => "RoomPage",
-						"conditions" => "`RoomPage`.id``=`Content`.`room_id`"
+						"conditions" => "`RoomPage`.`id`=`Content`.`room_id`"
 					),
 					array("type" => "LEFT",
 						"table" => "page_user_links",
@@ -105,7 +105,7 @@ class BlockList extends AppModel {
 					array("type" => "LEFT",
 						"table" => "authorities",
 						"alias" => "Authority",
-						"conditions" => "`Authority`.id``=`PagesUsersLink`.`authority_id`"
+						"conditions" => "`Authority`.`id`=`PagesUsersLink`.`authority_id`"
 					),
 				),
 				'limit' => $limit,

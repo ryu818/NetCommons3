@@ -1,7 +1,7 @@
 <?php
 	$permalink = $blog_post['BlogPost']['permalink'];
 	$dates = $this->TimeZone->date_values($blog_post['BlogPost']['post_date']);
-	$usename = Configure::read(NC_SYSTEM_KEY.'.handle');
+	$nc_user = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 
 	// edit:編集、返信、 add:新規
 	if($edit) {
@@ -83,7 +83,7 @@
 	?>
 		<fieldset class="form">
 			<ul class="lists">
-				<?php if (empty($usename)):// ログインしてない場合は表示項目を追加する ?>
+				<?php if (empty($nc_user['id'])):// ログインしてない場合は表示項目を追加する ?>
 					<li>
 						<dl>
 							<dt>
@@ -152,7 +152,7 @@
 	<?php if ($mode == 'edit'):?>
 		<script>
 			$(function(){
-				<?php if (empty($usename)): ?>
+				<?php if (empty($nc_user['id'])): ?>
 					$('#<?php echo($authorId); ?>').focus();
 				<?php else: ?>
 					$('#<?php echo($commentAreaId); ?>').focus();
