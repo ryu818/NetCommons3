@@ -1,4 +1,4 @@
-<?php 
+<?php
 class AppSchema extends CakeSchema {
 
 	public function before($event = array()) {
@@ -257,10 +257,43 @@ class AppSchema extends CakeSchema {
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
 
+	public $group_links = array(
+		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
+		'group_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'user_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
+		'created_user_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'created_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'modified' => array('type' => 'datetime', 'null' => true, 'default' => null),
+		'modified_user_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'modified_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'indexes' => array(
+			'PRIMARY' => array('column' => 'id', 'unique' => 1)
+		),
+		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
+	);
+
+	public $groups = array(
+		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
+		'user_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'content_id' => array('type' => 'integer', 'null' => false, 'default' => null),
+		'name' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
+		'created_user_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'created_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'modified' => array('type' => 'datetime', 'null' => true, 'default' => null),
+		'modified_user_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'modified_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'indexes' => array(
+			'PRIMARY' => array('column' => 'id', 'unique' => 1)
+		),
+		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
+	);
+
 	public $htmlarea_video_urls = array(
 		'url' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'indexes' => array(
-			
+
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
