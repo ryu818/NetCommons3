@@ -56,7 +56,7 @@ class MyHtmlHelper extends HtmlHelper {
 /**
  * 引数の文字列の先頭にhttp://を付加する
  *
- * @param   $test
+ * @param   $text
  * @return  $ret
  * @since   v 3.0.0.0
  */
