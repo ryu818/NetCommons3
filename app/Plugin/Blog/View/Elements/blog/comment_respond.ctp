@@ -26,6 +26,8 @@
 		$comment['BlogComment']['author_email'] = '';
 		$comment['BlogComment']['author_url'] = '';
 		$comment['BlogComment']['comment'] = '';
+		$comment['BlogComment']['parent_id'] = '';
+		$comment['BlogComment']['id'] = '';
 	}
 	$authorId = 'BlogCommentAuthor'.$id.$mode;
 	$authorEmailId = 'BlogCommentAuthorEmail'.$id.$mode;

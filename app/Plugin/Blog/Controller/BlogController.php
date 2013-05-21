@@ -258,7 +258,6 @@ class BlogController extends BlogAppController {
 
 			if(empty($userId)) {
 				$comment['BlogComment']['author_email'] = $this->request->data['BlogComment']['author_email'];
-				// TODO:URLは入力値のコンバート処理が必要 example.com → http://example.com　wordpressでは実装されている
 				$comment['BlogComment']['author_url'] = $this->request->data['BlogComment']['author_url'];
 			}
 			$comment['BlogComment']['comment'] = $this->request->data['BlogComment']['comment'];

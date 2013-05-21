@@ -52,6 +52,23 @@ class MyHtmlHelper extends HtmlHelper {
 	public function fetchCss($name, $attributes = null) {
 		return $this->__instance->fetchCss($name, $attributes);
 	}
+
+/**
+ * 引数の文字列の先頭にhttp://を付加する
+ *
+ * @param   $text
+ * @return  $ret
+ * @since   v 3.0.0.0
+ */
+	public function linkUrl($text) {
+		$pattern = '#((?:https?|ftps?|sftp|file|news|gopher)://[a-z0-9.\-:]+(?:/[^\s]*)?)#i';
+		if(!preg_match($pattern, $text)) {
+			$ret = 'http://' . $text;
+		} else {
+			$ret = $text;
+		}
+		return $ret;
+	}
 }
 
 class MyHtmlHelperInstance extends AppHelper {
