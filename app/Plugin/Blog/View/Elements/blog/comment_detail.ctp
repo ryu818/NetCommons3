@@ -16,13 +16,12 @@
 						<div class="table-cell">
 							<cite class="blog-comment-citation">
 								<?php	// ユーザ名
-									// TODO:リンクのURLは整形（http://を先頭につけるようなコンバート処理）が必要→格納時
 									$author = !empty($blog_comments_tree[$i]['BlogComment']['author'])? $blog_comments_tree[$i]['BlogComment']['author'] : __('Guest');
 									if(!empty($blog_comments_tree[$i]['BlogComment']['author_url'])){
 										echo $this->Html->link(h($author),
-											$blog_comments_tree[$i]['BlogComment']['author_url'],
+											$this->MyHtml->linkUrl($blog_comments_tree[$i]['BlogComment']['author_url']),
 											array('id' => 'comment-author-link'.$id.'-'.$blog_comments_tree[$i]['BlogComment']['blog_post_id'],
-												'class' => 'nc-tooltip', 'title' =>$blog_comments_tree[$i]['BlogComment']['author_url'],'target' => '_blank'
+												'class' => 'nc-tooltip', 'title' => $this->MyHtml->linkUrl($blog_comments_tree[$i]['BlogComment']['author_url']),'target' => '_blank'
 										));
 									}else{
 										echo h($author);
