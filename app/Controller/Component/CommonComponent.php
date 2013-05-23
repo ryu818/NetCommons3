@@ -269,4 +269,28 @@ class CommonComponent extends Component {
 		}
 		return $params;
 	}
+
+/**
+ * 直近のクエリについての情報を得る
+ * @param   string  $source
+ * @return  array
+ * @since   v 3.0.0.0
+ */
+	public function getSqlInfo($source = 'default') {
+		$db = ConnectionManager::getDataSource($source);
+		$log = $db->getLog(false, false);
+		if(isset($log['log'][count($log['log']) - 1])) {
+			$retLog = $log['log'][count($log['log']) - 1];
+			$ret = array(
+				'id' => count($log['log']),
+				'query' => $retLog['query'],
+				'affected' => $retLog['affected'],
+				'numRows' => $retLog['numRows'],
+				'took' => $retLog['took'],
+			);
+		} else {
+			return false;
+		}
+		return $ret;
+	}
 }
