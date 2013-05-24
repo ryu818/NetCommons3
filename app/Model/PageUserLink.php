@@ -56,7 +56,7 @@ class PageUserLink extends AppModel
 			$authority_id = isset($post_user_id_arr[$user_id]) ? intval($post_user_id_arr[$user_id]) : null;
 			$pre_authority_id = isset($pre_user_id_arr[$user_id]) ? intval($pre_user_id_arr[$user_id]) : null;
 
-			if(!isset($authority_id) || $pre_authority_id == $authority_id || ($authority_id == $default_authority_id && $authority_id != NC_AUTH_OTHER_ID)) {
+			if(!isset($authority_id) || $pre_authority_id === $authority_id || ($authority_id == $default_authority_id && $authority_id != NC_AUTH_OTHER_ID)) {
 				// 既にあるデータか、default値といっしょなので、Insertしない。
 				if($authority_id == $default_authority_id && $authority_id != $pre_authority_id) {
 					// delete
