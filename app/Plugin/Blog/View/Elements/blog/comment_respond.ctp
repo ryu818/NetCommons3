@@ -1,6 +1,6 @@
 <?php
 	$permalink = $blog_post['BlogPost']['permalink'];
-	$dates = $this->TimeZone->date_values($blog_post['BlogPost']['post_date']);
+	$dates = $this->TimeZone->dateValues($blog_post['BlogPost']['post_date']);
 	$nc_user = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 
 	// edit:編集、返信、 add:新規
