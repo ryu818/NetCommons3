@@ -64,4 +64,29 @@ class BlogCommonComponent extends Component {
 
 		return $url;
 	}
+
+/**
+ * メールの定義文セット
+ * @param   Model BlogPost $blogPost
+ * @param   string  $body	{X-BODY}文字列
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function mailAssignedTags($blogPost, $body) {
+		$this->_controller->Mail->assignedTags['{X-SUBJECT}'] = $blogPost['BlogPost']['title'];
+		$this->_controller->Mail->assignedTags['{X-BODY}'] = $body;
+		$this->_controller->Mail->assignedTags['{X-URL}'] = $this->getDetailRedirectUrl($blogPost);
+		$categories = $this->_controller->BlogTerm->findCategories($blogPost['BlogPost']['content_id'], $this->_controller->BlogPost->id, null, 'list');
+		if(count($categories) > 0) {
+			$this->_controller->Mail->assignedTags['{X-CATEGORY_NAME}'] = implode(',', $categories);
+		} else {
+			$this->_controller->Mail->assignedTags['{X-CATEGORY_NAME}'] = __('Uncategorized');
+		}
+		$tags = $this->_controller->BlogTerm->findTags($blogPost['BlogPost']['content_id'], $this->_controller->BlogPost->id, null, 'list');
+		if(count($tags) > 0) {
+			$this->_controller->Mail->assignedTags['{X-TAG_NAME}'] = implode(',', $tags);
+		} else {
+			$this->_controller->Mail->assignedTags['{X-TAG_NAME}'] = __('Uncategorized');
+		}
+	}
 }

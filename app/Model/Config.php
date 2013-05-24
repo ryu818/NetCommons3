@@ -11,11 +11,11 @@
 class Config extends AppModel
 {
 	public $name = 'Config';
-	/*public $hasOne = array(
+	/*public $hasMany = array(
 		'ConfigLang' => array(
-			'className' => 'ConfigLang',
+			'className'  => 'ConfigLang',
 			'conditions' => array('ConfigLang.lang'  => 'en'),
-			'foreignKey' => 'config_id'
+			'order'      => 'Recipe.created DESC'
 		)
 	);*/
 
@@ -42,7 +42,7 @@ class Config extends AppModel
 					$result['Config']['value'] = $result['ConfigLang']['value'];
 				}
 				if(isset($result['ConfigLang']['id']) && !is_null($result['ConfigLang']['id'])) {
-					$result['Config']['configs_lang_id'] = $result['ConfigLang']['id'];
+					$result['Config']['config_lang_id'] = $result['ConfigLang']['id'];
 				}
 				$ret[$result['Config']['name']] = $result['Config']['value'];
 			}
@@ -52,7 +52,7 @@ class Config extends AppModel
 					$result['Config']['value'] = $result['ConfigLang']['value'];
 				}
 				if(isset($result['ConfigLang']['id']) && !is_null($result['ConfigLang']['id'])) {
-					$result['Config']['configs_lang_id'] = $result['ConfigLang']['id'];
+					$result['Config']['config_lang_id'] = $result['ConfigLang']['id'];
 				}
 				$ret[$result['Config']['module_id']][$result['Config']['name']] = $result['Config'];
 			}
@@ -62,7 +62,7 @@ class Config extends AppModel
 					$result['Config']['value'] = $result['ConfigLang']['value'];
 				}
 				if(isset($result['ConfigLang']['id']) && !is_null($result['ConfigLang']['id'])) {
-					$result['Config']['configs_lang_id'] = $result['ConfigLang']['id'];
+					$result['Config']['config_lang_id'] = $result['ConfigLang']['id'];
 				}
 				$ret[$result['Config']['name']] = $result['Config'];
 			}
@@ -98,5 +98,25 @@ class Config extends AppModel
 			return $configs['version'];
 		}
 		return NC_VERSION;
+	}
+
+/**
+ * Configモデル共通JOIN文
+ * @param   string  $lang
+ * @return  array   $joins
+ * @since   v 3.0.0.0
+ */
+	public function getJoinsArray($lang) {
+		return array(
+			array(
+				"type" => "LEFT",
+				"table" => "config_langs",
+				"alias" => "ConfigLang",
+				"conditions" => array(
+					"`ConfigLang`.`config_name`=`Config`.`name`",
+					"`ConfigLang`.`lang`" => $lang
+				)
+			),
+		);
 	}
 }

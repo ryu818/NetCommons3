@@ -148,38 +148,38 @@ class BlogTerm extends AppModel
 		if($check['parent'] == 0) {
 			return true;
 		}
-		$blog_term = $this->findById($check['parent']);
-		if(!isset($blog_term['BlogTerm']) || $blog_term['BlogTerm']['parent'] != '0')
+		$blogTerm = $this->findById($check['parent']);
+		if(!isset($blogTerm['BlogTerm']) || $blogTerm['BlogTerm']['parent'] != '0')
 			return false;
 		return true;
 	}
 
 /**
  * Model BlogPost からタグ一覧、カテゴリー一覧の取得
- * @param   Model BlogPost $blog_posts
+ * @param   Model BlogPost $blogPosts
  * @return  array(blog_post_id.'_'.taxonomy => Model BlogTerms)
  * @since   v 3.0.0.0
  */
-	public function findByBlogPosts($blog_posts) {
+	public function findByBlogPosts($blogPosts) {
 		$rets = array();
-		if(count($blog_posts) == 0) {
+		if(count($blogPosts) == 0) {
 			return $rets;
 		}
-		foreach($blog_posts as $blog_post) {
-			$rets[$blog_post['BlogPost']['id']] = $this->findByBlogPostId($blog_post['BlogPost']['id']);
+		foreach($blogPosts as $blogPost) {
+			$rets[$blogPost['BlogPost']['id']] = $this->findByBlogPostId($blogPost['BlogPost']['id']);
 		}
 		return $rets;
 	}
 
 /**
  * BlogTermLink.blog_post_idから取得
- * @param   integer $blog_post_id
- * @param   string  INNER OR LEFT $joins_type
+ * @param   integer $blogPostId
+ * @param   string  INNER OR LEFT $joinsType
  * @param   string  $taxonomy
  * @return  Model BlogTerms BlogTermLinks
  * @since   v 3.0.0.0
  */
-	public function findByBlogPostId($blog_post_id, $joins_type = 'INNER', $taxonomy = '') {
+	public function findByBlogPostId($blogPostId, $joinsType = 'INNER', $taxonomy = '') {
 		$params = array(
 			'fields' => array(
 				'BlogTerm.id',
@@ -192,12 +192,12 @@ class BlogTerm extends AppModel
 				'BlogTermLink.blog_term_id',
 			),
 			'joins' => array(array(
-				'type' => $joins_type,
+				'type' => $joinsType,
 				'alias' => 'BlogTermLink',
 				'table' => 'blog_term_links',
 				'conditions' => array(
 					'BlogTermLink.blog_term_id = BlogTerm.id',
-					'BlogTermLink.blog_post_id' => $blog_post_id
+					'BlogTermLink.blog_post_id' => $blogPostId
 				)
 			)),
 		);
@@ -211,16 +211,16 @@ class BlogTerm extends AppModel
 
 /**
  * カテゴリ一覧、タグ一覧取得
- * @param   integer $content_id
+ * @param   integer $contentId
  * @param   integer $visible_item
  * @param   string  $taxonomy	category or tag
  * @param   boolean $is_chief
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function findTerms($content_id, $visible_item, $taxonomy) {
+	public function findTerms($contentId, $visible_item, $taxonomy) {
 		$conditions = array(
-			'BlogTerm.content_id' => $content_id,
+			'BlogTerm.content_id' => $contentId,
 			'BlogTerm.taxonomy' => $taxonomy
 		);
 
@@ -241,15 +241,16 @@ class BlogTerm extends AppModel
 
 /**
  * カテゴリ一覧、タグ一覧の体裁を整える
- * @param   integer $content_id
- * @param   integer $blog_post_id
- * @param   array   $active_category_arr アクティブなカテゴリー名称　記事投稿、カテゴリー追加直後
+ * @param   integer $contentId
+ * @param   integer $blogPostId
+ * @param   array   $activeCategoryArr アクティブなカテゴリー名称　記事投稿、カテゴリー追加直後
+ * @param   string  'thread' or 'list'
  * @return  array($categories, $tags)
  * @since   v 3.0.0.0
  */
-	public function findCategories($content_id, $blog_post_id = null, $active_category_arr = null) {
+	public function findCategories($contentId, $blogPostId = null, $activeCategoryArr = null, $type = 'thread') {
 		$conditions = array(
-			'BlogTerm.content_id' => $content_id,
+			'BlogTerm.content_id' => $contentId,
 			'BlogTerm.taxonomy' => 'category'
 		);
 
@@ -265,7 +266,7 @@ class BlogTerm extends AppModel
 			),
 			'conditions' => $conditions,
 		);
-		if(isset($blog_post_id)) {
+		if(isset($blogPostId)) {
 			$params['fields'][] = 'BlogTermLink.blog_post_id';
 			$params['joins'] = array(
 				array(
@@ -274,33 +275,37 @@ class BlogTerm extends AppModel
 					'table' => 'blog_term_links',
 					'conditions' => array(
 						'BlogTermLink.blog_term_id = BlogTerm.id',
-						'BlogTermLink.blog_post_id' => $blog_post_id
+						'BlogTermLink.blog_post_id' => $blogPostId
 					)
 				)
 			);
 			$params['order'] = array("BlogTermLink.blog_post_id" => "DESC", "BlogTerm.count" => "DESC", "BlogTerm.id" => "DESC");
 		}
 
-		$blog_terms = $this->find('all', $params);
+		$blogTerms = $this->find('all', $params);
 
 		$categories = array();
-		foreach($blog_terms as $blog_term) {
-			if(is_array($active_category_arr)) {
-				$blog_term['BlogTerm']['checked'] = false;
-				if(in_array($blog_term['BlogTerm']['id'] , $active_category_arr)) {
-					$blog_term['BlogTerm']['checked'] = true;
+		foreach($blogTerms as $blogTerm) {
+			if(is_array($activeCategoryArr)) {
+				$blogTerm['BlogTerm']['checked'] = false;
+				if(in_array($blogTerm['BlogTerm']['id'] , $activeCategoryArr)) {
+					$blogTerm['BlogTerm']['checked'] = true;
 				}
-			} else if(isset($blog_post_id)) {
-				$blog_term['BlogTerm']['checked'] = false;
-				if(isset($blog_term['BlogTermLink']) && isset($blog_term['BlogTermLink']['blog_post_id'])) {
-					$blog_term['BlogTerm']['checked'] = true;
+			} else if(isset($blogPostId)) {
+				$blogTerm['BlogTerm']['checked'] = false;
+				if(isset($blogTerm['BlogTermLink']) && isset($blogTerm['BlogTermLink']['blog_post_id'])) {
+					$blogTerm['BlogTerm']['checked'] = true;
 				}
 			}
 
-			if(intval($blog_term['BlogTerm']['parent']) != 0) {
-				$categories[$blog_term['BlogTerm']['parent']][1][] = $blog_term;
-			} else {
-				$categories[$blog_term['BlogTerm']['id']][0]['BlogTerm'] = $blog_term['BlogTerm'];
+			if($type == 'thread') {
+				if(intval($blogTerm['BlogTerm']['parent']) != 0) {
+					$categories[$blogTerm['BlogTerm']['parent']][1][] = $blogTerm;
+				} else {
+					$categories[$blogTerm['BlogTerm']['id']][0]['BlogTerm'] = $blogTerm['BlogTerm'];
+				}
+			} else if($blogTerm['BlogTerm']['checked'] == true) {
+				$categories[] = $blogTerm['BlogTerm']['name'];
 			}
 		}
 
@@ -309,15 +314,16 @@ class BlogTerm extends AppModel
 
 /**
  * カテゴリ一覧、タグ一覧の体裁を整える
- * @param   integer $content_id
- * @param   integer $blog_post_id
- * @param   array   $active_tag_arr アクティブなタグ名称　記事投稿直後
+ * @param   integer $contentId
+ * @param   integer $blogPostId
+ * @param   array   $activeTagArr アクティブなタグ名称　記事投稿直後
+ * @param   string  'thread' or 'list'
  * @return  array($categories, $tags)
  * @since   v 3.0.0.0
  */
-	public function findTags($content_id, $blog_post_id = null, $active_tag_arr = null) {
+	public function findTags($contentId, $blogPostId = null, $activeTagArr = null, $type = 'thread') {
 		$conditions = array(
-			'BlogTerm.content_id' => $content_id,
+			'BlogTerm.content_id' => $contentId,
 			'BlogTerm.taxonomy' => 'tag'
 		);
 
@@ -334,7 +340,7 @@ class BlogTerm extends AppModel
 			'conditions' => $conditions,
 			//'limit' => BLOG_SHOW_MAX_TAGS
 		);
-		if(isset($blog_post_id)) {
+		if(isset($blogPostId)) {
 			$params['fields'][] = 'BlogTermLink.blog_post_id';
 			$params['joins'] = array(
 				array(
@@ -343,39 +349,43 @@ class BlogTerm extends AppModel
 					'table' => 'blog_term_links',
 					'conditions' => array(
 						'BlogTermLink.blog_term_id = BlogTerm.id',
-						'BlogTermLink.blog_post_id' => $blog_post_id
+						'BlogTermLink.blog_post_id' => $blogPostId
 					)
 				)
 			);
 			$params['order'] = array("BlogTermLink.blog_post_id" => "DESC", "BlogTerm.count" => "DESC", "BlogTerm.id" => "DESC");
 		}
 
-		$blog_terms = $this->find('all', $params);
+		$blogTerms = $this->find('all', $params);
 
 		$tags = array();
-		$tags_names_arr = array();
-		foreach($blog_terms as $blog_term) {
-			if(is_array($active_tag_arr)) {
-				$blog_term['BlogTerm']['checked'] = false;
-				if(in_array($blog_term['BlogTerm']['name'] , $active_tag_arr)) {
-					$blog_term['BlogTerm']['checked'] = true;
+		$tagsNamesArr = array();
+		foreach($blogTerms as $blogTerm) {
+			if(is_array($activeTagArr)) {
+				$blogTerm['BlogTerm']['checked'] = false;
+				if(in_array($blogTerm['BlogTerm']['name'] , $activeTagArr)) {
+					$blogTerm['BlogTerm']['checked'] = true;
 				}
-			} else if(isset($blog_post_id)) {
-				$blog_term['BlogTerm']['checked'] = false;
-				if(isset($blog_term['BlogTermLink']) && isset($blog_term['BlogTermLink']['blog_post_id'])) {
-					$blog_term['BlogTerm']['checked'] = true;
+			} else if(isset($blogPostId)) {
+				$blogTerm['BlogTerm']['checked'] = false;
+				if(isset($blogTerm['BlogTermLink']) && isset($blogTerm['BlogTermLink']['blog_post_id'])) {
+					$blogTerm['BlogTerm']['checked'] = true;
 				}
 			}
-			$tags_names_arr[] = $blog_term['BlogTerm']['name'];
-			$tags[] = $blog_term;
+			$tagsNamesArr[] = $blogTerm['BlogTerm']['name'];
+			if($type == 'thread') {
+				$tags[] = $blogTerm;
+			} else if($blogTerm['BlogTerm']['checked'] == true) {
+				$tags[] = $blogTerm['BlogTerm']['name'];
+			}
 		}
-		if(is_array($active_tag_arr)) {
-			foreach($active_tag_arr as $tag_name) {
-				if(!in_array($tag_name , $tags_names_arr)) {
+		if(is_array($activeTagArr)) {
+			foreach($activeTagArr as $tagName) {
+				if(!in_array($tagName , $tagsNamesArr)) {
 					$tags[] = array(
 						'BlogTerm' => array(
 							'checked' => true,
-							'name' => $tag_name
+							'name' => $tagName
 						)
 					);
 				}

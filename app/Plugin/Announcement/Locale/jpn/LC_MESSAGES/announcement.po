@@ -1,3 +1,7 @@
 ## 編集画面
 msgid	"Announcement name"
 msgstr	"お知らせ名称"
+msgid	"[{X-SITE_NAME}]Announcement({X-ROOM} {X-CONTENT_NAME})"
+msgstr	"[{X-SITE_NAME}]お知らせ投稿({X-ROOM} {X-CONTENT_NAME})"
+msgid	"You are receiving this email because a message was posted to Announcement.\nRoom's name:{X-ROOM}\nAnnouncement title:{X-CONTENT_NAME}\nuser:{X-USER}\ndate:{X-TO_DATE}\n\n\n{X-BODY}\n\nClick on the link below to access to this article.\n{X-URL}"
+msgstr	"お知らせに投稿されたのでお知らせします。\nルーム名称:{X-ROOM}\nお知らせタイトル:{X-CONTENT_NAME}\n投稿者:{X-USER}\n投稿日時:{X-TO_DATE}\n\n\n{X-BODY}\n\nこの記事に閲覧するには、下記アドレスへ。\n{X-URL}"

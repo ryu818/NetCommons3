@@ -474,4 +474,194 @@ class User extends AppModel
 
     	return array($total, $this->find('all', $params));
     }
+
+/**
+ * ContentIdからメール送信先email一覧取得
+ *
+ * @param integer					$contentId
+ * @param integer					$moreThanHierarchy(モデレータ以上、主担以上等)
+ *
+ * 									$pageId指定ありの場合、ルーム権限
+ * 									$pageId指定なしの場合、会員権限
+ * @param array						$conditions
+ * @param array						$order
+ *
+ * @return  boolean|array ('email' => Array $email, 'mobileEmail' => Array $mobileEmail)
+ * @since   v 3.0.0.0
+*/
+	public function getSendMails($contentId = null, $moreThanHierarchy = null, $conditions = array(), $order = array()) {
+		$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
+		$userId = $loginUser['id'];
+		//$emailRes = array('email' => array(), 'mobileEmail' => array());
+		App::uses('Content', 'Model');
+		$Content = new Content();
+		$content = $Content->findById($contentId);
+
+		if (!isset($content['Content'])) {
+			return false;
+		}
+
+		$emailRes = $this->getSendMailsByPageId($content['Content']['room_id'], $moreThanHierarchy, $conditions, $order);
+
+		// コンテンツ元IDからショートカットを取得
+		$params = array(
+			'fields' => array('Content.id', 'Content.room_id'),
+			'conditions' => array(
+				'Content.master_id' => $contentId,
+				'Content.id !=' => $contentId,
+			)
+		);
+		$shortcutContents = $Content->find('all', $params);
+		if(count($shortcutContents) > 0) {
+			// 権限を付与したショートカットが配置してあるルームもメール配信対象とする。
+			foreach($shortcutContents as $shortcutContent) {
+				$masterEmailRes = $this->getSendMailsByPageId($shortcutContent['Content']['room_id'], $moreThanHierarchy, $conditions, $order);
+				if(count($masterEmailRes['email']) > 0) {
+					$emailRes['email'] = array_merge($emailRes['email'], $masterEmailRes['email']);
+				}
+				if(count($masterEmailRes['mobileEmail']) > 0) {
+					$emailRes['mobileEmail'] = array_merge($emailRes['mobileEmail'], $masterEmailRes['mobileEmail']);
+				}
+			}
+		}
+
+		return $emailRes;
+	}
+
+/**
+ * PageIdからメール送信先email一覧取得
+ *
+ * <pre>
+ * 	contentIdに結びつけれない場合、ページIDからメールを送信する。基本的にgetSendMailsを用いる。
+ * </pre>
+ *
+ * @param integer					$pageId
+ * @param integer					$moreThanHierarchy(モデレータ以上、主担以上等)
+ *
+ * 									$pageId指定ありの場合、ルーム権限
+ * 									$pageId指定なしの場合、会員権限
+ * @param array						$conditions
+ * @param array						$order
+ *
+ * @return  boolean|array ('email' => Array $email, 'mobileEmail' => Array $mobileEmail)
+ * @since   v 3.0.0.0
+ */
+	public function getSendMailsByPageId($pageId = null, $moreThanHierarchy = null, $conditions = array(), $order = array()) {
+		// TODO:現状Userテーブルのみから取得　今後UserItemLinkテーブルからも取得できるように修正予定
+		$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
+		$userId = $loginUser['id'];
+		$emailRes = array('email' => array(), 'mobileEmail' => array());
+		App::uses('Page', 'Model');
+		$Page = new Page();
+
+		$page_params = array(
+			'fields' => array('Page.*', 'Community.publication_range_flag'),
+			'joins' => array(
+				array("type" => "LEFT",
+					"table" => "communities",
+					"alias" => "Community",
+					"conditions" => "`Community`.`room_id`=`Page`.`room_id`"
+				),
+			),
+			'conditions' => array('Page.id' => $pageId)
+		);
+		$page = $Page->find('first', $page_params);
+		if (!isset($page['Page'])) {
+			return false;
+		}
+		$defaultEntryHierarchy = $Page->getDefaultHierarchy($page, $userId);
+
+		if(!empty($pageId)) {
+			if(($page['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC ||
+				($page['Page']['space_type'] == NC_SPACE_TYPE_GROUP && $page['Community']['publication_range_flag'] != NC_PUBLICATION_RANGE_FLAG_ONLY_USER)) &&
+				$moreThanHierarchy <= NC_AUTH_GENERAL
+			) {
+				$type = 'LEFT';
+			} else {
+				$type = 'INNER';
+			}
+			$isDefaultEntry = false;
+			if($page['Community']['publication_range_flag'] != NC_PUBLICATION_RANGE_FLAG_ONLY_USER) {
+				$isDefaultEntry = true;
+			}
+
+			$params = array(
+				'fields' => array('User.email', 'User.mobile_email', 'PageUserLink.authority_id', 'Authority.hierarchy'),	// 'PageUserLink.authority_id',
+				'joins' => array(
+					array("type" => $type,
+						"table" => "page_user_links",
+						"alias" => "PageUserLink",
+						"conditions" => "`User`.`id`=`PageUserLink`.`user_id`".
+						" AND `PageUserLink`.`room_id` =".intval($pageId)
+					),
+					array("type" => $type,
+						"table" => "authorities",
+						"alias" => "Authority",
+						"conditions" => "`Authority`.`id`=`PageUserLink`.`authority_id`"
+					),
+				),
+				'conditions' => $conditions,
+				'order' => $order,
+				'recursive' => -1
+			);
+		} else {
+			// ルームID指定なし
+			// User.authority_idのみでメールを送信
+			if($moreThanHierarchy != null) {
+				$joins =  array(
+					array(
+						"type" => "INNER",
+						"table" => "authorities",
+						"alias" => "Authority",
+						"conditions" => array(
+							"`Authority`.`id`=`User`.`authority_id`",
+							"`Authority`.`authority_id` >= " => $moreThanHierarchy
+						)
+					)
+				);;
+			} else {
+				$joins =  array(
+					array(
+						"type" => "INNER",
+						"table" => "authorities",
+						"alias" => "Authority",
+						"conditions" => "`Authority`.`id`=`User`.`authority_id`"
+					)
+				);
+			}
+			$params = array(
+				'fields' => array('User.email', 'User.mobile_email', 'Authority.hierarchy'),
+				'joins' => $joins,
+				'conditions' => $conditions,
+				'order' => $order,
+				'recursive' => -1
+			);
+		}
+		$users = $this->find('all', $params);
+
+		if (count($users) == 0) {
+			return $emailRes;
+		}
+		foreach($users as $user) {
+			if(isset($user['Authority']) && $user['PageUserLink']['authority_id'] === (string) NC_AUTH_OTHER_ID) {
+				continue;
+			}
+			if(isset($user['Authority']) && $user['Authority']['hierarchy'] === null) {
+				if(!$isDefaultEntry) {
+					continue;
+				}
+				$user['Authority']['hierarchy'] = $defaultEntryHierarchy;
+			}
+			if($moreThanHierarchy == null || (isset($user['Authority']) && $user['Authority']['hierarchy'] >= $moreThanHierarchy)) {
+				if(!empty($user['User']['email'])) {
+					$emailRes['email'][$user['User']['email']] = $user['User']['email'] ;
+				}
+				if(!empty($user['User']['mobile_email'])) {
+					$emailRes['mobileEmail'][$user['User']['mobile_email']] = $user['User']['mobile_email'] ;
+				}
+			}
+		}
+
+		return $emailRes;
+	}
 }

@@ -748,6 +748,31 @@ class Page extends AppModel
 	}
 
 /**
+ * CommunityLang.community_nameを含むページ情報取得
+ *
+ * @param integer   $pageId
+ * @return Model Page, CommunityLang.community_name
+ * @since   v 3.0.0.0
+ */
+	public function findIncludeComunityLang($pageId) {
+		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
+		$params = array(
+			'fields' => array('Page.*', 'CommunityLang.community_name'),
+			'joins' => array(
+				array(
+					"type" => "LEFT",
+					"table" => "community_langs",
+					"alias" => "CommunityLang",
+					"conditions" => "`Page`.`room_id`=`CommunityLang`.`room_id`".
+					" AND `CommunityLang`.`lang` ='".$lang."'"
+				),
+			),
+			'conditions' => array('Page.id' => $pageId)
+		);
+		return $this->find('first', $params);
+	}
+
+/**
  * Current_pageの子供のページを取得
  *
  * @param string    $type first or all or list

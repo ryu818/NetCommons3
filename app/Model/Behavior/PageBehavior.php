@@ -96,7 +96,7 @@ class PageBehavior extends ModelBehavior {
 		if(isset($page['Authority']['hierarchy'])) {
 			return $page['Authority']['hierarchy'];
 		}
-		if(!isset($page['Community'])  && $page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
+		if(!isset($page['Community'])  && $page['Page']['space_type'] == NC_SPACE_TYPE_GROUP && $page['Page']['root_id'] != 0) {
 			App::uses('Community', 'Model');
 			$Community = new Community();
 			$params = array(

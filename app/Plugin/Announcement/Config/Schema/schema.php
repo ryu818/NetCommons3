@@ -33,7 +33,7 @@ class AnnouncementSchema extends CakeSchema {
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'content_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'revision_group_id' => array('type' => 'integer', 'null' => true, 'default' => null),
-		'status' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
+		'status' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3),
 		'is_approved' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
 		'pre_change_flag' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'pre_change_date' => array('type' => 'datetime', 'null' => true, 'default' => null),

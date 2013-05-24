@@ -1,4 +1,4 @@
-<?php
+<?php 
 class AppSchema extends CakeSchema {
 
 	public function before($event = array()) {
@@ -16,7 +16,7 @@ class AppSchema extends CakeSchema {
 		'content_id' => array('type' => 'integer', 'null' => false, 'default' => null),
 		'model_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'unique_id' => array('type' => 'integer', 'null' => false, 'default' => null),
-		'status' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
+		'status' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3),
 		'is_approved' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
 		'group_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'access_hierarchy' => array('type' => 'integer', 'null' => false, 'default' => '0'),
@@ -190,7 +190,7 @@ class AppSchema extends CakeSchema {
 
 	public $config_langs = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
-		'config_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'key' => 'index'),
+		'config_name' => array('type' => 'string', 'null' => false, 'key' => 'index', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'lang' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 10, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'value' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
@@ -201,7 +201,7 @@ class AppSchema extends CakeSchema {
 		'modified_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'indexes' => array(
 			'PRIMARY' => array('column' => 'id', 'unique' => 1),
-			'config_id' => array('column' => array('config_id', 'lang'), 'unique' => 0)
+			'config_name' => array('column' => array('config_name', 'lang'), 'unique' => 0)
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
@@ -275,7 +275,7 @@ class AppSchema extends CakeSchema {
 
 	public $groups = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
-		'user_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'module_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'content_id' => array('type' => 'integer', 'null' => false, 'default' => null),
 		'name' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
@@ -293,7 +293,7 @@ class AppSchema extends CakeSchema {
 	public $htmlarea_video_urls = array(
 		'url' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'indexes' => array(
-
+			
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);

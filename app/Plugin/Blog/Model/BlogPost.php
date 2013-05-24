@@ -132,12 +132,15 @@ class BlogPost extends AppModel
 			),
 			//'vote',
 			'status' => array(
-				'boolean'  => array(
-					'rule' => array('boolean'),
-					'last' => true,
-					'required' => true,
-					'message' => __('The input must be a boolean.')
-				),
+				'inList' => array(
+					'rule' => array('inList', array(
+						NC_STATUS_PUBLISH,
+						NC_STATUS_TEMPORARY,
+						NC_STATUS_TEMPORARY_BEFORE_RELEASED,
+					), false),
+					'allowEmpty' => true,
+					'message' => __('It contains an invalid string.')
+				)
 			),
 			'is_approved' => array(
 				'boolean'  => array(
@@ -278,7 +281,7 @@ class BlogPost extends AppModel
 				'icon_name' => null,
 				'revision_group_id' => 0,
 				'vote' => null,
-				'status' => NC_STATUS_PUBLISH,
+				'status' => NC_STATUS_TEMPORARY_BEFORE_RELEASED,
 				'is_approved' => _ON,
 				'pre_change_flag' => _OFF,
 				'pre_change_date' => null,

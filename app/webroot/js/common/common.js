@@ -832,7 +832,8 @@
 			$.ajax(ajax_options);
 		},
 		/* 権限[主坦　モデレータ　一般]スライダー */
-		sliderAuthority: function(id, disable) {
+		sliderAuthority: function(id, disable, display_guest) {
+			display_guest = (typeof display_guest == "undefined") ? false : display_guest;
 			var _hierarchy = function(authority_id) {
 				var  h = 0;
 				switch (authority_id)
@@ -840,9 +841,10 @@
 					case 2 : h = '301'; break;
 					case 3 : h = '201'; break;
 					case 4 : h = '101'; break;
+					case 5 : h = '1'; break;
 				}
 				return h;
-			}
+			};
 			var _authority_id = function(h) {
 				var authority_id = 2;
 				switch (h)
@@ -850,9 +852,10 @@
 					case '301' : authority_id = 2; break;
 					case '201' : authority_id = 3; break;
 					case '101' : authority_id = 4; break;
+					case '1' : authority_id = 5; break;
 				}
 				return authority_id;
-			}
+			};
 			var input = $('#' + id);
 			if(!input.get(0)) return false;
 			var slider = input.next();
@@ -863,7 +866,7 @@
 
 			slider.slider({
 				'min'    : 2,
-				'max'    : 4,
+				'max'    : (display_guest) ? 5 : 4,
 				'value'  : _authority_id($(input).val()),
 				'animate': 'fast',
 				'range'  : 'min',

@@ -27,7 +27,7 @@ if($blog['Blog']['approved_flag'] == _ON && $hierarchy  <= NC_AUTH_MODERATE) {
 					<?php
 						echo $this->Form->label('BlogPost.post_date', __('Date-time'));
 					?>
-					<?php if($blog_post['BlogPost']['status'] == NC_STATUS_TEMPORARY): ?>
+					<?php if($blog_post['BlogPost']['status'] != NC_STATUS_PUBLISH): ?>
 						<span class="temporary">
 							<?php echo __('Temporary...'); ?>
 						</span>
@@ -224,7 +224,12 @@ if($blog['Blog']['approved_flag'] == _ON && $hierarchy  <= NC_AUTH_MODERATE) {
 					$disabled = true;
 					$preChangeFlag = ($blog['Blog']['approved_pre_change_flag']) ? true : false;
 				} else {
-					$preChangeFlag = ($blog_post['BlogPost']['pre_change_flag']) ? true : false;
+					if($blog_post['BlogPost']['is_approved'] == _OFF) {
+						// 承認制で未承認コンテンツを主坦が更新しようとした場合
+						$preChangeFlag = false;
+					} else {
+						$preChangeFlag = ($blog_post['BlogPost']['pre_change_flag']) ? true : false;
+					}
 					$disabled = false;
 				}
 

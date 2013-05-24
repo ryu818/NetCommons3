@@ -750,6 +750,9 @@ a.nc-widget-area-title-arrow {
 	position: absolute;
 	top: -1.3em;
 }
+.authority-slider-display-guest {
+	width:300px !important;
+}
 
 /* 履歴情報 */
 ul.nc-revisions li {

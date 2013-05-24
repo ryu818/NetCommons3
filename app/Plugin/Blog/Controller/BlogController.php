@@ -49,6 +49,7 @@ class BlogController extends BlogAppController {
 	public function index() {
 
 		// TODO:is_future=_ONのものを検索し、既に過去になっていたら、termマスタのcountを更新　is_future=_OFFへ
+		//      メール記事投稿送信の設定がされていれば、メールも送信
 
 		$params = array(
 			'conditions' => array('block_id' => $this->block_id, 'OR' => array('widget_type' => BLOG_WIDGET_TYPE_MAIN, 'display_flag' => _ON))

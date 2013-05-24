@@ -98,17 +98,7 @@ class SetConfigComponent extends Component {
 								'ConfigLang.value'
 			),
 			'conditions' => $conditions,
-			'joins' => array(
-				array(
-						"type" => "LEFT",
-						"table" => "config_langs",
-						"alias" => "ConfigLang",
-						"conditions" => array(
-							"`ConfigLang`.`config_id`=`Config`.`id`",
-							"`ConfigLang`.`lang`" => $lang
-						)
-				),
-			)
+			'joins' => $controller->Config->getJoinsArray($lang),
 		);
 		$configs = $controller->Config->find('all', $params);
 		$configs['language'] = $lang;

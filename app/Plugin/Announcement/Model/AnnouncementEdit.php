@@ -141,7 +141,7 @@ class AnnouncementEdit extends AppModel
 				'approved_pre_change_flag' => _ON,
 				'approved_mail_flag' => _OFF,
 				'approved_mail_subject' => __("[{X-SITE_NAME}] [{X-CONTENT_NAME}] Post Approval completion notice"),
-				'approved_mail_body' => __("Your article posted to [{X-SITE_NAME}] [{X-CONTENT_NAME}] was approved.\n\nClick the link below to check the article.\n{X-URL}"),
+				'approved_mail_body' => __("Your article posted to [{X-SITE_NAME}] [{X-CONTENT_NAME}] was approved.\n\n\n{X-BODY}\n\nClick the link below to check the article.\n{X-URL}"),
 				'approved_pre_change_flag' => _ON,
 			),
 		);

@@ -110,6 +110,7 @@ class Blog extends AppModel
 				),
 				'inList' => array(
 					'rule' => array('inList', array(
+						NC_AUTH_GUEST,
 						NC_AUTH_MIN_GENERAL,
 						NC_AUTH_MIN_MODERATE,
 						NC_AUTH_MIN_CHIEF,
@@ -402,12 +403,12 @@ class Blog extends AppModel
 				'approved_flag' => _OFF,
 				'approved_pre_change_flag' => _ON,
 				'approved_mail_flag' => _OFF,
-				'approved_mail_subject' => __("[{X-SITE_NAME}] [{X-CONTENT_NAME}] Post Approval completion notice"),
-				'approved_mail_body' => __("Your article posted to [{X-SITE_NAME}] [{X-CONTENT_NAME}] was approved.\n\nClick the link below to check the article.\n{X-URL}"),
+				'approved_mail_subject' => __d('blog', "[{X-SITE_NAME}] [{X-CONTENT_NAME} {X-SUBJECT}] Post Approval completion notice"),
+				'approved_mail_body' => __d('blog', "Your article posted to [{X-SITE_NAME}] [{X-CONTENT_NAME} {X-SUBJECT}] was approved.\nRoom's name:{X-ROOM}\nBlog title:{X-CONTENT_NAME}\ntitle:{X-SUBJECT}\nuser:{X-USER}\ndate:{X-TO_DATE}\n\n\n{X-BODY}\n\nClick the link below to check the article.\n{X-URL}"),
 				'comment_approved_flag' => _OFF,
 				'comment_approved_mail_flag' => _OFF,
-				'comment_approved_mail_subject' => __("[{X-SITE_NAME}] [{X-CONTENT_NAME}] Comment, trackback Approval completion notice"),
-				'comment_approved_mail_body' => __("Your comment and trackback posted to [{X-SITE_NAME}] [{X-CONTENT_NAME}] was approved.\n\nClick the link below to check the article.\n{X-URL}"),
+				'comment_approved_mail_subject' => __d('blog', "[{X-SITE_NAME}] [{X-CONTENT_NAME} {X-SUBJECT}] Comment, trackback Approval completion notice"),
+				'comment_approved_mail_body' => __d('blog', "Your comment and trackback posted to [{X-SITE_NAME}] [{X-CONTENT_NAME} {X-SUBJECT}] was approved.\nRoom's name:{X-ROOM}\nBlog title:{X-CONTENT_NAME}\ntitle:{X-SUBJECT}\nuser:{X-USER}\ndate:{X-TO_DATE}\n\n\n{X-BODY}\n\nClick the link below to check the article.\n{X-URL}"),
 			),
 		);
 

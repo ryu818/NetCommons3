@@ -6,7 +6,7 @@
 	$isEdit = $this->CheckAuth->isEdit($hierarchy, $blog['Blog']['post_hierarchy'], $blog_post['BlogPost']['created_user_id'],
 		$blog_post['Authority']['hierarchy']);
 	$isApprove = false;
-	if($blog_post['BlogPost']['status'] != NC_STATUS_TEMPORARY && $blog_post['BlogPost']['is_approved'] != _ON) {
+	if($blog_post['BlogPost']['status'] == NC_STATUS_PUBLISH && $blog_post['BlogPost']['is_approved'] != _ON) {
 		$isApprove = true;
 	}
 ?>
@@ -41,7 +41,7 @@
 						'data-ajax-effect' => 'fold'
 					));
 				?>
-			<?php elseif($blog_post['BlogPost']['status'] == NC_STATUS_TEMPORARY): ?>
+			<?php elseif($blog_post['BlogPost']['status'] != NC_STATUS_PUBLISH): ?>
 				<span class="temporary">
 					<?php echo __('Temporary...'); ?>
 				</span>

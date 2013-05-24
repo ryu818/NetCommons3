@@ -28,7 +28,7 @@ if($announcement_edit['AnnouncementEdit']['approved_flag'] == _ON && $hierarchy 
 					<?php
 						echo $this->Form->label('Content.title', __d('announcement', 'Announcement name'));
 					?>
-					<?php if($announcement['Announcement']['status'] == NC_STATUS_TEMPORARY): ?>
+					<?php if($announcement['Announcement']['status'] != NC_STATUS_PUBLISH): ?>
 						<span class="temporary">
 							<?php echo __('Temporary...'); ?>
 						</span>
@@ -99,7 +99,12 @@ if($announcement_edit['AnnouncementEdit']['approved_flag'] == _ON && $hierarchy 
 						$disabled = true;
 						$preChangeFlag = ($announcement_edit['AnnouncementEdit']['approved_pre_change_flag']) ? true : false;
 					} else {
-						$preChangeFlag = ($announcement['Announcement']['pre_change_flag']) ? true : false;
+						if($announcement['Announcement']['is_approved'] == _OFF) {
+							// 承認制で未承認コンテンツを主坦が更新しようとした場合
+							$preChangeFlag = false;
+						} else {
+							$preChangeFlag = ($announcement['Announcement']['pre_change_flag']) ? true : false;
+						}
 						$disabled = false;
 					}
 

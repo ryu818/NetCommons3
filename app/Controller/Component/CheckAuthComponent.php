@@ -383,7 +383,7 @@ class CheckAuthComponent extends Component {
 					$controller->nc_block = $block;
 					$controller->module_id = $block['Block']['module_id'];
 
-					$active_page = $controller->Page->findById($block['Block']['page_id']);
+					$active_page = $controller->Page->findIncludeComunityLang($block['Block']['page_id']);
 					if(!$active_page) {
 						// ブロックIDに対応したページが存在しない
 						$controller->flash(__('Page not found.'), $redirect_url, 'CheckAuth.checkGeneral.005', '404');
@@ -543,16 +543,28 @@ class CheckAuthComponent extends Component {
 		$page = null;
 		$request_page = null;
 		$center_page = false;
+		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		if(empty($userId)) {
 			$page_params = array(
 				'fields' => array(
-					'Page.*'
+					'Page.*',
+					'CommunityLang.community_name',
+				),
+				'joins' => array(
+					array(
+						"type" => "LEFT",
+						"table" => "community_langs",
+						"alias" => "CommunityLang",
+						"conditions" => "`Page`.`id`=`CommunityLang`.`room_id`".
+						" AND `CommunityLang`.`lang` ='".$lang."'"
+					),
 				)
 			);
 		} else {
 			$page_params = array(
 				'fields' => array(
-					'Page.*,'.
+					'Page.*',
+					'CommunityLang.community_name',
 					'Authority.hierarchy'
 				),
 				'joins' => array(
@@ -568,7 +580,14 @@ class CheckAuthComponent extends Component {
 						"table" => "authorities",
 						"alias" => "Authority",
 						"conditions" => "`Authority`.`id`=`PageUserLink`.`authority_id`"
-					)
+					),
+					array(
+						"type" => "LEFT",
+						"table" => "community_langs",
+						"alias" => "CommunityLang",
+						"conditions" => "`Page`.`room_id`=`CommunityLang`.`room_id`".
+							" AND `CommunityLang`.`lang` ='".$lang."'"
+					),
 				)
 			);
 		}

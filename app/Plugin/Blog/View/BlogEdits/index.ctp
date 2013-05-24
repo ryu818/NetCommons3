@@ -157,7 +157,7 @@ $this->extend('/Frame/block');
 								<div class="hr">
 								<?php
 									echo $this->Form->label('Blog.mail_hierarchy', __('Notify whom? :'));
-									echo $this->Form->authoritySlider('Blog.mail_hierarchy', array('value' => $blog['Blog']['mail_hierarchy']));
+									echo $this->Form->authoritySlider('Blog.mail_hierarchy', array('value' => $blog['Blog']['mail_hierarchy'], 'display_guest' => true));
 									$settings = array(
 										'type' => 'text',
 										'value' => $blog['Blog']['mail_subject'],
@@ -181,7 +181,7 @@ $this->extend('/Frame/block');
 									echo $this->Form->input('Blog.mail_body', $settings);
 								?>
 								<div class="note">
-									<?php echo __d('blog', 'You may use the following keywords in the title and content of the message, <br />{X-SITE_NAME},{X-ROOM},<br />{X-CONTENT_NAME},{X-CATEGORY_NAME},{X-SUBJECT},{X-USER},<br />{X-TO_DATE}、{X-BODY}、{X-URL}<br /><br />Each keyword will be translated to <br />site name, room name, <br />Blog title, category, title of the article, creator<br />timestamp, article and url.');?>
+									<?php echo __d('blog', 'You may use the following keywords in the title and content of the message, <br />{X-SITE_NAME},{X-ROOM},<br />{X-CONTENT_NAME},{X-CATEGORY_NAME},{X-TAG_NAME},{X-SUBJECT},{X-USER},<br />{X-TO_DATE}、{X-BODY}、{X-URL}<br /><br />Each keyword will be translated to <br />site name, room name, <br />Blog title, category, tag, title of the article, creator<br />timestamp, article and url.');?>
 								</div>
 								</div>
 							</dd>
@@ -291,7 +291,7 @@ $this->extend('/Frame/block');
 									echo $this->Form->input('Blog.comment_mail_body', $settings);
 								?>
 								<div class="note">
-									<?php echo __d('blog', 'You may use the following keywords in the title and content of the message, <br />{X-SITE_NAME},{X-ROOM},<br />{X-CONTENT_NAME},{X-CATEGORY_NAME},{X-SUBJECT},{X-USER},<br />{X-TO_DATE}、{X-BODY}、{X-URL}<br /><br />Each keyword will be translated to <br />site name, room name, <br />Blog title, category, title of the article, creator<br />timestamp, article and url.');?>
+									<?php echo __d('blog', 'You may use the following keywords in the title and content of the message, <br />{X-SITE_NAME},{X-ROOM},<br />{X-CONTENT_NAME},{X-CATEGORY_NAME},{X-TAG_NAME},{X-SUBJECT},{X-USER},<br />{X-TO_DATE}、{X-BODY}、{X-URL}<br /><br />Each keyword will be translated to <br />site name, room name, <br />Blog title, category, tag, title of the article, creator<br />timestamp, article and url.');?>
 								</div>
 								</div>
 							</dd>

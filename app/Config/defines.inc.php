@@ -90,10 +90,11 @@ define('NC_DISPLAY_FLAG_DISABLE', 2);	// 利用不可
 
 //-----------------status-------------------------------------------
 
-define("NC_STATUS_PUBLISH",   0);		// 公開中
-define("NC_STATUS_TEMPORARY", 1);		// 一時保存中
-define("NC_STATUS_PRIVATE",   2);		// 非公開
-define("NC_STATUS_MEMBERS",   3);		// 会員のみ公開
+define("NC_STATUS_PUBLISH",   0);					// 公開中
+define("NC_STATUS_TEMPORARY", 1);					// 一時保存中
+define("NC_STATUS_TEMPORARY_BEFORE_RELEASED", 2);	// 一時保存中(新規投稿->一時保存の場合)	新規投稿記事メール送信用
+//define("NC_STATUS_PRIVATE",   2);		// 非公開
+//define("NC_STATUS_MEMBERS",   3);		// 会員のみ公開
 
 //-----------------community publication_range_flag-------------------------------------------
 

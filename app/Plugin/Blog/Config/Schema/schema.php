@@ -1,4 +1,4 @@
-<?php
+<?php 
 class BlogSchema extends CakeSchema {
 
 	public function before($event = array()) {
@@ -50,7 +50,7 @@ class BlogSchema extends CakeSchema {
 		'icon_name' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 128, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'revision_group_id' => array('type' => 'integer', 'null' => true, 'default' => null),
 		'vote' => array('type' => 'text', 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'status' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
+		'status' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3),
 		'is_approved' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
 		'pre_change_flag' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'pre_change_date' => array('type' => 'datetime', 'null' => true, 'default' => null),

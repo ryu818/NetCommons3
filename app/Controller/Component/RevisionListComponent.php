@@ -180,7 +180,8 @@ class RevisionListComponent extends Component {
 	public function approve($postModel, $postModelData) {
 		$conditions = array(
 			"Revision.group_id" => $postModelData[$postModel->alias]['revision_group_id'],
-			"Revision.is_approved_pointer" => _ON
+			"Revision.is_approved_pointer" => _ON,
+			"Revision.revision_name !=" => 'auto-draft',
 		);
 		$preRevision = $this->_controller->Revision->find('first', array('conditions' => $conditions));
 
@@ -246,7 +247,8 @@ class RevisionListComponent extends Component {
 				$revision['Revision']['id'] = $this->_controller->Revision->id;
 				$revision_name = isset($preRevision['Revision']) ? $preRevision['Revision']['revision_name'] : NC_STATUS_PUBLISH;
 			}
-			$postModelData[$postModel->alias]['status'] = ($revision_name == 'publish') ? NC_STATUS_PUBLISH : NC_STATUS_TEMPORARY;
+			$postModelData[$postModel->alias]['status'] = ($revision_name == 'publish') ? NC_STATUS_PUBLISH :
+				(($postModelData[$postModel->alias]['status'] == NC_STATUS_TEMPORARY) ? NC_STATUS_TEMPORARY : NC_STATUS_TEMPORARY_BEFORE_RELEASED);
 			$postModelData[$postModel->alias]['is_approved'] = _ON;
 			$postModelData[$postModel->alias]['pre_change_flag'] = _OFF;
 			$postModelData[$postModel->alias]['pre_change_date'] = null;

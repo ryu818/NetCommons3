@@ -30,7 +30,7 @@ class AnnouncementPostsController extends AnnouncementAppController {
  *
  * @var array
  */
-	public $components = array('RevisionList', 'CheckAuth' => array('allowAuth' => NC_AUTH_GENERAL));
+	public $components = array('RevisionList', 'Mail', 'CheckAuth' => array('allowAuth' => NC_AUTH_GENERAL));
 
 /**
  * Model name
@@ -54,7 +54,6 @@ class AnnouncementPostsController extends AnnouncementAppController {
  */
 	public function index($postId = null) {
 		// TODO:権限チェックが未作成
-		// TODO:email送信未実装
 		// TODO:承認処理を共通化
 
 		// 自動保存前処理
@@ -86,6 +85,8 @@ class AnnouncementPostsController extends AnnouncementAppController {
 			$announcement = $this->Announcement->findDefault($this->content_id);
 			$beforeContent = '';
 		}
+		$beforeStatus = $blogPost['BlogPost']['status'];
+		$beforeIsApproved = $announcement['Announcement']['is_approved'];
 
 		if($this->request->is('post')) {
 			if(!isset($this->request->data['Content']['title']) || !isset($this->request->data['Revision']['content'])) {
@@ -109,8 +110,11 @@ class AnnouncementPostsController extends AnnouncementAppController {
 				$announcement['Announcement'] = array_merge($announcement['Announcement'], $this->request->data['Announcement']);
 			}
 
+			if(!isset($status) || ($status == NC_STATUS_TEMPORARY && $announcement['Announcement']['status'] == NC_STATUS_TEMPORARY_BEFORE_RELEASED)) {
+				$status = $blogPost['BlogPost']['status'];
+			}
 			$announcement['Announcement']['content_id'] = $this->content_id;
-			$announcement['Announcement']['status'] = isset($status) ? $status : $announcement['Announcement']['status'];
+			$announcement['Announcement']['status'] = $status;
 			$announcement['Announcement']['is_approved'] = _ON;
 
 			$announcement['Revision']['content'] = $this->request->data['Revision']['content'];
@@ -164,7 +168,6 @@ class AnnouncementPostsController extends AnnouncementAppController {
 				}
 
 				$this->Announcement->save($announcement, false, $fieldList);
-
 				if($isAutoRegist) {
 					// 自動保存時後処理
 					$this->RevisionList->afterAutoRegist($this->Announcement->id);
@@ -188,6 +191,24 @@ class AnnouncementPostsController extends AnnouncementAppController {
 				if(!$this->Archive->saveAuto($this->params, $archive)) {
 					$this->flash(__('Failed to update the database, (%s).', 'archives'), null, 'AnnouncementPosts.index.003', '500');
 					return;
+				}
+
+				// メール送信
+				$mailType = $this->Mail->checkPost(isset($postId), false, $announcement['Announcement']['status'], $beforeStatus, $announcement['Announcement']['is_approved'], $beforeIsApproved);
+				if(isset($mailType['Unapproved'])) {
+					$this->Mail->moreThanHierarchy = NC_AUTH_MIN_CHIEF;
+					$this->Mail->subject = __('Pending [%s]', __d('announcement', "[{X-SITE_NAME}]Announcement({X-ROOM} {X-CONTENT_NAME})"));
+					$this->Mail->body = __d('announcement', "You are receiving this email because a message was posted to Announcement.\nRoom's name:{X-ROOM}\nAnnouncement title:{X-CONTENT_NAME}\nuser:{X-USER}\ndate:{X-TO_DATE}\n\n\n{X-BODY}\n\nClick on the link below to access to this article.\n{X-URL}");
+				} else if(isset($mailType['Approved'])) {
+					$this->Mail->userId = $announcement['Revision']['created_user_id'];
+					$this->Mail->subject = $announcementEdit['AnnouncementEdit']['approved_mail_subject'];
+					$this->Mail->body = $announcementEdit['AnnouncementEdit']['approved_mail_body'];
+				}
+				if(count($mailType) > 0) {
+					$this->Mail->contentId = $this->content_id;
+					$this->Mail->assignedTags['{X-BODY}'] = $revision['Revision']['content'];
+					$this->Mail->assignedTags['{X-URL}'] = array('controller' => 'announcement', '#' => $this->id);
+					$this->Mail->send();
 				}
 
 				// メッセージ表示
@@ -219,6 +240,7 @@ class AnnouncementPostsController extends AnnouncementAppController {
 
 /**
  * 履歴情報表示・復元処理
+ * 		承認制の一般会員による復元は未承認になるが、この時点ではメールは飛ばさない仕様とする。
  * @param   integer $postId
  * @return  void
  * @since   v 3.0.0.0
@@ -259,6 +281,10 @@ class AnnouncementPostsController extends AnnouncementAppController {
  */
 	public function approve() {
 		// TODO:記事編集権限チェックが未作成
+		$announcementEdit = $this->AnnouncementEdit->findByContentId($this->content_id);
+		if(!isset($announcementEdit['AnnouncementEdit'])) {
+			$announcementEdit = $this->AnnouncementEdit->findDefault($this->content_id);
+		}
 		$announcement = $this->Announcement->findByContentId($this->content_id);
 		if(empty($announcement)) {
 			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'AnnouncementEdits.approve.001', '500');
@@ -275,7 +301,20 @@ class AnnouncementPostsController extends AnnouncementAppController {
 			return;
 		}
 
+		if($this->request->is('post') && $this->request->data['is_approve']) {
+			// 承認する
+			$this->Mail->contentId = $this->content_id;
+			$this->Mail->userId = $announcement['Revision']['created_user_id'];
+			$this->Mail->subject = $announcementEdit['AnnouncementEdit']['approved_mail_subject'];
+			$this->Mail->body = $announcementEdit['AnnouncementEdit']['approved_mail_body'];
+
+			$revision = $this->Revision->findRevisions(null, $announcement['Announcement']['revision_group_id'], 1);
+			$this->Mail->assignedTags['{X-BODY}'] = $revision[0]['Revision']['content'];
+			$this->Mail->assignedTags['{X-URL}'] = array('controller' => 'announcement', 'action' => 'index', '#' => $this->id);
+			$this->Mail->send();
+		}
 		$this->set('dialog_id', 'announcement-approve-'.$this->id);
 		$this->render('/Approve/index');
 	}
+
 }

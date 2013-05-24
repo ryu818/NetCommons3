@@ -19,7 +19,7 @@ class BlogPostsController extends BlogAppController {
  *
  * @var array
  */
-	public $components = array('Blog.BlogCommon', 'RevisionList', 'CheckAuth' => array('allowAuth' => NC_AUTH_GENERAL));
+	public $components = array('Blog.BlogCommon', 'Mail', 'RevisionList', 'CheckAuth' => array('allowAuth' => NC_AUTH_GENERAL));
 
 /**
  * Model name
@@ -36,7 +36,6 @@ class BlogPostsController extends BlogAppController {
  */
 	public function index($postId = null) {
 		// TODO:権限チェックが未作成
-		// TODO:email送信未実装
 		// TODO:承認処理を共通化
 
 		// 自動保存前処理
@@ -46,7 +45,7 @@ class BlogPostsController extends BlogAppController {
 		$status = $autoRegistParams['status'];
 		$revisionName = $autoRegistParams['revision_name'];
 
-		$blog = $this->Blog->find('first', array('conditions' => array('content_id' => $this->content_id)));
+		$blog = $this->Blog->findByContentId($this->content_id);
 		if(!isset($blog['Blog'])) {
 			$this->flash(__('Content not found.'), null, 'BlogPosts.index.001', '404');
 			return;
@@ -76,6 +75,8 @@ class BlogPostsController extends BlogAppController {
 			$isBeforeUpdateTermCount = false;
 			$beforeContent = '';
 		}
+		$beforeStatus = $blogPost['BlogPost']['status'];
+		$beforeIsApproved = $blogPost['BlogPost']['is_approved'];
 
 		$userId = $this->Auth->user('id');
 		$isEdit = false;
@@ -93,8 +94,8 @@ class BlogPostsController extends BlogAppController {
 			return;
 		}
 
-		$active_category_arr = null;
-		$active_tag_arr = null;
+		$activeCategoryArr = null;
+		$activeTagArr = null;
 		if($this->request->is('post')) {
 			if(!isset($this->request->data['BlogPost']) || !isset($this->request->data['Revision']['content'])) {
 				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPosts.index.004', '500');
@@ -105,10 +106,14 @@ class BlogPostsController extends BlogAppController {
 			unset($this->request->data['BlogPost']['revision_group_id']);
 			unset($this->request->data['BlogPost']['status']);
 			//unset($this->request->data['BlogPost']['is_approved']);
+			if(!isset($status) || ($status == NC_STATUS_TEMPORARY && $blogPost['BlogPost']['status'] == NC_STATUS_TEMPORARY_BEFORE_RELEASED)) {
+				$status = $blogPost['BlogPost']['status'];
+			}
+
 			$blogPost['BlogPost'] = array_merge($blogPost['BlogPost'], $this->request->data['BlogPost']);
 			$blogPost['BlogPost']['content_id'] = $this->content_id;
 			$blogPost['BlogPost']['permalink'] = $blogPost['BlogPost']['title'];	// TODO:仮でtitleをセット「「/,:」等の記号を取り除いたり同じタイトルがあればリネームしたりすること。」
-			$blogPost['BlogPost']['status'] = isset($status) ? $status : $blogPost['BlogPost']['status'];
+			$blogPost['BlogPost']['status'] = $status;
 			$blogPost['BlogPost']['is_approved'] = _ON;
 
 			$blogPost['Revision']['content'] = $this->request->data['Revision']['content'];
@@ -149,9 +154,9 @@ class BlogPostsController extends BlogAppController {
 				'group_id', 'pointer', 'is_approved_pointer', 'revision_name', 'content_id', 'content',
 			);
 
-			$active_category_arr = (isset($this->request->data['BlogTermLink']) && isset($this->request->data['BlogTermLink']['category_id'])) ?
+			$activeCategoryArr = (isset($this->request->data['BlogTermLink']) && isset($this->request->data['BlogTermLink']['category_id'])) ?
 				$this->request->data['BlogTermLink']['category_id'] : array();
-			$active_tag_arr = (isset($this->request->data['BlogTermLink']) && isset($this->request->data['BlogTermLink']['tag_name'])) ?
+			$activeTagArr = (isset($this->request->data['BlogTermLink']) && isset($this->request->data['BlogTermLink']['tag_name'])) ?
 				$this->request->data['BlogTermLink']['tag_name'] : array();
 
 			$this->Revision->set($revision);
@@ -178,27 +183,50 @@ class BlogPostsController extends BlogAppController {
 					return;
 				}
 
-				if(empty($blogPost['BlogPost']['id'])) {
-					$this->Session->setFlash(__('Has been successfully registered.'));
-				} else {
-					$this->Session->setFlash(__('Has been successfully updated.'));
-				}
 				if($blogPost['BlogPost']['is_future'] == _ON || $blogPost['BlogPost']['status'] == NC_STATUS_TEMPORARY) {
-					$is_after_update_term_count = false;
+					$isAfterUpdateTermCount = false;
 				} else {
-					$is_after_update_term_count = true;
+					$isAfterUpdateTermCount = true;
 				}
 				// カテゴリー登録
-				if(!$this->BlogTermLink->saveTermLinks($this->content_id, $this->BlogPost->id, $isBeforeUpdateTermCount, $is_after_update_term_count,
-					$active_category_arr, 'id', 'category')) {
+				if(!$this->BlogTermLink->saveTermLinks($this->content_id, $this->BlogPost->id, $isBeforeUpdateTermCount, $isAfterUpdateTermCount,
+					$activeCategoryArr, 'id', 'category')) {
 					$this->flash(__('Failed to register the database, (%s).', 'blog_term_links'), null, 'BlogPosts.index.005', '500');
 					return;
 				}
 				// タグ登録
-				if(!$this->BlogTermLink->saveTermLinks($this->content_id, $this->BlogPost->id, $isBeforeUpdateTermCount, $is_after_update_term_count,
-						$active_tag_arr, 'name', 'tag')) {
+				if(!$this->BlogTermLink->saveTermLinks($this->content_id, $this->BlogPost->id, $isBeforeUpdateTermCount, $isAfterUpdateTermCount,
+						$activeTagArr, 'name', 'tag')) {
 					$this->flash(__('Failed to register the database, (%s).', 'blog_term_links'), null, 'BlogPosts.index.006', '500');
 					return;
+				}
+
+				// メール送信
+				$mailType = $this->Mail->checkPost(isset($postId), $blog['Blog']['mail_flag'], $blogPost['BlogPost']['status'], $beforeStatus, $blogPost['BlogPost']['is_approved'], $beforeIsApproved);
+				if(isset($mailType['Unapproved'])) {
+					$this->Mail->moreThanHierarchy = NC_AUTH_MIN_CHIEF;
+					$this->Mail->subject = __('Pending [%s]', $blog['Blog']['mail_subject']);
+					$this->Mail->body = $blog['Blog']['mail_body'];
+				} else if(isset($mailType['Approved'])) {
+					$this->Mail->userId = $blogPost['Revision']['created_user_id'];
+					$this->Mail->subject = $blog['Blog']['approved_mail_subject'];
+					$this->Mail->body = $blog['Blog']['approved_mail_body'];
+				}
+				if(count($mailType) > 0) {
+					$this->Mail->contentId = $this->content_id;
+
+					$this->BlogCommon->mailAssignedTags($blogPost, $revision['Revision']['content']);
+
+					if(isset($mailType['Approved']) || isset($mailType['Unapproved'])) {
+						$this->Mail->send();
+					}
+					if(isset($mailType['Post']) && $blogPost['BlogPost']['is_future'] != _ON) {
+						$this->Mail->userId = null;
+						$this->Mail->moreThanHierarchy = $blog['Blog']['mail_hierarchy'];
+						$this->Mail->subject = $blog['Blog']['mail_subject'];
+						$this->Mail->body = $blog['Blog']['mail_body'];
+						$this->Mail->send();
+					}
 				}
 
 				// 新着・検索
@@ -219,6 +247,13 @@ class BlogPostsController extends BlogAppController {
 				if(!$this->Archive->saveAuto($this->params, $archive)) {
 					$this->flash(__('Failed to update the database, (%s).', 'archives'), null, 'AnnouncementPosts.index.003', '500');
 					return;
+				}
+
+				// メッセージ表示
+				if(empty($blogPost['BlogPost']['id'])) {
+					$this->Session->setFlash(__('Has been successfully registered.'));
+				} else {
+					$this->Session->setFlash(__('Has been successfully updated.'));
 				}
 
 				if($status == NC_STATUS_PUBLISH) {
@@ -249,8 +284,8 @@ class BlogPostsController extends BlogAppController {
 		$this->set('blog_post', $blogPost);
 
 		// カテゴリ一覧、タグ一覧
-		$categories = $this->BlogTerm->findCategories($this->content_id, isset($postId) ? $postId : null, $active_category_arr);
-		$tags = $this->BlogTerm->findTags($this->content_id, isset($postId) ? $postId : null, $active_tag_arr);
+		$categories = $this->BlogTerm->findCategories($this->content_id, isset($postId) ? $postId : null, $activeCategoryArr);
+		$tags = $this->BlogTerm->findTags($this->content_id, isset($postId) ? $postId : null, $activeTagArr);
 		$this->set('categories', $categories);
 		$this->set('tags', $tags);
 		$this->set('post_id', $postId);
@@ -406,6 +441,7 @@ class BlogPostsController extends BlogAppController {
 
 /**
  * 履歴情報表示・復元処理
+ * 		承認制の一般会員による復元は未承認になるが、この時点ではメールは飛ばさない仕様とする。
  * @param   integer $postId
  * @return  void
  * @since   v 3.0.0.0
@@ -446,6 +482,10 @@ class BlogPostsController extends BlogAppController {
  */
 	public function approve($postId) {
 		// TODO:記事編集権限チェックが未作成
+		$blog = $this->Blog->findByContentId($this->content_id);
+		if(!isset($blog['Blog'])) {
+			$blog = $this->Blog->findDefault($this->content_id);
+		}
 		$blogPost = $this->BlogPost->findById($postId);
 		if(empty($blogPost)) {
 			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPosts.approve.001', '500');
@@ -460,6 +500,29 @@ class BlogPostsController extends BlogAppController {
 		if(!$this->RevisionList->approve($this->BlogPost, $blogPost)) {
 			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPosts.approve.003', '500');
 			return;
+		}
+
+		if($this->request->is('post') && $this->request->data['is_approve']) {
+			// 承認する
+			$revision = $this->Revision->findRevisions(null, $blogPost['BlogPost']['revision_group_id'], 1);
+
+			$mailType = $this->Mail->checkPost(isset($postId), $blog['Blog']['mail_flag'], $blogPost['BlogPost']['status'], $blogPost['BlogPost']['status'], true, false);
+			$this->Mail->userId = $revision[0]['Revision']['created_user_id'];
+			$this->Mail->subject = $blog['Blog']['approved_mail_subject'];
+			$this->Mail->body = $blog['Blog']['approved_mail_body'];
+			if(count($mailType) > 0) {
+				$this->Mail->contentId = $this->content_id;
+
+				$this->BlogCommon->mailAssignedTags($blogPost, $revision[0]['Revision']['content']);
+				$this->Mail->send();
+				if(isset($mailType['Post']) && $blogPost['BlogPost']['is_future'] != _ON) {
+					$this->Mail->userId = null;
+					$this->moreThanHierarchy = $blog['Blog']['mail_hierarchy'];
+					$this->Mail->subject = $blog['Blog']['mail_subject'];
+					$this->Mail->body = $blog['Blog']['mail_body'];
+					$this->Mail->send();
+				}
+			}
 		}
 
 		$this->set('dialog_id', 'blog-posts-approve-'.$this->id);
