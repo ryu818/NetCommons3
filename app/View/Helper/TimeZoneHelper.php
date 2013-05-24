@@ -14,43 +14,29 @@ class TimeZoneHelper extends AppHelper {
 	public $helpers = array('Time');
 
 /**
- * タイムゾーンで変換し、日付を表示
- * @param   $time nullならば現在の時刻
- * @param   $format nullならば__('Y-m-d H:i:s')
- * @return  string Date format
+ * 地方標準時をformatに従い返す
+ *
+ * @param   string  $timeUtc 協定世界時、nullならば現在の協定世界時
+ * @param   string  $format  nullならば__('Y-m-d H:i:s')
+ * @return  string  Date 日付を表す文字列
  * @since   v 3.0.0.0
  */
-	// TODO:TimeZoneBehaviorと同一ファンクション
-	public function date($time = null, $format = null) {
-		if($format === null) {
-	    	$format =  __('Y-m-d H:i:s');
-		}
-		if ($time === null) {
-	    	$time = gmdate($format);
-		} else {
-			$time = date(NC_VALIDATOR_DATE_TIME, strtotime($time));
-		}
-		$timezone_offset = Configure::read(NC_CONFIG_KEY.'.timezone_offset');;
-	    $timezone_minute_offset = 0;
-		if(round($timezone_offset) != intval($timezone_offset)) {
-			$timezone_offset = ($timezone_offset> 0) ? floor($timezone_offset) : ceil($timezone_offset);
-			$timezone_minute_offset = ($timezone_offset> 0) ? 30 : -30;			// 0.5minute
-		}
-
-		$int_time = mktime(intval(substr($time, 8, 2)) + $timezone_offset, intval(substr($time, 10, 2))+$timezone_minute_offset, intval(substr($time, 12, 2)),
-						intval(substr($time, 4, 2)), intval(substr($time, 6, 2)), intval(substr($time, 0, 4)));
-
-		return date($format, $int_time);
+	public function date($timeUtc = null, $format = null) {
+		// TimeZoneBehaviorのdateファンクションを呼び出し
+		App::uses('TimeZoneBehavior', 'Model/Behavior');
+		$timeZoneBehavior = new TimeZoneBehavior();
+		return $timeZoneBehavior->date(new Model(), $timeUtc, $format);
     }
 /**
- * タイムゾーンで変換し、日付を年、月、日、日付、時間、Atom, Full形式で取得
- * @param   $time nullならば現在の時刻
- * @param   $format nullならば__('Y-m-d H:i:s')
- * @return  array key: year, month, day, date,time, atom_date, full_date(__('Y-m-d H:i:s'))
+ * 協定世界時を地方標準時に変換し、日付を年、月、日、日付、時間、Atom, Full形式で取得
+ *
+ * @param   string  $timeUtc 協定世界時、nullならば現在の協定世界時
+ * @param   string  $format  nullならば__('Y-m-d H:i:s')
+ * @return  array key: year, month, day, date, time, atom_date, full_date(__('Y-m-d H:i:s'))
  * @since   v 3.0.0.0
  */
-    public function date_values($time = null) {
-		$post_date = $this->date($time);
+    public function dateValues($timeUtc = null) {
+		$post_date = $this->date($timeUtc);
 		$int_post_date = strtotime($post_date);
 
 		return array(
