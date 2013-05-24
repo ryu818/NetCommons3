@@ -640,7 +640,7 @@ class InstallController extends Controller {
 		$retConfig = $Config->updateAll($fields, $conditions);
 
 		$fields = array('ConfigLang.value' => "'" . Sanitize::escape($config['site_name']) . "'");
-		$conditions = array('ConfigLang.config_id' => 1);
+		$conditions = array('ConfigLang.config_name' => 'sitename');
 		$retConfigLang = $ConfigLang->updateAll($fields, $conditions);
 
 		$this->set('user', $user);
