@@ -22,7 +22,7 @@ if (!empty($page_style['file'])) {
 	echo "\n".$this->Html->script(array('jquery/', 'common/'), array('inline' => true, 'data-title' => 'jquery'));
 	echo '<!--[if IE]>'."\n".$this->Html->script('html5/', array('inline' => true, 'data-title' => 'IE')).'<![endif]-->';
 ?>
-<script>
+<script>(function($) {
 <?php
 if($this->params['plugin'] == '' && $this->params['controller'] == 'pages') {
 	echo '	$.ajaxSetup({headers: {"X-NC-PAGE":"true"}});'."\n";
@@ -59,7 +59,7 @@ if(isset($pages) && isset($page_id_arr)) {
 	echo '	$._nc.show_count['.$page['Page']['id'].'] = '.$page['Page']['show_count'].';'."\n";
 }
 ?>
-</script>
+})(jQuery);</script>
 <?php
 	if(!isset($locale) || !file_exists(WWW_ROOT.'locale/'.$locale.'/lang.js')) {
 		$locale = 'jpn';

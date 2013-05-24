@@ -1,3 +1,4 @@
+(function($) {
 $._lang['common'] = {
 	'Ok' : 'Ok',
 	'Cancel' : 'キャンセル',
@@ -371,3 +372,4 @@ $._lang['nc_wysiwyg_tablemerge'] = {
 	cell_sep  : "-",
 	merge     : "マージするテーブルのセル数"
 };
+})(jQuery);
