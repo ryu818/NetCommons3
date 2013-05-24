@@ -1,6 +1,6 @@
 <?php
 	$permalink = $blog_post['BlogPost']['permalink'];
-	$blogDates = $this->TimeZone->date_values($blog_post['BlogPost']['post_date']);
+	$blogDates = $this->TimeZone->dateValues($blog_post['BlogPost']['post_date']);
 	$baseUrl = array('plugin' => 'blog', 'controller' => 'blog', $blogDates['year'], $blogDates['month'], $blogDates['day'],
 				$permalink, 'page' => $this->Paginator->current());
 ?>
@@ -27,14 +27,12 @@
 										echo h($author);
 									}
 								?>
-								<?php
-									if($blog_post['BlogPost']['created_user_id'] == $blog_comments_tree[$i]['BlogComment']['created_user_id']){
-										echo $this->Html->tag('span', __('Author'), array('class' => 'blog-comment-contributor'));
-									}
-								?>
+								<?php if($blog_post['BlogPost']['created_user_id'] == $blog_comments_tree[$i]['BlogComment']['created_user_id']): ?>
+									<?php echo $this->Html->tag('span', __('Author'), array('class' => 'blog-comment-author')); ?>
+								<?php endif; ?>
 							</cite>
 							<a href="<?php echo '#'.$id.'-comment-'.$blog_comments_tree[$i]['BlogComment']['id'] ?>" class="blog-comment-time-link">
-								<?php $dates = $this->TimeZone->date_values($blog_comments_tree[$i]['BlogComment']['modified']) ?>
+								<?php $dates = $this->TimeZone->dateValues($blog_comments_tree[$i]['BlogComment']['modified']) ?>
 								<time datetime="<?php echo $dates['atom_date']?>" class="comment-date">
 									<?php echo date(__('(Y-m-d h:i A)'), strtotime($dates['full_date'])) ?>
 								</time>
@@ -44,12 +42,10 @@
 
 					<div class="table-row">
 						<div class="table-cell">
-							<?php
-								if(!empty($blog_comments_tree[$i]['BlogComment']['author_email'])){
-									echo $this->Html->link(__('Send to mail.'), 'mailto:'.$blog_comments_tree[$i]['BlogComment']['author_email'],
-										array('class' => 'nc-tooltip', 'title' => $blog_comments_tree[$i]['BlogComment']['author_email']));
-								}
-							?>
+							<?php if(!empty($blog_comments_tree[$i]['BlogComment']['author_email'])): ?>
+								<?php echo $this->Html->link(__('Send to mail.'), 'mailto:'.$blog_comments_tree[$i]['BlogComment']['author_email'],
+									array('class' => 'nc-tooltip', 'title' => $blog_comments_tree[$i]['BlogComment']['author_email'])); ?>
+							<?php endif; ?>
 						</div>
 					</div>
 				</header>
@@ -74,14 +70,14 @@
 					&nbsp;|&nbsp;
 					<?php	// 削除
 						$deleteUrl = array(
-								'controller' => 'comments', 'action' => 'delete',
-								$blog_comments_tree[$i]['BlogComment']['blog_post_id'], $blog_comments_tree[$i]['BlogComment']['id'],
-								'?' => array('comment_back_page' => $this->Paginator->current())
+							'controller' => 'comments', 'action' => 'delete',
+							$blog_comments_tree[$i]['BlogComment']['blog_post_id'], $blog_comments_tree[$i]['BlogComment']['id'],
+							'?' => array('comment_back_page' => $this->Paginator->current())
 						);
 						echo $this->Html->link(__('Delete'),
-								$deleteUrl,
-								array('title' =>__('Delete Comment'), 'data-ajax-confirm' => __('Deleting %s. <br />Are you sure to proceed?',__('Comment')),
-									'data-pjax' => '#'.$id, 'data-ajax-type' => 'post'
+							$deleteUrl,
+							array('title' =>__('Delete Comment'), 'data-ajax-confirm' => __('Deleting %s. <br />Are you sure to proceed?',__('Comment')),
+								'data-pjax' => '#'.$id, 'data-ajax-type' => 'post'
 						));
 					?>
 					<?php	// 返信
@@ -111,9 +107,7 @@
 		<?php // ツリーに子供がいる場合は続きを表示 ?>
 		<?php if(array_key_exists('children', $blog_comments_tree[$i]) && !empty($blog_comments_tree[$i]['children'])): ?>
 			<ul class="blog-comment-child-lists">
-			<?php
-				echo $this->element('blog/comment_detail', array('blog_comments_tree' => $blog_comments_tree[$i]['children'], 'depth' => $depth - 1, 'blog_post' => $blog_post, 'comment' => $comment));
-			?>
+				<?php echo $this->element('blog/comment_detail', array('blog_comments_tree' => $blog_comments_tree[$i]['children'], 'depth' => $depth - 1, 'blog_post' => $blog_post, 'comment' => $comment)); ?>
 			</ul>
 		<?php endif; ?>
 	</li>

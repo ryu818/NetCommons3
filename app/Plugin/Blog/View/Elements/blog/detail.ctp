@@ -2,7 +2,7 @@
 	$title = $blog_post['BlogPost']['title'];
 	$permalink = $blog_post['BlogPost']['permalink'];
 
-	$dates = $this->TimeZone->date_values($blog_post['BlogPost']['post_date']);
+	$dates = $this->TimeZone->dateValues($blog_post['BlogPost']['post_date']);
 	$isEdit = $this->CheckAuth->isEdit($hierarchy, $blog['Blog']['post_hierarchy'], $blog_post['BlogPost']['created_user_id'],
 		$blog_post['Authority']['hierarchy']);
 	$isApprove = false;
@@ -100,7 +100,7 @@
 			if(isset($blog_prev_post['BlogPost'])) {
 				$title = $blog_prev_post['BlogPost']['title'];
 				$permalink = $blog_prev_post['BlogPost']['permalink'];
-				$prevEates = $this->TimeZone->date_values($blog_prev_post['BlogPost']['post_date']);
+				$prevEates = $this->TimeZone->dateValues($blog_prev_post['BlogPost']['post_date']);
 
 				echo $this->Html->link('<span>'.h(__('<')).'</span>'.h($title), array('plugin' => 'blog', 'controller' => 'blog', $prevEates['year'], $prevEates['month'], $prevEates['day'], $permalink, '#' => $id),
 					array('title' => __d('blog', 'Permalink to %s', $title), 'data-pjax' => '#'.$id,
@@ -113,7 +113,7 @@
 			if(isset($blog_next_post['BlogPost'])) {
 				$title = $blog_next_post['BlogPost']['title'];
 				$permalink = $blog_next_post['BlogPost']['permalink'];
-				$nextDates = $this->TimeZone->date_values($blog_next_post['BlogPost']['post_date']);
+				$nextDates = $this->TimeZone->dateValues($blog_next_post['BlogPost']['post_date']);
 
 				echo $this->Html->link(h($title).'<span>'.h(__('>')).'</span>', array('plugin' => 'blog', 'controller' => 'blog', $nextDates['year'], $nextDates['month'], $nextDates['day'], $permalink, '#' => $id),
 					array('title' => __d('blog', 'Permalink to %s', $title), 'data-pjax' => '#'.$id,

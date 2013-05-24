@@ -1,7 +1,7 @@
 <?php
 	$title = $blog_post['BlogPost']['title'];
 	$permalink = $blog_post['BlogPost']['permalink'];
-	$dates = $this->TimeZone->date_values($blog_post['BlogPost']['post_date']);
+	$dates = $this->TimeZone->dateValues($blog_post['BlogPost']['post_date']);
 	$isEdit = $this->CheckAuth->isEdit($hierarchy, $blog['Blog']['post_hierarchy'], $blog_post['BlogPost']['created_user_id'],
 		$blog_post['Authority']['hierarchy']);
 
@@ -13,6 +13,11 @@
 		$isVoted = false;
 	}else{
 		$isVoted = true;
+	}
+	if($this->CheckAuth->checkAuth($hierarchy, NC_AUTH_CHIEF)) {
+		$commentCount = intval($blog_post['BlogPost']['comment_count']);
+	} else {
+		$commentCount = intval($blog_post['BlogPost']['approved_comment_count']);
 	}
 ?>
 <footer id="blog-entry-meta<?php echo($id.'-'.$blog_post['BlogPost']['id']); ?>" class="blog-entry-meta">
@@ -68,7 +73,7 @@
 		?>
 		&nbsp;|&nbsp;
 		<?php
-			echo $this->Html->link(__d('blog', 'Comments(%s)', intval($blog_post['BlogPost']['comment_count'])), array('controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], $permalink, '#' => $id.'-comments'),
+			echo $this->Html->link(__d('blog', 'Comments(%s)', $commentCount), array('controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], $permalink, '#' => $id.'-comments'),
 				array('title' => __d('blog', 'Comment on %s', $title),
 				'rel' => 'bookmark'));
 		?>

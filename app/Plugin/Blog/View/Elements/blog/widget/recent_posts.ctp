@@ -8,7 +8,7 @@
 			<?php
 				$title = $post['BlogPost']['title'];
 				$permalink = $post['BlogPost']['permalink'];
-				$dates = $this->TimeZone->date_values($post['BlogPost']['post_date']);
+				$dates = $this->TimeZone->dateValues($post['BlogPost']['post_date']);
 			?>
 			<li>
 			<?php
