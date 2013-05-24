@@ -217,10 +217,10 @@ div.message {
 
 /* 一時保存 */
 .temporary {
-	color: #d50000;
+	color: #da1d1d;
 	margin: 2px 5px 2px 0;
-	background-color: #fff0f0;
-	border: 1px solid #da9393;
+	background-color: #fff9f9;
+	border: 1px solid #efd0d0;
 	border-radius: 3px;
 	padding: 1px;
 	font-size:75%;
