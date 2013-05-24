@@ -200,6 +200,9 @@ msgstr 	"いいえ"
 msgid  	"Deleting %s. <br />Are you sure to proceed?"
 msgstr 	"%sを削除します。<br />よろしいですか？"
 
+msgid  	"Approve to %s. <br />Are you sure to proceed?"
+msgstr 	"%sを承認します。<br />よろしいですか？"
+
 msgid  	"Detail setting"
 msgstr 	"詳細設定"
 
@@ -245,6 +248,8 @@ msgid	"Approved"
 msgstr	"承認済み"
 msgid  	"Pending [%s]"
 msgstr 	"承認待ち [%s]"
+msgid  	"Pending %s"
+msgstr 	"%s承認待ち "
 msgid  	"Approval system"
 msgstr 	"承認制"
 
