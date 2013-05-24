@@ -467,14 +467,14 @@
     <!-- テーブル community_langs -->
     <!-- テーブル community_tags -->
     <!-- テーブル configs -->
-	<table name="nc3_configs">
+	<table name="configs">
             <column name="id">1</column>
             <column name="module_id">0</column>
             <column name="cat_id">0</column>
             <column name="name">sitename</column>
             <column name="type">text</column>
             <column name="title"></column>
-            <column name="value">NC3テストサイト(舛川)</column>
+            <column name="value">サイト名未設定</column>
             <column name="description"></column>
             <column name="attribute">size=&quot;50&quot;</column>
             <column name="display_sequence">0</column>
@@ -489,7 +489,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">2</column>
             <column name="module_id">0</column>
             <column name="cat_id">0</column>
@@ -511,7 +511,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">3</column>
             <column name="module_id">0</column>
             <column name="cat_id">0</column>
@@ -533,7 +533,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">4</column>
             <column name="module_id">0</column>
             <column name="cat_id">0</column>
@@ -555,7 +555,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">5</column>
             <column name="module_id">0</column>
             <column name="cat_id">0</column>
@@ -577,7 +577,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">6</column>
             <column name="module_id">0</column>
             <column name="cat_id">0</column>
@@ -599,7 +599,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">7</column>
             <column name="module_id">0</column>
             <column name="cat_id">0</column>
@@ -621,7 +621,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">8</column>
             <column name="module_id">0</column>
             <column name="cat_id">0</column>
@@ -643,7 +643,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">9</column>
             <column name="module_id">0</column>
             <column name="cat_id">0</column>
@@ -665,7 +665,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">10</column>
             <column name="module_id">0</column>
             <column name="cat_id">0</column>
@@ -687,7 +687,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">11</column>
             <column name="module_id">0</column>
             <column name="cat_id">0</column>
@@ -709,7 +709,7 @@
             <column name="modified_user_id">1</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">12</column>
             <column name="module_id">0</column>
             <column name="cat_id">0</column>
@@ -731,7 +731,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">13</column>
             <column name="module_id">0</column>
             <column name="cat_id">0</column>
@@ -753,7 +753,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">14</column>
             <column name="module_id">0</column>
             <column name="cat_id">0</column>
@@ -775,7 +775,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">15</column>
             <column name="module_id">0</column>
             <column name="cat_id">1</column>
@@ -797,7 +797,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">16</column>
             <column name="module_id">0</column>
             <column name="cat_id">1</column>
@@ -819,7 +819,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">17</column>
             <column name="module_id">0</column>
             <column name="cat_id">1</column>
@@ -841,7 +841,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">18</column>
             <column name="module_id">0</column>
             <column name="cat_id">1</column>
@@ -863,7 +863,7 @@
             <column name="modified_user_id">1</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">19</column>
             <column name="module_id">0</column>
             <column name="cat_id">1</column>
@@ -885,7 +885,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">20</column>
             <column name="module_id">0</column>
             <column name="cat_id">1</column>
@@ -907,7 +907,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">21</column>
             <column name="module_id">0</column>
             <column name="cat_id">1</column>
@@ -929,7 +929,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">22</column>
             <column name="module_id">0</column>
             <column name="cat_id">1</column>
@@ -951,7 +951,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">23</column>
             <column name="module_id">0</column>
             <column name="cat_id">1</column>
@@ -973,7 +973,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">24</column>
             <column name="module_id">0</column>
             <column name="cat_id">1</column>
@@ -995,7 +995,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">25</column>
             <column name="module_id">0</column>
             <column name="cat_id">2</column>
@@ -1017,7 +1017,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">26</column>
             <column name="module_id">0</column>
             <column name="cat_id">2</column>
@@ -1039,7 +1039,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">27</column>
             <column name="module_id">0</column>
             <column name="cat_id">2</column>
@@ -1061,7 +1061,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">28</column>
             <column name="module_id">0</column>
             <column name="cat_id">2</column>
@@ -1083,7 +1083,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">29</column>
             <column name="module_id">0</column>
             <column name="cat_id">2</column>
@@ -1105,7 +1105,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">30</column>
             <column name="module_id">0</column>
             <column name="cat_id">2</column>
@@ -1127,7 +1127,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">31</column>
             <column name="module_id">0</column>
             <column name="cat_id">2</column>
@@ -1149,7 +1149,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">32</column>
             <column name="module_id">0</column>
             <column name="cat_id">3</column>
@@ -1171,7 +1171,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">33</column>
             <column name="module_id">0</column>
             <column name="cat_id">3</column>
@@ -1193,7 +1193,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">34</column>
             <column name="module_id">0</column>
             <column name="cat_id">3</column>
@@ -1215,7 +1215,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">35</column>
             <column name="module_id">0</column>
             <column name="cat_id">3</column>
@@ -1237,7 +1237,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">36</column>
             <column name="module_id">0</column>
             <column name="cat_id">4</column>
@@ -1259,7 +1259,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">37</column>
             <column name="module_id">0</column>
             <column name="cat_id">3</column>
@@ -1281,7 +1281,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">38</column>
             <column name="module_id">0</column>
             <column name="cat_id">3</column>
@@ -1303,7 +1303,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">39</column>
             <column name="module_id">0</column>
             <column name="cat_id">3</column>
@@ -1325,7 +1325,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">40</column>
             <column name="module_id">0</column>
             <column name="cat_id">3</column>
@@ -1347,7 +1347,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">41</column>
             <column name="module_id">0</column>
             <column name="cat_id">3</column>
@@ -1369,7 +1369,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">42</column>
             <column name="module_id">0</column>
             <column name="cat_id">3</column>
@@ -1391,7 +1391,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">43</column>
             <column name="module_id">0</column>
             <column name="cat_id">3</column>
@@ -1413,7 +1413,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">44</column>
             <column name="module_id">0</column>
             <column name="cat_id">3</column>
@@ -1435,7 +1435,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">45</column>
             <column name="module_id">0</column>
             <column name="cat_id">4</column>
@@ -1457,7 +1457,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">46</column>
             <column name="module_id">0</column>
             <column name="cat_id">4</column>
@@ -1479,7 +1479,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">47</column>
             <column name="module_id">0</column>
             <column name="cat_id">4</column>
@@ -1501,7 +1501,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">48</column>
             <column name="module_id">0</column>
             <column name="cat_id">5</column>
@@ -1523,7 +1523,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">49</column>
             <column name="module_id">0</column>
             <column name="cat_id">5</column>
@@ -1545,7 +1545,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">50</column>
             <column name="module_id">0</column>
             <column name="cat_id">5</column>
@@ -1567,7 +1567,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">51</column>
             <column name="module_id">0</column>
             <column name="cat_id">5</column>
@@ -1589,7 +1589,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">52</column>
             <column name="module_id">0</column>
             <column name="cat_id">5</column>
@@ -1611,7 +1611,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">53</column>
             <column name="module_id">0</column>
             <column name="cat_id">5</column>
@@ -1633,7 +1633,7 @@
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">54</column>
             <column name="module_id">0</column>
             <column name="cat_id">5</column>
@@ -1679,7 +1679,7 @@ from this site, etc.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">55</column>
             <column name="module_id">0</column>
             <column name="cat_id">5</column>
@@ -1701,7 +1701,7 @@ from this site, etc.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">56</column>
             <column name="module_id">0</column>
             <column name="cat_id">5</column>
@@ -1727,7 +1727,7 @@ and confirm registration.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">57</column>
             <column name="module_id">0</column>
             <column name="cat_id">5</column>
@@ -1749,7 +1749,7 @@ and confirm registration.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">58</column>
             <column name="module_id">0</column>
             <column name="cat_id">5</column>
@@ -1772,7 +1772,7 @@ Clicking on the link below will activate the account of this user.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">59</column>
             <column name="module_id">0</column>
             <column name="cat_id">5</column>
@@ -1794,7 +1794,7 @@ Clicking on the link below will activate the account of this user.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">60</column>
             <column name="module_id">0</column>
             <column name="cat_id">5</column>
@@ -1822,7 +1822,7 @@ You may now log in by clicking on this link or copying and pasting it in your br
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">61</column>
             <column name="module_id">0</column>
             <column name="cat_id">5</column>
@@ -1844,7 +1844,7 @@ You may now log in by clicking on this link or copying and pasting it in your br
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">62</column>
             <column name="module_id">0</column>
             <column name="cat_id">5</column>
@@ -1870,7 +1870,7 @@ You can still login with your password until now.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">63</column>
             <column name="module_id">0</column>
             <column name="cat_id">5</column>
@@ -1892,7 +1892,7 @@ You can still login with your password until now.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">64</column>
             <column name="module_id">0</column>
             <column name="cat_id">5</column>
@@ -1915,7 +1915,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">65</column>
             <column name="module_id">0</column>
             <column name="cat_id">5</column>
@@ -1937,7 +1937,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">66</column>
             <column name="module_id">0</column>
             <column name="cat_id">5</column>
@@ -1959,7 +1959,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">67</column>
             <column name="module_id">0</column>
             <column name="cat_id">5</column>
@@ -1981,7 +1981,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">68</column>
             <column name="module_id">0</column>
             <column name="cat_id">5</column>
@@ -2003,7 +2003,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">69</column>
             <column name="module_id">0</column>
             <column name="cat_id">5</column>
@@ -2025,7 +2025,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">70</column>
             <column name="module_id">0</column>
             <column name="cat_id">6</column>
@@ -2047,7 +2047,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_id">1</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">71</column>
             <column name="module_id">0</column>
             <column name="cat_id">6</column>
@@ -2069,7 +2069,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_configs">
+        <table name="configs">
             <column name="id">72</column>
             <column name="module_id">0</column>
             <column name="cat_id">7</column>
@@ -2092,7 +2092,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_name"></column>
         </table>
     <!-- テーブル config_langs -->
-<table name="nc3_config_langs">
+<table name="config_langs">
             <column name="id">1</column>
             <column name="config_name">sitename</column>
             <column name="lang">ja</column>
@@ -2104,7 +2104,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_config_langs">
+        <table name="config_langs">
             <column name="id">2</column>
             <column name="config_name">maintenance_text</column>
             <column name="lang">ja</column>
@@ -2116,7 +2116,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_config_langs">
+        <table name="config_langs">
             <column name="id">3</column>
             <column name="config_name">fromname</column>
             <column name="lang">ja</column>
@@ -2128,7 +2128,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_config_langs">
+        <table name="config_langs">
             <column name="id">4</column>
             <column name="config_name">autoregist_disclaimer</column>
             <column name="lang">ja</column>
@@ -2157,7 +2157,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_config_langs">
+        <table name="config_langs">
             <column name="id">5</column>
             <column name="config_name">mail_approval_subject</column>
             <column name="lang">ja</column>
@@ -2169,7 +2169,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_config_langs">
+        <table name="config_langs">
             <column name="id">6</column>
             <column name="config_name">mail_approval_body</column>
             <column name="lang">ja</column>
@@ -2184,7 +2184,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_config_langs">
+        <table name="config_langs">
             <column name="id">7</column>
             <column name="config_name">mail_add_announce_subject</column>
             <column name="lang">ja</column>
@@ -2196,7 +2196,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_config_langs">
+        <table name="config_langs">
             <column name="id">8</column>
             <column name="config_name">mail_add_announce_subject</column>
             <column name="lang">ja</column>
@@ -2210,7 +2210,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_config_langs">
+        <table name="config_langs">
             <column name="id">9</column>
             <column name="config_name">mail_add_user_subject</column>
             <column name="lang">ja</column>
@@ -2222,7 +2222,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_config_langs">
+        <table name="config_langs">
             <column name="id">10</column>
             <column name="config_name">mail_add_user_subject</column>
             <column name="lang">ja</column>
@@ -2240,7 +2240,7 @@ e-mail：{X-EMAIL}
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_config_langs">
+        <table name="config_langs">
             <column name="id">11</column>
             <column name="config_name">mail_get_password_subject</column>
             <column name="lang">ja</column>
@@ -2252,7 +2252,7 @@ e-mail：{X-EMAIL}
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_config_langs">
+        <table name="config_langs">
             <column name="id">12</column>
             <column name="config_name">mail_get_password_subject</column>
             <column name="lang">ja</column>
@@ -2269,7 +2269,7 @@ e-mail：{X-EMAIL}
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_config_langs">
+        <table name="config_langs">
             <column name="id">13</column>
             <column name="config_name">mail_get_password_subject</column>
             <column name="lang">ja</column>
@@ -2281,7 +2281,7 @@ e-mail：{X-EMAIL}
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_config_langs">
+        <table name="config_langs">
             <column name="id">14</column>
             <column name="config_name">mail_new_password_body</column>
             <column name="lang">ja</column>
@@ -2295,7 +2295,7 @@ e-mail：{X-EMAIL}
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_config_langs">
+        <table name="config_langs">
             <column name="id">15</column>
             <column name="config_name">mail_withdraw_membership_subject</column>
             <column name="lang">ja</column>
@@ -2307,7 +2307,7 @@ e-mail：{X-EMAIL}
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_config_langs">
+        <table name="config_langs">
             <column name="id">16</column>
             <column name="config_name">mail_withdraw_membership_body</column>
             <column name="lang">ja</column>
@@ -2319,7 +2319,7 @@ e-mail：{X-EMAIL}
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_config_langs">
+        <table name="config_langs">
             <column name="id">17</column>
             <column name="config_name">mailheader</column>
             <column name="lang">ja</column>
@@ -2331,7 +2331,7 @@ e-mail：{X-EMAIL}
             <column name="modified_user_id">0</column>
             <column name="modified_user_name"></column>
         </table>
-        <table name="nc3_config_langs">
+        <table name="config_langs">
             <column name="id">18</column>
             <column name="config_name">mailfooter</column>
             <column name="lang">ja</column>
