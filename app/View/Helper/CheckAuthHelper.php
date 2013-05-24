@@ -54,4 +54,19 @@ class CheckAuthHelper extends AppHelper {
 		}
 		return $isEdit;
 	}
+
+/**
+ * 権限チェック
+ *
+ * @param   integer $hierarchy
+ * @param   integer $allowAuth
+ * @return  boolean
+ * @since   v 3.0.0.0
+ */
+	public function checkAuth($hierarchy, $allowAuth = null) {
+		// CheckAuthComponentのcheckAuthファンクションを呼び出し
+		App::uses('CheckAuthComponent', 'Controller/Component');
+		$checkAuthComp = new CheckAuthComponent(new ComponentCollection());
+		return $checkAuthComp->checkAuth($hierarchy, $allowAuth);
+	}
 }
