@@ -7852,14 +7852,6 @@ jQuery.extend({
 		// We also use the url parameter if available
 		s.url = ( ( url || s.url || ajaxLocation ) + "" ).replace( rhash, "" ).replace( rprotocol, ajaxLocParts[ 1 ] + "//" );
 
-		// Add Start	Ryuji.M
-		// AjaxのURLに全角文字が含まれると、IE9以下はSJISでURIエンコードを行ってしまったため、
-		// jquery側で対応。
-		if($.browser.msie && parseInt($.browser.version) < 10) {
-			s.url = encodeURI(s.url);
-		}
-		// Add End Ryuji.M
-
 		// Alias method option to type as per ticket #12004
 		s.type = options.method || options.type || s.method || s.type;
 
