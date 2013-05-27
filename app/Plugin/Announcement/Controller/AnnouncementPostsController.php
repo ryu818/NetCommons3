@@ -85,7 +85,7 @@ class AnnouncementPostsController extends AnnouncementAppController {
 			$announcement = $this->Announcement->findDefault($this->content_id);
 			$beforeContent = '';
 		}
-		$beforeStatus = $blogPost['BlogPost']['status'];
+		$beforeStatus = $announcement['Announcement']['status'];
 		$beforeIsApproved = $announcement['Announcement']['is_approved'];
 
 		if($this->request->is('post')) {
@@ -111,7 +111,7 @@ class AnnouncementPostsController extends AnnouncementAppController {
 			}
 
 			if(!isset($status) || ($status == NC_STATUS_TEMPORARY && $announcement['Announcement']['status'] == NC_STATUS_TEMPORARY_BEFORE_RELEASED)) {
-				$status = $blogPost['BlogPost']['status'];
+				$status = $announcement['Announcement']['status'];
 			}
 			$announcement['Announcement']['content_id'] = $this->content_id;
 			$announcement['Announcement']['status'] = $status;
