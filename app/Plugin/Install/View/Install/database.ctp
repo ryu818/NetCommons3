@@ -24,9 +24,10 @@ $this->assign('title', __d('install', 'General configuration'));
 						'empty' => false,
 						'options' => array(
 							'Database/Mysql' => 'Mysql',
-							'Database/Sqlite' => 'Sqlite',
-							'Database/Postgres' => 'Postgres',
-							'Database/Sqlserver' => 'Sql server',
+// TODO: Mysql以外コメント
+							//'Database/Sqlite' => 'Sqlite',
+							//'Database/Postgres' => 'Postgres',
+							//'Database/Sqlserver' => 'Sql server',
 						),
 					)),
 					'note' =>  __d('install', 'Choose the database to be used.'),

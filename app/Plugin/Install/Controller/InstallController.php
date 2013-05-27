@@ -459,6 +459,50 @@ class InstallController extends Controller {
 			}
 		}
 
+		App::import('Vendor', 'XML_Unserializer', array('file' => 'pear/XML/Unserializer.php'));
+		//App::uses('pear/XML/Unserializer', 'Vendor');
+		$options = array(
+			XML_UNSERIALIZER_OPTION_ATTRIBUTES_PARSE => 'parseAttributes',
+			//XML_UNSERIALIZER_OPTION_COMPLEXTYPE => 'array',
+			XML_UNSERIALIZER_OPTION_ENCODING_SOURCE => "UTF-8"
+		);
+		$unserializer = new XML_Unserializer($options);
+
+		$xml = App::pluginPath('Install') . DS . 'Config' . DS . 'Data' . DS . 'default.xml';	// TODO:default固定
+
+		$result = $unserializer->unserialize($xml, true);
+		//
+		if (empty($result) || PEAR::isError($result)) {
+			$this->set("failure_datas", true);
+			return;
+		}
+		$parseXML = $unserializer->getUnserializedData();
+
+		$columnNameArr = array();
+		foreach ($parseXML as $database => $database_datas) {
+			foreach ($database_datas as $table => $table_datas) {
+				if($table_datas['name'] == 'modules') {
+					$table_data = $table_datas['column'];
+					foreach ($table_data as $buf_data) {
+						$column_name = $buf_data['name'];
+
+						if($column_name == 'dir_name') {
+							if(isset($buf_data['_content'])) {
+								if($buf_data['_content'] === 'NULL') {
+									continue;
+								} else {
+									$data = $buf_data['_content'];
+								}
+							} else {
+								$data = '';
+							}
+							$columnNameArr[$data] = true;
+						}
+					}
+				}
+			}
+		}
+
 		/*
 		 * Plugin テーブル作成
 		 */
@@ -468,6 +512,9 @@ class InstallController extends Controller {
 			$schemaPlugin = new CakeSchema(array('name' => $dir, 'plugin' => $dir));
 			$schemaPlugin = $schemaPlugin->load();
 			if($schemaPlugin === false) {
+				continue;
+			}
+			if(!isset($columnNameArr[$dir])) {
 				continue;
 			}
 
@@ -488,24 +535,6 @@ class InstallController extends Controller {
 		$this->set("tables", $tables);
 		$this->set("not_tables", $not_tables);
 
-		App::import('Vendor', 'XML_Unserializer', array('file' => 'pear/XML/Unserializer.php'));
-		//App::uses('pear/XML/Unserializer', 'Vendor');
-		$options = array(
-				XML_UNSERIALIZER_OPTION_ATTRIBUTES_PARSE => 'parseAttributes',
-				//XML_UNSERIALIZER_OPTION_COMPLEXTYPE => 'array',
-				XML_UNSERIALIZER_OPTION_ENCODING_SOURCE => "UTF-8"
-		);
-		$unserializer = new XML_Unserializer($options);
-
-		$xml = App::pluginPath('Install') . DS . 'Config' . DS . 'Data' . DS . 'default.xml';	// TODO:default固定
-
-		$result = $unserializer->unserialize($xml, true);
-		//
-		if (empty($result) || PEAR::isError($result)) {
-			$this->set("failure_datas", true);
-			return;
-		}
-		$parseXML = $unserializer->getUnserializedData();
 		$err_mes = array();
 		foreach ($parseXML as $database => $database_datas) {
 			foreach ($database_datas as $table => $table_datas) {
