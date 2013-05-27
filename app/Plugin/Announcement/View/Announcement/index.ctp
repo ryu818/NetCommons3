@@ -36,7 +36,7 @@ if(!empty($announcement['Announcement']['id'])) {
 					'data-ajax-effect' => 'fold'
 				));
 			?>
-		<?php elseif(isset($announcement['Announcement']) && $announcement['Announcement']['status'] != NC_STATUS_PUBLISH): ?>
+		<?php elseif(!empty($announcement['Announcement']) && isset($announcement['Announcement']['id']) && $announcement['Announcement']['status'] != NC_STATUS_PUBLISH): ?>
 			<span class="temporary">
 				<?php echo __('Temporary...'); ?>
 			</span>
