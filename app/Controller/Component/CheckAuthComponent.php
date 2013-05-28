@@ -148,7 +148,8 @@ class CheckAuthComponent extends Component {
 		if($plugin_name == 'page' || $controller_name == 'pages' || $plugin_name == 'group' ||
 			$controller_name == 'users' || $module['Module']['system_flag'] == _OFF) {
 			// 一般系モジュール
-			if(!$this->checkGeneral()) {
+			$page = $this->checkGeneral();
+			if($page === false) {
 				return;
 			}
 		} else {
@@ -170,23 +171,23 @@ class CheckAuthComponent extends Component {
 				$this->allowAuth = NC_AUTH_OTHER;
 			} else if($page['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL ||
 				$page['Page']['space_type'] == NC_SPACE_TYPE_PRIVATE) {
-				$currentUser = $this->_controller->User->currentUser($page, $loginUser);
+				$currentUser = $this->_controller->User->currentUser($page, $user);
 				if(!isset($currentUser['User'])) {
 					// 不参加
 					$controller->hierarchy = NC_AUTH_OTHER;
 				} else {
 					if($page['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
-						if($currentUser['Authority']['myportal_use_flag'] == NC_MYPORTAL_USE_ALL) {
+						if($currentUser['User']['myportal_use_flag'] == NC_MYPORTAL_USE_ALL) {
 							// 参加
 							$this->allowAuth = NC_AUTH_OTHER;
-						} else if($currentUser['Authority']['myportal_use_flag'] == NC_MYPORTAL_MEMBERS) {
-							$this->allowAuth = $currentUser['Authority']['allow_myportal_viewing_hierarchy'];
+						} else if($currentUser['User']['myportal_use_flag'] == NC_MYPORTAL_MEMBERS) {
+							$this->allowAuth = $currentUser['User']['allow_myportal_viewing_hierarchy'];
 						} else {
 							// 不参加
 							$controller->hierarchy = NC_AUTH_OTHER;
 						}
 					} else {
-						if($currentUser['Authority']['private_use_flag'] == _ON) {
+						if($currentUser['User']['private_use_flag'] == _ON) {
 							// 参加
 							$this->allowAuth = NC_AUTH_OTHER;
 						} else {
@@ -213,43 +214,41 @@ class CheckAuthComponent extends Component {
 			}
 		}
 
-		if(!$this->checkAuth($controller->hierarchy)) {
+		if(isset($controller->nc_block['Block'])) {
+			// 画面タイプ設定
+			$controllerAction = null;
+			if($action_name == 'index') {
+				$controller_arr = explode('_', $controller_name, 2);
+				$controllerAction = $controller_arr[0];
+				if(isset($controller_arr[1])) {
+					$controllerAction .= '/'. $controller_arr[1];
+				}
+			}
+
+			if($controller->nc_block['Module']['edit_controller_action'] != '' && (($controller->nc_block['Module']['edit_controller_action'] == $controller_name .'/'.$action_name) ||
+				($controller->nc_block['Module']['edit_controller_action'] == $controller_name && $action_name == 'index') ||
+				($controller->nc_block['Module']['edit_controller_action'] == $controllerAction))) {
+				$ncType = 'edit';
+			} else if($controller->nc_block['Module']['style_controller_action'] != '' && (($controller->nc_block['Module']['style_controller_action'] == $controller_name .'/'.$action_name) ||
+				($controller->nc_block['Module']['style_controller_action'] == $controller_name && $action_name == 'index') ||
+				($controller->nc_block['Module']['style_controller_action'] == $controllerAction))) {
+				$ncType = 'style';
+			} else {
+				$ncType = $controller->ncType;
+			}
+			$controller->ncType = $ncType;
+		} //else {
+			//$ret = $this->checkAuth($controller->hierarchy, NC_AUTH_CHIEF);
+		//}
+		//$controller->nc_show_edit = $ret;
+		$checkHierarchy = ($controller->ncType == 'style' || (isset($controller->blockHierarchy) && $plugin_name == 'block')) ? $controller->blockHierarchy : $controller->hierarchy;
+		if(!$this->checkAuth($checkHierarchy)) {
 			if($userId == 0) {
 				$this->Session->setFlash(__('Forbidden permission to access the page.'), 'default', array(), 'auth');
 			}
 			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.check.003', '403');
 			return;
 		}
-
-
-		if(isset($controller->nc_block['Block']) && !$controller->nc_block['Block']['is_master']) {
-			// 編集画面なのに権限を付与したショートカットならばエラー。ただし、ショートカット先が主坦ならばエラーとしない。
-			$content =  $controller->Content->findAuthById($controller->nc_block['Block']['master_id'], $userId);
-			$ret = $this->checkAuth($content['Authority']['hierarchy'], NC_AUTH_CHIEF);
-			$edit_controller_action = null;
-			if($action_name == 'index') {
-				$controller_arr = explode('_', $controller_name, 2);
-				$edit_controller_action = $controller_arr[0];
-				if(isset($controller_arr[1])) {
-					$edit_controller_action .= '/'. $controller_arr[1];
-				}
-			}
-			if(($controller->nc_block['Module']['edit_controller_action'] == $controller_name .'/'.$action_name) ||
-				($controller->nc_block['Module']['edit_controller_action'] == $controller_name && $action_name == 'index') ||
-				($controller->nc_block['Module']['edit_controller_action'] == $edit_controller_action)) {
-				$nc_is_edit = true;
-			} else {
-				$nc_is_edit = $controller->nc_is_edit;
-			}
-
-			if($nc_is_edit && !$ret) {
-				$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.check.004', '403');
-				return;
-			}
-		} else {
-			$ret = $this->checkAuth($controller->hierarchy, NC_AUTH_CHIEF);
-		}
-		$controller->nc_show_edit = $ret;
 
 		if($isActiveContent) {
 			// 参照のみなのでゲスト固定
@@ -262,14 +261,14 @@ class CheckAuthComponent extends Component {
 			if($userId == 0) {
 				$this->Session->setFlash(__('Forbidden permission to access the page.'), 'default', array(), 'auth');
 			}
-			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.check.005', '403');
+			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.check.004', '403');
 			return;
 		}
 
 		if($controller->hierarchy >= NC_AUTH_MIN_CHIEF) {
-			$controller->is_chief = true;
+			$controller->isChief = true;
 		} else {
-			$controller->is_chief = false;
+			$controller->isChief = false;
 		}
 	}
 
@@ -302,13 +301,14 @@ class CheckAuthComponent extends Component {
  * 一般系系権限チェック
  *
  * @param   Model Module $module
- * @return  boolean
+ * @return  boolean|Model Page
  * @since   v 3.0.0.0
  */
 	public function checkGeneral() {
 		$controller = $this->_controller;
 		$user = $this->Auth->user();
 		$userId = isset($user['id']) ? intval($user['id']) : 0;
+		$page = true;
 		$this->_setControllerParams($controller);
 		if (isset($controller->nc_block['Block'])) {
 			// 既に権限チェック済 - PageからrequestActionよりブロックを表示した場合
@@ -434,6 +434,9 @@ class CheckAuthComponent extends Component {
 				$page_hierarchy = (isset($page) && !is_null($page['Authority']['hierarchy'])) ? intval($page['Authority']['hierarchy']) : NC_AUTH_OTHER;
 				$block_hierarchy = (isset($block) && !is_null($block['Block']['hierarchy'])) ? intval($block['Block']['hierarchy']) : $page_hierarchy;
 				$controller->hierarchy = min($block_hierarchy, $page_hierarchy);
+				if(isset($block) && !is_null($block['Block']['block_hierarchy'])) {
+					$controller->blockHierarchy = intval($block['Block']['block_hierarchy']);
+				}
 
 				if(isset($block) && !is_null($block['Content']['master_id'])) {
 					$controller->content_id = intval($block['Content']['master_id']);
@@ -485,7 +488,7 @@ class CheckAuthComponent extends Component {
 			$this->Session->delete(NC_SYSTEM_KEY.'.mode');
 		}
 
-		return true;
+		return $page;
 	}
 
 /**
@@ -703,6 +706,9 @@ class CheckAuthComponent extends Component {
 
 			if(!is_null($block['Block']['hierarchy'])) {
 				$controller->hierarchy = intval($block['Block']['hierarchy']);
+			}
+			if(!is_null($block['Block']['block_hierarchy'])) {
+				$controller->blockHierarchy = intval($block['Block']['block_hierarchy']);
 			}
 			if(!is_null($block['Content']['master_id'])) {
 				$controller->content_id = intval($block['Content']['master_id']);

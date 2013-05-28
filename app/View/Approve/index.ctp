@@ -53,7 +53,7 @@
 	echo $this->Form->hidden('revision_id' , array('id' => 'RevisionRevisionId'. $id, 'name' => 'revision_id', 'value' => $post_approval['Revision']['id']));
 	echo $this->Form->hidden('is_approve' , array('id' => 'RevisionIsApprove'. $id, 'name' => 'is_approve', 'value' => _ON));
 /* TODO:「承認しない」->承認しない理由を記入者にメールでお知らせするほうが望ましい。未対応。 */
-	if($is_chief) {
+	if($isChief) {
 		$approve = $this->Form->button(__('Approve'), array(
 			'class' => 'nc-button nc-button-blue common-btn',
 			'type' => 'submit',

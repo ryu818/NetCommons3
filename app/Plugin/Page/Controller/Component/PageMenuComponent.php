@@ -822,7 +822,7 @@ class PageMenuComponent extends Component {
 		if($action == 'shortcut' && $pre_room_id != $move_room_id) {
 			// 移動先が移動元と異なれば、チェックボックス表示
 			$echo_str .= '<label class="pages-menu-edit-confirm-shortcut" for="pages-menu-edit-confirm-shortcut">'.
-					'<input id="pages-menu-edit-confirm-shortcut" type="checkbox" name="shortcut_flag" value="'._ON.'" />&nbsp;'.
+					'<input id="pages-menu-edit-confirm-shortcut" type="checkbox" name="shortcut_type" value="'._ON.'" />&nbsp;'.
 					__('Allow the room authority to view and edit.').
 					'</label>';
 		}
@@ -1451,11 +1451,11 @@ class PageMenuComponent extends Component {
  * @param   integer      $copy_page_id_arr		コピー元ID配列
  * @param   Model Pages  $copy_pages	コピー元
  * @param   Model Pages  $ins_pages		コピー先
- * @param   integer      $default_shortcut_flag ペーストならnull ショートカット 0 権限付与つきショートカット 1
+ * @param   integer      $default_shortcut_type ペーストならnull ショートカット 0 権限付与つきショートカット 1
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	public function operateBlock($action, $hash_key, $user_id, $copy_page_id_arr, $copy_pages, $ins_pages, $default_shortcut_flag = null) {
+	public function operateBlock($action, $hash_key, $user_id, $copy_page_id_arr, $copy_pages, $ins_pages, $default_shortcut_type = null) {
 		if($action == 'move' && $copy_pages[0]['Page']['room_id'] == $ins_pages[0]['Page']['room_id']) {
 			// 移動で同一ルーム内の移動であればblockテーブルは更新しない
 			$this->_controller->TempData->destroy($hash_key);
@@ -1515,16 +1515,16 @@ class PageMenuComponent extends Component {
 
 				if($action != 'move' && isset($content_id_arr[$content['Content']['id']])) {
 					// 既にpasteしてあるコンテンツのショートカットならば、ショートカットとして貼り付ける。
-					$shortcut_flag = _OFF;
+					$shortcut_type = _OFF;
 					$content['Content']['id'] = $content_id_arr[$content['Content']['id']];
-					if($content['Content']['is_master']) {
+					if($content['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_OFF) {
 						$content['Content']['master_id'] = $content['Content']['id'];
 					}
 				} else {
-					$shortcut_flag = $default_shortcut_flag;
+					$shortcut_type = $default_shortcut_type;
 				}
 
-				$ins_ret = $this->_controller->BlockOperation->addBlock($action, $current_page, $module, $block, $content, $shortcut_flag, $ins_page, $new_root_id, $new_parent_id);
+				$ins_ret = $this->_controller->BlockOperation->addBlock($action, $current_page, $module, $block, $content, $shortcut_type, $ins_page, $new_root_id, $new_parent_id);
 
 				if($ins_ret === false) {
 					$this->_controller->TempData->destroy($hash_key);

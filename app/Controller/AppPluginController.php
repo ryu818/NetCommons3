@@ -21,10 +21,10 @@ class AppPluginController extends AppController
 {
 /**
  * 編集画面か否か（セッティングモードONの場合の上部、編集ボタンをリンク先を変更するため）
- * Default:false
+ * Default:'' or 'edit' or 'style'
  * @var boolean
  */
-	protected $nc_is_edit = false;
+	public $ncType = '';
 
 	public $viewClass = 'Plugin';
 
@@ -58,18 +58,18 @@ class AppPluginController extends AppController
 		$this->getEventManager()->dispatch(new CakeEvent('Controller.startup', $this));
 
 		if(!empty($this->nc_block)) {
-			$is_error = false;
+			$isError = false;
 			if(!isset($this->nc_block['Content']['id'])) {
 				$this->set('name', __('Content removed.'));
-				$is_error = true;
+				$isError = true;
 			} else if(!isset($this->nc_block['Module']['id']) &&
 					isset($this->request->params['plugin']) && $this->request->params['plugin'] != 'group'
 					 && $this->request->params['plugin'] != 'content' && $this->request->params['plugin'] != 'block') {
 				$this->set('name', __('Module uninstalled.'));
-				$is_error = true;
+				$isError = true;
 			}
-			if($is_error) {
-				$this->set('nc_error_flag' , true);
+			if($isError) {
+				$this->set('ncIsError' , true);
 				$this->set('show_frame', isset($this->Frame) ? $this->Frame : true);
 				$this->render("/Errors/block_error");
 				return false;
@@ -117,11 +117,13 @@ class AppPluginController extends AppController
 		if(!empty($this->nc_page) && !isset($this->viewVars['page'])) {
 			$this->set('page', $this->nc_page);
 		}
-		if(isset($this->is_chief) && !isset($this->viewVars['is_chief'])) {
-			$this->set('is_chief', $this->is_chief);
+		if(isset($this->isChief) && !isset($this->viewVars['isChief'])) {
+			$this->set('isChief', $this->isChief);
 		}
-		$this->set('nc_is_edit', $this->nc_is_edit);
-		$this->set('nc_show_edit', $this->nc_show_edit);
+		if(isset($this->blockHierarchy) && !isset($this->viewVars['blockHierarchy'])) {
+			$this->set('block_hierarchy', $this->blockHierarchy);
+		}
+		$this->set('ncType', $this->ncType);
 		$this->set('content_id', $this->content_id);
 	}
 }

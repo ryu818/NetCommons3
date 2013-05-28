@@ -9,7 +9,7 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 	$nc_user = $this->Session->read(NC_AUTH_KEY.'.'.'User');
-	$nc_mode = intval($this->Session->read(NC_SYSTEM_KEY.'.'.'mode'));
+	$ncMode = intval($this->Session->read(NC_SYSTEM_KEY.'.'.'mode'));
 	$locale = Configure::read(NC_SYSTEM_KEY.'.locale');
 
 // TODO:test
@@ -33,7 +33,7 @@ if($this->params['plugin'] == '' && $this->params['controller'] == 'pages') {
 	echo '	$._block_type = \'active-blocks\';'."\n";
 }
 echo '	$._nc = Array();'."\n";
-echo '	$._mode = '.$nc_mode.";\n";
+echo '	$._mode = '.$ncMode.";\n";
 echo '	$._debug = '.intval(Configure::read('debug')).";\n";
 echo '	$._lang = new Object();'."\n";
 echo '	$._display_header_menu = '.intval(Configure::read(NC_CONFIG_KEY.'.'.'display_header_menu')).";\n";
@@ -71,7 +71,7 @@ if(isset($pages) && isset($page_id_arr)) {
 	//if($this->params['controller'] == 'pages') {	// TODO:system_flagがOFFの場合にincludeするように後に修正。
 		$common_css[] = 'pages/common/';
 	//}
-	if($nc_mode == NC_BLOCK_MODE) {
+	if($ncMode == NC_BLOCK_MODE) {
 		$common_css[] = 'pages/block/';
 	}
 	echo $this->Html->css($common_css, null, array('inline' => true));

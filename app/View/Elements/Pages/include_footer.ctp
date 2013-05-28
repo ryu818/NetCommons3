@@ -9,13 +9,13 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 	$nc_user = $this->Session->read(NC_AUTH_KEY.'.'.'User');
-	$nc_mode = intval($this->Session->read(NC_SYSTEM_KEY.'.'.'mode'));
+	$ncMode = intval($this->Session->read(NC_SYSTEM_KEY.'.'.'mode'));
 
 	$common_js = array('plugins/chosen.jquery.js');
 	if($this->params['controller'] == 'pages') {
 		$common_js[] = 'pages/common/';
 	}
-	if($nc_mode == NC_BLOCK_MODE) {
+	if($ncMode == NC_BLOCK_MODE) {
 		$common_js[] = 'pages/block/';
 		//$common_js[] = 'pages/style/';
 	}

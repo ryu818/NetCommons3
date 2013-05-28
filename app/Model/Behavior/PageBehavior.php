@@ -89,39 +89,43 @@ class PageBehavior extends ModelBehavior {
  * @param  Model        $Model
  * @param  boolean|integer $isLogin(userId)
  * @param  Model Page   $page
+ * @param  stinrg $modelPrefix '' or 'Block' (Block->Page->PageUserLink->Authority or Content->Page->PageUserLink->Authority)
  * @return integer hierarchy
  * @since  v 3.0.0.0
  */
-	public function getDefaultHierarchy($Model, $page, $isLogin = false) {
-		if(isset($page['Authority']['hierarchy'])) {
-			return $page['Authority']['hierarchy'];
+	public function getDefaultHierarchy($Model, $page, $isLogin = false, $shortcutFlag = NC_SHORTCUT_TYPE_OFF, $modelPrefix = '') {
+		if(isset($page[$modelPrefix.'Authority']['hierarchy'])) {
+			return $page[$modelPrefix.'Authority']['hierarchy'];
 		}
-		if(!isset($page['Community'])  && $page['Page']['space_type'] == NC_SPACE_TYPE_GROUP && $page['Page']['root_id'] != 0) {
+		if($shortcutFlag == NC_SHORTCUT_TYPE_SHOW_ONLY) {
+			return NC_AUTH_GUEST;	// ゲスト固定
+		}
+		if(!isset($page[$modelPrefix.'Community'])  && $page[$modelPrefix.'Page']['space_type'] == NC_SPACE_TYPE_GROUP && $page[$modelPrefix.'Page']['root_id'] != 0) {
 			App::uses('Community', 'Model');
 			$Community = new Community();
 			$params = array(
 				'fields' => array(
 					'Community.publication_range_flag'
 				),
-				'conditions' => array('room_id' => $page['Page']['root_id']),
+				'conditions' => array('room_id' => $page[$modelPrefix.'Page']['root_id']),
 			);
 			$current_community = $Community->find('first', $params);
-			$page['Community'] = $current_community['Community'];
+			$page[$modelPrefix.'Community'] = $current_community[$modelPrefix.'Community'];
 		}
 
 		$hierarchy = NC_AUTH_OTHER;
-		if($page['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC) {
+		if($page[$modelPrefix.'Page']['space_type'] == NC_SPACE_TYPE_PUBLIC) {
 			$hierarchy = Configure::read(NC_CONFIG_KEY.'.default_entry_public_hierarchy');
-		} else if($page['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
+		} else if($page[$modelPrefix.'Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
 			$hierarchy = Configure::read(NC_CONFIG_KEY.'.default_entry_myportal_hierarchy');
-		} else if($page['Page']['space_type'] == NC_SPACE_TYPE_PRIVATE) {
+		} else if($page[$modelPrefix.'Page']['space_type'] == NC_SPACE_TYPE_PRIVATE) {
 			$hierarchy = Configure::read(NC_CONFIG_KEY.'.default_entry_private_hierarchy');
-		} else if($page['Page']['root_id'] == 0) {
-			$hierarchy = NC_AUTH_OTHER_ID;
+		} else if($page[$modelPrefix.'Page']['root_id'] == 0) {
+			$hierarchy = NC_AUTH_OTHER;
 		} else {
-			if($page['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_ONLY_USER ||
-				((!isset($isLogin) || intval($isLogin) == 0) && $page['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_LOGIN_USER)) {
-				$hierarchy = NC_AUTH_OTHER_ID;
+			if($page[$modelPrefix.'Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_ONLY_USER ||
+				((!isset($isLogin) || intval($isLogin) == 0) && $page[$modelPrefix.'Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_LOGIN_USER)) {
+				$hierarchy = NC_AUTH_OTHER;
 			} else {
 				$hierarchy = Configure::read(NC_CONFIG_KEY.'.default_entry_group_hierarchy');
 			}

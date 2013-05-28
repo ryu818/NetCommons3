@@ -10,10 +10,13 @@
 			$activeClassColor = "nc-content-located";
 			$title .= '<span class=\''.$activeClassColor.'\'>['.__d('content', 'Already located.').']</span>&nbsp;';
 		}
-		if(!$val['Content']['is_master']) {
+		if($val['Content']['shortcut_type'] != NC_SHORTCUT_TYPE_OFF) {
 			$title .= __d('content', 'Origin of content').':'.h($val['Page']['page_name']);
-
-			$titlePostfix .= '<span class="nc-content-shortcut-edit nc-block-header-shortcut-edit"><span></span></span>';
+			if($val['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_SHOW_ONLY) {
+				$titlePostfix .= '<span class="nc-content-shortcut nc-block-header-shortcut-show"><span></span></span>';
+			} else {
+				$titlePostfix .= '<span class="nc-content-shortcut nc-block-header-shortcut-edit"><span></span></span>';
+			}
 			$confirm ='Deleting the only shortcut[%1$s]. Are you sure to proceed?';
 		} else {
 			$confirm ='Deleting the content[%1$s]. You can not be undone. Are you sure to proceed?';

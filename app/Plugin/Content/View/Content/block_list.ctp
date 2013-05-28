@@ -9,10 +9,11 @@
 		}
 
 		$titlePostfix = '';
-		if($val['Page']['room_id'] != $val['Content']['room_id']) {
-			$titlePostfix .= '<span class="nc-content-shortcut-edit nc-block-header-shortcut-show"><span></span></span>';
-		} elseif(!$val['Content']['is_master']) {
-			$titlePostfix .= '<span class="nc-content-shortcut-edit nc-block-header-shortcut-edit"><span></span></span>';
+
+		if($val['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_SHOW_ONLY) {
+			$titlePostfix .= '<span class="nc-content-shortcut nc-block-header-shortcut-show"><span></span></span>';
+		} elseif($val['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_SHOW_AUTH) {
+			$titlePostfix .= '<span class="nc-content-shortcut nc-block-header-shortcut-edit"><span></span></span>';
 		}
 
 		// ブロック名称

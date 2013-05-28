@@ -98,7 +98,7 @@ class ContentList extends AppModel {
 
 		$params = array(
 			'fields' => array(
-				'Content.id','Content.module_id','Content.title','Content.is_master','Content.master_id',
+				'Content.id','Content.module_id','Content.title','Content.shortcut_type','Content.master_id',
 					'Content.room_id','Content.display_flag','Content.is_approved',
 				'PagesUsersLink.authority_id',
 				'Page.id, Page.page_name, Page.thread_num, Page.space_type',
@@ -121,7 +121,7 @@ class ContentList extends AppModel {
 		$rets = $this->find('all', $params);
 		if(count($rets) > 0) {
 			for($i =0; $i < count($rets); $i++) {
-				if(!$rets[$i]['Content']['is_master']) {
+				if($rets[$i]['Content']['shortcut_type'] != NC_SHORTCUT_TYPE_OFF) {
 					// コンテンツ元取得
 					App::uses('Content', 'Model');
 					$Content = new Content();

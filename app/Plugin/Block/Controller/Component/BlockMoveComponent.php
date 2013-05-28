@@ -64,7 +64,7 @@ class BlockMoveComponent extends Component {
 		}
 		$room_id = $content['Content']['room_id'];
 
-		if($pre_page['Page']['room_id'] != $room_id || !$content['Content']['is_master']) {
+		if($pre_page['Page']['room_id'] != $room_id || $content['Content']['shortcut_type'] != NC_SHORTCUT_TYPE_OFF) {
 			// ショートカット
 			$user_id = $this->_controller->Auth->user('id');
 			$master_content = $this->_controller->Content->findAuthById($content['Content']['master_id'], $user_id);
@@ -145,7 +145,7 @@ class BlockMoveComponent extends Component {
 			if($page['Page']['room_id'] == $block['Content']['room_id']) {
 				// Content更新
 				$content_fields = array(
-					'Content.is_master'=> _ON,
+					'Content.shortcut_type'=> NC_SHORTCUT_TYPE_OFF,
 		    		'Content.master_id'=>$block['Block']['content_id'],
 		    		'Content.room_id'=>$insert_room_id
 		    	);
@@ -260,7 +260,7 @@ class BlockMoveComponent extends Component {
 			 * ほかのルームでショートカットを作成し、それを元のルームに戻したら(移動)、ショートカットの
 			 * コンテンツを削除する。ブロックもショートカットを解除する。
 			 */
-			if(!$block['Content']['is_master']) {	// 権限を付与したショートカット
+			if($block['Content']['shortcut_type'] != NC_SHORTCUT_TYPE_OFF) {	// 権限を付与したショートカット
 				$content = $this->_controller->Content->findById($block['Content']['master_id']);
 				if($content['Content']['room_id'] == $insert_room_id) {
 					// 元のルームに戻した(権限を付与してあるショートカット)
@@ -331,8 +331,8 @@ class BlockMoveComponent extends Component {
  * parent_idからroot_id, page_id, Content.room_id更新処理
  *
  * @param integer $parent_id	移動先parent_id
- * @param integer $root_id      移動元root_id
- * @param integer $thread_num   移動元thread_num
+ * @param integer $root_id     移動元root_id
+ * @param integer $thread_num  移動元thread_num
  * @param object  $page			移動元page
  * @param object  $insert_page	移動先page
  *
@@ -356,7 +356,7 @@ class BlockMoveComponent extends Component {
 				if($page['Page']['room_id'] == $block['Content']['room_id']) {
 					// Content更新
 					$content_fields = array(
-						'Content.is_master'=>_ON,
+						'Content.shortcut_type'=>NC_SHORTCUT_TYPE_OFF,
 			    		'Content.master_id'=>$block['Block']['content_id'],
 			    		'Content.room_id'=>$insert_room_id
 			    	);

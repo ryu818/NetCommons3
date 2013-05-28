@@ -12,7 +12,13 @@ class User extends AppModel
 {
 	public $name = 'User';
 
-	public $belongsTo = 'Authority';
+	public $belongsTo = array(
+		'Authority'    => array(
+			//'foreignKey'    => '',
+			'fields' => array('Authority.hierarchy', 'Authority.myportal_use_flag',
+				 'Authority.allow_myportal_viewing_hierarchy', 'Authority.private_use_flag'),
+		),
+	);
 
 /**
  * Behavior name
@@ -306,7 +312,7 @@ class User extends AppModel
  * マイポータル、マイルーム以外ならば'' エラーならばfalse
  * @param   array $page
  * @param   array $loginUser
- * @return  mixed ''|false|$user
+ * @return  mixed ''|false|array $user
  * @since   v 3.0.0.0
  */
     public function currentUser($page, $loginUser = null) {
@@ -319,9 +325,12 @@ class User extends AppModel
     	if(!isset($loginUser['permalink']) || $buf_permalink_arr[0] != $loginUser['permalink']) {
     		$conditions = array('User.permalink' => $buf_permalink_arr[0]);
     		$user = $this->find( 'first', array(
-    			'conditions' => $conditions,
-    			'recursive' => -1
+    			'conditions' => $conditions
     		) );
+    		if(isset($user['Authority'])) {
+    			// 権限関連をAdd
+    			$user['User'] = array_merge($user['User'], $user['Authority']);
+    		}
     	} else {
     		$user['User'] = $loginUser;
     	}
@@ -505,7 +514,7 @@ class User extends AppModel
 
 		// コンテンツ元IDからショートカットを取得
 		$params = array(
-			'fields' => array('Content.id', 'Content.room_id'),
+			'fields' => array('Content.id', 'Content.room_id', 'Content.shortcut_type'),
 			'conditions' => array(
 				'Content.master_id' => $contentId,
 				'Content.id !=' => $contentId,
@@ -515,7 +524,34 @@ class User extends AppModel
 		if(count($shortcutContents) > 0) {
 			// 権限を付与したショートカットが配置してあるルームもメール配信対象とする。
 			foreach($shortcutContents as $shortcutContent) {
-				$masterEmailRes = $this->getSendMailsByPageId($shortcutContent['Content']['room_id'], $moreThanHierarchy, $conditions, $order);
+				if($shortcutContent['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_SHOW_ONLY) {
+					// 閲覧のみ
+					if($moreThanHierarchy != NC_AUTH_GUEST) {
+						continue;
+					}
+					// 配置ルームのゲスト以上にメール送信
+					App::uses('Block', 'Model');
+					$Block = new Block();
+					$blockParams = array(
+						'fields' => array('Page.room_id'),
+						'conditions' => array(
+							'Block.content_id' => $shortcutContent['Content']['id']
+						),
+						'joins' => array(
+							array("type" => "LEFT",
+								"table" => "pages",
+								"alias" => "Page",
+								"conditions" => "`Block`.`page_id`=`Page`.`id`"
+							),
+						)
+					);
+					$shortcutBlock = $Block->find('first', $blockParams);
+					if(isset($shortcutBlock['Page'])) {
+						$masterEmailRes = $this->getSendMailsByPageId($shortcutBlock['Page']['room_id'], $moreThanHierarchy, $conditions, $order);
+					}
+				} else {
+					$masterEmailRes = $this->getSendMailsByPageId($shortcutContent['Content']['room_id'], $moreThanHierarchy, $conditions, $order);
+				}
 				if(count($masterEmailRes['email']) > 0) {
 					$emailRes['email'] = array_merge($emailRes['email'], $masterEmailRes['email']);
 				}
@@ -524,7 +560,6 @@ class User extends AppModel
 				}
 			}
 		}
-
 		return $emailRes;
 	}
 

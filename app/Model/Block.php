@@ -302,11 +302,11 @@ class Block extends AppModel
 		// array_merge();
 		if(isset($val['Content']['id'])) {
 			$val['Block']['room_id'] = $val['Content']['room_id'];
-			$val['Block']['is_master'] = $val['Content']['is_master'];
+			$val['Block']['shortcut_type'] = $val['Content']['shortcut_type'];
 			$val['Block']['master_id'] = $val['Content']['master_id'];
 		} else {
 			$val['Block']['room_id'] = $val['Page']['room_id'];
-			$val['Block']['is_master'] = _ON;
+			$val['Block']['shortcut_type'] = NC_SHORTCUT_TYPE_OFF;
 			$val['Block']['master_id'] = 0;
 		}
 
@@ -322,17 +322,20 @@ class Block extends AppModel
 				$val['Block']['block_only'] = _ON;
 			}
 		}
-		if(!isset($val['Authority']['hierarchy'])) {
-			$val['Authority']['hierarchy'] = $this->getDefaultHierarchy($val, $user_id);
-		}
-		$val['Block']['hierarchy'] = $val['Authority']['hierarchy'];
 
-		if(!isset($val['Content']['id'])) {
-			// TODO:必要かどうか検討すること
-			$val['Block']['hierarchy'] = null;
-		}
+		$val['Authority']['hierarchy'] = $this->getDefaultHierarchy($val, $user_id, $val['Block']['shortcut_type']);
+		$val['BlockAuthority']['hierarchy'] = $this->getDefaultHierarchy($val, $user_id, NC_SHORTCUT_TYPE_OFF, 'Block');
+		$val['Block']['hierarchy'] = $val['Authority']['hierarchy'];
+		$val['Block']['block_hierarchy'] = $val['BlockAuthority']['hierarchy'];
+
+		//if(!isset($val['Content']['id'])) {
+		//	// TODO:必要かどうか検討すること 後に削除
+		//	$val['Block']['hierarchy'] = null;
+		//}
 		unset($val['Page']);
 		unset($val['Authority']);
+		unset($val['BlockPage']);
+		unset($val['BlockAuthority']);
 		//unset($val['Content']);
 		//unset($val['Module']);
 		return $val;
@@ -463,9 +466,10 @@ class Block extends AppModel
 		return array(
 			'Block.*',
 			'Page.thread_num','Page.room_id','Page.root_id','Page.space_type',
-			'Content.id','Content.module_id','Content.title','Content.is_master','Content.master_id','Content.room_id','Content.display_flag','Content.is_approved','Content.url',
+			'BlockPage.thread_num','BlockPage.room_id','BlockPage.root_id','BlockPage.space_type',
+			'Content.id','Content.module_id','Content.title','Content.shortcut_type','Content.master_id','Content.room_id','Content.display_flag','Content.is_approved','Content.url',
 			'Module.id','Module.controller_action','Module.edit_controller_action','Module.style_controller_action','Module.dir_name','Module.content_has_one',
-			'Authority.id','Authority.hierarchy'
+			'Authority.id','Authority.hierarchy','BlockAuthority.hierarchy'
 		);
 	}
 
@@ -497,6 +501,22 @@ class Block extends AppModel
 				"table" => "pages",
 				"alias" => "Page",
 				"conditions" => "`Content`.`room_id`=`Page`.`id`"
+			),
+			array("type" => "LEFT",
+				"table" => "pages",
+				"alias" => "BlockPage",
+				"conditions" => "`Block`.`page_id`=`BlockPage`.`id`"
+			),
+			array("type" => "LEFT",
+				"table" => "page_user_links",
+				"alias" => "BlockPageUserLink",
+				"conditions" => "`BlockPage`.`room_id`=`BlockPageUserLink`.`room_id`".
+				" AND `BlockPageUserLink`.`user_id` =".intval($user_id)
+			),
+			array("type" => "LEFT",
+				"table" => "authorities",
+				"alias" => "BlockAuthority",
+				"conditions" => "`BlockAuthority`.`id`=`BlockPageUserLink`.`authority_id`"
 			),
 			array("type" => "LEFT",
 				"table" => "modules",
@@ -595,7 +615,7 @@ class Block extends AppModel
 						}
 					}
 
-					if(isset($content['Content']) && $content['Content']['is_master'] && $all_delete == _ON &&
+					if(isset($content['Content']) && $content['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_OFF && $all_delete == _ON &&
 						$page['Page']['room_id'] == $content['Content']['room_id'] && method_exists($class_name, 'delete')) {
 						// 削除アクション
 						$ret = $class->delete($content);
@@ -605,14 +625,14 @@ class Block extends AppModel
 					}
 				}
 				if(isset($content['Content'])) {
-					if($content['Content']['display_flag'] == NC_DISPLAY_FLAG_DISABLE || !$content['Content']['is_master'] ||
+					if($content['Content']['display_flag'] == NC_DISPLAY_FLAG_DISABLE || $content['Content']['shortcut_type'] != NC_SHORTCUT_TYPE_OFF ||
 						($all_delete == _ON && $page['Page']['room_id'] == $content['Content']['room_id'])) {
 
-						// 権限が付与されたショートカットか、ショートカットではない場合
+						// ショートカットか、ショートカットではない場合
 						// コンテンツがなくてもエラーとしない(コンテンツ一覧からコンテンツを削除後にブロック削除を行うとエラーとなるため)
 						$Content->delete($block['Block']['content_id']);
 					} else if(isset($parent_room_id) && $all_delete == NC_DELETE_MOVE_PARENT && $content['Content']['room_id'] != $parent_room_id) {
-						// 親のルームの持ち物に変換し、親のルーム内の権限を付与したショートカットを解除
+						// 親のルームの持ち物に変換し、親のルーム内のショートカットを解除
 						if(!$Content->cancelShortcutParentRoom($content_id, $parent_room_id)) {
 							return false;
 						}

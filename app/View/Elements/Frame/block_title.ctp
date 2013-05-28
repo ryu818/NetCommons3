@@ -1,5 +1,5 @@
 <?php
-$nc_mode = $this->Session->read(NC_SYSTEM_KEY.'.mode');
+$ncMode = $this->Session->read(NC_SYSTEM_KEY.'.mode');
 $block_title = $this->fetch('block_title');
 $block_title = (isset($block_title) && $block_title != '') ? $block_title : h($block['Block']['title']);
 $this->element('Pages/title_assign', array('block_title' => $block_title));

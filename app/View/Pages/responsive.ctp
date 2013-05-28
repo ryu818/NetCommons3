@@ -2,30 +2,30 @@
 // TODO:php部分はcontrollerで行ったほうがよい個所もある
 // 同ディレクトリのindex.ctpと同等の処理になるため共通化するべき
 	$nc_user = $this->Session->read(NC_AUTH_KEY.'.'.'User');
-	$nc_mode = $this->Session->read(NC_SYSTEM_KEY.'.'.'mode');
+	$ncMode = $this->Session->read(NC_SYSTEM_KEY.'.'.'mode');
 
-	if(isset($page_id_arr[1]) && $page_id_arr[1] != 0 && (isset($blocks[$page_id_arr[1]]) || $nc_mode == NC_BLOCK_MODE)) {
+	if(isset($page_id_arr[1]) && $page_id_arr[1] != 0 && (isset($blocks[$page_id_arr[1]]) || $ncMode == NC_BLOCK_MODE)) {
 		// headercolumn
 		$headercolumn_str = $this->element('Pages/column', array('blocks' => isset($blocks[$page_id_arr[1]]) ? $blocks[$page_id_arr[1]] : null, 'page' => $pages[$page_id_arr[1]], 'parent_id' => 0, 'attr' => 'data-column-top="1"'));
 	}
-	if(isset($page_id_arr[2]) && $page_id_arr[2] != 0 && (isset($blocks[$page_id_arr[2]]) || $nc_mode == NC_BLOCK_MODE)) {
+	if(isset($page_id_arr[2]) && $page_id_arr[2] != 0 && (isset($blocks[$page_id_arr[2]]) || $ncMode == NC_BLOCK_MODE)) {
 		// leftcolumn
 		$leftcolumn_str = $this->element('Pages/column', array('blocks' => isset($blocks[$page_id_arr[2]]) ? $blocks[$page_id_arr[2]] : null, 'page' => $pages[$page_id_arr[2]], 'parent_id' => 0, 'attr' => 'data-column-top="1"'));
 	}
 
-	if(isset($blocks[$page_id_arr[0]]) || $nc_mode == NC_BLOCK_MODE) {
+	if(isset($blocks[$page_id_arr[0]]) || $ncMode == NC_BLOCK_MODE) {
 		// centercolumn
 		$centercolumn_str = $this->element('Pages/column', array('blocks' => isset($blocks[$page_id_arr[0]]) ? $blocks[$page_id_arr[0]] : null, 'page' => $pages[$page_id_arr[0]], 'parent_id' => 0, 'attr' => 'data-column-top="1"'));
 
 	}
 
-	if(isset($page_id_arr[3]) && $page_id_arr[3] != 0 && (isset($blocks[$page_id_arr[3]]) || $nc_mode == NC_BLOCK_MODE)) {
+	if(isset($page_id_arr[3]) && $page_id_arr[3] != 0 && (isset($blocks[$page_id_arr[3]]) || $ncMode == NC_BLOCK_MODE)) {
 		// rightcolumn
 		$rightcolumn_str = $this->element('Pages/column', array('blocks' => isset($blocks[$page_id_arr[3]]) ? $blocks[$page_id_arr[3]] : null, 'page' => $pages[$page_id_arr[3]], 'parent_id' => 0, 'attr' => 'data-column-top="1"'));
 
 	}
 
-	if(isset($page_id_arr[4]) && $page_id_arr[4] != 0 && (isset($blocks[$page_id_arr[4]]) || $nc_mode == NC_BLOCK_MODE)) {
+	if(isset($page_id_arr[4]) && $page_id_arr[4] != 0 && (isset($blocks[$page_id_arr[4]]) || $ncMode == NC_BLOCK_MODE)) {
 		// footercolumn
 		$footercolumn_str = $this->element('Pages/column', array('blocks' => isset($blocks[$page_id_arr[4]]) ? $blocks[$page_id_arr[4]] : null, 'page' => $pages[$page_id_arr[4]], 'parent_id' => 0, 'attr' => 'data-column-top="1"'));
 	}

@@ -129,10 +129,10 @@ class PageOperationsController extends PageAppController {
 		$user_id = $this->Auth->User('id');
 		$move_page_id = $this->request->query['page_id'];
 		$is_confirm = isset($this->request->data['is_confirm']) ? intval($this->request->data['is_confirm']) : _OFF;
-		$shortcut_flag = isset($this->request->data['shortcut_flag']) ? intval($this->request->data['shortcut_flag']) : null;
+		$shortcut_type = isset($this->request->data['shortcut_type']) ? intval($this->request->data['shortcut_type']) : null;
 		$position = isset($this->request->data['position']) ? $this->request->data['position'] : 'bottom';
-		if($this->action == "shortcut" && is_null($shortcut_flag)) {
-			$shortcut_flag = _OFF;
+		if($this->action == "shortcut" && is_null($shortcut_type)) {
+			$shortcut_type = _OFF;
 		}
 		$this->TempData->gc();
 
@@ -157,7 +157,7 @@ class PageOperationsController extends PageAppController {
 		// ブロック処理開始
 		list($copy_page_id_arr, $copy_pages, $ins_pages) = $results;
 
-		if(!$this->PageMenu->operateBlock($this->action, $hash_key, $user_id, $copy_page_id_arr, $copy_pages, $ins_pages, $shortcut_flag)) {
+		if(!$this->PageMenu->operateBlock($this->action, $hash_key, $user_id, $copy_page_id_arr, $copy_pages, $ins_pages, $shortcut_type)) {
 			$this->flash(__('Failed to execute the %s.', __('Paste')), null, 'PageOperations.'.$this->action.'.002', '500');
 			return;
 		}

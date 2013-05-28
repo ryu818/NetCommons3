@@ -1123,9 +1123,9 @@
 					        position: [pos.left + 10 - $(window).scrollLeft() ,pos.top + 10 - $(window).scrollTop()]
 						}, _buttons = {};
 						_buttons[ok] = function(){
-							var shortcut_flag = $('#nc-block-confirm-shortcut');
-							if(shortcut_flag.get(0) && shortcut_flag.is(':checked')) {
-								params['shortcut_flag'] = 1;
+							var shortcut_type = $('#nc-block-confirm-shortcut');
+							if(shortcut_type.get(0) && shortcut_type.is(':checked')) {
+								params['shortcut_type'] = 1;
 							}
 
 							params['is_confirm'] = 1;

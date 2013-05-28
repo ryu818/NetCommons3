@@ -63,7 +63,7 @@ class BlockList extends AppModel {
 				'Page.id','Page.page_name','Page.space_type','Page.thread_num','Page.display_sequence','Page.room_id',
 				'RoomPage.id','RoomPage.page_name','RoomPage.space_type','RoomPage.thread_num','RoomPage.display_sequence',
 				'Authority.hierarchy',
-				'Content.id','Content.title','Content.room_id','Content.is_master'
+				'Content.id','Content.title','Content.room_id','Content.shortcut_type'
 			);
 			if($blockId > 0) {
 				$order = array(
@@ -94,7 +94,7 @@ class BlockList extends AppModel {
 					array("type" => "LEFT",
 						"table" => "pages",
 						"alias" => "RoomPage",
-						"conditions" => "`RoomPage`.`id`=`Content`.`room_id`"
+						"conditions" => "`RoomPage`.`id`=`Page`.`room_id`"
 					),
 					array("type" => "LEFT",
 						"table" => "page_user_links",

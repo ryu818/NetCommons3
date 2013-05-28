@@ -66,13 +66,13 @@ class BlockOperationsController extends BlockAppController {
 		$page = $this->nc_current_page;	// 移動先Page
 		$pre_page = $this->Page->findAuthById(intval($block['Block']['page_id']), $user_id);
 
-		$shortcut_flag = isset($this->request->data['shortcut_flag']) ? _ON : _OFF;
-		if($pre_page['Page']['room_id'] != $content['Content']['room_id']) {
+		$shortcut_type = isset($this->request->data['shortcut_type']) ? _ON : _OFF;
+		if($content['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_SHOW_ONLY) {
+			// ショートカット(閲覧のみ)
+			$shortcut_type = _OFF;
+		} else if($content['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_SHOW_AUTH) {
 			// ショートカット
-			$shortcut_flag = _OFF;
-		} else if(!$content['Content']['is_master']) {
-			// 権限が付与されたショートカット
-			$shortcut_flag = _ON;
+			$shortcut_type = _ON;
 		}
 
 		if(!$this->validatorRequest($this->request, $page, $module)) {
@@ -103,7 +103,7 @@ class BlockOperationsController extends BlockAppController {
 				'module_id' => $block['Block']['module_id'],
 				'show_count' => $this->request->data['show_count'],
 				'page_id' => $page['Page']['id'],
-				'shortcut_flag' => $shortcut_flag
+				'shortcut_type' => $shortcut_type
 			),
 			'return'
 		);
@@ -135,7 +135,7 @@ class BlockOperationsController extends BlockAppController {
 
 		// ショートカットのペーストはショートカット作成と同意
 		$room_id = $content['Content']['room_id'];
-		if($pre_page['Page']['room_id'] != $room_id || !$content['Content']['is_master']) {
+		if($pre_page['Page']['room_id'] != $room_id || $content['Content']['shortcut_type'] != NC_SHORTCUT_TYPE_OFF) {
 			$this->action = 'shortcut';
 			$this->shortcut();
 			return;
@@ -313,7 +313,7 @@ class BlockOperationsController extends BlockAppController {
 			}
 			// 権限つきのショートカットの場合、元のルームへの操作でないかどうかチェックし、
 			// 元のルームならば確認を出さない。
-			/*if(!$content['Content']['is_master']) {
+			/*if($content['Content']['shortcut_type'] != NC_SHORTCUT_TYPE_OFF) {
 				$master_content = $this->Content->findById($content['Content']['master_id']);
 				if( $move_room_id == $master_content['Content']['room_id']) {
 					return true;
@@ -325,7 +325,7 @@ class BlockOperationsController extends BlockAppController {
 			switch($this->action) {
 				case 'move':
 					// ルーム名取得
-					if($pre_page['Page']['room_id'] != $room_id || !$content['Content']['is_master']) {
+					if($pre_page['Page']['room_id'] != $room_id || $content['Content']['shortcut_type'] != NC_SHORTCUT_TYPE_OFF) {
 						// ショートカット
 						$echo_str .= __d('block','You move a block to [%s]. Are you sure?', $move_page['Page']['page_name']);
 					} else {
@@ -344,10 +344,10 @@ class BlockOperationsController extends BlockAppController {
 			}
 			$echo_str .= '</div>';
 
-			if($this->action == 'shortcut' && $pre_page['Page']['room_id'] == $room_id && $content['Content']['is_master']) {
+			if($this->action == 'shortcut' && $pre_page['Page']['room_id'] == $room_id && $content['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_OFF) {
 				// コピー元がショートカットではないならば、チェックボックス表示
 				$echo_str .= '<label class="nc-block-confirm-shortcut" for="nc-block-confirm-shortcut">'.
-					'<input id="nc-block-confirm-shortcut" type="checkbox" name="shortcut_flag" value="'._ON.'" />&nbsp;'.
+					'<input id="nc-block-confirm-shortcut" type="checkbox" name="shortcut_type" value="'._ON.'" />&nbsp;'.
 					__('Allow the room authority to view and edit.').
 					'</label>';
 			}

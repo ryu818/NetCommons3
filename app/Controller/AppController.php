@@ -48,7 +48,7 @@ class AppController extends Controller {
 
 	public $hierarchy = null;
 
-	public $is_chief = null;
+	public $isChief = null;
 
 	public $components = array(
 		'Init', 'SetConfig', 'Session', 'Common', 'CheckAuth', 'Auth',

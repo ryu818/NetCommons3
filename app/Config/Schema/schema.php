@@ -1,4 +1,4 @@
-<?php 
+<?php
 class AppSchema extends CakeSchema {
 
 	public function before($event = array()) {
@@ -239,7 +239,7 @@ class AppSchema extends CakeSchema {
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'module_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'title' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'is_master' => array('type' => 'integer', 'null' => false, 'default' => '1', 'length' => 3),
+		'shortcut_type' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3),
 		'master_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'room_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'display_flag' => array('type' => 'integer', 'null' => false, 'default' => '1', 'length' => 2),
@@ -293,7 +293,7 @@ class AppSchema extends CakeSchema {
 	public $htmlarea_video_urls = array(
 		'url' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'indexes' => array(
-			
+
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);

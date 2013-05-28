@@ -214,7 +214,6 @@ class BlogTerm extends AppModel
  * @param   integer $contentId
  * @param   integer $visible_item
  * @param   string  $taxonomy	category or tag
- * @param   boolean $is_chief
  * @return  void
  * @since   v 3.0.0.0
  */

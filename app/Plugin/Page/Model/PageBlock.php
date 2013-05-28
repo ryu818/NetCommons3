@@ -57,8 +57,8 @@ class PageBlock extends AppModel {
 		$blocks = $this->find('all', $params);
 		if(count($blocks) > 0) {
 			foreach($blocks as $block) {
-				if($block['Block']['controller_action'] == 'group' || !$block['Content']['is_master']) {
-					// グループブロックか権限が付与されたショートカット
+				if($block['Block']['controller_action'] == 'group' || $block['Content']['shortcut_type'] != NC_SHORTCUT_TYPE_OFF) {
+					// グループブロックかショートカット
 					$Content->id = $block['Block']['content_id'];
 					if(!$Content->saveField('room_id', $addauth_room_id)) {
 						return false;
@@ -97,7 +97,7 @@ class PageBlock extends AppModel {
 					$ins_content = array(
 						'module_id' => $block['Content']['module_id'],
 						'title' => $block['Content']['title'],
-						'is_master' => _OFF,
+						'shortcut_type' => NC_SHORTCUT_TYPE_SHOW_AUTH,
 						'master_id' => $block['Content']['id'],
 						'room_id' => $addauth_room_id,
 						'display_flag' => $block['Content']['display_flag'],
@@ -165,10 +165,10 @@ class PageBlock extends AppModel {
 				}
 
 				// 親ルームのショートカットならば、ショートカットを解除
-				if(!$block['Content']['is_master']) {
+				if($block['Content']['shortcut_type'] != NC_SHORTCUT_TYPE_OFF) {
 					$master_content = $Content->findById($block['Content']['master_id']);
 					if(isset($master_content['Content']) && $master_content['Content']['room_id'] == $parent_room_id) {
-						// 親ルームの権限つきショートカット
+						// 親ルームのショートカット
 						// 同ページ内の他ブロックにより、既に削除されている可能性があるためエラーチェックしない。
 						$Content->delete($block['Content']['id']);
 						$this->id = $block['Block']['id'];

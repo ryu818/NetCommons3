@@ -2348,7 +2348,7 @@ e-mail：{X-EMAIL}
         <column name="id">17</column>
         <column name="module_id">5</column>
         <column name="title">研究ブログ</column>
-        <column name="is_master">1</column>
+        <column name="shortcut_type">0</column>
         <column name="master_id">17</column>
         <column name="room_id">9</column>
         <column name="display_flag">1</column>
@@ -2365,7 +2365,7 @@ e-mail：{X-EMAIL}
         <column name="id">18</column>
         <column name="module_id">1</column>
         <column name="title">お知らせ</column>
-        <column name="is_master">1</column>
+        <column name="shortcut_type">0</column>
         <column name="master_id">18</column>
         <column name="room_id">9</column>
         <column name="display_flag">1</column>

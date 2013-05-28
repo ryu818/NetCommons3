@@ -1,11 +1,11 @@
 <?php
-if(isset($nc_error_flag) && $nc_error_flag) {
+if(isset($ncIsError) && $ncIsError) {
 	$add_class_name = 'nc-cancel-toolbox';
 
-} else if(!$nc_show_edit) {
+} else if($hierarchy < NC_AUTH_MIN_CHIEF) {
 	$add_class_name = 'nc-shortcut-toolbox';
 }
-if($page['Page']['room_id'] != $block['Content']['room_id'] || !$block['Content']['is_master'] ||
+if($page['Page']['room_id'] != $block['Content']['room_id'] || $block['Content']['shortcut_type'] != NC_SHORTCUT_TYPE_OFF ||
 	(isset($block['Content']['display_flag']) && $block['Content']['display_flag'] == NC_DISPLAY_FLAG_DISABLE)) {
 	$all_delete = _OFF;	// ショートカット
 } else {
@@ -25,21 +25,7 @@ if($page['Page']['room_id'] != $block['Content']['room_id'] || !$block['Content'
 		$all_delete = _OFF;
 	}
 }
-$edit_controller_action = null;
-if($this->request->params['action'] == 'index') {
-	$controller_arr = explode('_', $this->request->params['controller'], 2);
-	$edit_controller_action = $controller_arr[0];
-	if(isset($controller_arr[1])) {
-		$edit_controller_action .= '/'. $controller_arr[1];
-	}
-}
-if(($block['Module']['edit_controller_action'] == $this->request->params['controller'] .'/'.$this->request->params['action']) ||
-	($block['Module']['edit_controller_action'] == $this->request->params['controller'] && $this->request->params['action'] == 'index') ||
-	($block['Module']['edit_controller_action'] == $edit_controller_action)) {
-	$nc_is_edit = true;
-}
-
-if($nc_is_edit) {
+if($ncType != '') {
 	$title =  __('Quit');
 	$controller_action = $block['Module']['controller_action'];
 	$edit_class_name = "nc-block-header-setting-end-icon";
@@ -49,7 +35,7 @@ if($nc_is_edit) {
 	$edit_class_name = "nc-block-header-setting-icon";
 }
 $tooltip_title = '';
-if($hierarchy >= NC_AUTH_MIN_CHIEF) {
+if($block_hierarchy >= NC_AUTH_MIN_CHIEF) {
 	$tooltip_title = $this->TimeZone->getPublishedLabel($block['Block']['display_from_date'], $block['Block']['display_to_date']);
 	if($tooltip_title != '') {
 		$tooltip_title = ' title="' . $tooltip_title . '"';
@@ -67,7 +53,7 @@ if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 		</span>
 		<ul class="nc-block-toolbox<?php if(isset($add_class_name)){ echo(' '. $add_class_name); }?>">
 			<?php if(!isset($add_class_name) || $add_class_name != 'nc-cancel-toolbox'): ?>
-			<?php if($nc_show_edit): ?>
+			<?php if($hierarchy >= NC_AUTH_MIN_CHIEF): ?>
 			<li class="<?php echo($edit_class_name); ?>">
 				<?php
 				$controller_arr = explode('/', $controller_action, 3);
@@ -94,7 +80,6 @@ if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 			<li class="nc-block-header-list-icon">
 				<a href="#" onclick="$.PagesBlock.toggleOperation(event, '<?php echo($id); ?>');return false;" title="<?php echo(__('Operation'));?>" class="nc-block-toolbox-link nc-tooltip">
 				</a>
-
 			</li>
 			<?php endif; ?>
 			<li class="nc-block-header-close-icon">
@@ -118,13 +103,15 @@ if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 								array('title' => __('Copy'), 'id' => 'nc-block-header-copy'.$id, 'class' => 'link hover-highlight','data-ajax' => '', 'data-ajax-type' => 'post'));
 							?>
 		</li>
+		<?php if($block_hierarchy >= NC_AUTH_MIN_CHIEF): ?>
 		<li>
 			<?php
 				echo $this->Html->link(__('Block style'), array('plugin' => 'block', 'controller' => 'styles', 'action' => 'index', 'block_id' => $block['Block']['id']),
 						array('title' => __('Block style'), 'id' => 'nc-block-styles-link'.$id, 'class' => 'link hover-highlight','data-ajax' => '', 'data-block-styles-dialog-id' => 'nc-block-styles-dialog'.$block['Block']['id']));
 			?>
 		</li>
-		<?php if($hierarchy >= NC_AUTH_MIN_CHIEF && $block['Module']['style_controller_action'] != '' && !isset($nc_error_flag)): ?>
+		<?php endif; ?>
+		<?php if($block_hierarchy >= NC_AUTH_MIN_CHIEF && $block['Module']['style_controller_action'] != '' && !isset($ncIsError)): ?>
 		<li>
 			<?php
 				$params = $this->Common->explodeControllerAction($block['Module']['style_controller_action']);
@@ -136,20 +123,20 @@ if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 		</li>
 		<?php endif; ?>
 		<?php
-		/* その他メニューに追加する場合、nc_other_controller_actionに対してassignする。 */
-		$nc_other_controller_action = $this->fetch('nc_other_controller_action');
-		if(isset($nc_other_controller_action)) {
-			if(is_array($nc_other_controller_action)) {
-				foreach($nc_other_controller_action as $bufControllerAction) {
-					echo '<li>'.$bufControllerAction.'</li>';
+		/* その他メニューに追加する場合、ncOtherControllerActionに対してassignする。 */
+		$ncOtherControllerAction = $this->fetch('ncOtherControllerAction');
+		if(!empty($ncOtherControllerAction)) {
+			if(is_array($ncOtherControllerAction)) {
+				foreach($ncOtherControllerAction as $bufControllerAction) {
+					//echo '<li>'.$bufControllerAction.'</li>';
 				}
 			} else {
-				echo '<li>'.$nc_other_controller_action.'</li>';
+				//echo '<li>'.$ncOtherControllerAction.'</li>';
 			}
 		}
 		?>
 		<?php /* TODO:コンテンツ一覧を表示する必要がないモジュールも存在する予定 */ ?>
-		<?php if($block['Block']['controller_action'] != 'group'): ?>
+		<?php if($hierarchy >= NC_AUTH_MIN_CHIEF && $block['Block']['controller_action'] != 'group'): ?>
 		<li>
 			<?php
 				echo $this->Html->link(__('Contents list'), array('plugin' => 'content', 'controller' => 'content', 'action' => 'index', 'block_id' => $block['Block']['id'], $page['Page']['room_id']),

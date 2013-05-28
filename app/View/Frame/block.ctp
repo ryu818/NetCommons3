@@ -1,5 +1,5 @@
 <?php
-$nc_mode = $this->Session->read(NC_SYSTEM_KEY.'.mode');
+$ncMode = $this->Session->read(NC_SYSTEM_KEY.'.mode');
 $content = trim($this->fetch('content'));
 $current_url = $this->here;
 if(count($this->params->query) > 0) {
@@ -21,7 +21,7 @@ if($this->request->params['block_type'] == 'active-contents') {
 	return;
 }
 if($content == '') {
-	if($hierarchy < NC_AUTH_MIN_CHIEF) {
+	if($block_hierarchy < NC_AUTH_MIN_CHIEF) {
 		// コンテンツが空で、主坦以下の権限ならば、非表示にする。
 		return;
 	}
@@ -48,7 +48,7 @@ if($block['Block']['min_width_size'] != 0) {
 	else
 		$width = "width:".$block['Block']['min_width_size']."px;";
 }
-//if($nc_mode == NC_BLOCK_MODE) {
+//if($ncMode == NC_BLOCK_MODE) {
 //	/* セッティングモードがONならば広さを指定 IE6等では機能しない */
 //	$width .= "min-width:120px;";
 //}
@@ -75,21 +75,21 @@ if($pos !== false) {
 $block['Block']['theme_name'] = 'th-' . str_replace('.', '-', Inflector::underscore($block['Block']['theme_name']));	// th-(frame_name)-(color_dir)
 if($block['Block']['display_flag'] == NC_DISPLAY_FLAG_OFF || (isset($block['Content']['display_flag']) && $block['Content']['display_flag'] == NC_DISPLAY_FLAG_OFF)) {
 	$class_name .= ' nonpublic';
-} else if(!empty($block['Block']['display_to_date']) && $nc_mode == NC_BLOCK_MODE) {
+} else if(!empty($block['Block']['display_to_date']) && $ncMode == NC_BLOCK_MODE) {
     $class_name .= ' to-nonpublic';
 }
 ?>
 <div id="<?php echo($id); ?>" class="<?php echo($class_name); ?>"<?php echo($block['Block']['margin_style']); ?> data-block='<?php echo($block['Block']['id']); ?>' data-page='<?php echo($block['Block']['page_id']); ?>' data-action='<?php echo($block['Block']['controller_action']); ?>' data-ajax-url='<?php echo(h($current_url)); ?>'<?php echo($attr); ?>>
 	<div class="<?php if(isset($parent_class_name)): ?><?php echo($parent_class_name.' '); ?><?php endif; ?><?php echo($block['Block']['theme_name']); ?> nc-frame table"<?php echo($block['Block']['style']); ?>>
-		<?php if($hierarchy >= NC_AUTH_MIN_CHIEF && !isset($nc_error_flag)): ?>
-			<?php if($page['Page']['room_id'] != $block['Content']['room_id']): ?>
+		<?php if($block_hierarchy >= NC_AUTH_MIN_CHIEF && !isset($ncIsError)): ?>
+			<?php if($block['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_SHOW_ONLY): ?>
 				<div class="nc-block-header-shortcut nc-block-header-shortcut-show"><div></div></div>
-			<?php elseif(!$block['Content']['is_master']): ?>
+			<?php elseif($block['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_SHOW_AUTH): ?>
 				<div class="nc-block-header-shortcut nc-block-header-shortcut-edit"><div></div></div>
 			<?php endif; ?>
 		<?php endif; ?>
 		<?php /* ブロックヘッダー */ ?>
-		<?php if($nc_mode == NC_BLOCK_MODE && $hierarchy >= NC_AUTH_MIN_CHIEF): ?>
+		<?php if($ncMode == NC_BLOCK_MODE && $block_hierarchy >= NC_AUTH_MIN_CHIEF): ?>
 			<?php echo($this->element('Frame/block_header')); ?>
 		<?php endif; ?>
 		<section>
@@ -110,7 +110,7 @@ if($block['Block']['display_flag'] == NC_DISPLAY_FLAG_OFF || (isset($block['Cont
 			}
 		?>
 	</div>
-	<?php if($nc_mode == NC_BLOCK_MODE && $hierarchy >= NC_AUTH_MIN_CHIEF): ?>
+	<?php if($ncMode == NC_BLOCK_MODE && $block_hierarchy >= NC_AUTH_MIN_CHIEF): ?>
 		<script>
 		$(function(){
 			$.PagesBlock.initBlock('<?php echo($id); ?>');

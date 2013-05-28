@@ -48,12 +48,20 @@ class Content extends AppModel
 					'message' => __('The input must be up to %s characters.', NC_VALIDATOR_BLOCK_TITLE_LEN)
 				)
 			),
-			'is_master' => array(
-				'boolean'  => array(
-					'rule' => array('boolean'),
-					'last' => true,
+			'shortcut_type' => array(
+				'numeric' => array(
+					'rule' => array('numeric'),
 					'required' => true,
-					'message' => __('The input must be a boolean.')
+					'message' => __('The input must be a number.')
+				),
+				'inList' => array(
+					'rule' => array('inList', array(
+						NC_SHORTCUT_TYPE_OFF,
+						NC_SHORTCUT_TYPE_SHOW_ONLY,
+						NC_SHORTCUT_TYPE_SHOW_AUTH,
+					), false),
+					'allowEmpty' => false,
+					'message' => __('It contains an invalid string.')
 				)
 			),
 			'master_id' => array(
@@ -126,8 +134,8 @@ class Content extends AppModel
  * @since   v 3.0.0.0
  */
 	public function afterFindDefault($val, $user_id) {
-		if(isset($val['Content']['id']) && !isset($val['Authority']['hierarchy'])) {
-			$val['Authority']['hierarchy'] = $this->getDefaultHierarchy($val, $user_id);
+		if(isset($val['Content']['id'])) {
+			$val['Authority']['hierarchy'] = $this->getDefaultHierarchy($val, $user_id, $val['Content']['shortcut_type']);
 		}
 		return $val;
 	}
@@ -199,8 +207,8 @@ class Content extends AppModel
 		$module_id = $content['Content']['module_id'];
 		$master_id = $content['Content']['master_id'];
 		$room_id = $content['Content']['room_id'];
-		if($module_id == 0 || !$content['Content']['is_master']) {
-			// group化ブロック、または、権限を付与されたショートカット
+		if($module_id == 0 || $content['Content']['shortcut_type'] != NC_SHORTCUT_TYPE_OFF) {
+			// group化ブロック、または、ショートカット
 			$ret = $this->delete($content_id);
 			$Upload->deleteByContentId($content_id);
 			return $ret;
@@ -306,7 +314,7 @@ class Content extends AppModel
 			'fields' => array('Content.id'),
 			'conditions' => array(
 				'Content.master_id' => $content_id,
-				'Content.is_master' => _OFF,
+				'Content.shortcut_type !=' => NC_SHORTCUT_TYPE_OFF,
 				'Content.room_id' => $parent_room_id
 			)
 		);

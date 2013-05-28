@@ -49,7 +49,7 @@ class BlockController extends BlockAppController {
 		$pre_page = $page;
 		$copy_block_id = intval($this->Session->read('Blocks.'.'copy_block_id'));
 		$copy_content_id = intval($this->Session->read('Blocks.'.'copy_content_id'));
-		$shortcut_flag = isset($this->request->data['shortcut_flag']) ? $this->request->data['shortcut_flag'] : null;
+		$shortcut_type = isset($this->request->data['shortcut_type']) ? $this->request->data['shortcut_type'] : null;
 
 		if(!empty($this->request->params['requested']) && !empty($copy_block_id)) {
 			$block = $this->Block->findById($copy_block_id);	// 再取得
@@ -86,7 +86,7 @@ class BlockController extends BlockAppController {
 		}
 
 		if(!empty($this->request->params['requested']) && !empty($copy_block_id)) {
-			if(isset($shortcut_flag)) {
+			if(isset($shortcut_type)) {
 				$title = 'Shortcut';
 				$action = 'shortcut';
 			} else {
@@ -94,7 +94,7 @@ class BlockController extends BlockAppController {
 				$action = 'paste';
 			}
 			$ins_ret = $this->BlockOperation->addBlock($action, $pre_page, $module, $block, $content,
-				$shortcut_flag, $page);
+				$shortcut_type, $page);
 		} else {
 			$title = 'Add';
 			$ins_ret = $this->BlockOperation->addBlock($this->action, $pre_page, $module);
@@ -452,7 +452,7 @@ class BlockController extends BlockAppController {
 				 */
 				$ins_content['Content'] = array(
 					'module_id' => 0,
-					'is_master' => _ON,
+					'shortcut_type' => NC_SHORTCUT_TYPE_OFF,
 					'title' => __d('block', 'New group'),
 					'room_id' => $page['Page']['room_id'],
 					'display_flag' => NC_DISPLAY_FLAG_ON,

@@ -1,7 +1,7 @@
 <?php
 $nc_user = $this->Session->read(NC_AUTH_KEY.'.'.'User');
-$nc_mode = $this->Session->read(NC_SYSTEM_KEY.'.'.'mode');
-if($nc_mode == NC_BLOCK_MODE){
+$ncMode = $this->Session->read(NC_SYSTEM_KEY.'.'.'mode');
+if($ncMode == NC_BLOCK_MODE){
 	$setting = __d('pages', 'Setting mode off');
 	$tooltip_setting = __d('pages', 'I exit edit mode block.');
 	$setting_class = 'nc-hmenu-setting-end-btn';
@@ -23,7 +23,7 @@ if(isset($page_menu)) {
 }
 $is_controls = ($this->request->controller == 'controls') ? true : false;
 ?>
-<div id="nc-hmenu" class="nc-panel-color"<?php if($is_controls || $nc_mode == NC_BLOCK_MODE){ echo(' style="top:0;"'); } ?>>
+<div id="nc-hmenu" class="nc-panel-color"<?php if($is_controls || $ncMode == NC_BLOCK_MODE){ echo(' style="top:0;"'); } ?>>
 	<div id="nc-hmenu-l" class="nc-panel-color">
 		<ul class="nc-hmenu-ul ">
 			<li class="nc-hmenu-li nc-hmenu-logo-li">
@@ -80,7 +80,7 @@ $is_controls = ($this->request->controller == 'controls') ? true : false;
 	</div>
 	<?php if(!$is_controls): ?>
 	<div class="nc-hmenu-arrow">
-		<a id="nc-hmenu-arrow" class="nc-arrow<?php if($nc_mode == NC_BLOCK_MODE){ echo(' nc-arrow-up'); } ?>" href="#"></a>
+		<a id="nc-hmenu-arrow" class="nc-arrow<?php if($ncMode == NC_BLOCK_MODE){ echo(' nc-arrow-up'); } ?>" href="#"></a>
 	</div>
 	<?php endif; ?>
 </div>

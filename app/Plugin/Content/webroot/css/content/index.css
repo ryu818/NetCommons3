@@ -24,13 +24,13 @@
 .nc-content-sel-module {
 	width:200px;
 }
-.nc-content-shortcut-edit {
+.nc-content-shortcut {
 	position: absolute;
 	top:-5px;;
 	right:-5px;
 	padding:0 !important;
 }
-.nc-content-shortcut-edit span {
+.nc-content-shortcut span {
 	display:block;
 	padding:0 !important;
 	width:15px;
