@@ -41,8 +41,8 @@ if(!empty($announcement['Announcement']['id'])) {
 				<?php echo __('Temporary...'); ?>
 			</span>
 		<?php endif; ?>
-		<?php /* 編集メニュー表示 */  ?>
-		<a href="#" title="<?php echo __('Display edit menu');  ?>" class="float-right nc-arrow-outer" onclick="$(this).next().slideToggle();return false;"><span class="nc-arrow"></span></a>
+		<?php /* 編集メニュー切替 */  ?>
+		<a href="#" title="<?php echo __('Switching edit menu');  ?>" class="float-right nc-arrow-outer" onclick="$(this).next().slideToggle();return false;"><span class="nc-arrow"></span></a>
 		<div class="nc-panel-color nc-arrow-header-link">
 		<?php if(isset($announcement['Announcement'])): ?>
 			<?php
