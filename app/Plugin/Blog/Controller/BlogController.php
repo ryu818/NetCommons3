@@ -226,20 +226,25 @@ class BlogController extends BlogAppController {
  * @since   v 3.0.0.0
  */
 	protected function _comments($blogPost) {
-		// TODO:コメント数のカウントアップ未実装
+		$blog = $this->Blog->findByContentId($this->content_id);
+		if(!isset($blog['Blog'])) {
+			$this->flash(__('Content not found.'), null, 'Blog.comments.001', '404');
+			return;
+		}
+
+		$userId = $this->Auth->user('id');
+
 		if($this->request->is('post')) {
-			if(!empty($this->request->data['BlogComment']['comment_id'])) {
+			if (!empty($this->request->data['BlogComment']['comment_id'])) {
 				$mode = 'edit';
 			} elseif (!empty($this->request->data['BlogComment']['parent_id'])) {
 				$mode = 'reply';
 			} else {
 				$mode = 'add';
 			}
-			$userId = $this->Auth->user('id');
 			if($mode == 'edit') {
 				// 編集
 				$comment = $this->BlogComment->findById( $this->request->data['BlogComment']['comment_id']);
-
 				if(!isset($comment['BlogComment'])) {
 					$this->flash(__('Content not found.'), null, 'Blog.comments.002', '404');
 					return;
@@ -247,14 +252,9 @@ class BlogController extends BlogAppController {
 			} else {
 				// 新規または返信
 				$comment = $this->BlogComment->findDefault($this->content_id, $blogPost['BlogPost']['id']);
-
 				$comment['BlogComment']['parent_id'] = $this->request->data['BlogComment']['parent_id'];
 				$comment['BlogComment']['author_ip'] = $this->request->clientIp(false);
-				if(empty($userId)) {
-					$comment['BlogComment']['author'] = $this->request->data['BlogComment']['author'];
-				} else {
-					$comment['BlogComment']['author'] = $this->Auth->user('handle');
-				}
+				$comment['BlogComment']['author'] = empty($userId) ? $this->request->data['BlogComment']['author'] : $this->Auth->user('handle');
 			}
 
 			if(empty($userId)) {
@@ -263,8 +263,12 @@ class BlogController extends BlogAppController {
 			}
 			$comment['BlogComment']['comment'] = $this->request->data['BlogComment']['comment'];
 
+			if($blog['Blog']['comment_approved_flag'] == _ON && !$this->CheckAuth->checkAuth($this->hierarchy, NC_AUTH_CHIEF)) {
+				$comment['BlogComment']['is_approved'] = NC_APPROVED_FLAG_OFF;
+			}
+
 			$fieldList = array(
-					'content_id', 'blog_post_id', 'parent_id', 'comment', 'author', 'author_email', 'author_url', 'author_ip',
+				'content_id', 'blog_post_id', 'parent_id', 'comment', 'author', 'author_email', 'author_url', 'author_ip', 'is_approved'
 			);
 			$this->BlogComment->set($comment);
 			if($this->BlogComment->validates(array('fieldList' => $fieldList))) {
@@ -275,22 +279,25 @@ class BlogController extends BlogAppController {
 					$this->flash(__('Failed to register the database, (%s).', 'blog_comments'), null, 'Blog.comments.003', '500');
 					return;
 				}
-
+				if(!$this->BlogPost->adjustCommentCount($mode, $blogPost['BlogPost']['id'], $comment['BlogComment']['is_approved'], $blog['Blog']['comment_approved_flag'], $this->hierarchy)) {
+					$this->flash(__('Failed to update the database, (%s).', 'blog_posts'), null, 'Blog.comments.004', '500');
+					return;
+				}
 				if(empty($comment['BlogComment']['id'])) {
 					$this->Session->setFlash(__('Has been successfully registered.'));
 				} else {
 					$this->Session->setFlash(__('Has been successfully updated.'));
 				}
-				$savedId = $this->BlogComment->id;
 
+				$savedId = $this->BlogComment->id;
 			}
 
 		} else {
-			// コメント入力フォームの表示内容取得
+			// 編集、返信時のコメント入力フォーム内容取得
 			if(isset($this->request->named['comment_edit'])) {
 				$comment = $this->BlogComment->findById($this->request->named['comment_edit']);
 				if(!isset($comment['BlogComment'])) {
-					$this->flash(__('Content not found.'), null, 'Blog.comments.004', '404');
+					$this->flash(__('Content not found.'), null, 'Blog.comments.005', '404');
 					return;
 				}
 			} else {
@@ -300,21 +307,22 @@ class BlogController extends BlogAppController {
 				}
 			}
 		}
+
 		// 送信フォーム内容取得
 		$this->set('comment', $comment);
-
 		// コメントのrootを元にページングを設定
 		$this->paginate = array('threaded');
-		// コメント表示上限数取得
 		$blogStyleOptions = $this->BlogStyle->findOptions($this->block_id, BLOG_WIDGET_TYPE_MAIN);
-		if(!empty($blogStyleOptions)) {
-			$this->paginate['limit'] = $blogStyleOptions['BlogStyle']['visible_item_comments'];
-		} else {
-			$this->paginate['limit'] = BLOG_DEFAULT_VISIBLE_ITEM_COMMENTS;
+		$this->paginate['limit'] = !empty($blogStyleOptions['BlogStyle']['visible_item_comments']) ? $blogStyleOptions['BlogStyle']['visible_item_comments'] : BLOG_DEFAULT_VISIBLE_ITEM_COMMENTS;
+		if(!empty($savedId) && empty($userId)) {
+			$savedCommentAry = $this->Session->read('Blog.savedComment');
+			$savedCommentAry[] = $savedId;
+			$this->Session->write('Blog.savedComment', $savedCommentAry);
 		}
-		$rootComments = $this->paginate($this->BlogComment, $this->BlogComment->getPaginateConditions($blogPost['BlogPost']['id']));
+		$this->paginate['conditions'] = $this->BlogComment->getPaginateConditions($blogPost['BlogPost']['id'], $userId, $this->hierarchy, $this->Session->read('Blog.savedComment'));
+		$rootComments = $this->paginate($this->BlogComment);
 
-		// saveがうまくいっていた場合はリダイレクト（ファンクション内でページングを利用）
+		// saveがうまくいっていた場合はリダイレクト（getDetailRedirectUrlファンクション内でページングを利用）
 		if(!empty($savedId)) {
 			$redirectUrl = $this->BlogCommon->getDetailRedirectUrl($blogPost, $mode, $savedId);
 
@@ -334,18 +342,17 @@ class BlogController extends BlogAppController {
 				)
 			);
 			if(!$this->Archive->saveAuto($this->params, $archive)) {
-				$this->flash(__('Failed to update the database, (%s).', 'archives'), null, 'Blog.comments.005', '500');
+				$this->flash(__('Failed to update the database, (%s).', 'archives'), null, 'Blog.comments.006', '500');
 				return;
 			}
+
 			$this->redirect($redirectUrl);
 		}
 
 		// コメントのrootを親とするtreeを取得
-		$blogCommentsTree = $this->BlogComment->findCommentTree($rootComments);
-		$this->set('blog_comments_tree', $blogCommentsTree);
+		$this->set('blog_comments_tree', $this->BlogComment->findCommentTree($rootComments, $userId, $this->hierarchy, $this->Session->read('Blog.savedComment')));
 
 		// コメント投稿において、投稿者名とメールアドレスが、必須か否かを取得
-		$blog = $this->Blog->findByContentId($this->content_id);
 		$this->set('is_required_name', $blog['Blog']['comment_required_name']);
 
 	}
@@ -464,6 +471,10 @@ class BlogController extends BlogAppController {
 		$this->Session->write('Blog.vote.'.$userId.'.'.$postId, true);
 
 		$blogPost = $this->BlogPost->findById($postId);
+		if(empty($blogPost)) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPost.vote.003', '500');
+			return;
+		}
 		$this->set('blog_post', $blogPost);
 		$this->render('Elements/blog/detail_footer');
 	}

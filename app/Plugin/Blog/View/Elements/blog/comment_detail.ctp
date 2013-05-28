@@ -31,6 +31,11 @@
 									<?php echo $this->Html->tag('span', __('Author'), array('class' => 'blog-comment-author')); ?>
 								<?php endif; ?>
 							</cite>
+							<?php if(!$blog_comments_tree[$i]['BlogComment']['is_approved']): ?>
+								<span class="temporary">
+									<?php echo __('Pending'); ?>
+								</span>
+							<?php endif; ?>
 							<a href="<?php echo '#'.$id.'-comment-'.$blog_comments_tree[$i]['BlogComment']['id'] ?>" class="blog-comment-time-link">
 								<?php $dates = $this->TimeZone->dateValues($blog_comments_tree[$i]['BlogComment']['modified']) ?>
 								<time datetime="<?php echo $dates['atom_date']?>" class="comment-date">
@@ -90,6 +95,21 @@
 								$replyUrl,
 								array('id' => 'comment-reply-link'.$id.'-'.$blog_comments_tree[$i]['BlogComment']['blog_post_id'], 'title' =>__('Reply'),
 								'data-pjax' => '#'.$id
+							));
+						}
+					?>
+					<?php	// 承認
+						if($this->CheckAuth->checkAuth($hierarchy, NC_AUTH_CHIEF) && !$blog_comments_tree[$i]['BlogComment']['is_approved']) {
+							echo '&nbsp;|&nbsp;';
+							$approveUrl = array(
+								'controller' => 'comments', 'action' => 'approve',
+								$blog_comments_tree[$i]['BlogComment']['blog_post_id'], $blog_comments_tree[$i]['BlogComment']['id'],
+								'?' => array('comment_back_page' => $this->Paginator->current())
+							);
+							echo $this->Html->link(__('Approve'),
+								$approveUrl,
+								array('title' =>__('Approve'), 'data-ajax-confirm' => __('Approve to %s. <br />Are you sure to proceed?',__('Comment')),
+									'data-pjax' => '#'.$id, 'data-ajax-type' => 'post'
 							));
 						}
 					?>
