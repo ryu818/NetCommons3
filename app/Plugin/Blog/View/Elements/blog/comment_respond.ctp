@@ -56,7 +56,7 @@
 
 	$commentSettings = array_merge($baseSettings, array(
 		'id' => $commentAreaId,
-		'cols' => 23,
+		'cols' => 22,
 		'type' => 'textarea',
 		'escape' => false,
 		'value' => $comment['BlogComment']['comment']));

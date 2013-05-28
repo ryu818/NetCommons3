@@ -19,7 +19,7 @@ class BlogCommentsController extends BlogAppController {
  *
  * @var array
  */
-	public $components = array('CheckAuth' => array('allowAuth' => NC_AUTH_GENERAL));
+	public $components = array('Blog.BlogCommon', 'CheckAuth' => array('allowAuth' => NC_AUTH_GENERAL));
 
 /**
  * コメントの削除
@@ -30,7 +30,6 @@ class BlogCommentsController extends BlogAppController {
  * @since   v 3.0.0.0
  */
 	public function delete($blogPostId = null, $commentId = null) {
-		// TODO:コメント数のカウントダウン未実装
 		if(empty($blogPostId) || empty($commentId) || !$this->request->is('post')) {
 			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogComment.delete.001', '500');
 			return;
@@ -52,57 +51,63 @@ class BlogCommentsController extends BlogAppController {
 			return;
 		}
 
-		$this->redirect($this->_getRedirectUrl($blogPostId, $comment['BlogComment']['parent_id']));
+		// コメント数デクリメント
+		if(!$this->BlogPost->adjustCommentCount('delete', $blogPostId, $comment['BlogComment']['is_approved'])) {
+			$this->flash(__('Failed to update the database, (%s).', 'blog_posts'), null, 'Blog.comments.004', '500');
+			return;
+		}
+
+		$blogPost = $this->BlogPost->findById($blogPostId);
+		$this->redirect($this->BlogCommon->getDetailRedirectUrl($blogPost, 'delete', null,$comment['BlogComment']['parent_id']));
 	}
 
 /**
- * コメント削除時リダイレクトURL取得
- * 		現在のページ上にほかのコメントがあれば、そのページへ
- * 		なければ、現在のページの1ページ前へリダイレクト
+ * コメント承認
  *
  * @param   integer $blogPostId
- * @param   integer $parentId
- * @return  array $redirectUrl
+ * @param   integer $commentId
+ * @return  void
  * @since   v 3.0.0.0
  */
-	protected function _getRedirectUrl($blogPostId, $parentId) {
+	public function approve($blogPostId = null, $commentId = null) {
+		if(empty($blogPostId) || empty($commentId) || !$this->request->is('post')) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogComment.approve.001', '500');
+			return;
+		}
+
+		if(!$this->CheckAuth->checkAuth($this->hierarchy, NC_AUTH_CHIEF)) {
+			$this->flash(__('Forbidden permission to access the page.'), null, 'BlogComment.approve.002', '403');
+			return;
+		}
+
 		$blogPost = $this->BlogPost->findById($blogPostId);
-		$permalink = $blogPost['BlogPost']['permalink'];
-		$int_post_date = strtotime($blogPost['BlogPost']['post_date']);
-		$blogDates = strtotime($this->BlogPost->date($blogPost['BlogPost']['post_date']));
-
-		if(!empty($parentId)) {
-			$id = $this->id. '-comment-' .$parentId;
-		} else {
-			$id = $this->id. '-comments';
+		if(!isset($blogPost['BlogPost'])) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogComment.approve.003', '500');
+			return;
+		}
+		$blog = $this->Blog->findByContentId($blogPost['BlogPost']['content_id']);
+		if(!isset($blog['Blog'])) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogComment.approve.004', '500');
+			return;
 		}
 
-		// コメント表示上限数取得
-		$blogStyleOptions = $this->BlogStyle->findOptions($this->block_id, BLOG_WIDGET_TYPE_MAIN);
-		if(!empty($blogStyleOptions)) {
-			$commentLimit = $blogStyleOptions['BlogStyle']['visible_item_comments'];
-		} else {
-			$commentLimit = BLOG_DEFAULT_VISIBLE_ITEM_COMMENTS;
+		$comment = $this->BlogComment->findById($commentId, 'is_approved','is_approved');
+		if(empty($comment['BlogComment']) || $comment['BlogComment']['is_approved']) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogComment.approve.005', '500');
+			return;
 		}
 
-		$page = isset($this->request->query['comment_back_page']) ? $this->request->query['comment_back_page'] : 1;
-
-		$redirectBlogComments = $this->BlogComment->find('all', array(
-			'fields' => array('BlogComment.id'),
-			'conditions' => $this->BlogComment->getPaginateConditions($blogPostId),
-			'page' => $page,
-			'limit' => $commentLimit,
-			'recursive' => -1
-		));
-		if(count($redirectBlogComments) == 0 && $page >= 2) {
-			// 1ページ前を表示
-			$page = $page - 1;
+		$this->BlogComment->id = $commentId;
+		if(!$this->BlogComment->saveField('is_approved', NC_APPROVED_FLAG_ON)) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogComment.approve.006', '500');
+			return;
 		}
 
-		$redirectUrl = array('plugin' => 'blog', 'controller' => 'blog', 'action'=>'index',
-			date('Y', $blogDates), date('m', $blogDates), date('d', $blogDates),
-			$permalink, 'page' => $page,'#' => $id);
+		if(!$this->BlogPost->adjustCommentCount('approve', $blogPostId, $comment['BlogComment']['is_approved'], $blog['Blog']['comment_approved_flag'])) {
+			$this->flash(__('Failed to update the database, (%s).', 'blog_posts'), null, 'BlogComment.approve.007', '500');
+			return;
+		}
 
-		return $redirectUrl;
+		$this->redirect($this->BlogCommon->getDetailRedirectUrl($blogPost, 'approve', $commentId));
 	}
 }

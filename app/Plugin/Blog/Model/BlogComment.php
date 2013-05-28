@@ -250,41 +250,75 @@ class BlogComment extends AppModel
 	}
 
 /**
+ * コメント一覧表示のparams取得
+ *
+ * @param   integer $blogPostId
+ * @param   integer $userId
+ * @param   integer $hierarchy
+ * @param   array   $savedComment 個別に取得する必要があるコメントIDのArray
+ * @return  array
+ * @since   v 3.0.0.0
+ */
+	public function getConditions($blogPostId, $userId, $hierarchy, $savedComment) {
+		if($hierarchy >= NC_AUTH_MIN_CHIEF) {
+			return array(
+				'BlogComment.blog_post_id' => $blogPostId
+			);
+		}
+
+		return array(
+			'BlogComment.blog_post_id' => $blogPostId,
+			'OR' => array(
+				'BlogComment.is_approved' => NC_APPROVED_FLAG_ON,
+				'BlogComment.created_user_id' => $userId,
+				'BlogComment.id' => $savedComment,
+			)
+		);
+	}
+
+/**
  * ブログへのコメントをTree構造のArrayで取得
  *
  * @param   array $rootComments BlogCommentモデルのArray
- * @return  array $commentTree 引数のコメントをrootにもったTreeがArrayになったもの
+ * @param   integer $userId
+ * @param   integer $hierarchy
+ * @param   array   $savedComment 個別に取得する必要があるコメントのID
+ * @return  array $commentTree 引数のコメントをrootにもったTree構造のArray
  * @since   v 3.0.0.0
  */
-	public function findCommentTree($rootComments) {
+	public function findCommentTree($rootComments, $userId, $hierarchy, $savedComment) {
 		$commentTree = array();
 
 		// ルートに紐づくコメントの取得
 		if(!empty($rootComments)) {
-			$params = array(
-				'conditions' => array(
-					'BlogComment.blog_post_id' => $rootComments[0]['BlogComment']['blog_post_id'],
-					'BlogComment.lft >=' => $rootComments[0]['BlogComment']['lft'],
-					'BlogComment.rght <=' => $rootComments[count($rootComments) - 1]['BlogComment']['rght'],
-				));
-			$commentTree =  $this->find('threaded', $params);
+			$conditions = $this->getConditions($rootComments[0]['BlogComment']['blog_post_id'], $userId, $hierarchy, $savedComment);
+			$treeConditons = array(
+				'BlogComment.lft >=' => $rootComments[0]['BlogComment']['lft'],
+				'BlogComment.rght <=' => $rootComments[count($rootComments) - 1]['BlogComment']['rght'],
+			);
+			$param['conditions'] = array_merge($treeConditons, $conditions);
+			$commentTree =  $this->find('threaded', $param);
 		}
 		return $commentTree;
 	}
 
-
-
 /**
- * コメント一覧のconditions取得
+ * コメント一覧のPaginateの追加conditions取得
  *
  * @param   integer $blogPostId
- * @return  array conditions
+ * @param   integer $userId
+ * @param   integer $hierarchy
+ * @param   array   $savedComment 個別に取得する必要があるコメントのID
+ * @return  array
  * @since   v 3.0.0.0
  */
-	public function getPaginateConditions($blogPostId) {
-		return array(
-				'BlogComment.blog_post_id' => $blogPostId,
-				'BlogComment.parent_id' => null
+	public function getPaginateConditions($blogPostId, $userId, $hierarchy, $savedComment) {
+		$conditions = $this->getConditions($blogPostId, $userId, $hierarchy, $savedComment);
+
+		$rootConditions = array(
+			'BlogComment.parent_id' => null
 		);
+
+		return array_merge($rootConditions, $conditions);
 	}
 }

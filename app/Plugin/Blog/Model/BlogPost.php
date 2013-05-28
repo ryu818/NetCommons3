@@ -482,4 +482,50 @@ class BlogPost extends AppModel
 
 		return $this->find('first', $params);
 	}
+
+/**
+ * ブログコメント追加、編集、返信、承認、削除時のコメント数（承認済みコメント数を含む）のインクリメント、デクリメント
+ *
+ * @param   string  $mode 'add'新規コメント追加時 、'edit'コメント編集時、'reply'コメント返信時、'approve'コメント承認時、'delete'コメント削除時
+ * @param   integer $blogPostId コメントのカウント数を調整する対象のブログポスト
+ * @param   integer $isApprovedComment ブログコメントが承認されているか否か
+ * @param   integer $blogPostApprovedFlag ブログポストへのコメント投稿が承認制か否か
+ * @param   integer $hierarchy
+ * @return  boolean
+ * @since   v 3.0.0.0
+ */
+	public function adjustCommentCount($mode, $blogPostId, $isApprovedComment, $blogPostApprovedFlag = null, $hierarchy = null) {
+		if($mode == 'add' || $mode == 'reply') {
+			if(!$this->incrementSeq($blogPostId, 'comment_count')) {
+				return false;
+			}
+			if($blogPostApprovedFlag == _OFF || $hierarchy >= NC_AUTH_MIN_CHIEF) {
+				if(!$this->incrementSeq($blogPostId, 'approved_comment_count')) {
+					return false;
+				}
+			}
+		} elseif($mode == 'edit') {
+			if($isApprovedComment && $blogPostApprovedFlag == _ON && $hierarchy < NC_AUTH_MIN_CHIEF) {
+				if(!$this->decrementSeq($blogPostId, 'approved_comment_count')) {
+					$this->flash(__('Failed to update the database, (%s).', 'blog_posts'), null, 'Blog.comments.005', '500');
+					return false;
+				}
+			}
+		} elseif($mode == 'delete') {
+			if(!$this->decrementSeq($blogPostId, 'comment_count')) {
+				return false;
+			}
+			if($isApprovedComment) {
+				if(!$this->decrementSeq($blogPostId, 'approved_comment_count')) {
+					return false;
+				}
+			}
+		} elseif($mode == 'approve') {
+			if(!$this->incrementSeq($blogPostId, 'approved_comment_count')) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 }

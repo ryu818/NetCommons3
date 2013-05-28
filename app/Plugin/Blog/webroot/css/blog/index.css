@@ -176,7 +176,10 @@ h3.blog-comment-recomment-title {
 .blog-comment-btn {
 	margin:0 15px
 }
-.blog-comment-contributor {
+cite.blog-comment-citation {
+	margin-right:5px;
+}
+.blog-comment-author {
 	background-color: #fff;
 	border: 1px solid #3865b7;
 	color: #3865b7;
@@ -184,9 +187,6 @@ h3.blog-comment-recomment-title {
 	font-weight: normal;
 	text-align: center;
 	padding:1px 2px;
-}
-cite.blog-comment-citation {
-	margin-right:20px;
 }
 .blog-comment-time-link {
 	text-decoration:none;

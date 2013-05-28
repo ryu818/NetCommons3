@@ -46,6 +46,13 @@
 					<?php echo __('Temporary...'); ?>
 				</span>
 			<?php endif; ?>
+
+			<?php if($this->CheckAuth->checkAuth($hierarchy, NC_AUTH_CHIEF) && $blog_post['BlogPost']['approved_comment_count'] != $blog_post['BlogPost']['comment_count']): ?>
+				<span class="temporary">
+					<?php echo __('Pending %s', __('Comment')); ?>
+				</span>
+			<?php endif; ?>
+
 		</h1>
 
 		<div class="blog-entry-meta">
