@@ -27,7 +27,7 @@ if($blog['Blog']['approved_flag'] == _ON && $hierarchy  <= NC_AUTH_MODERATE) {
 					<?php
 						echo $this->Form->label('BlogPost.post_date', __('Date-time'));
 					?>
-					<?php if($blog_post['BlogPost']['status'] != NC_STATUS_PUBLISH): ?>
+					<?php if(!empty($blog_post['BlogPost']['id']) && $blog_post['BlogPost']['status'] != NC_STATUS_PUBLISH): ?>
 						<span class="temporary">
 							<?php echo __('Temporary...'); ?>
 						</span>
