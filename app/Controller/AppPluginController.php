@@ -120,8 +120,12 @@ class AppPluginController extends AppController
 		if(isset($this->isChief) && !isset($this->viewVars['isChief'])) {
 			$this->set('isChief', $this->isChief);
 		}
-		if(isset($this->blockHierarchy) && !isset($this->viewVars['blockHierarchy'])) {
-			$this->set('block_hierarchy', $this->blockHierarchy);
+		if(!isset($this->viewVars['block_hierarchy'])) {
+			if(isset($this->blockHierarchy)) {
+				$this->set('block_hierarchy', $this->blockHierarchy);
+			} else {
+				$this->set('block_hierarchy', null);
+			}
 		}
 		$this->set('ncType', $this->ncType);
 		$this->set('content_id', $this->content_id);
