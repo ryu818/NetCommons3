@@ -71,12 +71,14 @@
 		<?php
 			echo(__('Voted(%s)', intval($blog_post['BlogPost']['vote_count'])));
 		?>
-		&nbsp;|&nbsp;
-		<?php
-			echo $this->Html->link(__d('blog', 'Comments(%s)', $commentCount), array('controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], $permalink, '#' => $id.'-comments'),
-				array('title' => __d('blog', 'Comment on %s', $title),
-				'rel' => 'bookmark'));
-		?>
+		<?php if($blog['Blog']['comment_flag'] || $commentCount > 0): ?>
+			&nbsp;|&nbsp;
+			<?php
+				echo $this->Html->link(__d('blog', 'Comments(%s)', $commentCount), array('controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], $permalink, '#' => $id.'-comments'),
+					array('title' => __d('blog', 'Comment on %s', $title),
+					'rel' => 'bookmark'));
+			?>
+		<?php endif;?>
 		&nbsp;|&nbsp;
 		<?php
 			echo $this->Html->link(__d('blog', 'Trackbacks(%s)', intval($blog_post['BlogPost']['trackback_count'])), array('controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], $permalink, '#' => $id.'-trackbacks'),
