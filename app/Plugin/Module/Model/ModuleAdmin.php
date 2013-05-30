@@ -193,7 +193,7 @@ class ModuleAdmin extends AppModel {
 			return array($successMes, $errorMes);
 		}
 
-		$default_enable_flag = isset($module['Module']['ini']['default_enable_flag']) ? intval($module['Module']['ini']['default_enable_flag']) : _OFF;
+		$default_enable_flag = isset($module['Module']['ini']['default_enable_flag']) ? intval($module['Module']['ini']['default_enable_flag']) : _ON;
 		$module['Module'] = array_merge($module['Module'], $module['Module']['ini']);
 		unset($module['Module']['ini']);
 		unset($module['Module']['module_name']);
@@ -850,6 +850,7 @@ class ModuleAdmin extends AppModel {
 
 		foreach($space_type_ids as $space_type) {
 			$module_link['ModuleLink']['space_type'] = $space_type;
+			$module_link['ModuleLink']['authority_id'] = 0;
 			if($space_type == NC_SPACE_TYPE_MYPORTAL || $space_type == NC_SPACE_TYPE_PRIVATE) {
 				foreach($authority_ids as $authority_id) {
 					$module_link['ModuleLink']['authority_id'] = $authority_id;
