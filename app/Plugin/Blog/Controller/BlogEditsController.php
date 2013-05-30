@@ -18,7 +18,7 @@ class BlogEditsController extends BlogAppController {
  *
  * @var array
  */
-	public $components = array('CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF));
+	public $components = array('Security', 'CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF));
 
 /**
  * ブログ編集画面

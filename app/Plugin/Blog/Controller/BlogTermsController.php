@@ -29,6 +29,14 @@ class BlogTermsController extends BlogAppController {
 	public function add_category($post_id = null) {
 		// TODO:権限チェック未作成
 		if($this->request->is('post')) {
+			// 手動でTokenチェック
+			$requestToken = $this->request->data['token'];
+			$csrfTokens = $this->Session->read('_Token.csrfTokens');
+			if (!isset($csrfTokens[$requestToken]) || $csrfTokens[$requestToken] < time()) {
+				$this->errorToken();
+				return;
+			}
+
 			if(!isset($this->request->data['BlogTerm']['name'])) {
 				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogTerms.add_category.001', '500');
 				return;

@@ -26,7 +26,6 @@
 <body>
 	<?php echo $this->fetch('content'); ?>
 	<?php echo($this->element('Pages/include_footer')); ?>
-	<?php echo $this->Token->create('nc_token', 'nc_token'); ?>
 	<?php echo $this->element('flash_mes'); ?>
 	<?php echo $this->element('sql_dump'); ?>
 </body>

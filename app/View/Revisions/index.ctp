@@ -188,6 +188,7 @@ foreach ($revisions as $revision) {
 								'title' => __('Restore'),
 								'data-pjax' => '#'.$id,
 								'data-ajax-type' => 'post',
+								'data-ajax-serialize' => true,
 								'data-ajax-confirm' => __('Restoring post from %s. <br />Are you sure to proceed?', $revisionTitle),
 							)
 						);

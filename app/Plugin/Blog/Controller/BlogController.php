@@ -25,7 +25,7 @@ class BlogController extends BlogAppController {
  *
  * @var array
  */
-	public $components = array('Blog.BlogCommon', 'RevisionList');
+	public $components = array('Security', 'Blog.BlogCommon', 'RevisionList');
 
 /**
  * Pagination
@@ -39,6 +39,21 @@ class BlogController extends BlogAppController {
 			'BlogPost.id' => 'DESC',
 		)
 	);
+
+/**
+ * 実行前処理
+ * <pre>Tokenチェック処理</pre>
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function beforeFilter() {
+		parent::beforeFilter();
+		if($this->action == "vote") {
+			$this->Security->validatePost = false;
+			$this->Security->csrfUseOnce = false;
+		}
+	}
 
 /**
  * ブログ記事一覧表示

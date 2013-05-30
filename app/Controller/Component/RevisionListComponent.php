@@ -39,12 +39,12 @@ class RevisionListComponent extends Component {
  */
 	public function beforeAutoRegist($id) {
 		$isAutoRegist = false;
-		if(isset($this->_controller->request->data['auto_regist']) && $this->_controller->request->data['auto_regist']) {
+		if(isset($this->_controller->request->data['AutoRegist']['on']) && $this->_controller->request->data['AutoRegist']['on']) {
 			$isAutoRegist = true;
 		}
-		if(empty($id) && isset($this->_controller->request->data['autoregist_post_id']) && $this->_controller->request->data['autoregist_post_id']) {
+		if(empty($id) && isset($this->_controller->request->data['AutoRegist']['post_id']) && $this->_controller->request->data['AutoRegist']['post_id']) {
 			// 新規投稿で自動保存の2回目以降は$post_idがセットされないためセット
-			$id = $this->_controller->request->data['autoregist_post_id'];
+			$id = $this->_controller->request->data['AutoRegist']['post_id'];
 		}
 
 		if(empty($id) && $isAutoRegist) {
@@ -52,7 +52,7 @@ class RevisionListComponent extends Component {
 			$isTemporally = _ON;
 		}
 		if(!isset($isTemporally)) {
-			if(!isset($this->_controller->request->data['is_temporally']) || $this->_controller->request->data['is_temporally'] == _OFF) {
+			if(!isset($this->_controller->request->data['AutoRegist']['status']) || $this->_controller->request->data['AutoRegist']['status'] == _OFF) {
 				$isTemporally = _OFF;
 			} else {
 				$isTemporally = _ON;

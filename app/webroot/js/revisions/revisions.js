@@ -67,7 +67,12 @@
 				params += field.name + '=' + field.value;
 			});
 			var url = action + params + '#' + id;
-			location.href = url;
+			var ajaxParams = {
+				'data-pjax' : '#' + id,
+				'data-ajax-type' : 'get',
+				'data-ajax-url' : url
+			};
+			$.Common.ajax(e, form, ajaxParams);
 			e.preventDefault();
 		}
 	}

@@ -355,6 +355,9 @@ msgid  	"The server encountered an internal error and was unable to complete you
 msgstr 	"サーバで内部エラーが発生したため、リクエストを完了できませんでした。"
 msgid  	"Authority Error!  You do not have the privilege to access this page."
 msgstr 	"権限が不正です。画面を表示、または、登録処理を実行できませんでした。"
+## Tokenエラー
+msgid  	"The request has been disabled by the security check."
+msgstr 	"このリクエストは、セキュリティチェックにより無効化されました。"
 
 msgid  	"It contains an invalid string."
 msgstr 	"不正な文字列が含まれています。"

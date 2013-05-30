@@ -72,6 +72,7 @@
 			if(e.keyCode != 13 && e.type != 'click') {
 				return;
 			}
+			var top = $('#blog-post-widget-area-content' + id);
 			var add_category_outer = $('#blog-posts-add-category-outer' + id);
 			var add_category = $('.blog-posts-add-text', add_category_outer);
 			var parent_select_category = $('#blog-posts-categories-parent-select' + id);
@@ -81,13 +82,13 @@
 			params[add_category.attr('name')] = add_category.val();
 			params[parent_select_category.attr('name')] = parent_select_category.val();
 			params[sel_categories.attr('name')] = sel_categories.trigger("liszt:updated").val();
-
+			params['token'] = $('input[name="data[_Token][key]"]:first', top.parents('form:first')).val();
 			$.Event(e).preventDefault();
 
 			$.post(url,
 				params,
 				function(res){
-					$('#blog-post-widget-area-content' + id).html(res);
+					top.html(res);
 					$.BlogPosts.initCategory(id);
 				}
 			);

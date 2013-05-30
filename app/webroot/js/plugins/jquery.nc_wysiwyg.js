@@ -2479,16 +2479,16 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			if(form.get(0) && (!autoregist_flag || (autoregist_flag && t.autoregist != content))) {
 				t.autoregist = content;			// エラーがでても、contentがかわるまではPOSTを投げるのをやめる。
 				var data = form.serializeArray();
-				data[data.length] = {name : 'auto_regist',value : true};
+				data[data.length] = {name : 'data[AutoRegist][on]',value : true};
 				var options = {
 					data : data,
 					success : function(res, status, xhr){
 						var post_id = $.trim(res);
 						if(isFinite(post_id) && parseInt(post_id) > 0) {
 							//t.autoregist = content;
-							var autoregist_post_id = $(t.el).children("input[name=autoregist_post_id]:first");
+							var autoregist_post_id = $(t.el).children("input[name=data\\[AutoRegist\\]\\[post_id\\]]:first");
 							if(!autoregist_post_id.get(0)) {
-								autoregist_post_id = $('<input type="hidden" name="autoregist_post_id" value="'+ post_id +'"/>');
+								autoregist_post_id = $('<input type="hidden" name="data[AutoRegist][post_id]" value="'+ post_id +'"/>');
 								autoregist_post_id.appendTo( t.el );
 							}
 							autoregist_post_id.val(post_id);

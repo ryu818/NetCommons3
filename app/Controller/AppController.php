@@ -69,7 +69,6 @@ class AppController extends Controller {
         ),
 		'Text',
 		'Js',
-        'Token',
 		'TimeZone',
 		'Common',
     );
@@ -129,49 +128,55 @@ class AppController extends Controller {
  * @return  void
  * @since   v 3.0.0.0
  */
-    public function beforeFilter()
+	public function beforeFilter()
 	{
 		parent::beforeFilter();
 
 		$controllerName = $this->request->params['controller'];
 		//$blockType = isset($this->request->params['block_type']) ? $this->request->params['block_type'] : null;
-    	$this->Common->initializeAuth();
+		$this->Common->initializeAuth();
 
 		if ($this->request->is('ajax')) {
 			$this->layout = 'ajax';
 		}
 
-    	if ($this->request->is('ajax')) {
-    		$pluginName = isset($this->request->params['plugin']) ? $this->request->params['plugin'] :
-    		(isset($this->request->params['active_plugin']) ? $this->request->params['active_plugin'] : '');
-    		if($pluginName != '') {
-    			// ajaxの場合、blocksのリンクが含まれていれば、active-blocksに置換する。
-    			$replaceUrl = preg_replace('/(.*)\/blocks\/([0-9]*)/i', '$1/active-blocks/$2', $this->request->here);
-    			if($replaceUrl != $this->request->here) {
-    				$replaceUrl = preg_replace('%^'.$this->request->webroot.'%i', '', $replaceUrl);
-    				echo $this->requestAction($replaceUrl, array('return', 'bare' => 0, 'requested' => 0,
-    					'pass' => $this->request->params['pass'], 'named' => $this->request->params['named']));
-    				$this->_stop();
-    			}
-    		}
-    	}
-    	// Configセット
-    	if ($this->Components->enabled('Auth')) {
-    		$this->SetConfig->set();
-    	}
+		if ($this->request->is('ajax')) {
+			$pluginName = isset($this->request->params['plugin']) ? $this->request->params['plugin'] :
+			(isset($this->request->params['active_plugin']) ? $this->request->params['active_plugin'] : '');
+			if($pluginName != '') {
+				// ajaxの場合、blocksのリンクが含まれていれば、active-blocksに置換する。
+				$replaceUrl = preg_replace('/(.*)\/blocks\/([0-9]*)/i', '$1/active-blocks/$2', $this->request->here);
+				if($replaceUrl != $this->request->here) {
+					$replaceUrl = preg_replace('%^'.$this->request->webroot.'%i', '', $replaceUrl);
+					echo $this->requestAction($replaceUrl, array('return', 'bare' => 0, 'requested' => 0,
+						'pass' => $this->request->params['pass'], 'named' => $this->request->params['named']));
+					$this->_stop();
+				}
+			}
+		}
+		// Configセット
+		if ($this->Components->enabled('Auth')) {
+			$this->SetConfig->set();
+		}
 
-    	$isClosedSite = Configure::read(NC_CONFIG_KEY.'.'.'is_closed_site');
-    	if(!$isClosedSite) {
-    		$this->Auth->allow();
-    	}
+		$isClosedSite = Configure::read(NC_CONFIG_KEY.'.'.'is_closed_site');
+		if(!$isClosedSite) {
+			$this->Auth->allow();
+		}
 
-    	// 権限チェック
-    	//if($blockType == 'active-controls') {
-    	//	// 管理系モジュール
-    	//} else
-    	if ($controllerName != 'controls' && $this->Components->enabled('Auth')) {
-    		$this->CheckAuth->check();
-    	}
+		// 権限チェック
+		//if($blockType == 'active-controls') {
+		//	// 管理系モジュール
+		//} else
+		if ($controllerName != 'controls' && $this->Components->enabled('Auth')) {
+			$this->CheckAuth->check();
+		}
+
+		// Security Token
+		if ($this->Components->enabled('Security')) {
+			$this->Security->csrfExpires = '+1 hour';		// Tokenの有効期限　TODO: Configに持つべき？
+			$this->Security->blackHoleCallback = 'errorToken';
+		}
 	}
 
 /**
@@ -360,5 +365,49 @@ class AppController extends Controller {
 			}
 			Configure::write(NC_SYSTEM_KEY. '.'. $name, $ncExecuteTimes);
 		}
+	}
+
+/**
+ * Tokenエラーコールバック
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function errorToken()
+	{
+		$this->flash(__('The request has been disabled by the security check.'), null, 'AppController.errorToken', '400');
+	}
+
+/**
+ * 自動保存時 実行前処理
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function autoRegistBeforeFilter()
+	{
+		if($this->action == 'index') {
+			$this->autoRegistSecurity();
+		} else if($this->action == 'revision' || $this->action == 'approve') {
+			// 改ざんチェックを行わない。
+			$this->Security->validatePost = false;
+		}
+	}
+
+/**
+ * 自動保存時Security設定
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function autoRegistSecurity()
+	{
+		if(isset($this->request->data['AutoRegist']['on']) && $this->request->data['AutoRegist']['on']) {
+			// 自動保存時
+			$this->Security->csrfUseOnce = false;
+		}
+		$this->Security->unlockedFields = array(
+			'AutoRegist'
+		);
 	}
 }

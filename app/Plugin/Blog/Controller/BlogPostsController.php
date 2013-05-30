@@ -19,7 +19,7 @@ class BlogPostsController extends BlogAppController {
  *
  * @var array
  */
-	public $components = array('Blog.BlogCommon', 'Mail', 'RevisionList', 'CheckAuth' => array('allowAuth' => NC_AUTH_GENERAL));
+	public $components = array('Security', 'Blog.BlogCommon', 'Mail', 'RevisionList', 'CheckAuth' => array('allowAuth' => NC_AUTH_GENERAL));
 
 /**
  * Model name
@@ -27,6 +27,31 @@ class BlogPostsController extends BlogAppController {
  * @var array
  */
 	public $uses = array('Blog.BlogTermLink', 'Revision');
+
+/**
+ * 実行前処理
+ * <pre>Tokenチェック処理</pre>
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function beforeFilter() {
+		parent::beforeFilter();
+		$this->autoRegistBeforeFilter();
+		if($this->action == "delete") {
+			$this->Security->csrfCheck = false;
+			$this->Security->validatePost = false;
+			// 手動でチェック
+			if($this->action == "delete") {
+				$requestToken = $this->request->data['_Token']['key'];
+				$csrfTokens = $this->Session->read('_Token.csrfTokens');
+				if (!isset($csrfTokens[$requestToken]) || $csrfTokens[$requestToken] < time()) {
+					$this->errorToken();
+					return;
+				}
+			}
+		}
+	}
 
 /**
  * ブログ記事投稿表示・登録

@@ -34,6 +34,7 @@
 					'col_num' : ui.item.parents('.blog-style-widget-area:first').attr('data-col-num'),
 					'row_num' : ui.item.parent().children('div').index(ui.item) + 1
 				};
+				params['_Token'] = {'key' : $('#blog-style-widget-area-token' + id).val()};
 				state = true;
 				$.post(top_el.attr('data-ajax-url'),
 					params,
@@ -78,6 +79,7 @@
 				'widget_type' : item.attr('data-widget-type'),
 				'display_flag' : display
 			};
+			params['_Token'] = {'key' : $('#blog-style-widget-area-token' + id).val()};
 
 			$.post(url,
 				params,

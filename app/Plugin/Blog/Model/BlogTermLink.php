@@ -63,7 +63,8 @@ class BlogTermLink extends AppModel
 
 		if(!is_array($tag_name_arr)) {
 			$tag_name_arr = array($tag_name_arr);
-		} else if(count($tag_name_arr) == 0) {
+		}
+		if(count($tag_name_arr) == 0 || $tag_name_arr[0] == "") {
 			return true;
 		}
 		$arr_column_name = ($arr_column_name != 'name') ? 'id' : $arr_column_name;

@@ -67,10 +67,10 @@ if($announcement_edit['AnnouncementEdit']['approved_flag'] == _ON && $hierarchy 
 	</ul>
 </fieldset>
 <?php
-	echo $this->Form->hidden('is_temporally' , array('name' => 'is_temporally', 'value' => _OFF));
+	echo $this->Form->hidden('AutoRegist.status' , array('value' => NC_STATUS_PUBLISH));
 	echo $this->Html->div('submit',
 		$this->Form->button(__('Save temporally'), array('name' => 'temporally', 'class' => 'common-btn',
-			'type' => 'button', 'onclick' => "$('#AnnouncementIsTemporally".$id."').val(1);$(this.form).submit();")).
+			'type' => 'button', 'onclick' => "$('#AutoRegistStatus".$id."').val(".NC_STATUS_TEMPORARY.");$(this.form).submit();")).
 		$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'common-btn', 'type' => 'submit')).
 		$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
 			'data-pjax' => '#'.$id, 'data-ajax-url' =>  $this->Html->url(array('controller' => 'announcement', '#' => $id))))

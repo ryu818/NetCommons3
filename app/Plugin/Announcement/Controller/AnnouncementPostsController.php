@@ -30,7 +30,7 @@ class AnnouncementPostsController extends AnnouncementAppController {
  *
  * @var array
  */
-	public $components = array('RevisionList', 'Mail', 'CheckAuth' => array('allowAuth' => NC_AUTH_GENERAL));
+	public $components = array('Security', 'RevisionList', 'Mail', 'CheckAuth' => array('allowAuth' => NC_AUTH_GENERAL));
 
 /**
  * Model name
@@ -47,6 +47,18 @@ class AnnouncementPostsController extends AnnouncementAppController {
 	public $helpers = array('TimeZone');
 
 /**
+ * 実行前処理
+ * <pre>Tokenチェック処理</pre>
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function beforeFilter() {
+		parent::beforeFilter();
+		$this->autoRegistBeforeFilter();
+	}
+
+/**
  * お知らせ編集画面表示・登録
  * @param   integer $postId
  * @return  void
@@ -57,7 +69,7 @@ class AnnouncementPostsController extends AnnouncementAppController {
 		// TODO:承認処理を共通化
 
 		// 自動保存前処理
-		$autoRegistParams = $this->RevisionList->beforeAutoRegist($postId);
+		$autoRegistParams = $this->RevisionList->beforeAutoRegist($postId, isset($this->request->data['Announcement']) ? $this->request->data['Announcement'] : null);
 		$postId = $autoRegistParams['id'];
 		$isAutoRegist = $autoRegistParams['isAutoRegist'];
 		$status = $autoRegistParams['status'];

@@ -144,10 +144,10 @@ if($blog['Blog']['approved_flag'] == _ON && $hierarchy  <= NC_AUTH_MODERATE) {
 	$backUrl['limit'] = isset($this->request->query['back_limit']) ? $this->request->query['back_limit'] : null;
 	$backUrl['page'] = isset($this->request->query['back_page']) ? $this->request->query['back_page'] : null;
 
-	echo $this->Form->hidden('is_temporally' , array('name' => 'is_temporally', 'value' => _OFF));
+	echo $this->Form->hidden('AutoRegist.status' , array('value' => NC_STATUS_PUBLISH));
 	echo $this->Html->div('submit',
 		$this->Form->button(__('Save temporally'), array('name' => 'temporally', 'class' => 'common-btn',
-			'type' => 'button', 'onclick' => "$('#BlogPostIsTemporally".$id."').val(1);$(this.form).submit();")).
+			'type' => 'button', 'onclick' => "$('#AutoRegistStatus".$id."').val(".NC_STATUS_TEMPORARY.");$(this.form).submit();")).
 		$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'common-btn', 'type' => 'submit')).
 		$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
 			'data-pjax' => '#'.$id, 'data-ajax-url' =>  $this->Html->url($backUrl)))
@@ -173,12 +173,28 @@ if($blog['Blog']['approved_flag'] == _ON && $hierarchy  <= NC_AUTH_MODERATE) {
 			<a class="nc-widget-area-title-arrow"><span class="nc-arrow"></span></a>
 		</div>
 		<div class="nc-widget-area-content">
-			<select id="blog-posts-tags-select<?php echo ($id);?>" name="data[BlogTermLink][tag_name][]" data-placeholder="<?php echo(__d('blog', 'Choose from the used tags')); ?>" multiple class="blog-posts-select">
-			<?php foreach ($tags as $tag): ?>
-				<option value="<?php echo(h($tag['BlogTerm']['name']));?>"<?php if($tag['BlogTerm']['checked']): ?> selected="selected"<?php endif; ?>><?php echo(h($tag['BlogTerm']['name']));?></option>
-			<?php endforeach; ?>
-			</select>
 			<?php
+				$tagsOptions = array();
+				$multipleValues = array();
+				foreach ($tags as $tag) {
+					$tagsOptions[$tag['BlogTerm']['name']] = $tag['BlogTerm']['name'];
+					if($tag['BlogTerm']['checked']) {
+						$multipleValues[] = $tag['BlogTerm']['name'];
+					}
+				}
+				$settings = array(
+					'id' => "blog-posts-tags-select".$id,
+					'data-placeholder' => __d('blog', 'Choose from the used tags'),
+					'class' => 'blog-posts-select',
+					'label' => false,
+					'div' => false,
+					'type' =>'select',
+					'value' => $multipleValues,
+					'options' => $tagsOptions,
+					'multiple' => true,
+				);
+				echo $this->Form->input('BlogTermLink.tag_name', $settings);
+
 				$settings = array(
 					'id' => "blog-post-tag-names".$id,
 					'type' => 'text',

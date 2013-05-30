@@ -18,7 +18,20 @@ class BlogStylesController extends BlogAppController {
  *
  * @var array
  */
-	public $components = array('CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF));
+	public $components = array('Security', 'CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF));
+
+/**
+ * 実行前処理
+ * <pre>Tokenチェック処理</pre>
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function beforeFilter() {
+		parent::beforeFilter();
+		$this->Security->validatePost = false;
+		$this->Security->csrfUseOnce = false;
+	}
 
 /**
  * ブログ表示方法変更画面
@@ -63,7 +76,7 @@ class BlogStylesController extends BlogAppController {
  * @since   v 3.0.0.0
  */
 	public function display() {
-		if(!isset($this->request->data['widget_type']) || !isset($this->request->data['display_flag'])) {
+		if(!$this->request->is('post') || !isset($this->request->data['widget_type']) || !isset($this->request->data['display_flag'])) {
 			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogStyles.display.001', '500');
 			return;
 		}

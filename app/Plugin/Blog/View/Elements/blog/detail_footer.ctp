@@ -48,7 +48,9 @@
 				array('title' =>__('Delete Post'),
 						'data-ajax-confirm' => __('Deleting %s. <br />Are you sure to proceed?',$blog_post['BlogPost']['title']),
 						'data-pjax' => '#'.$id,
-						'data-ajax-type' => 'post'
+						'data-ajax-type' => 'post',
+						'data-pjax' => '#'.$id,
+						'data-ajax-data' => '{"data[_Token][key]": "'.$this->params['_Token']['key'].'"}',
 			));
 		?>
 		&nbsp;|&nbsp;
@@ -61,7 +63,8 @@
 					array('controller' => 'blog', 'action' => 'vote', $blog_post['BlogPost']['id']),
 					array('title' =>__('Vote'),
 						'data-ajax' => '#blog-entry-meta'.$id.'-'.$blog_post['BlogPost']['id'],
-						'data-ajax-type' => 'post'
+						'data-ajax-type' => 'post',
+						'data-ajax-data' => '{"data[_Token][key]": "'.$this->params['_Token']['key'].'"}',
 				));
 			}
 		?>

@@ -26,6 +26,8 @@
 		//		data-pjax, data-pjax-inner, data-ajax, data-ajax-innerはいずれかを設定すること。
 		// data-ajax-url:URL default：href属性から取得
 		// data-ajax-type: post or get
+		// data-ajax-serialize: default:false boolean　postリクエスト時のみformのpostでない場合でも、elの親elementにformがあればserializeしてdataにセットする。
+		// data-ajax-data: postする場合のdataのhash配列を文字列に変換したものをセットすることにより、POSTのdataを送信することができる。
 		// data-ajax-effect: 遷移時effect
 		// data-ajax-confirm: メッセージをValueに設定すると確認ダイアログ表示
 		// data-ajax-dialog: ダイアログとして表示する場合、true trueの場合、data-ajaxが指定dialogTopのid属性となる。
@@ -46,7 +48,7 @@
 		// params：上記属性情報をパラメータによりセットする場合、使用
 		// options：ajax時のoptions マージされる
 		ajax : function(e, el, params, options, _confirm, _force_url) {
-			var data_pjax, top, url, data, input_type, type, params, is_form, ret, data_url, default_options;
+			var data_pjax, top, url, data = {}, input_type, type, params, is_form, ret, data_url, data_serialize, default_options;
 			var target_pjax, confirm, is_pjax;
 			var $el = $(el), buf_options = options;
 			if(params != undefined && params != null) {
@@ -54,11 +56,15 @@
 				confirm = (typeof _confirm == "undefined") ? params['data-ajax-confirm'] : _confirm;
 				type = params['data-ajax-type'];
 				data_url = params['data-ajax-url'];
+				data_serialize = params['data-ajax-serialize'];
+				data_data = params['data-ajax-data'];
 			} else {
 				target_pjax =  $el.attr("data-pjax");
 				confirm = (typeof _confirm == "undefined") ? $el.attr("data-ajax-confirm") : _confirm;
 				type = $el.attr("data-ajax-type");
 				data_url = $el.attr("data-ajax-url");
+				data_serialize = $el.attr("data-ajax-serialize");
+				data_data = $el.attr("data-ajax-data");
 			}
 			is_pjax = target_pjax && $.support.pjax && !_force_url;
 
@@ -70,8 +76,8 @@
 				var ok = __('Ok') ,cancel = __('Cancel');
 				var default_dialog_params = {
 					resizable: false,
-		            modal: true,
-		            position: [e.pageX - $(window).scrollLeft(), e.pageY - $(window).scrollTop()]
+					modal: true,
+					position: [e.pageX - $(window).scrollLeft(), e.pageY - $(window).scrollTop()]
 				}, _buttons = {}, dialog_params = new Object();
 				_buttons[ok] = function(){
 					$( this ).remove();
@@ -126,9 +132,26 @@
 					data = ret[0];
 				}
 			}
+			type = (type == 'GET' || type == 'get' || type == 'POST' || type == 'post') ? type.toLowerCase() : input_type.toLowerCase();
+			if(data_serialize == true && type == 'post' && Object.keys(data).length == 0) {
+				if(!is_form) {
+					var $form = $el.parents('form');
+					if($form.get(0)) {
+						// Postでデータが空でparentにFormタグがあれば、シリアライズしてセット
+						// Token等を含める
+						data = $form.serializeArray();
+					}
+				}
+			}
+			if(data_data) {
+				if(typeof data_data == 'string') {
+					data_data = $.parseJSON(data_data);
+				}
+				data = $.extend({}, data, data_data);
+			}
 
 			default_options = {
-				type: (type == 'GET' || type == 'get' || type == 'POST' || type == 'post') ? type : input_type,
+				type: type,
 				url: url,
 				data: data,
 				success: function(res, status, xhr){
@@ -159,7 +182,7 @@
 						var hash = $.Common.parseURL(url).hash;
 
 						var state = {
-	      					id: unique_id
+							id: unique_id
 						};
 
 						//if(cache_id != target_id) {
@@ -192,23 +215,23 @@
 					// pjaxならば、header Locationではなく、「X-PJAX-Location」ヘッダーを返し、そのURLを見て、再度、pjaxを呼ぶように修正。
 					// リダイレクト前のURLでリダイレクト後の画面が表示されてしまうため。
 					if ( textStatus !== 'abort' ) {
-						var url = xhr.getResponseHeader('X-PJAX-Location');
-						if(url) {
+						var pjaxUrl = xhr.getResponseHeader('X-PJAX-Location');
+						if(pjaxUrl) {
 							var re_url = new RegExp("^"+ $.Common.quote($._full_base_url) , 'i');
-							var buf_url = url.replace(re_url, '');
+							var buf_url = pjaxUrl.replace(re_url, '');
 							var redirect_params = new Object();
 
-							if(url != buf_url) {
-								url = $._base_url + buf_url;
+							if(pjaxUrl != buf_url) {
+								pjaxUrl = $._base_url + buf_url;
 							}
 
 							redirect_params['data-ajax-type'] = 'GET';
 
-							if(!url.match(/.*(#.*)/i)) {
+							if(!pjaxUrl.match(/.*(#.*)/i)) {
 								location.href.match(/.*(#.*)/i);
-								redirect_params['data-ajax-url'] = url + RegExp.$1;
+								redirect_params['data-ajax-url'] = pjaxUrl + RegExp.$1;
 							} else {
-								redirect_params['data-ajax-url'] = url;
+								redirect_params['data-ajax-url'] = pjaxUrl;
 							}
 							redirect_params['data-pjax'] = target_pjax;
 							if(buf_options) {
@@ -219,7 +242,13 @@
 							$.Common.ajax(e, $el, redirect_params, buf_options);
 
 							return;
-	          			}
+						}
+
+						if(xhr.responseText) {
+							var container = $.Common._extractContainer(xhr.responseText, xhr, url);
+							var res = '<div>' + container.contents + '</div>';
+							$.Common.ajaxSuccess(e, $el, res, params);
+						}
 					}
 				}
 			};

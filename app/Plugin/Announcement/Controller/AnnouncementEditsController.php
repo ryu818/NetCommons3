@@ -30,7 +30,7 @@ class AnnouncementEditsController extends AnnouncementAppController {
  *
  * @var array
  */
-	public $components = array('CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF));
+	public $components = array('Security', 'CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF));
 
 /**
  * お知らせ編集画面表示・登録
