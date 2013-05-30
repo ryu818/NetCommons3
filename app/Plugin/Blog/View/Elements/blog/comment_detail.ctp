@@ -86,7 +86,7 @@
 						));
 					?>
 					<?php	// 返信
-						if($depth > 1){
+						if($depth > 1 && $blog['Blog']['comment_flag']){
 							echo '&nbsp;|&nbsp;';
 							$replyUrl = array_merge($baseUrl,
 								array('comment_reply' => $blog_comments_tree[$i]['BlogComment']['id'],'#' => $id. '-comment-' .$blog_comments_tree[$i]['BlogComment']['id']));
@@ -119,7 +119,7 @@
 			<?php //コメント編集、返信フォームの表示
 				if((isset($this->request->named['comment_edit']) && $blog_comments_tree[$i]['BlogComment']['id'] == $this->request->named['comment_edit'])
 					|| (isset($this->request->named['comment_reply']) && $blog_comments_tree[$i]['BlogComment']['id'] == $this->request->named['comment_reply'] )){
-					echo $this->element('blog/comment_respond', array('blog_post' => $blog_post, 'comment' => $comment, 'edit' => true));
+					echo $this->element('blog/comment_respond', array('blog_post' => $blog_post, 'edit' => true));
 				}
 			?>
 		</div>
@@ -127,7 +127,7 @@
 		<?php // ツリーに子供がいる場合は続きを表示 ?>
 		<?php if(array_key_exists('children', $blog_comments_tree[$i]) && !empty($blog_comments_tree[$i]['children'])): ?>
 			<ul class="blog-comment-child-lists">
-				<?php echo $this->element('blog/comment_detail', array('blog_comments_tree' => $blog_comments_tree[$i]['children'], 'depth' => $depth - 1, 'blog_post' => $blog_post, 'comment' => $comment)); ?>
+				<?php echo $this->element('blog/comment_detail', array('blog_comments_tree' => $blog_comments_tree[$i]['children'], 'depth' => $depth - 1, 'blog_post' => $blog_post)); ?>
 			</ul>
 		<?php endif; ?>
 	</li>

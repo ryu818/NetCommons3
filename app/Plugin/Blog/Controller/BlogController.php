@@ -266,6 +266,10 @@ class BlogController extends BlogAppController {
 				}
 			} else {
 				// 新規または返信
+				if(!$blog['Blog']['comment_flag']) {
+					$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Blog.comments.003', '500');
+					return;
+				}
 				$comment = $this->BlogComment->findDefault($this->content_id, $blogPost['BlogPost']['id']);
 				$comment['BlogComment']['parent_id'] = $this->request->data['BlogComment']['parent_id'];
 				$comment['BlogComment']['author_ip'] = $this->request->clientIp(false);
@@ -291,11 +295,11 @@ class BlogController extends BlogAppController {
 					'scope' => array('BlogComment.blog_post_id' => $blogPost['BlogPost']['id'])
 				));
 				if(!$this->BlogComment->save($comment, false, $fieldList)) {
-					$this->flash(__('Failed to register the database, (%s).', 'blog_comments'), null, 'Blog.comments.003', '500');
+					$this->flash(__('Failed to register the database, (%s).', 'blog_comments'), null, 'Blog.comments.004', '500');
 					return;
 				}
 				if(!$this->BlogPost->adjustCommentCount($mode, $blogPost['BlogPost']['id'], $comment['BlogComment']['is_approved'], $blog['Blog']['comment_approved_flag'], $this->hierarchy)) {
-					$this->flash(__('Failed to update the database, (%s).', 'blog_posts'), null, 'Blog.comments.004', '500');
+					$this->flash(__('Failed to update the database, (%s).', 'blog_posts'), null, 'Blog.comments.005', '500');
 					return;
 				}
 				if(empty($comment['BlogComment']['id'])) {
@@ -312,7 +316,7 @@ class BlogController extends BlogAppController {
 			if(isset($this->request->named['comment_edit'])) {
 				$comment = $this->BlogComment->findById($this->request->named['comment_edit']);
 				if(!isset($comment['BlogComment'])) {
-					$this->flash(__('Content not found.'), null, 'Blog.comments.005', '404');
+					$this->flash(__('Content not found.'), null, 'Blog.comments.006', '404');
 					return;
 				}
 			} else {
@@ -357,7 +361,7 @@ class BlogController extends BlogAppController {
 				)
 			);
 			if(!$this->Archive->saveAuto($this->params, $archive)) {
-				$this->flash(__('Failed to update the database, (%s).', 'archives'), null, 'Blog.comments.006', '500');
+				$this->flash(__('Failed to update the database, (%s).', 'archives'), null, 'Blog.comments.007', '500');
 				return;
 			}
 
