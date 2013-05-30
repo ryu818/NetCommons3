@@ -149,11 +149,13 @@ class MailComponent extends Component {
 				return;
 			}
 		}
-
-		$Email->to($mails)
-			->emailFormat($emailFormat)
-			->subject($subject)
-			->send($this->replaceTags($this->body, $emailFormat));
+		try{
+			$Email->to($mails)
+				->emailFormat($emailFormat)
+				->subject($subject)
+				->send($this->replaceTags($this->body, $emailFormat));
+		}catch(Exception $e){
+		}
 	}
 
 /**
