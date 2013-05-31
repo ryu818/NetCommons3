@@ -892,7 +892,7 @@ class ModuleAdmin extends AppModel {
 		);
 
 		foreach($authority_ids as $authority_id) {
-			$module_system_link['authority_id'] = $authority_id;
+			$module_system_link['ModuleSystemLink']['authority_id'] = $authority_id;
 			$ModuleSystemLink->create();
 			$ModuleSystemLink->set($module_system_link);
 			if(!$ModuleSystemLink->save($module_system_link)) {
