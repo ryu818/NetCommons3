@@ -34,6 +34,8 @@
 		// data-ajax-dialog-class: ダイアログとして表示した場合のダイアログクラス名
 		// data-ajax-dialog-options: ダイアログとして表示した場合のダイアログオプション jquery dialogのoptionsをhash配列を文字列に変換したもの
 		//		"position" : "mouse"指定があればマウス位置にダイアログ表示
+		//      data-width:ajaxのレスポンスのtopノードにdata-widthがあれば、その広さでダイアログを表示する。
+		//      data-height:ajaxのレスポンスのtopノードにdata-heightがあれば、その高さでダイアログを表示する。
 		// カスタムイベント ajax:
 		// ajax:beforeSend - Ajaxリクエスト前に呼ばれる。falseを返せば処理を中断する。
 		// ajax:beforeSendのみ、return値(string or array)でURL及びdataの内容を上書き可。
@@ -286,7 +288,7 @@
 		ajaxSuccess : function(e, el, res, params) {
 			var target,replace_target,effect;
 			var buf_a, res_target, res_other_target, buf_res_target, effect_cnt = 0, effect_index = -1;
-			var dialog_title, dialog_options, dialog;
+			var dialog_title, dialog_options, dialog, w, h;
 			var $el = $(el);
 			if (params) {
 				target = params['data-ajax-inner'];
@@ -329,6 +331,14 @@
 					dialog = $('<div id='+ target.slice(1) +' style="display:none;"></div>').appendTo($(document.body));
 				}
 				dialog.html(res);
+				w = dialog.children(':first').attr('data-width');
+				h = dialog.children(':first').attr('data-height');
+				if(parseInt(w) > 0) {
+					dialog_options['width'] = parseInt(w);
+				}
+				if(parseInt(h) > 0) {
+					dialog_options['height'] = parseInt(h);
+				}
 				dialog.dialog(dialog_options);
 				if(dialog_class) {
 					dialog.parent().addClass(dialog_class);
@@ -841,11 +851,19 @@
 		},
 		/* ダイアログ表示用 */
 		showDialog: function(id, ajax_options, dialog_options) {
-			var dialog = $('#' + id);
+			var dialog = $('#' + id), w, h;
 			var ajax_defaults = {
 				success : function(res) {
 					var dialog_el = $('<div id='+ id +'></div>').appendTo($(document.body));
 					dialog_el.html(res);
+					w = dialog_el.children(':first').attr('data-width');
+					h = dialog_el.children(':first').attr('data-height');
+					if(parseInt(w) > 0) {
+						dialog_options['width'] = parseInt(w);
+					}
+					if(parseInt(h) > 0) {
+						dialog_options['height'] = parseInt(h);
+					}
 					dialog_el.dialog(dialog_options);
 				}
 			}, dialog_defaults = {
