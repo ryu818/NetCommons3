@@ -58,7 +58,7 @@ class BlogCommentsController extends BlogAppController {
 		}
 
 		$blogPost = $this->BlogPost->findById($blogPostId);
-		$this->redirect($this->BlogCommon->getDetailRedirectUrl($blogPost, 'delete', null,$comment['BlogComment']['parent_id']));
+		$this->redirect($this->BlogCommon->getDetailRedirectUrl($blogPost, 'delete', $comment['BlogComment']['parent_id']));
 	}
 
 /**

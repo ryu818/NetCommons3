@@ -22,7 +22,7 @@ $this->start('widget_content');
 			BLOG_POSITION_COMMENTS_LAST => __d('blog', 'Last'),
 			BLOG_POSITION_COMMENTS_FIRST => __d('blog', 'First'),
 		),
-		'selected' => isset($blog_style['BlogStyle']['position_comments']) ? intval($blog_style['BlogStyle']['position_comments']) : BLOG_POSITION_COMMENTS_LAST,
+		'selected' => isset($blog_style['BlogStyle']['position_comments']) ? intval($blog_style['BlogStyle']['position_comments']) : BLOG_POSITION_COMMENTS_FIRST,
 		'label' => __d('blog', 'Display position of comments'),
 		'id' => $top_id.'_'. $blog_style['BlogStyle']['widget_type'].'_position_comments',
 		'class' => 'blog-style-widget-single-input'
@@ -41,7 +41,7 @@ $this->start('widget_content');
 
 	echo $this->Form->input('BlogStyle.threaded_comments',array(
     	'type' => 'checkbox',
-		'checked' => (isset($blog_style['BlogStyle']['threaded_comments']) && $blog_style['BlogStyle']['threaded_comments']) ? true : false,
+		'checked' => (isset($blog_style['BlogStyle']['threaded_comments']) && !$blog_style['BlogStyle']['threaded_comments']) ? false : true,
 		'label' => __d('blog', 'Enable threaded (nested) comments.'),
         'id' => $top_id.'_'. $blog_style['BlogStyle']['widget_type'].'_threaded_comments',
 		'class' => 'blog-style-widget-single-input'
