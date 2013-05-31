@@ -291,8 +291,8 @@ class BlogController extends BlogAppController {
 		$this->paginate['limit'] = !empty($blogStyleOptions['BlogStyle']['visible_item_comments']) ? $blogStyleOptions['BlogStyle']['visible_item_comments'] : BLOG_DEFAULT_VISIBLE_ITEM_COMMENTS;
 		$this->paginate['conditions'] = $this->BlogComment->getPaginateConditions($blogPost['BlogPost']['id'], $userId, $this->hierarchy, $this->Session->read('Blog.savedComment'));
 		if(isset($blogStyleOptions['BlogStyle']['position_comments']) && $blogStyleOptions['BlogStyle']['position_comments'] == BLOG_POSITION_COMMENTS_LAST) {
-			$this->paginate['recordCount'] = $this->BlogComment->redordCount($this->paginate['conditions']);
-			$this->paginate['page'] = intval(ceil($this->paginate['redordCount'] / $this->paginate['limit']));
+			$this->paginate['recordCount'] = $this->BlogComment->recordCount($this->paginate['conditions']);
+			$this->paginate['page'] = intval(ceil($this->paginate['recordCount'] / $this->paginate['limit']));
 		}
 		if(isset($blogStyleOptions['BlogStyle']['order_comments']) && $blogStyleOptions['BlogStyle']['order_comments'] == BLOG_ORDER_COMMENTS_NEWEST) {
 			$this->BlogComment->order = array("BlogComment.lft" => "DESC");
