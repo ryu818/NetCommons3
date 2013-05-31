@@ -34,12 +34,11 @@ class BlogCommonComponent extends Component {
  *  内部で$this->request->params['paging']の内容を利用しています
  * @param   Model BlogPost $blogPost
  * @param   string  $mode 'add'新規コメント追加時 、'edit'コメント編集時、'reply'コメント返信時、'approve'コメント承認時、'delete'コメント削除時 指定されれば詳細記事コメントページングを指定
- * @param   integer $commentId saveしたコメントのid 指定されれば詳細記事コメント個所へアンカー
- * @param   integer $parentId deleteしたコメントのparent_id 指定されれば詳細記事コメント個所へアンカー
+ * @param   integer $commentId saveしたコメントのid,deleteしたコメントのparent_id 指定されれば詳細記事コメント個所へアンカー
  * @return  array
  * @since   v 3.0.0.0
  */
-	public function getDetailRedirectUrl($blogPost, $mode = null, $commentId = null, $parentId = null) {
+	public function getDetailRedirectUrl($blogPost, $mode = null, $commentId = null) {
 		$permalink = $blogPost['BlogPost']['permalink'];
 		$blogDates = strtotime($this->_controller->BlogPost->date($blogPost['BlogPost']['post_date']));
 
@@ -49,20 +48,22 @@ class BlogCommonComponent extends Component {
 
 		if(isset($mode)) {
 			if($mode == 'add'){
-				// ページネーションから全ページ数を取得
-				$page = isset($this->_controller->request->params['paging']['BlogComment']['pageCount']) ? $this->_controller->request->params['paging']['BlogComment']['pageCount'] : 1;
-
+				$blogStyleOptions = $this->_controller->BlogStyle->findOptions($this->_controller->block_id, BLOG_WIDGET_TYPE_MAIN);
+				if(isset($blogStyleOptions['BlogStyle']['order_comments']) && $blogStyleOptions['BlogStyle']['order_comments'] == BLOG_ORDER_COMMENTS_NEWEST) {
+					$page = 1;
+				} else {
+					$page = isset($this->_controller->request->params['paging']['BlogComment']['pageCount']) ? $this->_controller->request->params['paging']['BlogComment']['pageCount'] : 1;
+				}
 			} elseif($mode == 'delete') {
 				$blogStyleOptions = $this->_controller->BlogStyle->findOptions($this->_controller->block_id, BLOG_WIDGET_TYPE_MAIN);
 				$page = isset($this->_controller->request->query['comment_back_page']) ? $this->_controller->request->query['comment_back_page'] : 1;
-				$redirectBlogComments = $this->_controller->BlogComment->find('all', array(
-					'fields' => array('BlogComment.id'),
+				$redirectCommentCount = $this->_controller->BlogComment->find('count', array(
 					'conditions' => $this->_controller->BlogComment->getPaginateConditions($blogPost['BlogPost']['id'], $this->_controller->Auth->user('id'), $this->_controller->hierarchy, $this->_controller->Session->read('Blog.savedComment')),
 					'page' => $page,
 					'limit' => !empty($blogStyleOptions) ? $blogStyleOptions['BlogStyle']['visible_item_comments'] : BLOG_DEFAULT_VISIBLE_ITEM_COMMENTS,
 					'recursive' => -1
 				));
-				if(count($redirectBlogComments) == 0 && $page >= 2) {
+				if($redirectCommentCount == 0 && $page >= 2) {
 					// 1ページ前を表示
 					$page = $page - 1;
 				}
@@ -72,10 +73,9 @@ class BlogCommonComponent extends Component {
 			$url['page'] = $page;
 		}
 
-		if(isset($mode) && $mode == 'delete') {
-			$id = !empty($parentId) ? $this->_controller->id. '-comment-' .$parentId : $this->_controller->id. '-comments';
-		} else {
-			$id = !empty($commentId) ? $this->_controller->id. '-comment-' .$commentId : $this->_controller->id;
+		$id = !empty($commentId) ? $this->_controller->id. '-comment-' .$commentId : $this->_controller->id;
+		if(isset($mode) && $mode == 'delete' && empty($commentId)) {
+			$id .= '-comments';
 		}
 		$url['#'] = $id;
 

@@ -292,9 +292,10 @@ class BlogComment extends AppModel
 		// ルートに紐づくコメントの取得
 		if(!empty($rootComments)) {
 			$conditions = $this->getConditions($rootComments[0]['BlogComment']['blog_post_id'], $userId, $hierarchy, $savedComment);
+
 			$treeConditons = array(
-				'BlogComment.lft >=' => $rootComments[0]['BlogComment']['lft'],
-				'BlogComment.rght <=' => $rootComments[count($rootComments) - 1]['BlogComment']['rght'],
+				'BlogComment.lft >=' => $rootComments[0]['BlogComment']['lft'] < $rootComments[count($rootComments) - 1]['BlogComment']['lft'] ? $rootComments[0]['BlogComment']['lft'] : $rootComments[count($rootComments) - 1]['BlogComment']['lft'],
+				'BlogComment.rght <=' => $rootComments[0]['BlogComment']['rght'] > $rootComments[count($rootComments) - 1]['BlogComment']['rght'] ? $rootComments[0]['BlogComment']['rght'] : $rootComments[count($rootComments) - 1]['BlogComment']['rght'],
 			);
 			$param['conditions'] = array_merge($treeConditons, $conditions);
 			$commentTree =  $this->find('threaded', $param);
@@ -321,4 +322,33 @@ class BlogComment extends AppModel
 
 		return array_merge($rootConditions, $conditions);
 	}
+
+/**
+ * 条件に該当するコメントの件数を取得する
+ *
+ * @param   array $conditions
+ * @return  integer
+ * @since   v 3.0.0.0
+ */
+	public function recordCount($conditions) {
+		return $this->find('count', array('conditions' => $conditions));
+	}
+
+/**
+ * PaginatorComponentのpaginateより呼び出される
+ * paginateの中で発行されるレコード数をカウントするSQLが不要な場合は発行しない
+ *
+ * @param   array   $conditions
+ * @param   integer $recursive
+ * @param   array   $extra
+ * @return  integer
+ * @since   v 3.0.0.0
+ */
+	public function paginateCount($conditions, $recursive, $extra) {
+		if(isset($extra['recordCount'])) {
+			return $extra['recordCount'];
+		}
+		return $this->recordCount($conditions);
+	}
+
 }
