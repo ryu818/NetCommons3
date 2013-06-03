@@ -42,13 +42,11 @@ class BlogPostsController extends BlogAppController {
 			$this->Security->csrfCheck = false;
 			$this->Security->validatePost = false;
 			// 手動でチェック
-			if($this->action == "delete") {
-				$requestToken = $this->request->data['_Token']['key'];
-				$csrfTokens = $this->Session->read('_Token.csrfTokens');
-				if (!isset($csrfTokens[$requestToken]) || $csrfTokens[$requestToken] < time()) {
-					$this->errorToken();
-					return;
-				}
+			$requestToken = $this->request->data['_Token']['key'];
+			$csrfTokens = $this->Session->read('_Token.csrfTokens');
+			if (!isset($csrfTokens[$requestToken]) || $csrfTokens[$requestToken] < time()) {
+				$this->errorToken();
+				return;
 			}
 		}
 	}
@@ -376,6 +374,8 @@ class BlogPostsController extends BlogAppController {
 			$this->flash(__('Failed to delete the database, (%s).', 'revisions'), null, 'BlogPosts.delete.007', '500');
 			return;
 		}
+
+		$this->Session->setFlash(__('The post with %s has been deleted.', $blogPost['BlogPost']['title']));
 
 		// リダイレクト
 		$this->redirect($this->_getRedirectUrl($this->id, $this->block_id, $blogPost['BlogPost']['content_id'], $this->hierarchy));
