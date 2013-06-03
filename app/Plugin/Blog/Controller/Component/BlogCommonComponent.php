@@ -57,13 +57,13 @@ class BlogCommonComponent extends Component {
 			} elseif($mode == 'delete') {
 				$blogStyleOptions = $this->_controller->BlogStyle->findOptions($this->_controller->block_id, BLOG_WIDGET_TYPE_MAIN);
 				$page = isset($this->_controller->request->query['comment_back_page']) ? $this->_controller->request->query['comment_back_page'] : 1;
-				$redirectCommentCount = $this->_controller->BlogComment->find('count', array(
+				$redirectBlogComments = $this->_controller->BlogComment->find('all', array(
 					'conditions' => $this->_controller->BlogComment->getPaginateConditions($blogPost['BlogPost']['id'], $this->_controller->Auth->user('id'), $this->_controller->hierarchy, $this->_controller->Session->read('Blog.savedComment')),
 					'page' => $page,
 					'limit' => !empty($blogStyleOptions) ? $blogStyleOptions['BlogStyle']['visible_item_comments'] : BLOG_DEFAULT_VISIBLE_ITEM_COMMENTS,
 					'recursive' => -1
 				));
-				if($redirectCommentCount == 0 && $page >= 2) {
+				if(count($redirectBlogComments) == 0 && $page >= 2) {
 					// 1ページ前を表示
 					$page = $page - 1;
 				}
