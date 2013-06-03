@@ -456,7 +456,7 @@ $this->extend('/Frame/block');
 						<dl>
 							<dt>
 								<?php
-									echo $this->Form->label('Blog.comment_approved_flag', __d('blog', 'Trackback approval setting'));
+									echo $this->Form->label('Blog.trackback_approved_flag', __d('blog', 'Trackback approval setting'));
 								?>
 							</dt>
 							<dd>
