@@ -52,6 +52,15 @@ class BlogController extends BlogAppController {
 		if($this->action == "vote") {
 			$this->Security->validatePost = false;
 			$this->Security->csrfUseOnce = false;
+			// 手動でチェック
+			if($this->action == "vote") {
+				$requestToken = $this->request->data['_Token']['key'];
+				$csrfTokens = $this->Session->read('_Token.csrfTokens');
+				if (!isset($csrfTokens[$requestToken]) || $csrfTokens[$requestToken] < time()) {
+					$this->errorToken();
+					return;
+				}
+			}
 		}
 	}
 
