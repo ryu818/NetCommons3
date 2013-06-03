@@ -312,6 +312,14 @@ class Blog extends AppModel
 					'message' => __('The input must be a boolean.')
 				)
 			),
+			'trackback_approved_flag' => array(
+					'boolean'  => array(
+							'rule' => array('boolean'),
+							'last' => true,
+							'required' => true,
+							'message' => __('The input must be a boolean.')
+					)
+			),
 			'comment_approved_mail_flag' => array(
 				'boolean'  => array(
 					'rule' => array('boolean'),
@@ -326,14 +334,14 @@ class Blog extends AppModel
 					'message' => __('The input must be up to %s characters.', NC_VALIDATOR_TITLE_LEN)
 				),
 				'_notEmptyCondition'  => array(
-					'rule' => array('_notEmptyCondition', array('comment_approved_flag', 'comment_approved_mail_flag')),
+					'rule' => array('_notEmptyCondition', array('comment_approved_flag', 'trackback_approved_flag', 'comment_approved_mail_flag')),
 					'required' => true,
 					'message' => __('Please be sure to input.')
 				),
 			),
 			'comment_approved_mail_body' => array(
 				'_notEmptyCondition'  => array(
-					'rule' => array('_notEmptyCondition', array('comment_approved_flag', 'comment_approved_mail_flag')),
+					'rule' => array('_notEmptyCondition', array('comment_approved_flag', 'trackback_approved_flag', 'comment_approved_mail_flag')),
 					'required' => true,
 					'message' => __('Please be sure to input.')
 				),
@@ -406,6 +414,7 @@ class Blog extends AppModel
 				'approved_mail_subject' => __d('blog', "[{X-SITE_NAME}] [{X-CONTENT_NAME} {X-SUBJECT}] Post Approval completion notice"),
 				'approved_mail_body' => __d('blog', "Your article posted to [{X-SITE_NAME}] [{X-CONTENT_NAME} {X-SUBJECT}] was approved.\nRoom's name:{X-ROOM}\nBlog title:{X-CONTENT_NAME}\ntitle:{X-SUBJECT}\nuser:{X-USER}\ndate:{X-TO_DATE}\n\n\n{X-BODY}\n\nClick the link below to check the article.\n{X-URL}"),
 				'comment_approved_flag' => _OFF,
+				'trackback_approved_flag' => _OFF,
 				'comment_approved_mail_flag' => _OFF,
 				'comment_approved_mail_subject' => __d('blog', "[{X-SITE_NAME}] [{X-CONTENT_NAME} {X-SUBJECT}] Comment, trackback Approval completion notice"),
 				'comment_approved_mail_body' => __d('blog', "Your comment and trackback posted to [{X-SITE_NAME}] [{X-CONTENT_NAME} {X-SUBJECT}] was approved.\nRoom's name:{X-ROOM}\nBlog title:{X-CONTENT_NAME}\ntitle:{X-SUBJECT}\nuser:{X-USER}\ndate:{X-TO_DATE}\n\n\n{X-BODY}\n\nClick the link below to check the article.\n{X-URL}"),
