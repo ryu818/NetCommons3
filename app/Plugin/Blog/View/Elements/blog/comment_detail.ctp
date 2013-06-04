@@ -86,7 +86,7 @@
 						));
 					?>
 					<?php	// 返信
-						if($depth > 1 && $blog['Blog']['comment_flag']){
+						if($depth > 1 && $blog['Blog']['comment_flag'] && $this->CheckAuth->checkAuth($hierarchy,  $blog['Blog']['comment_hierarchy'])){
 							echo '&nbsp;|&nbsp;';
 							$replyUrl = array_merge($baseUrl,
 								array('comment_reply' => $blog_comments_tree[$i]['BlogComment']['id'],'#' => $id. '-comment-' .$blog_comments_tree[$i]['BlogComment']['id']));
