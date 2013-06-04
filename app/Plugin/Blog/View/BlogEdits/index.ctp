@@ -436,7 +436,7 @@ $this->extend('/Frame/block');
 						<dl>
 							<dt>
 								<?php
-									echo $this->Form->label('Blog.comment_approved_flag', __d('blog', 'Comment, trackback approval setting'));
+									echo $this->Form->label('Blog.comment_approved_flag', __d('blog', 'Comment approval setting'));
 								?>
 							</dt>
 							<dd>
@@ -445,6 +445,26 @@ $this->extend('/Frame/block');
 										'type' => 'radio',
 										'options' => array(_ON => __('Need room manager approval'), _OFF => __('Automatic approval')),
 										'value' => intval($blog['Blog']['comment_approved_flag']),
+										'div' => false,
+										'legend' => false,
+									));
+								?>
+							</dd>
+						</dl>
+					</li>
+					<li>
+						<dl>
+							<dt>
+								<?php
+									echo $this->Form->label('Blog.trackback_approved_flag', __d('blog', 'Trackback approval setting'));
+								?>
+							</dt>
+							<dd>
+								<?php
+									echo $this->Form->input('Blog.trackback_approved_flag',array(
+										'type' => 'radio',
+										'options' => array(_ON => __('Need room manager approval'), _OFF => __('Automatic approval')),
+										'value' => intval($blog['Blog']['trackback_approved_flag']),
 										'div' => false,
 										'legend' => false,
 									));

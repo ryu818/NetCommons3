@@ -82,7 +82,7 @@
 						echo $this->Html->link(__('Delete'),
 							$deleteUrl,
 							array('title' =>__('Delete Comment'), 'data-ajax-confirm' => __('Deleting %s. <br />Are you sure to proceed?',__('Comment')),
-								'data-pjax' => '#'.$id, 'data-ajax-type' => 'post'
+								'data-pjax' => '#'.$id, 'data-ajax-type' => 'post', 'data-ajax-data' => '{"data[_Token][key]": "'.$this->params['_Token']['key'].'"}'
 						));
 					?>
 					<?php	// 返信
@@ -109,7 +109,7 @@
 							echo $this->Html->link(__('Approve'),
 								$approveUrl,
 								array('title' =>__('Approve'), 'data-ajax-confirm' => __('Approve to %s. <br />Are you sure to proceed?',__('Comment')),
-									'data-pjax' => '#'.$id, 'data-ajax-type' => 'post'
+									'data-pjax' => '#'.$id, 'data-ajax-type' => 'post', 'data-ajax-data' => '{"data[_Token][key]": "'.$this->params['_Token']['key'].'"}'
 							));
 						}
 					?>
@@ -126,9 +126,13 @@
 
 		<?php // ツリーに子供がいる場合は続きを表示 ?>
 		<?php if(array_key_exists('children', $blog_comments_tree[$i]) && !empty($blog_comments_tree[$i]['children'])): ?>
-			<ul class="blog-comment-child-lists">
+			<?php if(isset($blog_styles[2][2]['BlogStyle']['threaded_comments']) && $blog_styles[2][2]['BlogStyle']['threaded_comments'] == _OFF):?>
 				<?php echo $this->element('blog/comment_detail', array('blog_comments_tree' => $blog_comments_tree[$i]['children'], 'depth' => $depth - 1, 'blog_post' => $blog_post)); ?>
-			</ul>
+			<?php else:?>
+				<ul class="blog-comment-child-lists">
+					<?php echo $this->element('blog/comment_detail', array('blog_comments_tree' => $blog_comments_tree[$i]['children'], 'depth' => $depth - 1, 'blog_post' => $blog_post)); ?>
+				</ul>
+			<?php endif; ?>
 		<?php endif; ?>
 	</li>
 <?php }?>

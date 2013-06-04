@@ -56,7 +56,7 @@ class BlogEditsController extends BlogAppController {
 							'comment_mail_flag', 'comment_mail_hierarchy', 'comment_mail_subject', 'comment_mail_body',),
 				2 => array('trackback_transmit_flag', 'trackback_transmit_article', 'trackback_receive_flag', 'transmit_blog_name',),
 				3 => array('approved_flag', 'approved_pre_change_flag', 'approved_mail_flag', 'approved_mail_subject', 'approved_mail_body',
-							'comment_approved_flag', 'comment_approved_mail_flag', 'comment_approved_mail_subject', 'comment_approved_mail_body',)
+							'comment_approved_flag', 'trackback_approved_flag', 'comment_approved_mail_flag', 'comment_approved_mail_subject', 'comment_approved_mail_body',)
 			);
 			$fieldList = array_merge(array('content_id'), $fieldLists[0], $fieldLists[1], $fieldLists[2], $fieldLists[3]);
 

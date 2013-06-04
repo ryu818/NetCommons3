@@ -19,7 +19,29 @@ class BlogCommentsController extends BlogAppController {
  *
  * @var array
  */
-	public $components = array('Blog.BlogCommon', 'CheckAuth' => array('allowAuth' => NC_AUTH_GENERAL));
+	public $components = array('Security', 'Blog.BlogCommon', 'CheckAuth' => array('allowAuth' => NC_AUTH_GENERAL));
+
+/**
+ * 実行前処理
+ * <pre>Tokenチェック処理</pre>
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function beforeFilter() {
+		parent::beforeFilter();
+		if($this->action == "delete" || $this->action == "approve") {
+			$this->Security->validatePost = false;
+			$this->Security->csrfUseOnce = false;
+			// 手動でチェック
+			$requestToken = $this->request->data['_Token']['key'];
+			$csrfTokens = $this->Session->read('_Token.csrfTokens');
+			if (!isset($csrfTokens[$requestToken]) || $csrfTokens[$requestToken] < time()) {
+				$this->errorToken();
+				return;
+			}
+		}
+	}
 
 /**
  * コメントの削除
@@ -56,6 +78,8 @@ class BlogCommentsController extends BlogAppController {
 			$this->flash(__('Failed to update the database, (%s).', 'blog_posts'), null, 'Blog.comments.004', '500');
 			return;
 		}
+
+		$this->Session->setFlash(__('Has been successfully deleted.'));
 
 		$blogPost = $this->BlogPost->findById($blogPostId);
 		$this->redirect($this->BlogCommon->getDetailRedirectUrl($blogPost, 'delete', $comment['BlogComment']['parent_id']));
