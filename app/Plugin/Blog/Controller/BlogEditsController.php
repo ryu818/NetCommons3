@@ -21,6 +21,18 @@ class BlogEditsController extends BlogAppController {
 	public $components = array('Security', 'CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF));
 
 /**
+ * 実行前処理
+ * <pre>書き換えが発生するhidden項目をSecurityComponentのチェック対象除外にする処理</pre>
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function beforeFilter() {
+		parent::beforeFilter();
+		$this->Security->disabledFields = array('Blog.post_hierarchy', 'Blog.term_hierarchy', 'Blog.mail_hierarchy', 'Blog.comment_hierarchy', 'Blog.comment_mail_hierarchy');
+	}
+
+/**
  * ブログ編集画面
  * @param   void
  * @return  void

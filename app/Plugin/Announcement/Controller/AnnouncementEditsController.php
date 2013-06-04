@@ -33,6 +33,18 @@ class AnnouncementEditsController extends AnnouncementAppController {
 	public $components = array('Security', 'CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF));
 
 /**
+ * 実行前処理
+ * <pre>書き換えが発生するhidden項目をSecurityComponentのチェック対象除外にする処理</pre>
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function beforeFilter() {
+		parent::beforeFilter();
+		$this->Security->disabledFields = array('AnnouncementEdit.post_hierarchy');
+	}
+
+/**
  * お知らせ編集画面表示・登録
  * @param   void
  * @return  void
