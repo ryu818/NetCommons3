@@ -83,7 +83,6 @@
 					'data-ajax-dialog' => true,
 					'data-ajax-effect' => 'fold',
 					'data-ajax-dialog-options' => '{"title" : "'.$this->Js->escape(__d('content', 'List of blocks[%1$s]', h($val['Content']['title']))).'","modal": true, "resizable": true, "autoResize": true, "width":640}',
-					'data-ajax-effect' => 'fold'
 				)
 			);
 			$adminStr .= "&nbsp;|&nbsp;";
@@ -98,7 +97,6 @@
 				'data-ajax-dialog' => true,
 				'data-ajax-effect' => 'fold',
 				'data-ajax-dialog-options' => '{"title" : "'.$this->Js->escape(__d('content', 'Edit content[%1$s]', h($val['Content']['title']))).'","modal": true, "resizable": true, "autoResize": true, "width":440, "position":"mouse"}',
-				'data-ajax-effect' => 'fold'
 			)
 		);
 		$adminStr .= "&nbsp;|&nbsp;";

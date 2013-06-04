@@ -38,7 +38,6 @@
 						'data-ajax-dialog' => true,
 						'data-ajax-effect' => 'fold',
 						'data-ajax-dialog-options' => '{"title" : "'.$this->Js->escape(__('Pending [%s]', h($title))).'","modal": true, "resizable": true, "autoResize": true, "position":"mouse", "width":"600"}',
-						'data-ajax-effect' => 'fold'
 					));
 				?>
 			<?php elseif($blog_post['BlogPost']['status'] != NC_STATUS_PUBLISH): ?>
