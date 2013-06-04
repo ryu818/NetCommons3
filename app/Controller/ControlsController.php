@@ -49,7 +49,9 @@ class ControlsController extends AppController {
 
 		$referer = $this->referer();
 		$base_url = Router::url('/', true);
-		if(preg_match('/^'.preg_quote($base_url, '/').'/', $referer) && !preg_match('/\/users\/login$/', $referer)) {
+		// TODO:管理系の画面を１つでも動作させると、refererが管理系の画面となり管理終了時に元の画面には遷移しない。
+		if(preg_match('/^'.preg_quote($base_url, '/').'/', $referer) && !preg_match('/\/users\/login$/', $referer)
+			 && !preg_match('/'.preg_quote($base_url, '/').'active-controls\/.*/', $referer)  && !preg_match('/'.preg_quote($base_url, '/').'controls\/.*/', $referer)) {
 			$this->set('referer', $referer);
 		} else {
 			$this->set('referer', $base_url);
