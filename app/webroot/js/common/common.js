@@ -38,7 +38,8 @@
 		//      data-height:ajaxのレスポンスのtopノードにdata-heightがあれば、その高さでダイアログを表示する。
 		// カスタムイベント ajax:
 		// ajax:beforeSend - Ajaxリクエスト前に呼ばれる。falseを返せば処理を中断する。
-		// ajax:beforeSendのみ、return値(string or array)でURL及びdataの内容を上書き可。
+		// ajax:beforeSendのみ、return値(string or array)でURL及びdataの内容を上書き可。dataはマージ
+		//							string url or array('url' => string, 'data' => array) or array(0 => url string, 1 => data array)
 		// ajax:success - Ajaxリクエスト直後に呼ばれる。falseを返せば処理を中断する。
 		//        @param Event ajax:success event object
 		//        @param res ajax response
@@ -103,6 +104,11 @@
 						data = {};
 					} else {
 						data = $el.serializeArray();
+						var dataHash = new Object();
+						$(data).each(function(){
+							dataHash[this['name']] = this['value'];
+						});
+						data = dataHash;
 					}
 					is_form = true;
 				} else {
@@ -118,22 +124,6 @@
 			} else {
 				url = data_url ? data_url : url;
 			}
-			ret = $.Common.fire('ajax:beforeSend', [url, data], $el, e);
-			if (!ret) {
-				if(e) e.preventDefault();
-				return false
-			}
-			if(ret !== true) {
-				if(typeof ret == "string") {
-					url = ret;
-				} else if(ret['url']) {
-					url = ret['url'];
-					data = ret['data'] ? ret['data'] : data;
-				} else {
-					url = ret[0];
-					data = ret[0];
-				}
-			}
 			type = (type == 'GET' || type == 'get' || type == 'POST' || type == 'post') ? type.toLowerCase() : input_type.toLowerCase();
 			if(data_serialize == true && type == 'post' && Object.keys(data).length == 0) {
 				if(!is_form) {
@@ -142,7 +132,32 @@
 						// Postでデータが空でparentにFormタグがあれば、シリアライズしてセット
 						// Token等を含める
 						data = $form.serializeArray();
+						var dataHash = new Object();
+						$(data).each(function(){
+							dataHash[this['name']] = this['value'];
+						});
+						data = dataHash;
 					}
+				}
+			}
+			ret = $.Common.fire('ajax:beforeSend', [url, data], $el, e);
+			if (!ret) {
+				if(e) e.preventDefault();
+				return false
+			}
+			if(ret !== true) {
+				if(typeof ret == "string") {
+					url = ret;
+				} else if(ret['url'] || ret['data']) {
+					if((ret['url'] != undefined))
+						url = ret['url'];
+					if((ret['data'] != undefined)) {
+
+					}
+					data = $.extend({}, data, ret['data']);
+				} else {
+					url = ret[0];
+					data = $.extend({}, data, ret[1]);
 				}
 			}
 			if(data_data) {
