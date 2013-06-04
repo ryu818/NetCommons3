@@ -10,7 +10,7 @@
 					$block['Block']['hierarchy'] = $page['Authority']['hierarchy'];
 				}
 				$params = array('block_type' => 'active-blocks', 'block_id' => $block['Block']['id']);
-				$requestActionOptions = array('return');
+				$requestActionOptions = array('return', 'requested' => _OFF);	// Tokenがrequested=1の場合、セットされないため1をセット
 				if(!empty($this->params['active_plugin']) && $block['Block']['id'] == $this->params['block_id']) {
 					$is_active = true;
 					Configure::delete(NC_SYSTEM_KEY.'.nc_not_active');
