@@ -145,14 +145,6 @@ class Blog extends AppModel
 					'message' => __('The input must be a boolean.')
 				)
 			),
-			'comment_members_only' => array(
-				'boolean'  => array(
-					'rule' => array('boolean'),
-					'last' => true,
-					'required' => true,
-					'message' => __('The input must be a boolean.')
-				)
-			),
 			'comment_required_name' => array(
 				'boolean'  => array(
 					'rule' => array('boolean'),
@@ -177,6 +169,7 @@ class Blog extends AppModel
 				),
 				'inList' => array(
 					'rule' => array('inList', array(
+						NC_AUTH_GUEST,
 						NC_AUTH_MIN_GENERAL,
 						NC_AUTH_MIN_MODERATE,
 						NC_AUTH_MIN_CHIEF,
@@ -396,7 +389,6 @@ class Blog extends AppModel
 				'mail_subject' => __d('blog', "[{X-SITE_NAME}]Blog({X-ROOM} {X-CONTENT_NAME} {X-SUBJECT})"),
 				'mail_body' => __d('blog', "You are receiving this email because a message was posted to Blog.\nRoom's name:{X-ROOM}\nBlog title:{X-CONTENT_NAME}\ntitle:{X-SUBJECT}\nuser:{X-USER}\ndate:{X-TO_DATE}\n\n\n{X-BODY}\n\nClick on the link below to reply to this article.\n{X-URL}"),
 				'comment_flag' => _ON,
-				'comment_members_only' => _ON,
 				'comment_required_name' => _ON,
 				'comment_image_auth' => _OFF,
 				'comment_hierarchy' => NC_AUTH_MIN_GENERAL,
