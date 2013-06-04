@@ -513,20 +513,28 @@ class BlogController extends BlogAppController {
 			return;
 		}
 
+		$blogPost = $this->BlogPost->findById($postId);
+		if(empty($blogPost)) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPost.vote.003', '500');
+			return;
+		}
+		$blog = $this->Blog->findByContentId($blogPost['BlogPost']['content_id']);
+		if(empty($blog)) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPost.vote.004', '500');
+			return;
+		}
+
 		$userId = $this->Auth->user('id');
 		// behaviorを利用して更新
 		if(!$this->BlogPost->voting($postId, $userId)){
 			$this->flash(__('Failed to update the database, (%s).', 'blog_posts'), null, 'BlogPost.vote.002', '500');
 			return;
 		}
+
 		$this->Session->setFlash(__('Has been successfully updated.'));
 		$this->Session->write('Blog.vote.'.$userId.'.'.$postId, true);
 
-		$blogPost = $this->BlogPost->findById($postId);
-		if(empty($blogPost)) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPost.vote.003', '500');
-			return;
-		}
+		$this->set('blog', $blog);
 		$this->set('blog_post', $blogPost);
 		$this->render('Elements/blog/detail_footer');
 	}
