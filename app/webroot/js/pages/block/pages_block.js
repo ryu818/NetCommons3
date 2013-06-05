@@ -989,11 +989,11 @@
 					}
 			);
 		},
-		delBlockConfirm: function(event, block_id, all_delete_flag, confirm) {
+		delBlockConfirm: function(event, a, block_id, all_delete_flag, confirm) {
 			var t = this;
 
 			var all_delete = (all_delete_flag) ? __d('pages', 'You completely delete it.') : null;
-			var pos = $(event.target).offset();
+			var pos = $(a).offset();	// IE8でエラーになったため、event.targetで取得しない。
 			var ok = __('Ok') ,cancel = __('Cancel');
 
 			if(all_delete) {
