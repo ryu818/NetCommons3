@@ -14,7 +14,7 @@
 		</ul>
 		<?php echo($this->element('/common/paginator', array('options' => $queryOptions))); ?>
 	<?php endif; ?>
-	<?php if ($blog['Blog']['comment_flag']):?>
+	<?php if ($blog['Blog']['comment_flag'] && $this->CheckAuth->checkAuth($hierarchy,  $blog['Blog']['comment_hierarchy'])):?>
 		<?php echo $this->element('blog/comment_respond', array('blog_post' => $blog_post, 'edit' => false)); ?>
 	<?php endif;?>
 </article>

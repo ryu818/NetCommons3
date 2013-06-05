@@ -21,6 +21,18 @@ class BlogEditsController extends BlogAppController {
 	public $components = array('Security', 'CheckAuth' => array('allowAuth' => NC_AUTH_CHIEF));
 
 /**
+ * 実行前処理
+ * <pre>書き換えが発生するhidden項目をSecurityComponentのチェック対象除外にする処理</pre>
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function beforeFilter() {
+		parent::beforeFilter();
+		$this->Security->disabledFields = array('Blog.post_hierarchy', 'Blog.term_hierarchy', 'Blog.mail_hierarchy', 'Blog.comment_hierarchy', 'Blog.comment_mail_hierarchy');
+	}
+
+/**
  * ブログ編集画面
  * @param   void
  * @return  void
@@ -52,7 +64,7 @@ class BlogEditsController extends BlogAppController {
 			$fieldLists = array(
 				0 => array('post_hierarchy', 'term_hierarchy', 'vote_flag', 'term_hierarchy', 'sns_flag', 'new_period',
 							'mail_flag', 'mail_hierarchy', 'mail_subject', 'mail_body',),
-				1 => array('comment_flag', 'comment_members_only', 'comment_required_name', 'comment_image_auth', 'comment_hierarchy',
+				1 => array('comment_flag', 'comment_hierarchy', 'comment_required_name', 'comment_image_auth',
 							'comment_mail_flag', 'comment_mail_hierarchy', 'comment_mail_subject', 'comment_mail_body',),
 				2 => array('trackback_transmit_flag', 'trackback_transmit_article', 'trackback_receive_flag', 'transmit_blog_name',),
 				3 => array('approved_flag', 'approved_pre_change_flag', 'approved_mail_flag', 'approved_mail_subject', 'approved_mail_body',

@@ -90,11 +90,11 @@
 						<dl>
 							<dt>
 								<?php echo $this->Form->label('BlogComment.author', __('Name'), array('for' => $authorId)) ?>
-								<?php
-									if($is_required_name){
-										echo $this->Html->tag('span', __('*'), array('class' => 'BlogComment.required'));
-									}
-								?>
+								<?php if($is_required_name): ?>
+									<span class="require">
+										<?php echo __('*');?>
+									</span>
+								<?php endif;?>
 							</dt>
 							<dd>
 								<?php echo $this->Form->input('BlogComment.author', $authorSettings); ?>
@@ -105,11 +105,11 @@
 						<dl>
 							<dt>
 								<?php echo $this->Form->label('BlogComment.author_email', __('E-mail'), array('for' => $authorEmailId)); ?>
-								<?php
-									if($is_required_name){
-										echo $this->Html->tag('span', __('*'), array('class' => 'BlogComment.required'));
-									}
-								?>
+								<?php if($is_required_name): ?>
+									<span class="require">
+										<?php echo __('*');?>
+									</span>
+								<?php endif;?>
 							</dt>
 							<dd>
 								<?php echo $this->Form->input('BlogComment.author_email', $emailSettings); ?>

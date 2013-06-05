@@ -210,40 +210,30 @@ $this->extend('/Frame/block');
 										'div' => false,
 										'legend' => false,
 									));
-									?>
-									<div class="hr">
+								?>
+								<div class="hr">
 									<?php
-									echo $this->Form->input('Blog.comment_members_only',array(
-										'type' => 'checkbox',
-										'value' => intval($blog['Blog']['comment_members_only']),
-										'label' => __d('blog', 'Users must be logged in to comment.'),
-									));
-									echo $this->Form->input('Blog.comment_required_name',array(
-										'type' => 'checkbox',
-										'value' => intval($blog['Blog']['comment_required_name']),
-										'label' => __d('blog', 'For non-members, comment author must fill out name and e-mail.'),
-									));
-									echo $this->Form->input('Blog.comment_image_auth',array(
-										'type' => 'checkbox',
-										'value' => intval($blog['Blog']['comment_image_auth']),
-										'label' => __d('blog', 'Use image authentication?'),
-									));
+										echo $this->Form->label('Blog.comment_hierarchy', __d('blog', 'Authority to post comments:'));
+										echo $this->Form->authoritySlider('Blog.comment_hierarchy', array('value' => $blog['Blog']['comment_hierarchy'], 'display_guest' => true));
 									?>
+									<div class="note">
+										<?php echo __d('blog', 'If set to guest, users can comment without logged in.'); ?>
 									</div>
-							</dd>
-						</dl>
-					</li>
-					<li>
-						<dl>
-							<dt>
-								<?php
-									echo $this->Form->label('Blog.comment_hierarchy', __d('blog', 'Authority to post comments'));
-								?>
-							</dt>
-							<dd>
-								<?php
-									echo $this->Form->authoritySlider('Blog.comment_hierarchy', array('value' => $blog['Blog']['comment_hierarchy']));
-								?>
+									<?php
+										echo $this->Form->input('Blog.comment_required_name',array(
+											'type' => 'checkbox',
+											'value' => _ON,
+											'checked' => !empty($blog['Blog']['comment_required_name']) ? true : false,
+											'label' => __d('blog', 'For non-members, comment author must fill out name and e-mail.'),
+										));
+										echo $this->Form->input('Blog.comment_image_auth',array(
+											'type' => 'checkbox',
+											'value' => _ON,
+											'checked' => !empty($blog['Blog']['comment_image_auth']) ? true : false,
+											'label' => __d('blog', 'Use image authentication?'),
+										));
+									?>
+								</div>
 							</dd>
 						</dl>
 					</li>
@@ -315,7 +305,8 @@ $this->extend('/Frame/block');
 								<?php
 									echo $this->Form->input('Blog.trackback_transmit_flag',array(
 										'type' => 'checkbox',
-										'value' => intval($blog['Blog']['trackback_transmit_flag']),
+										'value' => _ON,
+										'checked' => !empty($blog['Blog']['trackback_transmit_flag']) ? true : false,
 										'label' => __d('blog', 'Transmit trackbacks?'),
 									));
 								?>
@@ -323,7 +314,8 @@ $this->extend('/Frame/block');
 								<?php
 									echo $this->Form->input('Blog.trackback_transmit_article',array(
 										'type' => 'checkbox',
-										'value' => intval($blog['Blog']['trackback_transmit_article']),
+										'value' => _ON,
+										'checked' => !empty($blog['Blog']['trackback_transmit_article']) ? true : false,
 										'label' => __d('blog', 'Attempt to trackbacks any blogs linked to from the article.'),
 									));
 									$settings = array(
@@ -347,7 +339,8 @@ $this->extend('/Frame/block');
 								<?php
 									echo $this->Form->input('Blog.trackback_receive_flag',array(
 										'type' => 'checkbox',
-										'value' => intval($blog['Blog']['trackback_receive_flag']),
+										'value' => _ON,
+										'checked' => !empty($blog['Blog']['trackback_receive_flag']) ? true : false,
 										'label' => __d('blog', 'Recieve trackbacks?'),
 									));
 								?>

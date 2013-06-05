@@ -431,7 +431,7 @@ class BlogController extends BlogAppController {
 	}
 
 /**
- * 最近のコメント表示
+ * 承認済みの最近のコメント表示
  * @param   integer $contentId
  * @param   integer $visibleItem
  * @return  void
@@ -439,7 +439,9 @@ class BlogController extends BlogAppController {
  */
 	protected function _recentComments($contentId, $visibleItem) {
 		$userId = $this->Auth->user('id');
-		$this->set('blog_recent_comments', $this->BlogComment->recentComments($contentId, $visibleItem, $this->BlogPost->getConditions($contentId, $userId, $this->hierarchy)));
+		$conditions = $this->BlogPost->getConditions($contentId, $userId, $this->hierarchy);
+		$conditions = array_merge($conditions, array('BlogComment.is_approved' => NC_APPROVED_FLAG_ON));
+		$this->set('blog_recent_comments', $this->BlogComment->recentComments($contentId, $visibleItem, $conditions));
 	}
 
 /**
@@ -513,20 +515,28 @@ class BlogController extends BlogAppController {
 			return;
 		}
 
+		$blogPost = $this->BlogPost->findById($postId);
+		if(empty($blogPost)) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPost.vote.003', '500');
+			return;
+		}
+		$blog = $this->Blog->findByContentId($blogPost['BlogPost']['content_id']);
+		if(empty($blog)) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPost.vote.004', '500');
+			return;
+		}
+
 		$userId = $this->Auth->user('id');
 		// behaviorを利用して更新
 		if(!$this->BlogPost->voting($postId, $userId)){
 			$this->flash(__('Failed to update the database, (%s).', 'blog_posts'), null, 'BlogPost.vote.002', '500');
 			return;
 		}
+
 		$this->Session->setFlash(__('Has been successfully updated.'));
 		$this->Session->write('Blog.vote.'.$userId.'.'.$postId, true);
 
-		$blogPost = $this->BlogPost->findById($postId);
-		if(empty($blogPost)) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPost.vote.003', '500');
-			return;
-		}
+		$this->set('blog', $blog);
 		$this->set('blog_post', $blogPost);
 		$this->render('Elements/blog/detail_footer');
 	}

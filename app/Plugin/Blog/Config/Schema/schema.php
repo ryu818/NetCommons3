@@ -152,7 +152,6 @@ class BlogSchema extends CakeSchema {
 		'mail_subject' => array('type' => 'string', 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'mail_body' => array('type' => 'text', 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'comment_flag' => array('type' => 'integer', 'null' => false, 'default' => '1', 'length' => 3),
-		'comment_members_only' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
 		'comment_required_name' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
 		'comment_image_auth' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'comment_hierarchy' => array('type' => 'integer', 'null' => false, 'default' => '101'),
