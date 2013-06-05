@@ -431,7 +431,7 @@ class BlogController extends BlogAppController {
 	}
 
 /**
- * 最近のコメント表示
+ * 承認済みの最近のコメント表示
  * @param   integer $contentId
  * @param   integer $visibleItem
  * @return  void
@@ -439,7 +439,9 @@ class BlogController extends BlogAppController {
  */
 	protected function _recentComments($contentId, $visibleItem) {
 		$userId = $this->Auth->user('id');
-		$this->set('blog_recent_comments', $this->BlogComment->recentComments($contentId, $visibleItem, $this->BlogPost->getConditions($contentId, $userId, $this->hierarchy)));
+		$conditions = $this->BlogPost->getConditions($contentId, $userId, $this->hierarchy);
+		$conditions = array_merge($conditions, array('BlogComment.is_approved' => NC_APPROVED_FLAG_ON));
+		$this->set('blog_recent_comments', $this->BlogComment->recentComments($contentId, $visibleItem, $conditions));
 	}
 
 /**
