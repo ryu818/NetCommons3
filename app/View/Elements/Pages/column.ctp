@@ -27,6 +27,7 @@
 					$is_active = false;
 					Configure::write(NC_SYSTEM_KEY.'.nc_not_active' , true);
 					$params = array_merge($params, $this->Common->explodeControllerAction($block['Block']['controller_action']));
+					$requestActionOptions['chktoken'] = false;
 				}
 
 				Configure::write(NC_SYSTEM_KEY.'.block', $block);
