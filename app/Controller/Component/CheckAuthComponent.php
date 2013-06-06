@@ -750,28 +750,34 @@ class CheckAuthComponent extends Component {
 /**
  * 編集権限があるかどうか
  * @param   integer $roomHierarchy ログイン会員のroomにおけるhierarchy
- * @param   integer $adminPostHierarchy 管理画面における記事投稿権限hierarchy
+ * @param   integer $editPostHierarchy 編集画面における記事投稿権限hierarchy
  * @param   integer $postUserId 記事投稿者user_id
  * @param   integer $postHierarchy 記事投稿者hierarchy
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	public function isEdit($roomHierarchy, $adminPostHierarchy = null, $postUserId = null, $postHierarchy = null) {
+	public function isEdit($roomHierarchy, $editPostHierarchy = null, $postUserId = null, $postHierarchy = null) {
 		// TODO:Helperに同じメソッドが存在する。
 		$isEdit = true;
-		if(isset($adminPostHierarchy)) {
-			if($roomHierarchy < $adminPostHierarchy) {
+		if(isset($editPostHierarchy)) {
+			if($roomHierarchy < $editPostHierarchy) {
 				return false;
 			}
 		}
-		if(isset($postUserId)) {
+		if(!empty($postUserId)) {
 			$user = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 			if(isset($user) && $user['id'] == $postUserId) {
 				return true;
 			}
 		}
 		if(isset($postHierarchy)) {
-			if($roomHierarchy >= NC_AUTH_MIN_MODERATE) {
+			if($postHierarchy <= NC_AUTH_GUEST) {
+				if($roomHierarchy >= NC_AUTH_MIN_CHIEF) {
+					$isEdit = true;
+				} else {
+					$isEdit = false;
+				}
+			} else if($roomHierarchy >= NC_AUTH_MIN_MODERATE) {
 				if($roomHierarchy >= $postHierarchy) {
 					$isEdit = true;
 				} else {
