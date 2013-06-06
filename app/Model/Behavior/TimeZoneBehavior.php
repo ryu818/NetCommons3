@@ -36,7 +36,7 @@ class TimeZoneBehavior extends ModelBehavior {
 			$format =  __('Y-m-d H:i:s');
 		}
 		if ($timeUtc === null) {
-			$timeUtc = gmdate($format);
+			$timeUtc = gmdate(NC_VALIDATOR_DATE_TIME);
 		} else {
 			$timeUtc = date(NC_VALIDATOR_DATE_TIME, strtotime($timeUtc));
 		}
