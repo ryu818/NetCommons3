@@ -301,7 +301,6 @@
 この記事に返信するには、下記アドレスへ。
 {X-URL}</column>
         <column name="comment_flag">1</column>
-        <column name="comment_members_only">0</column>
         <column name="comment_required_name">0</column>
         <column name="comment_image_auth">0</column>
         <column name="comment_hierarchy">101</column>
@@ -333,6 +332,7 @@
 内容を確認するには下記のリンクをクリックして下さい。
 {X-URL}</column>
         <column name="comment_approved_flag">0</column>
+        <column name="trackback_approved_flag">0</column>
         <column name="comment_approved_mail_flag">0</column>
         <column name="comment_approved_mail_subject">[{X-SITE_NAME}] [{X-CONTENT_NAME}] Comment, trackback Approval completion notice</column>
         <column name="comment_approved_mail_body">[{X-SITE_NAME}] [{X-CONTENT_NAME}] におけるブログのコメントとトラックバックの承認が完了しました。
