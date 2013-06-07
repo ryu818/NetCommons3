@@ -5682,7 +5682,7 @@ e-mail：{X-EMAIL}
         <column name="is_approved_pointer">1</column>
         <column name="revision_name">publish</column>
         <column name="content_id">18</column>
-        <column name="content">&lt;img alt=&quot;NetCommons&quot; title=&quot;NetCommons&quot; src=&quot;/dev/kohama/nc3/img/install/logo.gif&quot;&gt;</column>
+        <column name="content">&lt;img alt=&quot;NetCommons&quot; title=&quot;NetCommons&quot; src=&quot;{NC_WEBROOT}img/install/logo.gif&quot;&gt;</column>
         <column name="created">2013-05-01 04:10:22</column>
         <column name="created_user_id">1</column>
         <column name="created_user_name">admin</column>
