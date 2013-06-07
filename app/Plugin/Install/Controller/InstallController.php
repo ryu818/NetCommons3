@@ -472,7 +472,7 @@ class InstallController extends Controller {
 
 		$result = $unserializer->unserialize($xml, true);
 		//
-		if (empty($result) || PEAR::isError($result)) {
+		if (empty($result) || @PEAR::isError($result)) {
 			$this->set("failure_datas", true);
 			return;
 		}
