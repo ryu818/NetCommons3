@@ -1138,7 +1138,8 @@ IEで、iframe中のbodyのborderがつくから削除していると
             		// １行選択してdelete(backspace)ボタン、
             		// または、1行にわたるNodeを選択してdelete(backspace)
             		// ボタンを押すと、そのelementが削除されないため対処
-					var data = null, p, pre_p, cur_flag, r = self.getRange(), f = self.getSelectNode();
+            		// ->ChromeでStringのバックスペースでカーソルが行の先頭に移動してしまうためコメントに。
+					/*var data = null, p, pre_p, cur_flag, r = self.getRange(), f = self.getSelectNode();
 					switch (r.startContainer.nodeType) {
 					    case 3:
 					    case 4:
@@ -1167,7 +1168,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 						self.setRange(r);
                   	}
                   	// 削除後、さらに入力すると削除前のスタイルが残ってしまうため対処
-                  	setTimeout(function() {self.collapse();}, 100);
+                  	setTimeout(function() {self.collapse();}, 100);*/
 				}
             	if(e.ctrlKey && e.keyCode == 90) {
             		// undo
