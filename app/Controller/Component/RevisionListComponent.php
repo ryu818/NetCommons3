@@ -439,7 +439,8 @@ class RevisionListComponent extends Component {
 					$Revision->updateAll($fields, $conditions);
 
 					$fields = array(
-						'Revision.pointer' => _ON
+						'Revision.pointer' => _ON,
+						'Revision.is_approved_pointer' => _ON
 					);
 					$conditions = array(
 						"Revision.id" => $revision[0]['Revision']['id'],
