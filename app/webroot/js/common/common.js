@@ -967,7 +967,7 @@
 				checkboxList.removeAttr('checked');
 			} else {
 				input.attr('data-allchecked', 1);
-				checkboxList.click();	//.attr('checked', true) 会員管理で再度、全選択した場合にFirefoxで選択されなかったためClickへ変更。
+				checkboxList.removeAttr('checked').click();	//.attr('checked', true) 会員管理で再度、全選択した場合にFirefoxで選択されなかったためClickへ変更。
 			}
 		},
 
