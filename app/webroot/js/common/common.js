@@ -30,6 +30,7 @@
 		// data-ajax-data: postする場合のdataのhash配列を文字列に変換したものをセットすることにより、POSTのdataを送信することができる。
 		// data-ajax-effect: 遷移時effect
 		// data-ajax-confirm: メッセージをValueに設定すると確認ダイアログ表示
+		// data-ajax-confirm-again: メッセージをValueに設定すると再度確認ダイアログ表示
 		// data-ajax-dialog: ダイアログとして表示する場合、true trueの場合、data-ajaxが指定dialogTopのid属性となる。
 		// data-ajax-dialog-class: ダイアログとして表示した場合のダイアログクラス名
 		// data-ajax-dialog-options: ダイアログとして表示した場合のダイアログオプション jquery dialogのoptionsをhash配列を文字列に変換したもの
@@ -52,11 +53,12 @@
 		// options：ajax時のoptions マージされる
 		ajax : function(e, el, params, options, _confirm, _force_url) {
 			var data_pjax, top, url, data = {}, input_type, type, params, is_form, ret, data_url, data_serialize, default_options;
-			var target_pjax, confirm, is_pjax;
+			var target_pjax, confirm, confirm_again, is_pjax;
 			var $el = $(el), buf_options = options;
 			if(params != undefined && params != null) {
 				target_pjax =  params['data-pjax'];
 				confirm = (typeof _confirm == "undefined") ? params['data-ajax-confirm'] : _confirm;
+				confirm_again = params['data-ajax-confirm-again'];
 				type = params['data-ajax-type'];
 				data_url = params['data-ajax-url'];
 				data_serialize = params['data-ajax-serialize'];
@@ -64,6 +66,7 @@
 			} else {
 				target_pjax =  $el.attr("data-pjax");
 				confirm = (typeof _confirm == "undefined") ? $el.attr("data-ajax-confirm") : _confirm;
+				confirm_again = $el.attr("data-ajax-confirm-again");
 				type = $el.attr("data-ajax-type");
 				data_url = $el.attr("data-ajax-url");
 				data_serialize = $el.attr("data-ajax-serialize");
@@ -84,7 +87,8 @@
 				}, _buttons = {}, dialog_params = new Object();
 				_buttons[ok] = function(){
 					$( this ).remove();
-					$.Common.ajax(e, $el, params, options, false);
+					_confirm = (confirm_again != _confirm && confirm_again) ? confirm_again : false;
+					$.Common.ajax(e, $el, params, options, _confirm);
 				};
 				_buttons[cancel] = function(){
 					$( this ).remove();
@@ -939,6 +943,31 @@
 			});
 			if(disable) {
 				slider.slider( "disable" );
+			}
+		},
+
+
+/**
+ * 全選択チェックボックスクリック
+ * @param   element input
+ * 		data-switch-value属性があれば、labelを切替える
+ * @param   elements checkboxList チェックボックスのelementのリスト
+ * @return  void
+ */
+		allChecked : function(input, checkboxList) {
+			input = $(input);
+			var switch_value = input.attr('data-switch-value');
+			var allchecked = input.attr('data-allchecked');
+			if(switch_value) {
+				input.attr('data-switch-value', input.val());
+				input.val(switch_value);
+			}
+			if(allchecked) {
+				input.removeAttr('data-allchecked');
+				checkboxList.removeAttr('checked');
+			} else {
+				input.attr('data-allchecked', 1);
+				checkboxList.click();	//.attr('checked', true) 会員管理で再度、全選択した場合にFirefoxで選択されなかったためClickへ変更。
 			}
 		},
 
