@@ -180,7 +180,7 @@ div.message {
 	position: fixed;
 	left: 0;
 	top: 0;
-	z-index: 991;
+	z-index: 3000;
 	width:100%;
 	color: #333333;
 	font-size:116%;
