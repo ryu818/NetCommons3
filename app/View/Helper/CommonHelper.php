@@ -8,6 +8,7 @@
  * @since         v 3.0.0.0
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
+App::uses('AppHelper', 'View/Helper');
 class CommonHelper extends AppHelper {
 /**
  * Page.controller_actionを分解し、配列を返す
