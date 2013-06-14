@@ -15,7 +15,7 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Test.Case.Console.Command.Task
  * @since         CakePHP(tm) v 1.3
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 App::uses('ShellDispatcher', 'Console');
@@ -102,7 +102,7 @@ class DbConfigTaskTest extends CakeTestCase {
 		$this->Task->expects($this->once())->method('_stop');
 		$this->Task->expects($this->at(0))->method('in')->will($this->returnValue('default')); //name
 		$this->Task->expects($this->at(1))->method('in')->will($this->returnValue('mysql')); //db type
-		$this->Task->expects($this->at(2))->method('in')->will($this->returnValue('n')); //persistant
+		$this->Task->expects($this->at(2))->method('in')->will($this->returnValue('n')); //persistent
 		$this->Task->expects($this->at(3))->method('in')->will($this->returnValue('localhost')); //server
 		$this->Task->expects($this->at(4))->method('in')->will($this->returnValue('n')); //port
 		$this->Task->expects($this->at(5))->method('in')->will($this->returnValue('root')); //user

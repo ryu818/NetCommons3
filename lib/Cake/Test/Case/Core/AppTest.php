@@ -15,7 +15,7 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Test.Case.Core
  * @since         CakePHP(tm) v 2.0
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 /**
@@ -97,7 +97,7 @@ class AppTest extends CakeTestCase {
 	}
 
 /**
- * tests that it is possible to set up paths using the cake 1.3 notation for them (models, behaviors, controllers...)
+ * tests that it is possible to set up paths using the CakePHP 1.3 notation for them (models, behaviors, controllers...)
  *
  * @return void
  */

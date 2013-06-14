@@ -15,8 +15,9 @@
  * @link          http://book.cakephp.org/2.0/en/development/testing.html CakePHP(tm) Tests
  * @package       Cake.TestSuite
  * @since         CakePHP(tm) v 1.2.0.4667
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
+
 App::uses('CakeFixtureManager', 'TestSuite/Fixture');
 App::uses('CakeTestFixture', 'TestSuite/Fixture');
 
@@ -43,7 +44,11 @@ abstract class CakeTestCase extends PHPUnit_Framework_TestCase {
 	public $autoFixtures = true;
 
 /**
+ * Control table create/drops on each test method.
+ *
  * Set this to false to avoid tables to be dropped if they already exist
+ * between each test method. Tables will still be dropped at the
+ * end of each test runner execution.
  *
  * @var boolean
  */
@@ -205,7 +210,7 @@ abstract class CakeTestCase extends PHPUnit_Framework_TestCase {
 		}
 		$args = func_get_args();
 		foreach ($args as $class) {
-			$this->fixtureManager->loadSingle($class);
+			$this->fixtureManager->loadSingle($class, null, $this->dropTables);
 		}
 	}
 

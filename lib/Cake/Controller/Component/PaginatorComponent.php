@@ -15,8 +15,9 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Controller.Component
  * @since         CakePHP(tm) v 2.0
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
+
 App::uses('Component', 'Controller');
 App::uses('Hash', 'Utility');
 
@@ -212,6 +213,9 @@ class PaginatorComponent extends Component {
 		$pageCount = intval(ceil($count / $limit));
 		$requestedPage = $page;
 		$page = max(min($page, $pageCount), 1);
+		if ($requestedPage > $page) {
+			throw new NotFoundException();
+		}
 
 		$paging = array(
 			'page' => $page,
@@ -233,10 +237,6 @@ class PaginatorComponent extends Component {
 			(array)$this->Controller->request['paging'],
 			array($object->alias => $paging)
 		);
-
-		if ($requestedPage > $page) {
-			throw new NotFoundException();
-		}
 
 		if (
 			!in_array('Paginator', $this->Controller->helpers) &&
@@ -372,6 +372,7 @@ class PaginatorComponent extends Component {
 			$field = key($options['order']);
 			if (!in_array($field, $whitelist)) {
 				$options['order'] = null;
+				return $options;
 			}
 		}
 
@@ -383,10 +384,11 @@ class PaginatorComponent extends Component {
 				if (strpos($key, '.') !== false) {
 					list($alias, $field) = explode('.', $key);
 				}
+				$correctAlias = ($object->alias == $alias);
 
-				if ($object->hasField($field)) {
-					$order[$alias . '.' . $field] = $value;
-				} elseif ($object->hasField($key, true)) {
+				if ($correctAlias && $object->hasField($field)) {
+					$order[$object->alias . '.' . $field] = $value;
+				} elseif ($correctAlias && $object->hasField($key, true)) {
 					$order[$field] = $value;
 				} elseif (isset($object->{$alias}) && $object->{$alias}->hasField($field, true)) {
 					$order[$alias . '.' . $field] = $value;

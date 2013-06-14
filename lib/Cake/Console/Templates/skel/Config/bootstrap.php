@@ -21,7 +21,7 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       app.Config
  * @since         CakePHP(tm) v 0.10.8.2117
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 // Setup a 'default' cache configuration for use in the application.
@@ -73,7 +73,7 @@ Cache::config('default', array('engine' => 'File'));
  */
 
 /**
- * You can attach event listeners to the request lifecyle as Dispatcher Filter . By Default CakePHP bundles two filters:
+ * You can attach event listeners to the request lifecycle as Dispatcher Filter . By Default CakePHP bundles two filters:
  *
  * - AssetDispatcher filter will serve your asset files (css, images, js, etc) from your themes and plugins
  * - CacheDispatcher filter will read the Cache.check configure variable and try to serve cached content generated from controllers

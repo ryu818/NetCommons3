@@ -15,7 +15,7 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.View.Helper
  * @since         CakePHP(tm) v 0.9.1
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 App::uses('AppHelper', 'View/Helper');
@@ -98,8 +98,8 @@ class HtmlHelper extends AppHelper {
 		'ol' => '<ol%s>%s</ol>',
 		'li' => '<li%s>%s</li>',
 		'error' => '<div%s>%s</div>',
-		'javascriptblock' => '<script type="text/javascript"%s>%s</script>',
-		'javascriptstart' => '<script type="text/javascript">',
+		'javascriptblock' => '<script%s>%s</script>',
+		'javascriptstart' => '<script>',
 		'javascriptlink' => '<script type="text/javascript" src="%s"%s></script>',
 		'javascriptend' => '</script>'
 	);
@@ -398,6 +398,7 @@ class HtmlHelper extends AppHelper {
  * - `block` Set the name of the block link/style tag will be appended to. This overrides the `inline`
  *   option.
  * - `plugin` False value will prevent parsing path as a plugin
+ * - `fullBase` If true the url will get a full address for the css file.
  *
  * @param string|array $path The name of a CSS style sheet or an array containing names of
  *   CSS stylesheets. If `$path` is prefixed with '/', the path will be relative to the webroot
@@ -429,6 +430,7 @@ class HtmlHelper extends AppHelper {
 			$url = $path;
 		} else {
 			$url = $this->assetUrl($path, $options + array('pathPrefix' => CSS_URL, 'ext' => '.css'));
+			$options = array_diff_key($options, array('fullBase' => null));
 
 			if (Configure::read('Asset.filter.css')) {
 				$pos = strpos($url, CSS_URL);
@@ -488,6 +490,7 @@ class HtmlHelper extends AppHelper {
  * - `once` Whether or not the script should be checked for uniqueness. If true scripts will only be
  *   included once, use false to allow the same script to be included more than once per request.
  * - `plugin` False value will prevent parsing path as a plugin
+ * - `fullBase` If true the url will get a full address for the script file.
  *
  * @param string|array $url String or array of javascript files to include
  * @param array|boolean $options Array of options, and html attributes see above. If boolean sets $options['inline'] = value
@@ -523,6 +526,7 @@ class HtmlHelper extends AppHelper {
 
 		if (strpos($url, '//') === false) {
 			$url = $this->assetUrl($url, $options + array('pathPrefix' => JS_URL, 'ext' => '.js'));
+			$options = array_diff_key($options, array('fullBase' => null));
 
 			if (Configure::read('Asset.filter.js')) {
 				$url = str_replace(JS_URL, 'cjs/', $url);
@@ -556,7 +560,7 @@ class HtmlHelper extends AppHelper {
  * @link http://book.cakephp.org/2.0/en/core-libraries/helpers/html.html#HtmlHelper::scriptBlock
  */
 	public function scriptBlock($script, $options = array()) {
-		$options += array('safe' => true, 'inline' => true);
+		$options += array('type' => 'text/javascript', 'safe' => true, 'inline' => true);
 		if ($options['safe']) {
 			$script = "\n" . '//<![CDATA[' . "\n" . $script . "\n" . '//]]>' . "\n";
 		}
@@ -781,7 +785,7 @@ class HtmlHelper extends AppHelper {
  */
 	public function image($path, $options = array()) {
 		$path = $this->assetUrl($path, $options + array('pathPrefix' => IMAGES_URL));
-		$options = array_diff_key($options, array('fullBase' => '', 'pathPrefix' => ''));
+		$options = array_diff_key($options, array('fullBase' => null, 'pathPrefix' => null));
 
 		if (!isset($options['alt'])) {
 			$options['alt'] = '';
@@ -892,6 +896,9 @@ class HtmlHelper extends AppHelper {
  * @link http://book.cakephp.org/2.0/en/core-libraries/helpers/html.html#HtmlHelper::tag
  */
 	public function tag($name, $text = null, $options = array()) {
+		if (empty($name)) {
+			return $text;
+		}
 		if (is_array($options) && isset($options['escape']) && $options['escape']) {
 			$text = h($text);
 			unset($options['escape']);
@@ -1020,7 +1027,7 @@ class HtmlHelper extends AppHelper {
  * - `tag` Type of media element to generate, either "audio" or "video".
  * 	If tag is not provided it's guessed based on file's mime type.
  * - `text` Text to include inside the audio/video tag
- * - `pathPrefix` Path prefix to use for relative urls, defaults to 'files/'
+ * - `pathPrefix` Path prefix to use for relative URLs, defaults to 'files/'
  * - `fullBase` If provided the src attribute will get a full address including domain name
  *
  * @param string|array $path Path to the video file, relative to the webroot/{$options['pathPrefix']} directory.
@@ -1085,10 +1092,10 @@ class HtmlHelper extends AppHelper {
 		$text = $options['text'];
 
 		$options = array_diff_key($options, array(
-			'tag' => '',
-			'fullBase' => '',
-			'pathPrefix' => '',
-			'text' => ''
+			'tag' => null,
+			'fullBase' => null,
+			'pathPrefix' => null,
+			'text' => null
 		));
 		return $this->tag($tag, $text, $options);
 	}

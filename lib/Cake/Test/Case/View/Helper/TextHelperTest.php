@@ -15,12 +15,17 @@
  * @link          http://book.cakephp.org/2.0/en/development/testing.html CakePHP(tm) Tests
  * @package       Cake.Test.Case.View.Helper
  * @since         CakePHP(tm) v 1.2.0.4206
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 App::uses('View', 'View');
 App::uses('TextHelper', 'View/Helper');
 
+/**
+ * Class TextHelperTestObject
+ *
+ * @package       Cake.Test.Case.View.Helper
+ */
 class TextHelperTestObject extends TextHelper {
 
 	public function attach(StringMock $string) {
@@ -35,6 +40,8 @@ class TextHelperTestObject extends TextHelper {
 
 /**
  * StringMock class
+ *
+ * @package       Cake.Test.Case.View.Helper
  */
 class StringMock {
 }
@@ -292,6 +299,18 @@ class TextHelperTest extends CakeTestCase {
 
 		$text = 'Text with a url http://www.www.not-working-www.com and more';
 		$expected = 'Text with a url <a href="http://www.www.not-working-www.com">http://www.www.not-working-www.com</a> and more';
+		$result = $this->Text->autoLinkUrls($text);
+		$this->assertEquals($expected, $result);
+	}
+
+/**
+ * Test autoLinkUrls with query strings.
+ *
+ * @return void
+ */
+	public function testAutoLinkUrlsQueryString() {
+		$text = 'Text with a partial http://www.cakephp.org?product_id=123&foo=bar link';
+		$expected = 'Text with a partial <a href="http://www.cakephp.org?product_id=123&amp;foo=bar">http://www.cakephp.org?product_id=123&amp;foo=bar</a> link';
 		$result = $this->Text->autoLinkUrls($text);
 		$this->assertEquals($expected, $result);
 	}

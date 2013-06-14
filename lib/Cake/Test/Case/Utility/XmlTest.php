@@ -15,8 +15,9 @@
  * @link          http://book.cakephp.org/2.0/en/development/testing.html CakePHP(tm) Tests
  * @package       Cake.Test.Case.Utility
  * @since         CakePHP(tm) v 1.2.0.5432
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
+
 App::uses('Xml', 'Utility');
 App::uses('CakeTestModel', 'TestSuite/Fixture');
 
@@ -30,7 +31,7 @@ class XmlArticle extends CakeTestModel {
 /**
  * name property
  *
- * @var string 'Article'
+ * @var string
  */
 	public $name = 'Article';
 
@@ -57,7 +58,7 @@ class XmlUser extends CakeTestModel {
 /**
  * name property
  *
- * @var string 'User'
+ * @var string
  */
 	public $name = 'User';
 
@@ -187,10 +188,21 @@ class XmlTest extends CakeTestCase {
  *
  * @dataProvider invalidDataProvider
  * @expectedException XmlException
- * return void
+ * @return void
  */
 	public function testBuildInvalidData($value) {
 		Xml::build($value);
+	}
+
+/**
+ * Test that building SimpleXmlElement with invalid XML causes the right exception.
+ *
+ * @expectedException XmlException
+ * @return void
+ */
+	public function testBuildInvalidDataSimpleXml() {
+		$input = '<derp';
+		$xml = Xml::build($input, array('return' => 'simplexml'));
 	}
 
 /**
@@ -363,6 +375,19 @@ XML;
 		$obj = Xml::fromArray($xml, 'attributes');
 		$xmlText = '<' . '?xml version="1.0" encoding="UTF-8"?><tags><tag id="1">defect</tag></tags>';
 		$this->assertXmlStringEqualsXmlString($xmlText, $obj->asXML());
+
+		$xml = array(
+			'tag' => array(
+				'@' => 0,
+				'@test' => 'A test'
+			)
+		);
+		$obj = Xml::fromArray($xml);
+		$xmlText = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<tag test="A test">0</tag>
+XML;
+		$this->assertXmlStringEqualsXmlString($xmlText, $obj->asXML());
 	}
 
 /**
@@ -457,6 +482,41 @@ XML;
 		} catch (Exception $e) {
 			$this->assertTrue(true, 'Caught exception.');
 		}
+	}
+
+/**
+ * Test that there are not unterminated errors when building xml
+ *
+ * @return void
+ */
+	public function testFromArrayUnterminatedError() {
+		$data = array(
+			'product_ID' => 'GENERT-DL',
+			'deeplink' => 'http://example.com/deep',
+			'image_URL' => 'http://example.com/image',
+			'thumbnail_image_URL' => 'http://example.com/thumb',
+			'brand' => 'Malte Lange & Co',
+			'availability' => 'in stock',
+			'authors' => array(
+				'author' => array('Malte Lange & Co')
+			)
+		);
+		$xml = Xml::fromArray(array('products' => $data), 'tags');
+		$expected = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<products>
+	<product_ID>GENERT-DL</product_ID>
+	<deeplink>http://example.com/deep</deeplink>
+	<image_URL>http://example.com/image</image_URL>
+	<thumbnail_image_URL>http://example.com/thumb</thumbnail_image_URL>
+	<brand>Malte Lange &amp; Co</brand>
+	<availability>in stock</availability>
+	<authors>
+		<author>Malte Lange &amp; Co</author>
+	</authors>
+</products>
+XML;
+		$this->assertXmlStringEqualsXmlString($expected, $xml->asXML());
 	}
 
 /**
@@ -606,6 +666,16 @@ XML;
 			'root' => array(
 				'tag' => 'defect',
 				'cake:bug' => 1
+			)
+		);
+		$this->assertEquals($expected, Xml::toArray($obj));
+
+		$xml = '<tag type="myType">0</tag>';
+		$obj = Xml::build($xml);
+		$expected = array(
+			'tag' => array(
+				'@type' => 'myType',
+				'@' => 0
 			)
 		);
 		$this->assertEquals($expected, Xml::toArray($obj));

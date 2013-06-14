@@ -15,7 +15,7 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Utility
  * @since         CakePHP(tm) v 1.2.0.5551
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 /**
@@ -356,7 +356,7 @@ class String {
  *
  * - `format` The piece of html with that the phrase will be highlighted
  * - `html` If true, will ignore any HTML tags, ensuring that only the correct text is highlighted
- * - `regex` a custom regex rule that is ued to match words, default is '|$tag|iu'
+ * - `regex` a custom regex rule that is used to match words, default is '|$tag|iu'
  *
  * @param string $text Text to search the phrase in
  * @param string $phrase The phrase that will be searched

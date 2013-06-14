@@ -15,7 +15,7 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Test.Case.Controller.Component.Auth
  * @since         CakePHP(tm) v 2.0
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 App::uses('AuthComponent', 'Controller/Component');
@@ -33,6 +33,11 @@ require_once CAKE . 'Test' . DS . 'Case' . DS . 'Model' . DS . 'models.php';
  */
 class FormAuthenticateTest extends CakeTestCase {
 
+/**
+ * Fixtrues
+ *
+ * @var array
+ */
 	public $fixtures = array('core.user', 'core.auth_user');
 
 /**
@@ -111,6 +116,28 @@ class FormAuthenticateTest extends CakeTestCase {
 			'User' => array(
 				'user' => 'mariano',
 				'password' => null
+		));
+		$this->assertFalse($this->auth->authenticate($request, $this->response));
+	}
+
+/**
+ * test authenticate field is not string
+ *
+ * @return void
+ */
+	public function testAuthenticateFieldsAreNotString() {
+		$request = new CakeRequest('posts/index', false);
+		$request->data = array(
+			'User' => array(
+				'user' => array('mariano', 'phpnut'),
+				'password' => 'my password'
+		));
+		$this->assertFalse($this->auth->authenticate($request, $this->response));
+
+		$request->data = array(
+			'User' => array(
+				'user' => 'mariano',
+				'password' => array('password1', 'password2')
 		));
 		$this->assertFalse($this->auth->authenticate($request, $this->response));
 	}
