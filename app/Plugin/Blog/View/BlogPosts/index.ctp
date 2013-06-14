@@ -216,7 +216,7 @@ if($blog['Blog']['approved_flag'] == _ON && $hierarchy  <= NC_AUTH_MODERATE) {
 			</div>
 			<div class="blog-posts-tag-button-outer align-right">
 			<?php
-				echo $this->Form->button(__('Add'), array('name' => 'ok', 'class' => 'common-btn common-btn-min', 'type' => 'button', 'onclick' => "$.BlogPosts.addTags(event, '".$id."');"));
+				echo $this->Form->button(__('Add'), array('name' => 'ok', 'class' => 'common-btn-min', 'type' => 'button', 'onclick' => "$.BlogPosts.addTags(event, '".$id."');"));
 			?>
 			</div>
 		</div>
