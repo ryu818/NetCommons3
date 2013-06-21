@@ -120,6 +120,9 @@ msgstr	"メールアドレス"
 msgid	"URL"
 msgstr	"URL"
 
+msgid	"IP"
+msgstr	"IP"
+
 msgid	"Name"
 msgstr	"名前"
 
