@@ -29,6 +29,7 @@
 		// data-ajax-serialize: default:false boolean　postリクエスト時のみformのpostでない場合でも、elの親elementにformがあればserializeしてdataにセットする。
 		// data-ajax-data: postする場合のdataのhash配列を文字列に変換したものをセットすることにより、POSTのdataを送信することができる。
 		// data-ajax-effect: 遷移時effect
+		// data-ajax-force: default:false falseの場合、urlが現状と同じURLならばajaxを送信しない。
 		// data-ajax-confirm: メッセージをValueに設定すると確認ダイアログ表示
 		// data-ajax-confirm-again: メッセージをValueに設定すると再度確認ダイアログ表示
 		// data-ajax-dialog: ダイアログとして表示する場合、true trueの場合、data-ajaxが指定dialogTopのid属性となる。
@@ -63,6 +64,7 @@
 				data_url = params['data-ajax-url'];
 				data_serialize = params['data-ajax-serialize'];
 				data_data = params['data-ajax-data'];
+				data_force = params['data-ajax-force'];
 			} else {
 				target_pjax =  $el.attr("data-pjax");
 				confirm = (typeof _confirm == "undefined") ? $el.attr("data-ajax-confirm") : _confirm;
@@ -71,7 +73,9 @@
 				data_url = $el.attr("data-ajax-url");
 				data_serialize = $el.attr("data-ajax-serialize");
 				data_data = $el.attr("data-ajax-data");
+				data_force = $el.attr("data-ajax-force");
 			}
+			data_force = (data_force == undefined) ? false : data_force;
 			is_pjax = target_pjax && $.support.pjax && !_force_url;
 
 			if($el.hasClass('disable-lbl') && !_force_url) {
@@ -298,8 +302,15 @@
 					};
 				}
 			}
-			$.ajax(options);
-			if(e) e.preventDefault();
+			// 現在、表示中のURLとajaxの取得先が等しいかどうかの確認
+			var reFullBaseUrl = new RegExp('^' +$.Common.quote($._full_base_url), 'i');
+			var reBaseUrl = new RegExp('^' +$.Common.quote($._base_url), 'i');
+			var prev_url = location.href.replace(reFullBaseUrl,'').replace(/#.*$/i,'').replace(/^\//i,'').replace(/\/$/i,'');
+			var current_url = options['url'].replace(reBaseUrl,'').replace(reFullBaseUrl,'').replace(/#.*$/i,'').replace(/^\//i,'').replace(/\/$/i,'');
+			if(data_force || prev_url != current_url) {
+				$.ajax(options);
+				if(e) e.preventDefault();
+			}
 		},
 		ajaxSuccess : function(e, el, res, params) {
 			var target,replace_target,effect;
