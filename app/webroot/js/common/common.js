@@ -16,7 +16,7 @@
 		pjaxCacheUniqueId: 0,
 		pjaxCachePointer : 0,
 		pjaxCacheBackTargetId : null,
-		pjaxPrevUrl : $._full_base_url,
+		pjaxPrevUrl : $._current_url,
 		isPopstate : false,
 		//pjaxMaxCacheLength : 40,
 
@@ -155,9 +155,6 @@
 				} else if(ret['url'] || ret['data']) {
 					if((ret['url'] != undefined))
 						url = ret['url'];
-					if((ret['data'] != undefined)) {
-
-					}
 					data = $.extend({}, data, ret['data']);
 				} else {
 					url = ret[0];
@@ -416,8 +413,8 @@
 				return;
 			}
 			$.Common.isPopstate = true;
-			var prev_url = $.Common.pjaxPrevUrl.replace(/#.*$/i,'').replace(/\//i,'');
-			var current_url = loc_href.replace(/#.*$/i,'').replace(/\//i,'');
+			var prev_url = $.Common.pjaxPrevUrl.replace(/#.*$/i,'').replace(/\/$/i,'');
+			var current_url = loc_href.replace(/#.*$/i,'').replace(/\/$/i,'');
 			if(prev_url == current_url) {
 				$.Common.isPopstate = false;
 				return true;
@@ -967,8 +964,53 @@
 				checkboxList.removeAttr('checked');
 			} else {
 				input.attr('data-allchecked', 1);
-				checkboxList.removeAttr('checked').click();	//.attr('checked', true) 会員管理で再度、全選択した場合にFirefoxで選択されなかったためClickへ変更。
+				checkboxList.prop('checked', true);
 			}
+		},
+
+
+/**
+ * フォーム内の指定セレクトオブジェクトで選択されている項目を
+ * 別のセレクトオブジェクトに移動する
+ *
+ * @param   element	fromSelect 移動元セレクトオブジェクト
+ * @param	element	toSelect   移動先セレクトオブジェクト
+ * @return  void
+ */
+		frmTransValue: function (fromSelect, toSelect){
+			fromSelect.children().each(function(){
+				if($(this).prop('selected') && !$(this).prop('disabled')) {
+					toSelect.append($(this));
+				}
+			});
+		},
+
+/**
+ * フォーム内の指定セレクトオブジェクトを全て解除状態にする
+ *
+ * @param   element select	セレクトオブジェクト
+ * @return  void
+ **/
+		frmAllReleaseList: function(select) {
+			$(select).prop('selectedIndex', -1);
+		},
+
+/**
+ * フォーム内の指定セレクトオブジェクトを全て選択状態にする
+ *
+ * @param	element select	セレクトオブジェクト
+ * @param	disabled		disable中のものを選択しないかどうか default:true
+ * @return  void
+ **/
+		frmAllSelectList: function(select, disabled) {
+			if(disabled == undefined) {
+				disabled = true;
+			}
+			select.children().each(function(){
+				if(!disabled || !$(this).prop('disabled')) {
+					$(this).prop('selected', true);
+				}
+			});
 		},
 
 		/* 色取得一般メソッド */

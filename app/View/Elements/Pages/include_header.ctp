@@ -59,6 +59,7 @@ if(isset($pages) && isset($page_id_arr)) {
 	echo '	$._nc.show_count['.$page['Page']['id'].'] = '.$page['Page']['show_count'].';'."\n";
 }
 ?>
+$.Common.pjaxPrevUrl = location.href;
 })(jQuery);</script>
 <?php
 	if(!isset($locale) || !file_exists(WWW_ROOT.'locale/'.$locale.'/lang.js')) {
