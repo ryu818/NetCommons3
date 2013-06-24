@@ -50,7 +50,7 @@ class CommonComponent extends Component {
 				'fields' => array('username' => 'login_id'),
 				'scope' => array('User.is_active' => NC_USER_IS_ACTIVE_ON),
 				'findFields' => array(
-									'id', 'login_id', 'handle', 'username', 'authority_id',
+									'id', 'login_id', 'handle', 'authority_id',
 									'permalink', 'myportal_page_id', 'private_page_id', 'avatar',
 									'lang', 'timezone_offset', 'email', 'mobile_email', 'last_login',
 									'Authority.hierarchy', 'Authority.myportal_use_flag', 'Authority.allow_myportal_viewing_hierarchy', 'Authority.private_use_flag',

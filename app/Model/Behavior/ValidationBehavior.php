@@ -16,7 +16,7 @@ class ValidationBehavior extends ModelBehavior {
  * @param   array    $data
  * @param   array    $fields
  * @return  boolean
- * @access	@since   v 3.0.0.0
+ * @since   v 3.0.0.0
  */
 	public function isUniqueWith(Model $Model, $data, $fields) {
 		if (!is_array($fields)) {
@@ -32,7 +32,7 @@ class ValidationBehavior extends ModelBehavior {
  * @param   Model $Model
  * @param   array    $data
  * @return  boolean
- * @access	@since   v 3.0.0.0
+ * @since   v 3.0.0.0
  */
 	public function existsTheme(Model $Model, $data) {
 		$values = array_values($data);
@@ -65,7 +65,7 @@ class ValidationBehavior extends ModelBehavior {
  * @param   Model $Model
  * @param   string    $theme_name
  * @return  string theme_path or boolean false
- * @access	@since   v 3.0.0.0
+ * @since   v 3.0.0.0
  */
     public function getThemePath(Model $Model, $theme_name = null) {
     	if(isset($theme_name)) {

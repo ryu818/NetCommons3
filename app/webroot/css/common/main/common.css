@@ -175,6 +175,11 @@ input.nc-time {
 	margin:2px 0 !important;
 	clear: both !important;
 }
+.error-message ul li {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
 
 div.message {
 	position: fixed;

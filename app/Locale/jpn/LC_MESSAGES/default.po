@@ -189,6 +189,8 @@ msgid  	"Public"
 msgstr 	"公開"
 msgid  	"Private"
 msgstr 	"非公開"
+msgid  	"Send to this address"
+msgstr 	"受け取る"
 
 msgid  	"To public"
 msgstr 	"公開にする"
@@ -283,6 +285,12 @@ msgstr 	"指定したコンテンツは移動しました。移動先へ遷移�
 
 msgid  	"Display module is not available."
 msgstr 	"表示しようとしているモジュールはご利用できません。"
+
+msgid  	"Active"
+msgstr 	"利用可能"
+
+msgid  	"Nonactive"
+msgstr 	"利用不可"
 
 msgid  	"Login"
 msgstr 	"ログイン"
@@ -485,6 +493,8 @@ msgid  	"px"
 msgstr 	"px"
 msgid  	"To list"
 msgstr 	"一覧へ戻る"
+msgid  	"Edit display sequence"
+msgstr 	"表示順変更"
 
 msgid  	"Results per page"
 msgstr 	"表示件数"
@@ -704,6 +714,9 @@ msgstr 	"Y/m/d H:i"
 msgid  	"y-m-d H:i:s"
 msgstr 	"y/m/d H:i:s"
 
+msgid  	"y-m-d H:i"
+msgstr 	"y/m/d H:i"
+
 ## 日時フォーマット(漢字)
 msgid  	"(Y-m-d h:i A)"
 msgstr 	"Y年m月d日 h:i A"
@@ -747,3 +760,7 @@ msgstr 	"セッションのタイムアウトまであと一分です。<br />�
 
 msgid  	"The automatic login."
 msgstr 	"自動ログインしています。"
+
+## SUMMARY属性用文言
+msgid  	"Select form"
+msgstr 	"選択フォーム"

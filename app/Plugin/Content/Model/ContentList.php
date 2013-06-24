@@ -127,11 +127,11 @@ class ContentList extends AppModel {
 					$Content = new Content();
 					$parent_content = $Content->findAuthById($rets[$i]['Content']['master_id'], $userId);
 					if(isset($parent_content['Page']['page_name'])) {
-						$parent_content['Page'] = $this->setPageName($parent_content['Page']);
+						$parent_content = $this->setPageName($parent_content);
 						$rets[$i]['Page']['page_name'] = $parent_content['Page']['page_name'];
 					}
 				}
-				//$rets[$i]['Page'] = $this->setPageName($rets[$i]['Page']);
+				//$rets[$i] = $this->setPageName($rets[$i]);
 			}
 		}
 

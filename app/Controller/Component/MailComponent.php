@@ -401,7 +401,7 @@ class MailComponent extends Component {
 			$this->assignedTags['{X-SITE_NAME}'] = Configure::read(NC_CONFIG_KEY.'.'.'sitename');
 		}
 		if(isset($this->_controller->nc_page)) {
-			$page['Page'] = $this->_controller->Page->setPageName($this->_controller->nc_page['Page']);
+			$page = $this->_controller->Page->setPageName($this->_controller->nc_page);
 		}
 
 		if($this->assignedTags['{X-ROOM}'] == '') {
@@ -413,7 +413,7 @@ class MailComponent extends Component {
 					$page['Page']['page_name'] : null);
 				if(!isset($roomName)) {
 					$active_page = $this->_controller->Page->findIncludeComunityLang($this->_controller->nc_page['Page']['room_id']);
-					$active_page['Page'] = $this->_controller->Page->setPageName($active_page['Page']);
+					$active_page = $this->_controller->Page->setPageName($active_page);
 					$roomName = isset($active_page['CommunityLang']['community_name']) ? $active_page['CommunityLang']['community_name'] :
 						$active_page['Page']['page_name'];
 				}

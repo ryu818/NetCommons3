@@ -33,7 +33,7 @@
 			$this->Form->button(__('Close'), array('name' => 'close', 'class' => 'common-btn', 'type' => 'button',
 				'onclick' => '$(\'#nc-block-contents-list-dialog'.$block_id.'\').dialog(\'close\'); return false;'))
 		);
-		//$all_checked = $this->Form->button(__('Select All'), array('name' => 'all_checked', 'class' => 'common-btn common-btn-min', 'type' => 'button', 'onclick' => ""));
+		//$all_checked = $this->Form->button(__('Select All'), array('name' => 'all_checked', 'class' => 'common-btn-min', 'type' => 'button', 'onclick' => ""));
 
 		echo $this->Form->end();
 	?>

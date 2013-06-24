@@ -27,7 +27,7 @@
 
 .pages-menu-top {
 	position: absolute;
-	height: 34px;
+	height: 36px;
     left: 12px;
     margin: 0;
     position: absolute;
@@ -36,7 +36,7 @@
 }
 .pages-menu-room {
 	position: absolute;
-	height: 34px;
+	height: 36px;
     left: 12px;
     margin: 0;
     position: absolute;
@@ -92,8 +92,9 @@
 
 /* 編集 */
 .pages-menu-edit-content {
-	line-height: 25px;
+	line-height: 27px;
 	min-width:200px;
+	height:38px;
 }
 
 a.pages-menu-display-flag {
@@ -272,6 +273,12 @@ ul.pages-menu-community-lists .hr {
 ul.pages-menu-community-lists legend {
 	float:left;
 	padding: 0 10px 0 0;
+}
+.pages-menu-select-show-user{
+	font-weight:bold;
+}
+.pages-menu-default-show-user {
+	color: #5e5e5e;
 }
 /* スライドバー */
 .pages-menu-community-slider-outer {

@@ -180,11 +180,12 @@ class CheckAuthComponent extends Component {
 						if($currentUser['User']['myportal_use_flag'] == NC_MYPORTAL_USE_ALL) {
 							// 使用
 							$this->allowAuth = NC_AUTH_OTHER;
-						} else if($currentUser['User']['myportal_use_flag'] == NC_MYPORTAL_MEMBERS) {
-							$this->allowAuth = $currentUser['User']['allow_myportal_viewing_hierarchy'];
 						} else {
 							// 未使用
 							$controller->hierarchy = NC_AUTH_OTHER;
+						}
+						if($currentUser['User']['myportal_use_flag'] == NC_MYPORTAL_MEMBERS) {
+							$this->allowUserAuth = $currentUser['User']['allow_myportal_viewing_hierarchy'];
 						}
 					} else {
 						if($currentUser['User']['private_use_flag'] == _ON) {
@@ -503,7 +504,9 @@ class CheckAuthComponent extends Component {
 		if(!isset($allowAuth)) {
 			$allowAuth = ($this->allowAuth == null) ? NC_AUTH_OTHER : $this->allowAuth;
 		}
-		$allowAuth = $this->_getMinAuth($allowAuth);
+		App::uses('Authority', 'Model');
+		$Authority = new Authority();
+		$allowAuth = $Authority->getMinHierarchy($allowAuth);
 		if($hierarchy < $allowAuth) {	// $page_id != 0 &&
 			return false;
 		}
@@ -522,7 +525,9 @@ class CheckAuthComponent extends Component {
 		if(!isset($allowUserAuth)) {
 			$allowUserAuth = ($this->allowUserAuth == null) ? NC_AUTH_OTHER : $this->allowUserAuth;
 		}
-		$allowUserAuth = $this->_getMinAuth($allowUserAuth);
+		App::uses('Authority', 'Model');
+		$Authority = new Authority();
+		$allowUserAuth = $Authority->getMinHierarchy($allowUserAuth);
 		if(intval($hierarchy) < $allowUserAuth) {
 			return false;
 		}
@@ -549,49 +554,13 @@ class CheckAuthComponent extends Component {
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		if(empty($userId)) {
 			$page_params = array(
-				'fields' => array(
-					'Page.*',
-					'CommunityLang.community_name',
-				),
-				'joins' => array(
-					array(
-						"type" => "LEFT",
-						"table" => "community_langs",
-						"alias" => "CommunityLang",
-						"conditions" => "`Page`.`id`=`CommunityLang`.`room_id`".
-						" AND `CommunityLang`.`lang` ='".$lang."'"
-					),
-				)
+				'fields' => $controller->Page->getFieldsArray($userId),
+				'joins' => $controller->Page->getJoinsArray($userId),
 			);
 		} else {
 			$page_params = array(
-				'fields' => array(
-					'Page.*',
-					'CommunityLang.community_name',
-					'Authority.hierarchy'
-				),
-				'joins' => array(
-					array(
-						"type" => "LEFT",
-						"table" => "page_user_links",
-						"alias" => "PageUserLink",
-						"conditions" => "`Page`.`room_id`=`PageUserLink`.`room_id`".
-							" AND `PageUserLink`.`user_id` =".$userId
-						),
-					array(
-						"type" => "LEFT",
-						"table" => "authorities",
-						"alias" => "Authority",
-						"conditions" => "`Authority`.`id`=`PageUserLink`.`authority_id`"
-					),
-					array(
-						"type" => "LEFT",
-						"table" => "community_langs",
-						"alias" => "CommunityLang",
-						"conditions" => "`Page`.`room_id`=`CommunityLang`.`room_id`".
-							" AND `CommunityLang`.`lang` ='".$lang."'"
-					),
-				)
+				'fields' => $controller->Page->getFieldsArray($userId),
+				'joins' => $controller->Page->getJoinsArray($userId),
 			);
 		}
 
@@ -719,32 +688,6 @@ class CheckAuthComponent extends Component {
 			$controller->nc_page = $page;
 			Configure::delete(NC_SYSTEM_KEY.'.page');
 		}
-	}
-
-/**
- * チェックする権限の最小値を取得
- *
- * @param   string $name
- * @return  string $name
- * @since   v 3.0.0.0
- */
-	protected function _getMinAuth($name) {
-		switch($name) {
-			case NC_AUTH_GENERAL:
-				$name = NC_AUTH_MIN_GENERAL;
-				break;
-			case NC_AUTH_MODERATE:
-				$name = NC_AUTH_MIN_MODERATE;
-				break;
-			case NC_AUTH_CHIEF:
-				$name = NC_AUTH_MIN_CHIEF;
-				break;
-			case NC_AUTH_ADMIN:
-				$name = NC_AUTH_MIN_ADMIN;
-				break;
-		}
-
-		return $name;
 	}
 
 /**

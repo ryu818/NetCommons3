@@ -102,7 +102,7 @@
 			$is_edit = true;
 			$is_delete = true;
 		}
-		if($space_type != NC_SPACE_TYPE_MYPORTAL && $space_type != NC_SPACE_TYPE_PRIVATE ) {
+		if(!$is_node_top_page && $space_type != NC_SPACE_TYPE_MYPORTAL && $space_type != NC_SPACE_TYPE_PRIVATE ) {
 			$is_sel_members = true;
 			//$is_sel_modules = true;
 		}

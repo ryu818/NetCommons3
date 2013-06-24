@@ -51,7 +51,7 @@ define('NC_PROHIBITION_URL', '/^(users\/|controls\/)/i');
 //-----------------DOCYTPE-------------------------------------------
 define('NC_DOCTYPE_STR', '/^[\s\r\n]*<!DOCTYPE html/i');
 
-//-----------------権限(authorities.authority_id)-------------------------------------------
+//-----------------権限(Authority.authority_id)-------------------------------------------
 define('NC_AUTH_OTHER_ID', 0);
 define('NC_AUTH_GUEST_ID', 5);
 define('NC_AUTH_GENERAL_ID', 4);
@@ -59,7 +59,7 @@ define('NC_AUTH_MODERATE_ID', 3);
 define('NC_AUTH_CHIEF_ID', 2);
 define('NC_AUTH_ADMIN_ID', 1);
 
-//-----------------権限(authorities.hierarchy)-------------------------------------------
+//-----------------権限(Authority.hierarchy)-------------------------------------------
 // 権限が大きくなるほど、高い権限を有する
 define('NC_AUTH_OTHER', 0);
 define('NC_AUTH_GUEST', 1);
@@ -77,10 +77,26 @@ define('NC_CONFIG_KEY', 'Config');
 define('NC_THEME_KEY', 'Theme');
 define('NC_SYSTEM_KEY', 'System');
 
-//-----------------権限(authorities.myportal_use_flag)------------------------------------
+//-----------------権限(Authority.allow_creating_community)------------------------------------
+define('NC_ALLOW_CREATING_COMMUNITY_OFF', 		0);			// ルーム作成不可(コミュニティーに限らず子グループの作成を許さない)
+define('NC_ALLOW_CREATING_COMMUNITY_ONLY_USER', 1);			// 参加者のみのコミュニティー作成可
+define('NC_ALLOW_CREATING_COMMUNITY_ALL_USER', 	2);			// 一部公開までのコミュニティー作成可
+define('NC_ALLOW_CREATING_COMMUNITY_ALL', 		3);			// 公開までのコミュニティー作成可
+
+//-----------------権限(Authority.allow_new_participant)------------------------------------
+// _ON:netcommonsのように主坦が参加者を追加・変更・削除を行うことができる。
+// _OFF:SNSのようにしてコミュニティーの参加者を募り、参加者の新規追加は許さない。
+
+//-----------------権限(Authority.myportal_use_flag)------------------------------------
 define('NC_MYPORTAL_USE_NOT', 0);			// 使用しない
 define('NC_MYPORTAL_USE_ALL', 1);			// すべて公開
 define('NC_MYPORTAL_MEMBERS', 2);			// ログイン会員のみ公開(allow_myportal_viewing_hierarchyの権限以上で閲覧可能とする[主坦、モデレータ、一般、ゲスト])
+
+//-----------------item_authority_links.XXXX_public_flag------------------------------------
+
+define('NC_POLICY_PUBLIC_EDIT', 2);		// 編集可
+define('NC_POLICY_PUBLIC_SHOW', 1);		// 表示可
+define('NC_POLICY_PUBLIC_NONE', 0);		// 非公開
 
 //-----------------display_flag-------------------------------------------
 
@@ -102,13 +118,13 @@ define('NC_SHORTCUT_TYPE_OFF', 0);				// ショートカットではないコン
 define('NC_SHORTCUT_TYPE_SHOW_ONLY', 1);		// 閲覧のみ許可
 define('NC_SHORTCUT_TYPE_SHOW_AUTH', 2);		// 表示中のルーム権限より閲覧・編集権限を付与する。
 
-//-----------------community publication_range_flag-------------------------------------------
+//-----------------Community.publication_range_flag-------------------------------------------
 
 define('NC_PUBLICATION_RANGE_FLAG_ONLY_USER', 0);		// 参加者のみ（コミュニティー参加者のみが閲覧可能）
 define('NC_PUBLICATION_RANGE_FLAG_LOGIN_USER', 1);		// 一部公開（すべてのログイン会員が閲覧可能）
 define('NC_PUBLICATION_RANGE_FLAG_ALL', 2);				// 公開（すべてのユーザーが閲覧可能）
 
-//-----------------community participate_flag-------------------------------------------
+//-----------------Community.participate_flag-------------------------------------------
 
 define('NC_PARTICIPATE_FLAG_ONLY_USER', 0);			// 参加会員のみ
 define('NC_PARTICIPATE_FLAG_INVITE', 1);			// 招待制（コミュニティーメンバーから招待を受けた会員のみ参加可能）
@@ -188,6 +204,9 @@ define('NC_AUTOLOGIN_OFF', 0);		// 自動ログインOFF
 define('NC_AUTOLOGIN_LOGIN', 1);	// ログインIDをクッキーに保持
 define('NC_AUTOLOGIN_ON', 2);		// 自動ログイン
 
+//-----------User.col_num-----------------------------------------------
+define("NC_USER_MAX_COL_NUM", 3);				// 項目設定- 列数の最大数
+
 //-----------------User.active_flag-------------------------------------------
 
 define('NC_USER_IS_ACTIVE_OFF',     0);		//利用不可
@@ -206,19 +225,6 @@ define('NC_HEADER_MENU_MOUSEOVER' ,1);				//マウスオーバー時表示
 define('NC_HEADER_MENU_CLICK', 2);					//クリック時表示
 define('NC_HEADER_MENU_ALWAYS', 3);					//常に表示
 
-//-----------------Item.type-------------------------------------------
-
-define('NC_ITEM_TYPE_TEXT',         "text");
-define('NC_ITEM_TYPE_CHECKBOX',     "checkbox");
-define('NC_ITEM_TYPE_RADIO',        "radio");
-define('NC_ITEM_TYPE_SELECT',       "select");
-define('NC_ITEM_TYPE_TEXTAREA',     "textarea");
-define('NC_ITEM_TYPE_EMAIL',        "email");
-define('NC_ITEM_TYPE_MOBILE_EMAIL', "mobile_email");
-define('NC_ITEM_TYPE_LABEL',        "label");
-define('NC_ITEM_TYPE_PASSWORD',     "password");
-define('NC_ITEM_TYPE_FILE',         "file");
-
 //-----------------システム管理者ID-------------------------------------------
 define('NC_SYSTEM_USER_ID',       1);
 
@@ -232,6 +238,28 @@ define('NC_BLOCK_MODE', 1);
 
 //-----------------ページ送り：リストを5ページ分まで表示----------------------
 define('NC_PAGINATE_VIEWS', 5);
+
+//-----------------Item.id-------------------------------------------
+
+define('NC_ITEM_ID_LOGIN_ID',			1);
+define('NC_ITEM_ID_PASSWORD',			2);
+define('NC_ITEM_ID_USERNAME',			3);
+define('NC_ITEM_ID_HANDLE',				4);
+define('NC_ITEM_ID_EMAIL',				5);
+define('NC_ITEM_ID_MOBILE_EMAIL',		6);
+define('NC_ITEM_ID_TIMEZONE_OFFSET	',	7);
+define('NC_ITEM_ID_LANG',				8);
+define('NC_ITEM_ID_AUTHORITY_ID',		9);
+define('NC_ITEM_ID_IS_ACTIVE',			10);
+define('NC_ITEM_ID_PERMALINK',			11);
+define('NC_ITEM_ID_AVATAR',				12);
+define('NC_ITEM_ID_CREATED',			13);
+define('NC_ITEM_ID_CREATED_USER_NAME',	14);
+define('NC_ITEM_ID_MODIFIED',			15);
+define('NC_ITEM_ID_MODIFIED_USER_NAME',	16);
+define('NC_ITEM_ID_PASSWORD_REGIST',	17);
+define('NC_ITEM_ID_LAST_LOGIN',			18);
+define('NC_ITEM_ID_PREVIOUS_LOGIN',		19);
 
 //-----------------アップロード関連-------------------------------------------
 define("NC_ALLOW_ATTACHMENT_NO", 0);

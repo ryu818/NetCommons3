@@ -34,13 +34,13 @@ class PageMenuComponent extends Component {
  *
  * @param  CakeRequest $request
  * @param  Page Model  $page
- * @param  Page Model  $parent_page
+ * @param  Page Model  $parentPage
  * @return mixed $admin_hierarchy or false + flashメッセージ
  * @since   v 3.0.0.0
  */
-	public function validatorPage($request, $page = null, $parent_page = null) {
-		$login_user = $this->_controller->Auth->user();
-		$user_id = $login_user['id'];
+	public function validatorPage($request, $page = null, $parentPage = null) {
+		$loginUser = $this->_controller->Auth->user();
+		$userId = $loginUser['id'];
 
 		if($request->params['action'] != 'detail' && $request->params['action'] != 'participant'  && $request->params['action'] != 'participant_cancel') {
 			if(!$request->is('post')) {
@@ -59,7 +59,7 @@ class PageMenuComponent extends Component {
 			}
 		}
 
-		$admin_hierarchy = $this->_controller->ModuleSystemLink->findHierarchyByPluginName($request->params['plugin'], $login_user['authority_id']);
+		$admin_hierarchy = $this->_controller->ModuleSystemLink->findHierarchyByPluginName($request->params['plugin'], $loginUser['authority_id']);
 		if($admin_hierarchy < NC_AUTH_MIN_GENERAL) {
 			$this->_controller->flash(__('Forbidden permission to access the page.'), null, 'PageMenu.validatorPage.003', '403');
 			return false;
@@ -73,12 +73,12 @@ class PageMenuComponent extends Component {
 			return false;
 		}
 
-		if(!$this->checkAuth($admin_hierarchy, $page, $parent_page)) {
+		if(!$this->checkAuth($admin_hierarchy, $page, $parentPage)) {
 			$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPage.005', '400');
 			return false;
 		}
 
-		if(!$this->validatorPageDetail($request, $page, $parent_page, $admin_hierarchy)) {
+		if(!$this->validatorPageDetail($request, $page, $parentPage, $admin_hierarchy)) {
 			return false;
 		}
 
@@ -96,17 +96,17 @@ class PageMenuComponent extends Component {
 	 * </pre>
 	 * @param  integer     $admin_hierarchy
 	 * @param  Page Model  $page
-	 * @param  Page Model  $parent_page
+	 * @param  Page Model  $parentPage
 	 * @return boolean
 	 * @since   v 3.0.0.0
 	 */
-	public function checkAuth($admin_hierarchy, $page = null, $parent_page = null) {
+	public function checkAuth($admin_hierarchy, $page = null, $parentPage = null) {
 		$is_auth_ok = false;
 		if($admin_hierarchy >= NC_AUTH_MIN_ADMIN) {
 			$is_auth_ok = true;
 		}
 
-		$chk_page = isset($parent_page) ? $parent_page : $page;
+		$chk_page = isset($parentPage) ? $parentPage : $page;
 		if(!$is_auth_ok && !$this->_controller->CheckAuth->checkAuth($chk_page['Authority']['hierarchy'], NC_AUTH_CHIEF)) {
 			return false;
 		}
@@ -122,33 +122,38 @@ class PageMenuComponent extends Component {
  *
  * @param  CakeRequest $request
  * @param  Page Model  $page
- * @param  Page Model  $parent_page
+ * @param  Page Model  $parentPage
  * @param  integer     $admin_hierarchy
  * @param  boolean     $is_child
  *
  * @return boolean
  * @since   v 3.0.0.0
  */
-	public function validatorPageDetail($request, $page = null, $parent_page = null, $admin_hierarchy = null, $is_child = false) {
+	public function validatorPageDetail($request, $page = null, $parentPage = null, $admin_hierarchy = null, $is_child = false) {
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
+		if($is_child == false && $page['Page']['lang'] != '' && $page['Page']['lang'] != $lang) {
+			// 編集のlangと現在のlangが異なる
+			$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.001', '400');
+			return false;
+		}
 
 		switch($request->params['action']) {
 			case 'add':
 				if($page['Page']['thread_num'] == 0) {
-					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.001', '400');
+					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.002', '400');
 					return false;
 				}
 				break;
 			case 'display':
 				// 親がOFFならば変更を許さない。
-				$parent_page = $this->_controller->Page->findById($page['Page']['parent_id']);
-				if(!isset($parent_page['Page']) || $parent_page['Page']['display_flag'] != NC_DISPLAY_FLAG_ON) {
-					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.002', '400');
+				$parentPage = $this->_controller->Page->findById($page['Page']['parent_id']);
+				if(!isset($parentPage['Page']) || $parentPage['Page']['display_flag'] != NC_DISPLAY_FLAG_ON) {
+					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.003', '400');
 					return false;
 				}
 				if($page['Page']['thread_num'] <= 1 && $page['Page']['space_type'] != NC_SPACE_TYPE_GROUP) {
 					//コミュニティー以外のTop Nodeの編集は許さない
-					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.003', '400');
+					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.004', '400');
 					return false;
 				}
 				break;
@@ -188,7 +193,7 @@ class PageMenuComponent extends Component {
 			case 'edit':
 				if($page['Page']['thread_num'] == 0 || ($page['Page']['thread_num'] == 1 && $page['Page']['space_type'] != NC_SPACE_TYPE_GROUP)) {
 					//コミュニティーのTop Node以外の編集は許さない
-					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.004', '400');
+					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.005', '400');
 					return false;
 				}
 				/*if($page['Page']['space_type'] != NC_SPACE_TYPE_PUBLIC && $page['Page']['thread_num'] == 2 && $page['Page']['display_sequence'] == 1) {
@@ -203,7 +208,7 @@ class PageMenuComponent extends Component {
 			case 'paste':
 				// ページロックしてあれば、移動不可。
 				if($page['Page']['lock_authority_id'] > 0) {
-					$page['Page'] = $this->_controller->Page->setPageName($page['Page']);
+					$page = $this->_controller->Page->setPageName($page);
 					echo __d('page', 'Because the [%s] page is locked, I can\'t be deleted. Please run after unlock the page.', $page['Page']['page_name']);
 					$this->_controller->render(false, 'ajax');
 					return false;
@@ -212,7 +217,7 @@ class PageMenuComponent extends Component {
 					if($page['Page']['space_type'] != NC_SPACE_TYPE_GROUP || $admin_hierarchy < NC_AUTH_MIN_CHIEF) {
 						//コミュニティーの表示順変更等は$admin_hierarchy=NC_AUTH_MIN_CHIEF以上
 						// TODO:後にパブリックのものをコミュニティへペースト等ができるようにしたほうが望ましい。
-						$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.005', '400');
+						$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.006', '400');
 					}
 				}
 				break;
@@ -220,15 +225,15 @@ class PageMenuComponent extends Component {
 			case "deallocation":
 				if($page['Page']['space_type'] == NC_SPACE_TYPE_PRIVATE) {
 					// プライベートスペースは権限を設定不可
-					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.006', '400');
-					return false;
-				}
-				if($page['Page']['thread_num'] == 0 || ($page['Page']['thread_num'] == 2 && $page['Page']['display_sequence'] == 1)) {
 					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.007', '400');
 					return false;
 				}
-				if($request->params['action'] == "deallocation" && $page['Page']['thread_num'] == 1) {
+				if($page['Page']['thread_num'] == 0 || ($page['Page']['thread_num'] == 2 && $page['Page']['display_sequence'] == 1)) {
 					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.008', '400');
+					return false;
+				}
+				if($request->params['action'] == "deallocation" && $page['Page']['thread_num'] == 1) {
+					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.009', '400');
 					return false;
 				}
 		}
@@ -242,15 +247,15 @@ class PageMenuComponent extends Component {
  * @param  Page Model  $page
  * @param  Page Model  $move_page
  * @param  string      $position inner or bottom or top
- * @param  Page Model  $parent_page
+ * @param  Page Model  $parentPage
  * @return boolean
  * @since   v 3.0.0.0
  */
-	public function validatorMovePage($request, $page, $move_page, $position, $parent_page) {
-		$user_id = $this->_controller->Auth->user('id');
+	public function validatorMovePage($request, $page, $move_page, $position, $parentPage) {
+		$userId = $this->_controller->Auth->user('id');
 
 		// 移動先権限チェック
-		if($page['Page']['thread_num'] != 1 && !$this->_controller->CheckAuth->checkAuth($parent_page['Authority']['hierarchy'], NC_AUTH_CHIEF)) {
+		if($page['Page']['thread_num'] != 1 && !$this->_controller->CheckAuth->checkAuth($parentPage['Authority']['hierarchy'], NC_AUTH_CHIEF)) {
 			$this->_controller->flash(__('Forbidden permission to access the page.'), null, 'PageMenu.validatorMovePage.001', '403');
 			return false;
 		}
@@ -425,13 +430,13 @@ class PageMenuComponent extends Component {
  * @param   string     edit(編集) or inner or bottom(追加) $type
  * @param   array      $current_page
  * param   array       $current_page
- * @return  array      array($page, $parent_page)
+ * @return  array      array($page, $parentPage)
  * @since   v 3.0.0.0
  */
-	public function getDefaultPage($type, $current_page, $parent_page = null) {
+	public function getDefaultPage($type, $current_page, $parentPage = null) {
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
-		if(!isset($parent_page)) {
-			$parent_page = $current_page;
+		if(!isset($parentPage)) {
+			$parentPage = $current_page;
 		}
 
 		$ins_page = $current_page;
@@ -444,7 +449,7 @@ class PageMenuComponent extends Component {
 			unset($ins_page['Page']['id']);
 
 			// hierarchy
-			$ins_page['Authority']['hierarchy'] =$parent_page['Authority']['hierarchy'];
+			$ins_page['Authority']['hierarchy'] =$parentPage['Authority']['hierarchy'];
 		}
 		if($current_page['Page']['thread_num'] == 1) {
 			$display_sequence = 1;
@@ -481,7 +486,7 @@ class PageMenuComponent extends Component {
 
 		$count_fields = 'MAX(Page.display_sequence) as max_number';
 		$count_conditions = array(
-			'Page.root_id' => $parent_page['Page']['root_id'],
+			'Page.root_id' => $parentPage['Page']['root_id'],
 			'Page.thread_num >' => 1,
 			'Page.lang' => array('', $lang)
 		);
@@ -499,8 +504,8 @@ class PageMenuComponent extends Component {
 		if($display_sequence == 1) {
 			// 各トップページ
 			$permalink = '';
-			if($parent_page['Page']['permalink'] != '') {
-				$permalink = $parent_page['Page']['permalink'].$permalink;
+			if($parentPage['Page']['permalink'] != '') {
+				$permalink = $parentPage['Page']['permalink'].$permalink;
 			}
 			if($space_type == NC_SPACE_TYPE_MYPORTAL) {
 				$page_name = __("Myportal Top");
@@ -513,7 +518,7 @@ class PageMenuComponent extends Component {
 			}
 		} else {
 			$page_name = __d('page', "New page");
-			list($page_name, $permalink) = $this->_getPageName($page_name, $count, $parent_page);
+			list($page_name, $permalink) = $this->_getPageName($page_name, $count, $parentPage);
 		}
 
 		$ins_page['Page']['display_sequence'] = $display_sequence;
@@ -521,14 +526,14 @@ class PageMenuComponent extends Component {
 		$ins_page['Page']['permalink'] = $permalink;
 		$ins_page['Page']['show_count'] = 0;
 
-		$ins_page['Page']['display_flag'] = $parent_page['Page']['display_flag'];
-		if(!empty($parent_page['Page']['display_from_date']) && $parent_page['Page']['display_apply_subpage'] == _ON) {
-			$ins_page['Page']['display_from_date'] = $parent_page['Page']['display_from_date'];
+		$ins_page['Page']['display_flag'] = $parentPage['Page']['display_flag'];
+		if(!empty($parentPage['Page']['display_from_date']) && $parentPage['Page']['display_apply_subpage'] == _ON) {
+			$ins_page['Page']['display_from_date'] = $parentPage['Page']['display_from_date'];
 		} else {
 			$ins_page['Page']['display_from_date'] = null;
 		}
-		if(!empty($parent_page['Page']['display_to_date'])) {
-			$ins_page['Page']['display_to_date'] = $parent_page['Page']['display_to_date'];
+		if(!empty($parentPage['Page']['display_to_date'])) {
+			$ins_page['Page']['display_to_date'] = $parentPage['Page']['display_to_date'];
 		} else {
 			$ins_page['Page']['display_to_date'] = null;
 		}
@@ -592,15 +597,15 @@ class PageMenuComponent extends Component {
  * 固定リンクが同じではないページ名称,固定リンクを取得
  * @param   string        $page_name
  * @param   integer       $count カウント数初期値
- * @param   Model Page    $parent_page 親ページ
+ * @param   Model Page    $parentPage 親ページ
  * @return  array    array($page_name, $permalink)
  * @since   v 3.0.0.0
  */
-	protected function _getPageName($page_name, $count, $parent_page = null) {
+	protected function _getPageName($page_name, $count, $parentPage = null) {
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		$permalink = preg_replace(NC_PERMALINK_PROHIBITION, NC_PERMALINK_PROHIBITION_REPLACE, $page_name);
-		if($parent_page['Page']['permalink'] != '') {
-			$permalink = $parent_page['Page']['permalink']. '/'. $permalink;
+		if($parentPage['Page']['permalink'] != '') {
+			$permalink = $parentPage['Page']['permalink']. '/'. $permalink;
 		}
 		while(1) {
 			$conditions = array(
@@ -655,8 +660,8 @@ class PageMenuComponent extends Component {
  * @since   v 3.0.0.0
  */
 	public function participantSession($request, $page_id, $admin_hierarchy, $auth_list = null) {
-		$login_user = $this->_controller->Auth->user();
-		$user_id = $login_user['id'];
+		$loginUser = $this->_controller->Auth->user();
+		$userId = $loginUser['id'];
 
 		$buf_page_user_links = $this->_controller->Session->read(NC_SYSTEM_KEY.'.page_menu.PageUserLink['.$page_id.']');
 		$write_flag = false;
@@ -666,10 +671,10 @@ class PageMenuComponent extends Component {
 			$buf_page_user_links_params['PageUserLink'] = $request->data['PageUserLink'];
 			if($admin_hierarchy < NC_AUTH_MIN_ADMIN) {
 				// ページメニューが管理者権限でないならば、ログイン会員は必ず主坦として参加
-				$buf_page_user_links_params['PageUserLink'][$user_id] = array(
+				$buf_page_user_links_params['PageUserLink'][$userId] = array(
 					'id' => 0,
 					'room_id' => 0,
-					'user_id' => $user_id,
+					'user_id' => $userId,
 					'authority_id' => NC_AUTH_CHIEF_ID
 				);
 			}
@@ -713,16 +718,16 @@ class PageMenuComponent extends Component {
  * @since   v 3.0.0.0
  */
 	public function getOperationPage($pre_page_id, $move_page_id, $position = 'bottom') {
-		$user_id = $this->_controller->Auth->user('id');
-		$pre_page = $this->_controller->Page->findAuthById($pre_page_id, $user_id);
-		$move_page = $this->_controller->Page->findAuthById($move_page_id, $user_id);
+		$userId = $this->_controller->Auth->user('id');
+		$pre_page = $this->_controller->Page->findAuthById($pre_page_id, $userId);
+		$move_page = $this->_controller->Page->findAuthById($move_page_id, $userId);
 		if(!isset($pre_page['Page']) || !isset($move_page['Page'])) {
 			return false;
 		}
 
-		$parent_pre_page = $this->_controller->Page->findAuthById($pre_page['Page']['parent_id'], $user_id);
+		$parent_pre_page = $this->_controller->Page->findAuthById($pre_page['Page']['parent_id'], $userId);
 		if($position != 'inner') {
-			$parent_move_page = $this->_controller->Page->findAuthById($move_page['Page']['parent_id'], $user_id);
+			$parent_move_page = $this->_controller->Page->findAuthById($move_page['Page']['parent_id'], $userId);
 		} else {
 			$parent_move_page = $move_page;
 		}
@@ -732,7 +737,7 @@ class PageMenuComponent extends Component {
 		} else if($move_page['Page']['room_id'] == $parent_move_page['Page']['id']) {
 			$move_room_name = $parent_move_page['Page']['page_name'];
 		} else {
-			$parent_room_page = $this->_controller->Page->findAuthById($move_page['Page']['room_id'], $user_id);
+			$parent_room_page = $this->_controller->Page->findAuthById($move_page['Page']['room_id'], $userId);
 			$move_room_name = $parent_room_page['Page']['page_name'];
 		}
 		$pre_page_id_arr = array($pre_page['Page']['id']);
@@ -741,7 +746,7 @@ class PageMenuComponent extends Component {
 			$pre_room_id_arr = array($pre_page['Page']['id']);
 		}
 		// 移動元ページ以下のページ取得
-		$child_pre_pages = $this->_controller->Page->findChilds('all', $pre_page, $user_id);
+		$child_pre_pages = $this->_controller->Page->findChilds('all', $pre_page);
 		$last_pre_page = $pre_page;
 		foreach($child_pre_pages as $child_page) {
 			$pre_page_id_arr[] = $child_page['Page']['id'];
@@ -754,7 +759,7 @@ class PageMenuComponent extends Component {
 			}
 		}
 
-		$child_move_pages = $this->_controller->Page->findChilds('all', $move_page, $user_id);
+		$child_move_pages = $this->_controller->Page->findChilds('all', $move_page);
 		$last_move_page = $move_page;
 		if($move_page['Page']['thread_num'] != 1 || $position == 'inner') {
 			foreach($child_move_pages as $child_page) {
@@ -941,8 +946,8 @@ class PageMenuComponent extends Component {
 		}
 
 		// ブロック情報取得
-		$user_id = $this->_controller->Auth->user('id');
-		$blocks = $this->_controller->Block->findByPageIds($copy_page_id_arr, $user_id, '');
+		$userId = $this->_controller->Auth->user('id');
+		$blocks = $this->_controller->Block->findByPageIds($copy_page_id_arr, $userId, '');
 
 		if(!$is_confirm) {
 			$confirm = $this->showConfirm($action, $position, $copy_page, $move_page, $move_room_name, $copy_parent_page, $move_parent_page, $copy_room_id_arr, $blocks);
@@ -1447,7 +1452,7 @@ class PageMenuComponent extends Component {
  * ブロックのコピー,ショートカット、移動処理
  * @param   string       $action paste or shortcut
  * @param   string       TempDataテーブルハッシュキー $hash_key
- * @param   integer      $user_id
+ * @param   integer      $userId
  * @param   integer      $copy_page_id_arr		コピー元ID配列
  * @param   Model Pages  $copy_pages	コピー元
  * @param   Model Pages  $ins_pages		コピー先
@@ -1455,13 +1460,13 @@ class PageMenuComponent extends Component {
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	public function operateBlock($action, $hash_key, $user_id, $copy_page_id_arr, $copy_pages, $ins_pages, $default_shortcut_type = null) {
+	public function operateBlock($action, $hash_key, $userId, $copy_page_id_arr, $copy_pages, $ins_pages, $default_shortcut_type = null) {
 		if($action == 'move' && $copy_pages[0]['Page']['room_id'] == $ins_pages[0]['Page']['room_id']) {
 			// 移動で同一ルーム内の移動であればblockテーブルは更新しない
 			$this->_controller->TempData->destroy($hash_key);
 			return true;
 		}
-		$blocks = $this->_controller->Block->findByPageIds($copy_page_id_arr, $user_id, "");
+		$blocks = $this->_controller->Block->findByPageIds($copy_page_id_arr, $userId, "");
 		$total = count($blocks);
 		if($total > 0) {
 			$percent = 0;
@@ -1568,16 +1573,16 @@ class PageMenuComponent extends Component {
 /**
  * 公開日、非公開日等を親のPageをみてセットしなおす
  * @param   Model Page    $page カレントページ
- * @param   Model Page    $parent_page 親ページ
+ * @param   Model Page    $parentPage 親ページ
  * @param   array $fieldChildList
  * @return  string エラーメッセージ
  * @since   v 3.0.0.0
  */
-	public function setDisplay($page, $parent_page, $fieldChildList = array()) {
-		$display_flag = $parent_page['Page']['display_flag'];
-		$display_from_date = $parent_page['Page']['display_from_date'];
-		$display_apply_subpage = $parent_page['Page']['display_apply_subpage'];
-		$display_to_date = $parent_page['Page']['display_to_date'];
+	public function setDisplay($page, $parentPage, $fieldChildList = array()) {
+		$display_flag = $parentPage['Page']['display_flag'];
+		$display_from_date = $parentPage['Page']['display_from_date'];
+		$display_apply_subpage = $parentPage['Page']['display_apply_subpage'];
+		$display_to_date = $parentPage['Page']['display_to_date'];
 
 		if($display_flag == _OFF && $page['Page']['display_flag'] == _ON) {
 			$fieldChildList[] = 'display_flag';

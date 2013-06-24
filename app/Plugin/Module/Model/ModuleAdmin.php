@@ -516,7 +516,7 @@ class ModuleAdmin extends AppModel {
 		// --- ブロックテーブルのデータ削除                  ---
 		// ------------------------------------------------------
 		// TODO: col_num,row_num,グループ化ブロック等を整列しなおす必要があるため、現状、コメント
-		// deleteBlockにその処理もいれて、ブロックの削除もそちらを呼ぶだけにするほうが望ましい。
+		// delBlockにその処理もいれて、ブロックの削除もそちらを呼ぶだけにするほうが望ましい。
 		/*
 		App::uses('Block', 'Model');
 		$Block = new Block();
@@ -538,7 +538,7 @@ class ModuleAdmin extends AppModel {
 		$blocks = $Block->find('all', $params);
 		if(isset($blocks[0])) {
 			foreach($blocks as $block) {
-				if(!$Block->deleteBlock($block)) {
+				if(!$Block->delBlock($block)) {
 					$errorMes[] = $prefix.__d('module', 'Failed to %s.',t __d('module', 'Delete block')
 					return array($successMes, $errorMes);
 				}

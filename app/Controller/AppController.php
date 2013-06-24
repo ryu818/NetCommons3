@@ -253,7 +253,7 @@ class AppController extends Controller {
 		if($exit) {
 			$this->autoLayout = true;
 			$this->render(false, $layout);
-			echo $this->response->body();
+			$this->response->send();
 			$this->_stop();
 		} else {
 			$this->render(false, $layout);

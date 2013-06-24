@@ -109,13 +109,13 @@ class Content extends AppModel
 
 /**
  * content_id,user_idから該当コンテンツを取得
- * @param   integer   $content_id
+ * @param   integer   $id
  * @param   integer   $user_id
  * @return  Content   $content
  * @since   v 3.0.0.0
  */
-	public function findAuthById($content_id, $user_id) {
-		$conditions['Content.id'] = $content_id;
+	public function findAuthById($id, $user_id) {
+		$conditions['Content.id'] = $id;
 		$params = array(
 			'fields' => $this->_getFieldsArray(),
 			'joins' => $this->_getJoinsArray($user_id),
@@ -135,7 +135,9 @@ class Content extends AppModel
  */
 	public function afterFindDefault($val, $user_id) {
 		if(isset($val['Content']['id'])) {
-			$val['Authority']['hierarchy'] = $this->getDefaultHierarchy($val, $user_id, $val['Content']['shortcut_type']);
+			if(!isset($val['Authority']['hierarchy'])) {
+				$val['Authority']['hierarchy'] = $this->getDefaultHierarchy($val, $user_id, $val['Content']['shortcut_type']);
+			}
 		}
 		return $val;
 	}
@@ -193,44 +195,45 @@ class Content extends AppModel
  *
  * @param   Model Content  $content
  * @param   boolean $mode _OFF:ショートカットのみ削除。_ON. 強制的に削除 NC_DELETE_MOVE_PARENT.自動で親のルームがあれば、そちらのものとする。ショートカットは削除。
- * @param   integer $parent_room_id $all_delete NC_DELETE_MOVE_PARENTの場合の振り替え先room_id
+ * @param   integer $parentRoomId $allDelete NC_DELETE_MOVE_PARENTの場合の振り替え先room_id
  * @return	boolean true or false
  * @since   v 3.0.0.0
  */
-	public function deleteContent($content, $all_delete = _OFF, $parent_room_id = null) {
+	public function deleteContent($content, $allDelete = _OFF, $parentRoomId = null) {
 		App::uses('Page', 'Model');
 		App::uses('Upload', 'Model');
+		App::uses('Revision', 'Model');
 		$Page = new Page();
 		$Upload = new Upload();
+		$Revision = new Revision();
 
-		$content_id = $content['Content']['id'];
+		$id = $content['Content']['id'];
 		$module_id = $content['Content']['module_id'];
 		$master_id = $content['Content']['master_id'];
 		$room_id = $content['Content']['room_id'];
 		if($module_id == 0 || $content['Content']['shortcut_type'] != NC_SHORTCUT_TYPE_OFF) {
 			// group化ブロック、または、ショートカット
-			$ret = $this->delete($content_id);
-			$Upload->deleteByContentId($content_id);
+			$ret = $this->delete($id);
 			return $ret;
 		}
-		if($all_delete == _OFF) {
+		if($allDelete == _OFF) {
 			return true;
 		}
 
-		if($all_delete == NC_DELETE_MOVE_PARENT && !isset($parent_room_id)) {
+		if($allDelete == NC_DELETE_MOVE_PARENT && !isset($parentRoomId)) {
 			$page = $Page->findById($room_id);
 			$parent_page = $Page->findById($page['Page']['parent_id']);
-			$parent_room_id = isset($parent_page['Page']) ? $parent_page['Page']['room_id'] : 0;
+			$parentRoomId = isset($parent_page['Page']) ? $parent_page['Page']['room_id'] : 0;
 		}
-		if($parent_room_id == 0) {
+		if($parentRoomId == 0) {
 			// 移動先のルームがないため完全に削除。
-			$all_delete = _ON;
+			$allDelete = _ON;
 		}
 
 		// -------------------------------------
 		// --- 削除関数                      ---
 		// -------------------------------------
-		if($all_delete == _ON) {
+		if($allDelete == _ON) {
 			if(isset($content['Module'])) {
 				$module['Module'] = $content['Module'];
 			} else {
@@ -251,11 +254,23 @@ class Content extends AppModel
 					return false;
 				}
 			}
-			$this->delete($content_id);
-			$Upload->deleteByContentId($content_id);
-		} else if($content['Content']['room_id'] != $parent_room_id) {
+			$this->delete($id);
+			$conditions = array(
+				"Revision.content_id" => $id
+			);
+			if(!$Revision->deleteAll($conditions)) {
+				return false;
+			}
+			// TODO:uploads関連削除 仮実装
+			$conditions = array(
+				"Upload.content_id" => $id
+			);
+			if(!$Upload->deleteAll($conditions)) {
+				return false;
+			}
+		} else if($content['Content']['room_id'] != $parentRoomId) {
 			// 親のルームの持ち物に変換し、親のルーム内の権限を付与したショートカットを解除
-			if(!$this->cancelShortcutParentRoom($content_id, $parent_room_id)) {
+			if(!$this->cancelShortcutParentRoom($id, $parentRoomId)) {
 				return false;
 			}
 		}
@@ -267,28 +282,28 @@ class Content extends AppModel
  * 親のルームの持ち物に変換し、親ルームの該当コンテンツにおける権限を付与したショートカットを解除
  * ルーム削除（コンテンツ削除）時に親のルームの物に変換される場合、親ルームの削除コンテンツに対する権限を付与したショートカットを解除する必要があるため
  *
- * @param   integer $content_id
- * @param   integer $parent_room_id
+ * @param   integer $id
+ * @param   integer $parentRoomId
  * @return	boolean true or false
  * @since   v 3.0.0.0
  */
-	public function cancelShortcutParentRoom($content_id, $parent_room_id) {
-		$fields = array('Content.room_id'=> $parent_room_id);
+	public function cancelShortcutParentRoom($id, $parentRoomId) {
+		$fields = array('Content.room_id'=> $parentRoomId);
 		$conditions = array(
-			"Content.id" => $content_id
+			"Content.id" => $id
 		);
 		if(!$this->updateAll($fields, $conditions)) {
 			return false;
 		}
 
 		// 親のルーム内のショートカットを解除
-		$cancel_contents_list = $this->findCancelShortcut($content_id, $parent_room_id);
+		$cancel_contents_list = $this->findCancelShortcut($id, $parentRoomId);
 		if(count($cancel_contents_list) > 0) {
 			$this->delete($cancel_contents_list);
 			App::uses('Block', 'Model');
 			$Block = new Block();
 			$fields = array(
-				'Block.content_id' => $content_id
+				'Block.content_id' => $id
 			);
 			$conditions = array(
 				'Block.content_id' => $cancel_contents_list
@@ -304,18 +319,18 @@ class Content extends AppModel
  * 解除対象のコンテンツ一覧を取得する
  * ルーム削除（コンテンツ削除）時に親のルームの物に変換される場合、親ルームの削除コンテンツに対する権限を付与したショートカットを解除する必要があるため
  *
- * @param   integer $content_id
- * @param   integer $parent_room_id
+ * @param   integer $id
+ * @param   integer $parentRoomId
  * @return	boolean true or false
  * @since   v 3.0.0.0
  */
-	protected function findCancelShortcut($content_id, $parent_room_id) {
+	protected function findCancelShortcut($id, $parentRoomId) {
 		$params = array(
 			'fields' => array('Content.id'),
 			'conditions' => array(
-				'Content.master_id' => $content_id,
+				'Content.master_id' => $id,
 				'Content.shortcut_type !=' => NC_SHORTCUT_TYPE_OFF,
-				'Content.room_id' => $parent_room_id
+				'Content.room_id' => $parentRoomId
 			)
 		);
 

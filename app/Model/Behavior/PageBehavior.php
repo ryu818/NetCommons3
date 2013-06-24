@@ -18,64 +18,76 @@ class PageBehavior extends ModelBehavior {
  * @return boolean
  * @since   v 3.0.0.0
  */
-	public function setPageName(Model $Model, $page, $type = 0) {
-		if(($page['thread_num'] == 0 || ($page['space_type'] != NC_SPACE_TYPE_GROUP && $page['thread_num'] == 1) ||
-				($page['space_type'] != NC_SPACE_TYPE_PUBLIC && $page['thread_num'] == 2 && $page['display_sequence'] == 1))) {
+	public function setPageName(Model $Model, $page, $type = 0, $alias = 'Page') {
+		if(($page[$alias]['thread_num'] == 0 || ($page[$alias]['space_type'] != NC_SPACE_TYPE_GROUP && $page[$alias]['thread_num'] == 1) ||
+				($page[$alias]['space_type'] != NC_SPACE_TYPE_PUBLIC && $page[$alias]['thread_num'] == 2 && $page[$alias]['display_sequence'] == 1))) {
 			if($type == 0) {
-				if($page['thread_num'] == 1 && ($page['space_type'] == NC_SPACE_TYPE_MYPORTAL || $page['space_type'] == NC_SPACE_TYPE_PRIVATE)) {
+				if($page[$alias]['thread_num'] == 1 && ($page[$alias]['space_type'] == NC_SPACE_TYPE_MYPORTAL || $page[$alias]['space_type'] == NC_SPACE_TYPE_PRIVATE)) {
 
 					App::uses('AuthComponent', 'Controller/Component');
 					$user = AuthComponent::user();
-					if($page['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
+					if($page[$alias]['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
 						// TODO:config_langsに{X-HANDLE}のマイポータル {X-USERNAME}のマイポータル等のデータを持ち、変換する。
-						if($user['myportal_page_id'] == $page['id']) {
-							$page['page_name'] = __('Myportal of %s', $user['handle']);
+						if($user['myportal_page_id'] == $page[$alias]['id']) {
+							$page[$alias]['page_name'] = __('Myportal of %s', $user['handle']);
 						} else {
 							App::uses('User', 'Model');
 							$User = new User();
-							$conditions = array('myportal_page_id' => $page['id']);
+							$conditions = array('myportal_page_id' => $page[$alias]['id']);
 							$user = $User->find( 'first', array('conditions' => $conditions, 'recursive' => -1) );
-							$page['page_name'] = __('Myportal of %s', $user['User']['handle']);
+							$page[$alias]['page_name'] = __('Myportal of %s', $user['User']['handle']);
 						}
 					} else {
 						// TODO:config_langsに{X-handle}のマイルーム {X-username}のマイルーム等のデータを持ち、変換する。
-						if($user['private_page_id'] == $page['id']) {
-							$page['page_name'] = __('Private room of %s', $user['handle']);
+						if($user['private_page_id'] == $page[$alias]['id']) {
+							$page[$alias]['page_name'] = __('Private room of %s', $user['handle']);
 						} else {
 							App::uses('User', 'Model');
 							$User = new User();
 							$conditions = array('User.private_page_id' => $page['id']);
 							$user = $User->find( 'first', array('conditions' => $conditions, 'recursive' => -1) );
-							$page['page_name'] = __('Private room of %s', $user['User']['handle']);
+							$page[$alias]['page_name'] = __('Private room of %s', $user['User']['handle']);
 						}
 					}
+				} else if($page[$alias]['thread_num'] == 1 && $page[$alias]['space_type'] == NC_SPACE_TYPE_GROUP) {
+					if(!isset($page['CommunityLang']['community_name'])) {
+						$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
+						App::uses('CommunityLang', 'Model');
+						$CommunityLang = new CommunityLang();
+						$page['CommunityLang'] = $CommunityLang->find('first', array('conditions' => array('room_id' => $page[$alias]['id'], 'lang' => $lang)));
+					}
+					if(isset($page['CommunityLang']['community_name'])) {
+						$page[$alias]['page_name'] = $page['CommunityLang']['community_name'];
+					}
 				} else {
-					$page['page_name'] = __($page['page_name']);
+					$page[$alias]['page_name'] = __($page[$alias]['page_name']);
 				}
-			} else {
-				switch($page['space_type']) {
+			} else if($page[$alias]['thread_num'] <= 1) {
+				switch($page[$alias]['space_type']) {
 					case NC_SPACE_TYPE_PUBLIC:
-						if($page['page_name'] == __('Public')) {
-							$page['page_name'] = "Public room";
+						if($page[$alias]['page_name'] == __('Public')) {
+							$page[$alias]['page_name'] = "Public room";
 						}
 						break;
 					case NC_SPACE_TYPE_MYPORTAL:
-						if($page['page_name'] == __('Myportal')) {
-							$page['page_name'] = "Myportal";
+						if($page[$alias]['page_name'] == __('Myportal')) {
+							$page[$alias]['page_name'] = "Myportal";
 						} else if($page['page_name'] == __('Myportal Top')) {
-							$page['page_name'] = "Myportal Top";
+							$page[$alias]['page_name'] = "Myportal Top";
 						}
 						break;
 					case NC_SPACE_TYPE_PRIVATE:
-						if($page['page_name'] == __('Private')) {
-							$page['page_name'] = "Private room";
-						} else if($page['page_name'] == __('Private Top')) {
-							$page['page_name'] = "Private Top";
+						if($page[$alias]['page_name'] == __('Private')) {
+							$page[$alias]['page_name'] = "Private room";
+						} else if($page[$alias]['page_name'] == __('Private Top')) {
+							$page[$alias]['page_name'] = "Private Top";
 						}
 						break;
 					case NC_SPACE_TYPE_GROUP:
-						if($page['page_name'] == __('Community')) {
-							$page['page_name'] = "Community";
+						if($page[$alias]['page_name'] == __('Community')) {
+							$page[$alias]['page_name'] = "Community";
+						} else if($page[$alias]['page_name'] == __('Community Top')) {
+							$page[$alias]['page_name'] = "Community Top";
 						}
 						break;
 				}
@@ -85,21 +97,24 @@ class PageBehavior extends ModelBehavior {
 	}
 
 /**
- * 会員ID、ページ情報からHierarchyを返す
- * @param  Model        $Model
- * @param  boolean|integer $isLogin(userId)
+ * ページにおけるデフォルトの権限(authority_id, hierarchy)を取得
+ * @param  Model           $Model
  * @param  Model Page   $page
+ * @param  boolean|integer $isLogin(userId)
+ * @param  integer $shortcutFlag
  * @param  stinrg $modelPrefix '' or 'Block' (Block->Page->PageUserLink->Authority or Content->Page->PageUserLink->Authority)
- * @return integer hierarchy
+ * @return array('id' => integer authority_id,'hierarchy' => integer hierarchy)
  * @since  v 3.0.0.0
  */
-	public function getDefaultHierarchy($Model, $page, $isLogin = false, $shortcutFlag = NC_SHORTCUT_TYPE_OFF, $modelPrefix = '') {
-		if(isset($page[$modelPrefix.'Authority']['hierarchy'])) {
-			return $page[$modelPrefix.'Authority']['hierarchy'];
-		}
+	public function getDefaultAuthority($Model, $page, $isLogin = false, $shortcutFlag = NC_SHORTCUT_TYPE_OFF, $modelPrefix = '') {
 		if($shortcutFlag == NC_SHORTCUT_TYPE_SHOW_ONLY) {
-			return NC_AUTH_GUEST;	// ゲスト固定
+			// ゲスト固定
+			return array(
+				'id' => NC_AUTH_GUEST_ID,
+				'hierarchy' => NC_AUTH_GUEST
+			);
 		}
+
 		if(!isset($page[$modelPrefix.'Community'])  && $page[$modelPrefix.'Page']['space_type'] == NC_SPACE_TYPE_GROUP && $page[$modelPrefix.'Page']['root_id'] != 0) {
 			App::uses('Community', 'Model');
 			$Community = new Community();
@@ -113,67 +128,32 @@ class PageBehavior extends ModelBehavior {
 			$page[$modelPrefix.'Community'] = $current_community[$modelPrefix.'Community'];
 		}
 
+		$authorityId = NC_AUTH_OTHER_ID;
 		$hierarchy = NC_AUTH_OTHER;
 		if($page[$modelPrefix.'Page']['space_type'] == NC_SPACE_TYPE_PUBLIC) {
+			$authorityId = Configure::read(NC_CONFIG_KEY.'.default_entry_public_authority_id');
 			$hierarchy = Configure::read(NC_CONFIG_KEY.'.default_entry_public_hierarchy');
 		} else if($page[$modelPrefix.'Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
+			$authorityId = Configure::read(NC_CONFIG_KEY.'.default_entry_myportal_authority_id');
 			$hierarchy = Configure::read(NC_CONFIG_KEY.'.default_entry_myportal_hierarchy');
 		} else if($page[$modelPrefix.'Page']['space_type'] == NC_SPACE_TYPE_PRIVATE) {
+			$authorityId = Configure::read(NC_CONFIG_KEY.'.default_entry_private_authority_id');
 			$hierarchy = Configure::read(NC_CONFIG_KEY.'.default_entry_private_hierarchy');
 		} else if($page[$modelPrefix.'Page']['root_id'] == 0) {
+			$authorityId = NC_AUTH_OTHER_ID;
 			$hierarchy = NC_AUTH_OTHER;
 		} else {
 			if($page[$modelPrefix.'Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_ONLY_USER ||
 				((!isset($isLogin) || intval($isLogin) == 0) && $page[$modelPrefix.'Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_LOGIN_USER)) {
+				$authorityId = NC_AUTH_OTHER_ID;
 				$hierarchy = NC_AUTH_OTHER;
 			} else {
+				$authorityId = Configure::read(NC_CONFIG_KEY.'.default_entry_group_authority_id');
 				$hierarchy = Configure::read(NC_CONFIG_KEY.'.default_entry_group_hierarchy');
 			}
 		}
 
-		return $hierarchy;
-	}
-
-/**
- * ページにおけるデフォルトの権限を取得
- * @param  Model           $Model
- * @param  boolean|integer $isLogin(userId)
- * @param  Model Page      $page
- * @return integer authority_id
- * @since  v 3.0.0.0
- */
-	public function getDefaultAuthorityId($Model, $page, $isLogin = false) {
-		if(!isset($page['Community'])  && $page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
-			App::uses('Community', 'Model');
-			$Community = new Community();
-			$params = array(
-				'fields' => array(
-					'Community.publication_range_flag'
-				),
-				'conditions' => array('room_id' => $page['Page']['root_id']),
-			);
-			$current_community = $Community->find('first', $params);
-			$page['Community'] = $current_community['Community'];
-		}
-		$authority_id = NC_AUTH_OTHER_ID;
-		if($page['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC) {
-			$authority_id = Configure::read(NC_CONFIG_KEY.'.default_entry_public_authority_id');
-		} else if($page['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
-			$authority_id = Configure::read(NC_CONFIG_KEY.'.default_entry_myportal_authority_id');
-		} else if($page['Page']['space_type'] == NC_SPACE_TYPE_PRIVATE) {
-			$authority_id = Configure::read(NC_CONFIG_KEY.'.default_entry_private_authority_id');
-		} else if($page['Page']['root_id'] == 0) {
-			$authority_id = NC_AUTH_OTHER_ID;
-		} else {
-			if($page['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_ONLY_USER ||
-					((!isset($isLogin) || intval($isLogin) == 0) && $page['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_LOGIN_USER)) {
-				$authority_id = NC_AUTH_OTHER_ID;
-			} else {
-				$authority_id = Configure::read(NC_CONFIG_KEY.'.default_entry_group_authority_id');
-			}
-		}
-
-		/*if($isLogin != _OFF && $authority_id != NC_AUTH_OTHER_ID && $page['Page']['root_id'] != $page['Page']['room_id']) {
+		/*if($isLogin != _OFF && $authorityId != NC_AUTH_OTHER_ID && $page['Page']['root_id'] != $page['Page']['room_id']) {
 			// 子グループ
 			// 親ルームが存在するならば、親ルームの参加者権限を取得
 			App::uses('Page', 'Model');
@@ -192,9 +172,43 @@ class PageBehavior extends ModelBehavior {
 				'conditions' => $conditions
 			);
 			$page_user_link = $PageUserLink->find('first', $params);
-			$authority_id = $page_user_link['PageUserLink']['authority_id'];
+			$authorityId = $page_user_link['PageUserLink']['authority_id'];
 		}*/
-		return $authority_id;
+
+		return array(
+			'id' => $authorityId,
+			'hierarchy' => $hierarchy
+		);
+	}
+
+/**
+ * 会員ID、ページ情報からHierarchyを返す
+ * @param  Model           $Model
+ * @param  Model Page   $page
+ * @param  boolean|integer $isLogin(userId)
+ * @param  integer $shortcutFlag
+ * @param  stinrg $modelPrefix '' or 'Block' (Block->Page->PageUserLink->Authority or Content->Page->PageUserLink->Authority)
+ * @return integer hierarchy
+ * @since  v 3.0.0.0
+ */
+	public function getDefaultHierarchy($Model, $page, $isLogin = false, $shortcutFlag = NC_SHORTCUT_TYPE_OFF, $modelPrefix = '') {
+		$authority = $this->getDefaultAuthority($Model, $page, $isLogin, $shortcutFlag, $modelPrefix);
+		return $authority['hierarchy'];
+	}
+
+/**
+ * ページにおけるデフォルトの権限を取得
+ * @param  Model           $Model
+ * @param  Model Page   $page
+ * @param  boolean|integer $isLogin(userId)
+ * @param  integer $shortcutFlag
+ * @param  stinrg $modelPrefix '' or 'Block' (Block->Page->PageUserLink->Authority or Content->Page->PageUserLink->Authority)
+ * @return integer authority_id
+ * @since  v 3.0.0.0
+ */
+	public function getDefaultAuthorityId($Model, $page, $isLogin = false, $shortcutFlag = NC_SHORTCUT_TYPE_OFF, $modelPrefix = '') {
+		$authority = $this->getDefaultAuthority($Model, $page, $isLogin, $shortcutFlag, $modelPrefix);
+		return $authority['id'];
 	}
 
 /**
@@ -222,121 +236,6 @@ class PageBehavior extends ModelBehavior {
 			$ret_permalink .= $permalink.'/';
 
 		return $ret_permalink;
-	}
-
-/**
- * ページメニューの階層構造を表示するafterコールバック
- *
- * @param  Model     $Model
- * @param  array     $results
- * @param  boolean   $isLogin
- * @param  array     $fetch_params
- * @return array     $pages['space_type']['thread_num']['parent_id']['display_sequence']
- * @since   v 3.0.0.0
- */
-	public function afterFindMenu(Model $Model, $results, $isLogin = false, $fetch_params = null) {
-		$pages = array();
-		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
-		$active_page_id = isset($fetch_params['active_page_id']) ? $fetch_params['active_page_id'] : null;
-
-		if(!empty($active_page_id)) {
-			$buf_pages = array();
-			foreach ($results as $key => $val) {
-				$buf_pages[$val[$Model->alias]['id']] = $val[$Model->alias]['parent_id'];
-			}
-			$active_id_arr = array($active_page_id => true);
-			$buf_page_id = $active_page_id;
-			while(1) {
-				if(!empty($buf_pages[$buf_page_id])) {
-					$active_id_arr[$buf_pages[$buf_page_id]] = true;
-					$buf_page_id = $buf_pages[$buf_page_id];
-				} else {
-					break;
-				}
-			}
-		}
-
-		$active_lang = null;
-		$active_room_id = null;
-		//$parent_id_arr = array();
-		$permalink_arr = array();
-		$node_top_arr = array();
-		$parent_display_arr = array();
-		foreach ($results as $key => $val) {
-			if(($val[$Model->alias]['thread_num'] == 1 || $val[$Model->alias]['display_sequence'] == 1) && $val[$Model->alias]['lang'] == $lang) {
-				// NodeTop
-				$node_top_arr[$val[$Model->alias]['space_type']] = true;
-			}
-			if($val[$Model->alias]['lang'] != '' && $val[$Model->alias]['lang'] != $lang && isset($node_top_arr[$val[$Model->alias]['space_type']])) {
-				// 現在の言語でTopNodeがある場合、他の言語は表示しない。
-				continue;
-			}
-
-			if(isset($permalink_arr[$val[$Model->alias]['space_type']][$val[$Model->alias]['permalink']])) {
-				continue;
-			} else if($val[$Model->alias]['lang'] == $lang) {
-				$permalink_arr[$val[$Model->alias]['space_type']][$val[$Model->alias]['permalink']] = $val[$Model->alias]['permalink'];
-			} else if($val[$Model->alias]['lang'] != '' &&
-					$val[$Model->alias]['display_sequence'] != 0 && ($active_lang === '' || $active_lang == 'en')) {
-				continue;
-			}
-
-			$pre_display_flag = $val[$Model->alias]['display_flag'];
-
-
-			$val[$Model->alias] = $this->updDisplayFlag($Model, $val[$Model->alias]);
-
-			if($pre_display_flag != $val[$Model->alias]['display_flag'] &&
-					($val[$Model->alias]['display_flag'] == _OFF ||
-						($val[$Model->alias]['display_flag'] == _ON && $val[$Model->alias]['display_apply_subpage'] == _ON))) {
-				// 親が非公開ならば、子供が公開になっていても非公開として表示。
-				// 公開日付Toを設定直後に親が非公開、子供が公開で表示されてしまうため
-				// 親が公開で、「下位ページにも適用」のチェックボックスがONの場合も同様。
-				$parent_display_arr[$val[$Model->alias]['id']] = $val[$Model->alias]['display_flag'];
-			}
-			if(isset($parent_display_arr[$val[$Model->alias]['parent_id']])) {
-				$val[$Model->alias]['display_flag'] = $parent_display_arr[$val[$Model->alias]['parent_id']];
-			}
-
-			//if($val[$Model->alias]['thread_num'] >= 2 && !isset($parent_id_arr[$val[$Model->alias]['parent_id']])) {
-			//	// 親がなし
-			//	continue;
-			//}
-
-			if($val[$Model->alias]['display_sequence'] != 0 && $active_room_id != $val[$Model->alias]['room_id']) {
-				$active_lang = $val[$Model->alias]['lang'];
-				$active_room_id = $val[$Model->alias]['room_id'];
-			}
-
-			if(!empty($active_page_id)) {
-				if(!empty($active_id_arr[$val[$Model->alias]['id']])) {
-					$val[$Model->alias]['active'] = true;
-				} else {
-					$val[$Model->alias]['active'] = false;
-				}
-
-				if(isset($active_id_arr[$val[$Model->alias]['parent_id']]) || $val[$Model->alias]['thread_num'] <= 1) {	// || $val[$Model->alias]['thread_num'] <= 2
-					$val[$Model->alias]['show'] = true;
-				} else {
-					$val[$Model->alias]['show'] = false;
-				}
-			}
-			//$val[$Model->alias]['hierarchy'] = isset($val['Authority']['hierarchy']) ? $val['Authority']['hierarchy'] : NC_AUTH_OTHER;
-			if(!isset($val['Authority']['hierarchy'])) {
-				$val['Authority']['hierarchy'] = $this->getDefaultHierarchy($Model, $val, $isLogin);
-			}
-
-			if(isset($val['CommunityLang']['community_name'])) {
-				$val[$Model->alias]['page_name'] = $val['CommunityLang']['community_name'];
-			}
-
-			$val[$Model->alias]['visibility_flag'] = empty($val['Menu']['visibility_flag']) ? _ON : $val['Menu']['visibility_flag'];
-			$val[$Model->alias]['permalink'] = $this->getPermalink($Model, $val[$Model->alias]['permalink'], $val[$Model->alias]['space_type']);
-			$val[$Model->alias] = $this->setPageName($Model, $val[$Model->alias]);
-			$pages[$val[$Model->alias]['space_type']][$val[$Model->alias]['thread_num']][$val[$Model->alias]['parent_id']][$val[$Model->alias]['display_sequence']] = $val;
-			//$parent_id_arr[$val[$Model->alias]['id']] = $val[$Model->alias]['id'];
-		}
-		return $pages;
 	}
 
 /**

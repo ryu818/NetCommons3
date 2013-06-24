@@ -102,7 +102,7 @@ if(isset($is_edit) && $is_edit == _ON){
 		<ol class="dd-list">
 			<?php if(!empty($pages[NC_SPACE_TYPE_PUBLIC])): ?>
 				<?php $thread_num = 2; $parent_id = $pages[NC_SPACE_TYPE_PUBLIC][1][NC_TOP_PUBLIC_ID][0]['Page']['id']; ?>
-				<?php echo($this->element('index/page', array('pages' => $pages, 'menus' => $pages[NC_SPACE_TYPE_PUBLIC][$thread_num][$parent_id], 'space_type' => NC_SPACE_TYPE_PUBLIC, 'page_id' => $page_id))); ?>
+				<?php if(!empty($pages[NC_SPACE_TYPE_PUBLIC][$thread_num][$parent_id])){ echo($this->element('index/page', array('pages' => $pages, 'menus' => $pages[NC_SPACE_TYPE_PUBLIC][$thread_num][$parent_id], 'space_type' => NC_SPACE_TYPE_PUBLIC, 'page_id' => $page_id)));} ?>
 			<?php endif; ?>
 			<?php if(!empty($pages[NC_SPACE_TYPE_MYPORTAL])): ?>
 				<?php $thread_num = 1; $parent_id = NC_TOP_MYPORTAL_ID; /*$pages[NC_SPACE_TYPE_MYPORTAL][1][NC_TOP_MYPORTAL_ID][0]['Page']['id'];*/?>

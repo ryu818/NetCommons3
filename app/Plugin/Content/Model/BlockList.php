@@ -122,8 +122,8 @@ class BlockList extends AppModel {
 			}
 			$blocks = $this->find('all', $params);
 			for($i =0; $i < count($blocks); $i++) {
-				$blocks[$i]['Page'] = $this->setPageName($blocks[$i]['Page']);
-				$blocks[$i]['RoomPage'] = $this->setPageName($blocks[$i]['RoomPage']);
+				$blocks[$i] = $this->setPageName($blocks[$i]);
+				$blocks[$i] = $this->setPageName($blocks[$i], 0, 'RoomPage');
 				$blocks[$i]['Page']['permalink'] = $this->getPermalink($blocks[$i]['Page']['permalink'], $blocks[$i]['Page']['space_type']);
 				if(!isset($blocks[$i]['Authority']['hierarchy'])) {
 					$blocks[$i]['Authority']['hierarchy'] = $this->getDefaultHierarchy($blocks[$i], $userId);

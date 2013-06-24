@@ -315,7 +315,6 @@ class Block extends AppModel
 		$val['Block']['edit_controller_action'] = $val['Module']['edit_controller_action'];
 		$val['Block']['style_controller_action'] = $val['Module']['style_controller_action'];
 
-		$val['Block']['hierarchy'] = $val['Authority']['hierarchy'];
 		if($val['Block']['title'] != '') {
 			if($val['Block']['title'] == "{X-CONTENT}") {
 				$val['Block']['title'] = $val['Content']['title'];
@@ -323,8 +322,12 @@ class Block extends AppModel
 			}
 		}
 
-		$val['Authority']['hierarchy'] = $this->getDefaultHierarchy($val, $user_id, $val['Block']['shortcut_type']);
-		$val['BlockAuthority']['hierarchy'] = $this->getDefaultHierarchy($val, $user_id, NC_SHORTCUT_TYPE_OFF, 'Block');
+		if(!isset($val['Authority']['hierarchy'])) {
+			$val['Authority']['hierarchy'] = $this->getDefaultHierarchy($val, $user_id, $val['Block']['shortcut_type']);
+		}
+		if(!isset($val['BlockAuthority']['hierarchy'])) {
+			$val['BlockAuthority']['hierarchy'] = $this->getDefaultHierarchy($val, $user_id, NC_SHORTCUT_TYPE_OFF, 'Block');
+		}
 		$val['Block']['hierarchy'] = $val['Authority']['hierarchy'];
 		$val['Block']['block_hierarchy'] = $val['BlockAuthority']['hierarchy'];
 
@@ -547,13 +550,13 @@ class Block extends AppModel
  * 再帰的に処理
  *
  * @param object  $block
- * @param boolean $all_delete コンテンツもすべて削除するかどうか（NC_DELETE_MOVE_PARENTの場合、コンテンツを親のコンテンツへ）
- * @param integer $parent_room_id $all_delete NC_DELETE_MOVE_PARENTの場合の振り替え先room_id
+ * @param boolean $allDelete コンテンツもすべて削除するかどうか（NC_DELETE_MOVE_PARENTの場合、コンテンツを親のコンテンツへ）
+ * @param integer $parentRoomId $allDelete NC_DELETE_MOVE_PARENTの場合の振り替え先room_id
  * @param boolean $is_page ページ削除から呼ばれたかどうか
  * @return	boolean true or false
  * @since   v 3.0.0.0
  **/
-	public function deleteBlock($block, $all_delete = _OFF, $parent_room_id = null, $is_delete_page = false)
+	public function delBlock($block, $allDelete = _OFF, $parentRoomId = null, $isDeletePage = false)
 	{
 		App::uses('Content', 'Model');
 		$Content = new Content();
@@ -574,7 +577,7 @@ class Block extends AppModel
 			// --- 子供に位置するモジュール削除   ---
 			// --------------------------------------
 			//子供取得
-			if(!$is_delete_page) {		// ページから削除する場合は、再帰的に削除する必要なし。
+			if(!$isDeletePage) {		// ページから削除する場合は、再帰的に削除する必要なし。
 				$child_blocks = $this->find('all', array(
 					'recursive' => -1,
 					'conditions' => array(
@@ -583,7 +586,7 @@ class Block extends AppModel
 				));
 				foreach($child_blocks as $child_block) {
 					//再帰処理
-					$ret = $this->deleteBlock($child_block, $all_delete, $parent_room_id, $is_delete_page);
+					$ret = $this->delBlock($child_block, $allDelete, $parentRoomId, $isDeletePage);
 					if(!$ret) {
 						return false;
 					}
@@ -615,7 +618,7 @@ class Block extends AppModel
 						}
 					}
 
-					if(isset($content['Content']) && $content['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_OFF && $all_delete == _ON &&
+					if(isset($content['Content']) && $content['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_OFF && $allDelete == _ON &&
 						$page['Page']['room_id'] == $content['Content']['room_id'] && method_exists($class_name, 'delete')) {
 						// 削除アクション
 						$ret = $class->delete($content);
@@ -626,14 +629,14 @@ class Block extends AppModel
 				}
 				if(isset($content['Content'])) {
 					if($content['Content']['display_flag'] == NC_DISPLAY_FLAG_DISABLE || $content['Content']['shortcut_type'] != NC_SHORTCUT_TYPE_OFF ||
-						($all_delete == _ON && $page['Page']['room_id'] == $content['Content']['room_id'])) {
+						($allDelete == _ON && $page['Page']['room_id'] == $content['Content']['room_id'])) {
 
 						// ショートカットか、ショートカットではない場合
 						// コンテンツがなくてもエラーとしない(コンテンツ一覧からコンテンツを削除後にブロック削除を行うとエラーとなるため)
 						$Content->delete($block['Block']['content_id']);
-					} else if(isset($parent_room_id) && $all_delete == NC_DELETE_MOVE_PARENT && $content['Content']['room_id'] != $parent_room_id) {
+					} else if(isset($parentRoomId) && $allDelete == NC_DELETE_MOVE_PARENT && $content['Content']['room_id'] != $parentRoomId) {
 						// 親のルームの持ち物に変換し、親のルーム内のショートカットを解除
-						if(!$Content->cancelShortcutParentRoom($content_id, $parent_room_id)) {
+						if(!$Content->cancelShortcutParentRoom($content_id, $parentRoomId)) {
 							return false;
 						}
 					}

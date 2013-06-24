@@ -343,4 +343,40 @@ class MyFormHelper extends FormHelper {
 		}
 		return false;
 	}
+
+/**
+ * Postデータをhidden属性で持ち回り用
+ * 次へ、前へ等でPOSTのデータをhiddenに保持しつつ画面遷移することができる。
+ *
+ * 3次元配列までは対応。
+ *
+ * @param string Model name
+ * @param array $fieldList	fieldListが設定されていた場合、そのfieldListのみ出力。
+ * @return string hidden string
+ */
+	public function hiddenVars($modelName, $fieldList = array()) {
+		$ret = "";
+		if(!isset($this->data[$modelName])) {
+			return $ret;
+		}
+
+		foreach ($this->data[$modelName] as $key => $val) {
+			if(is_array($val)){
+				foreach( $val as $key2 => $val2 ){
+					if(is_array($val2)){
+						foreach( $val2 as $key3 => $val3 ){
+							if(count($fieldList) == 0 || in_array($key3, $fieldList)) {
+								$ret .= $this->hidden("$modelName.$key.$key2.$key3")."\n";
+							}
+						}
+					} else if(count($fieldList) == 0 || in_array($key2, $fieldList)) {
+						$ret .= $this->hidden("$modelName.$key.$key2")."\n";
+					}
+				}
+			} else if(count($fieldList) == 0 || in_array($key, $fieldList)) {
+				$ret .= $this->hidden("$modelName.$key")."\n";
+			}
+		}
+		return $ret;
+	}
 }

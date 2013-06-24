@@ -119,7 +119,7 @@ class ContentController extends ContentAppController {
 			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Content.index.007', '500');
 			return;
 		}
-		$activeRoom['Page'] = $this->Page->setPageName($activeRoom['Page']);
+		$activeRoom = $this->Page->setPageName($activeRoom);
 
 		$this->set('room_name', $activeRoom['Page']['page_name']);
 		// モジュール一覧

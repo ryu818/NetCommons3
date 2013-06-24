@@ -730,7 +730,7 @@
  * @param   element form
  * @param   string file_name
  * @return  void
- * @access  public
+ * @since   v 3.0.0.0
  */
 		selectPhoto: function(id, target, file_name) {
 			var form = $('#PagesMenuForm-' + id);
@@ -748,7 +748,7 @@
  * @param   integer def_authority_id
  * @param   element el button element
  * @return  void
- * @access  public
+ * @since   v 3.0.0.0
  */
 		allChecked: function(page_id, def_authority_id, el) {
 			var cell = $(el).parent();
@@ -762,7 +762,9 @@
 
 					if(select.get(0)) {
 						var list_name = $(this).parent().next();
-						list_name.val(select.val());
+						if(!list_name.attr('disabled')) {
+							list_name.val(select.val());
+						}
 					}
 
 				}
@@ -771,15 +773,14 @@
 
 /**
  * 参加者修正-権限セレクトボックス
- * @param   integer page_id
- * @param   integer def_authority_id
- * @param   element el button element
+ * @param   element el
  * @return  void
- * @access  public
+ * @since   v 3.0.0.0
  */
-		chgSelectAuth: function(page_id, el) {
+		chgSelectAuth: function(el) {
 			var authority_id = $(el).val();
 			var input = $('input:hidden:first,input:radio:first',$(el).parent());
+			console.log(input);
 			input.val(authority_id);
 		},
 

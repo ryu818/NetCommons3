@@ -331,14 +331,26 @@ class Archive extends AppModel
 		$Page = new Page();
 		// $isDisplayAllMyportal + ルーム指定の新着はSQLが複雑になりそうなので対処しない。
 		if(!$isDisplayAllMyportal) {
-			$pages = $Page->findViewableRoom('all', array(), $userId, null, $roomIdArr, $isDisplayPublicCommunity, false);
+			$addParams = array();
+			if(isset($roomIdArr)) {
+				$addParams = array(
+					'conditions' => array(
+						'Page.room_id' => $roomIdArr
+					)
+				);
+			}
+			$options = array(
+				'isDisplayPublicCommunity' => $isDisplayPublicCommunity,
+				'isMyPortalSelf' => false,
+			);
+			$pages = $Page->findViewableRoom('all', $userId, $addParams, $options);
 
 			if(count($pages) == 0) {
 				return $ret;
 			}
 			$hierarchyRooms = array();
 			foreach ($pages as $key => $val) {
-				$hierarchy = $Page->getDefaultHierarchy($val, $userId);
+				$hierarchy = $val['Authority']['hierarchy'];		//$Page->getDefaultHierarchy($val, $userId);
 				if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 					$hierarchyRooms[NC_AUTH_CHIEF][] = $val['Page']['id'];
 				} else if($hierarchy >= NC_AUTH_MIN_MODERATE) {

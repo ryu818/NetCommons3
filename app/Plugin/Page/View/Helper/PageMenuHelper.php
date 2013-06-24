@@ -14,28 +14,28 @@ class PageMenuHelper extends AppHelper {
 /**
  * $authority_id, $hierarchy取得
  *
- * @param   array $auth_list
+ * @param   array $authList
  * @param   Model Page $page
  * @param   Model PageUserLink $page_user_links
  * @param   Model User $user
  * @param   Model Authority $authority
- * @param   array $sess_page_user_links
- * @param   integer $default_authority_id
- * @return  array ($authority_id, $hierarchy)
+ * @param   array $sessPageUserLinks
+ * @param   integer $defaultAuthorityId
+ * @return  array ($authorityId, $hierarchy)
  * @since   v 3.0.0.0
  */
-	public function getAuth($auth_list, $page, $user, $sess_page_user_links, $default_authority_id) {
-		if(!empty($sess_page_user_links['PageUserLink'][$user['User']['id']])) {
+	public function getAuth($authList, $page, $user, $sessPageUserLinks, $defaultAuthorityId) {
+		if(!empty($sessPageUserLinks['PageUserLink'][$user['User']['id']])) {
 			// セッションあり
-			$authority_id = $sess_page_user_links['PageUserLink'][$user['User']['id']]['authority_id'];
-			$hierarchy = $this->_getHierarchy($authority_id, $auth_list);
+			$authorityId = $sessPageUserLinks['PageUserLink'][$user['User']['id']]['authority_id'];
+			$hierarchy = $this->_getHierarchy($authorityId, $authList);
 		//} else if($user['User']['id'] == $user_id) {
 		//	// コミュニティを作成する本人
-		//	$authority_id = NC_AUTH_CHIEF_ID;
-		//	$hierarchy = $auth_list[NC_AUTH_CHIEF][NC_AUTH_CHIEF_ID];
+		//	$authorityId = NC_AUTH_CHIEF_ID;
+		//	$hierarchy = $authList[NC_AUTH_CHIEF][NC_AUTH_CHIEF_ID];
 		} else if(isset($user['PageUserLink']['authority_id'])) {
 			// データあり
-			$authority_id = $user['PageUserLink']['authority_id'];
+			$authorityId = $user['PageUserLink']['authority_id'];
 			if(isset($user['Authority']['hierarchy'])) {
 				$hierarchy = $user['Authority']['hierarchy'];
 			} else {
@@ -43,39 +43,39 @@ class PageMenuHelper extends AppHelper {
 			}
 		} else if(isset($user['PageUserLinkParent']['authority_id']) && $page['Page']['id'] != $page['Page']['room_id']) {
 			// 新規
-			$authority_id = $user['PageUserLinkParent']['authority_id'];
+			$authorityId = $user['PageUserLinkParent']['authority_id'];
 			if(isset($user['AuthorityParent']['hierarchy'])) {
 				$hierarchy = $user['AuthorityParent']['hierarchy'];
 			} else {
 				$hierarchy = NC_AUTH_OTHER;
 			}
 		} else {
-			$authority_id = $default_authority_id;
-			$hierarchy = $this->_getHierarchy($authority_id, $auth_list);
+			$authorityId = $defaultAuthorityId;
+			$hierarchy = $this->_getHierarchy($authorityId, $authList);
 		}
 
-		return array($authority_id, $hierarchy);
+		return array($authorityId, $hierarchy);
     }
 
 /**
  * authority_idからhierarchyを取得
  *
- * @param   integer $authority_id
- * @param   array $auth_list
+ * @param   integer $authorityId
+ * @param   array $authList
  * @return  integer $hierarchy
  * @since   v 3.0.0.0
  */
-	protected function _getHierarchy($authority_id, $auth_list) {
-		if($authority_id == NC_AUTH_GUEST_ID)
+	protected function _getHierarchy($authorityId, $authList) {
+		if($authorityId == NC_AUTH_GUEST_ID)
 			$hierarchy = NC_AUTH_GUEST;
-		else if($authority_id == NC_AUTH_OTHER_ID)
+		else if($authorityId == NC_AUTH_OTHER_ID)
 			$hierarchy = NC_AUTH_OTHER;
-		else if(!empty($auth_list[NC_AUTH_CHIEF][$authority_id]))
-			$hierarchy = $auth_list[NC_AUTH_CHIEF][$authority_id]['hierarchy'];
-		else if(!empty($auth_list[NC_AUTH_MODERATE][$authority_id]))
-			$hierarchy = $auth_list[NC_AUTH_MODERATE][$authority_id]['hierarchy'];
-		else if(!empty($auth_list[NC_AUTH_GENERAL][$authority_id]))
-			$hierarchy = $auth_list[NC_AUTH_GENERAL][$authority_id]['hierarchy'];
+		else if(!empty($authList[NC_AUTH_CHIEF][$authorityId]))
+			$hierarchy = $authList[NC_AUTH_CHIEF][$authorityId]['hierarchy'];
+		else if(!empty($authList[NC_AUTH_MODERATE][$authorityId]))
+			$hierarchy = $authList[NC_AUTH_MODERATE][$authorityId]['hierarchy'];
+		else if(!empty($authList[NC_AUTH_GENERAL][$authorityId]))
+			$hierarchy = $authList[NC_AUTH_GENERAL][$authorityId]['hierarchy'];
 		else
 			$hierarchy = NC_AUTH_OTHER;
 		return $hierarchy;

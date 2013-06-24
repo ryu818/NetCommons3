@@ -95,9 +95,7 @@ class PageController extends PageAppController {
 		if(isset($pre_lang)) {
 			Configure::write(NC_CONFIG_KEY.'.'.'language', $pre_lang);
 			$this->Session->write(NC_CONFIG_KEY.'.language', $pre_lang);
-			$this->Session->delete(NC_SYSTEM_KEY.'.page_menu.pre_lang');
 		}
-
 	}
 
 /**
@@ -113,8 +111,8 @@ class PageController extends PageAppController {
 		include_once dirname(dirname(__FILE__)).'/Config/defines.inc.php';
 
 		$center_page = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');
-		$login_user = $this->Auth->user();
-		$user_id = $login_user['id'];
+		$loginUser = $this->Auth->user();
+		$userId = $loginUser['id'];
 
 		$is_edit = isset($this->request->query['is_edit']) ? intval($this->request->query['is_edit']) : _OFF;
 		$is_detail = isset($this->request->query['is_detail']) ? intval($this->request->query['is_detail']) : _OFF;
@@ -124,15 +122,16 @@ class PageController extends PageAppController {
 		$page_id = isset($this->request->query['page_id']) ? intval($this->request->query['page_id']) : (isset($center_page) ? $center_page['Page']['id'] : null);
 
 		// 言語切替
-		$languages = $this->Language->findLists();
-		//$active_lang = isset($active_lang) ? $active_lang : $this->Session->read(NC_SYSTEM_KEY.'.page_menu.lang');
-		//$this->_sess_language = null;
+		$languages = $this->Language->findList();
 		if(isset($active_lang) && isset($languages[$active_lang])) {
-			$this->Session->write(NC_SYSTEM_KEY.'.page_menu.pre_lang', $this->Session->read(NC_CONFIG_KEY.'.language'));
+			$pre_lang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.pre_lang');
+			if(!isset($pre_lang)) {
+				$this->Session->write(NC_SYSTEM_KEY.'.page_menu.pre_lang', $this->Session->read(NC_CONFIG_KEY.'.language'));
+			}
+			$this->Session->write(NC_SYSTEM_KEY.'.page_menu.lang', $active_lang);
 
 			Configure::write(NC_CONFIG_KEY.'.'.'language', $active_lang);
 			$this->Session->write(NC_CONFIG_KEY.'.language', $active_lang);
-			$this->Session->write(NC_SYSTEM_KEY.'.page_menu.lang', $active_lang);
 		}
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 
@@ -149,14 +148,6 @@ class PageController extends PageAppController {
 			'community_params' => array()
 		);
 
-		// カレント会員取得
-		$current_user = $this->User->currentUser($center_page, $login_user);
-		if($current_user === false) {
-			$this->flash(__('Failed to obtain the database, (%s).','users'), null, 'Page/index.001', '500');
-			return;
-		} else if($current_user === '') {
-			$current_user = array('User' => $login_user);
-		}
 		$sel_active_tab = 0;
 		if($center_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
 			$sel_active_tab = 1;
@@ -192,14 +183,14 @@ class PageController extends PageAppController {
 		}
 
 		// 管理系の権限を取得
-		if($user_id) {
-			$admin_hierarchy = $this->ModuleSystemLink->findHierarchyByPluginName($this->request->params['plugin'], $login_user['authority_id']);
+		if($userId) {
+			$admin_hierarchy = $this->ModuleSystemLink->findHierarchyByPluginName($this->request->params['plugin'], $loginUser['authority_id']);
 		} else {
 			$admin_hierarchy = NC_AUTH_OTHER;
 		}
 		$element_params['admin_hierarchy'] = $admin_hierarchy;
 
-		$parent_page = $this->Page->findAuthById($center_page['Page']['parent_id'], $user_id);
+		$parent_page = $this->Page->findAuthById($center_page['Page']['parent_id'], $userId);
 		if(!isset($parent_page['Page'])) {
 			$this->flash(__('Failed to obtain the database, (%s).','pages'), null, 'Page/index.002', '500');
 			return;
@@ -231,7 +222,7 @@ class PageController extends PageAppController {
 			$buf_thread_num = $center_page['Page']['thread_num'];
 			if($center_page['Page']['thread_num'] == 2 && $center_page['Page']['display_sequence'] == 1) {
 				// Topページ
-				$parent_page = $this->Page->findAuthById($parent_page['Page']['parent_id'], $user_id);	// 再取得
+				$parent_page = $this->Page->findAuthById($parent_page['Page']['parent_id'], $userId);	// 再取得
 				if(!isset($parent_page['Page'])) {
 					$this->flash(__('Failed to obtain the database, (%s).','pages'), null, 'Page/index.003', '500');
 					return;
@@ -256,21 +247,21 @@ class PageController extends PageAppController {
 			}
 		}
 
-		$fetch_params = array(
-			'active_page_id' => $page_id
+		$addParams = array(
+			'conditions' => array(
+				'Page.space_type' => array(NC_SPACE_TYPE_PUBLIC, NC_SPACE_TYPE_MYPORTAL, NC_SPACE_TYPE_PRIVATE)
+			)
 		);
-		$pages = $this->Page->findMenu('all', $user_id, NC_SPACE_TYPE_PUBLIC, $current_user, $params, null, $fetch_params, true);
-		$private_pages = $this->Page->findMenu('all', $user_id, array(NC_SPACE_TYPE_MYPORTAL, NC_SPACE_TYPE_PRIVATE), $current_user, $params, null, $fetch_params);
-		if(isset($private_pages[NC_SPACE_TYPE_MYPORTAL])) {
-			$pages[NC_SPACE_TYPE_MYPORTAL] = $private_pages[NC_SPACE_TYPE_MYPORTAL];
-		}
-		if(isset($private_pages[NC_SPACE_TYPE_PRIVATE])) {
-			$pages[NC_SPACE_TYPE_PRIVATE] = $private_pages[NC_SPACE_TYPE_PRIVATE];
-		}
+		$options = array(
+			'isDisplayPublicCommunity' => false,
+			'isMyPortalSelf' => true,
+			'ativePageId' => $page_id,
+		);
+		$pages = $this->Page->findViewable('menu', $userId, $addParams, $options);
 
 		// コミュニティー数
-		//$this->paginate['extra'] = array('user_id' => $user_id);
-		$this->paginate['user_id'] = $user_id;
+		//$this->paginate['extra'] = array('user_id' => $userId);
+		$this->paginate['user_id'] = $userId;
 		if($is_edit && $admin_hierarchy >= NC_AUTH_MIN_ADMIN) {
 			$this->paginate['is_all'] = true;
 		} else {
@@ -279,12 +270,22 @@ class PageController extends PageAppController {
 		$pages_top_group = $this->paginate('Page');
 		$pages_group = array();
 		if(count($pages_top_group) > 0) {
-			$params['conditions']['Page.root_id'] = $pages_top_group;
-			$pages_group = $this->Page->findMenu('all', $user_id, NC_SPACE_TYPE_GROUP, null, $params, null, $fetch_params, $this->paginate['is_all']);
+			$addParams = array(
+				'conditions' => array(
+					'Page.root_id' => $pages_top_group,
+					'Page.space_type' => NC_SPACE_TYPE_GROUP,
+				)
+			);
+			$options = array(
+				'isDisplayPublicCommunity' => true,
+				'isMyPortalSelf' => false,
+				'ativePageId' => $page_id,
+			);
+			$pages_group = $this->Page->findViewable('menu', ($this->paginate['is_all']) ? 'all' : $userId, $addParams, $options);
 		}
 		$copy_page_id = $this->Session->read('Pages.'.'copy_page_id');
 		if(isset($copy_page_id)) {
-			$copy_page = $this->Page->findAuthById($copy_page_id, $user_id);
+			$copy_page = $this->Page->findAuthById($copy_page_id, $userId);
 			$element_params['copy_page_id'] = $copy_page_id;
 			$element_params['copy_page'] = $copy_page;
 		} else {

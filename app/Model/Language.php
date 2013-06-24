@@ -19,7 +19,7 @@ class Language extends AppModel
  * @return  array
  * @since   v 3.0.0.0
  */
-	public function findLists() {
+	public function findList() {
 		return $this->find('list', array(
 			'fields' => array('display_name'),
 			'conditions' => array('display_flag' => _ON),
