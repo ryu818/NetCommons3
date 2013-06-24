@@ -18,7 +18,7 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Routing
  * @since         CakePHP(tm) v 0.2.9
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 /**
  * By Ryuji.M
@@ -82,7 +82,7 @@ class Dispatcher implements CakeEventListener {
 	}
 
 /**
- * Returns the list of events this object listents to.
+ * Returns the list of events this object listens to.
  *
  * @return array
  */
@@ -184,7 +184,7 @@ class Dispatcher implements CakeEventListener {
  * @param Controller $controller Controller to invoke
  * @param CakeRequest $request The request object to invoke the controller for.
  * @param CakeResponse $response The response object to receive the output
- * @return CakeResponse te resulting response object
+ * @return CakeResponse the resulting response object
  */
 	protected function _invoke(Controller $controller, CakeRequest $request, CakeResponse $response) {
 		$controller->constructClasses();

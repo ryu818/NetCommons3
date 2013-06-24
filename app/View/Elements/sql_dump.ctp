@@ -14,7 +14,7 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.View.Elements
  * @since         CakePHP(tm) v 1.3
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 //echo('<span class="nc-log-second"> ('.(sprintf('%01.04f', round(microtime(true) - TIME_START, 4))).'s)</span>');	// debugモードOFFでの時間計測表示
 if (!class_exists('ConnectionManager') || Configure::read('debug') == 0) {

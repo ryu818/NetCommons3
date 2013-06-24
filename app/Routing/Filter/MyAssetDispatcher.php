@@ -59,7 +59,7 @@ class MyAssetDispatcher extends AssetDispatcher {
 // Add End Ryuji.M
 		}
 		$plugin = Inflector::camelize($parts[0]);
-		if (CakePlugin::loaded($plugin)) {
+		if ($plugin && CakePlugin::loaded($plugin)) {
 			unset($parts[0]);
 			$fileFragment = urldecode(implode(DS, $parts));
 			$pluginWebroot = CakePlugin::path($plugin) . 'webroot' . DS;

@@ -14,8 +14,9 @@
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @since         CakePHP(tm) v 2.0
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
+
 App::uses('Hash', 'Utility');
 
 /**
@@ -217,17 +218,6 @@ class CakeRequest implements ArrayAccess {
 		if (isset($this->params['url'])) {
 			$query = array_merge($this->params['url'], $query);
 		}
-// Add Start 先頭「_」がつかないqueryのみ追加 Ryuji.M
-		/*if(is_array($query)) {
-			$buf_query = array();
-			foreach($query as $k => $v) {
-				if(substr($k, 0, 1) != '_') {
-					$buf_query[$k] = $v;
-				}
-			}
-			$query = $buf_query;
-		}*/
-// Edit End Ryuji.M
 		$this->query = $query;
 	}
 
@@ -303,7 +293,7 @@ class CakeRequest implements ArrayAccess {
 			if ($base === DS || $base === '.') {
 				$base = '';
 			}
-
+			$base = implode('/', array_map('rawurlencode', explode('/', $base)));
 			$this->webroot = $base . '/';
 			return $this->base = $base;
 		}
@@ -591,10 +581,10 @@ class CakeRequest implements ArrayAccess {
 	}
 
 /**
- * Get the value of the current requests url. Will include named parameters and querystring arguments.
+ * Get the value of the current requests URL. Will include named parameters and querystring arguments.
  *
  * @param boolean $base Include the base path, set to false to trim the base path off.
- * @return string the current request url including query string args.
+ * @return string the current request URL including query string args.
  */
 	public function here($base = true) {
 		$url = $this->here;
