@@ -7,12 +7,13 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright   Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link        http://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.View.Helper
- * @since       CakePHP(tm) v 0.10.0.1076
- * @license     MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @since         CakePHP(tm) v 0.10.0.1076
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
+
 App::uses('ClassRegistry', 'Utility');
 App::uses('AppHelper', 'View/Helper');
 App::uses('Hash', 'Utility');
@@ -272,6 +273,13 @@ class FormHelper extends AppHelper {
 	public function tagIsInvalid() {
 		$entity = $this->entity();
 		$model = array_shift($entity);
+
+		// 0.Model.field. Fudge entity path
+		if (empty($model) || is_numeric($model)) {
+			array_splice($entity, 1, 0, $model);
+			$model = array_shift($entity);
+		}
+
 		$errors = array();
 		if (!empty($entity) && isset($this->validationErrors[$model])) {
 			$errors = $this->validationErrors[$model];
@@ -293,7 +301,7 @@ class FormHelper extends AppHelper {
  *
  * - `type` Form method defaults to POST
  * - `action`  The controller action the form submits to, (optional).
- * - `url`  The url the form submits to. Can be a string or a url array. If you use 'url'
+ * - `url`  The URL the form submits to. Can be a string or an URL array. If you use 'url'
  *    you should leave 'action' undefined.
  * - `default`  Allows for the creation of Ajax forms. Set this to false to prevent the default event handler.
  *   Will create an onsubmit attribute if it doesn't not exist. If it does, default action suppression
@@ -845,7 +853,7 @@ class FormHelper extends AppHelper {
 		$modelFields = array();
 		$model = $this->model();
 		if ($model) {
-			$modelFields = array_keys($this->_introspectModel($model, 'fields'));
+			$modelFields = array_keys((array)$this->_introspectModel($model, 'fields'));
 		}
 		if (is_array($fields)) {
 			if (array_key_exists('legend', $fields) && !in_array('legend', $modelFields)) {
@@ -1242,12 +1250,9 @@ class FormHelper extends AppHelper {
 			$options['type'] !== 'select'
 		);
 		if ($autoLength &&
-			in_array($options['type'], array('text', 'email', 'tel', 'url'))
+			in_array($options['type'], array('text', 'email', 'tel', 'url', 'search'))
 		) {
 			$options['maxlength'] = $fieldDef['length'];
-		}
-		if ($autoLength && $fieldDef['type'] === 'float') {
-			$options['maxlength'] = array_sum(explode(',', $fieldDef['length'])) + 1;
 		}
 		return $options;
 	}
@@ -1274,8 +1279,10 @@ class FormHelper extends AppHelper {
 		} elseif (is_array($div)) {
 			$divOptions = array_merge($divOptions, $div);
 		}
-
-		if ($this->_introspectModel($this->model(), 'validates', $this->field())) {
+		if (
+			$this->_extractOption('required', $options) !== false &&
+			$this->_introspectModel($this->model(), 'validates', $this->field())
+		) {
 			$divOptions = $this->addClass($divOptions, 'required');
 		}
 		if (!isset($divOptions['tag'])) {
@@ -1421,7 +1428,7 @@ class FormHelper extends AppHelper {
 		}
 		unset($options['hiddenField']);
 
-		return $output . $this->Html->useTag('checkbox', $options['name'], array_diff_key($options, array('name' => '')));
+		return $output . $this->Html->useTag('checkbox', $options['name'], array_diff_key($options, array('name' => null)));
 	}
 
 /**
@@ -1527,7 +1534,7 @@ class FormHelper extends AppHelper {
 			}
 			$allOptions = array_merge($attributes, $optionsHere);
 			$out[] = $this->Html->useTag('radio', $attributes['name'], $tagName,
-				array_diff_key($allOptions, array('name' => '', 'type' => '', 'id' => '')),
+				array_diff_key($allOptions, array('name' => null, 'type' => null, 'id' => null)),
 				$optTitle
 			);
 		}
@@ -1584,7 +1591,7 @@ class FormHelper extends AppHelper {
 			$options['type'] = $method;
 		}
 		$options = $this->_initInputField($params[0], $options);
-		return $this->Html->useTag('input', $options['name'], array_diff_key($options, array('name' => '')));
+		return $this->Html->useTag('input', $options['name'], array_diff_key($options, array('name' => null)));
 	}
 
 /**
@@ -1610,7 +1617,7 @@ class FormHelper extends AppHelper {
 			}
 			unset($options['value']);
 		}
-		return $this->Html->useTag('textarea', $options['name'], array_diff_key($options, array('type' => '', 'name' => '')), $value);
+		return $this->Html->useTag('textarea', $options['name'], array_diff_key($options, array('type' => null, 'name' => null)), $value);
 	}
 
 /**
@@ -1636,7 +1643,7 @@ class FormHelper extends AppHelper {
 			$this->_secure(true, null, '' . $options['value']);
 		}
 
-		return $this->Html->useTag('hidden', $options['name'], array_diff_key($options, array('name' => '')));
+		return $this->Html->useTag('hidden', $options['name'], array_diff_key($options, array('name' => null)));
 	}
 
 /**
@@ -1659,7 +1666,7 @@ class FormHelper extends AppHelper {
 			$this->_secure($secure, array_merge($field, array($suffix)));
 		}
 
-		$exclude = array('name' => '', 'value' => '');
+		$exclude = array('name' => null, 'value' => null);
 		return $this->Html->useTag('file', $options['name'], array_diff_key($options, $exclude));
 	}
 
@@ -1750,7 +1757,7 @@ class FormHelper extends AppHelper {
 			unset($options['confirm']);
 		}
 
-		$formName = uniqid('post_');
+		$formName = str_replace('.', '', uniqid('post_', true));
 		$formUrl = $this->url($url);
 		$formOptions = array(
 			'name' => $formName,
@@ -2018,9 +2025,9 @@ class FormHelper extends AppHelper {
 				empty($attributes['disabled']) &&
 				(!empty($attributes['multiple']) || $hasOptions)
 			) {
-				$this->_secure(true);
+				$this->_secure(true, $this->_secureFieldName($attributes));
 			}
-			$select[] = $this->Html->useTag($tag, $attributes['name'], array_diff_key($attributes, array('name' => '', 'value' => '')));
+			$select[] = $this->Html->useTag($tag, $attributes['name'], array_diff_key($attributes, array('name' => null, 'value' => null)));
 		}
 		$emptyMulti = (
 			$showEmpty !== null && $showEmpty !== false && !(
@@ -2077,7 +2084,7 @@ class FormHelper extends AppHelper {
 		$attributes = $this->_dateTimeSelected('day', $fieldName, $attributes);
 
 		if (strlen($attributes['value']) > 2) {
-			$attributes['value'] = date('d', strtotime($attributes['value']));
+			$attributes['value'] = date_create($attributes['value'])->format('d');
 		} elseif ($attributes['value'] === false) {
 			$attributes['value'] = null;
 		}
@@ -2123,7 +2130,7 @@ class FormHelper extends AppHelper {
 		}
 
 		if (strlen($attributes['value']) > 4 || $attributes['value'] === 'now') {
-			$attributes['value'] = date('Y', strtotime($attributes['value']));
+			$attributes['value'] = date_create($attributes['value'])->format('Y');
 		} elseif ($attributes['value'] === false) {
 			$attributes['value'] = null;
 		}
@@ -2159,7 +2166,7 @@ class FormHelper extends AppHelper {
 		$attributes = $this->_dateTimeSelected('month', $fieldName, $attributes);
 
 		if (strlen($attributes['value']) > 2) {
-			$attributes['value'] = date('m', strtotime($attributes['value']));
+			$attributes['value'] = date_create($attributes['value'])->format('m');
 		} elseif ($attributes['value'] === false) {
 			$attributes['value'] = null;
 		}
@@ -2195,10 +2202,11 @@ class FormHelper extends AppHelper {
 		$attributes = $this->_dateTimeSelected('hour', $fieldName, $attributes);
 
 		if (strlen($attributes['value']) > 2) {
+			$Date = new DateTime($attributes['value']);
 			if ($format24Hours) {
-				$attributes['value'] = date('H', strtotime($attributes['value']));
+				$attributes['value'] = $Date->format('H');
 			} else {
-				$attributes['value'] = date('g', strtotime($attributes['value']));
+				$attributes['value'] = $Date->format('g');
 			}
 		} elseif ($attributes['value'] === false) {
 			$attributes['value'] = null;
@@ -2206,6 +2214,9 @@ class FormHelper extends AppHelper {
 
 		if ($attributes['value'] > 12 && !$format24Hours) {
 			$attributes['value'] -= 12;
+		}
+		if (($attributes['value'] === 0 || $attributes['value'] === '00') && !$format24Hours) {
+			$attributes['value'] = 12;
 		}
 
 		return $this->select(
@@ -2234,7 +2245,7 @@ class FormHelper extends AppHelper {
 		$attributes = $this->_dateTimeSelected('min', $fieldName, $attributes);
 
 		if (strlen($attributes['value']) > 2) {
-			$attributes['value'] = date('i', strtotime($attributes['value']));
+			$attributes['value'] = date_create($attributes['value'])->format('i');
 		} elseif ($attributes['value'] === false) {
 			$attributes['value'] = null;
 		}
@@ -2301,7 +2312,7 @@ class FormHelper extends AppHelper {
 						$attributes['value'] = date('a');
 					}
 				} else {
-					$attributes['value'] = date('a', strtotime($value));
+					$attributes['value'] = date_create($attributes['value'])->format('a');
 				}
 			}
 		}
@@ -2373,6 +2384,10 @@ class FormHelper extends AppHelper {
 		$monthNames = $attributes['monthNames'];
 		$attributes = array_diff_key($attributes, $defaults);
 
+		if ($timeFormat == 12 && $hour == 12) {
+			$hour = 0;
+		}
+
 		if (!empty($interval) && $interval > 1 && !empty($min)) {
 			$current = new DateTime();
 			if ($year !== null) {
@@ -2383,7 +2398,8 @@ class FormHelper extends AppHelper {
 			}
 			$change = (round($min * (1 / $interval)) * $interval) - $min;
 			$current->modify($change > 0 ? "+$change minutes" : "$change minutes");
-			$newTime = explode(' ', $current->format('Y m d H i a'));
+			$format = ($timeFormat == 12) ? 'Y m d h i a' : 'Y m d H i a';
+			$newTime = explode(' ', $current->format($format));
 			list($year, $month, $day, $hour, $min, $meridian) = $newTime;
 		}
 
@@ -2503,15 +2519,8 @@ class FormHelper extends AppHelper {
 		if (!empty($timeFormat)) {
 			$time = explode(':', $days[1]);
 
-			if ($time[0] >= '12' && $timeFormat === '12') {
+			if ($time[0] >= 12) {
 				$meridian = 'pm';
-			} elseif ($time[0] === '00' && $timeFormat === '12') {
-				$time[0] = 12;
-			} elseif ($time[0] >= 12) {
-				$meridian = 'pm';
-			}
-			if ($time[0] == 0 && $timeFormat === '12') {
-				$time[0] = 12;
 			}
 			$hour = $min = null;
 			if (isset($time[1])) {
@@ -2644,7 +2653,7 @@ class FormHelper extends AppHelper {
 					) {
 						$htmlOptions['disabled'] = 'disabled';
 					}
-					if ($hasDisabled && !$disabledIsArray) {
+					if ($hasDisabled && !$disabledIsArray && $attributes['style'] === 'checkbox') {
 						$htmlOptions['disabled'] = $attributes['disabled'] === true ? 'disabled' : $attributes['disabled'];
 					}
 
@@ -2792,6 +2801,9 @@ class FormHelper extends AppHelper {
  *   Disabling the field using the `disabled` option, will also omit the field from being
  *   part of the hashed key.
  *
+ * This method will convert a numerically indexed 'disabled' into a associative
+ * value. FormHelper's internals expect associative options.
+ *
  * @param string $field Name of the field to initialize options for.
  * @param array $options Array of options to append options into.
  * @return array Array of options for the input.
@@ -2802,6 +2814,12 @@ class FormHelper extends AppHelper {
 			unset($options['secure']);
 		} else {
 			$secure = (isset($this->request['_Token']) && !empty($this->request['_Token']));
+		}
+
+		$disabledIndex = array_search('disabled', $options, true);
+		if (is_int($disabledIndex)) {
+			unset($options[$disabledIndex]);
+			$options['disabled'] = true;
 		}
 
 		$result = parent::_initInputField($field, $options);
@@ -2817,16 +2835,27 @@ class FormHelper extends AppHelper {
 			$result['required'] = true;
 		}
 
-		$fieldName = null;
-		if (!empty($options['name'])) {
+		$this->_secure($secure, $this->_secureFieldName($options));
+		return $result;
+	}
+
+/**
+ * Get the field name for use with _secure().
+ *
+ * Parses the name attribute to create a dot separated name value for use
+ * in secured field hash.
+ *
+ * @param array $options An array of options possibly containing a name key.
+ * @return string|null
+ */
+	protected function _secureFieldName($options) {
+		if (isset($options['name'])) {
 			preg_match_all('/\[(.*?)\]/', $options['name'], $matches);
 			if (isset($matches[1])) {
-				$fieldName = $matches[1];
+				return $matches[1];
 			}
 		}
-
-		$this->_secure($secure, $fieldName);
-		return $result;
+		return null;
 	}
 
 /**

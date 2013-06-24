@@ -15,7 +15,7 @@
  * @link          http://book.cakephp.org/2.0/en/development/testing.html CakePHP(tm) Tests
  * @package       Cake.Test.Case.View.Helper
  * @since         CakePHP(tm) v 1.2.0.4206
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 App::uses('Controller', 'Controller');
@@ -40,7 +40,7 @@ class TheHtmlTestController extends Controller {
 /**
  * name property
  *
- * @var string 'TheTest'
+ * @var string
  */
 	public $name = 'TheTest';
 
@@ -605,6 +605,22 @@ class HtmlHelperTest extends CakeTestCase {
 	}
 
 /**
+ * testCssWithFullBase method
+ *
+ * @return void
+ */
+	public function testCssWithFullBase() {
+		Configure::write('Asset.filter.css', false);
+		$here = $this->Html->url('/', true);
+
+		$result = $this->Html->css('screen', null, array('fullBase' => true));
+		$expected = array(
+			'link' => array('rel' => 'stylesheet', 'type' => 'text/css', 'href' => $here . 'css/screen.css')
+		);
+		$this->assertTags($result, $expected);
+	}
+
+/**
  * testPluginCssLink method
  *
  * @return void
@@ -977,6 +993,30 @@ class HtmlHelperTest extends CakeTestCase {
 	}
 
 /**
+ * testScriptWithFullBase method
+ *
+ * @return void
+ */
+	public function testScriptWithFullBase() {
+		$here = $this->Html->url('/', true);
+
+		$result = $this->Html->script('foo', array('fullBase' => true));
+		$expected = array(
+			'script' => array('type' => 'text/javascript', 'src' => $here . 'js/foo.js')
+		);
+		$this->assertTags($result, $expected);
+
+		$result = $this->Html->script(array('foobar', 'bar'), array('fullBase' => true));
+		$expected = array(
+			array('script' => array('type' => 'text/javascript', 'src' => $here . 'js/foobar.js')),
+			'/script',
+			array('script' => array('type' => 'text/javascript', 'src' => $here . 'js/bar.js')),
+			'/script',
+		);
+		$this->assertTags($result, $expected);
+	}
+
+/**
  * test a script file in the webroot/theme dir.
  *
  * @return void
@@ -1020,6 +1060,16 @@ class HtmlHelperTest extends CakeTestCase {
 		$result = $this->Html->scriptBlock('window.foo = 2;');
 		$expected = array(
 			'script' => array('type' => 'text/javascript'),
+			$this->cDataStart,
+			'window.foo = 2;',
+			$this->cDataEnd,
+			'/script',
+		);
+		$this->assertTags($result, $expected);
+
+		$result = $this->Html->scriptBlock('window.foo = 2;', array('type' => 'text/x-handlebars-template'));
+		$expected = array(
+			'script' => array('type' => 'text/x-handlebars-template'),
 			$this->cDataStart,
 			'window.foo = 2;',
 			$this->cDataEnd,
@@ -1096,6 +1146,20 @@ class HtmlHelperTest extends CakeTestCase {
 		$expected = array(
 			'script' => array('type' => 'text/javascript'),
 			'this is some javascript',
+			'/script'
+		);
+		$this->assertTags($result, $expected);
+
+		$result = $this->Html->scriptStart(array('safe' => true, 'type' => 'text/x-handlebars-template'));
+		$this->assertNull($result);
+		echo 'this is some template';
+
+		$result = $this->Html->scriptEnd();
+		$expected = array(
+			'script' => array('type' => 'text/x-handlebars-template'),
+			$this->cDataStart,
+			'this is some template',
+			$this->cDataEnd,
 			'/script'
 		);
 		$this->assertTags($result, $expected);
@@ -1654,6 +1718,15 @@ class HtmlHelperTest extends CakeTestCase {
 
 		$result = $this->Html->tag('div', '<text>', array('class' => 'class-name', 'escape' => true));
 		$this->assertTags($result, array('div' => array('class' => 'class-name'), '&lt;text&gt;', '/div'));
+
+		$result = $this->Html->tag(false, '<em>stuff</em>');
+		$this->assertEquals($result, '<em>stuff</em>');
+
+		$result = $this->Html->tag(null, '<em>stuff</em>');
+		$this->assertEquals($result, '<em>stuff</em>');
+
+		$result = $this->Html->tag('', '<em>stuff</em>');
+		$this->assertEquals($result, '<em>stuff</em>');
 	}
 
 /**

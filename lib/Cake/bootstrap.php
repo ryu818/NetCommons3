@@ -17,8 +17,9 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake
  * @since         CakePHP(tm) v 0.2.9
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
+
 define('TIME_START', microtime(true));
 
 if (!defined('E_DEPRECATED')) {
@@ -62,17 +63,23 @@ if (!defined('APP')) {
 /**
  * Path to the public CSS directory.
  */
+if (!defined('CSS')) {
 	define('CSS', WWW_ROOT . 'css' . DS);
+}
 
 /**
  * Path to the public JavaScript directory.
  */
+if (!defined('JS')) {
 	define('JS', WWW_ROOT . 'js' . DS);
+}
 
 /**
  * Path to the public images directory.
  */
+if (!defined('IMAGES')) {
 	define('IMAGES', WWW_ROOT . 'img' . DS);
+}
 
 /**
  * Path to the tests directory.
@@ -135,7 +142,7 @@ require CAKE . 'Core' . DS . 'App.php';
 require CAKE . 'Error' . DS . 'exceptions.php';
 
 /**
- * Full url prefix
+ * Full URL prefix
  */
 if (!defined('FULL_BASE_URL')) {
 	$s = null;
@@ -167,6 +174,9 @@ if (function_exists('mb_internal_encoding')) {
 	$encoding = Configure::read('App.encoding');
 	if (!empty($encoding)) {
 		mb_internal_encoding($encoding);
+	}
+	if (!empty($encoding) && function_exists('mb_regex_encoding')) {
+		mb_regex_encoding($encoding);
 	}
 }
 

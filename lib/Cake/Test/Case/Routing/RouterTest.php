@@ -14,7 +14,7 @@
  * @link          http://book.cakephp.org/2.0/en/development/testing.html CakePHP(tm) Tests
  * @package       Cake.Test.Case.Routing
  * @since         CakePHP(tm) v 1.2.0.4206
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 App::uses('Router', 'Routing');
@@ -59,7 +59,7 @@ class RouterTest extends CakeTestCase {
 	public function testFullBaseURL() {
 		$skip = PHP_SAPI === 'cli';
 		if ($skip) {
-			$this->markTestSkipped('Cannot validate base urls in CLI');
+			$this->markTestSkipped('Cannot validate base URLs in CLI');
 		}
 		$this->assertRegExp('/^http(s)?:\/\//', Router::url('/', true));
 		$this->assertRegExp('/^http(s)?:\/\//', Router::url(null, true));
@@ -315,7 +315,7 @@ class RouterTest extends CakeTestCase {
 	}
 
 /**
- * test generation of basic urls.
+ * test generation of basic URLs.
  *
  * @return void
  */
@@ -1552,7 +1552,7 @@ class RouterTest extends CakeTestCase {
 		Router::setRequestInfo(
 			$request->addParams(array(
 				'plugin' => null, 'controller' => 'images', 'action' => 'index',
-				'prefix' => null, 'admin' => false,'url' => array('url' => 'images/index')
+				'prefix' => null, 'admin' => false, 'url' => array('url' => 'images/index')
 			))->addPaths(array(
 				'base' => '',
 				'here' => '/images/index',
@@ -2159,6 +2159,16 @@ class RouterTest extends CakeTestCase {
 		$this->assertEquals($expected, Router::stripPlugin($url, $pluginName));
 		$this->assertEquals(Router::stripPlugin($url), $url);
 		$this->assertEquals(Router::stripPlugin($url, null), $url);
+	}
+
+/**
+ * testCurrentRouteWhenNonExistentRoute
+ *
+ * @return void
+ */
+	public function testCurrentRouteWhenNonExistentRoute() {
+		$route = Router::currentRoute();
+		$this->assertFalse($route);
 	}
 
 /**

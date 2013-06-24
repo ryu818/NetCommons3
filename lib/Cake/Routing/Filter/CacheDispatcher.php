@@ -7,16 +7,16 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
- * @link http://cakephp.org CakePHP(tm) Project
- * @since CakePHP(tm) v 2.2
- * @license MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
+ * @since         CakePHP(tm) v 2.2
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 App::uses('DispatcherFilter', 'Routing');
 
 /**
- * This filter will check wheter the response was previously cached in the file system
+ * This filter will check whether the response was previously cached in the file system
  * and served it back to the client if appropriate.
  *
  * @package Cake.Routing.Filter

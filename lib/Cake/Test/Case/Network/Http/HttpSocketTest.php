@@ -15,7 +15,7 @@
  * @link          http://book.cakephp.org/2.0/en/development/testing.html CakePHP(tm) Tests
  * @package       Cake.Test.Case.Network.Http
  * @since         CakePHP(tm) v 1.2.0.4206
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 App::uses('HttpSocket', 'Network/Http');
@@ -24,7 +24,6 @@ App::uses('HttpResponse', 'Network/Http');
 /**
  * TestAuthentication class
  *
- * @package       Cake.Test.Case.Network.Http
  * @package       Cake.Test.Case.Network.Http
  */
 class TestAuthentication {
@@ -593,7 +592,7 @@ class HttpSocketTest extends CakeTestCase {
 	}
 
 /**
- * Test urls like http://cakephp.org/index.php?somestring without key/value pair for query
+ * Test URLs like http://cakephp.org/index.php?somestring without key/value pair for query
  *
  * @return void
  */
@@ -780,7 +779,7 @@ class HttpSocketTest extends CakeTestCase {
 	}
 
 /**
- * Test that redirect urls are urldecoded
+ * Test that redirect URLs are urldecoded
  *
  * @return void
  */
@@ -1065,6 +1064,19 @@ class HttpSocketTest extends CakeTestCase {
 		$socket->configAuth('Test', 'mark', 'passwd');
 		$socket->get('http://example.com/test');
 		$this->assertTrue(strpos($socket->request['header'], 'Authorization: Test mark.passwd') !== false);
+
+		$socket->configAuth(false);
+		$socket->request(array(
+			'method' => 'GET',
+			'uri' => 'http://example.com/test',
+			'auth' => array(
+				'method' => 'Basic',
+				'user' => 'joel',
+				'pass' => 'hunter2'
+			)
+		));
+		$this->assertEquals($socket->request['auth'], array('Basic' => array('user' => 'joel', 'pass' => 'hunter2')));
+		$this->assertTrue(strpos($socket->request['header'], 'Authorization: Basic am9lbDpodW50ZXIy') !== false);
 	}
 
 /**
@@ -1577,9 +1589,10 @@ class HttpSocketTest extends CakeTestCase {
 			'people' => array(
 				'value' => 'jim,jack,johnny;',
 				'path' => '/accounts'
-			)
+			),
+			'key' => 'value'
 		);
-		$expect = "Cookie: foo=bar; people=jim,jack,johnny\";\"\r\n";
+		$expect = "Cookie: foo=bar; people=jim,jack,johnny\";\"; key=value\r\n";
 		$result = $this->Socket->buildCookies($cookies);
 		$this->assertEquals($expect, $result);
 	}

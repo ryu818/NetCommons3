@@ -14,7 +14,7 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.View
  * @since         CakePHP(tm) v 2.0
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 App::uses('ObjectCollection', 'Utility');
@@ -50,7 +50,7 @@ class HelperCollection extends ObjectCollection implements CakeEventListener {
  * if any
  *
  * @param string $helper The helper name to be loaded
- * @return boolean wheter the helper could be loaded or not
+ * @return boolean whether the helper could be loaded or not
  * @throws MissingHelperException When a helper could not be found.
  *    App helpers are searched, and then plugin helpers.
  */

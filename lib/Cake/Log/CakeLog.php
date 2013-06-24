@@ -17,7 +17,7 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Log
  * @since         CakePHP(tm) v 0.2.9
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 App::uses('LogEngineCollection', 'Log');
@@ -56,7 +56,7 @@ App::uses('LogEngineCollection', 'Log');
  * }}}
  *
  * If you require custom logging levels, you can use CakeLog::levels() to
- * append additoinal logging levels.
+ * append additional logging levels.
  *
  * ### Logging scopes
  *
@@ -301,7 +301,7 @@ class CakeLog {
 	}
 
 /**
- * Checks wether $streamName is enabled
+ * Checks whether $streamName is enabled
  *
  * @param string $streamName to check
  * @return bool

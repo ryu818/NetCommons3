@@ -14,7 +14,7 @@
  * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @link          http://cakephp.org CakePHP(tm) Project
  * @since         CakePHP(tm) v 1.2.0.5012
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 App::uses('TaskCollection', 'Console');
@@ -22,6 +22,7 @@ App::uses('ConsoleOutput', 'Console');
 App::uses('ConsoleInput', 'Console');
 App::uses('ConsoleInputSubcommand', 'Console');
 App::uses('ConsoleOptionParser', 'Console');
+App::uses('ClassRegistry', 'Utility');
 App::uses('File', 'Utility');
 
 /**
@@ -234,7 +235,6 @@ class Shell extends Object {
 		if (empty($this->uses)) {
 			return false;
 		}
-		App::uses('ClassRegistry', 'Utility');
 
 		$uses = is_array($this->uses) ? $this->uses : array($this->uses);
 
@@ -825,7 +825,7 @@ class Shell extends Object {
  * If you don't wish to see in your stdout or stderr everything that is logged
  * through CakeLog, call this function with first param as false
  *
- * @param boolean $enable wheter to enable CakeLog output or not
+ * @param boolean $enable whether to enable CakeLog output or not
  * @return void
  */
 	protected function _useLogger($enable = true) {
