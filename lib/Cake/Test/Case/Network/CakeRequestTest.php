@@ -15,13 +15,18 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Test.Case.Network
  * @since         CakePHP(tm) v 2.0
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 App::uses('Dispatcher', 'Routing');
 App::uses('Xml', 'Utility');
 App::uses('CakeRequest', 'Network');
 
+/**
+ * Class TestCakeRequest
+ *
+ * @package       Cake.Test.Case.Network
+ */
 class TestCakeRequest extends CakeRequest {
 
 	public function reConstruct($url = 'some/path', $parseEnvironment = true) {
@@ -1099,6 +1104,15 @@ class CakeRequestTest extends CakeTestCase {
  */
 	public function testBaseUrlAndWebrootWithModRewrite() {
 		Configure::write('App.baseUrl', false);
+
+		$_SERVER['DOCUMENT_ROOT'] = '/cake/repo/branches';
+		$_SERVER['PHP_SELF'] = '/urlencode me/app/webroot/index.php';
+		$_SERVER['PATH_INFO'] = '/posts/view/1';
+
+		$request = new CakeRequest();
+		$this->assertEquals('/urlencode%20me', $request->base);
+		$this->assertEquals('/urlencode%20me/', $request->webroot);
+		$this->assertEquals('posts/view/1', $request->url);
 
 		$_SERVER['DOCUMENT_ROOT'] = '/cake/repo/branches';
 		$_SERVER['PHP_SELF'] = '/1.2.x.x/app/webroot/index.php';

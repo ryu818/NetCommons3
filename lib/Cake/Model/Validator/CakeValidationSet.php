@@ -4,7 +4,7 @@
  *
  * Provides the Model validation logic.
  *
- * PHP versions 5
+ * PHP 5
  *
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
@@ -17,7 +17,7 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Model.Validator
  * @since         CakePHP(tm) v 2.2.0
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 App::uses('CakeValidationRule', 'Model/Validator');
@@ -149,7 +149,7 @@ class CakeValidationSet implements ArrayAccess, IteratorAggregate, Countable {
 	}
 
 /**
- * Resets interal state for all validation rules in this set
+ * Resets internal state for all validation rules in this set
  *
  * @return void
  */
@@ -235,7 +235,7 @@ class CakeValidationSet implements ArrayAccess, IteratorAggregate, Countable {
  * }}}
  *
  * @param array $rules The rules to be set
- * @param bolean $mergeVars [optional] If true, merges vars instead of replace. Defaults to true.
+ * @param boolean $mergeVars [optional] If true, merges vars instead of replace. Defaults to true.
  * @return ModelField
  */
 	public function setRules($rules = array(), $mergeVars = true) {
@@ -307,7 +307,7 @@ class CakeValidationSet implements ArrayAccess, IteratorAggregate, Countable {
 	}
 
 /**
- * Returns wheter an index exists in the rule set
+ * Returns whether an index exists in the rule set
  *
  * @param string $index name of the rule
  * @return boolean

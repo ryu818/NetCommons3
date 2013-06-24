@@ -17,7 +17,7 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Error
  * @since         CakePHP(tm) v 0.10.5.1732
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 App::uses('Debugger', 'Utility');
@@ -113,7 +113,7 @@ class ErrorHandler {
 		if (!empty($config['log'])) {
 			CakeLog::write(LOG_ERR, self::_getMessage($exception));
 		}
-		$renderer = $config['renderer'];
+		$renderer = isset($config['renderer']) ? $config['renderer'] : 'ExceptionRenderer';
 		if ($renderer !== 'ExceptionRenderer') {
 			list($plugin, $renderer) = pluginSplit($renderer, true);
 			App::uses($renderer, $plugin . 'Error');

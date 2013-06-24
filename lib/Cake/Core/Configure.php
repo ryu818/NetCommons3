@@ -11,11 +11,12 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Core
  * @since         CakePHP(tm) v 1.0.0.2363
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 App::uses('Hash', 'Utility');
 App::uses('ConfigReaderInterface', 'Configure');
+
 /**
  * Compatibility with 2.1, which expects Configure to load Set.
  */
@@ -160,7 +161,7 @@ class Configure {
  * Configure::read('Name.key'); will return only the value of Configure::Name[key]
  * }}}
  *
- * @linkhttp://book.cakephp.org/2.0/en/development/configuration.html#Configure::read
+ * @link http://book.cakephp.org/2.0/en/development/configuration.html#Configure::read
  * @param string $var Variable to obtain. Use '.' to access array elements.
  * @return mixed value stored in configure, or null.
  */

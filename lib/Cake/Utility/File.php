@@ -15,7 +15,7 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Utility
  * @since         CakePHP(tm) v 0.2.9
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 App::uses('Folder', 'Utility');
@@ -130,7 +130,6 @@ class File {
 		if (!$force && is_resource($this->handle)) {
 			return true;
 		}
-		clearstatcache();
 		if ($this->exists() === false) {
 			if ($this->create() === false) {
 				return false;
@@ -278,7 +277,6 @@ class File {
  * @link http://book.cakephp.org/2.0/en/core-utility-libraries/file-folder.html#File::delete
  */
 	public function delete() {
-		clearstatcache();
 		if (is_resource($this->handle)) {
 			fclose($this->handle);
 			$this->handle = null;
@@ -410,6 +408,11 @@ class File {
  * @link http://book.cakephp.org/2.0/en/core-utility-libraries/file-folder.html#File::exists
  */
 	public function exists() {
+		if (version_compare(PHP_VERSION, '5.3.0') >= 0) {
+			clearstatcache(true, $this->path);
+		} else {
+			clearstatcache();
+		}
 		return (file_exists($this->path) && is_file($this->path));
 	}
 
@@ -527,7 +530,7 @@ class File {
  * @return Folder Current folder
  * @link http://book.cakephp.org/2.0/en/core-utility-libraries/file-folder.html#File::Folder
  */
-	public function &folder() {
+	public function folder() {
 		return $this->Folder;
 	}
 

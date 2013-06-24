@@ -11,7 +11,7 @@
  * @link          http://book.cakephp.org/2.0/en/development/testing.html CakePHP(tm) Tests
  * @package       Cake.TestSuite.Fixture
  * @since         CakePHP(tm) v 1.2.0.4667
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 App::uses('CakeSchema', 'Model');
@@ -277,13 +277,16 @@ class CakeTestFixture {
 				$fields = array_unique($fields);
 				$default = array_fill_keys($fields, null);
 				foreach ($this->records as $record) {
-					$fields = array_keys($record);
 					$values[] = array_values(array_merge($default, $record));
 				}
 				$nested = $db->useNestedTransactions;
 				$db->useNestedTransactions = false;
 				$result = $db->insertMulti($this->table, $fields, $values);
-				if ($this->primaryKey && in_array($this->fields[$this->primaryKey]['type'], array('integer', 'biginteger'))) {
+				if (
+					$this->primaryKey &&
+					isset($this->fields[$this->primaryKey]['type']) &&
+					in_array($this->fields[$this->primaryKey]['type'], array('integer', 'biginteger'))
+				) {
 					$db->resetSequence($this->table, $this->primaryKey);
 				}
 				$db->useNestedTransactions = $nested;

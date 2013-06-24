@@ -11,7 +11,7 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Model.Behavior
  * @since         CakePHP(tm) v 1.2.0.4525
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 App::uses('ModelBehavior', 'Model');
@@ -219,7 +219,7 @@ class TranslateBehavior extends ModelBehavior {
  * @param string $field The field name being joined.
  * @param string $aliasField The aliased field name being joined.
  * @param string|array $locale The locale(s) having joins added.
- * @return array The modfied query
+ * @return array The modified query
  */
 	protected function _addJoin(Model $Model, $query, $field, $aliasField, $locale) {
 		$db = ConnectionManager::getDataSource($Model->useDbConfig);
@@ -417,7 +417,7 @@ class TranslateBehavior extends ModelBehavior {
 		}
 
 		unset($this->runtime[$Model->alias]['beforeValidate'], $this->runtime[$Model->alias]['beforeSave']);
-		$conditions = array('model' => $Model->alias, 'foreign_key' => $Model->id);
+		$conditions = array('model' => $Model->name, 'foreign_key' => $Model->id);
 		$RuntimeModel = $this->translateModel($Model);
 
 		if ($created) {
@@ -502,7 +502,7 @@ class TranslateBehavior extends ModelBehavior {
  */
 	public function afterDelete(Model $Model) {
 		$RuntimeModel = $this->translateModel($Model);
-		$conditions = array('model' => $Model->alias, 'foreign_key' => $Model->id);
+		$conditions = array('model' => $Model->name, 'foreign_key' => $Model->id);
 		$RuntimeModel->deleteAll($conditions);
 	}
 
@@ -539,7 +539,7 @@ class TranslateBehavior extends ModelBehavior {
 				$className = $Model->translateModel;
 			}
 
-			$this->runtime[$Model->alias]['model'] = ClassRegistry::init($className, 'Model');
+			$this->runtime[$Model->alias]['model'] = ClassRegistry::init($className);
 		}
 		if (!empty($Model->translateTable) && $Model->translateTable !== $this->runtime[$Model->alias]['model']->useTable) {
 			$this->runtime[$Model->alias]['model']->setSource($Model->translateTable);
@@ -611,7 +611,7 @@ class TranslateBehavior extends ModelBehavior {
 					}
 				}
 				$associations[$association] = array_merge($default, array('conditions' => array(
-					'model' => $Model->alias,
+					'model' => $Model->name,
 					$RuntimeModel->displayField => $field
 				)));
 			}

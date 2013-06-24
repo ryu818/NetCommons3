@@ -17,7 +17,7 @@
  * @link          http://cakephp.org CakePHP(tm) Project
  * @package       Cake.Utility
  * @since         CakePHP(tm) v 0.10.0.1076
- * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 App::import('Model', 'ConnectionManager');
@@ -91,7 +91,7 @@ class Sanitize {
  * - remove (boolean) if true strips all HTML tags before encoding
  * - charset (string) the charset used to encode the string
  * - quotes (int) see http://php.net/manual/en/function.htmlentities.php
- * - double (boolean) doube encode html entities
+ * - double (boolean) double encode html entities
  *
  * @param string $string String from where to strip tags
  * @param array $options Array of options to use.
