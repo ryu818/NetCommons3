@@ -105,7 +105,7 @@ before_script:
     }" > app/Config/database.php
 
 script:
-  - ./lib/Cake/Console/cake test core AllTests --stderr
+  - cd app/; ./Console/cake test app All --stderr
 
 notifications:
   email: false
