@@ -780,7 +780,6 @@
 		chgSelectAuth: function(el) {
 			var authority_id = $(el).val();
 			var input = $('input:hidden:first,input:radio:first',$(el).parent());
-			console.log(input);
 			input.val(authority_id);
 		},
 
