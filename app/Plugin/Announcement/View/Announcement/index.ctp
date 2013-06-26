@@ -31,7 +31,7 @@ if(!empty($announcement['Announcement']['id'])) {
 					'class' => 'nc-button nc-button-red small',
 					'data-ajax-inner' =>'#announcement-approve-'.$id,
 					'data-ajax-dialog' => true,
-					'data-ajax-dialog-options' => '{"title" : "'.$this->Js->escape(__('Pending [%s]', h($announcement['Content']['title']))).'","modal": true, "resizable": true, "autoResize": true, "position":"mouse", "width":"600"}',
+					'data-ajax-dialog-options' => '{"title" : "'.$this->Js->escape(__('Pending [%s]', h($announcement['Content']['title']))).'","modal": true, "resizable": true, "position":"mouse", "width":"600"}',
 					'data-ajax-effect' => 'fold'
 				));
 			?>

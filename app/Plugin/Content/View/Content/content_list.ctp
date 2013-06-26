@@ -82,7 +82,7 @@
 					'data-ajax-inner' =>'#nc-content-block-list-'.$id. '-' .$val['Content']['id'],
 					'data-ajax-dialog' => true,
 					'data-ajax-effect' => 'fold',
-					'data-ajax-dialog-options' => '{"title" : "'.$this->Js->escape(__d('content', 'List of blocks[%1$s]', h($val['Content']['title']))).'","modal": true, "resizable": true, "autoResize": true, "width":640}',
+					'data-ajax-dialog-options' => '{"title" : "'.$this->Js->escape(__d('content', 'List of blocks[%1$s]', h($val['Content']['title']))).'","modal": true, "resizable": true, "width":640}',
 				)
 			);
 			$adminStr .= "&nbsp;|&nbsp;";
@@ -96,7 +96,7 @@
 				'data-ajax-inner' =>'#nc-content-edit-dialog'.$id. '-' .$val['Content']['id'],
 				'data-ajax-dialog' => true,
 				'data-ajax-effect' => 'fold',
-				'data-ajax-dialog-options' => '{"title" : "'.$this->Js->escape(__d('content', 'Edit content[%1$s]', h($val['Content']['title']))).'","modal": true, "resizable": true, "autoResize": true, "width":440, "position":"mouse"}',
+				'data-ajax-dialog-options' => '{"title" : "'.$this->Js->escape(__d('content', 'Edit content[%1$s]', h($val['Content']['title']))).'","modal": true, "resizable": true, "width":440, "position":"mouse"}',
 			)
 		);
 		$adminStr .= "&nbsp;|&nbsp;";

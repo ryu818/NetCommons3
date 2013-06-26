@@ -25,7 +25,7 @@
 				'data-ajax-inner' =>'#user-add-item'.$id,
 				'data-ajax-dialog' => true,
 				'data-ajax-effect' => 'fold',
-				'data-ajax-dialog-options' => '{"title" : "'.$this->Js->escape(__d('user', 'Add Item')).'","modal": true, "resizable": true, "autoResize": true, "position":"mouse", "width":"440"}',
+				'data-ajax-dialog-options' => '{"title" : "'.$this->Js->escape(__d('user', 'Add Item')).'","modal": true, "resizable": true, "position":"mouse", "width":"440"}',
 			));
 		?>
 	</div>

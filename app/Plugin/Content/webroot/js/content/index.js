@@ -47,7 +47,6 @@
 				height: h,
 				modal: true,
 				resizable: true,
-				autoResize: true,
 				show:'fold',
 				hide:'fold'
         	});

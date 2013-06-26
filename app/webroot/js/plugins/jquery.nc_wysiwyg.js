@@ -916,7 +916,6 @@
 													position: [e.pageX - $(window).scrollLeft(), e.pageY - $(window).scrollTop()],
 													modal: true,
 													resizable: true,
-													autoResize: true,
 													show:'fold',
 													hide:'fold'
 												}
