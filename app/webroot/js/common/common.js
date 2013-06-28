@@ -53,7 +53,8 @@
 		// params：上記属性情報をパラメータによりセットする場合、使用
 		// options：ajax時のoptions マージされる
 		ajax : function(e, el, params, options, _confirm, _force_url) {
-			var data_pjax, top, url, data = {}, input_type, type, params, is_form, ret, data_url, data_serialize, default_options;
+			var data_pjax, top, url, data = {}, input_type, type, params, is_form, ret, data_url, data_serialize, data_data, data_force;
+			var dialog, default_options, dialogTarget;
 			var target_pjax, confirm, confirm_again, is_pjax;
 			var $el = $(el), buf_options = options;
 			if(params != undefined && params != null) {
@@ -65,6 +66,10 @@
 				data_serialize = params['data-ajax-serialize'];
 				data_data = params['data-ajax-data'];
 				data_force = params['data-ajax-force'];
+				dialog = params['data-ajax-dialog'];
+				if (dialog == 'true' || dialog == true) {
+					dialogTarget = params['data-ajax-inner'] || params['data-ajax'];
+				}
 			} else {
 				target_pjax =  $el.attr("data-pjax");
 				confirm = (typeof _confirm == "undefined") ? $el.attr("data-ajax-confirm") : _confirm;
@@ -74,6 +79,10 @@
 				data_serialize = $el.attr("data-ajax-serialize");
 				data_data = $el.attr("data-ajax-data");
 				data_force = $el.attr("data-ajax-force");
+				dialog = $el.attr("data-ajax-dialog");
+				if (dialog == 'true' || dialog == true) {
+					dialogTarget = $el.attr("data-ajax-inner") || $el.attr("data-ajax");
+				}
 			}
 			data_force = (data_force == undefined) ? false : data_force;
 			is_pjax = target_pjax && $.support.pjax && !_force_url;
@@ -124,6 +133,16 @@
 					url = $el.attr('href');
 					data = {};
 					is_form = false;
+				}
+			}
+
+			if (dialogTarget) {
+				// ダイアログ表示の場合、dialogTopIDが等しい場合、既にダイアログ表示中につきajaxを送信しない。
+				dialog = $(dialogTarget);
+				if(dialog.get(0)) {
+					dialog.dialog('open');
+					if(e) e.preventDefault();
+					return false;
 				}
 			}
 
@@ -353,6 +372,7 @@
 					}
 					dialog_options = $.extend({}, {zIndex: ++$.Common.zIndex}, dialog_options);
 				}
+				target = target || replace_target;
 				dialog = $(target);
 				if(!dialog.get(0)) {
 					dialog = $('<div id='+ target.slice(1) +' style="display:none;"></div>').appendTo($(document.body));
