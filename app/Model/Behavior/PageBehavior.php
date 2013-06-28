@@ -125,7 +125,7 @@ class PageBehavior extends ModelBehavior {
 				'conditions' => array('room_id' => $page[$modelPrefix.'Page']['root_id']),
 			);
 			$current_community = $Community->find('first', $params);
-			$page[$modelPrefix.'Community'] = $current_community[$modelPrefix.'Community'];
+			$page[$modelPrefix.'Community'] = $current_community['Community'];
 		}
 
 		$authorityId = NC_AUTH_OTHER_ID;
