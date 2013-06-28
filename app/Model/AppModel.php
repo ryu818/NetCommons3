@@ -55,8 +55,8 @@ class AppModel extends Model {
 		}
 		$user = Configure::read(NC_SYSTEM_KEY.'.user');
 
-		$id = $user['id'];
-		$usename = $user['handle'];
+		$id = isset($user['id']) ? $user['id'] : _OFF;
+		$usename = isset($user['handle']) ? $user['handle'] : '';
 
 		if ($this->hasField('created_user_id') && empty($data[$this->alias][$this->primaryKey])
 			 && (!in_array('created_user_id', $fields) || !isset($data[$this->alias]['created_user_id']))) {
