@@ -151,6 +151,9 @@ class UserController extends UserAppController {
 		$fields = array(
 			'User.*, UserItemLinkUsername.content, Authority.authority_name, Authority.hierarchy, Authority.system_flag'
 		);
+		if(!isset($this->request->data['isSearch'])) {
+			unset($this->request->data['User']);
+		}
 		list($conditions, $joins) = $this->User->getRefineSearch($this->request, $userAuthorityId, $this->hierarchy);
 		$joins[] = 	array("table" => "authorities",
 			"alias" => "Authority",

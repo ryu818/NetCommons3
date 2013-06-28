@@ -30,6 +30,7 @@
 	if(isset($this->request->data['isSearch']) && $this->request->data['isSearch']) {
 		echo $this->Form->hiddenVars('User', array(), false);
 		echo $this->Form->hiddenVars('UserItemLink', array(), false);
+		echo $this->Form->hidden('isSearch', array('name' => 'isSearch', 'value' => _ON));
 	}
 	echo $this->Form->end();
 ?>
