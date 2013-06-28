@@ -96,17 +96,19 @@ class UserController extends UserAppController {
 		$this->_setLanguage('Elements/list');
 
 		if ($this->request->is('post')) {
-			if(isset($this->request->data['isSearch']) && $this->request->data['isSearch']) {
-				// 絞り込み検索
-			} else {
+			if(isset($this->request->data['DelSingleUser'])) {
+				// 削除リンク
+				$this->request->data['DelUser'] = $this->request->data['DelSingleUser'];
+			}
+			if(isset($this->request->data['DelUser'])) {
 				// 削除処理
-				if(!isset($this->request->data['User']) || $this->hierarchy < NC_AUTH_MIN_CHIEF) {
+				if($this->hierarchy < NC_AUTH_MIN_CHIEF) {
 					$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'User.index.001', '500');
 					return;
 				}
 				$deleteUserIds = array();
-				$loginUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
-				foreach($this->request->data['User'] as $userId => $userOperation) {
+				$loginUser = $this->Auth->user();
+				foreach($this->request->data['DelUser'] as $userId => $userOperation) {
 					if(!isset($userOperation['delete']) || !$userOperation['delete']) {
 						continue;
 					}
@@ -142,7 +144,7 @@ class UserController extends UserAppController {
 		$sortname = isset($this->request->data['sortname']) ? $this->request->data['sortname'] : "Authority.hierarchy" ;
 		$sortorder = ($this->request->data['sortorder'] == "asc" || $this->request->data['sortorder'] == "desc") ? $this->request->data['sortorder'] : "desc";
 
-		$loginUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
+		$loginUser = $this->Auth->user();
 		$userAuthorityId = $this->Authority->getUserAuthorityId($loginUser['hierarchy']);
 		$this->set('loginHierarchy', $loginUser['hierarchy']);
 
@@ -241,7 +243,7 @@ class UserController extends UserAppController {
  * @since v 3.0.0.0
  */
 	public function search() {
-		$loginUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
+		$loginUser = $this->Auth->user();
 		$userId = $loginUser['id'];
 
 		include_once dirname(dirname(__FILE__)).'/Config/defines.inc.php';

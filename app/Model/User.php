@@ -941,6 +941,8 @@ class User extends AppModel
 						}
 
 						continue;
+					} else if(!isset($itemsTags[$dataKey])) {
+						continue;
 					}
 					$itemId = $itemsTags[$dataKey];
 					if(isset($itemAuthorityLinks['self'][$itemId]) &&

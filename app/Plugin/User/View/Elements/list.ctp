@@ -27,10 +27,8 @@
 	echo $this->Html->div('submit align-right',
 		$this->Form->button(__('Delete'), array('name' => 'delete', 'class' => 'common-btn', 'type' => 'submit'))
 	);
-	if(isset($this->request->data['isSearch']) && $this->request->data['isSearch']) {
-		echo $this->Form->hiddenVars('User', array(), false);
-		echo $this->Form->hiddenVars('UserItemLink', array(), false);
-	}
+	echo $this->Form->hiddenVars('User', array(), false);
+	echo $this->Form->hiddenVars('UserItemLink', array(), false);
 	echo $this->Form->end();
 ?>
 <script>

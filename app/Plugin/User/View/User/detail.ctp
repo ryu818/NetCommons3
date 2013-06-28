@@ -69,7 +69,8 @@
 					'title' => $deleteTitle,
 					'data-ajax-inner' => '#user-init-tab-list',
 					'data-ajax-type' => 'post',
-					'data-ajax-data' => '{"data[User]['.$user['User']['id'].'][delete]": "'._ON.'", "data[_Token][key]": "'.$this->params['_Token']['key'].'"}',
+					'data-ajax-serialize' => true,
+					'data-ajax-data' => '{"data[DelSingleUser]['.$user['User']['id'].'][delete]": "'._ON.'"}',
 					'data-ajax-confirm' => __('Deleting %s. <br />Are you sure to proceed?', $user['User']['handle']),
 				));
 			}
@@ -89,7 +90,7 @@
 				'legend' => false,
 				'checked' => false,
 			);
-			$ret['rows'][$key]['cell'][] = '<label class="display-block" for="'.$settings['id'].'">'.$this->Form->input('User.'.$user['User']['id'].'.delete', $settings).'</label>';
+			$ret['rows'][$key]['cell'][] = '<label class="display-block" for="'.$settings['id'].'">'.$this->Form->input('DelUser.'.$user['User']['id'].'.delete', $settings).'</label>';
 		} else {
 			$ret['rows'][$key]['cell'][] = "";
 		}
