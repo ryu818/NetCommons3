@@ -21,7 +21,7 @@
 		$labelEnd = "</label>";
 
 		$ret['rows'][$key]['cell'][] = $label.h($user['User']['handle']).$labelEnd;
-		$ret['rows'][$key]['cell'][] = $label.h($user['UsersItemsLinkUsername']['content']).$labelEnd;
+		$ret['rows'][$key]['cell'][] = $label.h($user['UserItemLinkUsername']['content']).$labelEnd;
 		if($user['Authority']['system_flag']) {
 			$authority_name = h(__($user['Authority']['authority_name']));
 		} else {

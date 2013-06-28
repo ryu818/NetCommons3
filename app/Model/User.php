@@ -404,6 +404,7 @@ class User extends AppModel
  * 						true : 参加者のみ公開
  * 						null : 親ルームのデータを取得しない(会員参加登録時使用)
  * @param   array    $conditions
+ * @param   array    $joins
  * @param   integer  $startPage
  * @param   integer  $limit
  * @param   string $sortname
@@ -411,7 +412,7 @@ class User extends AppModel
  * @return  array array($total, $pages_users_link)
  * @since   v 3.0.0.0
  */
-	public function findParticipant($page, $participantType = true, $conditions = array(), $startPage = 1, $limit= 30, $sortname= 'chief', $sortorder = 'DESC') {
+	public function findParticipant($page, $participantType = true, $conditions = array(), $joins = array(), $startPage = 1, $limit= 30, $sortname= 'chief', $sortorder = 'DESC') {
 
 		$roomId = $page['Page']['id'];
 		$fields = array(
@@ -426,32 +427,30 @@ class User extends AppModel
 			'UserAuthority.hierarchy',
 		);
 		$type = ($participantType == 0  || is_null($participantType)) ? "INNER" : "LEFT";
-		$joins = array(
-			array(
-				"type" => $type,
-				"table" => "page_user_links",
-				"alias" => "PageUserLink",
-				"conditions" => "`User`.`id`=`PageUserLink`.`user_id`".
-				" AND `PageUserLink`.`room_id` =".intval($roomId)
-			),
-			array(
-				"type" => "LEFT",
-				"table" => "authorities",
-				"alias" => "Authority",
-				"conditions" => "`Authority`.`id`=`PageUserLink`.`authority_id`"
-			),
-			array(
-				"type" => "INNER",
-				"table" => "authorities",
-				"alias" => "UserAuthority",
-				"conditions" => "`UserAuthority`.`id`=`User`.`authority_id`"
-			),
-			array(
-				"type" => "LEFT",
-				"table" => "pages",
-				"alias" => "Page",
-				"conditions" => "`Page`.`id`=`PageUserLink`.`room_id`"
-			)
+		$joins[] = array(
+			"type" => $type,
+			"table" => "page_user_links",
+			"alias" => "PageUserLink",
+			"conditions" => "`User`.`id`=`PageUserLink`.`user_id`".
+			" AND `PageUserLink`.`room_id` =".intval($roomId)
+		);
+		$joins[] = array(
+			"type" => "LEFT",
+			"table" => "authorities",
+			"alias" => "Authority",
+			"conditions" => "`Authority`.`id`=`PageUserLink`.`authority_id`"
+		);
+		$joins[] = array(
+			"type" => "INNER",
+			"table" => "authorities",
+			"alias" => "UserAuthority",
+			"conditions" => "`UserAuthority`.`id`=`User`.`authority_id`"
+		);
+		$joins[] = array(
+			"type" => "LEFT",
+			"table" => "pages",
+			"alias" => "Page",
+			"conditions" => "`Page`.`id`=`PageUserLink`.`room_id`"
 		);
 
 		if(!is_null($participantType) && $page['Page']['thread_num'] > 1) {
@@ -769,19 +768,14 @@ class User extends AppModel
  * 		自分より低い権限が、編集可であれば、public_flagはみない。
  *   それ以外、public_flagをみる。
  *  </pre>
- * include
- * 		components
- * 			Session
- * 			Timezone
- * 			Common
  * @param   Object Request $request
  * @param   integer $userAuthorityId
  * @param   integer $adminHierarchy
- * @param   array   $itemsAuthoritiesLinks
+ * @param   array   $itemAuthorityLinks
  * @return  array (array conditions, array joins)
  * @since   v 3.0.0.0
  */
-	public function getRefineSearch($request, $userAuthorityId = null, $adminHierarchy = null, $itemsAuthoritiesLinks = null) {
+	public function getRefineSearch($request, $userAuthorityId = null, $adminHierarchy = null, $itemAuthorityLinks = null) {
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
 		App::uses('Authority', 'Model');
@@ -790,37 +784,19 @@ class User extends AppModel
 		list($baseMinHierarchy, $baseMaxHierarchy) = $Authority->getHierarchyByUserAuthorityId($userAuthorityId);
 
 		$conditions = array();
-		$joins = array(
-			array("type" => "INNER",
-				"table" => "authorities",
-				"alias" => "Authority",
-				"conditions" => "`User`.`authority_id`=`Authority`.`id`"
-			)
-		);
+		$joins = array();
 
-		$joinsCount = 1;
-		$alias = "UsersItemsLinkUsername";
-		$joins[$joinsCount] = array(
-			"type" => "LEFT",
-			"table" => "user_item_links",
-			"alias" => $alias,
-			"conditions" => array(
-				$alias.".user_id = User.id",
-				$alias.".item_id" => NC_ITEM_ID_USERNAME,
-				$alias.".lang" => $lang,
-			)
-		);
-		$joinsCount++;
-		if(isset($request->data['User']) || isset($request->data['UsersItemsLink'])) {
-			if($adminHierarchy < NC_AUTH_MIN_CHIEF && !isset($itemsAuthoritiesLinks)) {
+		$joinsCount = 0;
+		if(isset($request->data['User']) || isset($request->data['UserItemLink'])) {
+			if($adminHierarchy < NC_AUTH_MIN_CHIEF && !isset($itemAuthorityLinks)) {
 				// 会員管理が編集不可能(会員管理が編集可能ならば、すべてから検索可能, 会員管理が編集可能ならば、public_flagはみない。)
-				App::uses('ItemsAuthoritiesLink', 'Model');
-				$ItemsAuthoritiesLink = new ItemsAuthoritiesLink();
+				App::uses('ItemAuthorityLink', 'Model');
+				$ItemAuthorityLink = new ItemAuthorityLink();
 				$params = array(
 					'conditions' => array('user_authority_id' => $userAuthorityId)
 				);
-				$rets = $ItemsAuthoritiesLink->findList('all' , $params);
-				$itemsAuthoritiesLinks = $rets[$userAuthorityId];
+				$rets = $ItemAuthorityLink->findList('all' , $params);
+				$itemAuthorityLinks = $rets[$userAuthorityId];
 			}
 
 			App::uses('Item', 'Model');
@@ -833,16 +809,142 @@ class User extends AppModel
 			$items = array();
 			$itemsAllowPublicFlags = array();
 			$itemsTypes = array();
+
+			$itemsTags = array();
+
 			foreach($allItems as $bufItem) {
 				$items[$bufItem['Item']['id']] = $bufItem['Item']['tag_name'];
 				$itemsAllowPublicFlags[$bufItem['Item']['id']] = $bufItem['Item']['allow_public_flag'];
 				$itemsTypes[$bufItem['Item']['id']] = $bufItem['Item']['type'];
+
+				if($bufItem['Item']['tag_name'] != '') {
+					$itemsTags[$bufItem['Item']['tag_name']] = $bufItem['Item']['id'];
+				}
 			}
 
 			if(isset($request->data['User'])) {
-				foreach($request->data['User'] as $itemId => $value) {
-					if(isset($itemsAuthoritiesLinks['self'][$itemId]) &&
-						$itemsAuthoritiesLinks['self'][$itemId] == NC_POLICY_PUBLIC_NONE) {
+				foreach($request->data['User'] as $dataKey => $value) {
+					if($dataKey == 'communities') {
+						// 参加コミュニティー
+						$roomId = intval($value);
+
+						if($roomId == 0) {
+							// コミュニティに参加していない会員
+							// 自分のコミュニティに参加している会員を取得
+							if($adminHierarchy < NC_AUTH_MIN_CHIEF) {
+								// 会員管理の主坦より小さい場合、検索不可
+								continue;
+							}
+
+							// 公開コミュニティーがあれば、PageUserLink.authority_id = NC_AUTH_OTHER_IDの会員が検索対象
+							// 公開コミュニティーがなければ、PageUserLink.authority_id がNULL OR NC_AUTH_OTHER_IDの会員すべて
+							App::uses('Community', 'Model');
+							$Community = new Community();
+							$roomIds = $Community->find('list', array(
+								'fields' => array('Community.id', 'Community.room_id'),
+								'conditions' => array('publication_range_flag' =>
+									array(
+										NC_PUBLICATION_RANGE_FLAG_LOGIN_USER,
+										NC_PUBLICATION_RANGE_FLAG_ALL
+									)
+								)
+							));
+							if(count($roomIds) > 0) {
+								$isPublicCommunity = true;
+							} else {
+								$isPublicCommunity = false;
+							}
+
+							App::uses('PageUserLink', 'Model');
+							$PageUserLink = new PageUserLink();
+							if($isPublicCommunity) {
+								// DISTINCT等で同じIDを省いていない。
+								$params = array(
+									'fields' => array('PageUserLink.user_id'),
+									'conditions' => array(
+										'PageUserLink.room_id' => $roomIds,
+										'PageUserLink.authority_id' => NC_AUTH_OTHER_ID
+									),
+								);
+								$userIds = $PageUserLink->find('list', $params);
+							} else {
+								$roomIds = $Community->find('list', array(
+									'fields' => array('Community.id', 'Community.room_id')
+								));
+								$results = $PageUserLink->find('all',
+									array(
+										'fields' => "PageUserLink.user_id, MAX(PageUserLink.authority_id) as max_number",
+										'conditions' => array(
+											'PageUserLink.room_id' => $roomIds
+										),
+										'group' => 'PageUserLink.user_id'
+									)
+								);
+								$userIds = array();
+								foreach($results as $result) {
+									if(!empty($result[0]['max_number'])) {
+										$userIds[] = $result['PageUserLink']['user_id'];
+									}
+								}
+								$userIdsCount = count($userIds);
+								if($userIdsCount == 1) {
+									$userIdsValues = array_values($userIds);
+									$conditions['User.id !='] = $userIdsValues[0];
+								} else if($userIdsCount > 1) {
+									$conditions['User.id NOT'] = $userIds;
+								}
+							}
+
+						} else {
+							$params = array(
+								'fields' => array('Community.publication_range_flag'),
+								'joins' => array(array(
+									"type" => "INNER",
+									"table" => "communities",
+									"alias" => "Community",
+									"conditions" => "`Page`.`root_id`=`Community`.`room_id`"
+								)),
+								'conditions' => array(
+									'Page.id' => $roomId
+								),
+							);
+							App::uses('Page', 'Model');
+							$Page = new Page();
+							$room = $Page->find('first', $params);
+							if($room['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_ONLY_USER) {
+								$joins[$joinsCount] = array(
+									"type" => "INNER",
+									"table" => "page_user_links",
+									"alias" => 'PageUserLink',
+									"conditions" => array(
+										"PageUserLink.user_id = User.id",
+										"PageUserLink.room_id" => $roomId
+									)
+								);
+								$joinsCount++;
+							} else {
+								$joins[$joinsCount] = array(
+									"type" => "LEFT",
+									"table" => "page_user_links",
+									"alias" => 'PageUserLink',
+									"conditions" => array(
+										"PageUserLink.user_id = User.id",
+										"PageUserLink.room_id" => $roomId
+									)
+								);
+								$joinsCount++;
+								$conditions['and']['or'] = array(
+									'PageUserLink.authority_id !=' => NC_AUTH_OTHER_ID,
+									'PageUserLink.authority_id IS NULL'
+								);
+							}
+						}
+
+						continue;
+					}
+					$itemId = $itemsTags[$dataKey];
+					if(isset($itemAuthorityLinks['self'][$itemId]) &&
+						$itemAuthorityLinks['self'][$itemId] == NC_POLICY_PUBLIC_NONE) {
 						// 自分自身が非公開のものは検索させない。
 						continue;
 					}
@@ -853,14 +955,14 @@ class User extends AppModel
 
 					if($itemsTypes[$itemId] == 'label' && is_array($value)) {
 						// 更新日時等
-						if($value[0] == '' && $value[1] == '') {
+						if((isset($value[0]) && $value[0] == '') && (isset($value[1]) && $value[1] == '')) {
 							continue;
 						} else {
-							if($value[0] != '') {
+							if(isset($value[0]) && intval($value[0]) >= 0) {
 								$time = $this->_formatDate(intval($value[0]));
 								$conditions['User.'.$key. ' <='] = $time;
 							}
-							if($value[1] != '') {
+							if(isset($value[1]) && intval($value[1]) >= 0) {
 								$time = $this->_formatDate(intval($value[1]));
 								$conditions['User.'.$key. ' >='] = $time;
 							}
@@ -868,44 +970,43 @@ class User extends AppModel
 					} else if(is_array($value) || $value != '') {
 						if($itemsTypes[$itemId] == 'checkbox' || $itemsTypes[$itemId] == 'radio' ||
 							$itemsTypes[$itemId] == 'select') {
-							// 基本項目にはないため、未対応
 							$conditions['User.'.$key] = $value;
 						} else {
 							$conditions['User.'.$key.' LIKE'] = '%'.$value.'%';
 						}
 					}
 
-					if(isset($itemsAuthoritiesLinks['higher'][$itemId]) &&
-						$itemsAuthoritiesLinks['higher'][$itemId] == NC_POLICY_PUBLIC_NONE) {
+					if(isset($itemAuthorityLinks['higher'][$itemId]) &&
+					$itemAuthorityLinks['higher'][$itemId] == NC_POLICY_PUBLIC_NONE) {
 						// 自分以上の権限が、非公開であれば、自分の権限以下で検索(自分自身は関係なし)
 						$conditions['OR']['Authority.hierarchy <'] = $baseMinHierarchy;
 						$conditions['OR']['User.id'] = $loginUser['id'];
 					}
 
-					if(isset($itemsAuthoritiesLinks['lower'][$itemId]) &&
-						$itemsAuthoritiesLinks['lower'][$itemId] == NC_POLICY_PUBLIC_NONE) {
+					if(isset($itemAuthorityLinks['lower'][$itemId]) &&
+					$itemAuthorityLinks['lower'][$itemId] == NC_POLICY_PUBLIC_NONE) {
 						// 自分より低い権限が、非公開であれば、自分の権限以上で検索
 						$conditions['Authority.hierarchy >='] = $baseMinHierarchy;
 
 					}
 
 					$higher = false;
-					if(isset($itemsAuthoritiesLinks['higher'][$itemId]) &&
-						$itemsAuthoritiesLinks['higher'][$itemId] != NC_POLICY_PUBLIC_EDIT &&
-						$itemsAllowPublicFlags[$itemId]) {
+					if(isset($itemAuthorityLinks['higher'][$itemId]) &&
+					$itemAuthorityLinks['higher'][$itemId] != NC_POLICY_PUBLIC_EDIT &&
+					$itemsAllowPublicFlags[$itemId]) {
 						// 自分以上の権限が、編集可であれば、public_flagはみない。(自分自身は関係なし)
 						$higher = true;
 					}
 					$lower = false;
-					if(isset($itemsAuthoritiesLinks['lower'][$itemId]) &&
-						$itemsAuthoritiesLinks['lower'][$itemId] != NC_POLICY_PUBLIC_EDIT &&
-						$itemsAllowPublicFlags[$itemId]) {
+					if(isset($itemAuthorityLinks['lower'][$itemId]) &&
+					$itemAuthorityLinks['lower'][$itemId] != NC_POLICY_PUBLIC_EDIT &&
+					$itemsAllowPublicFlags[$itemId]) {
 						// 自分より低い権限が、編集可であれば、public_flagはみない。
 						$lower = true;
 					}
 
 					if($higher || $lower) {
-						$alias = "UsersItemsLink_".$itemId;
+						$alias = "UserItemLink_".$itemId;
 						$joins[$joinsCount] = array(
 							"type" => "INNER",
 							"table" => "user_item_links",
@@ -933,11 +1034,11 @@ class User extends AppModel
 				}
 			}
 
-			$search_users_items_columns = array();
-			if(isset($request->data['UsersItemsLink'])) {
-				foreach($request->data['UsersItemsLink'] as $itemId => $value) {
-					if(isset($itemsAuthoritiesLinks['self'][$itemId]) &&
-						$itemsAuthoritiesLinks['self'][$itemId] == NC_POLICY_PUBLIC_NONE) {
+			if(isset($request->data['UserItemLink'])) {
+				foreach($request->data['UserItemLink'] as $itemId => $valueArr) {
+					$value = $valueArr['content'];
+					if(isset($itemAuthorityLinks['self'][$itemId]) &&
+						$itemAuthorityLinks['self'][$itemId] == NC_POLICY_PUBLIC_NONE) {
 						// 自分自身が非公開のものは検索させない。
 						continue;
 					}
@@ -945,22 +1046,22 @@ class User extends AppModel
 						continue;
 					}
 
-					if(isset($itemsAuthoritiesLinks['higher'][$itemId]) &&
-						$itemsAuthoritiesLinks['higher'][$itemId] == NC_POLICY_PUBLIC_NONE) {
+					if(isset($itemAuthorityLinks['higher'][$itemId]) &&
+						$itemAuthorityLinks['higher'][$itemId] == NC_POLICY_PUBLIC_NONE) {
 						// 自分以上の権限が、非公開であれば、自分の権限以下で検索(自分自身は関係なし)
 						$conditions['OR']['Authority.hierarchy <'] = $baseMinHierarchy;
 						$conditions['OR']['User.id'] = $loginUser['id'];
 					}
 
-					if(isset($itemsAuthoritiesLinks['lower'][$itemId]) &&
-						$itemsAuthoritiesLinks['lower'][$itemId] == NC_POLICY_PUBLIC_NONE) {
+					if(isset($itemAuthorityLinks['lower'][$itemId]) &&
+						$itemAuthorityLinks['lower'][$itemId] == NC_POLICY_PUBLIC_NONE) {
 						// 自分より低い権限が、非公開であれば、自分の権限以上で検索
 						$conditions['Authority.hierarchy >='] = $baseMinHierarchy;
 
 					}
 
 					if(is_array($value) || $value != '') {
-						$alias = "UsersItemsLink_".$itemId;
+						$alias = "UserItemLink_".$itemId;
 						if(is_array($value)) {
 							$set_content = array();
 							foreach($value as $v) {
@@ -1000,15 +1101,15 @@ class User extends AppModel
 						}
 
 						$higher = false;
-						if(isset($itemsAuthoritiesLinks['higher'][$itemId]) &&
-						$itemsAuthoritiesLinks['higher'][$itemId] != NC_POLICY_PUBLIC_EDIT &&
+						if(isset($itemAuthorityLinks['higher'][$itemId]) &&
+						$itemAuthorityLinks['higher'][$itemId] != NC_POLICY_PUBLIC_EDIT &&
 						$itemsAllowPublicFlags[$itemId]) {
 							// 自分以上の権限が、編集可であれば、public_flagはみない。(自分自身は関係なし)
 							$higher = true;
 						}
 						$lower = false;
-						if(isset($itemsAuthoritiesLinks['lower'][$itemId]) &&
-							$itemsAuthoritiesLinks['lower'][$itemId] != NC_POLICY_PUBLIC_EDIT &&
+						if(isset($itemAuthorityLinks['lower'][$itemId]) &&
+							$itemAuthorityLinks['lower'][$itemId] != NC_POLICY_PUBLIC_EDIT &&
 							$itemsAllowPublicFlags[$itemId]) {
 							// 自分より低い権限が、編集可であれば、public_flagはみない。
 							$lower = true;
@@ -1032,59 +1133,23 @@ class User extends AppModel
 			}
 		}
 
-		/*
-		 * 参加ルーム
-		*/
-		if(isset($request->data['UsersCommunities']) && $request->data['UsersCommunities'] != '') {
-			// TODO:未作成
-			/*$roomId = intval($request->data['UsersCommunities']);
-
-			if($roomId == 0) {
-				// コミュニティに参加していない会員
-				// 自分のコミュニティに参加している会員を取得
-				$params = array(
-					'fields' => array('PagesUsersLink.room_id'),
-					'conditions' => array(
-						'Page.display_sequence' => 0
-					)
-				);
-				$roomIds = $this->_controller->Page->findMenu('list', $loginUser['id'], NC_SPACE_TYPE_GROUP, $loginUser, $params, '', '');
-
-				// DISTINCT等で同じIDを省いていない。
-				$params = array(
-					'fields' => array('PagesUsersLink.user_id'),
-					'conditions' => array(
-						'PagesUsersLink.room_id' => $roomIds
-					)
-				);
-				$user_ids = $this->_controller->PagesUsersLink->find('list', $params);
-
-				$user_ids_count = count($user_ids);
-				if($user_ids_count == 1) {
-					$user_ids_values = array_values($user_ids);
-					$conditions['User.id !='] = $user_ids_values[0];
-				} else if($user_ids_count > 1) {
-					$conditions['User.id NOT'] = $user_ids;
-				}
-			} else {
-				$alias = "PagesUsersLink";
-				$joins[$joinsCount] = array(
-					"type" => "INNER",
-					"table" => "pages_users_links",
-					"alias" => $alias,
-					"conditions" => array(
-						$alias.".user_id = User.id",
-						$alias.".room_id" => $roomId
-					)
-				);
-			}
-			$joinsCount++;*/
-		}
-
-		// 権限割り当てのSession情報クリア
-		/////$this->_controller->Session->delete('pagesmenu.PagesUsersLink');
-
 		return array($conditions, $joins);
+	}
+
+/**
+ * 会員絞り込み　日付のフォーマット生成
+ *
+ * @param integer $value
+ * @return  string
+ * @since   v 3.0.0.0
+ */
+	protected function _formatDate($value) {
+		$time = $this->nowDate("YmdHis");
+		$time = mktime(intval(substr($time, 8, 2)), intval(substr($time, 10, 2)),
+			intval(substr($time, 12, 2)), intval(substr($time, 4, 2)),
+			intval(substr($time, 6, 2)) - intval($value), intval(substr($time, 0, 4)));
+		$time = date("YmdHis", $time);
+		return $time;
 	}
 
 /**

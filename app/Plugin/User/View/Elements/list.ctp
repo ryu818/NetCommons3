@@ -9,12 +9,28 @@
 <div class="top-description">
 	<?php echo __d('user', 'Click the link [%1$s] to edit the user data. Select a row and push [%2$s] to delete the user(s).', __('Edit'), __('Delete'));?>
 </div>
+<div class="users-search-outer">
+	<?php
+		echo $this->Form->button(__('Search for the members'), array('name' => 'search', 'class' => 'common-btn',
+			'type' => 'button',
+			'data-ajax' => "#user-init-tab-list-search",
+			'data-ajax-dialog' => true,
+			'data-ajax-dialog-options' => h('{"title" : "'.$this->Js->escape(__('Search for the members')).'","modal" : true, "resizable": true, "width":"800"}'),
+			'data-ajax-effect' => 'fold',
+			'data-ajax-url' => $this->Html->url(array('action' => 'search', 'language' => $language)),
+		));
+	?>
+</div>
 <table id="user-list" summary="<?php echo __d('user', 'Display a list of members.'); ?>" data-url="<?php echo $this->Html->url(array('action' => 'detail', 'language' => $language));?>">
 </table>
 <?php
 	echo $this->Html->div('submit align-right',
 		$this->Form->button(__('Delete'), array('name' => 'delete', 'class' => 'common-btn', 'type' => 'submit'))
 	);
+	if(isset($this->request->data['isSearch']) && $this->request->data['isSearch']) {
+		echo $this->Form->hiddenVars('User', array(), false);
+		echo $this->Form->hiddenVars('UserItemLink', array(), false);
+	}
 	echo $this->Form->end();
 ?>
 <script>

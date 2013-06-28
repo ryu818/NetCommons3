@@ -59,10 +59,11 @@
 			height: 'auto',
 			showToggleBtn: false,
 			url: table.attr('data-url'),
-			//setParams : function() {
-			//var fields = $(":input", $("#" + form_id)).serializeArray();
-			//return fields;
-			//},
+			setParams : function() {
+				// 絞り込み検索用
+				var fields = $("input:hidden", $("#user-init-tab-list")).serializeArray();
+				return fields;
+			},
 			//procmsg: '読み込み中です..',
 			//pagestat: '全 {total} 件のうち、{from} - {to} 件目を表示中',
 			method: 'POST',

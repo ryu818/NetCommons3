@@ -15,6 +15,19 @@
 	<div class="top-description">
 		<?php echo(__d('page', 'Set the roles of the room members, and press [Ok] button. To set the roles all at once, press [Select All] button.'));?>
 	</div>
+
+	<div class="pages-menu-search-outer">
+	<?php
+		echo $this->Form->button(__('Search for the members'), array('name' => 'search', 'class' => 'common-btn',
+			'type' => 'button',
+			'data-ajax' => "#pages-menu-user-search",
+			'data-ajax-dialog' => true,
+			'data-ajax-dialog-options' => h('{"title" : "'.$this->Js->escape(__('Search for the members')).'","modal" : true, "resizable": true, "width":"800"}'),
+			'data-ajax-effect' => 'fold',
+			'data-ajax-url' => $this->Html->url(array('plugin' => 'user', 'controller' => 'user', 'action' => 'search', 'post_page_id' => $page['Page']['id'])),
+		));
+	?>
+	</div>
 	<?php echo $this->Form->create(null, $form_params); ?>
 	<table id="pages-menu-edit-participant-grid-<?php echo($page['Page']['id']);?>" style="display:none;">
 	</table>
@@ -34,6 +47,10 @@
 				'onclick' => "$.PageMenu.hideDetail(".$page['Page']['id'].");", 'data-ajax-url' => $this->Html->url(array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'participant_cancel', $page['Page']['id'])),
 				'data-ajax-inner' => '#pages-menu-edit-participant-tmp')).$deallocation
 		);
+		if(isset($this->request->data['isSearch']) && $this->request->data['isSearch']) {
+			echo $this->Form->hiddenVars('User', array(), false);
+			echo $this->Form->hiddenVars('UserItemLink', array(), false);
+		}
 		echo $this->Form->end();
 	?>
 </div>

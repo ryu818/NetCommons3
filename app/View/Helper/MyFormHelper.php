@@ -314,6 +314,36 @@ class MyFormHelper extends FormHelper {
 	}
 
 /**
+ * ルーム一覧セレクトボックス表示
+ * @param string $fieldName Name attribute of the SELECT
+ * @param array key:room_id => array(key:thread_num => page_name) Page->findRoomListメソッドの返り値をセット。
+ * @param array $attributes The HTML attributes of the select element.
+ * @return string Formatted SELECT element
+ * @since   v 3.0.0.0
+ */
+	public function selectRooms($fieldName, $rooms, $attributes = array()) {
+		$options = array();
+		if($rooms === false || count($rooms) == 0) {
+			return '';
+		}
+		$attributes = array_merge( array('escape' => false, 'class' => 'select_rooms'), $attributes);
+		foreach($rooms as $key => $room) {
+			if(is_array($room)) {
+				$optionNameSpace = '';
+				for ($i = 1; $i < $room['Page']['thread_num']; $i++) {
+					$optionNameSpace .= '&nbsp;&nbsp;';
+				}
+				$roomName = $optionNameSpace.h($room['Page']['page_name']);
+				$options[$room['Page']['id']] = $roomName;
+			} else {
+				$options[$key] = $room;
+			}
+		}
+
+		return $this->select($fieldName, $options, $attributes);
+	}
+
+/**
  * Returns if a field is required to be filled based on validation properties from the validating object.
  *
  * @param CakeValidationSet $validationRules
@@ -352,9 +382,10 @@ class MyFormHelper extends FormHelper {
  *
  * @param string Model name
  * @param array $fieldList	fieldListが設定されていた場合、そのfieldListのみ出力。
+ * @param boolean falseの場合、""のデータのものはhiddenとして出力しない。
  * @return string hidden string
  */
-	public function hiddenVars($modelName, $fieldList = array()) {
+	public function hiddenVars($modelName, $fieldList = array(), $isEmpty = true) {
 		$ret = "";
 		if(!isset($this->data[$modelName])) {
 			return $ret;
@@ -365,15 +396,15 @@ class MyFormHelper extends FormHelper {
 				foreach( $val as $key2 => $val2 ){
 					if(is_array($val2)){
 						foreach( $val2 as $key3 => $val3 ){
-							if(count($fieldList) == 0 || in_array($key3, $fieldList)) {
+							if((count($fieldList) == 0 || in_array($key3, $fieldList)) && ($isEmpty == true || $val3 !== '')) {
 								$ret .= $this->hidden("$modelName.$key.$key2.$key3")."\n";
 							}
 						}
-					} else if(count($fieldList) == 0 || in_array($key2, $fieldList)) {
+					} else if((count($fieldList) == 0 || in_array($key2, $fieldList)) && ($isEmpty == true || $val2 !== '')) {
 						$ret .= $this->hidden("$modelName.$key.$key2")."\n";
 					}
 				}
-			} else if(count($fieldList) == 0 || in_array($key, $fieldList)) {
+			} else if((count($fieldList) == 0 || in_array($key, $fieldList)) && ($isEmpty == true || $val !== '')) {
 				$ret .= $this->hidden("$modelName.$key")."\n";
 			}
 		}

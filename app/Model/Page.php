@@ -436,6 +436,7 @@ class Page extends AppModel
 	public function afterFindIds($results, $userId, $type = "all", $fields = null, $ativePageId = null) {
 		$listKeyAlias = $this->alias;
 		$listValueAlias = $this->alias;
+		$listGroupAlias = $this->alias;
 		$listKey = 'id';
 		$listValue = 'id';
 		if($type == 'list' && isset($fields)) {
@@ -460,6 +461,15 @@ class Page extends AppModel
 				$listValueAlias = $listKeyAlias;
 				$listValue = $listKey;
 			}
+			if(isset($fields[2])) {
+				$fields2Arr = explode('.', $fields[2]);
+				if(count($fields2Arr) == 2) {
+					$listGroupAlias = $fields2Arr[0];
+					$listGroup = $fields2Arr[1];
+				} else {
+					$listGroup = $fields[2];
+				}
+			}
 		}
 		$pages = array();
 		$single_flag = false;
@@ -469,7 +479,7 @@ class Page extends AppModel
 			$results = array($results);
 		}
 		if(is_array($results)) {
-			if(!empty($ativePageId)) {
+			if(!empty($ativePageId) && $type == "menu") {
 				$bufPages = array();
 				foreach ($results as $key => $val) {
 					$bufPages[$val[$this->alias]['id']] = $val[$this->alias]['parent_id'];
@@ -485,51 +495,87 @@ class Page extends AppModel
 					}
 				}
 			}
-			$parentDisplayArr = array();
-			foreach ($results as $key => $val) {
-				if(!isset($val['PageUserLink']['authority_id'])) {
-					$val['Authority'] = $this->getDefaultAuthority($val, $userId);
-				}
-				$val = $this->setPageName($val);
-				if($type == "menu") {
-					$preDisplayFlag = $val[$this->alias]['display_flag'];
-
-					$val[$this->alias] = $this->updDisplayFlag($val[$this->alias]);
-
-					if($preDisplayFlag != $val[$this->alias]['display_flag'] &&
-					($val[$this->alias]['display_flag'] == _OFF ||
-					($val[$this->alias]['display_flag'] == _ON && $val[$this->alias]['display_apply_subpage'] == _ON))) {
-						// 親が非公開ならば、子供が公開になっていても非公開として表示。
-						// 公開日付Toを設定直後に親が非公開、子供が公開で表示されてしまうため
-						// 親が公開で、「下位ページにも適用」のチェックボックスがONの場合も同様。
-						$parentDisplayArr[$val[$this->alias]['id']] = $val[$this->alias]['display_flag'];
-					}
-					if(isset($parentDisplayArr[$val[$this->alias]['parent_id']])) {
-						$val[$this->alias]['display_flag'] = $parentDisplayArr[$val[$this->alias]['parent_id']];
-					}
-					if(!empty($ativePageId)) {
-						if(!empty($activeIdArr[$val[$this->alias]['id']])) {
-							$val[$this->alias]['active'] = true;
-						} else {
-							$val[$this->alias]['active'] = false;
+			if($type == "thread") {
+				$bufRootPages = array();
+				$bufPages = array();
+				foreach ($results as $key => $val) {
+					$val = $this->setPageName($val);
+					if($userId != 'all') {
+						if(!isset($val['PageUserLink']['authority_id'])) {
+							$val['Authority'] = $this->getDefaultAuthority($val, $userId);
 						}
-
-						if(isset($activeIdArr[$val[$this->alias]['parent_id']]) || $val[$this->alias]['thread_num'] <= 1) {	// || $val[$this->alias]['thread_num'] <= 2
-							$val[$this->alias]['show'] = true;
-						} else {
-							$val[$this->alias]['show'] = false;
+						if($val['Authority']['hierarchy'] == NC_AUTH_OTHER) {
+							continue;
 						}
 					}
-					$val[$this->alias]['visibility_flag'] = empty($val['Menu']['visibility_flag']) ? _ON : $val['Menu']['visibility_flag'];
-					$val[$this->alias]['permalink'] = $this->getPermalink($val[$this->alias]['permalink'], $val[$this->alias]['space_type']);
-					$pages[$val[$this->alias]['space_type']][$val[$this->alias]['thread_num']][$val[$this->alias]['parent_id']][$val[$this->alias]['display_sequence']] = $val;
-				} else if($type == "all") {
-					$pages[$val[$this->alias]['id']] = $val;
-				} else {
-					// list
-					$pages[$val[$listKeyAlias][$listKey]] = $val[$listValueAlias][$listValue];
+					if($val[$this->alias]['thread_num'] == 1) {
+						$bufRootPages[intval($val[$this->alias]['space_type'])][intval($val[$this->alias]['display_sequence'])] = $val;
+					} else {
+						$bufPages[intval($val[$this->alias]['root_id'])][intval($val[$this->alias]['display_sequence'])] = $val;
+					}
 				}
+				foreach($bufRootPages as $bufRootPageSpace) {
+					foreach($bufRootPageSpace as $bufRootPage) {
+						$pages[$bufRootPage[$this->alias]['id']] = $bufRootPage;
+						if(isset($bufPages[$bufRootPage[$this->alias]['id']])) {
+							ksort($bufPages[$bufRootPage[$this->alias]['id']]);
+							foreach($bufPages[$bufRootPage[$this->alias]['id']] as $bufPage) {
+								$pages[$bufPage[$this->alias]['id']] = $bufPage;
+							}
+						}
+					}
+				}
+			} else {
+				$parentDisplayArr = array();
+				foreach ($results as $key => $val) {
+					if(!isset($val['PageUserLink']['authority_id'])) {
+						$val['Authority'] = $this->getDefaultAuthority($val, $userId);
+					}
+					$val = $this->setPageName($val);
+					if($type == "menu") {
+						$preDisplayFlag = $val[$this->alias]['display_flag'];
 
+						$val[$this->alias] = $this->updDisplayFlag($val[$this->alias]);
+
+						if($preDisplayFlag != $val[$this->alias]['display_flag'] &&
+						($val[$this->alias]['display_flag'] == _OFF ||
+						($val[$this->alias]['display_flag'] == _ON && $val[$this->alias]['display_apply_subpage'] == _ON))) {
+							// 親が非公開ならば、子供が公開になっていても非公開として表示。
+							// 公開日付Toを設定直後に親が非公開、子供が公開で表示されてしまうため
+							// 親が公開で、「下位ページにも適用」のチェックボックスがONの場合も同様。
+							$parentDisplayArr[$val[$this->alias]['id']] = $val[$this->alias]['display_flag'];
+						}
+						if(isset($parentDisplayArr[$val[$this->alias]['parent_id']])) {
+							$val[$this->alias]['display_flag'] = $parentDisplayArr[$val[$this->alias]['parent_id']];
+						}
+						if(!empty($ativePageId)) {
+							if(!empty($activeIdArr[$val[$this->alias]['id']])) {
+								$val[$this->alias]['active'] = true;
+							} else {
+								$val[$this->alias]['active'] = false;
+							}
+
+							if(isset($activeIdArr[$val[$this->alias]['parent_id']]) || $val[$this->alias]['thread_num'] <= 1) {	// || $val[$this->alias]['thread_num'] <= 2
+								$val[$this->alias]['show'] = true;
+							} else {
+								$val[$this->alias]['show'] = false;
+							}
+						}
+						$val[$this->alias]['visibility_flag'] = empty($val['Menu']['visibility_flag']) ? _ON : $val['Menu']['visibility_flag'];
+						$val[$this->alias]['permalink'] = $this->getPermalink($val[$this->alias]['permalink'], $val[$this->alias]['space_type']);
+						$pages[$val[$this->alias]['space_type']][$val[$this->alias]['thread_num']][$val[$this->alias]['parent_id']][$val[$this->alias]['display_sequence']] = $val;
+					} else if($type == "all") {
+						$pages[$val[$this->alias]['id']] = $val;
+					} else {
+						// list
+						if(isset($listGroup)) {
+							$pages[$val[$listGroupAlias][$listGroup]][$val[$listKeyAlias][$listKey]] = $val[$listValueAlias][$listValue];
+						} else {
+							$pages[$val[$listKeyAlias][$listKey]] = $val[$listValueAlias][$listValue];
+						}
+					}
+
+				}
 			}
 		}
 		if(count($pages) == 0)
@@ -578,6 +624,34 @@ class Page extends AppModel
 /**
  * 閲覧可能のルームリストを取得
  *
+ * @param   integer|string 'all'  $userId
+ * @param   integer  $spaceType nullならば、すべてのルームが対象
+ * @param   boolean $isShowAllCommunity:default true
+ * 					true :公開コミュニティーを含む閲覧可能なすべてのコミュニティー　
+ * 					false:参加コミュニティーのみ
+ * 						PageUserLinkテーブルがあるデータ+コミュニティーのデフォルト参加が一般ならば、公開コミュニティーすべて-不参加にした会員のルームを引く。
+ * @return  array key:room_id => array(key:thread_num => page_name)
+ * @since   v 3.0.0.0
+ */
+	public function findRoomList($userId, $spaceType = null, $isShowAllCommunity = true) {
+		$addParams = array();
+		if(isset($spaceType)) {
+			$addParams = array(
+				'conditions' => array(
+					'Page.space_type' => $spaceType,
+				)
+			);
+		}
+		$options = array(
+			'isRoom' => true,
+			'isShowAllCommunity' => $isShowAllCommunity,
+		);
+		return $this->findViewable('thread', $userId, $addParams, $options);
+	}
+
+/**
+ * 閲覧可能のルームリストを取得
+ *
  * type:listはkey,valueまで取得可能
  * TODO:左カラム等は現状、含めていない。
  *
@@ -585,8 +659,11 @@ class Page extends AppModel
  * @param   integer|string 'all'  $userId
  * @param   array   $addParams
  * @param   array   $options
- * 				'isDisplayPublicCommunity':公開コミュニティーを含めるかどうか default true
- * 				'isMyPortalSelf':公開コミュニティーを含めるかどうか default true
+ * 				'isShowAllCommunity':default true
+ * 					true :公開コミュニティーを含む閲覧可能なすべてのコミュニティー　
+ * 					false:参加コミュニティーのみ
+ * 						PageUserLinkテーブルがあるデータ+コミュニティーのデフォルト参加が一般ならば、公開コミュニティーすべて-不参加にした会員のルームを引く。
+ * 				'isMyPortalCurrent':カレントのマイポータルを優先的に取得するかどうか default false
  * 				'ativePageId': $type='menu'時に使用。アクティブなページIDを指定default null
  * @return  Model Pages
  * @since   v 3.0.0.0
@@ -606,8 +683,11 @@ class Page extends AppModel
  * @param   integer|string 'all'  $userId
  * @param   array   $addParams
  * @param   array   $options
- * 				'isDisplayPublicCommunity':公開コミュニティーを含めるかどうか default true
- * 				'isMyPortalSelf':公開コミュニティーを含めるかどうか default true
+ * 				'isShowAllCommunity':default true
+ * 					true :公開コミュニティーを含む閲覧可能なすべてのコミュニティー　
+ * 					false:参加コミュニティーのみ
+ * 						PageUserLinkテーブルがあるデータ+コミュニティーのデフォルト参加が一般ならば、公開コミュニティーすべて-不参加にした会員のルームを引く。
+ * 				'isMyPortalCurrent':カレントのマイポータルを優先的に取得するかどうか default false
  * 				'ativePageId': $type='menu'時に使用。アクティブなページIDを指定default null
  * 				'autoLang' : 言語を自動で条件にいれる場合、true default true
  * 				'isRoom':ルームのみ取得するかどうか。default false
@@ -623,8 +703,8 @@ class Page extends AppModel
 		}
 
 		$options = array_merge(array(
-			'isDisplayPublicCommunity' => true,
-			'isMyPortalSelf' => true,
+			'isShowAllCommunity' => true,
+			'isMyPortalCurrent' => false,
 			'ativePageId' => null,
 			'autoLang' => true,
 			'isRoom' => false,
@@ -651,11 +731,11 @@ class Page extends AppModel
 			),
 		);
 
-		if($options['isMyPortalSelf']) {
+		if($options['isMyPortalCurrent']) {
 			$centerPage = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');
 
 			if($centerPage['Page']['room_id'] != $loginUser['myportal_page_id'] &&
-			$centerPage['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
+				$centerPage['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
 				// マイポータルで、現在のカレントのもの取得
 				// TODO:マイポータルに子グループを作成できる仕様にすると動作しない。
 				App::uses('User', 'Model');
@@ -671,64 +751,74 @@ class Page extends AppModel
 					// 参加
 					$currentMyPortal = $centerPage['Page']['room_id'];
 				}
+				$currentPrivate = $loginUser['private_page_id'];
 			} else {
 				/*$currentUser = array('Authority' =>array(
 				 'myportal_use_flag' => $loginUser['allow_myportal_viewing_hierarchy'],
 					'allow_myportal_viewing_hierarchy' => $loginUser['allow_myportal_viewing_hierarchy'],
 				));*/
 				$currentMyPortal = $loginUser['myportal_page_id'];
+				$currentPrivate = $loginUser['private_page_id'];
 			}
+		} else if(!empty($userId) && $userId != 'all') {
+			App::uses('User', 'Model');
+			$User = new User();
+			$currentUser = $User->findById($userId);
+			$currentMyPortal = $currentUser['User']['myportal_page_id'];
+			$currentPrivate = $currentUser['User']['private_page_id'];
 		}
 
+		$defaultHierarchy = Configure::read(NC_CONFIG_KEY.'.default_entry_group_hierarchy');
 		if($userId === 'all') {
 			// 全ルーム取得
 		} else if(empty($userId)) {
 			// ログイン前
-			if(!empty($currentMyPortal)) {
-				$bufSpaceType = array(NC_SPACE_TYPE_PUBLIC, NC_SPACE_TYPE_MYPORTAL);
-			} else {
-				$bufSpaceType = NC_SPACE_TYPE_PUBLIC;
-			}
-			if($options['isDisplayPublicCommunity']) {
+			// TODO:NC_SPACE_TYPE_MYPORTALは設定によっては、ログインした一部会員しかみえないため
+			// 修正する必要あり？
+			if($defaultHierarchy >= NC_AUTH_MIN_GENERAL || $options['isShowAllCommunity']) {
 				$conditions['or'] = array(
+					'Page.space_type' => array(NC_SPACE_TYPE_PUBLIC, NC_SPACE_TYPE_MYPORTAL),
 					'Community.publication_range_flag' => NC_PUBLICATION_RANGE_FLAG_ALL,
-					'Page.space_type' => $bufSpaceType,
+					array(
+						'PageUserLink.authority_id IS NOT NULL',
+						'PageUserLink.authority_id !=' => NC_AUTH_OTHER_ID,
+					),
 				);
 			} else {
 				$conditions['or'] = array(
-					'Page.space_type' => $bufSpaceType,
+					'Page.space_type' => array(NC_SPACE_TYPE_PUBLIC, NC_SPACE_TYPE_MYPORTAL)
 				);
 			}
 		} else {
 			// ログイン後
-			if($options['isDisplayPublicCommunity']) {
+			if($defaultHierarchy >= NC_AUTH_MIN_GENERAL || $options['isShowAllCommunity']) {
 				$conditions['or'] = array(
-					'Page.space_type' => array(NC_SPACE_TYPE_PUBLIC, NC_SPACE_TYPE_MYPORTAL),
-					'Community.publication_range_flag' => array(NC_PUBLICATION_RANGE_FLAG_LOGIN_USER, NC_PUBLICATION_RANGE_FLAG_ALL),
+					'Page.space_type' => array(NC_SPACE_TYPE_PUBLIC, NC_SPACE_TYPE_MYPORTAL, NC_SPACE_TYPE_PRIVATE),
 					array(
-						'PageUserLink.authority_id IS NOT NULL',
-						'PageUserLink.authority_id !=' => NC_AUTH_OTHER_ID,
+						'Community.publication_range_flag' => array(NC_PUBLICATION_RANGE_FLAG_LOGIN_USER, NC_PUBLICATION_RANGE_FLAG_ALL),
+						'or' => array('PageUserLink.authority_id !=' => NC_AUTH_OTHER_ID,'PageUserLink.authority_id IS NULL'),
 					),
+					'PageUserLink.authority_id !=' => NC_AUTH_OTHER_ID,
+					//array(
+					//	'PageUserLink.authority_id IS NOT NULL',
+					//	'PageUserLink.authority_id !=' => NC_AUTH_OTHER_ID,
+					//),
 				);
 			} else {
 				$conditions['or'] = array(
-					'Page.space_type' => array(NC_SPACE_TYPE_PUBLIC, NC_SPACE_TYPE_MYPORTAL),
-					array(
-						'PageUserLink.authority_id IS NOT NULL',
-						'PageUserLink.authority_id !=' => NC_AUTH_OTHER_ID,
-					),
+					'Page.space_type' => array(NC_SPACE_TYPE_PUBLIC, NC_SPACE_TYPE_MYPORTAL, NC_SPACE_TYPE_PRIVATE),
+					'PageUserLink.authority_id !=' => NC_AUTH_OTHER_ID,
+					//array(
+					//	'PageUserLink.authority_id IS NOT NULL',
+					//	'PageUserLink.authority_id !=' => NC_AUTH_OTHER_ID,
+					//),
 				);
 			}
-		}
-		if(!empty($currentMyPortal)) {
-			$conditions['and']['or'] = array(
-				'Page.room_id' => $currentMyPortal,
-				'Page.space_type != ' => NC_SPACE_TYPE_MYPORTAL
-			);
+
 		}
 
-		if(!empty($userId) && $userId != 'all') {
-			// ログイン後
+		if(!empty($userId) && $userId != 'all' || ($defaultHierarchy >= NC_AUTH_MIN_GENERAL || $options['isShowAllCommunity'])) {
+			// ログイン後 OR すべての公開コミュニティーを含む
 			$joins[] = array(
 				"type" => "LEFT",
 				"table" => "page_user_links",
@@ -736,6 +826,10 @@ class Page extends AppModel
 				"conditions" => "`PageUserLink`.`user_id`=".intval($userId).
 				" AND `Page`.`room_id`=`PageUserLink`.`room_id`"
 			);
+		}
+
+		if(!empty($userId) && $userId != 'all') {
+			// ログイン後
 			$joins[] = array(
 				"type" => "LEFT",
 				"table" => "authorities",
@@ -746,6 +840,12 @@ class Page extends AppModel
 		$spaceType = null;
 		if(isset($addParams['conditions']['Page.space_type'])) {
 			$spaceType = $addParams['conditions']['Page.space_type'];
+		}
+		if((empty($spaceType) || $spaceType != NC_SPACE_TYPE_GROUP) && isset($currentMyPortal) && isset($currentPrivate)) {
+			$conditions['and']['or'] = array(
+				'Page.room_id' => array($currentMyPortal, $currentPrivate),
+				'Page.space_type' => array(NC_SPACE_TYPE_PUBLIC, NC_SPACE_TYPE_GROUP)
+			);
 		}
 		if(empty($spaceType) || $spaceType == NC_SPACE_TYPE_GROUP || (is_array($spaceType) && in_array(NC_SPACE_TYPE_GROUP, $spaceType))) {
 			$joins[] = array(
@@ -877,8 +977,7 @@ class Page extends AppModel
 			$addParams['conditions']['Page.lang'] = array('', $lang);
 		}
 		$options = array(
-			'isDisplayPublicCommunity' => true,
-			'isMyPortalSelf' => false,
+			'isShowAllCommunity' => true,
 			'autoLang' => false,
 			'ativePageId' => $currentPage['Page']['id'],
 		);
@@ -901,8 +1000,7 @@ class Page extends AppModel
 			)
 		);
 		$defaultOptions = array(
-			'isDisplayPublicCommunity' => true,
-			'isMyPortalSelf' => false
+			'isShowAllCommunity' => true
 		);
 		if(isset($params['conditions'])) {
 			$addParams['conditions'] = array_merge($addParams['conditions'], $params['conditions']);
@@ -943,8 +1041,7 @@ class Page extends AppModel
 			'recursive' => $recursive
 		);
 		$options = array(
-			'isDisplayPublicCommunity' => true,
-			'isMyPortalSelf' => false,
+			'isShowAllCommunity' => true
 		);
 		return $this->findViewable('list', ($is_all) ? 'all' : $extra['user_id'], $addParams, $options);
 	}

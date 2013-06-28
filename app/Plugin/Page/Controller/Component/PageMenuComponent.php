@@ -59,30 +59,30 @@ class PageMenuComponent extends Component {
 			}
 		}
 
-		$admin_hierarchy = $this->_controller->ModuleSystemLink->findHierarchyByPluginName($request->params['plugin'], $loginUser['authority_id']);
-		if($admin_hierarchy < NC_AUTH_MIN_GENERAL) {
+		$adminHierarchy = $this->_controller->ModuleSystemLink->findHierarchyByPluginName($request->params['plugin'], $loginUser['authority_id']);
+		if($adminHierarchy < NC_AUTH_MIN_GENERAL) {
 			$this->_controller->flash(__('Forbidden permission to access the page.'), null, 'PageMenu.validatorPage.003', '403');
 			return false;
 		}
 
 		if(is_null($page)) {
-			return $admin_hierarchy;
+			return $adminHierarchy;
 		}
 		if(!isset($page['Page'])) {
 			$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPage.004', '400');
 			return false;
 		}
 
-		if(!$this->checkAuth($admin_hierarchy, $page, $parentPage)) {
+		if(!$this->checkAuth($adminHierarchy, $page, $parentPage)) {
 			$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPage.005', '400');
 			return false;
 		}
 
-		if(!$this->validatorPageDetail($request, $page, $parentPage, $admin_hierarchy)) {
+		if(!$this->validatorPageDetail($request, $page, $parentPage, $adminHierarchy)) {
 			return false;
 		}
 
-		return $admin_hierarchy;
+		return $adminHierarchy;
 	}
 	/**
 	 * 権限チェック
@@ -94,15 +94,15 @@ class PageMenuComponent extends Component {
 	 *  	TODO:一般権限のHierarchyも２つに分離し、ページ操作、ブロック操作を行えるかどうかを追加するほうが望ましい。
 	 *  ゲスト：ページメニューをみるだけ。
 	 * </pre>
-	 * @param  integer     $admin_hierarchy
+	 * @param  integer     $adminHierarchy
 	 * @param  Page Model  $page
 	 * @param  Page Model  $parentPage
 	 * @return boolean
 	 * @since   v 3.0.0.0
 	 */
-	public function checkAuth($admin_hierarchy, $page = null, $parentPage = null) {
+	public function checkAuth($adminHierarchy, $page = null, $parentPage = null) {
 		$is_auth_ok = false;
-		if($admin_hierarchy >= NC_AUTH_MIN_ADMIN) {
+		if($adminHierarchy >= NC_AUTH_MIN_ADMIN) {
 			$is_auth_ok = true;
 		}
 
@@ -123,13 +123,13 @@ class PageMenuComponent extends Component {
  * @param  CakeRequest $request
  * @param  Page Model  $page
  * @param  Page Model  $parentPage
- * @param  integer     $admin_hierarchy
+ * @param  integer     $adminHierarchy
  * @param  boolean     $is_child
  *
  * @return boolean
  * @since   v 3.0.0.0
  */
-	public function validatorPageDetail($request, $page = null, $parentPage = null, $admin_hierarchy = null, $is_child = false) {
+	public function validatorPageDetail($request, $page = null, $parentPage = null, $adminHierarchy = null, $is_child = false) {
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		if($is_child == false && $page['Page']['lang'] != '' && $page['Page']['lang'] != $lang) {
 			// 編集のlangと現在のlangが異なる
@@ -214,8 +214,8 @@ class PageMenuComponent extends Component {
 					return false;
 				}
 				if($page['Page']['thread_num'] <= 1) {
-					if($page['Page']['space_type'] != NC_SPACE_TYPE_GROUP || $admin_hierarchy < NC_AUTH_MIN_CHIEF) {
-						//コミュニティーの表示順変更等は$admin_hierarchy=NC_AUTH_MIN_CHIEF以上
+					if($page['Page']['space_type'] != NC_SPACE_TYPE_GROUP || $adminHierarchy < NC_AUTH_MIN_CHIEF) {
+						//コミュニティーの表示順変更等は$adminHierarchy=NC_AUTH_MIN_CHIEF以上
 						// TODO:後にパブリックのものをコミュニティへペースト等ができるようにしたほうが望ましい。
 						$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.006', '400');
 					}
@@ -653,56 +653,63 @@ class PageMenuComponent extends Component {
  * PageUserLinksテーブルのデータをSessionにセット
  *
  * @param   CakeRequest $request
- * @param   integer     $page_id
- * @param   integer     $admin_hierarchy
- * @param   array       $auth_list	権限リストになければベースの権限でセットさせる
+ * @param   integer     $pageId
+ * @param   integer     $adminHierarchy
+ * @param   array       $authList	権限リストになければベースの権限でセットさせる
  * @return  array $page_user_links
  * @since   v 3.0.0.0
  */
-	public function participantSession($request, $page_id, $admin_hierarchy, $auth_list = null) {
+	public function participantSession($request, $pageId, $adminHierarchy, $authList = null) {
 		$loginUser = $this->_controller->Auth->user();
 		$userId = $loginUser['id'];
 
-		$buf_page_user_links = $this->_controller->Session->read(NC_SYSTEM_KEY.'.page_menu.PageUserLink['.$page_id.']');
-		$write_flag = false;
+		$bufPageUserLinks = $this->_controller->Session->read(NC_SYSTEM_KEY.'.page_menu.PageUserLink['.$pageId.']');
+		$writeFlag = false;
 
 		if(!empty($request->data['PageUserLink'])) {
 			// 権限項目
-			$buf_page_user_links_params['PageUserLink'] = $request->data['PageUserLink'];
-			if($admin_hierarchy < NC_AUTH_MIN_ADMIN) {
+			$bufPageUserLinksParams['PageUserLink'] = $request->data['PageUserLink'];
+			$pageUserLinks = $this->_controller->PageUserLink->findAllByRoomId($pageId);
+			foreach($pageUserLinks as $pageUserLink) {
+				if(!isset($bufPageUserLinksParams['PageUserLink'][$pageUserLink['PageUserLink']['user_id']])) {
+					$bufPageUserLinksParams['PageUserLink'][$pageUserLink['PageUserLink']['user_id']] = $pageUserLink['PageUserLink'];
+				}
+			}
+
+			if($adminHierarchy < NC_AUTH_MIN_ADMIN) {
 				// ページメニューが管理者権限でないならば、ログイン会員は必ず主坦として参加
-				$buf_page_user_links_params['PageUserLink'][$userId] = array(
+				$bufPageUserLinksParams['PageUserLink'][$userId] = array(
 					'id' => 0,
-					'room_id' => 0,
+					'room_id' => $pageId,
 					'user_id' => $userId,
 					'authority_id' => NC_AUTH_CHIEF_ID
 				);
 			}
-			if(isset($auth_list)) {
-				foreach($buf_page_user_links_params['PageUserLink'] as $key => $buf_data) {
-					if(!isset($auth_list[NC_AUTH_CHIEF][$buf_data['authority_id']]) && !isset($auth_list[NC_AUTH_MODERATE][$buf_data['authority_id']]) &&
-							!isset($auth_list[NC_AUTH_GENERAL][$buf_data['authority_id']]) && $buf_data['authority_id'] != NC_AUTH_GUEST_ID &&
+			if(isset($authList)) {
+				foreach($bufPageUserLinksParams['PageUserLink'] as $key => $buf_data) {
+					if(!isset($authList[NC_AUTH_CHIEF][$buf_data['authority_id']]) && !isset($authList[NC_AUTH_MODERATE][$buf_data['authority_id']]) &&
+							!isset($authList[NC_AUTH_GENERAL][$buf_data['authority_id']]) && $buf_data['authority_id'] != NC_AUTH_GUEST_ID &&
 							$buf_data['authority_id'] != NC_AUTH_OTHER_ID) {
 						// 存在しない権限に変更しようとした->ゲストにする
-						$buf_page_user_links_params['PageUserLink'][$key]['authority_id'] = NC_AUTH_GUEST_ID;
+						$bufPageUserLinksParams['PageUserLink'][$key]['authority_id'] = NC_AUTH_GUEST_ID;
 					}
 				}
 			}
-			if(!empty($buf_page_user_links)) {
-				//$buf_page_user_links['PageUserLink'] = array_merge($buf_page_user_links['PageUserLink'], $buf_page_user_links_params['PageUserLink']);
-				foreach($buf_page_user_links_params['PageUserLink'] as $key => $buf_data) {
-					$buf_page_user_links['PageUserLink'][$key] = $buf_data;
+			if(!empty($bufPageUserLinks)) {
+				//$bufPageUserLinks['PageUserLink'] = array_merge($bufPageUserLinks['PageUserLink'], $bufPageUserLinksParams['PageUserLink']);
+				foreach($bufPageUserLinksParams['PageUserLink'] as $key => $buf_data) {
+					$bufPageUserLinks['PageUserLink'][$key] = $buf_data;
 				}
 			} else {
-				$buf_page_user_links = $buf_page_user_links_params;
+				$bufPageUserLinks = $bufPageUserLinksParams;
 			}
-			$write_flag = true;
+			$writeFlag = true;
 		}
-		if($write_flag) {
-			$this->_controller->Session->write(NC_SYSTEM_KEY.'.page_menu.PageUserLink['.$page_id.']', $buf_page_user_links);
+		if($writeFlag) {
+			$this->_controller->Session->write(NC_SYSTEM_KEY.'.page_menu.PageUserLink['.$pageId.']', $bufPageUserLinks);
 		}
 
-		return $this->_controller->Session->read(NC_SYSTEM_KEY.'.page_menu.PageUserLink['.$page_id.']');
+		return $this->_controller->Session->read(NC_SYSTEM_KEY.'.page_menu.PageUserLink['.$pageId.']');
 	}
 
 /**
@@ -939,8 +946,8 @@ class PageMenuComponent extends Component {
 		}
 
 		// 権限チェック
-		$admin_hierarchy = $this->validatorPage($this->_controller->request, $copy_page);
-		if(!$admin_hierarchy) {
+		$adminHierarchy = $this->validatorPage($this->_controller->request, $copy_page);
+		if(!$adminHierarchy) {
 			$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.', 'pages'), null, 'PageMenu/operatePage.002', '500');
 			return false;
 		}
@@ -961,13 +968,13 @@ class PageMenuComponent extends Component {
 		// コピー先権限チェック
 		if(isset($move_page['Page'])) {
 			if($move_page['Page']['thread_num'] <= 1) {
-				if($move_page['Page']['space_type'] != NC_SPACE_TYPE_GROUP || $admin_hierarchy <= NC_AUTH_MODERATE) {
+				if($move_page['Page']['space_type'] != NC_SPACE_TYPE_GROUP || $adminHierarchy <= NC_AUTH_MODERATE) {
 					// 主坦以上
 					// TODO:現状、パブリック、マイポータル、マイページ直下への操作はエラーとする
 					$this->_controller->flash(__('Forbidden permission to access the page.'), null, 'PageMenu/operatePage.003', '403');
 					return false;
 				}
-			} else if(!$this->checkAuth($admin_hierarchy, $move_page, $move_parent_page)) {
+			} else if(!$this->checkAuth($adminHierarchy, $move_page, $move_parent_page)) {
 				$this->_controller->flash(__('Forbidden permission to access the page.'), null, 'PageMenu/operatePage.004', '403');
 				return false;
 			}

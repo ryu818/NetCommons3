@@ -253,8 +253,8 @@ class PageController extends PageAppController {
 			)
 		);
 		$options = array(
-			'isDisplayPublicCommunity' => false,
-			'isMyPortalSelf' => true,
+			'isShowAllCommunity' => false,
+			'isMyPortalCurrent' => true,
 			'ativePageId' => $page_id,
 		);
 		$pages = $this->Page->findViewable('menu', $userId, $addParams, $options);
@@ -267,18 +267,18 @@ class PageController extends PageAppController {
 		} else {
 			$this->paginate['is_all'] = false;
 		}
-		$pages_top_group = $this->paginate('Page');
+		$pagesTopGroup = $this->paginate('Page');
 		$pages_group = array();
-		if(count($pages_top_group) > 0) {
+		if(count($pagesTopGroup) > 0) {
 			$addParams = array(
 				'conditions' => array(
-					'Page.root_id' => $pages_top_group,
+					'Page.root_id' => $pagesTopGroup,
 					'Page.space_type' => NC_SPACE_TYPE_GROUP,
 				)
 			);
 			$options = array(
-				'isDisplayPublicCommunity' => true,
-				'isMyPortalSelf' => false,
+				'isShowAllCommunity' => true,
+				'isMyPortalCurrent' => false,
 				'ativePageId' => $page_id,
 			);
 			$pages_group = $this->Page->findViewable('menu', ($this->paginate['is_all']) ? 'all' : $userId, $addParams, $options);

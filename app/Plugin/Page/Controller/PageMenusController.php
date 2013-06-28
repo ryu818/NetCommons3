@@ -723,7 +723,7 @@ class PageMenusController extends PageAppController {
 		}
 
 		$authList = $this->Authority->findAuthSelectHtml();
-		if($this->request->is('post')) {
+		if($this->request->is('post') && !isset($this->request->data['isSearch'])) {
 			// 登録処理
 			$authority = $this->Authority->findById($user['authority_id']);
 			if(!isset($authority['Authority'])) {
@@ -744,13 +744,13 @@ class PageMenusController extends PageAppController {
 					$this->render(false, 'ajax');
 					return;
 				}
-				list($total, $users) = $this->User->findParticipant($page, null, array(), null, null);
+				list($total, $users) = $this->User->findParticipant($page, null, array(), array(), null, null);
 				$participantType = $this->Authority->getParticipantType($user['authority_id'], $page);
 				if($page['Page']['thread_num'] <= 1) {
 					$result = $this->PageUserLink->saveParticipant($page, $pageUserLinks['PageUserLink'], $users, null, $participantType);
 				} else {
 					// サブグループ
-					list($parentTotal, $parentUsers) = $this->User->findParticipant($this->Page->findAuthById($parentPage['Page']['room_id'], $userId), null, array(), null, null);
+					list($parentTotal, $parentUsers) = $this->User->findParticipant($this->Page->findAuthById($parentPage['Page']['room_id'], $userId), null, array(), array(), null, null);
 					$result = $this->PageUserLink->saveParticipant($page, $pageUserLinks['PageUserLink'], $users, $parentUsers, $participantType);
 				}
 				if(!$result) {
@@ -787,6 +787,11 @@ class PageMenusController extends PageAppController {
 			$this->_renderItem($page, $parentPage, $adminHierarchy, false, false, $childPages);
 			return;
 		}
+		if(!$this->request->is('post') || (isset($this->request->data['isSearch']) && $this->request->data['isSearch'])) {
+			// 権限割り当てのSession情報クリア
+			$this->Session->delete(NC_SYSTEM_KEY.'.page_menu.PageUserLink['.$pageId.']');
+
+		}
 
 		$this->set('page', $page);
 		$this->set('auth_list', $authList);
@@ -820,9 +825,11 @@ class PageMenusController extends PageAppController {
 		$sortname = (!empty($this->request->data['sortname']) && ($this->request->data['sortname'] == "handle" || $this->request->data['sortname'] == "chief")) ? $this->request->data['sortname'] : null;
 		$sortorder = (!empty($this->request->data['sortorder']) && ($this->request->data['sortorder'] == "asc" || $this->request->data['sortorder'] == "desc")) ? $this->request->data['sortorder'] : "asc";
 
-		// TODO:会員絞り込み未作成
-		$conditions = array();
-		////list($conditions, $joins) = $this->Common->getRefineSearch();
+		// 会員絞り込み
+		$userAuthorityId = $this->Authority->getUserAuthorityId($user['hierarchy']);
+		$adminUserHierarchy = $this->ModuleSystemLink->findHierarchyByPluginName('User', $user['authority_id']);
+		list($conditions, $joins) = $this->User->getRefineSearch($this->request, $userAuthorityId, $adminUserHierarchy);
+
 		$participantType = $this->Authority->getParticipantType($user['authority_id'], $page);
 		$defaultAuthorityId = $this->Page->getDefaultAuthorityId($page, true);
 
@@ -832,7 +839,7 @@ class PageMenusController extends PageAppController {
 			$conditions['PageUserLinkParent.authority_id >'] = NC_AUTH_OTHER_ID;
 		}
 
-		list($total, $users) = $this->User->findParticipant($page, $participantType, $conditions, $pageNum, $rp, $sortname, $sortorder);
+		list($total, $users) = $this->User->findParticipant($page, $participantType, $conditions, $joins, $pageNum, $rp, $sortname, $sortorder);
 
 		$this->set('room_id', $pageId);
 		$this->set('page_num', $pageNum);

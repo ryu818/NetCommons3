@@ -686,6 +686,11 @@ msgstr 	"ファイルサイズの合計が大きすぎます<br />あと%sbyte�
 msgid  	"Search for the members"
 msgstr 	"対象会員の絞込み"
 
+msgid  	"Not specified"
+msgstr 	"未選択"
+msgid  	"-- Not specify --"
+msgstr 	"--指定しない--"
+
 ##日時フォーマット
 msgid  	"Y-m-d"
 msgstr 	"Y/m/d"

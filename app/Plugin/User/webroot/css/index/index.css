@@ -7,6 +7,12 @@
  * @since         v 3.0.0.0
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
+/* 対象会員の絞込み */
+.users-search-outer {
+	text-align:center;
+	padding:0 0 10px 0;
+}
+
 /* 会員登録・編集 */
 ul.user-edit-row li dl dt {
 	padding: 5px;

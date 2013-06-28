@@ -601,9 +601,9 @@ ul.lists li dl dt {
 
 ul.lists li dl dd {
 	float: left;
-    overflow: hidden;
-    padding: 10px;
-    /*width : 200px;*/
+	padding: 10px;
+	/*overflow: hidden;*/
+	/*width : 200px;*/
 }
 
 /* 編集画面リスト */
@@ -772,6 +772,11 @@ ul.nc-revisions a {
 span.nc-auto-draft {
 	color: #bb2626;
 	padding: 3px 10px;
+}
+
+/* ルーム一覧セレクトボックス */
+.select_rooms {
+	width: 200px;
 }
 
 /** Debugging **/

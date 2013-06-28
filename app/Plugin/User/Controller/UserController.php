@@ -18,14 +18,14 @@ class UserController extends UserAppController {
  *
  * @var array
  */
-	public $uses = array('PageUserLink');
+	public $uses = array('PageUserLink', 'ItemAuthorityLink');
 
 /**
  * Component name
  *
  * @var array
  */
-	public $components = array('Security', 'User.UserCommon');
+	public $components = array('Security', 'User.UserCommon', 'CheckAuth' => array('allowAuth' => NC_AUTH_GUEST));
 
 /**
  * 表示前処理
@@ -37,7 +37,15 @@ class UserController extends UserAppController {
  * @since   v 3.0.0.0
  */
 	public function beforeFilter() {
+		if($this->action == "search") {
+			// 検索絞り込みは、ページ設定からも呼ばれるため、権限チェックを緩くして
+			// ログインしているかどうかだけチェック
+			$this->CheckAuth->allowAuth = null;
+			$this->CheckAuth->allowUserAuth = NC_AUTH_GUEST;
+		}
+
 		parent::beforeFilter();
+
 		if($this->action == "edit") {
 			$this->Security->unlockedFields = array('language', 'activeLang');
 		}
@@ -46,6 +54,9 @@ class UserController extends UserAppController {
 			$this->Security->validatePost = false;
 		} else if($this->action == "index" || $this->action == "display_setting" || $this->action == "select_group" || $this->action == "select_auth") {
 			$this->Security->validatePost = false;
+			if(isset($this->request->data['isSearch']) && $this->request->data['isSearch']) {
+				$this->Security->csrfUseOnce = false;
+			}
 		} else if($this->action == "detail") {
 			$this->Security->csrfCheck = false;
 			$this->Security->validatePost = false;
@@ -85,29 +96,33 @@ class UserController extends UserAppController {
 		$this->_setLanguage('Elements/list');
 
 		if ($this->request->is('post')) {
-			// 削除処理
-			if(!isset($this->request->data['User']) || $this->hierarchy < NC_AUTH_MIN_CHIEF) {
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'User.index.001', '500');
-				return;
-			}
-			$deleteUserIds = array();
-			$loginUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
-			foreach($this->request->data['User'] as $userId => $userOperation) {
-				if(!$userOperation['delete']) {
-					continue;
+			if(isset($this->request->data['isSearch']) && $this->request->data['isSearch']) {
+				// 絞り込み検索
+			} else {
+				// 削除処理
+				if(!isset($this->request->data['User']) || $this->hierarchy < NC_AUTH_MIN_CHIEF) {
+					$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'User.index.001', '500');
+					return;
 				}
-				$deleteUserIds[] = $userId;
-			}
-			$deleteUsers = $this->User->find('all', array(
-				'conditions' => array(
-					'User.id' => $deleteUserIds,
-					'Authority.hierarchy <=' => $loginUser['hierarchy']
-				)
-			));
+				$deleteUserIds = array();
+				$loginUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
+				foreach($this->request->data['User'] as $userId => $userOperation) {
+					if(!isset($userOperation['delete']) || !$userOperation['delete']) {
+						continue;
+					}
+					$deleteUserIds[] = $userId;
+				}
+				$deleteUsers = $this->User->find('all', array(
+					'conditions' => array(
+						'User.id' => $deleteUserIds,
+						'Authority.hierarchy <=' => $loginUser['hierarchy']
+					)
+				));
 
-			if(!$this->User->delUser($deleteUsers)) {
-				$this->flash(__('Failed to delete the database, (%s).', 'users'), null, 'User.index.002', '500');
-				return;
+				if(!$this->User->delUser($deleteUsers)) {
+					$this->flash(__('Failed to delete the database, (%s).', 'users'), null, 'User.index.002', '500');
+					return;
+				}
 			}
 
 			$this->render('Elements/list');
@@ -121,6 +136,7 @@ class UserController extends UserAppController {
  * @since   v 3.0.0.0
  */
 	public function detail() {
+		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		$pageNum = intval($this->request->data['page']) == 0 ? 1 : intval($this->request->data['page']);
 		$rp = intval($this->request->data['rp']);
 		$sortname = isset($this->request->data['sortname']) ? $this->request->data['sortname'] : "Authority.hierarchy" ;
@@ -132,19 +148,25 @@ class UserController extends UserAppController {
 
 		$this->_setLanguage();
 
-		$itemsAuthoritiesLinks = null;
-		if($this->hierarchy < NC_AUTH_MIN_CHIEF) {
-			$params = array(
-				'conditions' => array('user_authority_id' => $userAuthorityId)
-			);
-			$rets = $this->ItemsAuthoritiesLink->findList('all' , $params);
-			$itemsAuthoritiesLinks = $rets[$userAuthorityId];
-		}
-
 		$fields = array(
-			'User.*, UsersItemsLinkUsername.content, Authority.authority_name, Authority.hierarchy, Authority.system_flag'
+			'User.*, UserItemLinkUsername.content, Authority.authority_name, Authority.hierarchy, Authority.system_flag'
 		);
-		list($conditions, $joins) = $this->User->getRefineSearch($this->request, $userAuthorityId, $this->hierarchy, $itemsAuthoritiesLinks);
+		list($conditions, $joins) = $this->User->getRefineSearch($this->request, $userAuthorityId, $this->hierarchy);
+		$joins[] = 	array("table" => "authorities",
+			"alias" => "Authority",
+			"conditions" => "`User`.`authority_id`=`Authority`.`id`"
+		);
+		$alias = "UserItemLinkUsername";
+		$joins[] = array(
+			"type" => "LEFT",
+			"table" => "user_item_links",
+			"alias" => $alias,
+			"conditions" => array(
+				$alias.".user_id = User.id",
+				$alias.".item_id" => NC_ITEM_ID_USERNAME,
+				$alias.".lang" => $lang,
+			)
+		);;
 		$order = array(
 			$sortname => $sortorder,
 			'User.id' => 'asc'
@@ -210,6 +232,37 @@ class UserController extends UserAppController {
 		$this->set('page_num', $pageNum);
 		$this->set('total', $total);
 		$this->set('users', $users);
+	}
+
+/**
+ * 検索画面表示
+ * @param   void
+ * @return  void
+ * @since v 3.0.0.0
+ */
+	public function search() {
+		$loginUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
+		$userId = $loginUser['id'];
+
+		include_once dirname(dirname(__FILE__)).'/Config/defines.inc.php';
+
+		$items = $this->Item->findList();
+		$this->set('items', $items);
+		$this->set('authorities', $this->Authority->findList());
+		$this->set('languages', $this->Language->findList());
+		$userAuthorityId = $this->Authority->getUserAuthorityId($loginUser['hierarchy']);
+		$params = array(
+			'conditions' => array('user_authority_id' => $userAuthorityId)
+		);
+		$rets = $this->ItemAuthorityLink->findList('all' , $params);
+		$this->set('itemAuthorityLinks', $rets[$userAuthorityId]);
+		// 参加コミュニティー
+		if($this->hierarchy >= NC_AUTH_MIN_CHIEF) {
+			// 会員管理のhierarchyが主坦以上ならば、参加してないルームもセットし、すべてのルーム一覧を取得
+			// TODO:すべてのコミュニティーの一覧の取得はコミュニティー数が増大すると重くなる。
+			$userId = 'all';
+		}
+		$this->set('communities', $this->Page->findRoomList($userId, NC_SPACE_TYPE_GROUP));
 	}
 
 /**
@@ -455,6 +508,7 @@ class UserController extends UserAppController {
 		$this->set('rooms', $rooms);
 		$this->set('enrollRoomIds', $enrollRoomIds);
 	}
+
 /**
  * 参加権限選択
  * @param   integer
