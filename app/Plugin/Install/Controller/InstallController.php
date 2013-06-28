@@ -648,7 +648,14 @@ class InstallController extends Controller {
 			//}
 			//$user['User']['password'] = Security::hash($user['User']['password'], null, true);
 			App::uses('AuthComponent', 'Controller/Component');
-			if(!$User->save($user, false, array('login_id', 'handle', 'password'))) {
+			$user['User']['created'] = $User->nowDate();
+			$user['User']['created_user_id'] = $user['User']['id'];
+			$user['User']['created_user_name'] = $user['User']['handle'];
+			$user['User']['modified'] = $User->nowDate();
+			$user['User']['modified_user_id'] = $user['User']['id'];
+			$user['User']['modified_user_name'] = $user['User']['handle'];
+			if(!$User->save($user, false, array('login_id', 'handle', 'password', 'created', 'created_user_id',
+				'created_user_name', 'modified', 'modified_user_id', 'modified_user_name'))) {
 				$mes = __('Failed to update the database, (%s).', 'users');
 				$this->Session->setFlash($mes, 'default', array('class' => 'header-error'));
 				return;
