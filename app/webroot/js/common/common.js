@@ -11,6 +11,7 @@
 	$.Common ={
 		zIndex : 2000,
 		blockZIndex : 1000,
+		regEvents : {},
 
 		pjaxCacheMapping : [],
 		pjaxCacheUniqueId: 0,
@@ -217,7 +218,7 @@
 						$.Common._pjaxCachePush(unique_id, target_id, sub_target_id, $.Common.pjaxCachePointer);
 					}
 
-					$.Common.ajaxSuccess(e, $el, res, params);
+					////$.Common.ajaxSuccess(e, $el, res, params);
 
 					if(is_pjax) {
 						var hash = $.Common.parseURL(url).hash;
@@ -237,17 +238,18 @@
 						//window.location.hash = hash;
 
 						container.url =$.Common._convertPluginUrl(target, container.url);
-
 						window.history.pushState(state, container.title, container.url);
 	    				if (container.title) {
 	    					document.title = container.title;
 	    				}
 	    				$.Common.pjaxPrevUrl = location.href;
-	    				var hash_target = $(hash);
-	    				if (hash_target.length) {
-							$(window).scrollTop(hash_target.offset().top);
-						}
+	    				//var hash_target = $(hash);
+	    				//if (hash_target.length) {
+							//$(window).scrollTop(hash_target.offset().top);
+							window.location.hash = hash;
+						//}
 	    			}
+	    			$.Common.ajaxSuccess(e, $el, res, params);
 				},
 				error: function(xhr, textStatus, errorThrown) {
 					if(!target_pjax) {

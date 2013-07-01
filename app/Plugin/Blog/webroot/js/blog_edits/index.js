@@ -24,13 +24,16 @@
 				active_tab = ui.index;
 			}
 		});
-		$(window).bind("hashchange", function(e){
-			// hash値が切り替わったらタブの表示を切り替える
-			var active = getActivetab(id);
-			if(active !== false) {
-				$('#blog-edits-tab' + id).tabs( "option", "active", active);
-			}
-		});
+		if(!$.Common.regEvents[id + '-edits-hashchange']) {
+			$.Common.regEvents[id + '-edits-hashchange'] = true;	// グローバルEventが登録されたかどうかを$.Commonに保持。
+			$(window).bind("hashchange", function(e){
+				// hash値が切り替わったらタブの表示を切り替える
+				var active = getActivetab(id);
+				if(active !== false) {
+					$('#blog-edits-tab' + id).tabs( "option", "active", active);
+				}
+			});
+		}
 		$(this).show();
 
 		function getActivetab(id) {
