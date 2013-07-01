@@ -1,9 +1,9 @@
 <?php
 /**
- * UploadControllerクラス
+ * UserControllerクラス
  *
  * <pre>
- * 会員管理コントローラ
+ * 会員管理コントローラー
  * </pre>
  *
  * @copyright     Copyright 2012, NetCommons Project
@@ -13,13 +13,6 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 class UserController extends UserAppController {
-/**
- * Model name
- *
- * @var array
- */
-	public $uses = array('PageUserLink', 'ItemAuthorityLink');
-
 /**
  * Component name
  *
