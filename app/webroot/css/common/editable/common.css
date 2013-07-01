@@ -192,6 +192,16 @@ a.hover-highlight:active {
 	text-align:center;
 	white-space: nowrap;
 }
+
+.add-btn-link-outer {
+	text-align: right;
+	padding: 5px 0 8px 0;
+}
+.add-btn-link {
+	background: url(../../img/icons/plus.png) no-repeat left center;
+	padding: 0 0 0 28px;
+}
+
 /* 一覧へ戻る */
 .link-bottom {
 	margin:5px 0;

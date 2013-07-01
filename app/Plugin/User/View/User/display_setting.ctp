@@ -17,11 +17,11 @@
 	<div class="top-description">
 		<?php echo __d('user', 'You can add, edit, delete and change the display order of items of user profile.<br />The items to be displayed to other members are controled at Information Policy module.');?>
 	</div>
-	<div class="user-display-setting-add-btn-outer">
+	<div class="add-btn-link-outer">
 		<?php
 			echo $this->Html->link(__d('user', 'Add Item'), array('action' => 'add_item'), array(
 				'title' => __d('user', 'Add Item'),
-				'class' => 'user-display-setting-add-btn',
+				'class' => 'add-btn-link',
 				'data-ajax-inner' =>'#user-add-item'.$id,
 				'data-ajax-dialog' => true,
 				'data-ajax-effect' => 'fold',
