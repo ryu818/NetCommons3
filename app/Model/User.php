@@ -340,7 +340,7 @@ class User extends AppModel
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	public function updLastLogin($user) {
+	public function updateLastLogin($user) {
 		$this->create();
 		$this->id = $user[$this->alias]['id'];
 		$user[$this->alias]['previous_login'] = $user[$this->alias]['last_login'];

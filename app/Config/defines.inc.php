@@ -112,7 +112,7 @@ define("NC_STATUS_TEMPORARY_BEFORE_RELEASED", 2);	// 一時保存中(新規投�
 //define("NC_STATUS_PRIVATE",   2);		// 非公開
 //define("NC_STATUS_MEMBERS",   3);		// 会員のみ公開
 
-//-----------------shortcut_type-------------------------------------------
+//-----------------Content.shortcut_type-------------------------------------------
 
 define('NC_SHORTCUT_TYPE_OFF', 0);				// ショートカットではないコンテンツ
 define('NC_SHORTCUT_TYPE_SHOW_ONLY', 1);		// 閲覧のみ許可

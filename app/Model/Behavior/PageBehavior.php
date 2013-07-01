@@ -153,28 +153,6 @@ class PageBehavior extends ModelBehavior {
 			}
 		}
 
-		/*if($isLogin != _OFF && $authorityId != NC_AUTH_OTHER_ID && $page['Page']['root_id'] != $page['Page']['room_id']) {
-			// 子グループ
-			// 親ルームが存在するならば、親ルームの参加者権限を取得
-			App::uses('Page', 'Model');
-			$Page = new Page();
-			$parent_page = $Page->findById($page['Page']['parent_id']);
-			$parent_room_id = $parent_page['Page']['room_id'];
-
-			App::uses('PageUserLink', 'Model');
-			$PageUserLink = new PageUserLink();
-			$conditions = array(
-				'PageUserLink.room_id' => $parent_room_id,
-				'PageUserLink.user_id' => $isLogin
-			);
-			$params = array(
-				'fields' => 'PageUserLink.authority_id',
-				'conditions' => $conditions
-			);
-			$page_user_link = $PageUserLink->find('first', $params);
-			$authorityId = $page_user_link['PageUserLink']['authority_id'];
-		}*/
-
 		return array(
 			'id' => $authorityId,
 			'hierarchy' => $hierarchy
@@ -247,7 +225,7 @@ class PageBehavior extends ModelBehavior {
  * @return array     $pages['space_type']['thread_num']['parent_id']['display_sequence']
  * @since   v 3.0.0.0
  */
-	public function updDisplayFlag(Model $Model, $val) {
+	public function updateDisplayFlag(Model $Model, $val) {
 		$d = gmdate("Y-m-d H:i:s");
 
 		// 公開日時

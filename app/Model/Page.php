@@ -535,7 +535,7 @@ class Page extends AppModel
 					if($type == "menu") {
 						$preDisplayFlag = $val[$this->alias]['display_flag'];
 
-						$val[$this->alias] = $this->updDisplayFlag($val[$this->alias]);
+						$val[$this->alias] = $this->updateDisplayFlag($val[$this->alias]);
 
 						if($preDisplayFlag != $val[$this->alias]['display_flag'] &&
 						($val[$this->alias]['display_flag'] == _OFF ||
