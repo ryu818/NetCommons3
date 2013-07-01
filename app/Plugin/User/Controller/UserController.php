@@ -662,7 +662,7 @@ class UserController extends UserAppController {
 					}
 				}
 
-				// 一覧にっ唯一の主坦が消された場合、メッセージを表示する
+				// 会員一覧に唯一の主坦が消された場合、メッセージを表示する
 				$successMessage = '';
 				$uniqueChiefRoomIds = $this->UserCommon->isUniqueChief($insertPageUserLinks);
 				if(count($uniqueChiefRoomIds) > 0) {
