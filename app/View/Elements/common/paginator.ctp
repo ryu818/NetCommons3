@@ -2,7 +2,7 @@
 if(!isset($views)) {
 	$views = !empty($this->request->named['views']) ? intval($this->request->named['views']) : NC_PAGINATE_VIEWS;
 }
-$moveParams = array('tag' => 'li');
+$moveParams = array('tag' => 'li', 'escape' => false);
 $numbersParams = array('ellipsis' => '<li>...</li>','last'=>1,'tag' => 'li', 'separator' => '', 'modulus' => $views);
 //$currentParams = array('class' => 'display-none');
 if(isset($options)) {
@@ -21,9 +21,9 @@ $after = $this->fetch('paginator_content_after');
 	<?php if($hasPage): ?>
 	<nav>
 		<ul class="nc-paginator">
-			<?php echo $this->Paginator->prev(__('<'), $moveParams); ?>
+			<?php echo $this->Paginator->prev(__('&lt;'), $moveParams); ?>
 			<?php echo $this->Paginator->numbers($numbersParams); ?>
-			<?php echo $this->Paginator->next(__('>'), $moveParams); ?>
+			<?php echo $this->Paginator->next(__('&gt;'), $moveParams); ?>
 		</ul>
 	</nav>
 	<?php endif; ?>

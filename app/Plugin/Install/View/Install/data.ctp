@@ -40,7 +40,7 @@ $this->assign('title', __d('install', 'Create Tables'));
 		</div>
 
 		<div class="btn-bottom align-right">
-			<input type="submit" value="<?php echo(h(__('Next>>'))); ?>" name="next" <?php if(!$check || !$exists_database): ?>disabled="disabled" class="btn disabled"<?php else: ?>class="btn"<?php endif; ?>/>
+			<input type="submit" value="<?php echo(h(__('Next&gt;&gt;'))); ?>" name="next" <?php if(!$check || !$exists_database): ?>disabled="disabled" class="btn disabled"<?php else: ?>class="btn"<?php endif; ?>/>
 		</div>
 	</form>
 </div>

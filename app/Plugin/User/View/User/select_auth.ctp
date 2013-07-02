@@ -67,7 +67,7 @@
 
 	<?php
 		echo $this->Html->div('submit align-right',
-			$this->Form->button(__('<<Back'), array('name' => 'back', 'class' => 'common-btn', 'type' => 'button', 'data-ajax' => '#'.$id, 'data-ajax-url' => $this->Html->url(array('action' => 'select_group', $user_id)), 'data-ajax-type' => 'post', 'data-ajax-serialize' => true)).
+			$this->Form->button(__('&lt;&lt;Back'), array('name' => 'back', 'class' => 'common-btn', 'type' => 'button', 'data-ajax' => '#'.$id, 'data-ajax-url' => $this->Html->url(array('action' => 'select_group', $user_id)), 'data-ajax-type' => 'post', 'data-ajax-serialize' => true)).
 			$this->Form->button(__('Ok'), array('name' => 'next', 'class' => 'common-btn', 'type' => 'submit')).
 			$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button', 'onclick' => '$.User.memberQuit('.$user_id.'); return false;'))
 		);

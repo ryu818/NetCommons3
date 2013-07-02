@@ -108,7 +108,7 @@
 				$permalink = $blog_prev_post['BlogPost']['permalink'];
 				$prevEates = $this->TimeZone->dateValues($blog_prev_post['BlogPost']['post_date']);
 
-				echo $this->Html->link('<span>'.h(__('<')).'</span>'.h($title), array('plugin' => 'blog', 'controller' => 'blog', $prevEates['year'], $prevEates['month'], $prevEates['day'], $permalink, '#' => $id),
+				echo $this->Html->link('<span>'.__('&lt;').'</span>'.h($title), array('plugin' => 'blog', 'controller' => 'blog', $prevEates['year'], $prevEates['month'], $prevEates['day'], $permalink, '#' => $id),
 					array('title' => __d('blog', 'Permalink to %s', $title), 'data-pjax' => '#'.$id,
 					'rel' => 'prev','escape' => false));
 			}
@@ -121,7 +121,7 @@
 				$permalink = $blog_next_post['BlogPost']['permalink'];
 				$nextDates = $this->TimeZone->dateValues($blog_next_post['BlogPost']['post_date']);
 
-				echo $this->Html->link(h($title).'<span>'.h(__('>')).'</span>', array('plugin' => 'blog', 'controller' => 'blog', $nextDates['year'], $nextDates['month'], $nextDates['day'], $permalink, '#' => $id),
+				echo $this->Html->link(h($title).'<span>'.__('&gt;').'</span>', array('plugin' => 'blog', 'controller' => 'blog', $nextDates['year'], $nextDates['month'], $nextDates['day'], $permalink, '#' => $id),
 					array('title' => __d('blog', 'Permalink to %s', $title), 'data-pjax' => '#'.$id,
 					'rel' => 'prev','escape' => false));
 			}

@@ -54,7 +54,7 @@
 		<?php echo __d('user', 'Select Groups to join'); ?>
 	</h3>
 	<div class="top-description">
-		<?php echo __d('user', 'Select room(s) in which you want make this member join, and press [%1$s]. <br />Select room(s) displayed from [%2$s], and press [%3$s].<br />The rooms marked by [*] are rooms in %4$s.', __('Next>>'), __d('user', 'All the groups'),  __('Add>>'), __('Public room'));?>
+		<?php echo __d('user', 'Select room(s) in which you want make this member join, and press [%1$s]. <br />Select room(s) displayed from [%2$s], and press [%3$s].<br />The rooms marked by [*] are rooms in %4$s.', __('Next&gt;&gt;'), __d('user', 'All the groups'),  __('Add>>'), __('Public room'));?>
 	</div>
 	<table summary="<?php echo __('Select form'); ?>">
 		<tr>
@@ -123,8 +123,8 @@
 	</div>
 	<?php
 		echo $this->Html->div('submit align-right',
-			$this->Form->button(__('<<Back'), array('name' => 'back', 'class' => 'common-btn', 'type' => 'button', 'data-ajax' => '#'.$id, 'data-ajax-url' => $this->Html->url(array('action' => 'edit', $user_id)), 'data-ajax-type' => 'post', 'data-ajax-serialize' => true, 'onclick'=> "$.Common.frmAllReleaseList($('#NoEnrollPageUserLinkPageId".$id."'));$.Common.frmAllReleaseList($('#EnrollPageUserLinkPageId".$id."'));")).
-			$this->Form->button(__('Next>>'), array('name' => 'next', 'class' => 'common-btn', 'type' => 'submit', 'onclick'=> "$.Common.frmAllReleaseList($('#NoEnrollPageUserLinkPageId".$id."'));$.Common.frmAllReleaseList($('#EnrollPageUserLinkPageId".$id."'));")).
+			$this->Form->button(__('&lt;&lt;Back'), array('name' => 'back', 'class' => 'common-btn', 'type' => 'button', 'data-ajax' => '#'.$id, 'data-ajax-url' => $this->Html->url(array('action' => 'edit', $user_id)), 'data-ajax-type' => 'post', 'data-ajax-serialize' => true, 'onclick'=> "$.Common.frmAllReleaseList($('#NoEnrollPageUserLinkPageId".$id."'));$.Common.frmAllReleaseList($('#EnrollPageUserLinkPageId".$id."'));")).
+			$this->Form->button(__('Next&gt;&gt;'), array('name' => 'next', 'class' => 'common-btn', 'type' => 'submit', 'onclick'=> "$.Common.frmAllReleaseList($('#NoEnrollPageUserLinkPageId".$id."'));$.Common.frmAllReleaseList($('#EnrollPageUserLinkPageId".$id."'));")).
 			$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button', 'onclick' => '$.User.memberQuit('.$user_id.'); return false;'))
 		);
 		echo $this->Form->hiddenVars('PageUserLink', array('authority_id'));
