@@ -239,17 +239,21 @@
 
 						container.url =$.Common._convertPluginUrl(target, container.url);
 						window.history.pushState(state, container.title, container.url);
-	    				if (container.title) {
-	    					document.title = container.title;
-	    				}
-	    				$.Common.pjaxPrevUrl = location.href;
-	    				//var hash_target = $(hash);
-	    				//if (hash_target.length) {
-							//$(window).scrollTop(hash_target.offset().top);
-							window.location.hash = hash;
-						//}
-	    			}
-	    			$.Common.ajaxSuccess(e, $el, res, params);
+						if (container.title) {
+							document.title = container.title;
+						}
+						$.Common.pjaxPrevUrl = location.href;
+
+						window.location.hash = hash;
+					}
+					$.Common.ajaxSuccess(e, $el, res, params);
+
+					if(is_pjax) {
+						var hash_target = $(hash);
+						if (hash_target.length) {
+							$(window).scrollTop(hash_target.offset().top);
+						}
+					}
 				},
 				error: function(xhr, textStatus, errorThrown) {
 					if(!target_pjax) {
