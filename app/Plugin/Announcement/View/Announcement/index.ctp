@@ -51,7 +51,7 @@ if(!empty($announcement['Announcement']['id'])) {
 			 |
 		<?php endif; ?>
 		<?php
-			echo $this->Html->link(__('Edit'), $url);
+			echo $this->Html->link(__('Edit'), $url, array('data-pjax' => '#'.$id));
 		?>
 		</div>
 	<?php endif; ?>
