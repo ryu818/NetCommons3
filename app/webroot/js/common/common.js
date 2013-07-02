@@ -281,6 +281,7 @@
 								redirect_params['data-ajax-url'] = pjaxUrl;
 							}
 							redirect_params['data-pjax'] = target_pjax;
+							redirect_params['data-ajax-force'] = true;
 							if(buf_options) {
 								buf_options['async'] = false;
 							} else {
