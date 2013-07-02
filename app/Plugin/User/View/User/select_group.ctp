@@ -125,7 +125,7 @@
 		echo $this->Html->div('submit align-right',
 			$this->Form->button(__('<<Back'), array('name' => 'back', 'class' => 'common-btn', 'type' => 'button', 'data-ajax' => '#'.$id, 'data-ajax-url' => $this->Html->url(array('action' => 'edit', $user_id)), 'data-ajax-type' => 'post', 'data-ajax-serialize' => true, 'onclick'=> "$.Common.frmAllReleaseList($('#NoEnrollPageUserLinkPageId".$id."'));$.Common.frmAllReleaseList($('#EnrollPageUserLinkPageId".$id."'));")).
 			$this->Form->button(__('Next>>'), array('name' => 'next', 'class' => 'common-btn', 'type' => 'submit', 'onclick'=> "$.Common.frmAllReleaseList($('#NoEnrollPageUserLinkPageId".$id."'));$.Common.frmAllReleaseList($('#EnrollPageUserLinkPageId".$id."'));")).
-			$this->Form->button(__('Quit'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button', 'onclick' => '$.User.memberQuit('.$user_id.'); return false;'))
+			$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button', 'onclick' => '$.User.memberQuit('.$user_id.'); return false;'))
 		);
 		echo $this->Form->hiddenVars('PageUserLink', array('authority_id'));
 		echo $this->Form->end();
