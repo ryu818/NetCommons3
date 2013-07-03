@@ -104,7 +104,7 @@
 							</dt>
 							<dd>
 								<div class="pages-menu-community-photo">
-									<img id="pages-menu-community-photo-preview-<?php echo($page['Page']['id']);?>" alt="<?php echo(__d('page', 'Photo')); ?>" title="<?php echo(__d('page', 'Photo')); ?>" src="<?php echo($this->webroot); ?>/img/common/blank.gif"  style="background-image:url(<?php echo($this->webroot); ?>page/img/community/<?php echo(h($community_params['community']['Community']['photo'])); ?>);" />
+									<img id="pages-menu-community-photo-preview-<?php echo($page['Page']['id']);?>" alt="<?php echo(__d('page', 'Photo')); ?>" title="<?php echo(__d('page', 'Photo')); ?>" src="<?php echo($this->webroot); ?>img/common/blank.gif"  style="background-image:url(<?php echo($this->webroot); ?>page/img/community/<?php echo(h($community_params['community']['Community']['photo'])); ?>);" />
 								</div>
 
 								<div class="pages-menu-community-photo-sample">

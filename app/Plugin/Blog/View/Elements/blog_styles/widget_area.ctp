@@ -47,11 +47,11 @@
 			<div class="blog-style-widget-area-title blog-style-widget-area-title-sub <?php echo($class); ?>">
 				<?php if($blog_style['BlogStyle']['display_flag'] == NC_DISPLAY_FLAG_ON): ?>
 					<a class="blog-style-display-flag" href="#" title="<?php echo(__('To private')); ?>" onclick="$.BlogStyles.display(event, '<?php echo($id); ?>', this, '<?php echo($this->Js->escape($this->Html->url(array('action' => 'display')))); ?>');">
-						<img class="icon" alt="<?php echo(__('To private')); ?>" src="<?php echo($this->webroot); ?>/img/icons/base/on.gif" data-alt="<?php echo(__('To public')); ?>" />
+						<img class="icon" alt="<?php echo(__('To private')); ?>" src="<?php echo($this->webroot); ?>img/icons/base/on.gif" data-alt="<?php echo(__('To public')); ?>" />
 					</a>
 				<?php else: ?>
 					<a class="blog-style-display-flag"  href="#" title="<?php echo(__('To public')); ?>" onclick="$.BlogStyles.display(event, '<?php echo($id); ?>', this, '<?php echo($this->Js->escape($this->Html->url(array('action' => 'display')))); ?>');">
-						<img class="icon" alt="<?php echo(__('To public')); ?>" src="<?php echo($this->webroot); ?>/img/icons/base/off.gif" data-alt="<?php echo(__('To private')); ?>" />
+						<img class="icon" alt="<?php echo(__('To public')); ?>" src="<?php echo($this->webroot); ?>img/icons/base/off.gif" data-alt="<?php echo(__('To private')); ?>" />
 					</a>
 				<?php endif; ?>
 				<h4><?php echo($title); ?></h4>

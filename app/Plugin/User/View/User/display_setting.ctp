@@ -58,11 +58,11 @@
 								<div class="user-display-setting-area-title nc-title-color">
 									<?php if($item['Item']['display_flag'] == NC_DISPLAY_FLAG_ON): ?>
 										<a class="user-display-setting-area-display-flag" href="#" title="<?php echo(__('To private')); ?>" onclick="$.User.display(event, '<?php echo($id); ?>', this, '<?php echo($this->Js->escape($this->Html->url(array('action' => 'display')))); ?>');">
-											<img class="icon" alt="<?php echo(__('To private')); ?>" src="<?php echo($this->webroot); ?>/img/icons/base/on.gif" data-alt="<?php echo(__('To public')); ?>" />
+											<img class="icon" alt="<?php echo(__('To private')); ?>" src="<?php echo($this->webroot); ?>img/icons/base/on.gif" data-alt="<?php echo(__('To public')); ?>" />
 										</a>
 									<?php else: ?>
 										<a class="user-display-setting-area-display-flag"  href="#" title="<?php echo(__('To public')); ?>" onclick="$.User.display(event, '<?php echo($id); ?>', this, '<?php echo($this->Js->escape($this->Html->url(array('action' => 'display')))); ?>');">
-											<img class="icon" alt="<?php echo(__('To public')); ?>" src="<?php echo($this->webroot); ?>/img/icons/base/off.gif" data-alt="<?php echo(__('To private')); ?>" />
+											<img class="icon" alt="<?php echo(__('To public')); ?>" src="<?php echo($this->webroot); ?>img/icons/base/off.gif" data-alt="<?php echo(__('To private')); ?>" />
 										</a>
 									<?php endif; ?>
 									<h4>

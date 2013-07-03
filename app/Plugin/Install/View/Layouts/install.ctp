@@ -23,7 +23,7 @@
 	<div id="container">
 		<div id="header">
 			<h1>
-				<img alt="<?php echo(__d('install', 'NetCommons')); ?>" src="<?php echo($this->webroot); ?>/img/install/logo.gif" />
+				<img alt="<?php echo(__d('install', 'NetCommons')); ?>" src="<?php echo($this->webroot); ?>img/install/logo.gif" />
 			</h1>
 		</div>
 		<div id="install">

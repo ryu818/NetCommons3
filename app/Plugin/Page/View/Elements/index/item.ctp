@@ -149,18 +149,18 @@
 		<?php if($is_display): ?>
 			<?php if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_ON): ?>
 				<a class="pages-menu-display-flag" href="#" title="<?php echo(__('To private')); ?>">
-					<img class="icon" alt="<?php echo(__('To private')); ?>" src="<?php echo($this->webroot); ?>/img/icons/base/on.gif" data-alt="<?php echo(__('To public')); ?>" />
+					<img class="icon" alt="<?php echo(__('To private')); ?>" src="<?php echo($this->webroot); ?>img/icons/base/on.gif" data-alt="<?php echo(__('To public')); ?>" />
 				</a>
 			<?php else: ?>
 				<a class="pages-menu-display-flag"  href="#" title="<?php echo(__('To public')); ?>">
-					<img class="icon" alt="<?php echo(__('To public')); ?>" src="<?php echo($this->webroot); ?>/img/icons/base/off.gif" data-alt="<?php echo(__('To private')); ?>" />
+					<img class="icon" alt="<?php echo(__('To public')); ?>" src="<?php echo($this->webroot); ?>img/icons/base/off.gif" data-alt="<?php echo(__('To private')); ?>" />
 				</a>
 			<?php endif; ?>
 		<?php else: ?>
 			<?php if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_ON): ?>
-				<img class="icon disable-lbl" alt="<?php echo(__('To private')); ?>" src="<?php echo($this->webroot); ?>/img/icons/base/on.gif" />
+				<img class="icon disable-lbl" alt="<?php echo(__('To private')); ?>" src="<?php echo($this->webroot); ?>img/icons/base/on.gif" />
 			<?php else: ?>
-				<img class="icon disable-lbl" alt="<?php echo(__('To public')); ?>" src="<?php echo($this->webroot); ?>/img/icons/base/off.gif" />
+				<img class="icon disable-lbl" alt="<?php echo(__('To public')); ?>" src="<?php echo($this->webroot); ?>img/icons/base/off.gif" />
 			<?php endif; ?>
 		<?php endif; ?>
 		<input type="hidden" name="data[Page][display_flag]" value="<?php echo(intval($page['Page']['display_flag'])); ?>" />
