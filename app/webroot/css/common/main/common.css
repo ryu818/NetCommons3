@@ -829,7 +829,7 @@ a.nc-log-title {
 a.nc-log-post-title {
 	color:#0000ff;
 }
-pre.nc-log-post,pre.nc-log-get {
+pre.nc-log-post,pre.nc-log-get,pre.nc-log-put,pre.nc-log-delete {
 	font-weight:bold;
 	padding: 3px 20px;
 	background-color: #ffffff;
@@ -842,6 +842,12 @@ pre.nc-log-post,pre.nc-log-get {
 }
 td.nc-log-save, .nc-log td.nc-log-post {
 	background-color: #d5ffe6;
+}
+td.nc-log-save, .nc-log td.nc-log-put {
+	background-color: #d5f7ff;
+}
+td.nc-log-save, .nc-log td.nc-log-delete {
+	background-color: #e5e5e5;
 }
 .cake-error {
 	background-color: #fc9595;

@@ -44,7 +44,17 @@ if ($noLogs):
 	$nc_execute_start_times = Configure::read(NC_SYSTEM_KEY.'.nc_execute_start_times');
 	$nc_execute_end_times = Configure::read(NC_SYSTEM_KEY.'.nc_execute_end_times');
 endif;
-$header_log = '<table class="nc-log"><tr><td class="nc-php-log'.(($this->request->is('post') || $method_type == 'post') ? ' nc-log-post' : '').'">';
+$methodTitle = 'POST:';
+$methodClass = '';
+if($this->request->is('post') || $method_type == 'post') {
+	$methodClass = ' nc-log-post';
+} else if($this->request->is('put')) {
+	$methodTitle = 'PUT:';
+	$methodClass = ' nc-log-put';
+} else if($this->request->is('delete')) {
+	$methodClass = ' nc-log-delete';
+}
+$header_log = '<table class="nc-log"><tr><td class="nc-php-log'.$methodClass.'">';
 if (count($php_logs) > 0):
 	for($i = 0; $i < count($php_logs); $i++) {
 		$header_log .= $php_logs[$i]."\n";
@@ -80,7 +90,7 @@ if (isset($current_urls) && count($current_urls) > 0):
 		if (isset($form_post_values[$key])):
 			$post_str = (string)var_export(h($form_post_values[$key]), true);
 			if($post_str != $pre_post_str) {
-				$header_log .= '<a class="nc-log-title nc-log-post-title nc-title-color" href="#" onclick="$(this).next().slideToggle(); return false;">POST:</a><pre class="nc-log-post">'.$post_str.'</pre>';
+				$header_log .= '<a class="nc-log-title nc-log-post-title nc-title-color" href="#" onclick="$(this).next().slideToggle(); return false;">'.$methodTitle.'</a><pre class="nc-log-post">'.$post_str.'</pre>';
 			}
 			$pre_post_str = $post_str;
 		endif;
