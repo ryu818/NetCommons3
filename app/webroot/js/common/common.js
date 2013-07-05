@@ -214,7 +214,7 @@
 							// 戻る×４ => 進む ×４等でおかしくなる。
 							sub_target_id = $.Common.pjaxCacheBackTargetId;
 						}
-
+						if(prev_url != current_url)
 						$.Common._pjaxCachePush(unique_id, target_id, sub_target_id, $.Common.pjaxCachePointer);
 					}
 
@@ -235,10 +235,9 @@
 						$.Common.pjaxCachePointer++;
 						$.Common.pjaxCacheBackTargetId = target_id;
 
-						//window.location.hash = hash;
+						if(prev_url != current_url)
+							window.history.pushState(state, container.title, container.url);
 
-						container.url =$.Common._convertPluginUrl(target, container.url);
-						window.history.pushState(state, container.title, container.url);
 						if (container.title) {
 							document.title = container.title;
 						}
@@ -333,7 +332,7 @@
 			var reBaseUrl = new RegExp('^' +$.Common.quote($._base_url), 'i');
 			var prev_url = location.href.replace(reFullBaseUrl,'').replace(/#.*$/i,'').replace(/^\//i,'').replace(/\/$/i,'');
 			var current_url = options['url'].replace(reBaseUrl,'').replace(reFullBaseUrl,'').replace(/#.*$/i,'').replace(/^\//i,'').replace(/\/$/i,'');
-			if(data_force || prev_url != current_url) {
+			if(data_force || prev_url != current_url || type == 'post' || _force_url != undefined) {
 				$.ajax(options);
 				if(e) e.preventDefault();
 			}
@@ -453,10 +452,6 @@
 			$.Common.isPopstate = true;
 			var prev_url = $.Common.pjaxPrevUrl.replace(/#.*$/i,'').replace(/\/$/i,'');
 			var current_url = loc_href.replace(/#.*$/i,'').replace(/\/$/i,'');
-			if(prev_url == current_url) {
-				$.Common.isPopstate = false;
-				return true;
-			}
 
 			$.Common.pjaxPrevUrl = loc_href;
 
@@ -467,6 +462,11 @@
 				$.Common.pjaxCachePointer++;
 			} else if($.Common.pjaxCachePointer > 0) {
 				$.Common.pjaxCachePointer--;
+			}
+
+			if(prev_url == current_url) {
+				$.Common.isPopstate = false;
+				return true;
 			}
 
 			if($.Common.pjaxCacheMapping[$.Common.pjaxCachePointer]) {
