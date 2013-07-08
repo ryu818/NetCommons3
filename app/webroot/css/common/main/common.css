@@ -843,10 +843,10 @@ pre.nc-log-post,pre.nc-log-get,pre.nc-log-put,pre.nc-log-delete {
 td.nc-log-save, .nc-log td.nc-log-post {
 	background-color: #d5ffe6;
 }
-td.nc-log-save, .nc-log td.nc-log-put {
+.nc-log td.nc-log-put {
 	background-color: #d5f7ff;
 }
-td.nc-log-save, .nc-log td.nc-log-delete {
+.nc-log td.nc-log-delete {
 	background-color: #e5e5e5;
 }
 .cake-error {
