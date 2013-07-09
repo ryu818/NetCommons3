@@ -205,7 +205,7 @@ class Module extends AppModel
 			return true;
 		}
 
-		eval('$class = new '.$class_name.'();');
+		eval('$class = new '.$class_name.'(new ComponentCollection());');
 		$class->startup();
 
 		$ret = call_user_func_array(array($class, $action), $args);

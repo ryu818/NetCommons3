@@ -13,7 +13,7 @@
  * @since         v 3.0.0.0
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
-class AnnouncementOperationComponent extends Object {
+class AnnouncementOperationComponent extends Component {
 
 	public $Content = null;
 	public $Revision = null;

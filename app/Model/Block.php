@@ -608,7 +608,7 @@ class Block extends AppModel
 				App::uses($plugin.'OperationComponent', 'Plugin/'.$plugin.'/Controller/Component');
 				$class_name = $plugin.'OperationComponent';
 				if(class_exists($class_name)) {
-					eval('$class = new '.$class_name.'();');
+					eval('$class = new '.$class_name.'(new ComponentCollection());');
 					$class->startup();
 					if(method_exists($class_name,'delete_block')) {
 						// ブロック削除アクション
