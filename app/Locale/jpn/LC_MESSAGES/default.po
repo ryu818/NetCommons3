@@ -257,6 +257,8 @@ msgid  	"Pending %s"
 msgstr 	"%s承認待ち "
 msgid  	"Approval system"
 msgstr 	"承認制"
+msgid  	"There is a waiting for approval"
+msgstr 	"承認待ちあり"
 
 msgid  	"Approved."
 msgstr 	"承認しました。"
@@ -427,6 +429,9 @@ msgid  	"Submit a comment"
 msgstr 	"コメントを送信"
 msgid  	"Delete Comment"
 msgstr 	"コメントを削除"
+
+msgid  	"Show All"
+msgstr 	"すべて表示"
 
 msgid  	"Allow the room authority to view and edit."
 msgstr 	"表示中のルーム権限より閲覧・編集を許可する。"

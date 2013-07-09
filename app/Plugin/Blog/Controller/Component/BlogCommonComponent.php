@@ -30,11 +30,14 @@ class BlogCommonComponent extends Component {
 	}
 
 /**
- * ブログ記事詳細、コメント追加、コメント編集、返信、承認、削除時のリダイレクト先URL取得
- *  内部で$this->request->params['paging']の内容を利用しています
+ * ブログ記事詳細、コメント追加、編集、返信、承認、削除、トラックバック削除、承認時のリダイレクト先URL取得
+ * コメント追加の場合は、$this->request->params['paging']の内容を利用しています
+ *
  * @param   Model BlogPost $blogPost
- * @param   string  $mode 'add'新規コメント追加時 、'edit'コメント編集時、'reply'コメント返信時、'approve'コメント承認時、'delete'コメント削除時 指定されれば詳細記事コメントページングを指定
- * @param   integer $commentId saveしたコメントのid,deleteしたコメントのparent_id 指定されれば詳細記事コメント個所へアンカー
+ * @param   string  $mode 指定されれば詳細記事のコメントページングと$modeごとのページ内アンカーをURLに設定する
+ *     'add'新規コメント追加時 、'edit'コメント編集時、'reply'コメント返信時、'approve'コメント承認時、'delete'コメント削除時
+ * 	    'trackback'トラックバック削除および承認時
+ * @param   integer $commentId saveしたコメントのid,deleteしたコメントのparent_id $modeと同時に指定されれば詳細記事コメント個所へのページ内アンカー
  * @return  array
  * @since   v 3.0.0.0
  */
@@ -74,8 +77,12 @@ class BlogCommonComponent extends Component {
 		}
 
 		$id = !empty($commentId) ? $this->_controller->id. '-comment-' .$commentId : $this->_controller->id;
-		if(isset($mode) && $mode == 'delete' && empty($commentId)) {
-			$id .= '-comments';
+		if(isset($mode)) {
+			if($mode == 'delete' && empty($commentId)) {
+				$id .= '-comments';
+			} elseif ($mode == 'trackback') {
+				$id .= '-trackbacks';
+			}
 		}
 		$url['#'] = $id;
 

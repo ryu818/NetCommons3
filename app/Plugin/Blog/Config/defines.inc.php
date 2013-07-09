@@ -59,6 +59,18 @@ define("BLOG_VISIBLE_ITEM_ALL_SELECTBOX", '1|5|10|20|50|100|0');	// ブログ表
 define("BLOG_DEFAULT_VISIBLE_ITEM_COMMENTS", 5);					// コメントの表示数デフォルト値
 
 //-----------BlogComments----------------------------------------
-define("BLOG_RECENT_COMMENTS_MAX_LENGTH", 10);					// 最近のコメントの切り取る文字数
-define("BLOG_COMMENTS_MAX_DEPTH", 5);					// コメント返信の深さ
+define("BLOG_RECENT_COMMENTS_MAX_LENGTH", 10);			// 最近のコメントの切り取る文字数
+define("BLOG_COMMENTS_MAX_DEPTH", 5);							// コメント返信の深さ
+define("BLOG_TRACKBACK_TITLE_MAX_LENGTH", 100);			// トラックバックのタイトルの切り取る文字数
+define("BLOG_TRACKBACK_EXCERPT_MAX_LENGTH", 200);	// トラックバックのエントリ要約の切り取る文字数
+define("BLOG_TRACKBACK_BLOGNAME_MAX_LENGTH", 255);	// トラックバックのブログ名の切り取る文字数
+
+//-----------BlogComments.comment_type----------------------------------------
+define("BLOG_TRACKBACK_TYPE_TRACKBACK", 'trackback');	// トラックバックの場合のタイプ
+define("BLOG_TRACKBACK_TYPE_COMMENT", 'comment');		// コメントの場合のタイプ
+
+//-----------Blog----------------------------------------
+define("BLOG_TRACKBACK_FAILED", 1);									// トラックバック受信失敗
+define("BLOG_TRACKBACK_SUCCEED", 0);								// トラックバック受信成功
+define("BLOG_TRACKBACK_VIEW_MAX", 100);						// トラックバックの初期表示時最大件数
 

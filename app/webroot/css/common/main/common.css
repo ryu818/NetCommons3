@@ -220,16 +220,23 @@ div.message {
 	font-size: 85%;
 }
 
+
 /* 一時保存 */
 .temporary {
-	color: #da1d1d;
 	margin: 2px 5px 2px 0;
-	background-color: #fff9f9;
+	font-size:75%;
+}
+.temporary,.temporary-style, .temporary-style:link,.temporary-style:active {
+	color: #da1d1d;
+	background-color: #fff9f9 !important;
 	border: 1px solid #efd0d0;
 	border-radius: 3px;
-	padding: 1px;
-	font-size:75%;
 	white-space:nowrap;
+	padding: 0 3px;
+}
+
+.temporary-style:visited {
+	color: #b45b34;
 }
 
 

@@ -589,7 +589,6 @@
 この記事に返信するには、下記アドレスへ。
 {X-URL}</column>
         <column name="trackback_transmit_flag">0</column>
-        <column name="trackback_transmit_article">0</column>
         <column name="trackback_receive_flag">0</column>
         <column name="transmit_blog_name">{X-CONTENT_NAME}-{X-SITE_NAME}</column>
         <column name="approved_flag">0</column>
@@ -632,7 +631,8 @@
         <column name="pre_change_flag">0</column>
         <column name="pre_change_date">NULL</column>
         <column name="post_password"></column>
-        <column name="trackback_link"></column>
+        <column name="to_ping"></column>
+        <column name="pinged"></column>
         <column name="approved_comment_count">0</column>
         <column name="comment_count">0</column>
         <column name="approved_trackback_count">0</column>
@@ -660,7 +660,8 @@
         <column name="pre_change_flag">0</column>
         <column name="pre_change_date">NULL</column>
         <column name="post_password"></column>
-        <column name="trackback_link"></column>
+        <column name="to_ping"></column>
+        <column name="pinged"></column>
         <column name="approved_comment_count">0</column>
         <column name="comment_count">0</column>
         <column name="approved_trackback_count">0</column>
@@ -688,7 +689,8 @@
         <column name="pre_change_flag">0</column>
         <column name="pre_change_date">NULL</column>
         <column name="post_password"></column>
-        <column name="trackback_link"></column>
+        <column name="to_ping"></column>
+        <column name="pinged"></column>
         <column name="approved_comment_count">0</column>
         <column name="comment_count">0</column>
         <column name="approved_trackback_count">0</column>

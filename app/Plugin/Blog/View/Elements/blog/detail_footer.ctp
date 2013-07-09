@@ -14,13 +14,30 @@
 	}else{
 		$isVoted = true;
 	}
+
+	$commentLinkOptions = array('title' => __d('blog', 'Comment on %s', $title), 'rel' => 'bookmark', 'data-pjax' => '#'.$id);
+	$trackbackLinkOptions = array('title' => __d('blog', 'Trackback on %s', $title), 'rel' => 'bookmark', 'data-pjax' => '#'.$id);
 	if($this->CheckAuth->checkAuth($hierarchy, NC_AUTH_CHIEF)) {
 		$commentCount = intval($blog_post['BlogPost']['comment_count']);
+		$trackbackCount = intval($blog_post['BlogPost']['trackback_count']);
+
+		if($blog_post['BlogPost']['approved_comment_count'] != $blog_post['BlogPost']['comment_count']) {
+			$commentLinkOptions = array_merge($commentLinkOptions, array('class'=> 'temporary-style'));
+			$commentLinkOptions['title'] = $commentLinkOptions['title'].'['.__('There is a waiting for approval').']';
+		}
+		if($blog_post['BlogPost']['approved_trackback_count'] != $blog_post['BlogPost']['trackback_count']) {
+			$trackbackLinkOptions = array_merge($trackbackLinkOptions, array('class'=> 'temporary-style'));
+			$trackbackLinkOptions['title'] = $trackbackLinkOptions['title'].'['.__('There is a waiting for approval').']';
+		}
 	} else {
 		$commentCount = intval($blog_post['BlogPost']['approved_comment_count']);
+		$trackbackCount = intval($blog_post['BlogPost']['approved_trackback_count']);
 	}
+
+	// 承認待ちの判定（コメント、トラックバック）
+
 ?>
-<footer id="blog-entry-meta<?php echo($id.'-'.$blog_post['BlogPost']['id']); ?>" class="blog-entry-meta">
+<footer id="blog-entry-footer<?php echo($id.'-'.$blog_post['BlogPost']['id']); ?>" class="blog-entry-footer">
 	<span class="blog-edit-link">
 		<?php if($isEdit): ?>
 		<?php
@@ -47,9 +64,7 @@
 				$deleteUrl,
 				array('title' =>__('Delete Post'),
 						'data-ajax-confirm' => __('Deleting %s. <br />Are you sure to proceed?',$blog_post['BlogPost']['title']),
-						'data-pjax' => '#'.$id,
-						'data-ajax-type' => 'post',
-						'data-pjax' => '#'.$id,
+						'data-pjax' => '#'.$id, 'data-ajax-type' => 'post',
 						'data-ajax-data' => '{"data[_Token][key]": "'.$this->params['_Token']['key'].'"}',
 			));
 		?>
@@ -62,7 +77,7 @@
 				echo $this->Html->link(__('Vote'),
 					array('controller' => 'blog', 'action' => 'vote', $blog_post['BlogPost']['id']),
 					array('title' =>__('Vote'),
-						'data-ajax' => '#blog-entry-meta'.$id.'-'.$blog_post['BlogPost']['id'],
+						'data-ajax' => '#blog-entry-footer'.$id.'-'.$blog_post['BlogPost']['id'],
 						'data-ajax-type' => 'post',
 						'data-ajax-data' => '{"data[_Token][key]": "'.$this->params['_Token']['key'].'"}',
 				));
@@ -77,16 +92,16 @@
 		<?php if($blog['Blog']['comment_flag'] || $commentCount > 0): ?>
 			&nbsp;|&nbsp;
 			<?php
-				echo $this->Html->link(__d('blog', 'Comments(%s)', $commentCount), array('controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], $permalink, '#' => $id.'-comments'),
-					array('title' => __d('blog', 'Comment on %s', $title),
-					'rel' => 'bookmark'));
+				$commentUrl = array('controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], $permalink, '#' => $id.'-comments');
+				echo $this->Html->link(__d('blog', 'Comments(%s)', $commentCount), $commentUrl, $commentLinkOptions);
 			?>
 		<?php endif;?>
-		&nbsp;|&nbsp;
-		<?php
-			echo $this->Html->link(__d('blog', 'Trackbacks(%s)', intval($blog_post['BlogPost']['trackback_count'])), array('controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], $permalink, '#' => $id.'-trackbacks'),
-				array('title' => __d('blog', 'Trackback on %s', $title),
-				'rel' => 'bookmark'));
-		?>
+		<?php if (!empty($trackbackCount)): ?>
+			&nbsp;|&nbsp;
+			<?php
+				$trackbackUrl = array('controller' => 'blog', $dates['year'], $dates['month'], $dates['day'], $permalink, '#' => $id.'-trackbacks');
+				echo $this->Html->link(__d('blog', 'Trackbacks(%s)', $trackbackCount), $trackbackUrl, $trackbackLinkOptions);
+			?>
+		<?php endif;?>
 	</span>
 </footer>

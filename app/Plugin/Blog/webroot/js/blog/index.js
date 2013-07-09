@@ -26,10 +26,38 @@
 		}).hover(function() {
 			$(this).stop(false, true).effect("highlight", {}, 2000);
 		}, function(){});
+
+		// コメント：トラックバックのリンク切替
+		if(!$.Common.regEvents[id + '-hashchange']) {
+			$.Common.regEvents[id + '-hashchange'] = true;	// グローバルEventが登録されたかどうかを$.Commonに保持。
+			$(window).bind("hashchange", function(e){
+				$.Blog.clkCommentTrackback(id);
+			});
+		}
+
+		$.Blog.clkCommentTrackback(id);
 	};
-	$.Comment ={
+	$.Blog = {
+		clkCommentTrackback : function(id) {
+			hash = location.hash;
+			var trackbackId = '#' + id + '-trackbacks';
+			var commentId = '#' + id + '-comments';
+			if(hash == trackbackId) {
+				$(trackbackId).show();
+				$(commentId).hide();
+			} else {
+				$(commentId).show();
+				$(trackbackId).hide();
+			}
+			location.hash = hash;
+		},
+		clkCommentCancel : function(id) {
+			$('#' + id + 'edit-respond').remove();
+		}
+	};
+	$.BlogComments = {
 		clkCmtCancel : function(id) {
 			$('#' + id + 'edit-respond').remove();
-		},
-	};
+		}
+	}
 })(jQuery);

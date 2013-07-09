@@ -55,9 +55,13 @@ class BlogComment extends AppModel
 					'message' => __('The input must be a number.')
 				),
 			),
-			// TODO:トラックバックのタイトルがはいるのみ？バリデートが必要ならば追加する。
-			// 'title',
-
+			'title' => array(
+				'maxlength'  => array(
+					'rule' => array('maxLength', NC_VALIDATOR_VARCHAR_LEN),
+					'message' => __('The input must be up to %s characters.', NC_VALIDATOR_VARCHAR_LEN),
+					'allowEmpty' => true,
+				),
+			),
 			'comment' => array(
 				'notEmpty'  => array(
 					'rule' => array('notEmpty'),
@@ -74,6 +78,7 @@ class BlogComment extends AppModel
 			'author_email' => array(
 				'email' => array(
 					'rule' => array('email'),
+					'last' => true,
 					'message' => __('The input must be a %s.', __('E-mail')),
 					'allowEmpty' => true,
 				),
@@ -85,6 +90,7 @@ class BlogComment extends AppModel
 			'author_url' => array(
 				'url' => array(
 					'rule' => array('url'),
+					'last' => true,
 					'message' => __('The input must be a %s.', __('URL')),
 					'allowEmpty' => true,
 				),
@@ -96,26 +102,28 @@ class BlogComment extends AppModel
 			'author_ip' => array(
 				'ip' => array(
 					'rule' => array('ip'),
-					'message' => __('The input must be a number.')
+					'last' => true,
+					'message' => __('The input must be a %s.', __('IP')),
 				),
 				'maxlength'  => array(
-					'rule' => array('maxLength', 100),
-					'message' => __('The input must be up to %s characters.', 100)
+					'rule' => array('maxLength', 16),
+					'message' => __('The input must be up to %s characters.', 16)
 				),
 			),
 			'is_approved' => array(
 				'boolean'  => array(
 					'rule' => array('boolean'),
-					'last' => true,
 					'required' => true,
 					'message' => __('The input must be a boolean.')
 				),
 			),
-			// TODO:2系のカラムをそのまま移動したが、使用するかどうかカラム名から考慮する必要あり。
-			//'blog_name',
-			//'direction_flag',
-			//'tb_url',
-			//'link',
+			'blog_name' => array(
+				'maxlength'  => array(
+					'rule' => array('maxLength', NC_VALIDATOR_VARCHAR_LEN),
+					'message' => __('The input must be up to %s characters.', NC_VALIDATOR_VARCHAR_LEN),
+					'allowEmpty' => true,
+				),
+			),
 		);
 	}
 
@@ -134,6 +142,28 @@ class BlogComment extends AppModel
 		}
 		return true;
 	}
+
+
+/**
+* コメントトラックバック更新後処理
+* is_approvedが_ONならば、該当が存在しているならば、Archiveを更新
+* @param boolean $created
+* @return boolean
+* @since v 3.0.0.0
+*/
+	public function afterSave($created) {
+		if (!$created) {
+			App::uses('Archive', 'Model');
+			$Archive = new Archive();
+			if($this->data[$this->alias]['is_approved'] == NC_APPROVED_FLAG_ON) {
+				if(!$Archive->updateApprove('BlogComment', $this->id, $this->data[$this->alias]['is_approved'])) {
+					return false;
+				}
+			}
+		}
+	}
+
+
 /**
  * 最近のコメント取得
  *
@@ -146,7 +176,7 @@ class BlogComment extends AppModel
 	public function recentComments($content_id, $visible_item, $conditions = array()) {
 		$params = array(
 			'fields' => array('BlogComment.*', 'BlogPost.post_date', 'BlogPost.title', 'BlogPost.permalink'),
-			'conditions' => $conditions,
+			'conditions' => array_merge($conditions, array('BlogComment.comment_type' => BLOG_TRACKBACK_TYPE_COMMENT)),
 			'limit' => intval($visible_item),
 			'page' => 1,
 			'joins' => array(
@@ -203,11 +233,7 @@ class BlogComment extends AppModel
 				'author_url' => '',
 				'author_ip' => '',
 				'is_approved' => NC_APPROVED_FLAG_ON,
-				// TODO:バリデーション同様必要に応じて見直す
-// 				'blog_name' => '',
-// 				'direction_flag' => _OFF,
-// 				'tb_url' => null,
-// 				'link' => null,
+				'comment_type' => BLOG_TRACKBACK_TYPE_COMMENT,
 			),
 		);
 		return $ret;
@@ -224,8 +250,8 @@ class BlogComment extends AppModel
 	public function beforeValidate($options = array()) {
 		if(isset($this->data['BlogComment']['content_id']) && !Configure::read(NC_SYSTEM_KEY.'.isLogin')){
 			App::uses('Blog', 'Blog.Model');
-			$this->Blog = new Blog();
-			$blog = $this->Blog->findByContentId($this->data['BlogComment']['content_id']);
+			$blog = new Blog();
+			$blog = $blog->findByContentId($this->data['BlogComment']['content_id']);
 
 			// 投稿者名とEmailアドレスを必須に変更
 			if($blog['Blog']['comment_required_name']){
@@ -246,6 +272,10 @@ class BlogComment extends AppModel
 				);
 			}
 		}
+		if($this->data['BlogComment']['comment_type'] == BLOG_TRACKBACK_TYPE_TRACKBACK) {
+			// トラックバックなのでコメントの必須条件をはずす
+			unset($this->validate['comment']['notEmpty']);
+		}
 		return parent::beforeValidate($options);
 	}
 
@@ -262,17 +292,42 @@ class BlogComment extends AppModel
 	public function getConditions($blogPostId, $userId, $hierarchy, $savedComment) {
 		if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 			return array(
-				'BlogComment.blog_post_id' => $blogPostId
+				'BlogComment.blog_post_id' => $blogPostId,
+				'BlogComment.comment_type' => BLOG_TRACKBACK_TYPE_COMMENT,
 			);
 		}
 
 		return array(
 			'BlogComment.blog_post_id' => $blogPostId,
+			'BlogComment.comment_type' => BLOG_TRACKBACK_TYPE_COMMENT,
 			'OR' => array(
 				'BlogComment.is_approved' => NC_APPROVED_FLAG_ON,
 				'BlogComment.created_user_id' => $userId,
 				'BlogComment.id' => $savedComment,
 			)
+		);
+	}
+
+/**
+ * トラックバック一覧表示のparams取得
+ *
+ * @param   integer $blogPostId
+ * @param   integer $hierarchy
+ * @return  array
+ * @since   v 3.0.0.0
+ */
+	public function getTrackbackConditions($blogPostId, $hierarchy) {
+		if($hierarchy >= NC_AUTH_MIN_CHIEF) {
+			return array(
+				'BlogComment.blog_post_id' => $blogPostId,
+				'BlogComment.comment_type' => BLOG_TRACKBACK_TYPE_TRACKBACK,
+			);
+		}
+
+		return array(
+			'BlogComment.blog_post_id' => $blogPostId,
+			'BlogComment.comment_type' => BLOG_TRACKBACK_TYPE_TRACKBACK,
+			'BlogComment.is_approved' => NC_APPROVED_FLAG_ON
 		);
 	}
 
@@ -324,17 +379,6 @@ class BlogComment extends AppModel
 	}
 
 /**
- * 条件に該当するコメントの件数を取得する
- *
- * @param   array $conditions
- * @return  integer
- * @since   v 3.0.0.0
- */
-	public function recordCount($conditions) {
-		return $this->find('count', array('conditions' => $conditions));
-	}
-
-/**
  * PaginatorComponentのpaginateより呼び出される
  * paginateの中で発行されるレコード数をカウントするSQLが不要な場合は発行しない
  *
@@ -348,7 +392,7 @@ class BlogComment extends AppModel
 		if(isset($extra['recordCount'])) {
 			return $extra['recordCount'];
 		}
-		return $this->recordCount($conditions);
+		return $this->find('count', array('conditions' => $conditions));
 	}
 
 }

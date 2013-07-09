@@ -495,4 +495,41 @@ class Archive extends AppModel
 
 		return $this->find($type, $params);
 	}
+
+/**
+ * 承認ステータスの更新
+ *
+ * @param  string       $modelName モデル名
+ * @param  integer     $uniqueId
+ * @param   boolean $isApproved 更新する承認ステータス
+ * @return  boolean
+ * @since   v 3.0.0.0
+ */
+	public function updateApprove($modelName, $uniqueId, $isApproved = NC_APPROVED_FLAG_ON) {
+		$fieldList = array(
+			'id',
+			'model_name',
+			'unique_id',
+			'is_approved'
+		);
+
+		$archive= $this->find('first', array('field' => $fieldList, 'conditions' => array(
+			'model_name' => $modelName,
+			'unique_id' => $uniqueId,
+		), 'recursive' => -1));
+
+		if(!isset($archive['Archive'])) {
+			return false;
+		}
+		if($archive['Archive']['is_approved'] == $isApproved) {
+			return true;
+		}
+
+		$archive['Archive']['is_approved'] = $isApproved;
+		if(!$this->save($archive, true, $fieldList)) {
+			return false;
+		}
+		return true;
+	}
+
 }

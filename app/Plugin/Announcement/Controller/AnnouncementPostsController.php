@@ -326,7 +326,7 @@ class AnnouncementPostsController extends AnnouncementAppController {
 			$this->Mail->send();
 		}
 		$this->set('dialog_id', 'announcement-approve-'.$this->id);
-		$this->render('/Approve/index');
+		$this->render('/Dialogs/approve');
 	}
 
 }
