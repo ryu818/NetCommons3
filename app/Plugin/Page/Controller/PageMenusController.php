@@ -325,7 +325,7 @@ class PageMenusController extends PageAppController {
 			// 既に公開ならば、公開日付fromを空にする
 			$page['Page']['display_from_date'] = '';
 		}
-		$childPages = $this->Page->findChilds('all', $currentPage);
+		$childPages = $this->Page->findChilds('all', $currentPage, null, $userId);
 		if($currentPage['Page']['thread_num'] == 2 && $currentPage['Page']['display_sequence'] == 1) {
 			// ページ名称のみ変更を許す
 			$fieldList = array('page_name');
@@ -369,9 +369,6 @@ class PageMenusController extends PageAppController {
 		}
 
 		// 編集ページ以下のページ取得
-		$fetchParams = array(
-			'active_page_id' => $currentPage['Page']['id']
-		);
 		$retChilds = $this->PageMenu->childsValidateErrors($this->action, $childPages, $currentPage);
 		if($retChilds === false) {
 			// 子ページエラーメッセージ保持
@@ -945,14 +942,11 @@ class PageMenusController extends PageAppController {
 			$this->set('parent_page', $parentPage);
 		}
 		if(isset($childPages) && count($childPages) > 0) {
-			/*$fetchParams = array(
-				'active_page_id' => $page['Page']['id']
-			);
-			$threadPages = $this->Page->afterFindMenu($childPages, true, $fetchParams);
-			$this->set('pages', $threadPages);*/
-
-			$this->set('pages', $childPages);
-
+			$pages = array();
+			foreach($childPages as $childPage) {
+				$pages[$childPage['Page']['space_type']][$childPage['Page']['thread_num']][$childPage['Page']['parent_id']][$childPage['Page']['display_sequence']] = $childPage;
+			}
+			$this->set('pages', $pages);
 		}
 		$this->set('page', $page);
 		$this->set('space_type', $page['Page']['space_type']);

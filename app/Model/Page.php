@@ -960,10 +960,11 @@ class Page extends AppModel
  * @param string    $type first or all or list
  * @param array     $current_user
  * @param string    $lang
+ * @param   integer|string 'all'  $userId
  * @return  array   $fields
  * @since   v 3.0.0.0
  */
-	public function findChilds($type, $currentPage, $lang = null) {
+	public function findChilds($type, $currentPage, $lang = null, $userId = 'all') {
 
 		$lang = !isset($lang) ? $currentPage['Page']['lang'] : $lang;
 		$addParams = array(
@@ -981,7 +982,7 @@ class Page extends AppModel
 			'autoLang' => false,
 			'ativePageId' => $currentPage['Page']['id'],
 		);
-		return $this->findViewable('child_menus', 'all', $addParams, $options);
+		return $this->findViewable('child_menus', $userId, $addParams, $options);
 	}
 
 /**
