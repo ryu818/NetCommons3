@@ -290,6 +290,7 @@ class PageMenusController extends PageAppController {
 			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenus/edit.002', '400');
 			return;
 		}
+		$bufCurrentPermalink = $currentPage['Page']['permalink'];
 		$parentPage = $this->Page->findAuthById($currentPage['Page']['parent_id'], $userId);
 		if(!isset($parentPage['Page'])) {
 			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenus/edit.003', '400');
@@ -325,6 +326,7 @@ class PageMenusController extends PageAppController {
 			// 既に公開ならば、公開日付fromを空にする
 			$page['Page']['display_from_date'] = '';
 		}
+
 		$childPages = $this->Page->findChilds('all', $currentPage, null, $userId);
 		if($currentPage['Page']['thread_num'] == 2 && $currentPage['Page']['display_sequence'] == 1) {
 			// ページ名称のみ変更を許す
@@ -440,7 +442,7 @@ class PageMenusController extends PageAppController {
 			$currentPage['Page']['permalink'] = $inputPermalink;
 		}
 
-		$this->_renderItem($currentPage, $parentPage, $adminHierarchy, $isDetail, $errorFlag, $childPages);
+		$this->_renderItem($currentPage, $parentPage, $adminHierarchy, $isDetail, $errorFlag, $childPages, $bufCurrentPermalink);
 	}
 
 /**
@@ -934,10 +936,11 @@ class PageMenusController extends PageAppController {
  * @param   boolean       $isDetail
  * @param   boolean       $errorFlag
  * @param   Model Pages   $childPages
+ * @param   string        $prePermalink
  * @return  void
  * @since   v 3.0.0.0
  */
-	private function _renderItem($page, $parentPage = null, $adminHierarchy, $isDetail = false, $errorFlag = false, $childPages = null) {
+	private function _renderItem($page, $parentPage = null, $adminHierarchy, $isDetail = false, $errorFlag = false, $childPages = null, $prePermalink = null) {
 		if(isset($parentPage)) {
 			$this->set('parent_page', $parentPage);
 		}
@@ -954,6 +957,10 @@ class PageMenusController extends PageAppController {
 		$this->set('admin_hierarchy', $adminHierarchy);
 		$this->set('is_detail', $isDetail);
 		$this->set('error_flag', $errorFlag);
+		if($prePermalink != $page['Page']['permalink']) {
+			$this->set('permalink', rtrim($this->Page->getPermalink(str_replace('%2F', '/', urlencode($page['Page']['permalink'])), $page['Page']['space_type']), '/'));
+			$this->set('pre_permalink', rtrim($this->Page->getPermalink(str_replace('%2F', '/', urlencode($prePermalink)), $page['Page']['space_type']), '/'));
+		}
 		$this->render('Elements/index/item');
 	}
 
