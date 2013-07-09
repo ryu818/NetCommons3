@@ -13,27 +13,27 @@ class Authority extends AppModel
 	public $name = 'Authority';
 	public $validate = array();
 
-    public function __construct() {
+	public function __construct() {
 		parent::__construct();
 
 		//エラーメッセージ取得
 		$this->validate = array(
-			'authority_name' => array(
+			'default_authority_name' => array(
 				'notEmpty'  => array(
-									'rule' => array('notEmpty'),
-									'last' => true,
-									'required' => true,
-									'allowEmpty' => false,
-									'message' => __('Please be sure to input.')
-								),
+					'rule' => array('notEmpty'),
+					'last' => true,
+					'required' => true,
+					'allowEmpty' => false,
+					'message' => __('Please be sure to input.')
+				),
 				'maxlength'  => array(
-									'rule' => array('maxLength', 30),
-									'message' => __('The input must be up to %s characters.', 30)
-								),
+					'rule' => array('maxLength', 30),
+					'message' => __('The input must be up to %s characters.', 30)
+				),
 				'duplicationAuthorityName'  => array(
-									'rule' => array('_duplicationAuthorityName'),
-									'message' => __d('authorities', 'Authority with the same name')
-								)
+					'rule' => array('_duplicationAuthorityName'),
+					'message' => __d('authority', 'Authority with the same name')
+				)
 			),
 
 			'system_flag' => array(
@@ -47,14 +47,14 @@ class Authority extends AppModel
 
 			'hierarchy' => array(
 				'numeric' => array(
-										'rule' => 'numeric',
-										'required' => true,
-										'message' => __('The input must be a number.')
-									),
+					'rule' => 'numeric',
+					'required' => true,
+					'message' => __('The input must be a number.')
+				),
 				'range' => array(
-										'rule' => array('range', NC_AUTH_GUEST - 1, NC_AUTH_ADMIN + 1),
-										'message' => __('The input must be a number bigger than %d and less than %d.', NC_AUTH_GUEST, NC_AUTH_ADMIN)
-									)
+					'rule' => array('range', NC_AUTH_GUEST - 1, NC_AUTH_ADMIN + 1),
+					'message' => __('The input must be a number bigger than %d and less than %d.', NC_AUTH_GUEST, NC_AUTH_ADMIN)
+				)
 			),
 
 			'allow_creating_community' => array(
@@ -63,6 +63,7 @@ class Authority extends AppModel
 					NC_ALLOW_CREATING_COMMUNITY_ONLY_USER,
 					NC_ALLOW_CREATING_COMMUNITY_ALL_USER,
 					NC_ALLOW_CREATING_COMMUNITY_ALL,
+					NC_ALLOW_CREATING_COMMUNITY_ADMIN,
 				), false),
 				'allowEmpty' => true,
 				'message' => __('It contains an invalid string.')
@@ -78,23 +79,26 @@ class Authority extends AppModel
 			),
 
 			'myportal_use_flag' => array(
-				'boolean'  => array(
-					'rule' => array('boolean'),
-					'last' => true,
-					'required' => true,
-					'message' => __('The input must be a boolean.')
+				'inList' => array(
+					'rule' => array('inList', array(
+						NC_MYPORTAL_USE_NOT,
+						NC_MYPORTAL_USE_ALL,
+						NC_MYPORTAL_MEMBERS,
+					), false),
+					'allowEmpty' => false,
+					'message' => __('It contains an invalid string.')
 				)
 			),
 
 			'allow_myportal_viewing_hierarchy' => array(
 				'inList' => array(
 					'rule' => array('inList', array(
-						NC_AUTH_OTHER,
+						NC_AUTH_GUEST,
 						NC_AUTH_MIN_GENERAL,
 						NC_AUTH_MIN_MODERATE,
 						NC_AUTH_MIN_CHIEF,
 					), false),
-					'allowEmpty' => true,
+					'allowEmpty' => false,
 					'message' => __('It contains an invalid string.')
 				)
 			),
@@ -246,36 +250,180 @@ class Authority extends AppModel
  * @param   array    $data
  * @return  boolean
  */
-	protected function _duplicationAuthorityName($data) {
-		if(!empty($this->data['Authority']['id']))
-			$data['id !='] = $this->data['Authority']['id'];
+	public function _duplicationAuthorityName($data) {
+		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 
-		$count = $this->find( 'count', array('conditions' => $data, 'recursive' => -1) );
-		if($count != 0)
-			return false;
+		$conditions = array(
+			'or' => array(
+				'Authority.default_authority_name' => $data['default_authority_name'],
+				'AuthorityLang.authority_name' => $data['default_authority_name'],
+			),
+		);
+		if(!empty($this->data['Authority']['id']))
+			$conditions['Authority.id !='] = $this->data['Authority']['id'];
+		$params = array(
+			'fields' => array(
+				'Authority.id',
+				'Authority.default_authority_name',
+				'AuthorityLang.authority_name'
+			),
+			'conditions' => $conditions,
+			'joins' => array(
+				array("type" => "LEFT",
+					"table" => "authority_langs",
+					"alias" => "AuthorityLang",
+					"conditions" => array(
+						"`AuthorityLang`.`authority_id`=`Authority`.`id`",
+						'AuthorityLang.lang' => $lang
+					)
+				)
+			),
+			'recursive' => -1,
+		);
+
+		$authorities = $this->find( 'all', $params);
+		if(count($authorities) == 0) {
+			return true;
+		}
+
+		foreach($authorities as $authority) {
+			if(isset($authority['AuthorityLang']['authority_name'])) {
+				if($authority['AuthorityLang']['authority_name'] == $data['default_authority_name']) {
+					return false;
+				}
+			} else if($authority['Authority']['default_authority_name'] == $data['default_authority_name']) {
+				return false;
+			}
+		}
+
 		return true;
 	}
 
-	public function findAuthSelectHtml() {
+/**
+ * 権限追加時初期値
+ * @param   integer baseAuthorityId
+ * @return  Model Authority
+ * @since   v 3.0.0.0
+ */
+	public function findDefault($baseAuthorityId = null) {
+		if(!isset($baseAuthorityId)) {
+			$hierarchyArr = $this->getHierarchyByUserAuthorityId(NC_AUTH_GENERAL_ID);
+			return array(
+				'Authority' => array(
+					'id' => 0,
+					'default_authority_name' => '',
+					'system_flag' => _OFF,
+					'hierarchy' => $hierarchyArr[0],
+			));
+		}
+		$hierarchyArr = $this->getHierarchyByUserAuthorityId($baseAuthorityId);
+		if($baseAuthorityId == NC_AUTH_ADMIN_ID) {
+			$hierarchy = $hierarchyArr[1];
+		} else if($baseAuthorityId == NC_AUTH_GUEST_ID) {
+			$hierarchy = $hierarchyArr[0];
+		} else {
+			$hierarchy = $hierarchyArr[0];
+			$interlevel = $hierarchyArr[1] - $hierarchyArr[0];
+			if($interlevel > 0) {
+				$hierarchy += floor($interlevel/2);
+			}
+		}
+		$index = $baseAuthorityId - 1;
+		$allowCreatingCommunityArr = explode('|', AUTHORITY_ALLOW_CREATING_COMMUNITY_LIST);
+		$allowNewParticipantArr = explode('|', AUTHORITY_ALLOW_NEW_PARTICIPANT_LIST);
+		$myportalUseFlagArr = explode('|', AUTHORITY_MYPORTAL_USE_FLAG_LIST);
+		$allowMyportalViewingHierarchyArr = explode('|', AUTHORITY_MYPORTAL_VIEWING_HIERARCHY_LIST);
+		$privateUseFlagArr = explode('|', AUTHORITY_PRIVATE_USE_FLAG_LIST);
+		$publicCreateroomFlagArr = explode('|', AUTHORITY_PUBLIC_CREATEROOM_FLAG_LIST);
+		$groupCreateroomFlagArr = explode('|', AUTHORITY_GROUP_CREATEROOM_FLAG_LIST);
+		$myportalCreateroomFlagArr = explode('|', AUTHORITY_MYPORTAL_CREATEROOM_FLAG_LIST);
+		$privateCreateroomFlagArr = explode('|', AUTHORITY_PRIVATE_CREATEROOM_FLAG_LIST);
+		$allowHtmltagFlagArr = explode('|', AUTHORITY_ALLOW_HTMLTAG_FLAG_LIST);
+		$allowLayoutFlagArr = explode('|', AUTHORITY_ALLOW_LAYOUT_FLAG_LIST);
+		$allowAttachmentArr = explode('|', AUTHORITY_ALLOW_ATTACHMENT);
+		$allowVideoArr = explode('|', AUTHORITY_ALLOW_VIDEO);
+		$maxSizeArr = explode('|', AUTHORITY_MAX_SIZE);
+		$changeLeftcolumnFlagArr = explode('|', AUTHORITY_CHANGE_LEFTCOLUMN_FLAG);
+		$changeRightcolumnFlagArr = explode('|', AUTHORITY_CHANGE_RIGHTCOLUMN_FLAG);
+		$changeHeadercolumnFlagArr = explode('|', AUTHORITY_CHANGE_HEADERCOLUMN_FLAG);
+		$changeFootercolumnFlagArr = explode('|', AUTHORITY_CHANGE_FOOTERCOLUMN_FLAG);
+
+		$ret = array(
+			'Authority' => array(
+				'id' => 0,
+				'default_authority_name' => '',
+				'system_flag' => _OFF,
+				'hierarchy' => $hierarchy,
+				'allow_creating_community' => $allowCreatingCommunityArr[$index],
+				'allow_new_participant' => $allowNewParticipantArr[$index],
+				'myportal_use_flag' => $myportalUseFlagArr[$index],
+				'allow_myportal_viewing_hierarchy' => $allowMyportalViewingHierarchyArr[$index],
+				'private_use_flag' => $privateUseFlagArr[$index],
+				'public_createroom_flag' => $publicCreateroomFlagArr[$index],
+				'group_createroom_flag' => $groupCreateroomFlagArr[$index],
+				'myportal_createroom_flag' => $myportalCreateroomFlagArr[$index],
+				'private_createroom_flag' => $privateCreateroomFlagArr[$index],
+				'allow_htmltag_flag' => $allowHtmltagFlagArr[$index],
+				'allow_layout_flag' => $allowLayoutFlagArr[$index],
+				'allow_attachment' => $allowAttachmentArr[$index],
+				'allow_video' => $allowVideoArr[$index],
+				'max_size' => $maxSizeArr[$index],
+				'change_leftcolumn_flag' => $changeLeftcolumnFlagArr[$index],
+				'change_rightcolumn_flag' => $changeRightcolumnFlagArr[$index],
+				'change_headercolumn_flag' => $changeHeadercolumnFlagArr[$index],
+				'change_footercolumn_flag' => $changeFootercolumnFlagArr[$index],
+				'display_participants_editing' => _OFF,
+			)
+		);
+
+		return $ret;
+	}
+
+/**
+ * 権限一覧取得
+ * @param  string       $type
+ * @param  array        $query
+ * @return Model Authority|Authorities
+ * @since  v 3.0.0.0
+ */
+	public function findList($type = 'first', $query = array()) {
+		$query['fields'] = 'Authority.*, AuthorityLang.authority_name';
+		$query['joins'] = $this->getJoinsArray();
+		$query['order'] = array(
+			'Authority.hierarchy' => "DESC",
+			'Authority.system_flag' => "DESC"
+		);
+		return parent::find($type, $query);
+	}
+
+/**
+ * 参加者選択 -> 権限Select
+ * @param  void
+ * @return array
+ * @since  v 3.0.0.0
+ */
+	public function findAuthSelect() {
 		$conditions = array(
-			'Authority.hierarchy >=' => NC_AUTH_MIN_GENERAL,
+			'Authority.hierarchy >=' => NC_AUTH_GUEST,
 			'Authority.hierarchy <=' => NC_AUTH_CHIEF,
 			'Authority.display_participants_editing' => _ON,		// 参加ルーム選択に出すものだけ取得
 		);
 		$order = array(
-			'Authority.hierarchy' => "ASC",
-			'Authority.id' => "ASC"
+			'Authority.hierarchy' => 'DESC',
+			'Authority.id' => 'DESC',
 		);
 		$params = array(
-						'fields' => array(
-							'Authority.id',
-							'Authority.authority_name',
-							'Authority.hierarchy'
-						),
-						'conditions' => $conditions,
-						'order' => $order,
-						'callbacks' => 'after'
-						);
+			'fields' => array(
+				'Authority.id',
+				'Authority.default_authority_name',
+				'AuthorityLang.authority_name',
+				'Authority.hierarchy'
+			),
+			'conditions' => $conditions,
+			'joins' => $this->getJoinsArray(),
+			'order' => $order,
+			//'callbacks' => 'after',
+		);
 
 		return $this->_afterFind($this->find('all', $params));
 	}
@@ -285,9 +433,15 @@ class Authority extends AppModel
 		$select_chief_arr = array();
 		$select_moderate_arr = array();
 		$select_general_arr = array();
+		$select_guest_arr = array();
 
 		foreach ($results as $key => $val) {
 			$hierarchy = $val['Authority']['hierarchy'];
+			if(isset($val['AuthorityLang']['authority_name'])) {
+				$val['Authority']['authority_name'] = $val['AuthorityLang']['authority_name'];
+			} else {
+				$val['Authority']['authority_name'] = $val['Authority']['default_authority_name'];
+			}
 			if($hierarchy >= NC_AUTH_MIN_ADMIN) {
 				continue;
 			} else if($hierarchy >= NC_AUTH_MIN_CHIEF) {
@@ -296,6 +450,8 @@ class Authority extends AppModel
 				$select_moderate_arr[$val['Authority']['id']] = $val['Authority'];
 			} else if($hierarchy >= NC_AUTH_MIN_GENERAL) {
 				$select_general_arr[$val['Authority']['id']] = $val['Authority'];
+			} else if($hierarchy >= NC_AUTH_GUEST) {
+				$select_guest_arr[$val['Authority']['id']] = $val['Authority'];
 			} else {
 				continue;
 			}
@@ -303,11 +459,9 @@ class Authority extends AppModel
 		$rets[NC_AUTH_CHIEF] = $select_chief_arr;
 		$rets[NC_AUTH_MODERATE] = $select_moderate_arr;
 		$rets[NC_AUTH_GENERAL] = $select_general_arr;
-		$rets[NC_AUTH_GUEST][NC_AUTH_GUEST_ID]['id'] = NC_AUTH_GUEST_ID;
-		$rets[NC_AUTH_GUEST][NC_AUTH_GUEST_ID]['authority_name'] = 'Guest';
-		$rets[NC_AUTH_GUEST][NC_AUTH_GUEST_ID]['hierarchy'] = NC_AUTH_GUEST;
+		$rets[NC_AUTH_GUEST] = $select_guest_arr;
 		$rets[NC_AUTH_OTHER][NC_AUTH_OTHER_ID]['id'] = NC_AUTH_OTHER_ID;
-		$rets[NC_AUTH_OTHER][NC_AUTH_OTHER_ID]['authority_name'] = 'Non members';
+		$rets[NC_AUTH_OTHER][NC_AUTH_OTHER_ID]['authority_name'] = __('Non members');
 		$rets[NC_AUTH_OTHER][NC_AUTH_OTHER_ID]['hierarchy'] = NC_AUTH_OTHER;
 		return $rets;
 	}
@@ -351,13 +505,46 @@ class Authority extends AppModel
  * @return  array
  * @since   v 3.0.0.0
  */
-	public function findList() {
-		return $this->find('list', array(
-			'fields' => array('authority_name'),
-			'order' => array('hierarchy' => 'DESC', 'id' => 'ASC')
+	public function findSelectList() {
+		$results = $this->find('all', array(
+			'fields' => array('Authority.id', 'Authority.default_authority_name', 'AuthorityLang.authority_name'),
+			'joins' => $this->getJoinsArray(),
+			'order' => array('Authority.hierarchy' => 'DESC', 'Authority.id' => 'DESC'),
 		));
+		$ret = array();
+		foreach($results as $result) {
+			if(isset($result['AuthorityLang']['authority_name'])) {
+				$authorityName = $result['AuthorityLang']['authority_name'];
+			} else {
+				$authorityName = $result['Authority']['default_authority_name'];
+			}
+			$ret[$result['Authority']['id']] = $authorityName;
+		}
+		return $ret;
 	}
 
+/**
+ * Authorityモデル共通JOIN文
+ * @param   string  $lang
+ * @return  array   $joins
+ * @since   v 3.0.0.0
+ */
+	public function getJoinsArray($lang = null) {
+		if(!isset($lang)) {
+			$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
+		}
+		return array(
+			array(
+				"type" => "LEFT",
+				"table" => "authority_langs",
+				"alias" => "AuthorityLang",
+				"conditions" => array(
+					"`AuthorityLang`.`authority_id`=`Authority`.`id`",
+					"`AuthorityLang`.`lang`" => $lang,
+				)
+			),
+		);
+	}
 /**
  * チェックする権限の最小値を取得
  *

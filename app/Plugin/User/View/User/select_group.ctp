@@ -54,7 +54,7 @@
 		<?php echo __d('user', 'Select Groups to join'); ?>
 	</h3>
 	<div class="top-description">
-		<?php echo __d('user', 'Select room(s) in which you want make this member join, and press [%1$s]. <br />Select room(s) displayed from [%2$s], and press [%3$s].<br />The rooms marked by [*] are rooms in %4$s.', __('Next&gt;&gt;'), __d('user', 'All the groups'),  __('Add>>'), __('Public room'));?>
+		<?php echo __d('user', 'Select room(s) in which you want make this member join, and press [%1$s]. <br />Select room(s) displayed from [%2$s], and press [%3$s].<br />The rooms marked by [*] are rooms in %4$s.', __('Next&gt;&gt;'), __d('user', 'All the groups'),  __('Add&gt;&gt;'), __('Public room'));?>
 	</div>
 	<table summary="<?php echo __('Select form'); ?>">
 		<tr>
@@ -63,11 +63,11 @@
 			</th>
 			<td rowspan="2" class="user-selectlist-arrow-btn-area nowrap align-center">
 				<?php /* 追加 */ ?>
-				<input class="common-btn-min" type="button" value="<?php echo __('Add>>'); ?>" onclick="$.Common.frmTransValue($('#NoEnrollPageUserLinkPageId<?php echo $id?>'),$('#EnrollPageUserLinkPageId<?php echo $id?>'));" />
+				<input class="common-btn-min" type="button" value="<?php echo __('Add&gt;&gt;'); ?>" onclick="$.Common.frmTransValue($('#NoEnrollPageUserLinkPageId<?php echo $id?>'),$('#EnrollPageUserLinkPageId<?php echo $id?>'));" />
 				<br />
 				<br />
 				<?php /* 削除 */ ?>
-				<input class="common-btn-min" type="button" value="<?php echo __('<<Delete'); ?>" onclick="$.Common.frmTransValue($('#EnrollPageUserLinkPageId<?php echo $id?>'),$('#NoEnrollPageUserLinkPageId<?php echo $id?>'));" />
+				<input class="common-btn-min" type="button" value="<?php echo __('&lt;&lt;Delete'); ?>" onclick="$.Common.frmTransValue($('#EnrollPageUserLinkPageId<?php echo $id?>'),$('#NoEnrollPageUserLinkPageId<?php echo $id?>'));" />
 			</td>
 			<th class="nowrap align-center" scope="col">
 				<?php echo __d('user', 'Groups to join'); ?>

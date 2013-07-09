@@ -608,11 +608,11 @@ msgstr 	"全選択"
 msgid  	"Release All"
 msgstr 	"全解除"
 
-msgid  	"Add>>"
-msgstr 	"追加>>"
+msgid  	"Add&gt;&gt;"
+msgstr 	"追加&gt;&gt;"
 
-msgid  	"<<Delete"
-msgstr 	"<<削除"
+msgid  	"&lt;&lt;Delete"
+msgstr 	"&lt;&lt;削除"
 
 msgid  	"Auto"
 msgstr 	"自動"

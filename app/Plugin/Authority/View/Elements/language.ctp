@@ -2,14 +2,13 @@
 	<div class="language-outer">
 		<?php
 			$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
-			$user_id = empty($user_id) ? null : $user_id;
-			$langUrl = $this->Html->url(array('language' => $lang, $user_id));
+			$langUrl = $this->Html->url(array('language' => $lang));
 			$options = array();
 			foreach($languages as $key => $value) {
-				$options[$this->Html->url(array('language' => $key, $user_id))] = __($value);
+				$options[$this->Html->url(array('language' => $key))] = __($value);
 			}
 			$settings = array(
-				'id' => "user-language".$id,
+				'id' => "authoriy-language".$id,
 				'class' => "language",
 				'name' => "language",
 				'value' => $langUrl,
@@ -24,14 +23,14 @@
 	</div>
 	<script>
 		$(function(){
-			$('#user-language<?php echo $id; ?>').chosen({disable_search : true}).change( function(e){
+			$('#authoriy-language<?php echo $id; ?>').chosen({disable_search : true}).change( function(e){
 				var lang = $(this).val();
 				var url = lang;
 				$.get(url, function(res) {
 					<?php if($this->action == 'index'): ?>
 					$('#<?php echo $id; ?>').html(res);
 					<?php else: ?>
-					$('#<?php echo $id; ?>').replaceWith(res);
+					$('#authority-list').replaceWith(res);
 					<?php endif; ?>
 				});
 			} );

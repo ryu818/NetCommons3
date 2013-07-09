@@ -48,26 +48,34 @@ if(!empty($item['Item']['attribute'])) {
 
 $options = array();
 if($item['Item']['type'] == 'checkbox' || $item['Item']['type'] == 'radio' || $item['Item']['type'] == 'select') {
-	$options = !empty($item['ItemLang']['options']) ? unserialize($item['ItemLang']['options']) : array();
 	if($item['Item']['tag_name'] == 'lang') {
 		$options = $languages;
 	} else if($item['Item']['tag_name'] == 'authority_id') {
 		$options = $authorities;
+	} else {
+		$options = !empty($item['ItemLang']['options']) ? unserialize($item['ItemLang']['options']) : array();
 	}
 
 	if($item['ItemLang']['lang'] == '') {
 		foreach($options as $key => $option) {
-			$options[$key] = ($item['Item']['tag_name'] == 'lang' || $item['Item']['tag_name'] == 'authority_id') ? __($option) : __d('user_items', $option);
+			if($item['Item']['tag_name'] == 'authority_id') {
+				continue;
+			}
+			$options[$key] = ($item['Item']['tag_name'] == 'lang') ? __($option) : __d('user_items', $option);
 		}
 	}
 
 	if(!$isEdit) {
+		$bufOptions = $options;
+		$options = array();
 		if($item['Item']['type'] == 'select') {
-			$options = array_merge( array('' => __('-- Not specify --')), $options);
+			$options[''] = __('-- Not specify --');
 		} else if($item['Item']['type'] == 'radio') {
-			$options = array_merge( array('' => h(__('Not specified'))), $options);
+			$options[''] = __('Not specified');
 		}
-
+		foreach($bufOptions as $bufKey => $bufOption) {
+			$options[$bufKey] = $bufOption;
+		}
 		$value = '';
 
 	} else if(!isset($user['User']['id'])) {

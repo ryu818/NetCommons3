@@ -37,241 +37,17 @@
         <column name="modified_user_name">admin</column>
     </table>
     <!-- テーブル archives -->
-    <table name="archives">
-        <column name="id">1</column>
-        <column name="parent_model_name">Announcement</column>
-        <column name="parent_id">12</column>
-        <column name="module_id">1</column>
-        <column name="content_id">19</column>
-        <column name="model_name">Announcement</column>
-        <column name="unique_id">12</column>
-        <column name="status">0</column>
-        <column name="is_approved">1</column>
-        <column name="group_id">0</column>
-        <column name="access_hierarchy">0</column>
-        <column name="count">0</column>
-        <column name="title">お知らせ</column>
-        <column name="content">2222</column>
-        <column name="search_content"></column>
-        <column name="url">a:4:{s:10:&quot;controller&quot;;s:12:&quot;announcement&quot;;s:1:&quot;#&quot;;s:3:&quot;_19&quot;;s:6:&quot;plugin&quot;;s:12:&quot;announcement&quot;;s:6:&quot;action&quot;;s:5:&quot;index&quot;;}</column>
-        <column name="created">2013-05-27 06:54:17</column>
-        <column name="created_user_id">1</column>
-        <column name="created_user_name">admin</column>
-        <column name="modified">2013-05-27 06:54:17</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
     <!-- テーブル assets -->
-    <table name="assets">
-        <column name="id">1</column>
-        <column name="url">/module/css/index/</column>
-        <column name="hash_content">e0d0593436ca5025b5d8963af03544b3</column>
-        <column name="plugin">Module</column>
-        <column name="created">2013-06-24 08:19:02</column>
-        <column name="modified">2013-06-24 08:19:02</column>
-    </table>
-    <table name="assets">
-        <column name="id">2</column>
-        <column name="url">/css/plugins/flexigrid.css</column>
-        <column name="hash_content">976a75e03f2f72d82d7c96e6426cfa65</column>
-        <column name="plugin">flexigrid.css</column>
-        <column name="created">2013-06-24 08:19:02</column>
-        <column name="modified">2013-06-24 08:19:02</column>
-    </table>
-    <table name="assets">
-        <column name="id">3</column>
-        <column name="url">/module/js/index/</column>
-        <column name="hash_content">16171ce1cbb0c4901ceb4c5074a11e5d</column>
-        <column name="plugin">Module</column>
-        <column name="created">2013-06-24 08:19:02</column>
-        <column name="modified">2013-06-24 08:19:02</column>
-    </table>
-    <table name="assets">
-        <column name="id">4</column>
-        <column name="url">/js/plugins/flexigrid.js</column>
-        <column name="hash_content">2c761cd59b9f7695bc9247d6c7d83e12</column>
-        <column name="plugin">flexigrid.js</column>
-        <column name="created">2013-06-24 08:19:02</column>
-        <column name="modified">2013-06-24 08:19:02</column>
-    </table>
-    <table name="assets">
-        <column name="id">5</column>
-        <column name="url">/js/jquery/</column>
-        <column name="hash_content">92a3984fe7bddfb38f34a983a558d4bf</column>
-        <column name="plugin">Js</column>
-        <column name="created">2013-06-24 08:20:33</column>
-        <column name="modified">2013-06-24 08:20:33</column>
-    </table>
-    <table name="assets">
-        <column name="id">6</column>
-        <column name="url">/js/common/</column>
-        <column name="hash_content">6a3824fd1f2c8fe5fffe233dab812ab4</column>
-        <column name="plugin">Js</column>
-        <column name="created">2013-06-24 08:20:33</column>
-        <column name="modified">2013-06-24 08:20:33</column>
-    </table>
-    <table name="assets">
-        <column name="id">7</column>
-        <column name="url">/js/html5/</column>
-        <column name="hash_content">14a78b88ea5e4e734b7e2ca71ce372a5</column>
-        <column name="plugin">Js</column>
-        <column name="created">2013-06-24 08:20:33</column>
-        <column name="modified">2013-06-24 08:20:33</column>
-    </table>
-    <table name="assets">
-        <column name="id">8</column>
-        <column name="url">/js/locale/jpn/lang.js</column>
-        <column name="hash_content">57a5ba8a914148a3393d9c7b996c5668</column>
-        <column name="plugin">Nc-Locale</column>
-        <column name="created">2013-06-24 08:20:33</column>
-        <column name="modified">2013-06-24 08:20:33</column>
-    </table>
-    <table name="assets">
-        <column name="id">9</column>
-        <column name="url">/js/locale/jpn/jquery/ui/jquery.ui.datepicker.js</column>
-        <column name="hash_content">484af230503a16846b16b69397e41c66</column>
-        <column name="plugin">Nc-Locale</column>
-        <column name="created">2013-06-24 08:20:33</column>
-        <column name="modified">2013-06-24 08:20:33</column>
-    </table>
-    <table name="assets">
-        <column name="id">10</column>
-        <column name="url">/css/common/vendors/</column>
-        <column name="hash_content">64497884e8ed4c21883e77f4e66de0e5</column>
-        <column name="plugin">Css</column>
-        <column name="created">2013-06-24 08:20:33</column>
-        <column name="modified">2013-06-24 08:20:33</column>
-    </table>
-    <table name="assets">
-        <column name="id">11</column>
-        <column name="url">/css/common/main/</column>
-        <column name="hash_content">8af4d698e1d0224bcfbff460845f6919</column>
-        <column name="plugin">Css</column>
-        <column name="created">2013-06-24 08:20:33</column>
-        <column name="modified">2013-06-24 08:20:33</column>
-    </table>
-    <table name="assets">
-        <column name="id">12</column>
-        <column name="url">/css/jquery/base/</column>
-        <column name="hash_content">74fab7d85823e5e203012860e2a9c9cb</column>
-        <column name="plugin">Css</column>
-        <column name="created">2013-06-24 08:20:33</column>
-        <column name="modified">2013-06-24 08:20:33</column>
-    </table>
-    <table name="assets">
-        <column name="id">13</column>
-        <column name="url">/css/common/editable/common.css</column>
-        <column name="hash_content">13918d005d703932fa5256e8132041ec</column>
-        <column name="plugin">Css</column>
-        <column name="created">2013-06-24 08:20:33</column>
-        <column name="modified">2013-06-24 08:20:33</column>
-    </table>
-    <table name="assets">
-        <column name="id">14</column>
-        <column name="url">/css/pages/common/</column>
-        <column name="hash_content">b74fe60c3df185973d9f212c26f4f1bc</column>
-        <column name="plugin">Css</column>
-        <column name="created">2013-06-24 08:20:33</column>
-        <column name="modified">2013-06-24 08:20:33</column>
-    </table>
-    <table name="assets">
-        <column name="id">15</column>
-        <column name="url">/css/plugins/chosen.css</column>
-        <column name="hash_content">d53b59fbe9e592f5dee2839c116d7a32</column>
-        <column name="plugin">chosen.css</column>
-        <column name="created">2013-06-24 08:20:33</column>
-        <column name="modified">2013-06-24 08:20:33</column>
-    </table>
-    <table name="assets">
-        <column name="id">16</column>
-        <column name="url">/default/css/page.css</column>
-        <column name="hash_content">c37b1811ffc72e57ba2afed363661eda</column>
-        <column name="plugin">Nc-Frame</column>
-        <column name="created">2013-06-24 08:20:33</column>
-        <column name="modified">2013-06-24 08:20:33</column>
-    </table>
-    <table name="assets">
-        <column name="id">17</column>
-        <column name="url">/default/css/gray/page.css</column>
-        <column name="hash_content">73eee9adaf31e18a00a526a97f426a43</column>
-        <column name="plugin">Nc-Frame</column>
-        <column name="created">2013-06-24 08:20:33</column>
-        <column name="modified">2013-06-24 08:20:33</column>
-    </table>
-    <table name="assets">
-        <column name="id">18</column>
-        <column name="url">/css/redirect/</column>
-        <column name="hash_content">da83fff272a43589ff8e4c9df2b8ebe5</column>
-        <column name="plugin">Css</column>
-        <column name="created">2013-06-24 08:20:33</column>
-        <column name="modified">2013-06-24 08:20:33</column>
-    </table>
-    <table name="assets">
-        <column name="id">19</column>
-        <column name="url">/js/plugins/chosen.jquery.js</column>
-        <column name="hash_content">034fe757713cc1559697f4121098645b</column>
-        <column name="plugin">chosen.jquery.js</column>
-        <column name="created">2013-06-24 08:20:33</column>
-        <column name="modified">2013-06-24 08:20:33</column>
-    </table>
-    <table name="assets">
-        <column name="id">20</column>
-        <column name="url">/js/pages/common/</column>
-        <column name="hash_content">69947cc08a89d78ca5541865bb0c3c76</column>
-        <column name="plugin">Js</column>
-        <column name="created">2013-06-24 08:20:33</column>
-        <column name="modified">2013-06-24 08:20:33</column>
-    </table>
-    <table name="assets">
-        <column name="id">21</column>
-        <column name="url">/js/pages/main/</column>
-        <column name="hash_content">d41d8cd98f00b204e9800998ecf8427e</column>
-        <column name="plugin">Js</column>
-        <column name="created">2013-06-24 08:20:33</column>
-        <column name="modified">2013-06-24 08:20:33</column>
-    </table>
-    <table name="assets">
-        <column name="id">22</column>
-        <column name="url">/announcement/js/announcement/index.js</column>
-        <column name="hash_content">3e826a8ed5fbdf4f062642e598457fd8</column>
-        <column name="plugin">Announcement</column>
-        <column name="created">2013-06-24 08:20:36</column>
-        <column name="modified">2013-06-24 08:20:36</column>
-    </table>
-    <table name="assets">
-        <column name="id">23</column>
-        <column name="url">/none_frame/css/block.css</column>
-        <column name="hash_content">caefc1dbc512c0aaef4a851287851cba</column>
-        <column name="plugin">Nc-Frame</column>
-        <column name="created">2013-06-24 08:20:36</column>
-        <column name="modified">2013-06-24 08:20:36</column>
-    </table>
-    <table name="assets">
-        <column name="id">24</column>
-        <column name="url">/blog/js/blog/index.js</column>
-        <column name="hash_content">8f26eea1c2d00e59094a9b6041d90c23</column>
-        <column name="plugin">Blog</column>
-        <column name="created">2013-06-24 08:20:36</column>
-        <column name="modified">2013-06-24 08:20:36</column>
-    </table>
-    <table name="assets">
-        <column name="id">25</column>
-        <column name="url">/blog/css/blog/index.css</column>
-        <column name="hash_content">4aa0872731309ccef83c9932b8987889</column>
-        <column name="plugin">Blog</column>
-        <column name="created">2013-06-24 08:20:36</column>
-        <column name="modified">2013-06-24 08:20:36</column>
-    </table>
     <!-- テーブル authorities -->
     <table name="authorities">
         <column name="id">1</column>
-        <column name="authority_name">Administrator</column>
+        <column name="default_authority_name">Administrator</column>
         <column name="system_flag">1</column>
         <column name="hierarchy">500</column>
-        <column name="allow_creating_community">0</column>
+        <column name="allow_creating_community">4</column>
         <column name="allow_new_participant">1</column>
         <column name="myportal_use_flag">0</column>
-        <column name="allow_myportal_viewing_hierarchy">0</column>
+        <column name="allow_myportal_viewing_hierarchy">1</column>
         <column name="private_use_flag">1</column>
         <column name="public_createroom_flag">1</column>
         <column name="group_createroom_flag">1</column>
@@ -296,13 +72,13 @@
     </table>
     <table name="authorities">
         <column name="id">2</column>
-        <column name="authority_name">Room Manager</column>
+        <column name="default_authority_name">Room Manager</column>
         <column name="system_flag">1</column>
         <column name="hierarchy">350</column>
-        <column name="allow_creating_community">0</column>
+        <column name="allow_creating_community">2</column>
         <column name="allow_new_participant">1</column>
         <column name="myportal_use_flag">0</column>
-        <column name="allow_myportal_viewing_hierarchy">0</column>
+        <column name="allow_myportal_viewing_hierarchy">1</column>
         <column name="private_use_flag">1</column>
         <column name="public_createroom_flag">0</column>
         <column name="group_createroom_flag">0</column>
@@ -321,19 +97,19 @@
         <column name="created">2012-07-17 06:10:25</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
-        <column name="modified">2012-07-17 06:10:25</column>
+        <column name="modified">2013-07-09 00:48:58</column>
         <column name="modified_user_id">1</column>
         <column name="modified_user_name">admin</column>
     </table>
     <table name="authorities">
         <column name="id">3</column>
-        <column name="authority_name">Moderator</column>
+        <column name="default_authority_name">Moderator</column>
         <column name="system_flag">1</column>
         <column name="hierarchy">250</column>
-        <column name="allow_creating_community">0</column>
+        <column name="allow_creating_community">1</column>
         <column name="allow_new_participant">0</column>
         <column name="myportal_use_flag">0</column>
-        <column name="allow_myportal_viewing_hierarchy">0</column>
+        <column name="allow_myportal_viewing_hierarchy">1</column>
         <column name="private_use_flag">1</column>
         <column name="public_createroom_flag">0</column>
         <column name="group_createroom_flag">0</column>
@@ -352,22 +128,22 @@
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
-        <column name="modified">NULL</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
+        <column name="modified">2013-07-09 00:49:53</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
     </table>
     <table name="authorities">
         <column name="id">4</column>
-        <column name="authority_name">Common User</column>
+        <column name="default_authority_name">Common User</column>
         <column name="system_flag">1</column>
         <column name="hierarchy">150</column>
-        <column name="allow_creating_community">0</column>
+        <column name="allow_creating_community">1</column>
         <column name="allow_new_participant">0</column>
         <column name="myportal_use_flag">1</column>
-        <column name="allow_myportal_viewing_hierarchy">0</column>
+        <column name="allow_myportal_viewing_hierarchy">1</column>
         <column name="private_use_flag">1</column>
         <column name="public_createroom_flag">0</column>
-        <column name="group_createroom_flag">1</column>
+        <column name="group_createroom_flag">0</column>
         <column name="myportal_createroom_flag">0</column>
         <column name="private_createroom_flag">0</column>
         <column name="allow_htmltag_flag">0</column>
@@ -383,19 +159,19 @@
         <column name="created">2012-07-17 06:10:37</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
-        <column name="modified">2012-07-31 08:49:53</column>
+        <column name="modified">2013-07-08 11:11:47</column>
         <column name="modified_user_id">1</column>
         <column name="modified_user_name">admin</column>
     </table>
     <table name="authorities">
         <column name="id">5</column>
-        <column name="authority_name">Guest</column>
+        <column name="default_authority_name">Guest</column>
         <column name="system_flag">1</column>
         <column name="hierarchy">1</column>
         <column name="allow_creating_community">0</column>
         <column name="allow_new_participant">0</column>
         <column name="myportal_use_flag">0</column>
-        <column name="allow_myportal_viewing_hierarchy">0</column>
+        <column name="allow_myportal_viewing_hierarchy">1</column>
         <column name="private_use_flag">0</column>
         <column name="public_createroom_flag">0</column>
         <column name="group_createroom_flag">0</column>
@@ -420,13 +196,13 @@
     </table>
     <table name="authorities">
         <column name="id">6</column>
-        <column name="authority_name">モデレータ２</column>
+        <column name="default_authority_name">モデレーター２</column>
         <column name="system_flag">0</column>
         <column name="hierarchy">253</column>
-        <column name="allow_creating_community">0</column>
+        <column name="allow_creating_community">1</column>
         <column name="allow_new_participant">0</column>
         <column name="myportal_use_flag">0</column>
-        <column name="allow_myportal_viewing_hierarchy">0</column>
+        <column name="allow_myportal_viewing_hierarchy">1</column>
         <column name="private_use_flag">1</column>
         <column name="public_createroom_flag">0</column>
         <column name="group_createroom_flag">0</column>
@@ -445,22 +221,22 @@
         <column name="created">2013-01-17 02:26:45</column>
         <column name="created_user_id">1</column>
         <column name="created_user_name">adminさん</column>
-        <column name="modified">2013-01-17 02:26:45</column>
+        <column name="modified">2013-07-09 00:49:32</column>
         <column name="modified_user_id">1</column>
-        <column name="modified_user_name">adminさん</column>
+        <column name="modified_user_name">admin</column>
     </table>
     <table name="authorities">
         <column name="id">7</column>
-        <column name="authority_name">一般２</column>
+        <column name="default_authority_name">一般２</column>
         <column name="system_flag">0</column>
-        <column name="hierarchy">151</column>
-        <column name="allow_creating_community">0</column>
+        <column name="hierarchy">149</column>
+        <column name="allow_creating_community">1</column>
         <column name="allow_new_participant">0</column>
         <column name="myportal_use_flag">1</column>
-        <column name="allow_myportal_viewing_hierarchy">0</column>
+        <column name="allow_myportal_viewing_hierarchy">1</column>
         <column name="private_use_flag">1</column>
         <column name="public_createroom_flag">0</column>
-        <column name="group_createroom_flag">1</column>
+        <column name="group_createroom_flag">0</column>
         <column name="myportal_createroom_flag">0</column>
         <column name="private_createroom_flag">0</column>
         <column name="allow_htmltag_flag">0</column>
@@ -476,7 +252,92 @@
         <column name="created">2012-07-17 06:10:37</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
-        <column name="modified">2012-07-31 08:49:53</column>
+        <column name="modified">2013-07-08 11:12:05</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <!-- テーブル authority_langs -->
+    <table name="authority_langs">
+        <column name="id">1</column>
+        <column name="authority_id">1</column>
+        <column name="lang">ja</column>
+        <column name="authority_name">管理者</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="authority_langs">
+        <column name="id">2</column>
+        <column name="authority_id">2</column>
+        <column name="lang">ja</column>
+        <column name="authority_name">主坦</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">2013-07-09 00:48:58</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="authority_langs">
+        <column name="id">3</column>
+        <column name="authority_id">3</column>
+        <column name="lang">ja</column>
+        <column name="authority_name">モデレーター</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">2013-07-09 00:49:53</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="authority_langs">
+        <column name="id">4</column>
+        <column name="authority_id">4</column>
+        <column name="lang">ja</column>
+        <column name="authority_name">一般</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">2013-07-08 11:11:47</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="authority_langs">
+        <column name="id">5</column>
+        <column name="authority_id">5</column>
+        <column name="lang">ja</column>
+        <column name="authority_name">ゲスト</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="authority_langs">
+        <column name="id">6</column>
+        <column name="authority_id">6</column>
+        <column name="lang">ja</column>
+        <column name="authority_name">モデレーター２</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">2013-07-09 00:49:32</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="authority_langs">
+        <column name="id">7</column>
+        <column name="authority_id">7</column>
+        <column name="lang">ja</column>
+        <column name="authority_name">一般２</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">2013-07-08 11:12:05</column>
         <column name="modified_user_id">1</column>
         <column name="modified_user_name">admin</column>
     </table>
@@ -503,8 +364,8 @@
         <column name="right_margin">8</column>
         <column name="top_margin">8</column>
         <column name="bottom_margin">8</column>
-        <column name="min_width_size">800</column>
-        <column name="min_height_size">0</column>
+        <column name="min_width_size">772</column>
+        <column name="min_height_size">410</column>
         <column name="lock_authority_id">0</column>
         <column name="created">2013-05-01 03:27:18</column>
         <column name="created_user_id">1</column>
@@ -1197,7 +1058,73 @@
         <column name="modified_user_name">admin</column>
     </table>
     <!-- テーブル communities -->
+    <table name="communities">
+        <column name="id">2</column>
+        <column name="room_id">22</column>
+        <column name="photo">community.gif</column>
+        <column name="upload_id">0</column>
+        <column name="publication_range_flag">0</column>
+        <column name="participate_flag">0</column>
+        <column name="invite_hierarchy">301</column>
+        <column name="participate_notice_flag">1</column>
+        <column name="participate_notice_hierarchy">301</column>
+        <column name="resign_notice_flag">1</column>
+        <column name="resign_notice_hierarchy">301</column>
+        <column name="created">2013-06-26 01:10:56</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-06-26 01:10:56</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="communities">
+        <column name="id">3</column>
+        <column name="room_id">24</column>
+        <column name="photo">community.gif</column>
+        <column name="upload_id">0</column>
+        <column name="publication_range_flag">0</column>
+        <column name="participate_flag">0</column>
+        <column name="invite_hierarchy">301</column>
+        <column name="participate_notice_flag">1</column>
+        <column name="participate_notice_hierarchy">301</column>
+        <column name="resign_notice_flag">1</column>
+        <column name="resign_notice_hierarchy">301</column>
+        <column name="created">2013-06-26 01:43:40</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-06-26 01:43:40</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
     <!-- テーブル community_langs -->
+    <table name="community_langs">
+        <column name="id">2</column>
+        <column name="room_id">22</column>
+        <column name="lang">ja</column>
+        <column name="community_name">新規コミュニティー-2</column>
+        <column name="summary"></column>
+        <column name="description"></column>
+        <column name="created">2013-06-26 01:10:56</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-06-26 01:10:56</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="community_langs">
+        <column name="id">3</column>
+        <column name="room_id">24</column>
+        <column name="lang">ja</column>
+        <column name="community_name">新規コミュニティー-3</column>
+        <column name="summary"></column>
+        <column name="description"></column>
+        <column name="created">2013-06-26 01:43:40</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-06-26 01:43:40</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
     <!-- テーブル community_tags -->
     <!-- テーブル configs -->
     <table name="configs">
@@ -1207,7 +1134,7 @@
         <column name="name">sitename</column>
         <column name="type">text</column>
         <column name="title"></column>
-        <column name="value">サイト名未設定</column>
+        <column name="value">サイト名未設定(舛川)</column>
         <column name="description"></column>
         <column name="attribute">size=&quot;50&quot;</column>
         <column name="display_sequence">0</column>
@@ -2829,7 +2756,7 @@ We recommend that you change your password after login.</column>
         <column name="id">1</column>
         <column name="config_name">sitename</column>
         <column name="lang">ja</column>
-        <column name="value">サイト名未設定</column>
+        <column name="value">サイト名未設定(舛川)</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -5474,7 +5401,7 @@ e-mail：{X-EMAIL}
         <column name="controller_action">announcement</column>
         <column name="edit_controller_action">announcement/edits</column>
         <column name="style_controller_action"></column>
-        <column name="display_sequence">0</column>
+        <column name="display_sequence">1</column>
         <column name="module_icon"></column>
         <column name="temp_name"></column>
         <column name="content_has_one">0</column>
@@ -5514,7 +5441,7 @@ e-mail：{X-EMAIL}
         <column name="controller_action">module</column>
         <column name="edit_controller_action"></column>
         <column name="style_controller_action"></column>
-        <column name="display_sequence">2</column>
+        <column name="display_sequence">3</column>
         <column name="module_icon">module.gif</column>
         <column name="temp_name"></column>
         <column name="content_has_one">0</column>
@@ -5534,7 +5461,7 @@ e-mail：{X-EMAIL}
         <column name="controller_action">blog</column>
         <column name="edit_controller_action">blog/edits</column>
         <column name="style_controller_action">blog/styles</column>
-        <column name="display_sequence">0</column>
+        <column name="display_sequence">2</column>
         <column name="module_icon"></column>
         <column name="temp_name"></column>
         <column name="content_has_one">0</column>
@@ -5554,7 +5481,7 @@ e-mail：{X-EMAIL}
         <column name="controller_action">whatsnew</column>
         <column name="edit_controller_action"></column>
         <column name="style_controller_action"></column>
-        <column name="display_sequence">1</column>
+        <column name="display_sequence">3</column>
         <column name="module_icon"></column>
         <column name="temp_name"></column>
         <column name="content_has_one">0</column>
@@ -5574,7 +5501,7 @@ e-mail：{X-EMAIL}
         <column name="controller_action">user</column>
         <column name="edit_controller_action"></column>
         <column name="style_controller_action"></column>
-        <column name="display_sequence">1</column>
+        <column name="display_sequence">2</column>
         <column name="module_icon">user.gif</column>
         <column name="temp_name"></column>
         <column name="content_has_one">0</column>
@@ -5582,6 +5509,26 @@ e-mail：{X-EMAIL}
         <column name="created_user_id">1</column>
         <column name="created_user_name">admin</column>
         <column name="modified">2013-05-31 05:42:49</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="modules">
+        <column name="id">9</column>
+        <column name="dir_name">Authority</column>
+        <column name="version">3.0.0.0</column>
+        <column name="system_flag">1</column>
+        <column name="disposition_flag">1</column>
+        <column name="controller_action">authority</column>
+        <column name="edit_controller_action"></column>
+        <column name="style_controller_action"></column>
+        <column name="display_sequence">4</column>
+        <column name="module_icon">authority.gif</column>
+        <column name="temp_name"></column>
+        <column name="content_has_one">0</column>
+        <column name="created">2013-07-01 03:18:07</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-07-01 03:18:07</column>
         <column name="modified_user_id">1</column>
         <column name="modified_user_name">admin</column>
     </table>
@@ -5657,12 +5604,12 @@ e-mail：{X-EMAIL}
         <column name="authority_id">6</column>
         <column name="room_id">0</column>
         <column name="module_id">5</column>
-        <column name="created">2013-03-28 17:24:36</column>
+        <column name="created">2013-07-09 00:49:32</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
-        <column name="modified">2013-03-28 17:24:36</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
+        <column name="modified">2013-07-09 00:49:32</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
     </table>
     <table name="module_links">
         <column name="id">30</column>
@@ -5683,25 +5630,25 @@ e-mail：{X-EMAIL}
         <column name="authority_id">4</column>
         <column name="room_id">0</column>
         <column name="module_id">5</column>
-        <column name="created">2013-03-28 17:24:36</column>
+        <column name="created">2013-07-08 11:11:47</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
-        <column name="modified">2013-03-28 17:24:36</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
+        <column name="modified">2013-07-08 11:11:47</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
     </table>
     <table name="module_links">
-        <column name="id">28</column>
+        <column name="id">58</column>
         <column name="space_type">3</column>
         <column name="authority_id">3</column>
         <column name="room_id">0</column>
-        <column name="module_id">5</column>
-        <column name="created">2013-03-28 17:24:36</column>
+        <column name="module_id">7</column>
+        <column name="created">2013-07-09 00:49:53</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
-        <column name="modified">2013-03-28 17:24:36</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
+        <column name="modified">2013-07-09 00:49:53</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
     </table>
     <table name="module_links">
         <column name="id">27</column>
@@ -5709,12 +5656,12 @@ e-mail：{X-EMAIL}
         <column name="authority_id">2</column>
         <column name="room_id">0</column>
         <column name="module_id">5</column>
-        <column name="created">2013-03-28 17:24:36</column>
+        <column name="created">2013-07-09 00:48:58</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
-        <column name="modified">2013-03-28 17:24:36</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
+        <column name="modified">2013-07-09 00:48:58</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
     </table>
     <table name="module_links">
         <column name="id">26</column>
@@ -5735,12 +5682,12 @@ e-mail：{X-EMAIL}
         <column name="authority_id">6</column>
         <column name="room_id">0</column>
         <column name="module_id">5</column>
-        <column name="created">2013-03-28 17:24:36</column>
+        <column name="created">2013-07-09 00:49:23</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
-        <column name="modified">2013-03-28 17:24:36</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
+        <column name="modified">2013-07-09 00:49:23</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
     </table>
     <table name="module_links">
         <column name="id">24</column>
@@ -5761,12 +5708,12 @@ e-mail：{X-EMAIL}
         <column name="authority_id">4</column>
         <column name="room_id">0</column>
         <column name="module_id">5</column>
-        <column name="created">2013-03-28 17:24:36</column>
+        <column name="created">2013-07-08 11:11:47</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
-        <column name="modified">2013-03-28 17:24:36</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
+        <column name="modified">2013-07-08 11:11:47</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
     </table>
     <table name="module_links">
         <column name="id">22</column>
@@ -5774,12 +5721,12 @@ e-mail：{X-EMAIL}
         <column name="authority_id">3</column>
         <column name="room_id">0</column>
         <column name="module_id">5</column>
-        <column name="created">2013-03-28 17:24:36</column>
+        <column name="created">2013-07-08 11:11:23</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
-        <column name="modified">2013-03-28 17:24:36</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
+        <column name="modified">2013-07-08 11:11:23</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
     </table>
     <table name="module_links">
         <column name="id">21</column>
@@ -5787,12 +5734,12 @@ e-mail：{X-EMAIL}
         <column name="authority_id">2</column>
         <column name="room_id">0</column>
         <column name="module_id">5</column>
-        <column name="created">2013-03-28 17:24:36</column>
+        <column name="created">2013-07-09 00:48:45</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
-        <column name="modified">2013-03-28 17:24:36</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
+        <column name="modified">2013-07-09 00:48:45</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
     </table>
     <table name="module_links">
         <column name="id">20</column>
@@ -5834,15 +5781,15 @@ e-mail：{X-EMAIL}
         <column name="modified_user_name">admin</column>
     </table>
     <table name="module_links">
-        <column name="id">61</column>
+        <column name="id">63</column>
         <column name="space_type">3</column>
         <column name="authority_id">6</column>
         <column name="room_id">0</column>
-        <column name="module_id">7</column>
-        <column name="created">2013-05-30 09:54:48</column>
-        <column name="created_user_id">1</column>
-        <column name="created_user_name">admin</column>
-        <column name="modified">2013-05-30 09:54:48</column>
+        <column name="module_id">1</column>
+        <column name="created">2013-07-09 00:49:32</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">2013-07-09 00:49:32</column>
         <column name="modified_user_id">1</column>
         <column name="modified_user_name">admin</column>
     </table>
@@ -5860,41 +5807,41 @@ e-mail：{X-EMAIL}
         <column name="modified_user_name">admin</column>
     </table>
     <table name="module_links">
-        <column name="id">59</column>
+        <column name="id">68</column>
         <column name="space_type">3</column>
         <column name="authority_id">4</column>
         <column name="room_id">0</column>
-        <column name="module_id">7</column>
-        <column name="created">2013-05-30 09:54:48</column>
+        <column name="module_id">1</column>
+        <column name="created">2013-07-08 11:11:47</column>
         <column name="created_user_id">1</column>
         <column name="created_user_name">admin</column>
-        <column name="modified">2013-05-30 09:54:48</column>
+        <column name="modified">2013-07-08 11:11:47</column>
         <column name="modified_user_id">1</column>
         <column name="modified_user_name">admin</column>
     </table>
     <table name="module_links">
-        <column name="id">58</column>
+        <column name="id">66</column>
         <column name="space_type">3</column>
         <column name="authority_id">3</column>
         <column name="room_id">0</column>
-        <column name="module_id">7</column>
-        <column name="created">2013-05-30 09:54:48</column>
-        <column name="created_user_id">1</column>
-        <column name="created_user_name">admin</column>
-        <column name="modified">2013-05-30 09:54:48</column>
+        <column name="module_id">1</column>
+        <column name="created">2013-07-09 00:49:53</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">2013-07-09 00:49:53</column>
         <column name="modified_user_id">1</column>
         <column name="modified_user_name">admin</column>
     </table>
     <table name="module_links">
-        <column name="id">57</column>
+        <column name="id">64</column>
         <column name="space_type">3</column>
         <column name="authority_id">2</column>
         <column name="room_id">0</column>
-        <column name="module_id">7</column>
-        <column name="created">2013-05-30 09:54:48</column>
-        <column name="created_user_id">1</column>
-        <column name="created_user_name">admin</column>
-        <column name="modified">2013-05-30 09:54:48</column>
+        <column name="module_id">1</column>
+        <column name="created">2013-07-09 00:48:58</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">2013-07-09 00:48:58</column>
         <column name="modified_user_id">1</column>
         <column name="modified_user_name">admin</column>
     </table>
@@ -5912,15 +5859,15 @@ e-mail：{X-EMAIL}
         <column name="modified_user_name">admin</column>
     </table>
     <table name="module_links">
-        <column name="id">55</column>
+        <column name="id">76</column>
         <column name="space_type">2</column>
         <column name="authority_id">6</column>
         <column name="room_id">0</column>
-        <column name="module_id">7</column>
-        <column name="created">2013-05-30 09:54:48</column>
+        <column name="module_id">1</column>
+        <column name="created">2013-07-09 00:49:23</column>
         <column name="created_user_id">1</column>
         <column name="created_user_name">admin</column>
-        <column name="modified">2013-05-30 09:54:48</column>
+        <column name="modified">2013-07-09 00:49:23</column>
         <column name="modified_user_id">1</column>
         <column name="modified_user_name">admin</column>
     </table>
@@ -5938,41 +5885,41 @@ e-mail：{X-EMAIL}
         <column name="modified_user_name">admin</column>
     </table>
     <table name="module_links">
-        <column name="id">53</column>
+        <column name="id">67</column>
         <column name="space_type">2</column>
         <column name="authority_id">4</column>
         <column name="room_id">0</column>
-        <column name="module_id">7</column>
-        <column name="created">2013-05-30 09:54:48</column>
+        <column name="module_id">1</column>
+        <column name="created">2013-07-08 11:11:47</column>
         <column name="created_user_id">1</column>
         <column name="created_user_name">admin</column>
-        <column name="modified">2013-05-30 09:54:48</column>
+        <column name="modified">2013-07-08 11:11:47</column>
         <column name="modified_user_id">1</column>
         <column name="modified_user_name">admin</column>
     </table>
     <table name="module_links">
-        <column name="id">52</column>
+        <column name="id">65</column>
         <column name="space_type">2</column>
         <column name="authority_id">3</column>
         <column name="room_id">0</column>
-        <column name="module_id">7</column>
-        <column name="created">2013-05-30 09:54:48</column>
+        <column name="module_id">1</column>
+        <column name="created">2013-07-08 11:11:23</column>
         <column name="created_user_id">1</column>
         <column name="created_user_name">admin</column>
-        <column name="modified">2013-05-30 09:54:48</column>
+        <column name="modified">2013-07-08 11:11:23</column>
         <column name="modified_user_id">1</column>
         <column name="modified_user_name">admin</column>
     </table>
     <table name="module_links">
-        <column name="id">51</column>
+        <column name="id">75</column>
         <column name="space_type">2</column>
         <column name="authority_id">2</column>
         <column name="room_id">0</column>
-        <column name="module_id">7</column>
-        <column name="created">2013-05-30 09:54:48</column>
+        <column name="module_id">1</column>
+        <column name="created">2013-07-09 00:48:45</column>
         <column name="created_user_id">1</column>
         <column name="created_user_name">admin</column>
-        <column name="modified">2013-05-30 09:54:48</column>
+        <column name="modified">2013-07-09 00:48:45</column>
         <column name="modified_user_id">1</column>
         <column name="modified_user_name">admin</column>
     </table>
@@ -6015,22 +5962,192 @@ e-mail：{X-EMAIL}
         <column name="modified_user_id">1</column>
         <column name="modified_user_name">admin</column>
     </table>
+    <table name="module_links">
+        <column name="id">61</column>
+        <column name="space_type">3</column>
+        <column name="authority_id">6</column>
+        <column name="room_id">0</column>
+        <column name="module_id">7</column>
+        <column name="created">2013-07-09 00:49:32</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">2013-07-09 00:49:32</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="module_links">
+        <column name="id">57</column>
+        <column name="space_type">3</column>
+        <column name="authority_id">2</column>
+        <column name="room_id">0</column>
+        <column name="module_id">7</column>
+        <column name="created">2013-07-09 00:48:58</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">2013-07-09 00:48:58</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="module_links">
+        <column name="id">52</column>
+        <column name="space_type">2</column>
+        <column name="authority_id">3</column>
+        <column name="room_id">0</column>
+        <column name="module_id">7</column>
+        <column name="created">2013-07-08 11:11:23</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">2013-07-08 11:11:23</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="module_links">
+        <column name="id">28</column>
+        <column name="space_type">3</column>
+        <column name="authority_id">3</column>
+        <column name="room_id">0</column>
+        <column name="module_id">5</column>
+        <column name="created">2013-07-09 00:49:53</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">2013-07-09 00:49:53</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="module_links">
+        <column name="id">53</column>
+        <column name="space_type">2</column>
+        <column name="authority_id">4</column>
+        <column name="room_id">0</column>
+        <column name="module_id">7</column>
+        <column name="created">2013-07-08 11:11:47</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">2013-07-08 11:11:47</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="module_links">
+        <column name="id">59</column>
+        <column name="space_type">3</column>
+        <column name="authority_id">4</column>
+        <column name="room_id">0</column>
+        <column name="module_id">7</column>
+        <column name="created">2013-07-08 11:11:47</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">2013-07-08 11:11:47</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="module_links">
+        <column name="id">69</column>
+        <column name="space_type">2</column>
+        <column name="authority_id">7</column>
+        <column name="room_id">0</column>
+        <column name="module_id">1</column>
+        <column name="created">2013-07-08 11:12:05</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-07-08 11:12:05</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="module_links">
+        <column name="id">70</column>
+        <column name="space_type">2</column>
+        <column name="authority_id">7</column>
+        <column name="room_id">0</column>
+        <column name="module_id">5</column>
+        <column name="created">2013-07-08 11:12:05</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-07-08 11:12:05</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="module_links">
+        <column name="id">71</column>
+        <column name="space_type">2</column>
+        <column name="authority_id">7</column>
+        <column name="room_id">0</column>
+        <column name="module_id">7</column>
+        <column name="created">2013-07-08 11:12:05</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-07-08 11:12:05</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="module_links">
+        <column name="id">72</column>
+        <column name="space_type">3</column>
+        <column name="authority_id">7</column>
+        <column name="room_id">0</column>
+        <column name="module_id">1</column>
+        <column name="created">2013-07-08 11:12:05</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-07-08 11:12:05</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="module_links">
+        <column name="id">73</column>
+        <column name="space_type">3</column>
+        <column name="authority_id">7</column>
+        <column name="room_id">0</column>
+        <column name="module_id">5</column>
+        <column name="created">2013-07-08 11:12:05</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-07-08 11:12:05</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="module_links">
+        <column name="id">74</column>
+        <column name="space_type">3</column>
+        <column name="authority_id">7</column>
+        <column name="room_id">0</column>
+        <column name="module_id">7</column>
+        <column name="created">2013-07-08 11:12:05</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-07-08 11:12:05</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="module_links">
+        <column name="id">51</column>
+        <column name="space_type">2</column>
+        <column name="authority_id">2</column>
+        <column name="room_id">0</column>
+        <column name="module_id">7</column>
+        <column name="created">2013-07-09 00:48:45</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">2013-07-09 00:48:45</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="module_links">
+        <column name="id">55</column>
+        <column name="space_type">2</column>
+        <column name="authority_id">6</column>
+        <column name="room_id">0</column>
+        <column name="module_id">7</column>
+        <column name="created">2013-07-09 00:49:23</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">2013-07-09 00:49:23</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
     <!-- テーブル module_system_links -->
     <table name="module_system_links">
         <column name="id">1</column>
         <column name="authority_id">1</column>
-        <column name="module_id">2</column>
-        <column name="hierarchy">500</column>
-        <column name="created">NULL</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">NULL</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
-    </table>
-    <table name="module_system_links">
-        <column name="id">2</column>
-        <column name="authority_id">2</column>
         <column name="module_id">2</column>
         <column name="hierarchy">400</column>
         <column name="created">NULL</column>
@@ -6041,34 +6158,46 @@ e-mail：{X-EMAIL}
         <column name="modified_user_name"></column>
     </table>
     <table name="module_system_links">
-        <column name="id">3</column>
-        <column name="authority_id">3</column>
-        <column name="module_id">2</column>
-        <column name="hierarchy">300</column>
-        <column name="created">NULL</column>
+        <column name="id">10</column>
+        <column name="authority_id">2</column>
+        <column name="module_id">8</column>
+        <column name="hierarchy">200</column>
+        <column name="created">2013-07-09 00:48:58</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
-        <column name="modified">NULL</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
+        <column name="modified">2013-07-09 00:48:58</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
     </table>
     <table name="module_system_links">
-        <column name="id">4</column>
-        <column name="authority_id">4</column>
-        <column name="module_id">2</column>
+        <column name="id">11</column>
+        <column name="authority_id">3</column>
+        <column name="module_id">8</column>
         <column name="hierarchy">200</column>
-        <column name="created">NULL</column>
+        <column name="created">2013-07-09 00:49:53</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
-        <column name="modified">NULL</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
+        <column name="modified">2013-07-09 00:49:53</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="module_system_links">
+        <column name="id">12</column>
+        <column name="authority_id">4</column>
+        <column name="module_id">8</column>
+        <column name="hierarchy">200</column>
+        <column name="created">2013-07-08 11:11:47</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-07-08 11:11:47</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
     </table>
     <table name="module_system_links">
         <column name="id">5</column>
         <column name="authority_id">5</column>
         <column name="module_id">2</column>
-        <column name="hierarchy">1</column>
+        <column name="hierarchy">400</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -6080,7 +6209,7 @@ e-mail：{X-EMAIL}
         <column name="id">6</column>
         <column name="authority_id">1</column>
         <column name="module_id">3</column>
-        <column name="hierarchy">500</column>
+        <column name="hierarchy">400</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -6092,11 +6221,47 @@ e-mail：{X-EMAIL}
         <column name="id">7</column>
         <column name="authority_id">1</column>
         <column name="module_id">8</column>
-        <column name="hierarchy">500</column>
+        <column name="hierarchy">400</column>
         <column name="created">2013-05-31 05:42:49</column>
         <column name="created_user_id">1</column>
         <column name="created_user_name">admin</column>
         <column name="modified">2013-05-31 05:42:49</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="module_system_links">
+        <column name="id">8</column>
+        <column name="authority_id">1</column>
+        <column name="module_id">9</column>
+        <column name="hierarchy">400</column>
+        <column name="created">2013-07-01 03:18:07</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-07-01 03:18:07</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="module_system_links">
+        <column name="id">9</column>
+        <column name="authority_id">6</column>
+        <column name="module_id">8</column>
+        <column name="hierarchy">200</column>
+        <column name="created">2013-07-09 00:49:32</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">2013-07-09 00:49:32</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="module_system_links">
+        <column name="id">13</column>
+        <column name="authority_id">7</column>
+        <column name="module_id">8</column>
+        <column name="hierarchy">200</column>
+        <column name="created">2013-07-08 11:12:05</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-07-08 11:12:05</column>
         <column name="modified_user_id">1</column>
         <column name="modified_user_name">admin</column>
     </table>
@@ -6446,7 +6611,7 @@ e-mail：{X-EMAIL}
         <column name="page_column_id">1</column>
         <column name="room_id">9</column>
         <column name="space_type">1</column>
-        <column name="show_count">100</column>
+        <column name="show_count">102</column>
         <column name="display_flag">1</column>
         <column name="display_from_date">NULL</column>
         <column name="display_to_date">NULL</column>
@@ -6457,7 +6622,7 @@ e-mail：{X-EMAIL}
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
-        <column name="modified">2013-06-24 06:58:35</column>
+        <column name="modified">2013-07-09 00:50:49</column>
         <column name="modified_user_id">1</column>
         <column name="modified_user_name">admin</column>
     </table>
@@ -6518,6 +6683,246 @@ e-mail：{X-EMAIL}
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
         <column name="modified">2013-06-24 06:59:37</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="pages">
+        <column name="id">22</column>
+        <column name="root_id">22</column>
+        <column name="parent_id">4</column>
+        <column name="thread_num">1</column>
+        <column name="display_sequence">1</column>
+        <column name="page_name">新規コミュニティー-2</column>
+        <column name="permalink">新規コミュニティー-2</column>
+        <column name="position_flag">1</column>
+        <column name="lang"></column>
+        <column name="page_inf_id">0</column>
+        <column name="page_style_id">0</column>
+        <column name="page_column_id">0</column>
+        <column name="room_id">22</column>
+        <column name="space_type">4</column>
+        <column name="show_count">0</column>
+        <column name="display_flag">1</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="is_approved">1</column>
+        <column name="lock_authority_id">0</column>
+        <column name="created">2013-06-26 01:10:56</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-06-26 01:10:56</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="pages">
+        <column name="id">23</column>
+        <column name="root_id">22</column>
+        <column name="parent_id">22</column>
+        <column name="thread_num">2</column>
+        <column name="display_sequence">1</column>
+        <column name="page_name">Community Top</column>
+        <column name="permalink">新規コミュニティー-2</column>
+        <column name="position_flag">1</column>
+        <column name="lang">ja</column>
+        <column name="page_inf_id">0</column>
+        <column name="page_style_id">0</column>
+        <column name="page_column_id">0</column>
+        <column name="room_id">22</column>
+        <column name="space_type">4</column>
+        <column name="show_count">0</column>
+        <column name="display_flag">1</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="is_approved">1</column>
+        <column name="lock_authority_id">0</column>
+        <column name="created">2013-06-26 01:10:56</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-06-26 01:10:56</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="pages">
+        <column name="id">24</column>
+        <column name="root_id">24</column>
+        <column name="parent_id">4</column>
+        <column name="thread_num">1</column>
+        <column name="display_sequence">1</column>
+        <column name="page_name">新規コミュニティー-3</column>
+        <column name="permalink">新規コミュニティー-3</column>
+        <column name="position_flag">1</column>
+        <column name="lang"></column>
+        <column name="page_inf_id">0</column>
+        <column name="page_style_id">0</column>
+        <column name="page_column_id">0</column>
+        <column name="room_id">24</column>
+        <column name="space_type">4</column>
+        <column name="show_count">0</column>
+        <column name="display_flag">1</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="is_approved">1</column>
+        <column name="lock_authority_id">0</column>
+        <column name="created">2013-06-26 01:43:40</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-06-26 01:43:40</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="pages">
+        <column name="id">25</column>
+        <column name="root_id">24</column>
+        <column name="parent_id">24</column>
+        <column name="thread_num">2</column>
+        <column name="display_sequence">1</column>
+        <column name="page_name">Community Top</column>
+        <column name="permalink">新規コミュニティー-3</column>
+        <column name="position_flag">1</column>
+        <column name="lang">ja</column>
+        <column name="page_inf_id">0</column>
+        <column name="page_style_id">0</column>
+        <column name="page_column_id">0</column>
+        <column name="room_id">24</column>
+        <column name="space_type">4</column>
+        <column name="show_count">0</column>
+        <column name="display_flag">1</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="is_approved">1</column>
+        <column name="lock_authority_id">0</column>
+        <column name="created">2013-06-26 01:43:40</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-06-26 01:43:40</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="pages">
+        <column name="id">26</column>
+        <column name="root_id">22</column>
+        <column name="parent_id">22</column>
+        <column name="thread_num">2</column>
+        <column name="display_sequence">2</column>
+        <column name="page_name">新規コミュニティー-2-1</column>
+        <column name="permalink">新規コミュニティー-2/新規コミュニティー-2-1</column>
+        <column name="position_flag">1</column>
+        <column name="lang">ja</column>
+        <column name="page_inf_id">0</column>
+        <column name="page_style_id">0</column>
+        <column name="page_column_id">0</column>
+        <column name="room_id">26</column>
+        <column name="space_type">4</column>
+        <column name="show_count">0</column>
+        <column name="display_flag">1</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="is_approved">1</column>
+        <column name="lock_authority_id">0</column>
+        <column name="created">2013-06-26 01:10:56</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-06-26 01:44:11</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="pages">
+        <column name="id">27</column>
+        <column name="root_id">22</column>
+        <column name="parent_id">26</column>
+        <column name="thread_num">3</column>
+        <column name="display_sequence">3</column>
+        <column name="page_name">新規コミュニティー-2-2</column>
+        <column name="permalink">新規コミュニティー-2/新規コミュニティー-2-1/新規コミュニティー-2-2</column>
+        <column name="position_flag">1</column>
+        <column name="lang">ja</column>
+        <column name="page_inf_id">0</column>
+        <column name="page_style_id">0</column>
+        <column name="page_column_id">0</column>
+        <column name="room_id">27</column>
+        <column name="space_type">4</column>
+        <column name="show_count">0</column>
+        <column name="display_flag">1</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="is_approved">1</column>
+        <column name="lock_authority_id">0</column>
+        <column name="created">2013-06-26 01:10:56</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-06-26 01:44:11</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="pages">
+        <column name="id">28</column>
+        <column name="root_id">22</column>
+        <column name="parent_id">27</column>
+        <column name="thread_num">4</column>
+        <column name="display_sequence">4</column>
+        <column name="page_name">新規コミュニティー-2-3</column>
+        <column name="permalink">新規コミュニティー-2/新規コミュニティー-2-1/新規コミュニティー-2-2/新規コミュニティー-2-3</column>
+        <column name="position_flag">1</column>
+        <column name="lang">ja</column>
+        <column name="page_inf_id">0</column>
+        <column name="page_style_id">0</column>
+        <column name="page_column_id">0</column>
+        <column name="room_id">28</column>
+        <column name="space_type">4</column>
+        <column name="show_count">0</column>
+        <column name="display_flag">1</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="is_approved">1</column>
+        <column name="lock_authority_id">0</column>
+        <column name="created">2013-06-26 01:10:56</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-06-26 01:44:11</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
+    <table name="pages">
+        <column name="id">29</column>
+        <column name="root_id">22</column>
+        <column name="parent_id">22</column>
+        <column name="thread_num">2</column>
+        <column name="display_sequence">5</column>
+        <column name="page_name">新規コミュニティー-2-4</column>
+        <column name="permalink">新規コミュニティー-2/新規コミュニティー-2-4</column>
+        <column name="position_flag">1</column>
+        <column name="lang">ja</column>
+        <column name="page_inf_id">0</column>
+        <column name="page_style_id">0</column>
+        <column name="page_column_id">0</column>
+        <column name="room_id">29</column>
+        <column name="space_type">4</column>
+        <column name="show_count">0</column>
+        <column name="display_flag">1</column>
+        <column name="display_from_date">NULL</column>
+        <column name="display_to_date">NULL</column>
+        <column name="display_apply_subpage">1</column>
+        <column name="display_reverse_permalink">NULL</column>
+        <column name="is_approved">1</column>
+        <column name="lock_authority_id">0</column>
+        <column name="created">2013-06-26 01:10:56</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-06-26 01:44:11</column>
         <column name="modified_user_id">1</column>
         <column name="modified_user_name">admin</column>
     </table>
@@ -6860,6 +7265,18 @@ e-mail：{X-EMAIL}
         <column name="modified_user_id">0</column>
         <column name="modified_user_name"></column>
     </table>
+    <table name="page_user_links">
+        <column name="id">37</column>
+        <column name="room_id">24</column>
+        <column name="user_id">1</column>
+        <column name="authority_id">2</column>
+        <column name="created">2013-06-26 01:43:40</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-06-26 01:43:40</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name">admin</column>
+    </table>
     <!-- テーブル passports -->
     <!-- テーブル revisions -->
     <table name="revisions">
@@ -6969,7 +7386,7 @@ Valley以降、一貫してテーマとしてきたのも、まさにそのこ�
     <table name="users">
         <column name="id">1</column>
         <column name="login_id">admin</column>
-        <column name="password"></column>
+        <column name="password">e01081c788050418e66fff9605004263da908eb0</column>
         <column name="handle">admin</column>
         <column name="authority_id">1</column>
         <column name="is_active">1</column>
@@ -6980,15 +7397,15 @@ Valley以降、一貫してテーマとしてきたのも、まさにそのこ�
         <column name="activate_key">NULL</column>
         <column name="lang">ja</column>
         <column name="timezone_offset">9</column>
-        <column name="email"></column>
+        <column name="email">admin@admin.com</column>
         <column name="mobile_email"></column>
         <column name="password_regist">NULL</column>
-        <column name="last_login">2013-06-24 08:18:50</column>
-        <column name="previous_login">2013-06-24 06:32:39</column>
+        <column name="last_login">2013-07-08 10:16:12</column>
+        <column name="previous_login">2013-07-03 01:19:32</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
-        <column name="modified">2013-06-24 08:18:50</column>
+        <column name="modified">2013-07-08 10:16:12</column>
         <column name="modified_user_id">0</column>
         <column name="modified_user_name"></column>
     </table>
@@ -7036,7 +7453,7 @@ Valley以降、一貫してテーマとしてきたのも、まさにそのこ�
         <column name="item_id">21</column>
         <column name="public_flag">1</column>
         <column name="email_reception_flag">1</column>
-        <column name="content"></column>
+        <column name="content">aaaa</column>
     </table>
     <!-- テーブル whatsnew_select_rooms -->
     <!-- テーブル whatsnew_select_users -->

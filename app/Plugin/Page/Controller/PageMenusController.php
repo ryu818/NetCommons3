@@ -722,7 +722,7 @@ class PageMenusController extends PageAppController {
 			return;
 		}
 
-		$authList = $this->Authority->findAuthSelectHtml();
+		$authList = $this->Authority->findAuthSelect();
 		if($this->request->is('post') && !isset($this->request->data['isSearch'])) {
 			// 登録処理
 			$authority = $this->Authority->findById($user['authority_id']);
@@ -845,7 +845,7 @@ class PageMenusController extends PageAppController {
 		$this->set('page_num', $pageNum);
 		$this->set('total', $total);
 		$this->set('users', $users);
-		$this->set('auth_list',$this->Authority->findAuthSelectHtml());
+		$this->set('auth_list',$this->Authority->findAuthSelect());
 		$this->set('user_id', $userId);
 		$this->set('page', $page);
 		$this->set('page_user_links', $this->PageMenu->participantSession($this->request, $pageId, $adminHierarchy));

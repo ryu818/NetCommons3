@@ -101,9 +101,10 @@ class Module extends AppModel
 /**
  * コントロールパネルの表示リスト一覧取得
  * @param  integer  $authority_id
+ * @param  string   $joinType
  * @return Model Modules
  */
-	public function findSystemModule($authority_id) {
+	public function findSystemModule($authority_id, $joinType = "INNER") {
 		$conditions = array(
 			'Module.system_flag' => _ON,
 			'Module.disposition_flag' => _ON
@@ -113,10 +114,10 @@ class Module extends AppModel
 		);
 		$params = array(
 			'fields' => array(
-					'Module.*'
+				'Module.*', 'ModuleSystemLink.hierarchy'
 			),
 			'joins' => array(
-				array("type" => "INNER",
+				array("type" => $joinType,
 					"table" => "module_system_links",
 					"alias" => "ModuleSystemLink",
 					"conditions" => array(

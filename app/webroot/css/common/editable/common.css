@@ -159,7 +159,7 @@ a.hover-highlight:active {
 }
 
 .common-btn-min {
-	min-width: auto;
+	min-width: 0;
 	padding: 2px 10px 1px 10px;
 	margin: 3px;
 }
@@ -200,6 +200,19 @@ a.hover-highlight:active {
 .add-btn-link {
 	background: url(../../img/icons/plus.png) no-repeat left center;
 	padding: 0 0 0 28px;
+}
+
+
+/* 言語切替 */
+.language-outer {
+	padding: 4px;
+	text-align:right;
+}
+.language-outer div {
+	text-align:left;
+}
+.language {
+	width:130px;
 }
 
 /* 一覧へ戻る */

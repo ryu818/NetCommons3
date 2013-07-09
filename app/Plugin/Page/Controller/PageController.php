@@ -122,7 +122,7 @@ class PageController extends PageAppController {
 		$page_id = isset($this->request->query['page_id']) ? intval($this->request->query['page_id']) : (isset($center_page) ? $center_page['Page']['id'] : null);
 
 		// 言語切替
-		$languages = $this->Language->findList();
+		$languages = $this->Language->findSelectList();
 		if(isset($active_lang) && isset($languages[$active_lang])) {
 			$pre_lang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.pre_lang');
 			if(!isset($pre_lang)) {

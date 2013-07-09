@@ -383,29 +383,36 @@ class MyFormHelper extends FormHelper {
  * @param string Model name
  * @param array $fieldList	fieldListが設定されていた場合、そのfieldListのみ出力。
  * @param boolean falseの場合、""のデータのものはhiddenとして出力しない。
+ * @param array $data default null nullの場合、$this->dataからHidden生成、そうえない場合、$dataからHidden生成
  * @return string hidden string
  */
-	public function hiddenVars($modelName, $fieldList = array(), $isEmpty = true) {
+	public function hiddenVars($modelName, $fieldList = array(), $isEmpty = true, $data = null) {
 		$ret = "";
-		if(!isset($this->data[$modelName])) {
+		if(!isset($data)) {
+			$data = $this->data;
+		}
+		if(!isset($data[$modelName])) {
 			return $ret;
 		}
 
-		foreach ($this->data[$modelName] as $key => $val) {
+		foreach ($data[$modelName] as $key => $val) {
 			if(is_array($val)){
 				foreach( $val as $key2 => $val2 ){
 					if(is_array($val2)){
 						foreach( $val2 as $key3 => $val3 ){
 							if((count($fieldList) == 0 || in_array($key3, $fieldList)) && ($isEmpty == true || $val3 !== '')) {
-								$ret .= $this->hidden("$modelName.$key.$key2.$key3")."\n";
+								$val3 = ($val3 === false) ? _OFF : $val3;
+								$ret .= $this->hidden("$modelName.$key.$key2.$key3", array('value' => $val3))."\n";
 							}
 						}
 					} else if((count($fieldList) == 0 || in_array($key2, $fieldList)) && ($isEmpty == true || $val2 !== '')) {
-						$ret .= $this->hidden("$modelName.$key.$key2")."\n";
+						$val2 = ($val2 === false) ? _OFF : $val2;
+						$ret .= $this->hidden("$modelName.$key.$key2", array('value' => $val2))."\n";
 					}
 				}
 			} else if((count($fieldList) == 0 || in_array($key, $fieldList)) && ($isEmpty == true || $val !== '')) {
-				$ret .= $this->hidden("$modelName.$key")."\n";
+				$val = ($val === false) ? _OFF : $val;
+				$ret .= $this->hidden("$modelName.$key", array('value' => $val))."\n";
 			}
 		}
 		return $ret;

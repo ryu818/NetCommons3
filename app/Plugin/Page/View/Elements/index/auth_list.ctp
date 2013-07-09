@@ -45,7 +45,7 @@ if(count($auth) == 1 || $selauth == false) {
 			} else {
 				$selected = "";
 			}
-			$select_after_html .= "<option value=\"".$data['id']."\"".$selected.">".h(__($data['authority_name']))."</option>";
+			$select_after_html .= "<option value=\"".$data['id']."\"".$selected.">".h($data['authority_name'])."</option>";
 		}
 	$select_after_html .= "</select>";
 }

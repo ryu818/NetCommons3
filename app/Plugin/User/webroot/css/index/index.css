@@ -196,15 +196,3 @@ div.user-add-item-textarea {
 	width: 250px;
 	height: 80px;
 }
-
-/* 言語切替 */
-.user-language-outer {
-	padding: 4px;
-	text-align:right;
-}
-.user-language-outer div {
-	text-align:left;
-}
-.user-language {
-	width:130px;
-}

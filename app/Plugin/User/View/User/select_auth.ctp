@@ -16,11 +16,11 @@
 	<?php
 		echo $this->Html->link(__d('user', 'Edit member info[%s]', $user['User']['handle']), array('action' => 'edit', $user_id), array('data-ajax' => '#'.$id, 'data-ajax-type' => 'post', 'data-ajax-serialize' => true, 'class' => 'bold'));
 	?>
-	&nbsp;>>&nbsp;
+	&nbsp;&gt;&gt;&nbsp;
 	<?php
 		echo $this->Html->link(__d('user', 'Select Groups to join'), array('action' => 'select_group', $user_id), array('data-ajax' => '#'.$id, 'data-ajax-type' => 'post', 'data-ajax-serialize' => true, 'class' => 'bold'));
 	?>
-	&nbsp;>>&nbsp;
+	&nbsp;&gt;&gt;&nbsp;
 	<h3 class="bold display-inline">
 		<?php echo __d('user', 'Set authority'); ?>
 	</h3>

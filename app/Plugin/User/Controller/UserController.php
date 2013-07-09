@@ -131,7 +131,6 @@ class UserController extends UserAppController {
  * @since   v 3.0.0.0
  */
 	public function detail() {
-		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		$pageNum = intval($this->request->data['page']) == 0 ? 1 : intval($this->request->data['page']);
 		$rp = intval($this->request->data['rp']);
 		$sortname = isset($this->request->data['sortname']) ? $this->request->data['sortname'] : "Authority.hierarchy" ;
@@ -141,15 +140,24 @@ class UserController extends UserAppController {
 		$userAuthorityId = $this->Authority->getUserAuthorityId($loginUser['hierarchy']);
 		$this->set('loginHierarchy', $loginUser['hierarchy']);
 
-		$this->_setLanguage();
+		$activeLang = $this->_setLanguage();
 
 		$fields = array(
-			'User.*, UserItemLinkUsername.content, Authority.authority_name, Authority.hierarchy, Authority.system_flag'
+			'User.*, UserItemLinkUsername.content, Authority.default_authority_name, AuthorityLang.authority_name, Authority.hierarchy, Authority.system_flag'
 		);
 		list($conditions, $joins) = $this->User->getRefineSearch($this->request, $userAuthorityId, $this->hierarchy);
 		$joins[] = 	array("table" => "authorities",
 			"alias" => "Authority",
 			"conditions" => "`User`.`authority_id`=`Authority`.`id`"
+		);
+		$joins[] = 	array(
+			"type" => "LEFT",
+			"table" => "authority_langs",
+			"alias" => "AuthorityLang",
+			"conditions" => array(
+				"`AuthorityLang`.`authority_id`=`Authority`.`id`",
+				"AuthorityLang.lang" => $activeLang,
+			)
 		);
 		$alias = "UserItemLinkUsername";
 		$joins[] = array(
@@ -159,9 +167,9 @@ class UserController extends UserAppController {
 			"conditions" => array(
 				$alias.".user_id = User.id",
 				$alias.".item_id" => NC_ITEM_ID_USERNAME,
-				$alias.".lang" => $lang,
+				$alias.".lang" => $activeLang,
 			)
-		);;
+		);
 		$order = array(
 			$sortname => $sortorder,
 			'User.id' => 'asc'
@@ -243,8 +251,8 @@ class UserController extends UserAppController {
 
 		$items = $this->Item->findList();
 		$this->set('items', $items);
-		$this->set('authorities', $this->Authority->findList());
-		$this->set('languages', $this->Language->findList());
+		$this->set('authorities', $this->Authority->findSelectList());
+		$this->set('languages', $this->Language->findSelectList());
 		$userAuthorityId = $this->Authority->getUserAuthorityId($loginUser['hierarchy']);
 		$params = array(
 			'conditions' => array('user_authority_id' => $userAuthorityId)
@@ -416,8 +424,8 @@ class UserController extends UserAppController {
 		$this->set('user', $user);
 		$this->set('user_item_links', $userItemLinks);
 		$this->set("items", $items);
-		$this->set('authorities', $this->Authority->findList());
-		$this->set('languages', $this->Language->findList());
+		$this->set('authorities', $this->Authority->findSelectList());
+		$this->set('languages', $this->Language->findSelectList());
 	}
 
 /**
@@ -682,7 +690,7 @@ class UserController extends UserAppController {
 		$this->set('user', $user);
 		$this->set('user_authority_name', $this->Authority->getUserAuthorityName($user['Authority']['hierarchy']));
 		$this->set('page_user_links', $pageUserLinks);
-		$this->set('auth_list',$this->Authority->findAuthSelectHtml());
+		$this->set('auth_list',$this->Authority->findAuthSelect());
 	}
 
 /**
@@ -755,7 +763,7 @@ class UserController extends UserAppController {
 /**
  * 言語切替
  * @param   string $renderElement
- * @return  void
+ * @return  string
  * @since   v 3.0.0.0
  */
 	protected function _setLanguage($renderElement = null) {
@@ -763,7 +771,7 @@ class UserController extends UserAppController {
 		if(isset($this->request->data['activeLang'])) {
 			$activeLang = $this->request->data['activeLang'];
 		}
-		$languages = $this->Language->findList();
+		$languages = $this->Language->findSelectList();
 		$this->set("language", $activeLang);
 		$this->set("languages", $languages);
 		if(isset($activeLang) && isset($languages[$activeLang])) {
@@ -774,5 +782,6 @@ class UserController extends UserAppController {
 				$this->render($renderElement);
 			}
 		}
+		return $activeLang;
 	}
 }

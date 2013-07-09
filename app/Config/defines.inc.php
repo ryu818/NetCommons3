@@ -78,10 +78,11 @@ define('NC_THEME_KEY', 'Theme');
 define('NC_SYSTEM_KEY', 'System');
 
 //-----------------権限(Authority.allow_creating_community)------------------------------------
-define('NC_ALLOW_CREATING_COMMUNITY_OFF', 		0);			// ルーム作成不可(コミュニティーに限らず子グループの作成を許さない)
+define('NC_ALLOW_CREATING_COMMUNITY_OFF', 		0);			// コミュニティー作成不可（デフォルト）
 define('NC_ALLOW_CREATING_COMMUNITY_ONLY_USER', 1);			// 参加者のみのコミュニティー作成可
-define('NC_ALLOW_CREATING_COMMUNITY_ALL_USER', 	2);			// 一部公開までのコミュニティー作成可
-define('NC_ALLOW_CREATING_COMMUNITY_ALL', 		3);			// 公開までのコミュニティー作成可
+define('NC_ALLOW_CREATING_COMMUNITY_ALL_USER', 	2);			// 一部公開（すべてのログイン会員が閲覧可能）までのコミュニティー作成可
+define('NC_ALLOW_CREATING_COMMUNITY_ALL', 		3);			// 公開（すべてのユーザーが閲覧可能）までのコミュニティー作成可
+define('NC_ALLOW_CREATING_COMMUNITY_ADMIN', 	4);			// 公開コミュニティーまで作成でき、すべてのコミュニティーの表示順変更、削除が可能
 
 //-----------------権限(Authority.allow_new_participant)------------------------------------
 // _ON:netcommonsのように主坦が参加者を追加・変更・削除を行うことができる。
@@ -262,6 +263,7 @@ define('NC_ITEM_ID_LAST_LOGIN',			18);
 define('NC_ITEM_ID_PREVIOUS_LOGIN',		19);
 
 //-----------------アップロード関連-------------------------------------------
+// Authority.allow_attachment
 define("NC_ALLOW_ATTACHMENT_NO", 0);
 define("NC_ALLOW_ATTACHMENT_IMAGE" ,1);
 define("NC_ALLOW_ATTACHMENT_ALL", 2);
