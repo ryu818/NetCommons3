@@ -695,11 +695,17 @@
 			var reg = new RegExp(permalink_prohibition , 'ig');
 
 			// ページ名称と固定リンクが同じならば、ページ名称の変更で、固定リンクも変更。
-			input.keyup(function(e) {
+			var changepermalink = function(el) {
 				var replace_name = buf_name.replace(reg, permalink_prohibition_replace);
 				if(permalink.val() == replace_name) {
-    				permalink.val($(this).val().replace(reg, permalink_prohibition_replace));
-    			}
+					permalink.val($(el).val().replace(reg, permalink_prohibition_replace));
+				}
+			}
+			input.change(function(e) {
+				changepermalink(this);
+			});
+			input.keyup(function(e) {
+				changepermalink(this);
 			});
 			input.keydown(function(e) {
 				buf_name = $(this).val();
