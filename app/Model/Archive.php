@@ -202,7 +202,7 @@ class Archive extends AppModel
 		if(!isset($data['Archive'])) {
 			$data['Archive'] = $data;
 		}
-		if(!empty($data['Archive']['search_content'])) {
+		if(!isset($data['Archive']['search_content'])) {
 			$data['Archive']['search_content'] = $data['Archive']['content'];
 		}
 		if(!empty($data['Archive']['url']) && is_array($data['Archive']['url'])) {
