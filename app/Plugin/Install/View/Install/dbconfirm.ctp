@@ -106,8 +106,8 @@ $this->assign('title', __d('install', 'Confirm database settings'));
 
 		<div class="btn-bottom align-right">
 			<input type="button" value="<?php echo(__d('install', 'Reload')); ?>" name="reload" class="btn" onclick="location.href='<?php echo $this->Html->url(array('plugin' => 'install','controller' => 'install','action' => 'dbconfirm')); ?>';" />
-			<input type="button" value="<?php echo(h(__('&lt;&lt;Back'))); ?>" name="back" class="btn" onclick="location.href='<?php echo $this->Html->url(array('plugin' => 'install','controller' => 'install','action' => 'database')); ?>';" />
-			<input type="button" value="<?php echo(h(__('Next&gt;&gt;'))); ?>" name="next" <?php if(!$check || $exists_table): ?>disabled="disabled" class="btn disabled"<?php else: ?>class="btn"<?php endif; ?> onclick="location.href='<?php echo $this->Html->url(array('plugin' => 'install','controller' => 'install','action' => 'data')); ?>';" />
+			<input type="button" value="<?php echo(__('&lt;&lt;Back')); ?>" name="back" class="btn" onclick="location.href='<?php echo $this->Html->url(array('plugin' => 'install','controller' => 'install','action' => 'database')); ?>';" />
+			<input type="button" value="<?php echo(__('Next&gt;&gt;')); ?>" name="next" <?php if(!$check || $exists_table): ?>disabled="disabled" class="btn disabled"<?php else: ?>class="btn"<?php endif; ?> onclick="location.href='<?php echo $this->Html->url(array('plugin' => 'install','controller' => 'install','action' => 'data')); ?>';" />
 		</div>
 	</form>
 </div>

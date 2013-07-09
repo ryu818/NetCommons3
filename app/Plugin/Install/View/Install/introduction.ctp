@@ -9,8 +9,8 @@ $this->assign('title', __d('install', 'Introduction'));
 			<?php echo(__d('install', 'introduction description')); ?>
 		</div>
 		<div class="btn-bottom align-right">
-			<input type="button" value="<?php echo(h(__('&lt;&lt;Back'))); ?>" name="next" class="btn" onclick="history.back();" />
-			<input type="submit" value="<?php echo(h(__('Next&gt;&gt;'))); ?>" name="next" class="btn" />
+			<input type="button" value="<?php echo(__('&lt;&lt;Back')); ?>" name="next" class="btn" onclick="history.back();" />
+			<input type="submit" value="<?php echo(__('Next&gt;&gt;')); ?>" name="next" class="btn" />
 		</div>
 	</form>
 </div>
