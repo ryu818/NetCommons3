@@ -505,13 +505,6 @@ class ModuleAdmin extends AppModel {
 		$module_name = $module['Module']['module_name'];
 		$prefix = __d('module', 'Module %s:', h($module_name));
 
-		// ----------------------------------------------
-		// --- スキーマ実行(update)	 ---
-		// ----------------------------------------------
-		if(!$this->dropSchema($dirName, $prefix, $errorMes)) {
-			return array($successMes, $errorMes);
-		}
-
 		// ------------------------------------------------------
 		// --- ブロックテーブルのデータ削除                  ---
 		// ------------------------------------------------------
@@ -620,6 +613,13 @@ class ModuleAdmin extends AppModel {
 		);
 		if(!$Module->updateAll($displayseq_fields, $displayseq_conditions)) {
 			$errorMes[] = $prefix.__('Failed to update the database, (%s).','modules');
+			return array($successMes, $errorMes);
+		}
+
+		// ----------------------------------------------
+		// --- スキーマ実行(update)	 ---
+		// ----------------------------------------------
+		if(!$this->dropSchema($dirName, $prefix, $errorMes)) {
 			return array($successMes, $errorMes);
 		}
 
