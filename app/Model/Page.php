@@ -919,6 +919,7 @@ class Page extends AppModel
 				$bufResults = array();
 				$count = 0;
 				foreach($results as $result) {
+					$result = $this->setPageName($result);
 					$bufResults[$count] = $result;
 					$count++;
 				}
