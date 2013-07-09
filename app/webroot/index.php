@@ -47,6 +47,15 @@ if (!defined('ROOT')) {
 if (!defined('APP_DIR')) {
 	define('APP_DIR', basename(dirname(dirname(__FILE__))));
 }
+// versionチェック Add Start Ryuji.M
+if (version_compare(phpversion(), "5.2.8", "<")) {
+	echo 'Your PHP version is too old, please upgrade to a newer version. Your version is '.phpversion().', this application requires 5.2.8.';
+	exit;
+} else if(!is_writable(ROOT . DS . APP_DIR . DS . 'tmp' . DS . 'cache'. DS)) {
+	// tmp書き込み権チェック
+	echo '[app/tmp/cache] is NOT writable.';
+	exit;
+}
 
 /**
  * The absolute path to the "cake" directory, WITHOUT a trailing DS.
