@@ -104,7 +104,7 @@ class Revision extends AppModel
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	public function beforeSave($options) {
+	public function beforeSave($options = array()) {
 		if($this->data[$this->alias]['group_id'] != 0 && $this->data[$this->alias]['revision_name'] != 'auto-draft') {
 			$revisions = $this->findRevisions(null, $this->data[$this->alias]['group_id'], 1);
 			if(isset($revisions[0]) && $revisions[0][$this->alias]['revision_name']  != 'auto-draft'
