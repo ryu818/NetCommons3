@@ -33,11 +33,13 @@
 .blog-entry-title {
     font-size: 116%;
     font-weight: bold;
-    height: 1.1em;
-    padding: 0 0 10px 0;
+    display: inline;
     white-space: nowrap;
 }
 
+.blog-entry-meta {
+	padding: 3px 0;
+}
 .blog-entry-title a {
 	text-decoration:none;
 }
@@ -45,9 +47,6 @@
 .blog-entry-content {
     line-height: 1.7;
     padding: 20px 0;
-}
-
-.blog-comments-link a, .blog-entry-meta a {
 }
 
 .blog-term {
@@ -154,8 +153,7 @@ h3.blog-comment-title {
 }
 .blog-comment-list {
 	margin-left:15px;
-	border-bottom-style:double;
-	border-bottom-color:#EDEDED
+	border-bottom: 3px double #ededed;
 }
 ul.blog-comment-child-lists {
 	margin-left:50px;
@@ -190,4 +188,32 @@ cite.blog-comment-citation {
 }
 .blog-comment-time-link {
 	text-decoration:none;
+}
+/* トラックバック */
+.blog-trackback-group{
+	padding-left:15px;
+}
+.blog-trackback-list{
+	margin-left:15px;
+	border-bottom: 3px double #ededed;
+}
+article.blog-trackback {
+	padding-top:10px;
+}
+h3.blog-trackback-title {
+	margin:15px 0;
+	font-weight:bold;
+}
+.blog-trackback-blogname {
+	padding-left:15px;
+}
+.blog-trackback-date {
+	padding-left:20px;
+}
+.blog-trackback-excerpt {
+	padding-left:15px;
+}
+.blog-trackback-all {
+	padding-top:10px;
+	text-align:right;
 }

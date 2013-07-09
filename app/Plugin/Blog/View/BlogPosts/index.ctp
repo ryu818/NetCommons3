@@ -103,35 +103,58 @@ if($blog['Blog']['approved_flag'] == _ON && $hierarchy  <= NC_AUTH_MODERATE) {
 				echo $this->Form->textarea('Revision.content', array('escape' => false, 'required' => false, 'class' => 'nc-wysiwyg', 'value' => $blog_post['Revision']['content']));
 			?>
 		</li>
-		<?php if(isset($blog['Blog']['trackback_transmit_flag'])): ?>
-		<li>
-			<dl>
-				<dt>
-					<?php
-						echo $this->Form->label('BlogPost.trackback_link', __d('blog', 'Send trackbacks to'));
-					?>
-				</dt>
-				<dd>
-					<?php
-						$settings = array(
-							'type' => 'text',
-							'value' => $blog_post['BlogPost']['trackback_link'],
-							'label' => false,
-							'div' => false,
-							'size' => 30,
-							'error' => array('attributes' => array(
-								'selector' => true
-							))
-						);
-						echo $this->Form->input('BlogPost.trackback_link', $settings);
-					?>
-					<div class="note">
-						<?php echo(__d('blog', 'Separate multiple URLs with spaces.')); ?>
-					</div>
-				</dd>
-			</dl>
-		</li>
+		<?php if($blog['Blog']['trackback_transmit_flag'] == _ON): ?>
+			<li>
+				<dl>
+					<dt>
+						<?php
+							echo $this->Form->label('BlogPost.to_ping', __d('blog', 'Send trackbacks to'));
+						?>
+					</dt>
+					<dd>
+						<?php
+							$settings = array(
+								'type' => 'text',
+								'value' => $blog_post['BlogPost']['to_ping'],
+								'label' => false,
+								'div' => false,
+								'size' => 30,
+								'error' => array('attributes' => array(
+									'selector' => true
+								))
+							);
+							echo $this->Form->input('BlogPost.to_ping', $settings);
+						?>
+						<div class="note">
+							<?php echo(__d('blog', 'Separate multiple URLs with spaces.')); ?>
+						</div>
+					</dd>
+				</dl>
+			</li>
 		<?php endif; ?>
+		<?php if(!empty($blog_post['BlogPost']['pinged'])): ?>
+			<li>
+				<dl>
+					<dt>
+						<?php
+							echo $this->Form->label('BlogPost.pinged', __d('blog', 'Sent trackbacks'));
+						?>
+					</dt>
+					<dd>
+						<ul>
+							<div class="blog-posts-pinged">
+								<?php $pingeds = explode(' ', $blog_post['BlogPost']['pinged']);?>
+								<?php foreach ($pingeds as $pinged) {?>
+									<li>
+										<?php echo h($pinged);?>
+									</li>
+								<?php }?>
+							<div>
+						</ul>
+					</dd>
+				</dl>
+			</li>
+		<?php endif;?>
 		<?php /* TODO:post_password未作成 */ ?>
 	</ul>
 </fieldset>

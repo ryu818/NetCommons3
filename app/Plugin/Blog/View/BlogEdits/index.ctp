@@ -312,19 +312,13 @@ $this->extend('/Frame/block');
 								?>
 								<div class="hr">
 								<?php
-									echo $this->Form->input('Blog.trackback_transmit_article',array(
-										'type' => 'checkbox',
-										'value' => _ON,
-										'checked' => !empty($blog['Blog']['trackback_transmit_article']) ? true : false,
-										'label' => __d('blog', 'Attempt to trackbacks any blogs linked to from the article.'),
-									));
 									$settings = array(
 										'type' => 'text',
 										'value' => $blog['Blog']['transmit_blog_name'],
 										'label' => __d('blog', 'Sending title'),
 										'div' => false,
 										'maxlength' => NC_VALIDATOR_TITLE_LEN,
-										'size' => 35,
+										'size' => 30,
 										'error' => array('attributes' => array(
 											'selector' => true
 										))

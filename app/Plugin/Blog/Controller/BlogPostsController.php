@@ -135,9 +135,10 @@ class BlogPostsController extends BlogAppController {
 
 			$blogPost['BlogPost'] = array_merge($blogPost['BlogPost'], $this->request->data['BlogPost']);
 			$blogPost['BlogPost']['content_id'] = $this->content_id;
-			$blogPost['BlogPost']['permalink'] = $blogPost['BlogPost']['title'];	// TODO:仮でtitleをセット「「/,:」等の記号を取り除いたり同じタイトルがあればリネームしたりすること。」
+			$blogPost['BlogPost']['permalink'] = $blogPost['BlogPost']['title'];
 			$blogPost['BlogPost']['status'] = $status;
 			$blogPost['BlogPost']['is_approved'] = _ON;
+			$blogPost['BlogPost']['to_ping'] = trim($blogPost['BlogPost']['to_ping']);
 
 			$blogPost['Revision']['content'] = $this->request->data['Revision']['content'];
 
@@ -169,8 +170,8 @@ class BlogPostsController extends BlogAppController {
 			);
 
 			$fieldList = array(
-				'content_id', 'post_date', 'title', 'permalink', 'icon_name', 'revision_group_id', 'status', 'is_approved',
-				'post_password', 'trackback_link', 'pre_change_flag', 'pre_change_date',
+				'content_id', 'post_date', 'is_future', 'title', 'permalink', 'icon_name', 'revision_group_id', 'status', 'is_approved',
+				'post_password', 'to_ping', 'pre_change_flag', 'pre_change_date',
 			);
 
 			$fieldListRevision = array(
@@ -224,6 +225,13 @@ class BlogPostsController extends BlogAppController {
 					return;
 				}
 
+				// トラックバック送信
+				$tbSuccess = true;
+				if($blogPost['BlogPost']['is_future'] == _OFF && $blogPost['BlogPost']['is_approved'] == NC_APPROVED_FLAG_ON
+					&& $blogPost['BlogPost']['status'] == NC_STATUS_PUBLISH && $blog['Blog']['trackback_transmit_flag'] == _ON) {
+					$url = Router::url(array('plugin' => 'blog', 'controller' => 'blog', '?' => array('p' => $blogPost['BlogPost']['id'])), true);
+					list($tbSuccess, $tbMessage) = $this->BlogPost->sendTrackback($blogPost, $url);
+				}
 				// メール送信
 				$mailType = $this->Mail->checkPost(isset($postId), $blog['Blog']['mail_flag'], $blogPost['BlogPost']['status'], $beforeStatus, $blogPost['BlogPost']['is_approved'], $beforeIsApproved);
 				if(isset($mailType['Unapproved'])) {
@@ -273,7 +281,9 @@ class BlogPostsController extends BlogAppController {
 				}
 
 				// メッセージ表示
-				if(empty($blogPost['BlogPost']['id'])) {
+				if(!$tbSuccess) {
+					$this->Session->setFlash($tbMessage);
+				} else if(empty($blogPost['BlogPost']['id'])) {
 					$this->Session->setFlash(__('Has been successfully registered.'));
 				} else {
 					$this->Session->setFlash(__('Has been successfully updated.'));
@@ -551,6 +561,6 @@ class BlogPostsController extends BlogAppController {
 		}
 
 		$this->set('dialog_id', 'blog-posts-approve-'.$this->id);
-		$this->render('/Approve/index');
+		$this->render('/Dialogs/approve');
 	}
 }

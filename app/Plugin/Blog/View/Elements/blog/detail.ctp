@@ -26,33 +26,45 @@
 					'rel' => 'bookmark'));
 				/* TODO:New記号 */
 			?>
-			<?php if($isApprove): ?>
-				<?php
-					$approveUrl = array(
-						'controller' => 'posts', 'action' => 'approve', $blog_post['BlogPost']['id']
-					);
-					echo $this->Html->link(__('Pending'), $approveUrl, array(
-						'title' => __('Pending'),
-						'class' => 'nc-button nc-button-red small',
-						'data-ajax-inner' =>'#blog-posts-approve-'.$id,
-						'data-ajax-dialog' => true,
-						'data-ajax-effect' => 'fold',
-						'data-ajax-dialog-options' => '{"title" : "'.$this->Js->escape(__('Pending [%s]', h($title))).'","modal": true, "resizable": true, "position":"mouse", "width":"600"}',
-					));
-				?>
-			<?php elseif($blog_post['BlogPost']['status'] != NC_STATUS_PUBLISH): ?>
-				<span class="temporary">
-					<?php echo __('Temporary...'); ?>
-				</span>
-			<?php endif; ?>
-
-			<?php if($this->CheckAuth->checkAuth($hierarchy, NC_AUTH_CHIEF) && $blog_post['BlogPost']['approved_comment_count'] != $blog_post['BlogPost']['comment_count']): ?>
-				<span class="temporary">
-					<?php echo __('Pending %s', __('Comment')); ?>
-				</span>
-			<?php endif; ?>
-
 		</h1>
+		<?php if($isApprove): ?>
+			<?php
+				$approveUrl = array(
+					'controller' => 'posts', 'action' => 'approve', $blog_post['BlogPost']['id']
+				);
+				echo $this->Html->link(__('Pending'), $approveUrl, array(
+					'title' => __('Pending'),
+					'class' => 'nc-button nc-button-red small',
+					'data-ajax-inner' =>'#blog-posts-approve-'.$id,
+					'data-ajax-dialog' => true,
+					'data-ajax-effect' => 'fold',
+					'data-ajax-dialog-options' => '{"title" : "'.$this->Js->escape(__('Pending [%s]', h($title))).'","modal": true, "resizable": true, "position":"mouse", "width":"600"}',
+				));
+			?>
+		<?php elseif($blog_post['BlogPost']['status'] != NC_STATUS_PUBLISH): ?>
+			<span class="temporary">
+				<?php echo __('Temporary...'); ?>
+			</span>
+		<?php endif; ?>
+
+		<?php if($detail_type == 'subject'):?>
+			<?php // 短縮URLの取得
+				$url = array('plugin' => 'blog', 'controller' => 'blog', '?' => array('p' => $blog_post['BlogPost']['id']));
+				echo $this->Html->link(__d('blog', 'Short URLs'), $this->html->url($url, true), array(
+					'title' => __d('blog', 'Get %s', __d('blog', 'Short URLs')), 'class' => 'nc-button small',
+					'onclick' => "prompt('" .__d('blog', 'Short URLs'). ':'. "'  ,$(this).attr('href')); return false;"
+				));
+			?>
+			<?php // トラックバックURLの取得
+				if($blog['Blog']['trackback_receive_flag']  == _ON) :
+					$url = array('plugin' => 'blog', 'controller' => 'blog', 'action' => 'trackback', '?' => array('p' => $blog_post['BlogPost']['id']));
+					echo $this->Html->link(__d('blog', 'TrackBack URLs'), $this->html->url($url, true), array(
+							'title' => __d('blog', 'Get %s', __d('blog', 'TrackBack URLs')), 'class' => 'nc-button small',
+							'onclick' => "prompt('" .__d('blog', 'TrackBack URLs'). ':'. "'  ,$(this).attr('href')); return false;"
+					));
+				endif;
+			?>
+		<?php endif;?>
 
 		<div class="blog-entry-meta">
 			<?php echo(__('Submitted on:')); ?>
@@ -129,6 +141,9 @@
 	</span>
 </nav>
 <?php endif; ?>
-<?php if(isset($detail_type) && $detail_type == 'subject'): ?>
-	<?php echo $this->element('blog/comment', array('blog_post' => $blog_post)); ?>
-<?php endif; ?>
+<?php
+	if(isset($detail_type) && $detail_type == 'subject'):
+		echo $this->element('blog/comment', array('blog_post' => $blog_post));
+		echo $this->element('blog/trackback', array('blog_post' => $blog_post));
+	endif;
+?>

@@ -450,7 +450,6 @@
 この記事に返信するには、下記アドレスへ。
 {X-URL}</column>
         <column name="trackback_transmit_flag">0</column>
-        <column name="trackback_transmit_article">0</column>
         <column name="trackback_receive_flag">0</column>
         <column name="transmit_blog_name">{X-CONTENT_NAME}-{X-SITE_NAME}</column>
         <column name="approved_flag">0</column>
@@ -493,7 +492,8 @@
         <column name="pre_change_flag">0</column>
         <column name="pre_change_date">NULL</column>
         <column name="post_password"></column>
-        <column name="trackback_link"></column>
+        <column name="to_ping"></column>
+        <column name="pinged"></column>
         <column name="approved_comment_count">0</column>
         <column name="comment_count">0</column>
         <column name="approved_trackback_count">0</column>
@@ -521,7 +521,8 @@
         <column name="pre_change_flag">0</column>
         <column name="pre_change_date">NULL</column>
         <column name="post_password"></column>
-        <column name="trackback_link"></column>
+        <column name="to_ping"></column>
+        <column name="pinged"></column>
         <column name="approved_comment_count">0</column>
         <column name="comment_count">0</column>
         <column name="approved_trackback_count">0</column>
@@ -549,7 +550,8 @@
         <column name="pre_change_flag">0</column>
         <column name="pre_change_date">NULL</column>
         <column name="post_password"></column>
-        <column name="trackback_link"></column>
+        <column name="to_ping"></column>
+        <column name="pinged"></column>
         <column name="approved_comment_count">0</column>
         <column name="comment_count">0</column>
         <column name="approved_trackback_count">0</column>
@@ -6959,18 +6961,6 @@ e-mail：{X-EMAIL}
         <column name="modified_user_id">0</column>
         <column name="modified_user_name"></column>
     </table>
-    <table name="page_user_links">
-        <column name="id">37</column>
-        <column name="room_id">24</column>
-        <column name="user_id">1</column>
-        <column name="authority_id">2</column>
-        <column name="created">2013-06-26 01:43:40</column>
-        <column name="created_user_id">1</column>
-        <column name="created_user_name">admin</column>
-        <column name="modified">2013-06-26 01:43:40</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
     <!-- テーブル passports -->
     <!-- テーブル revisions -->
     <table name="revisions">
@@ -7080,7 +7070,7 @@ Valley以降、一貫してテーマとしてきたのも、まさにそのこ�
     <table name="users">
         <column name="id">1</column>
         <column name="login_id">admin</column>
-        <column name="password">e01081c788050418e66fff9605004263da908eb0</column>
+        <column name="password"></column>
         <column name="handle">admin</column>
         <column name="authority_id">1</column>
         <column name="is_active">1</column>
@@ -7091,7 +7081,7 @@ Valley以降、一貫してテーマとしてきたのも、まさにそのこ�
         <column name="activate_key">NULL</column>
         <column name="lang">ja</column>
         <column name="timezone_offset">9</column>
-        <column name="email">admin@admin.com</column>
+        <column name="email"></column>
         <column name="mobile_email"></column>
         <column name="password_regist">NULL</column>
         <column name="last_login">2013-07-08 10:16:12</column>
@@ -7147,7 +7137,7 @@ Valley以降、一貫してテーマとしてきたのも、まさにそのこ�
         <column name="item_id">21</column>
         <column name="public_flag">1</column>
         <column name="email_reception_flag">1</column>
-        <column name="content">aaaa</column>
+        <column name="content"></column>
     </table>
     <!-- テーブル whatsnew_select_rooms -->
     <!-- テーブル whatsnew_select_users -->

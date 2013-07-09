@@ -65,7 +65,7 @@
 	$viewBtn = $this->Form->button(__('Submit a comment'), array('name' => 'ok', 'class' => 'common-btn blog-comment-btn', 'type' => 'submit'));
 	if($mode == 'edit'){
 		$viewBtn .= $this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn blog-comment-btn', 'type' => 'button',
-			'onclick' => '$.Comment.clkCmtCancel(\'' .$id. '\');'));
+		'onclick' => '$.Blog.clkCommentCancel(\'' .$id. '\');'));
 	}
 
 	$formSubmitUrl = array('controller' => 'blog', 'action' => 'index',

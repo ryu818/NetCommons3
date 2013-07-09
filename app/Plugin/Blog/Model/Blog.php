@@ -228,14 +228,6 @@ class Blog extends AppModel
 					'message' => __('The input must be a boolean.')
 				)
 			),
-			'trackback_transmit_article' => array(
-				'boolean'  => array(
-					'rule' => array('boolean'),
-					'last' => true,
-					'required' => true,
-					'message' => __('The input must be a boolean.')
-				)
-			),
 			'trackback_receive_flag' => array(
 				'boolean'  => array(
 					'rule' => array('boolean'),
@@ -397,7 +389,6 @@ class Blog extends AppModel
 				'comment_mail_subject' => __d('blog', "[{X-SITE_NAME}]Blog Comment({X-ROOM} {X-CONTENT_NAME} {X-SUBJECT})"),
 				'comment_mail_body' => __d('blog', "You are receiving this email because a message was posted to Blog of comment.\nRoom's name:{X-ROOM}\nBlog title:{X-CONTENT_NAME}\ntitle:{X-SUBJECT}\nuser:{X-USER}\ndate:{X-TO_DATE}\n\n\n{X-BODY}\n\nClick on the link below to reply to this article.\n{X-URL}"),
 				'trackback_transmit_flag' => _OFF,
-				'trackback_transmit_article' => _OFF,
 				'trackback_receive_flag' => _OFF,
 				'transmit_blog_name' => __d('blog', "{X-CONTENT_NAME}-{X-SITE_NAME}"),
 				'approved_flag' => _OFF,

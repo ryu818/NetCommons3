@@ -44,7 +44,7 @@ class BlogCommentsController extends BlogAppController {
 	}
 
 /**
- * コメントの削除
+ * コメント、トラックバックの削除
  *
  * @param   integer $blogPostId
  * @param   integer $commentId
@@ -64,29 +64,48 @@ class BlogCommentsController extends BlogAppController {
 			return;
 		}
 
+		$blogPost = $this->BlogPost->findById($blogPostId);
+		if(!isset($blogPost['BlogPost'])) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogComment.delete.003', '500');
+			return;
+		}
+		// TODO:削除する人の権限チェック
+// 		$isOverChief = $this->CheckAuth->checkAuth($this->hierarchy, NC_AUTH_CHIEF);
+// 		if(!$isOverChief) {
+// 			$this->flash(__('Forbidden permission to access the page.'), null, 'BlogComment.delete.003', '403');
+// 			return;
+// 		}
+
 		// コメント削除
 		$this->BlogComment->Behaviors->attach('Tree', array(
 			'scope' => array('BlogComment.blog_post_id' => $blogPostId)
 		));
 		if(!$this->BlogComment->removeFromTree($commentId, true)) {
-			$this->flash(__('Failed to delete the database, (%s).', 'blog_comments'), null, 'BlogComment.delete.003', '500');
+			$this->flash(__('Failed to delete the database, (%s).', 'blog_comments'), null, 'BlogComment.delete.004', '500');
 			return;
 		}
 
 		// コメント数デクリメント
-		if(!$this->BlogPost->adjustCommentCount('delete', $blogPostId, $comment['BlogComment']['is_approved'])) {
-			$this->flash(__('Failed to update the database, (%s).', 'blog_posts'), null, 'Blog.comments.004', '500');
+		if(empty($this->request->query['is_trackback'])) {
+			$result = $this->BlogPost->adjustCommentCount('delete', $blogPostId, $comment['BlogComment']['is_approved']);
+		} else {
+			$result = $this->BlogPost->adjustTrackbackCount('delete', $blogPostId, $comment['BlogComment']['is_approved']);
+		}
+		if(!$result) {
+			$this->flash(__('Failed to update the database, (%s).', 'blog_posts'), null, 'BlogComment.delete.005', '500');
 			return;
 		}
 
 		$this->Session->setFlash(__('Has been successfully deleted.'));
 
-		$blogPost = $this->BlogPost->findById($blogPostId);
+		if(isset($this->request->query['is_trackback'])) {
+			$this->redirect($this->BlogCommon->getDetailRedirectUrl($blogPost, 'trackback'));
+		}
 		$this->redirect($this->BlogCommon->getDetailRedirectUrl($blogPost, 'delete', $comment['BlogComment']['parent_id']));
 	}
 
 /**
- * コメント承認
+ * コメント、トラックバック承認
  *
  * @param   integer $blogPostId
  * @param   integer $commentId
@@ -99,7 +118,8 @@ class BlogCommentsController extends BlogAppController {
 			return;
 		}
 
-		if(!$this->CheckAuth->checkAuth($this->hierarchy, NC_AUTH_CHIEF)) {
+		$isOverChief = $this->CheckAuth->checkAuth($this->hierarchy, NC_AUTH_CHIEF);
+		if(!$isOverChief) {
 			$this->flash(__('Forbidden permission to access the page.'), null, 'BlogComment.approve.002', '403');
 			return;
 		}
@@ -127,11 +147,21 @@ class BlogCommentsController extends BlogAppController {
 			return;
 		}
 
-		if(!$this->BlogPost->adjustCommentCount('approve', $blogPostId, $comment['BlogComment']['is_approved'], $blog['Blog']['comment_approved_flag'])) {
+		if(empty($this->request->query['is_trackback'])) {
+			$result = $this->BlogPost->adjustCommentCount('approve', $blogPostId, $comment['BlogComment']['is_approved'], $blog['Blog']['comment_approved_flag']);
+		} else {
+			$result = $this->BlogPost->adjustTrackbackCount('approve', $blogPostId, $comment['BlogComment']['is_approved']);
+		}
+		if(!$result) {
 			$this->flash(__('Failed to update the database, (%s).', 'blog_posts'), null, 'BlogComment.approve.007', '500');
 			return;
 		}
 
+		$this->Session->setFlash(__('Has been successfully updated.'));
+
+		if(isset($this->request->query['is_trackback'])) {
+			$this->redirect($this->BlogCommon->getDetailRedirectUrl($blogPost, 'trackback'));
+		}
 		$this->redirect($this->BlogCommon->getDetailRedirectUrl($blogPost, 'approve', $commentId));
 	}
 }

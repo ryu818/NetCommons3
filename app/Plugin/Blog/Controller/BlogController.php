@@ -25,7 +25,7 @@ class BlogController extends BlogAppController {
  *
  * @var array
  */
-	public $components = array('Security', 'Blog.BlogCommon', 'RevisionList');
+	public $components = array('Security', 'Blog.BlogCommon', 'Blog.BlogTrackback','RevisionList');
 
 /**
  * Pagination
@@ -49,18 +49,29 @@ class BlogController extends BlogAppController {
  */
 	public function beforeFilter() {
 		parent::beforeFilter();
-		if($this->action == "vote") {
+
+		// 投票
+		if($this->action == 'vote') {
 			$this->Security->validatePost = false;
 			$this->Security->csrfUseOnce = false;
 			// 手動でチェック
-			if($this->action == "vote") {
-				$requestToken = $this->request->data['_Token']['key'];
-				$csrfTokens = $this->Session->read('_Token.csrfTokens');
-				if (!isset($csrfTokens[$requestToken]) || $csrfTokens[$requestToken] < time()) {
-					$this->errorToken();
-					return;
-				}
+			$requestToken = $this->request->data['_Token']['key'];
+			$csrfTokens = $this->Session->read('_Token.csrfTokens');
+			if (!isset($csrfTokens[$requestToken]) || $csrfTokens[$requestToken] < time()) {
+				$this->errorToken();
+				return;
 			}
+		}
+		// トラックバック
+		elseif($this->action == 'trackback') {
+			$this->Security->validatePost = false;
+			$this->Security->csrfCheck = false;
+		}
+		// 記事詳細URLの最後に /trackback をつけてトラックバックURLとした場合向け
+		elseif($this->action == 'index' && $this->request->is('post') && !empty($this->request->data['url']) &&
+				!empty($this->request->params['pass']) && array_search('trackback', $this->request->params['pass']) !== false) {
+			$this->Security->validatePost = false;
+			$this->Security->csrfCheck = false;
 		}
 	}
 
@@ -71,9 +82,18 @@ class BlogController extends BlogAppController {
  * @since   v 3.0.0.0
  */
 	public function index() {
-
 		// TODO:is_future=_ONのものを検索し、既に過去になっていたら、termマスタのcountを更新　is_future=_OFFへ
 		//      メール記事投稿送信の設定がされていれば、メールも送信
+
+		// 短縮URLによるアクセス
+		if($this->request->is('get') && !empty($this->request->query['p']) && is_numeric($this->request->query['p'])) {
+			$tmpBlogPost = $this->BlogPost->findById($this->request->query['p']);
+			if(empty($tmpBlogPost['BlogPost'])) {
+				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Blog.index.001', '500');
+				return;
+			}
+			$this->redirect($this->BlogCommon->getDetailRedirectUrl($tmpBlogPost));
+		}
 
 		$params = array(
 			'conditions' => array('block_id' => $this->block_id, 'OR' => array('widget_type' => BLOG_WIDGET_TYPE_MAIN, 'display_flag' => _ON))
@@ -208,9 +228,18 @@ class BlogController extends BlogAppController {
 
 			$blogPosts = $this->BlogPost->find('all',$params);
 
-			// コメント取得
+			// トラックバック受信
+			if($this->request->is('post') && !empty($this->request->data['url']) &&
+			 !empty($this->request->params['pass']) &&  array_search('trackback', $this->request->params['pass']) !== false) {
+				$this->trackBack($blogPosts[0]);
+				return;
+			}
+			// コメント、トラックバック取得
 			if(isset($blogPosts[0])) {
 				$this->_comments($blogPosts[0]);
+				if($this->_trackbacks($blogPosts[0]['BlogPost']['id'], BLOG_TRACKBACK_VIEW_MAX)) {
+					$this->set('trackback_is_max', BLOG_TRACKBACK_VIEW_MAX);
+				}
 			}
 		} else {
 			$blogPosts = $this->paginate('BlogPost',$addParams);
@@ -219,9 +248,44 @@ class BlogController extends BlogAppController {
 			$this->set('detail_type', 'none');
 		}
 		// 変更後のデータの変換(pre_change_flag,pre_change_date)
+		// if_futureの更新、カテゴリー、タグのカウントアップ
+		$tmpIsFutureId = $tmpBlogPostToPing = $tmpCategoryArr = $tmpTagArr = array();
 		foreach($blogPosts as $key => $blogPost) {
 			$blogPosts[$key]['Revision']['content'] = $this->RevisionList->updatePreChange($this->BlogPost, $blogPost);
+
+			if($blogPost['BlogPost']['is_future'] == _ON && $blogPost['BlogPost']['post_date'] <= $this->BlogPost->nowDate()) {
+				array_push($tmpIsFutureId, $blogPost['BlogPost']['id']);
+				$categories = $this->BlogTerm->findByBlogPostId($blogPost['BlogPost']['id'], 'INNER', 'category');
+				foreach ($categories as $category) {
+					array_push($tmpCategoryArr, $category['BlogTerm']['name']);
+				}
+				$tags = $this->BlogTerm->findByBlogPostId($blogPost['BlogPost']['id'], 'INNER', 'tag');
+				foreach ($tags as $tag) {
+					array_push($tmpTagArr, $tag['BlogTerm']['name']);
+				}
+				array_push($tmpBlogPostToPing, $blogPost);
+			}
 		}
+		if(!empty($tmpIsFutureId)) {
+			if(!empty($tmpCategoryArr)) {
+				$categoryCnt = array_count_values($tmpCategoryArr);
+				foreach ($categoryCnt as $key => $cnt) {
+					$this->BlogTerm->incrementSeq(array('content_id' => $this->content_id, 'taxonomy' => 'category', 'name' => $key), 'count', $cnt);
+				}
+			}
+			if(!empty($tmpTagArr)) {
+				$tagCnt = array_count_values($tmpTagArr);
+				foreach ($tagCnt as $key => $cnt) {
+					$this->BlogTerm->incrementSeq(array('content_id' => $this->content_id, 'taxonomy' => 'tag', 'name' => $key), 'count', $cnt);
+				}
+			}
+			foreach ($tmpBlogPostToPing as $blogPostToping) {
+				$url = Router::url($this->BlogCommon->getDetailRedirectUrl($blogPostToping), true);
+				$this->BlogPost->sendTrackback($blogPostToping, $url);
+			}
+			$this->BlogPost->updateAll(array('BlogPost.is_future' => _OFF), array('BlogPost.id' => $tmpIsFutureId));
+		}
+
 		$this->set('blog_posts', $blogPosts);
 		$this->set('blog_posts_terms', $this->BlogTerm->findByBlogPosts($blogPosts));
 		$this->set('limit', $limit);
@@ -300,7 +364,7 @@ class BlogController extends BlogAppController {
 		$this->paginate['limit'] = !empty($blogStyleOptions['BlogStyle']['visible_item_comments']) ? $blogStyleOptions['BlogStyle']['visible_item_comments'] : BLOG_DEFAULT_VISIBLE_ITEM_COMMENTS;
 		$this->paginate['conditions'] = $this->BlogComment->getPaginateConditions($blogPost['BlogPost']['id'], $userId, $this->hierarchy, $this->Session->read('Blog.savedComment'));
 		if(isset($blogStyleOptions['BlogStyle']['position_comments']) && $blogStyleOptions['BlogStyle']['position_comments'] == BLOG_POSITION_COMMENTS_LAST) {
-			$this->paginate['recordCount'] = $this->BlogComment->recordCount($this->paginate['conditions']);
+			$this->paginate['recordCount'] = $this->BlogComment->find('count', array('conditions' => $this->paginate['conditions']));
 			$this->paginate['page'] = intval(ceil($this->paginate['recordCount'] / $this->paginate['limit']));
 		}
 		if(isset($blogStyleOptions['BlogStyle']['order_comments']) && $blogStyleOptions['BlogStyle']['order_comments'] == BLOG_ORDER_COMMENTS_NEWEST) {
@@ -313,21 +377,7 @@ class BlogController extends BlogAppController {
 			$redirectUrl = $this->BlogCommon->getDetailRedirectUrl($blogPost, $mode, $savedId);
 
 			// 新着・検索
-			$archive = array(
-				'Archive' => array(
-					'parent_model_name' => 'BlogPost',
-					'parent_id' => $blogPost['BlogPost']['id'],
-					'module_id' => $this->module_id,
-					'content_id' => $this->content_id,
-					'model_name' => 'BlogComment',
-					'unique_id' => $this->BlogComment->id,
-					'is_approved' => $comment['BlogComment']['is_approved'],
-					'title' => $blogPost['BlogPost']['title'],
-					'content' => $comment['BlogComment']['comment'],
-					'url' => $redirectUrl,
-				)
-			);
-			if(!$this->Archive->saveAuto($this->params, $archive)) {
+			if(!$this->_commentArchiveSave($blogPost, $comment, $redirectUrl)) {
 				$this->flash(__('Failed to update the database, (%s).', 'archives'), null, 'Blog.comments.003', '500');
 				return;
 			}
@@ -338,6 +388,38 @@ class BlogController extends BlogAppController {
 		// コメント投稿において、投稿者名とメールアドレスが、必須か否かを取得
 		$this->set('is_required_name', $blog['Blog']['comment_required_name']);
 
+	}
+
+/**
+ * コメント、トラックバックの新着・検索情報の追加・更新
+ *
+ * @param   Model BlogPost $blogPost
+ * @param   Model BlogComment $comment
+ * @param  array $url
+ * @return   boolean
+ * @since   v 3.0.0.0
+ */
+	protected function _commentArchiveSave($blogPost, $comment, $url) {
+		// 新着・検索
+		$archive = array(
+			'Archive' => array(
+				'parent_model_name' => 'BlogPost',
+				'parent_id' => $blogPost['BlogPost']['id'],
+				'module_id' => $this->module_id,
+				'content_id' => $this->content_id,
+				'model_name' => 'BlogComment',
+				'unique_id' => $this->BlogComment->id,
+				'is_approved' => $comment['BlogComment']['is_approved'],
+				'title' => $blogPost['BlogPost']['title'],
+				'content' => $comment['BlogComment']['comment'],
+				'url' => $url,
+			)
+		);
+
+		if(!$this->Archive->saveAuto($this->params, $archive)) {
+			return false;
+		}
+		return true;
 	}
 
 /**
@@ -382,7 +464,7 @@ class BlogController extends BlogAppController {
 		}
 
 		$fieldList = array(
-				'content_id', 'blog_post_id', 'parent_id', 'comment', 'author', 'author_email', 'author_url', 'author_ip', 'is_approved'
+			'content_id', 'blog_post_id', 'parent_id', 'comment', 'author', 'author_email', 'author_url', 'author_ip', 'is_approved', 'comment_type'
 		);
 		$this->BlogComment->set($comment);
 		if($this->BlogComment->validates(array('fieldList' => $fieldList))) {
@@ -407,6 +489,29 @@ class BlogController extends BlogAppController {
 		}
 
 		return array($savedId, $comment);
+	}
+
+/**
+ * トラックバック表示
+ * @param   Model BlogPost $blogPost
+ * @return  boolean $isOverLimit	トラックバックの件数がlimitよりも多い場合true
+ * @since   v 3.0.0.0
+ */
+	protected function _trackbacks($blogPostId, $limit = null) {
+		$prams['conditions'] = $this->BlogComment->getTrackbackConditions($blogPostId, $this->hierarchy);
+		if(isset($limit)) {
+			$prams['limit'] = $limit + 1;
+		}
+		$trackbacks = $this->BlogComment->find('all', $prams);
+		$count = count($trackbacks);
+
+		$isOverLimit = false;
+		if(isset($limit) && $count > $limit) {
+			$isOverLimit = true;
+			array_pop($trackbacks);
+		}
+		$this->set('trackbacks', $trackbacks);
+		return $isOverLimit;
 	}
 
 /**
@@ -503,6 +608,74 @@ class BlogController extends BlogAppController {
 	}
 
 /**
+ * トラックバック受信用
+ *
+ * @param   Model $blogPost
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function trackback($blogPost = null) {
+		if($this->request->is('get') && !empty($this->request->query['p']) && is_numeric($this->request->query['p'])) {
+			$tmpBlogPost = $this->BlogPost->findById($this->request->query['p']);
+			if(empty($tmpBlogPost['BlogPost'])) {
+				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Blog.index.001', '500');
+				return;
+			}
+			$this->redirect($this->BlogCommon->getDetailRedirectUrl($tmpBlogPost));
+		}
+		if(!$this->request->is('post') || empty($this->request->data['url'])) {
+			$errorMessage = __d('blog', 'It is illegal trackback.');
+			return $this->BlogTrackback->rtnTrackback(BLOG_TRACKBACK_FAILED, $errorMessage);
+		}
+		if($this->action != 'index' && $blogPost != null) {
+			$errorMessage = __d('blog', 'It is illegal trackback.');
+			return $this->BlogTrackback->rtnTrackback(BLOG_TRACKBACK_FAILED, $errorMessage);
+		}
+
+		if($this->action == 'index' && is_array($blogPost)) {
+			$blogPost = array_merge($blogPost, $this->Blog->findByContentId($blogPost['BlogPost']['content_id']));
+		}
+		elseif(!empty($this->request->query['p'])) {
+			if(!is_numeric($this->request->query['p'])){
+				$errorMessage = __d('blog', 'It is illegal trackback.');
+				return $this->BlogTrackback->rtnTrackback(BLOG_TRACKBACK_FAILED, $errorMessage);
+			}
+			$params = $this->BlogPost->getTrackbackParams($this->content_id, $this->request->query['p']);
+			$blogPost = $this->BlogPost->find('first', $params);
+		}
+
+		if(!isset($blogPost['Blog']) || !isset($blogPost['BlogPost'])) {
+			$errorMessage = __d('blog', 'It is illegal trackback.');
+			return $this->BlogTrackback->rtnTrackback(BLOG_TRACKBACK_FAILED, $errorMessage);
+		}
+		// トラックバック受付BLOGのステータスチェック
+		if($blogPost['Blog']['trackback_receive_flag'] == _OFF) {
+			$errorMessage = __d('blog', 'Trackbacks are closed for this item.');
+			return $this->BlogTrackback->rtnTrackback(BLOG_TRACKBACK_FAILED, $errorMessage);
+		}
+
+		// 受付済みのトラックバックははじく
+		$commentParams['conditions'] = array('blog_post_id' => $blogPost['BlogPost']['id'], 'comment_type' => BLOG_TRACKBACK_TYPE_TRACKBACK, 'author_url' => $this->request->data['url']);
+		$comment = $this->BlogComment->find('all', $commentParams);
+
+		if(count($comment) > 0) {
+			$errorMessage = __d('blog', 'We already have a trackback from that URL for this post.');
+			return $this->BlogTrackback->rtnTrackback(BLOG_TRACKBACK_FAILED, $errorMessage);
+		}
+
+		list($error, $errorMessage, $trackbackComment) = $this->BlogTrackback->trackbackSave($blogPost);
+		if($error == BLOG_TRACKBACK_SUCCEED) {
+			$redirectUrl = $this->BlogCommon->getDetailRedirectUrl($blogPost, 'trackback');
+			// 新着・検索
+			if(!$this->_commentArchiveSave($blogPost, $trackbackComment, $redirectUrl)) {
+				$errorMessage = __('Failed to execute the %s.', __d('blog', 'TrackBack'));
+				return $this->BlogTrackback->rtnTrackback(BLOG_TRACKBACK_FAILED, $errorMessage);
+			}
+		}
+		$this->BlogTrackback->rtnTrackback($error, $errorMessage);
+	}
+
+/**
  * 投票数カウントアップ
  * @param   integer $postId
  * @return  void
@@ -539,5 +712,27 @@ class BlogController extends BlogAppController {
 		$this->set('blog', $blog);
 		$this->set('blog_post', $blogPost);
 		$this->render('Elements/blog/detail_footer');
+	}
+
+/**
+ * トラックバックの追加取得
+ *
+ * @param   integer $postId
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function moreTrackback($postId = null){
+		if(empty($postId) || !$this->request->is('get')) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Blog.moreTrackback.001', '500');
+			return;
+		}
+		$blogPost = $this->BlogPost->findById($postId);
+		if(empty($blogPost)) {
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Blog.moreTrackback.002', '500');
+			return;
+		}
+		$this->_trackbacks($postId);
+		$this->set('blog_post', $blogPost);
+		$this->render('Elements/blog/trackback');
 	}
 }
