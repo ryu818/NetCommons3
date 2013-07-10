@@ -732,11 +732,8 @@
 		},
 
 		itemInit: function(id, preUrl, url) {
-			console.log(id);console.log(preUrl);console.log(url);
-
 			var reUrl = new RegExp("^"+ $.Common.quote(preUrl) , 'i');
 			var replaceUrl = location.href.replace(reUrl,'');
-			console.log(replaceUrl);
 			if(replaceUrl != location.href && (replaceUrl == '' || replaceUrl.substr(0, 1) == '/' || replaceUrl.substr(0, 1) == '?')) {
 				// コミュニティを追加直後に固定リンクを変更した場合、再描画。
 				location.href = url + '?is_edit=1';
