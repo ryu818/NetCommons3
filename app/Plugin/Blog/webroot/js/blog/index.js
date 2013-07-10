@@ -42,6 +42,7 @@
 			hash = location.hash;
 			var trackbackId = '#' + id + '-trackbacks';
 			var commentId = '#' + id + '-comments';
+			var isChange = (hash == commentId || hash == trackbackId) ? true : false;
 			if(hash == trackbackId) {
 				$(trackbackId).show();
 				$(commentId).hide();
@@ -49,15 +50,12 @@
 				$(commentId).show();
 				$(trackbackId).hide();
 			}
-			location.hash = hash;
+			if(isChange) {
+				location.hash = hash;
+			}
 		},
 		clkCommentCancel : function(id) {
 			$('#' + id + 'edit-respond').remove();
 		}
 	};
-	$.BlogComments = {
-		clkCmtCancel : function(id) {
-			$('#' + id + 'edit-respond').remove();
-		}
-	}
 })(jQuery);
