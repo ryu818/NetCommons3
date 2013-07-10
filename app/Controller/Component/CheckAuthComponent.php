@@ -700,7 +700,7 @@ class CheckAuthComponent extends Component {
  * @since   v 3.0.0.0
  */
 	public function isEdit($roomHierarchy, $editPostHierarchy = null, $postUserId = null, $postHierarchy = null) {
-		// TODO:Helperに同じメソッドが存在する。
+		// Helperに同じメソッドが存在する。
 		$isEdit = true;
 		if(isset($editPostHierarchy)) {
 			if($roomHierarchy < $editPostHierarchy) {
@@ -714,6 +714,7 @@ class CheckAuthComponent extends Component {
 			}
 		}
 		if(isset($postHierarchy)) {
+			$postHierarchy = intval($postHierarchy);
 			if($postHierarchy <= NC_AUTH_GUEST) {
 				if($roomHierarchy >= NC_AUTH_MIN_CHIEF) {
 					$isEdit = true;
