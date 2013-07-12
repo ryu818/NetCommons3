@@ -417,6 +417,18 @@ class PageMenusController extends PageAppController {
 					$this->flash(__('Failed to update the database, (%s).', 'community_langs'), null, 'PageMenus/edit.008', '500');
 					return;
 				}
+
+				// Community.publication_range_flagが一部公開（すべてのログイン会員が閲覧可能）以外に更新されたら、PageUserLinkの不参加会員削除
+				if($community['Community']['publication_range_flag'] != NC_PUBLICATION_RANGE_FLAG_LOGIN_USER) {
+					$conditions = array(
+						"PageUserLink.room_id" => $insPage['Page']['id'],
+						"PageUserLink.authority_id" => NC_AUTH_OTHER_ID
+					);
+					if(!$this->PageUserLink->deleteAll($conditions)) {
+						$this->flash(__('Failed to delete the database, (%s).', 'page_user_links'), null, 'PageMenus/edit.009', '500');
+						return;
+					}
+				}
 			}
 			$isDetail = false;
 			$this->Session->setFlash(__('Has been successfully registered.'));
