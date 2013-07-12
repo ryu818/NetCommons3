@@ -238,7 +238,7 @@ class Block extends AppModel
 
 		if(!$afterFindFlag)
 			return $this->find('first', $params);
-		return $this->afterFindDefault($this->find('first', $params));
+		return $this->afterFindDefault($this->find('first', $params), null, 'Page', true);
 	}
 
 	public function findUsers($type, $conditions, $userId) {
@@ -322,10 +322,10 @@ class Block extends AppModel
 		}
 
 		if(!isset($val['PageAuthority']['hierarchy'])) {
-			$val['PageAuthority']['hierarchy'] = $this->getDefaultAuthority($val);
+			$val['PageAuthority']['hierarchy'] = $this->getDefaultHierarchy($val, null, 'Page', true);
 		}
 		if(!isset($val['BlockAuthority']['hierarchy'])) {
-			$val['BlockAuthority']['hierarchy'] = $this->getDefaultAuthority($val, NC_SHORTCUT_TYPE_OFF, 'BlockPage');
+			$val['BlockAuthority']['hierarchy'] = $this->getDefaultHierarchy($val, NC_SHORTCUT_TYPE_OFF, 'BlockPage', true);
 		}
 		$val['Block']['hierarchy'] = $val['PageAuthority']['hierarchy'];
 		$val['Block']['block_hierarchy'] = $val['BlockAuthority']['hierarchy'];
@@ -471,7 +471,8 @@ class Block extends AppModel
 			'BlockPage.thread_num','BlockPage.room_id','BlockPage.root_id','BlockPage.space_type',
 			'Content.id','Content.module_id','Content.title','Content.shortcut_type','Content.master_id','Content.room_id','Content.display_flag','Content.is_approved','Content.url',
 			'Module.id','Module.controller_action','Module.edit_controller_action','Module.style_controller_action','Module.dir_name','Module.content_has_one',
-			'PageAuthority.id','PageAuthority.hierarchy','BlockAuthority.hierarchy'
+			'PageAuthority.id','PageAuthority.hierarchy','BlockAuthority.hierarchy',
+
 		);
 	}
 

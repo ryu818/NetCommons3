@@ -133,7 +133,7 @@ class Content extends AppModel
 	public function afterFindDefault($val) {
 		if(isset($val['Content']['id'])) {
 			if(!isset($val['PageAuthority']['hierarchy'])) {
-				$val['PageAuthority']['hierarchy'] = $this->getDefaultAuthority($val);
+				$val['PageAuthority']['hierarchy'] = $this->getDefaultHierarchy($val);
 			}
 		}
 		return $val;

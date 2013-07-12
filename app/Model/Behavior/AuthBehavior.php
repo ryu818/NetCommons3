@@ -188,10 +188,11 @@ class AuthBehavior extends ModelBehavior {
  * @param  Model
  * @param  integer $shortcutFlag
  * @param  stinrg $modelName default 'Page'
+ * @param  boolean ログイン会員の権限を取得
  * @return array('id' => integer authority_id,'hierarchy' => integer hierarchy)
  * @since  v 3.0.0.0
  */
-	public function getDefaultAuthority($Model, $val, $shortcutFlag = null, $modelName = 'Page') {
+	public function getDefaultAuthority($Model, $val, $shortcutFlag = null, $modelName = 'Page', $isLoginUser = false) {
 		$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
 		$loginUserId = isset($loginUser['id']) ? $loginUser['id'] : _OFF;
 		if(isset($shortcutFlag)) {
@@ -246,11 +247,13 @@ class AuthBehavior extends ModelBehavior {
 			}
 		}
 		// User取得
-		if(isset($val['PageUserLink']['user_id'])) {
+		if($isLoginUser) {
+			$userId = $loginUserId;
+		} else if(isset($val['PageUserLink']['user_id'])) {
 			$userId = $val['PageUserLink']['user_id'];
 		} else if(isset($val[$Model->alias]['user_id'])) {
 			$userId = $val[$Model->alias]['user_id'];
-		} else if($Model->alias != 'Page' &&isset($val[$Model->alias]['created_user_id'])) {
+		} else if($Model->alias != 'Page' && $Model->alias != 'Block' && $Model->alias != 'Content' && isset($val[$Model->alias]['created_user_id'])) {
 			$userId = $val[$Model->alias]['created_user_id'];
 		} else if($Model->alias == 'User' && isset($val[$Model->alias]['id'])) {
 			$userId = $val[$Model->alias]['id'];
@@ -326,11 +329,12 @@ class AuthBehavior extends ModelBehavior {
  * @param  Model
  * @param  integer $shortcutFlag
  * @param  stinrg $modelName default 'Page'
+ * @param  boolean ログイン会員の権限を取得
  * @return integer hierarchy
  * @since  v 3.0.0.0
  */
-	public function getDefaultHierarchy($Model, $val, $shortcutFlag = null, $modelName = 'Page') {
-		$authority = $this->getDefaultAuthority($Model, $val, $shortcutFlag, $modelName);
+	public function getDefaultHierarchy($Model, $val, $shortcutFlag = null, $modelName = 'Page', $isLoginUser = false) {
+		$authority = $this->getDefaultAuthority($Model, $val, $shortcutFlag, $modelName, $isLoginUser);
 		return $authority['hierarchy'];
 	}
 
@@ -340,11 +344,12 @@ class AuthBehavior extends ModelBehavior {
  * @param  Model
  * @param  integer $shortcutFlag
  * @param  stinrg $modelName default 'Page'
+ * @param  boolean ログイン会員の権限を取得
  * @return integer authority_id
  * @since  v 3.0.0.0
  */
-	public function getDefaultAuthorityId($Model, $val, $shortcutFlag = null, $modelName = 'Page') {
-		$authority = $this->getDefaultAuthority($Model, $val, $shortcutFlag, $modelName);
+	public function getDefaultAuthorityId($Model, $val, $shortcutFlag = null, $modelName = 'Page', $isLoginUser = false) {
+		$authority = $this->getDefaultAuthority($Model, $val, $shortcutFlag, $modelName, $isLoginUser);
 		return $authority['id'];
 	}
 }
