@@ -599,7 +599,7 @@ class PageMenusController extends PageAppController {
 		}
 
 		// 削除処理
-		if(!$this->Page->delPage($currentPage['Page']['id'], $allDelete, $childPages, $parentRoomId)) {
+		if(!$this->Page->deletePage($currentPage['Page']['id'], $allDelete, $childPages, $parentRoomId)) {
 			$this->flash(__('Failed to delete the database, (%s).', 'pages'), null, 'PageMenus/delete.004', '500');
 			return;
 		}

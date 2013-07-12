@@ -1161,7 +1161,7 @@ class Page extends AppModel
  * @return boolean True on success
  * @since   v 3.0.0.0
  */
-	public function delPage($id = null, $allDelete = _OFF, $childPages = null, $parentRoomId = null, $isRecursive = false) {
+	public function deletePage($id = null, $allDelete = _OFF, $childPages = null, $parentRoomId = null, $isRecursive = false) {
 		if (!empty($id)) {
 			$this->id = $id;
 		}
@@ -1188,7 +1188,7 @@ class Page extends AppModel
 				$blocks = array($blocks);
 			}
 			foreach($blocks as $block) {
-				$Block->delBlock($block, $allDelete, $parentRoomId, true);
+				$Block->deleteBlock($block, $allDelete, $parentRoomId, true);
 			}
 		}
 
@@ -1198,7 +1198,7 @@ class Page extends AppModel
 				$childPages = $this->findChilds('all', $page);
 			}
 			foreach($childPages as $child_page) {
-				if(!$this->delPage($child_page['Page']['id'], $allDelete, null, $parentRoomId, true)) {
+				if(!$this->deletePage($child_page['Page']['id'], $allDelete, null, $parentRoomId, true)) {
 					return false;
 				}
 			}

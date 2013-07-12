@@ -556,7 +556,7 @@ class Block extends AppModel
  * @return	boolean true or false
  * @since   v 3.0.0.0
  **/
-	public function delBlock($block, $allDelete = _OFF, $parentRoomId = null, $isDeletePage = false)
+	public function deleteBlock($block, $allDelete = _OFF, $parentRoomId = null, $isDeletePage = false)
 	{
 		App::uses('Content', 'Model');
 		$Content = new Content();
@@ -586,7 +586,7 @@ class Block extends AppModel
 				));
 				foreach($child_blocks as $child_block) {
 					//再帰処理
-					$ret = $this->delBlock($child_block, $allDelete, $parentRoomId, $isDeletePage);
+					$ret = $this->deleteBlock($child_block, $allDelete, $parentRoomId, $isDeletePage);
 					if(!$ret) {
 						return false;
 					}

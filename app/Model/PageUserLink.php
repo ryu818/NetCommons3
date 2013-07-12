@@ -29,7 +29,7 @@ class PageUserLink extends AppModel
  */
 	public function saveParticipant($page, $postPageUserLinks, $prePageUserLinks, $preParentPageUserLinks = null, $participantType = null) {
 		$roomId = $page['Page']['id'];
-		$delUserIdArr = array();
+		$deleteUserIdArr = array();
 		$preUserIdArr = array();
 		$postUserIdArr = array();
 		$preParentUserIdArr = array();
@@ -100,7 +100,7 @@ class PageUserLink extends AppModel
 			}
 
 			if($authorityId == NC_AUTH_OTHER_ID) {
-				$delUserIdArr[] = $userId;
+				$deleteUserIdArr[] = $userId;
 			}
 			if($authorityId == NC_AUTH_OTHER_ID && $defaultAuthorityId == NC_AUTH_OTHER_ID) {
 				// 会員のみ参加ルームで不参加にしたため、削除
@@ -144,7 +144,7 @@ class PageUserLink extends AppModel
 		// 		親ルームで参加していた会員を不参加に変更すると、親ルームには参加していないが、子ルームに参加している
 		//		状態になってしまうため
 		// 公開ルームならば、子供のルームも不参加として登録
-		if(count($delUserIdArr) == 0) {
+		if(count($deleteUserIdArr) == 0) {
 			return true;
 		}
 		App::uses('Page', 'Model');
@@ -164,14 +164,14 @@ class PageUserLink extends AppModel
 		if($defaultAuthorityId == NC_AUTH_OTHER_ID) {
 			// 非公開ルーム
 			$conditions = array(
-				"PageUserLink.user_id" => $delUserIdArr,
+				"PageUserLink.user_id" => $deleteUserIdArr,
 				"PageUserLink.room_id" => $roomIdListArr
 			);
 			$this->deleteAll($conditions);
 		} else {
 			// 公開ルーム
 			foreach($roomIdListArr as $child_room_id) {
-				foreach($delUserIdArr as $userId) {
+				foreach($deleteUserIdArr as $userId) {
 					$params = array(
 						'fields' => array(
 								'PageUserLink.id'

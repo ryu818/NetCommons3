@@ -83,7 +83,7 @@ if($block_hierarchy >= NC_AUTH_MIN_CHIEF) {
 			</li>
 			<?php endif; ?>
 			<li class="nc-block-header-close-icon">
-				<a href="#" onclick="$.PagesBlock.delBlockConfirm(event, this, <?php echo($block['Block']['id']); ?>, <?php echo($all_delete); ?>,'<?php $title = (!empty($block['Block']['title'])) ? h($block['Block']['title']) : __('Block'); $confirm = __('Deleting %s. <br />Are you sure to proceed?', $title); echo($confirm);?>'); return false;" title="<?php echo(__('Delete'));?>" class="nc-block-toolbox-link nc-tooltip">
+				<a href="#" onclick="$.PagesBlock.deleteBlockConfirm(event, this, <?php echo($block['Block']['id']); ?>, <?php echo($all_delete); ?>,'<?php $title = (!empty($block['Block']['title'])) ? h($block['Block']['title']) : __('Block'); $confirm = __('Deleting %s. <br />Are you sure to proceed?', $title); echo($confirm);?>'); return false;" title="<?php echo(__('Delete'));?>" class="nc-block-toolbox-link nc-tooltip">
 				</a>
 			</li>
 		</ul>

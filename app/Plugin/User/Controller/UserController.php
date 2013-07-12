@@ -114,7 +114,7 @@ class UserController extends UserAppController {
 					)
 				));
 
-				if(!$this->User->delUser($deleteUsers)) {
+				if(!$this->User->deleteUser($deleteUsers)) {
 					$this->flash(__('Failed to delete the database, (%s).', 'users'), null, 'User.index.002', '500');
 					return;
 				}

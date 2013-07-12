@@ -175,7 +175,7 @@ class BlockMoveComponent extends Component {
 
 		//グループ化した空ブロック削除処理
 		if($pre_count_row_num == 1) {
-			$this->delGroupingBlock($pre_parent_id, $id);
+			$this->deleteGroupingBlock($pre_parent_id, $id);
 		}
 
 		//移動先より大きな列+1
@@ -307,7 +307,7 @@ class BlockMoveComponent extends Component {
 
 		//グループ化した空ブロック削除処理
 		if($pre_count_row_num == 1) {
-			$this->delGroupingBlock($pre_parent_id, $id);
+			$this->deleteGroupingBlock($pre_parent_id, $id);
 		}
 
 		//前詰め処理（移動先)
@@ -396,7 +396,7 @@ class BlockMoveComponent extends Component {
  * @return boolean true or false
  * @since   v 3.0.0.0
  */
-	public function delGroupingBlock($parent_id, $block_id = null)
+	public function deleteGroupingBlock($parent_id, $block_id = null)
 	{
 		$block = $this->_controller->Block->findById($parent_id);
 		if(!empty($block)) {
@@ -433,7 +433,7 @@ class BlockMoveComponent extends Component {
 				}
 			    //再帰処理
 			    if($block['Block']['parent_id'] != 0) {
-				    $result = $this->delGroupingBlock($block['Block']['parent_id'], $block_id);
+				    $result = $this->deleteGroupingBlock($block['Block']['parent_id'], $block_id);
 				    if(!$result) {
 						return false;
 					}

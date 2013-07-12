@@ -194,14 +194,14 @@ class BlockController extends BlockAppController {
         // --------------------------------------
 		// --- ブロック削除処理     	      ---
 		// --------------------------------------
-		if(!$this->Block->delBlock($block, $all_delete)) {
+		if(!$this->Block->deleteBlock($block, $all_delete)) {
 			$this->flash(__('Failed to delete the database, (%s).', 'blocks'), null, 'del_block.004', '500');
 			return;
 		}
 
 		//グループ化した空ブロック削除処理
 		if($count_row_num == 1) {
-			if(!$this->BlockMove->delGroupingBlock($block['Block']['parent_id'])) {
+			if(!$this->BlockMove->deleteGroupingBlock($block['Block']['parent_id'])) {
 				$this->flash(__('Failed to delete the database, (%s).', 'blocks'), null, 'del_block.005', '500');
 				return;
 			}

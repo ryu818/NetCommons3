@@ -636,7 +636,7 @@
 				t.insert = obj;
 				//t.insert_column = insert_column;
 
-				delMoveEl(column);
+				deleteMoveEl(column);
 
 				//DB登録用
 				t.insertAction = "insert_row";
@@ -649,7 +649,7 @@
 				t.insert = obj;
 				//t.insert_column = column;
 
-				delMoveEl(column);
+				deleteMoveEl(column);
 				//DB登録用
 				t.insertAction = "insert_row";
 			}
@@ -658,7 +658,7 @@
 				var div = t.blockDummy;
 				var column = div.parent();
 				div.css('display', 'none').appendTo($(document.body));	//退避
-				delMoveEl(column);
+				deleteMoveEl(column);
 				if(index == -1) {
 					// 一番右
 					index = insert_columns.children('.nc-column').length - 1;
@@ -679,7 +679,7 @@
 				return index;
 			}
 			//移動元要素削除
-			function delMoveEl(column) {
+			function deleteMoveEl(column) {
 				if(!column.children(':first').get(0)) {
 					column.remove();
 				}
@@ -989,7 +989,7 @@
 					}
 			);
 		},
-		delBlockConfirm: function(event, a, block_id, all_delete_flag, confirm) {
+		deleteBlockConfirm: function(event, a, block_id, all_delete_flag, confirm) {
 			var t = this;
 
 			var all_delete = (all_delete_flag) ? __d('pages', 'You completely delete it.') : null;
@@ -1004,7 +1004,7 @@
 			}
 			var _buttons = {};
 			_buttons[ok] = function(){
-				t.delBlock(block_id);
+				t.deleteBlock(block_id);
 				//$(this).dialog('close');
 				$(this).remove();
 			};
@@ -1052,7 +1052,7 @@
 				}
 			);
 		},
-		delBlock: function( block_id ) {
+		deleteBlock: function( block_id ) {
 			var t = this, all_delete = 0, params = new Object(), show_count_el = null;
 			var block = $('#_' + block_id);
 			var page_id = block.attr('data-page');

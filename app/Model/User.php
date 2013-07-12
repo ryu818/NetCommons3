@@ -1181,7 +1181,7 @@ class User extends AppModel
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	public function delUser($userId) {
+	public function deleteUser($userId) {
 		App::uses('Page', 'Model');
 		$Page = new Page();
 		App::uses('UserItemLink', 'Model');
@@ -1203,8 +1203,8 @@ class User extends AppModel
 		}
 		$deleteUserIds = array();
 		foreach($deleteUsers as $deleteUser) {
-			if(($deleteUser['User']['myportal_page_id'] != 0 && !$Page->delPage($deleteUser['User']['myportal_page_id'], true))
-				|| ($deleteUser['User']['private_page_id'] != 0 && !$Page->delPage($deleteUser['User']['private_page_id'], true))) {
+			if(($deleteUser['User']['myportal_page_id'] != 0 && !$Page->deletePage($deleteUser['User']['myportal_page_id'], true))
+				|| ($deleteUser['User']['private_page_id'] != 0 && !$Page->deletePage($deleteUser['User']['private_page_id'], true))) {
 				return false;
 			}
 			$deleteUserIds[] = $deleteUser['User']['id'];
