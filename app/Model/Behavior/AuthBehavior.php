@@ -212,6 +212,12 @@ class AuthBehavior extends ModelBehavior {
 		if(isset($shortcutFlag)) {
 			$val['Content']['shortcut_type'] = $shortcutFlag;
 		}
+		if(isset($val['PageUserLink']['authority_id']) && $val['PageUserLink']['authority_id'] == NC_AUTH_OTHER_ID) {
+			return array(
+				'id' => NC_AUTH_OTHER_ID,
+				'hierarchy' => NC_AUTH_OTHER
+			);
+		}
 
 		// Page取得
 		if((!isset($val[$modelName]['space_type']) || !isset($val[$modelName]['root_id'])) && isset($val['Content']['room_id'])) {
