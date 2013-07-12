@@ -408,6 +408,27 @@ class AuthorityController extends AuthorityAppController {
 				}
 
 			}
+			if (!$created) {
+				if($preAuthority['Authority']['display_participants_editing'] != _OFF && $authority['Authority']['display_participants_editing'] == _OFF) {
+					// page_user_linksで該当データがあれば、authority_id更新
+					// デフォルトの参加権限であっても、PageUserLinkに追加されてしまう。
+					$userAuthorityId = $this->Authority->getUserAuthorityId($authority['Authority']['hierarchy']);
+					$pageUserLinks = $this->PageUserLink->findAllByAuthorityId($authorityId);
+					if(count($pageUserLinks) > 0) {
+						$fields = array(
+							'PageUserLink.authority_id' => $userAuthorityId
+						);
+						$conditions = array(
+							"PageUserLink.authority_id" => $authorityId
+						);
+						if(!$this->PageUserLink->updateAll($fields, $conditions)) {
+							$this->flash(__('Failed to update the database, (%s).', 'page_user_links'), null, 'Authority.confirm.009', 500);
+							return;
+						}
+					}
+				}
+			}
+
 
 			/**
 			 * 「マイポータル、プライベートルームを使用する」がNC_DISPLAY_FLAG_ONからNC_DISPLAY_FLAG_OFFに変更されたら、マイポータル、プライベートルームのdisplay_flag=NC_DISPLAY_FLAG_DISABLEを立てる
@@ -439,7 +460,7 @@ class AuthorityController extends AuthorityAppController {
 							"Page.root_id" => $pageIds
 						);
 						if(!$this->Page->updateAll($fields, $conditions)) {
-							$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'Authority.confirm.009', 500);
+							$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'Authority.confirm.010', 500);
 							return;
 						}
 					}
@@ -457,7 +478,7 @@ class AuthorityController extends AuthorityAppController {
 							"Page.root_id" => $pageIds
 						);
 						if(!$this->Page->updateAll($fields, $conditions)) {
-							$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'Authority.confirm.010', 500);
+							$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'Authority.confirm.011', 500);
 							return;
 						}
 					}
@@ -517,8 +538,9 @@ class AuthorityController extends AuthorityAppController {
 			}
 		}
 		// page_user_linksで該当データがあれば、authority_id更新
-		$page_user_links = $this->PageUserLink->findAllByAuthorityId($authorityId);
-		if(count($page_user_links) > 0) {
+		// デフォルトの参加権限であっても、PageUserLinkに追加されてしまう。
+		$pageUserLinks = $this->PageUserLink->findAllByAuthorityId($authorityId);
+		if(count($pageUserLinks) > 0) {
 			$fields = array(
 				'PageUserLink.authority_id' => $userAuthorityId
 			);
