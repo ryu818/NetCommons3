@@ -115,12 +115,26 @@ class AuthBehavior extends ModelBehavior {
 			return $results;
 		}
 		foreach ($results as $key => $val) {
+			if(!isset($val['Content'])) {
+				// コンテンツがない場合、afterFindを実行しない。
+				// 指定モデル内のメソッドすべてでafterFindが呼ばれるのを防ぐため。
+				return $results;
+			}
 			$val = $this->setDefaultAuthority($Model, $val);
 			$results[$key] = $val;
 		}
 		return $results;
 	}
 
+/**
+ * joinするテーブル一覧(belongsTo)取得
+ * @param  Model Object           $Model
+ * @return array
+ * @since  v 3.0.0.0
+ */
+	public function getJoins($Model) {
+		$this->settings[$Model->alias]['joins'];
+	}
 
 /**
  * ページにおけるデフォルトの権限(authority_id, hierarchy)をAuthorityにセット

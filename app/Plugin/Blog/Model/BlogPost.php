@@ -399,12 +399,12 @@ class BlogPost extends AppModel
 		$params = array(
 			'fields' => array(
 				'DISTINCT YEAR( BlogPost.post_date ) AS year',
-				'MONTH( post_date ) AS month'
+				'MONTH( BlogPost.post_date ) AS month'
 			),
 			'conditions' => $conditions,
 			'order' => array('BlogPost.post_date' => 'DESC'),
 			'limit' => intval($visible_item),
-			//'recursive' => -1,
+			'recursive' => -1,
 			'page' => 1
 		);
 		return $this->find('all', $params);
