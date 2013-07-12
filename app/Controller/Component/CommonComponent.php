@@ -58,6 +58,7 @@ class CommonComponent extends Component {
 									'Authority.private_createroom_flag', 'Authority.allow_htmltag_flag', 'Authority.allow_layout_flag',
 									'Authority.allow_attachment', 'Authority.allow_video', 'Authority.change_leftcolumn_flag',
 									'Authority.change_rightcolumn_flag', 'Authority.change_headercolumn_flag', 'Authority.change_footercolumn_flag',
+									'Authority.display_participants_editing',
 								),
 			)
 		);

@@ -264,8 +264,11 @@ class AuthBehavior extends ModelBehavior {
 		} else if(isset($val['Authority']['id'])) {
 			$bufAuthorityId = $val['Authority']['id'];
 		}
-
-		if((!isset($bufAuthorityId) || !isset($val['Authority']['hierarchy']) ||
+		if(!empty($userId) && $userId == $loginUserId) {
+			$bufAuthorityId = $val['User']['authority_id'] = $loginUser['authority_id'];
+			$val['Authority']['hierarchy'] = $loginUser['hierarchy'];
+			$val['Authority']['display_participants_editing'] = $loginUser['display_participants_editing'];
+		} else if((!isset($bufAuthorityId) || !isset($val['Authority']['hierarchy']) ||
 			!isset($val['Authority']['display_participants_editing'])) && isset($userId)) {
 			App::uses('User', 'Model');
 			$User = new User();
