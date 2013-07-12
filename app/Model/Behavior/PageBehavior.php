@@ -19,7 +19,7 @@ class PageBehavior extends ModelBehavior {
  * @since   v 3.0.0.0
  */
 	public function setPageName(Model $Model, $page, $type = 0, $alias = 'Page') {
-		if(($page[$alias]['thread_num'] == 0 || ($page[$alias]['space_type'] != NC_SPACE_TYPE_GROUP && $page[$alias]['thread_num'] == 1) ||
+		if(($page[$alias]['thread_num'] == 0 || ($page[$alias]['space_type'] != NC_SPACE_TYPE_PUBLIC && $page[$alias]['thread_num'] == 1) ||
 				($page[$alias]['space_type'] != NC_SPACE_TYPE_PUBLIC && $page[$alias]['thread_num'] == 2 && $page[$alias]['display_sequence'] == 1))) {
 			if($type == 0) {
 				if($page[$alias]['thread_num'] == 1 && ($page[$alias]['space_type'] == NC_SPACE_TYPE_MYPORTAL || $page[$alias]['space_type'] == NC_SPACE_TYPE_PRIVATE)) {
