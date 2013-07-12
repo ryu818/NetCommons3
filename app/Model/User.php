@@ -544,11 +544,11 @@ class User extends AppModel
 		foreach($users as $key => $user) {
 			$user['Page'] = $page['Page'];
 			$ret = $this->getDefaultAuthority($user);
-			if(!isset($users[$key]['PageAuthority']['hierarchy'])) {
+			if(!isset($users[$key]['PageUserLink']['authority_id'])) {
 				$users[$key]['PageAuthority']['id'] = $ret['id'];
 				$users[$key]['PageAuthority']['hierarchy'] = $ret['hierarchy'];
 			}
-			if(!isset($users[$key]['AuthorityParent']['hierarchy'])) {
+			if(!isset($users[$key]['PageUserLinkParent']['authority_id'])) {
 				$users[$key]['AuthorityParent']['id'] = $ret['id'];
 				$users[$key]['AuthorityParent']['hierarchy'] = $ret['hierarchy'];
 			}

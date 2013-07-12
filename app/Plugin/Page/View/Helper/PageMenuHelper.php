@@ -49,13 +49,16 @@ class PageMenuHelper extends AppHelper {
 			//} else {
 			//	$hierarchy = NC_AUTH_OTHER;
 			//}
+		} else if(isset($user['PageUserLink']['authority_id']) && $user['PageUserLink']['authority_id'] == NC_AUTH_OTHER_ID) {
+			$authorityId = NC_AUTH_OTHER_ID;
+			$hierarchy = NC_AUTH_OTHER;
 		} else {
 			$authorityId = $defaultAuthorityId;
 			$hierarchy = $this->_getHierarchy($authorityId, $authList);
 		}
 
 		return array($authorityId, $hierarchy);
-    }
+	}
 
 /**
  * authority_idからhierarchyを取得
