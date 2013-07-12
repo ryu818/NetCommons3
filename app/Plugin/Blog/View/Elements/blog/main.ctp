@@ -1,4 +1,3 @@
-<?php /* TODO:新規投稿権限があれば表示すること。*/ ?>
 <?php if($is_add && (!isset($detail_type) || $detail_type != 'subject')): ?>
 <div class="blog-add-link">
 	<?php
