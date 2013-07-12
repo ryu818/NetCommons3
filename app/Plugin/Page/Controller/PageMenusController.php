@@ -248,6 +248,7 @@ class PageMenusController extends PageAppController {
 		$errorFlag = _OFF;
 		$change_private = false;
 		$currentPage = $this->Page->findAuthById($page['Page']['id'], $userId);
+		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		if($currentPage['Page']['thread_num'] == 1 && $currentPage['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
 			// コミュニティー
 			$ret = $this->Community->getCommunityData($currentPage['Page']['room_id'], $this->request->data);
@@ -256,7 +257,6 @@ class PageMenusController extends PageAppController {
 				return;
 			}
 			list($community, $communityLang, $communityTag) = $ret;
-
 			$fieldCommunityList = array('photo', 'upload_id', 'publication_range_flag', 'participate_flag',
 										'invite_hierarchy', 'participate_notice_flag', 'participate_notice_hierarchy',
 										'resign_notice_flag', 'resign_notice_hierarchy');
@@ -327,7 +327,7 @@ class PageMenusController extends PageAppController {
 			$page['Page']['display_from_date'] = '';
 		}
 
-		$childPages = $this->Page->findChilds('all', $currentPage, null, $userId);
+		$childPages = $this->Page->findChilds('all', $currentPage, $lang, $userId);
 		if($currentPage['Page']['thread_num'] == 2 && $currentPage['Page']['display_sequence'] == 1) {
 			// ページ名称のみ変更を許す
 			$fieldList = array('page_name');
