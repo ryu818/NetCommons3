@@ -729,7 +729,7 @@ class PageMenusController extends PageAppController {
 				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenus/participant.001', '400');
 				return;
 			}
-			$pageUserLinks = $this->PageMenu->participantSession($this->request, $pageId, $adminHierarchy, $authList);
+			$pageUserLinks = $this->PageMenu->participantSession($this->request, $pageId, $user['hierarchy'], $authList);
 
 			if(!empty($pageUserLinks['PageUserLink'])) {
 				$isSetChief = false;
@@ -757,7 +757,7 @@ class PageMenusController extends PageAppController {
 					return;
 				}
 			}
-			$childPages = $this->Page->findChilds('all', $page);
+			$childPages = $this->Page->findChilds('all', $page, null, $userId);
 			if($page['Page']['id'] != $page['Page']['room_id']) {
 				// 新規ルーム
 				$pageIdListArr = $this->_getIdList($page, $childPages);
@@ -830,7 +830,7 @@ class PageMenusController extends PageAppController {
 		list($conditions, $joins) = $this->User->getRefineSearch($this->request, $userAuthorityId, $adminUserHierarchy);
 
 		$participantType = $this->Authority->getParticipantType($user['authority_id'], $page);
-		$defaultAuthorityId = $this->Page->getDefaultAuthorityId($page, true);
+		$defaultAuthorityId = $this->Page->getDefaultAuthorityId($page);
 
 		if($defaultAuthorityId == NC_AUTH_OTHER_ID && $page['Page']['thread_num'] > 1) {
 			// 親が非公開ルームで子グループならば、不参加会員は非表示
@@ -957,7 +957,7 @@ class PageMenusController extends PageAppController {
 		$this->set('admin_hierarchy', $adminHierarchy);
 		$this->set('is_detail', $isDetail);
 		$this->set('error_flag', $errorFlag);
-		if($prePermalink != $page['Page']['permalink']) {
+		if(isset($prePermalink) && $prePermalink != $page['Page']['permalink']) {
 			$this->set('permalink', rtrim($this->Page->getPermalink(str_replace('%2F', '/', urlencode($page['Page']['permalink'])), $page['Page']['space_type']), '/'));
 			$this->set('pre_permalink', rtrim($this->Page->getPermalink(str_replace('%2F', '/', urlencode($prePermalink)), $page['Page']['space_type']), '/'));
 		}

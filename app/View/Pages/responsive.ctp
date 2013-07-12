@@ -76,7 +76,7 @@
 	//$style .= "margin:0 auto;"
 ?>
 <?php if(!empty($nc_user['id']) || Configure::read(NC_CONFIG_KEY.'.'.'display_header_menu') != NC_HEADER_MENU_NONE) {
-	echo($this->element('Dialogs/hmenu', array('hierarchy' => isset($pages[$page_id_arr[0]]['Authority']['hierarchy']) ? $pages[$page_id_arr[0]]['Authority']['hierarchy'] : NC_AUTH_OTHER)));
+	echo($this->element('Dialogs/hmenu', array('hierarchy' => isset($pages[$page_id_arr[0]]['PageAuthority']['hierarchy']) ? $pages[$page_id_arr[0]]['PageAuthority']['hierarchy'] : NC_AUTH_OTHER)));
 }?>
 <div id="container">
 	<div id="main-container"<?php if($style != ''): ?> style="<?php echo($style); ?>"<?php endif; ?>>

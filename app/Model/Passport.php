@@ -10,8 +10,6 @@
  */
 class Passport extends AppModel
 {
-	public $name = 'Passport';
-
 	//public $belongsTo = 'User';
 
 /**

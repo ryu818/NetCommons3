@@ -54,7 +54,7 @@ class BlockController extends BlockAppController {
 		if(!empty($this->request->params['requested']) && !empty($copy_block_id)) {
 			$block = $this->Block->findById($copy_block_id);	// 再取得
 			$pre_page = $this->Page->findAuthById(intval($block['Block']['page_id']), $user_id);
-			if(!$pre_page || $pre_page['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
+			if(!$pre_page || $pre_page['PageAuthority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
 				$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), null, 'add_block.001', '403');
 				return;
 			}
@@ -235,7 +235,7 @@ class BlockController extends BlockAppController {
 
 		if(!empty($this->request->params['requested'])) {
 			$pre_page = $this->Page->findAuthById(intval($block['Block']['page_id']), $user_id);
-			if(!$pre_page || $pre_page['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
+			if(!$pre_page || $pre_page['PageAuthority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
 				$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), null, 'insert_row.001', '403');
 				return;
 			}
@@ -332,7 +332,7 @@ class BlockController extends BlockAppController {
 
 		if(!empty($this->request->params['requested']) && isset($this->request->data['page_id'])) {
 			$insert_page = $this->Page->findAuthById(intval($this->request->data['page_id']), $user_id);
-			if(!$insert_page || $insert_page['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
+			if(!$insert_page || $insert_page['PageAuthority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
 				$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), null, 'insert_cell.001', '403');
 				return;
 			}

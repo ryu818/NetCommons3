@@ -31,13 +31,6 @@
 	<table id="user-room-list-<?php echo $user_id; ?>" class="user-room-list" summary="<?php echo __d('user', 'Display a list of rooms.'); ?>">
 		<tbody>
 		<?php foreach($page_user_links as $key => $pageUserLink): ?>
-			<?php
-				if($pageUserLink['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC){
-					$defaultEntryAuthorityId = Configure::read(NC_CONFIG_KEY.'.default_entry_public_authority_id');
-				} else {
-					$defaultEntryAuthorityId = Configure::read(NC_CONFIG_KEY.'.default_entry_group_authority_id');
-				}
-			?>
 			<tr>
 				<td class="<?php if($pageUserLink['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC){ echo "user-auth-public";} else { echo "user-auth-community"; } ?>">
 					<?php
@@ -49,16 +42,16 @@
 					 ?>
 				</td>
 				<td>
-					<?php echo $this->element('select_auth/auth_list', array('auth' => $auth_list[NC_AUTH_CHIEF],   'room_id' => $pageUserLink['PageUserLink']['room_id'], 'prefix' => 'user-auth', 'selauth'=> true,  'radio'=> true, 'def_hierarchy' => NC_AUTH_CHIEF,    'def_authority_id' => NC_AUTH_CHIEF_ID, 'authority_id' => $pageUserLink['PageUserLink']['authority_id'], 'defaultEntryAuthorityId' => $defaultEntryAuthorityId)); ?>
+					<?php echo $this->element('select_auth/auth_list', array('auth' => $auth_list[NC_AUTH_CHIEF],   'room_id' => $pageUserLink['PageUserLink']['room_id'], 'prefix' => 'user-auth', 'selauth'=> true,  'radio'=> true, 'def_hierarchy' => NC_AUTH_CHIEF,    'def_authority_id' => NC_AUTH_CHIEF_ID, 'authority_id' => $pageUserLink['PageUserLink']['authority_id'])); ?>
 				</td>
 				<td>
-					<?php echo $this->element('select_auth/auth_list', array('auth' => $auth_list[NC_AUTH_MODERATE],'room_id' => $pageUserLink['PageUserLink']['room_id'], 'prefix' => 'user-auth', 'selauth'=> true,  'radio'=> true, 'def_hierarchy' => NC_AUTH_MODERATE, 'def_authority_id' => NC_AUTH_MODERATE_ID, 'authority_id' => $pageUserLink['PageUserLink']['authority_id'], 'defaultEntryAuthorityId' => $defaultEntryAuthorityId)); ?>
+					<?php echo $this->element('select_auth/auth_list', array('auth' => $auth_list[NC_AUTH_MODERATE],'room_id' => $pageUserLink['PageUserLink']['room_id'], 'prefix' => 'user-auth', 'selauth'=> true,  'radio'=> true, 'def_hierarchy' => NC_AUTH_MODERATE, 'def_authority_id' => NC_AUTH_MODERATE_ID, 'authority_id' => $pageUserLink['PageUserLink']['authority_id'])); ?>
 				</td>
 				<td>
-					<?php echo $this->element('select_auth/auth_list', array('auth' => $auth_list[NC_AUTH_GENERAL], 'room_id' => $pageUserLink['PageUserLink']['room_id'], 'prefix' => 'user-auth', 'selauth'=> true,  'radio'=> true, 'def_hierarchy' => NC_AUTH_GENERAL,  'def_authority_id' => NC_AUTH_GENERAL_ID,  'authority_id' => $pageUserLink['PageUserLink']['authority_id'], 'defaultEntryAuthorityId' => $defaultEntryAuthorityId)); ?>
+					<?php echo $this->element('select_auth/auth_list', array('auth' => $auth_list[NC_AUTH_GENERAL], 'room_id' => $pageUserLink['PageUserLink']['room_id'], 'prefix' => 'user-auth', 'selauth'=> true,  'radio'=> true, 'def_hierarchy' => NC_AUTH_GENERAL,  'def_authority_id' => NC_AUTH_GENERAL_ID,  'authority_id' => $pageUserLink['PageUserLink']['authority_id'])); ?>
 				</td>
 				<td>
-					<?php echo $this->element('select_auth/auth_list', array('auth' => $auth_list[NC_AUTH_GUEST],   'room_id' => $pageUserLink['PageUserLink']['room_id'], 'prefix' => 'user-auth', 'selauth'=> false, 'radio'=> true, 'def_hierarchy' => NC_AUTH_GUEST,    'def_authority_id' => NC_AUTH_GUEST_ID,    'authority_id' => $pageUserLink['PageUserLink']['authority_id'], 'defaultEntryAuthorityId' => $defaultEntryAuthorityId)); ?>
+					<?php echo $this->element('select_auth/auth_list', array('auth' => $auth_list[NC_AUTH_GUEST],   'room_id' => $pageUserLink['PageUserLink']['room_id'], 'prefix' => 'user-auth', 'selauth'=> false, 'radio'=> true, 'def_hierarchy' => NC_AUTH_GUEST,    'def_authority_id' => NC_AUTH_GUEST_ID,    'authority_id' => $pageUserLink['PageUserLink']['authority_id'])); ?>
 				</td>
 			</tr>
 		<?php endforeach; ?>

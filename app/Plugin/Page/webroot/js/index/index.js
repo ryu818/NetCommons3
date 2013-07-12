@@ -481,8 +481,8 @@
 			}).on('ajax:success','form.pages-menu-edit-form',function(e, res) {
 				var target = $.Common.ajaxSuccess(e, this, res);
 				var re_html = new RegExp("^<script>", 'i');
-				res = !$.trim(res);
-				if($(this).attr('data-name') == 'participant' && !res.match(re_html)) {
+				res = $.trim(res);
+				if($(this).attr('data-name') == 'participant' && res != '' && !res.match(re_html)) {
 					$.Common.showErrorDialog(res);
 					return;
 				}

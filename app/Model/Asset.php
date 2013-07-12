@@ -20,7 +20,6 @@
 
 class Asset extends AppModel
 {
-	public $name = 'Asset';
 	public $actsAs = array('TimeZone', 'File');
 /**
  * URLからJs、Cssファイルのデータを読み込み

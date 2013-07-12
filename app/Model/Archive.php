@@ -13,8 +13,6 @@
  */
 class Archive extends AppModel
 {
-	public $name = 'Archive';
-
 	public $actsAs = array('TimeZone');
 
 	public $validate = array();
@@ -352,7 +350,7 @@ class Archive extends AppModel
 			}
 			$hierarchyRooms = array();
 			foreach ($pages as $key => $val) {
-				$hierarchy = $val['Authority']['hierarchy'];		//$Page->getDefaultHierarchy($val, $userId);
+				$hierarchy = $val['PageAuthority']['hierarchy'];		//$Page->getDefaultHierarchy($val);
 				if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 					$hierarchyRooms[NC_AUTH_CHIEF][] = $val['Page']['id'];
 				} else if($hierarchy >= NC_AUTH_MIN_MODERATE) {

@@ -10,7 +10,6 @@
  */
 class Config extends AppModel
 {
-	public $name = 'Config';
 	/*public $hasMany = array(
 		'ConfigLang' => array(
 			'className'  => 'ConfigLang',

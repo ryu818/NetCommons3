@@ -106,7 +106,7 @@ class BlogPostsController extends BlogAppController {
 		if(!empty($userId)) {
 			if(isset($postId)) {
 				$isEdit = $this->CheckAuth->isEdit($this->hierarchy, $blog['Blog']['post_hierarchy'], $blogPost['BlogPost']['created_user_id'],
-					$blogPost['Authority']['hierarchy']);
+					$blogPost['PageAuthority']['hierarchy']);
 			} else {
 				$isEdit = $this->CheckAuth->isEdit($this->hierarchy, $blog['Blog']['post_hierarchy']);
 			}

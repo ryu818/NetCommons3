@@ -10,5 +10,4 @@
  */
 class WhatsnewSelectUser extends AppModel
 {
-	public $name = 'WhatsnewSelectUser';
 }

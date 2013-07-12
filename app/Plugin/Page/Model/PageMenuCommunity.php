@@ -9,9 +9,8 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 class PageMenuCommunity extends AppModel {
-	public $name = 'PageMenuCommunity';
-    public $useTable = 'communities';
-    public $alias = 'Community';
+	public $useTable = 'communities';
+	public $alias = 'Community';
 
 /**
  * 参加情報コピー処理

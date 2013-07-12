@@ -19,7 +19,7 @@
 		$is_top = true;
 	}
 
-	if($admin_hierarchy >= NC_AUTH_MIN_GENERAL && ($page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF || $admin_hierarchy >= NC_AUTH_MIN_ADMIN)){
+	if($admin_hierarchy >= NC_AUTH_MIN_GENERAL && ($page['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF || $admin_hierarchy >= NC_AUTH_MIN_ADMIN)){
 		$is_chief = true;
 	}
 
@@ -39,7 +39,7 @@
 				}
 				break;
 		}
-	} else if(isset($parent_page) && $admin_hierarchy >= NC_AUTH_MIN_GENERAL && ($parent_page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF || $admin_hierarchy >= NC_AUTH_MIN_ADMIN)) {
+	} else if(isset($parent_page) && $admin_hierarchy >= NC_AUTH_MIN_GENERAL && ($parent_page['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF || $admin_hierarchy >= NC_AUTH_MIN_ADMIN)) {
 		$is_parent_chief = true;
 	}
 
@@ -125,7 +125,7 @@
     	$class_link .= ' to-nonpublic';
 	}
 	$tooltip_title = '';
-	if($page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
+	if($page['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
 		$tooltip_title = $this->TimeZone->getPublishedLabel($page['Page']['display_from_date'], $page['Page']['display_to_date']);
 		if($tooltip_title != '') {
 			$tooltip_title = ' ' . $tooltip_title;

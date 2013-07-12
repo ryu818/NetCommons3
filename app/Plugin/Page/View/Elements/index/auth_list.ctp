@@ -6,6 +6,8 @@ if(empty($auth[$authority_id]['authority_name'])) {
 }
 if(!empty($auth[$authority_id])) {
 	$value = $authority_id;
+} else if(isset($user_authority_id) && !empty($auth[$user_authority_id])) {
+	$value = $user_authority_id;
 } else {
 	$value = $def_authority_id;
 }

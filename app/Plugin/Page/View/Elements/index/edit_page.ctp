@@ -1,7 +1,7 @@
 <?php if(!empty($menus)): ?>
 	<?php foreach ($menus as $page): ?>
 		<?php
-		if($page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
+		if($page['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
 			// メニューの表示は親のルームで１つでも主坦のものがあれば、非公開ページも表示させる。
 			$buf_is_root_parent_chief = true;
 		} else {

@@ -18,7 +18,7 @@ class Block extends AppModel
 	public $name = 'Block';
 	// public $belongsTo = array('Module');
 
-	public $actsAs = array('Page', 'TimeZone', 'Validation');
+	public $actsAs = array('Page', 'TimeZone', 'Validation', 'Auth' => array('joins' => false, 'afterFind' => false));
 
 	// 公開日付をsaveする前に変換するかどうかのフラグ
 	// public $autoConvert = true;
@@ -222,29 +222,29 @@ class Block extends AppModel
 
 /**
  * block_id,user_idから該当ブロックを取得
- * @param   integer $block_id
- * @param   integer $user_id
- * @param   boolean $afterFind_flag	コールバックを呼ぶかどうか
+ * @param   integer $blockId
+ * @param   integer $userId
+ * @param   boolean $afterFindFlag	コールバックを呼ぶかどうか
  * @return  Block   $block
  * @since   v 3.0.0.0
  */
-	public function findAuthById($block_id, $user_id, $afterFind_flag = true) {
-		$conditions['Block.id'] = $block_id;
+	public function findAuthById($blockId, $userId, $afterFindFlag = true) {
+		$conditions['Block.id'] = $blockId;
 		$params = array(
 			'fields' => $this->_getFieldsArray(),
-			'joins' => $this->_getJoinsArray($user_id),
+			'joins' => $this->_getJoinsArray($userId),
 			'conditions' => $conditions
 		);
 
-		if(!$afterFind_flag)
+		if(!$afterFindFlag)
 			return $this->find('first', $params);
-		return $this->afterFindDefault($this->find('first', $params), $user_id);
+		return $this->afterFindDefault($this->find('first', $params));
 	}
 
-	public function findUsers($type, $conditions, $user_id) {
+	public function findUsers($type, $conditions, $userId) {
 		$params = array(
 						'fields' => $this->_getFieldsArray(),
-						'joins' => $this->_getJoinsArray($user_id),
+						'joins' => $this->_getJoinsArray($userId),
 						'conditions' => $conditions
 						);
 
@@ -254,12 +254,11 @@ class Block extends AppModel
 /**
  * afterFind
  * @param   array   $val
- * @param   integer  $user_id
- * @param   boolean $check_auth	権限チェックをするかどうか
+ * @param   boolean $checkAuth	権限チェックをするかどうか
  * @return  array   $block
  * @since   v 3.0.0.0
  */
-	public function afterFindDefault($val, $user_id, $check_auth = true) {
+	public function afterFindDefault($val, $checkAuth = true) {
 		$d = gmdate("Y-m-d H:i:s");
 		// 公開日付・非公開日時
 		if(!empty($val['Block']['display_from_date']) && strtotime($val['Block']['display_from_date']) <= strtotime($d)) {
@@ -271,8 +270,8 @@ class Block extends AppModel
 			$this->save($val, true, array('display_flag', 'display_from_date', 'display_to_date'));
 		}
 
-		if($check_auth && isset($val['Content']['display_flag']) &&
-			(($val['Content']['display_flag'] != NC_DISPLAY_FLAG_ON || $val['Block']['display_flag'] == NC_DISPLAY_FLAG_OFF) && $val['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF)) {
+		if($checkAuth && isset($val['Content']['display_flag']) &&
+			(($val['Content']['display_flag'] != NC_DISPLAY_FLAG_ON || $val['Block']['display_flag'] == NC_DISPLAY_FLAG_OFF) && $val['PageAuthority']['hierarchy'] < NC_AUTH_MIN_CHIEF)) {
 			// 非公開
 			return;
 		}
@@ -322,13 +321,13 @@ class Block extends AppModel
 			}
 		}
 
-		if(!isset($val['Authority']['hierarchy'])) {
-			$val['Authority']['hierarchy'] = $this->getDefaultHierarchy($val, $user_id, $val['Block']['shortcut_type']);
+		if(!isset($val['PageAuthority']['hierarchy'])) {
+			$val['PageAuthority']['hierarchy'] = $this->getDefaultAuthority($val);
 		}
 		if(!isset($val['BlockAuthority']['hierarchy'])) {
-			$val['BlockAuthority']['hierarchy'] = $this->getDefaultHierarchy($val, $user_id, NC_SHORTCUT_TYPE_OFF, 'Block');
+			$val['BlockAuthority']['hierarchy'] = $this->getDefaultAuthority($val, NC_SHORTCUT_TYPE_OFF, 'BlockPage');
 		}
-		$val['Block']['hierarchy'] = $val['Authority']['hierarchy'];
+		$val['Block']['hierarchy'] = $val['PageAuthority']['hierarchy'];
 		$val['Block']['block_hierarchy'] = $val['BlockAuthority']['hierarchy'];
 
 		//if(!isset($val['Content']['id'])) {
@@ -336,7 +335,7 @@ class Block extends AppModel
 		//	$val['Block']['hierarchy'] = null;
 		//}
 		unset($val['Page']);
-		unset($val['Authority']);
+		unset($val['PageAuthority']);
 		unset($val['BlockPage']);
 		unset($val['BlockAuthority']);
 		//unset($val['Content']);
@@ -347,13 +346,13 @@ class Block extends AppModel
 /**
  * ページリストからブロック取得
  * @param   array    $page_id_arr
- * @param   integer  $user_id
+ * @param   integer  $userId
  * @param   function $fetchcallback
- * @param   array    $fetch_params
+ * @param   array    $fetchParams
  * @return  array    $blocks
  * @since   v 3.0.0.0
  */
-	public function findByPageIds($page_id_arr, $user_id, $fetchcallback = null, $fetch_params = null) {
+	public function findByPageIds($page_id_arr, $userId, $fetchcallback = null, $fetchParams = null) {
 		$conditions = array();
 		if(is_array($page_id_arr)) {
 			foreach($page_id_arr as $page_id) {
@@ -364,7 +363,7 @@ class Block extends AppModel
 		}
 		$params = array(
 			'fields' => $this->_getFieldsArray(),
-			'joins' => $this->_getJoinsArray($user_id),
+			'joins' => $this->_getJoinsArray($userId),
 			'conditions' => $conditions,
 			'order' => $this->_getOrderArray(),
 		);
@@ -376,9 +375,9 @@ class Block extends AppModel
 		if($fetchcallback === "") {
 			$results = $this->find('all', $params);
 		} else if(!is_null($fetchcallback)) {
-			$results = call_user_func_array($fetchcallback, array($this->find('all', $params), $fetch_params));
+			$results = call_user_func_array($fetchcallback, array($this->find('all', $params), $fetchParams));
 		} else {
-			$results = $this->_afterFind($this->find('all', $params), $fetch_params);
+			$results = $this->_afterFind($this->find('all', $params), $fetchParams);
 		}
 		return $results;
 	}
@@ -407,41 +406,41 @@ class Block extends AppModel
 /**
  * グループ化したブロックからブロック取得
  * @param   array    $block
- * @param   integer  $user_id
+ * @param   integer  $userId
  * @return  array    $blocks
  * @since   v 3.0.0.0
  */
-	function findByGroupId($block, $user_id) {
+	function findByGroupId($block, $userId) {
 		$conditions = array(
 			'Block.root_id' => $block['Block']['root_id'],
 			'Block.thread_num >=' => $block['Block']['thread_num']
 		);
 		$params = array(
 			'fields' => $this->_getFieldsArray(),
-			'joins' => $this->_getJoinsArray($user_id),
+			'joins' => $this->_getJoinsArray($userId),
 			'conditions' => $conditions,
 			'order' => $this->_getOrderArray(),
 		);
-		return $this->_afterFind($this->find('all', $params), $user_id, array('group_block_id' => $block['Block']['id']));
+		return $this->_afterFind($this->find('all', $params), $userId, array('group_block_id' => $block['Block']['id']));
 	}
 /**
  * afterFind
  * @param   array   $results
- * @param   array   $fetch_params
+ * @param   array   $fetchParams
  * @return  array   $blocks
  * @since   v 3.0.0.0
  */
-	protected function _afterFind($results, $user_id, $fetch_params = array()) {
+	protected function _afterFind($results, $userId, $fetchParams = array()) {
 		$blocks = array();
 		$group_block_id = null;
-		if(isset($fetch_params['group_block_id'])) {
-			$group_block_id = $fetch_params['group_block_id'];
-			$parent_id_arr = array($fetch_params['group_block_id']);
+		if(isset($fetchParams['group_block_id'])) {
+			$group_block_id = $fetchParams['group_block_id'];
+			$parent_id_arr = array($fetchParams['group_block_id']);
 		}
 
 		foreach ($results as $key => $val) {
 			// 公開日付・非公開日付
-			$val = $this->afterFindDefault($val, $user_id);
+			$val = $this->afterFindDefault($val, $userId);
 			if(empty($val))
 				continue;
 			if($group_block_id && ($val['Block']['id'] == $group_block_id ||
@@ -472,17 +471,17 @@ class Block extends AppModel
 			'BlockPage.thread_num','BlockPage.room_id','BlockPage.root_id','BlockPage.space_type',
 			'Content.id','Content.module_id','Content.title','Content.shortcut_type','Content.master_id','Content.room_id','Content.display_flag','Content.is_approved','Content.url',
 			'Module.id','Module.controller_action','Module.edit_controller_action','Module.style_controller_action','Module.dir_name','Module.content_has_one',
-			'Authority.id','Authority.hierarchy','BlockAuthority.hierarchy'
+			'PageAuthority.id','PageAuthority.hierarchy','BlockAuthority.hierarchy'
 		);
 	}
 
 /**
  * Blockモデル共通JOIN文
- * @param   integer $user_id
+ * @param   integer $userId
  * @return  array   $joins
  * @since   v 3.0.0.0
  */
-	protected function _getJoinsArray($user_id) {
+	protected function _getJoinsArray($userId) {
 		$ret = array(
 			array("type" => "LEFT",
 				"table" => "contents",
@@ -493,12 +492,12 @@ class Block extends AppModel
 				"table" => "page_user_links",
 				"alias" => "PageUserLink",
 				"conditions" => "`Content`.`room_id`=`PageUserLink`.`room_id`".
-				" AND `PageUserLink`.`user_id` =".intval($user_id)
+				" AND `PageUserLink`.`user_id` =".intval($userId)
 			),
 			array("type" => "LEFT",
 				"table" => "authorities",
-				"alias" => "Authority",
-				"conditions" => "`Authority`.`id`=`PageUserLink`.`authority_id`"
+				"alias" => "PageAuthority",
+				"conditions" => "`PageAuthority`.`id`=`PageUserLink`.`authority_id`"
 			),
 			array("type" => "LEFT",
 				"table" => "pages",
@@ -514,7 +513,7 @@ class Block extends AppModel
 				"table" => "page_user_links",
 				"alias" => "BlockPageUserLink",
 				"conditions" => "`BlockPage`.`room_id`=`BlockPageUserLink`.`room_id`".
-				" AND `BlockPageUserLink`.`user_id` =".intval($user_id)
+				" AND `BlockPageUserLink`.`user_id` =".intval($userId)
 			),
 			array("type" => "LEFT",
 				"table" => "authorities",

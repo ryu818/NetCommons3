@@ -10,9 +10,7 @@
  */
 class BlogComment extends AppModel
 {
-	public $name = 'BlogComment';
-
-	public $order = array("BlogComment.lft" => "ASC");
+	public $order = array("lft" => "ASC");
 
 	public $actsAs = array('Tree');
 
@@ -202,8 +200,8 @@ class BlogComment extends AppModel
 				array(
 					"type" => "LEFT",
 					"table" => "authorities",
-					"alias" => "Authority",
-					"conditions" => "`Authority`.`id`=`PageUserLink`.`authority_id`"
+					"alias" => "PageAuthority",
+					"conditions" => "`PageAuthority`.`id`=`PageUserLink`.`authority_id`"
 				)
 			),
 			'order' => array('BlogComment.created' => 'DESC')

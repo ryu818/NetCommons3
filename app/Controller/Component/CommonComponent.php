@@ -169,10 +169,10 @@ class CommonComponent extends Component {
 		if(!$redirect_url)
 			$redirect_url = '/';
 		return $redirect_url;
-    }
+	}
 	protected function _redirectStartpage($page_id) {
-    	$ret_url = false;
-    	$user = $this->_controller->Auth->user();//認証済みユーザーを取得
+		$ret_url = false;
+		$user = $this->_controller->Auth->user();//認証済みユーザーを取得
 		$user_id = isset($user['id']) ? intval($user['id']) : 0;
 
 		if($user_id > 0 && $page_id < 0) {
@@ -192,7 +192,7 @@ class CommonComponent extends Component {
 			$ret_url = '/';
 		} else {
 			$page = $this->_controller->Page->findAuthById($page_id, $user_id);
-    		if($page['Authority']['hierarchy'] != NC_AUTH_OTHER) {
+    		if($page['PageAuthority']['hierarchy'] != NC_AUTH_OTHER) {
     			if(isset($use_column) && !$page['Authority'][$use_column]) {
     				// マイポータル OR マイルーム使用不可
     				return false;

@@ -10,5 +10,4 @@
  */
 class PageMeta extends AppModel
 {
-	public $name = 'PageMeta';
 }

@@ -10,9 +10,7 @@
  */
 class Content extends AppModel
 {
-	public $name = 'Content';
-
-	public $actsAs = array('Page', 'Validation');
+	public $actsAs = array('Page', 'Validation', 'Auth' => array('joins' => false, 'afterFind' => false));
 
 /**
  * バリデート処理
@@ -110,33 +108,32 @@ class Content extends AppModel
 /**
  * content_id,user_idから該当コンテンツを取得
  * @param   integer   $id
- * @param   integer   $user_id
+ * @param   integer   $userId
  * @return  Content   $content
  * @since   v 3.0.0.0
  */
-	public function findAuthById($id, $user_id) {
+	public function findAuthById($id, $userId) {
 		$conditions['Content.id'] = $id;
 		$params = array(
 			'fields' => $this->_getFieldsArray(),
-			'joins' => $this->_getJoinsArray($user_id),
+			'joins' => $this->_getJoinsArray($userId),
 			'conditions' => $conditions
 		);
 
-		$ret = $this->afterFindDefault($this->find('first', $params), $user_id);
+		$ret = $this->afterFindDefault($this->find('first', $params));
 		return $ret;
 	}
 
 /**
  * afterFind
  * @param   array   $val
- * @param   integer  $user_id
  * @return  Model Content   $content
  * @since   v 3.0.0.0
  */
-	public function afterFindDefault($val, $user_id) {
+	public function afterFindDefault($val) {
 		if(isset($val['Content']['id'])) {
-			if(!isset($val['Authority']['hierarchy'])) {
-				$val['Authority']['hierarchy'] = $this->getDefaultHierarchy($val, $user_id, $val['Content']['shortcut_type']);
+			if(!isset($val['PageAuthority']['hierarchy'])) {
+				$val['PageAuthority']['hierarchy'] = $this->getDefaultAuthority($val);
 			}
 		}
 		return $val;
@@ -153,28 +150,28 @@ class Content extends AppModel
 			'Content.*',
 			'Page.id','Page.page_name','Page.thread_num','Page.room_id','Page.root_id','Page.space_type',
 			'Module.id','Module.controller_action','Module.edit_controller_action','Module.style_controller_action','Module.dir_name','Module.content_has_one',
-			'Authority.id','Authority.hierarchy'
+			'PageAuthority.id','PageAuthority.hierarchy'
 		);
 	}
 
 /**
  * Contentモデル共通JOIN文
- * @param   integer $user_id
+ * @param   integer $userId
  * @return  array   $joins
  * @since   v 3.0.0.0
  */
-	protected function _getJoinsArray($user_id) {
+	protected function _getJoinsArray($userId) {
 		$ret = array(
 			array("type" => "LEFT",
 				"table" => "page_user_links",
 				"alias" => "PageUserLink",
 				"conditions" => "`Content`.`room_id`=`PageUserLink`.`room_id`".
-				" AND `PageUserLink`.`user_id` =".intval($user_id)
+				" AND `PageUserLink`.`user_id` =".intval($userId)
 			),
 			array("type" => "LEFT",
 				"table" => "authorities",
-				"alias" => "Authority",
-				"conditions" => "`Authority`.`id`=`PageUserLink`.`authority_id`"
+				"alias" => "PageAuthority",
+				"conditions" => "`PageAuthority`.`id`=`PageUserLink`.`authority_id`"
 			),
 			array("type" => "LEFT",
 				"table" => "pages",

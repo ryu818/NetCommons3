@@ -7,7 +7,7 @@
 			foreach ($block_col as $row => $block) {
 
 				if(empty($block['Block']['hierarchy'])) {
-					$block['Block']['hierarchy'] = $page['Authority']['hierarchy'];
+					$block['Block']['hierarchy'] = $page['PageAuthority']['hierarchy'];
 				}
 				$params = array('block_type' => 'active-blocks', 'block_id' => $block['Block']['id']);
 				$requestActionOptions = array('return', 'requested' => _OFF);	// Tokenがrequested=1の場合、セットされないため1をセット

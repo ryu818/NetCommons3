@@ -10,9 +10,7 @@
  */
 class PageUserLink extends AppModel
 {
-	public $name = 'PageUserLink';
-
-	public $actsAs = array('Page');
+	public $actsAs = array('Page', 'Auth' => array('joins' => false, 'afterFind' => false));
 
 /**
  * 参加会員修正時のPageUserLink登録・更新処理
@@ -31,7 +29,6 @@ class PageUserLink extends AppModel
  */
 	public function saveParticipant($page, $postPageUserLinks, $prePageUserLinks, $preParentPageUserLinks = null, $participantType = null) {
 		$roomId = $page['Page']['id'];
-		$defaultAuthorityId = $this->getDefaultAuthorityId($page, true);
 		$delUserIdArr = array();
 		$preUserIdArr = array();
 		$postUserIdArr = array();
@@ -63,10 +60,13 @@ class PageUserLink extends AppModel
 			return false;
 		}
 
+		unset($page['Authority']);
+
 		foreach($preParentUserIdArr as $userId => $parentAuthorityId) {
 			$authorityId = isset($postUserIdArr[$userId]) ? intval($postUserIdArr[$userId]) : null;
 			$preAuthorityId = isset($preUserIdArr[$userId]) ? intval($preUserIdArr[$userId]) : null;
-
+			$page['PageUserLink']['user_id'] = $userId;
+			$defaultAuthorityId = $this->getDefaultAuthorityId($page);
 			if(!isset($authorityId) || $preAuthorityId === $authorityId || ($authorityId == $defaultAuthorityId && $authorityId != NC_AUTH_OTHER_ID)) {
 				// 既にあるデータか、default値といっしょなので、Insertしない。
 				if($authorityId == $defaultAuthorityId && $authorityId != $preAuthorityId) {

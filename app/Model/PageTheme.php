@@ -10,5 +10,4 @@
  */
 class PageTheme extends AppModel
 {
-	public $name = 'PageTheme';
 }

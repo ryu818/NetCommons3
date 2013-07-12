@@ -4,7 +4,7 @@
 
 	$dates = $this->TimeZone->dateValues($blog_post['BlogPost']['post_date']);
 	$isEdit = $this->CheckAuth->isEdit($hierarchy, $blog['Blog']['post_hierarchy'], $blog_post['BlogPost']['created_user_id'],
-		$blog_post['Authority']['hierarchy']);
+		$blog_post['PageAuthority']['hierarchy']);
 	$isApprove = false;
 	if($blog_post['BlogPost']['status'] == NC_STATUS_PUBLISH && $blog_post['BlogPost']['is_approved'] != _ON) {
 		$isApprove = true;

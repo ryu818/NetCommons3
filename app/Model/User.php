@@ -10,13 +10,11 @@
  */
 class User extends AppModel
 {
-	public $name = 'User';
-
 	public $belongsTo = array(
 		'Authority'    => array(
 			//'foreignKey'    => '',
-			'fields' => array('Authority.hierarchy', 'Authority.myportal_use_flag',
-				 'Authority.allow_myportal_viewing_hierarchy', 'Authority.private_use_flag'),
+			'fields' => array('id', 'hierarchy', 'myportal_use_flag',
+				 'allow_myportal_viewing_hierarchy', 'private_use_flag', 'display_participants_editing'),
 		),
 	);
 
@@ -25,7 +23,7 @@ class User extends AppModel
  *
  * @var array
  */
-	public $actsAs = array('TimeZone');
+	public $actsAs = array('TimeZone', 'Auth' => array('joins' => false, 'afterFind' => false));
 
 	public $validate = array();
 
@@ -353,7 +351,7 @@ class User extends AppModel
 			return false;
 		}
 		return true;
-    }
+	}
 
 /**
  *
@@ -364,31 +362,30 @@ class User extends AppModel
  * @return  mixed ''|false|array $user
  * @since   v 3.0.0.0
  */
-    public function currentUser($page, $loginUser = null) {
-    	$user = array();
-    	if($page['Page']['space_type'] != NC_SPACE_TYPE_MYPORTAL && $page['Page']['space_type'] != NC_SPACE_TYPE_PRIVATE) {
-    		return '';
-    	}
+	public function currentUser($page, $loginUser = null) {
+		$user = array();
+		if($page['Page']['space_type'] != NC_SPACE_TYPE_MYPORTAL && $page['Page']['space_type'] != NC_SPACE_TYPE_PRIVATE) {
+			return '';
+		}
 
-    	$buf_permalink_arr = explode('/', $page['Page']['permalink']);
-    	if(!isset($loginUser['permalink']) || $buf_permalink_arr[0] != $loginUser['permalink']) {
-    		$conditions = array('User.permalink' => $buf_permalink_arr[0]);
-    		$user = $this->find( 'first', array(
-    			'conditions' => $conditions
-    		) );
-    		if(isset($user['Authority'])) {
-    			// 権限関連をAdd
-    			$user['User'] = array_merge($user['User'], $user['Authority']);
-    		}
-    	} else {
-    		$user['User'] = $loginUser;
-    	}
-    	if(!isset($user['User']))
-    		return false;
+		$buf_permalink_arr = explode('/', $page['Page']['permalink']);
+		if(!isset($loginUser['permalink']) || $buf_permalink_arr[0] != $loginUser['permalink']) {
+			$conditions = array('User.permalink' => $buf_permalink_arr[0]);
+			$user = $this->find( 'first', array(
+				'conditions' => $conditions
+			) );
+			if(isset($user['Authority'])) {
+				// 権限関連をAdd
+				$user['User'] = array_merge($user['User'], $user['Authority']);
+			}
+		} else {
+			$user['User'] = $loginUser;
+		}
+		if(!isset($user['User']))
+			return false;
 
-    	return $user;
-    }
-
+		return $user;
+	}
 
 /**
  * 参加者情報取得
@@ -416,15 +413,18 @@ class User extends AppModel
 
 		$roomId = $page['Page']['id'];
 		$fields = array(
-			'Page.*',
 			'PageUserLink.id',
 			'PageUserLink.user_id',
 			'PageUserLink.authority_id',
 			'User.id',
 			'User.handle',
 			'User.authority_id',
+			'PageAuthority.id',
+			'PageAuthority.hierarchy',
+			'Authority.id',
+			'Authority.display_participants_editing',
 			'Authority.hierarchy',
-			'UserAuthority.hierarchy',
+			'Community.publication_range_flag',
 		);
 		$type = ($participantType == 0  || is_null($participantType)) ? "INNER" : "LEFT";
 		$joins[] = array(
@@ -437,26 +437,34 @@ class User extends AppModel
 		$joins[] = array(
 			"type" => "LEFT",
 			"table" => "authorities",
-			"alias" => "Authority",
-			"conditions" => "`Authority`.`id`=`PageUserLink`.`authority_id`"
+			"alias" => "PageAuthority",
+			"conditions" => "`PageAuthority`.`id`=`PageUserLink`.`authority_id`"
 		);
 		$joins[] = array(
 			"type" => "INNER",
 			"table" => "authorities",
-			"alias" => "UserAuthority",
-			"conditions" => "`UserAuthority`.`id`=`User`.`authority_id`"
+			"alias" => "Authority",
+			"conditions" => "`Authority`.`id`=`User`.`authority_id`"
 		);
+
 		$joins[] = array(
+			"type" => "LEFT",
+			"table" => "communities",
+			"alias" => "Community",
+			"conditions" => array('Community.room_id' => $roomId),
+		);
+		/*$joins[] = array(
 			"type" => "LEFT",
 			"table" => "pages",
 			"alias" => "Page",
 			"conditions" => "`Page`.`id`=`PageUserLink`.`room_id`"
-		);
+		);*/
 
 		if(!is_null($participantType) && $page['Page']['thread_num'] > 1) {
 		//if($page['Page']['id'] != $page['Page']['room_id'] && $page['Page']['thread_num'] > 1) {
 			// 親ルームが存在するならば、親ルームの参加者のみ表示
-			$fields[] = 'PageUserLinkParent.authority_id';
+			////$fields[] = 'PageUserLinkParent.authority_id';
+			$fields[] = 'AuthorityParent.id';
 			$fields[] = 'AuthorityParent.hierarchy';
 
 			App::uses('Page', 'Model');
@@ -495,23 +503,23 @@ class User extends AppModel
 
 		if($sortname == 'chief') {
 			$order = array(
+				'PageAuthority.hierarchy' => $sortorder,
 				'Authority.hierarchy' => $sortorder,
-				'UserAuthority.hierarchy' => $sortorder,
 				'User.handle' => $sortorder,
 				'User.id' => $sortorder
 			);
 			if(isset($parentRoomId)) {
 				$order = array(
-					'Authority.hierarchy' => $sortorder,
+					'PageAuthority.hierarchy' => $sortorder,
 					'AuthorityParent.hierarchy' => $sortorder,
-					'UserAuthority.hierarchy' => $sortorder,
+					'Authority.hierarchy' => $sortorder,
 					'User.handle' => 'ASC',
 					'User.id' => 'ASC'
 				);
 			} else {
 				$order = array(
+					'PageAuthority.hierarchy' => $sortorder,
 					'Authority.hierarchy' => $sortorder,
-					'UserAuthority.hierarchy' => $sortorder,
 					'User.handle' => 'ASC',
 					'User.id' => 'ASC'
 				);
@@ -532,9 +540,21 @@ class User extends AppModel
 			'recursive' => -1,
 			'order' => $order
 		);
-
-    	return array($total, $this->find('all', $params));
-    }
+		$users = $this->find('all', $params);
+		foreach($users as $key => $user) {
+			$user['Page'] = $page['Page'];
+			$ret = $this->getDefaultAuthority($user);
+			if(!isset($users[$key]['PageAuthority']['hierarchy'])) {
+				$users[$key]['PageAuthority']['id'] = $ret['id'];
+				$users[$key]['PageAuthority']['hierarchy'] = $ret['hierarchy'];
+			}
+			if(!isset($users[$key]['AuthorityParent']['hierarchy'])) {
+				$users[$key]['AuthorityParent']['id'] = $ret['id'];
+				$users[$key]['AuthorityParent']['hierarchy'] = $ret['hierarchy'];
+			}
+		}
+		return array($total, $users);
+	}
 
 /**
  * ContentIdからメール送信先email一覧取得
@@ -656,7 +676,7 @@ class User extends AppModel
 		if (!isset($page['Page'])) {
 			return false;
 		}
-		$defaultEntryHierarchy = $Page->getDefaultHierarchy($page, $userId);
+		$defaultEntryHierarchy = $Page->getDefaultHierarchy($page);
 
 		if(!empty($pageId)) {
 			if(($page['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC ||
@@ -673,7 +693,7 @@ class User extends AppModel
 			}
 
 			$params = array(
-				'fields' => array('User.email', 'User.mobile_email', 'PageUserLink.authority_id', 'Authority.hierarchy'),	// 'PageUserLink.authority_id',
+				'fields' => array('User.email', 'User.mobile_email', 'PageUserLink.authority_id', 'PageAuthority.hierarchy'),	// 'PageUserLink.authority_id',
 				'joins' => array(
 					array("type" => $type,
 						"table" => "page_user_links",

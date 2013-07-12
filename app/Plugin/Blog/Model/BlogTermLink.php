@@ -10,8 +10,6 @@
  */
 class BlogTermLink extends AppModel
 {
-	public $name = 'BlogTermLink';
-
 
 /**
  * バリデート処理

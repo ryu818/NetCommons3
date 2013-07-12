@@ -21,7 +21,7 @@
 			$val['Block']['title'] = $val['Content']['title'];
 		}
 
-		if($val['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
+		if($val['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
 			$params = array(
 				'permalink' => $val['Page']['permalink'],
 				'block_type' => 'active-blocks',

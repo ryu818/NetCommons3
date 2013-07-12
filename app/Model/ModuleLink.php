@@ -14,13 +14,11 @@
  */
 class ModuleLink extends AppModel
 {
-    var $name = 'ModuleLink';
-
-    public $belongsTo = array(
-        'Module' => array(
-            'type'    => 'INNER'
-        )
-    );
+	public $belongsTo = array(
+		'Module' => array(
+			'type'    => 'INNER'
+		)
+	);
 
 /**
  * block_id,user_idから該当ブロックを取得

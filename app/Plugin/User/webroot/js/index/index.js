@@ -290,11 +290,10 @@
 
 			}
 		},
-		memberQuit : function(userId, a) {
+		memberQuit : function(userId, a, active) {
 			var ul = $('#user-init-tab-ul');
-			var active = null;
 			var tabs = ul.parent();
-			if(a) {
+			if(a && !active) {
 				var remove_li = $(a).parent(), count = 0;
 
 				ul.children().each(function(){
@@ -441,8 +440,6 @@
 			var tabs = $('#user-init-tab');
 			var tabList = $('#user-init-tab-list');
 			setTimeout(function(){	// ヘッダーメッセージを表示するため
-				$.User.memberQuit(userId);
-				tabs.tabs( "option", "active", 0 );
 				if(errorMes != "") {
 					// 警告メッセージを会員一覧に表示
 					var description = $(".top-description:first", tabList);
@@ -451,6 +448,9 @@
 					}
 					description.before(errorMes);
 				}
+				active = tabs.tabs("option","active");
+				tabs.tabs( "option", "active", 0 );
+				$.User.memberQuit(userId, null, active);
 			}, 100);
 		}
 	}

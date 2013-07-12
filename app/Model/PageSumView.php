@@ -10,5 +10,4 @@
  */
 class PageSumView extends AppModel
 {
-	public $name = 'PageSumView';
 }

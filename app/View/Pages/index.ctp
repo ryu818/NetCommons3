@@ -87,12 +87,12 @@
 	}
 ?>
 <?php if(!empty($nc_user['id']) || Configure::read(NC_CONFIG_KEY.'.'.'display_header_menu') != NC_HEADER_MENU_NONE) {
-	echo($this->element('Dialogs/hmenu', array('hierarchy' => isset($pages[$page_id_arr[0]]['Authority']['hierarchy']) ? $pages[$page_id_arr[0]]['Authority']['hierarchy'] : NC_AUTH_OTHER)));
+	echo($this->element('Dialogs/hmenu', array('hierarchy' => isset($pages[$page_id_arr[0]]['PageAuthority']['hierarchy']) ? $pages[$page_id_arr[0]]['PageAuthority']['hierarchy'] : NC_AUTH_OTHER)));
 }?>
 <div id="container">
 	<div id="main-container" class="table"<?php if($style != ''): ?> style="<?php echo($style); ?>"<?php endif; ?>>
 	<?php if(isset($headercolumn_str)): ?>
-	<?php if($ncMode == NC_BLOCK_MODE && isset($pages[$page_id_arr[1]]) && $pages[$page_id_arr[1]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF): ?>
+	<?php if($ncMode == NC_BLOCK_MODE && isset($pages[$page_id_arr[1]]) && $pages[$page_id_arr[1]]['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF): ?>
 	<div class="table-row" data-add-columns='headercolumn'>
 		<?php echo($this->element('Pages/add_block', array('id' => 'nc-add-block-headercolumn', 'add_modules' => $add_modules[$pages[$page_id_arr[1]]['Page']['room_id']], 'copy_content' => $copy_content))); ?>
 	</div>
@@ -104,7 +104,7 @@
 	<div class="table">
 		<?php if(isset($leftcolumn_str)): ?>
 		<div id="leftcolumn" class="nc-columns table-cell"<?php if($left_style != ''): ?> style="<?php echo($left_style); ?>"<?php endif; ?> data-page='<?php echo($page_id_arr[2]); ?>' data-columns='top'>
-			<?php if($ncMode == NC_BLOCK_MODE && isset($pages[$page_id_arr[2]]) && $pages[$page_id_arr[2]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF): ?>
+			<?php if($ncMode == NC_BLOCK_MODE && isset($pages[$page_id_arr[2]]) && $pages[$page_id_arr[2]]['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF): ?>
 			<div class="table">
 				<?php echo($this->element('Pages/add_block', array('id' => 'nc-add-block-leftcolumn', 'add_modules' => $add_modules[$pages[$page_id_arr[2]]['Page']['room_id']], 'copy_content' => $copy_content))); ?>
 			</div>
@@ -115,7 +115,7 @@
 		</div>
 		<?php endif; ?>
 		<div id="centercolumn" class="nc-columns table-cell" data-columns='top' data-page='<?php echo($page_id_arr[0]); ?>'>
-			<?php if($ncMode == NC_BLOCK_MODE && isset($pages[$page_id_arr[0]]) && $pages[$page_id_arr[0]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF): ?>
+			<?php if($ncMode == NC_BLOCK_MODE && isset($pages[$page_id_arr[0]]) && $pages[$page_id_arr[0]]['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF): ?>
 			<div class="table">
 				<?php echo($this->element('Pages/add_block', array('id' => 'nc-add-block-centercolumn', 'add_modules' => $add_modules[$pages[$page_id_arr[0]]['Page']['room_id']], 'copy_content' => $copy_content))); ?>
 			</div>
@@ -126,7 +126,7 @@
 		</div>
 		<?php if(isset($rightcolumn_str)): ?>
 		<div id="rightcolumn" class="nc-columns table-cell"<?php if($right_style != ''): ?> style="<?php echo($right_style); ?>"<?php endif; ?> data-page='<?php echo($page_id_arr[3]); ?>' data-columns='top'>
-			<?php if($ncMode == NC_BLOCK_MODE && isset($pages[$page_id_arr[3]]) && $pages[$page_id_arr[3]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF): ?>
+			<?php if($ncMode == NC_BLOCK_MODE && isset($pages[$page_id_arr[3]]) && $pages[$page_id_arr[3]]['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF): ?>
 			<div class="table">
 				<?php echo($this->element('Pages/add_block', array('id' => 'nc-add-block-rightcolumn', 'add_modules' => $add_modules[$pages[$page_id_arr[3]]['Page']['room_id']], 'copy_content' => $copy_content))); ?>
 			</div>
@@ -138,7 +138,7 @@
 		<?php endif; ?>
 	</div>
 	<?php if(isset($footercolumn_str)): ?>
-	<?php if($ncMode == NC_BLOCK_MODE && isset($pages[$page_id_arr[4]]) && $pages[$page_id_arr[4]]['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF): ?>
+	<?php if($ncMode == NC_BLOCK_MODE && isset($pages[$page_id_arr[4]]) && $pages[$page_id_arr[4]]['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF): ?>
 		<div class="table-row" data-add-columns='footercolumn'>
 			<?php echo($this->element('Pages/add_block', array('id' => 'nc-add-block-footercolumn', 'add_modules' => $add_modules[$pages[$page_id_arr[4]]['Page']['room_id']], 'copy_content' => $copy_content))); ?>
 		</div>

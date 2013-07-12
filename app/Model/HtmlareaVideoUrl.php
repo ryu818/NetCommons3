@@ -10,5 +10,4 @@
  */
 class HtmlareaVideoUrl extends AppModel
 {
-	public $name = 'HtmlareaVideoUrl';
 }

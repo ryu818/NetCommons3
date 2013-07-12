@@ -13,9 +13,8 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 class ContentList extends AppModel {
-	public $name = 'ContentList';
-    public $useTable = 'contents';
-    public $alias = 'Content';
+	public $useTable = 'contents';
+	public $alias = 'Content';
 
 	public $actsAs = array('Page');
 
@@ -54,8 +53,8 @@ class ContentList extends AppModel {
 			),
 			array("type" => "INNER",
 				"table" => "authorities",
-				"alias" => "Authority",
-				"conditions" => "`Authority`.`id`=`PagesUsersLink`.`authority_id`"
+				"alias" => "PageAuthority",
+				"conditions" => "`PageAuthority`.`id`=`PagesUsersLink`.`authority_id`"
 			),
 			array("type" => "INNER",
 				"table" => "modules",
@@ -103,7 +102,7 @@ class ContentList extends AppModel {
 				'PagesUsersLink.authority_id',
 				'Page.id, Page.page_name, Page.thread_num, Page.space_type',
 				'Page.display_sequence',
-				'Authority.hierarchy',
+				'PageAuthority.hierarchy',
 				'ActiveContent.id',
 				'Module.dir_name','Module.controller_action',
 				'Block.id',
@@ -125,10 +124,10 @@ class ContentList extends AppModel {
 					// コンテンツ元取得
 					App::uses('Content', 'Model');
 					$Content = new Content();
-					$parent_content = $Content->findAuthById($rets[$i]['Content']['master_id'], $userId);
-					if(isset($parent_content['Page']['page_name'])) {
-						$parent_content = $this->setPageName($parent_content);
-						$rets[$i]['Page']['page_name'] = $parent_content['Page']['page_name'];
+					$parentContent = $Content->findAuthById($rets[$i]['Content']['master_id'], $userId);
+					if(isset($parentContent['Page']['page_name'])) {
+						$parentContent = $this->setPageName($parentContent);
+						$rets[$i]['Page']['page_name'] = $parentContent['Page']['page_name'];
 					}
 				}
 				//$rets[$i] = $this->setPageName($rets[$i]);

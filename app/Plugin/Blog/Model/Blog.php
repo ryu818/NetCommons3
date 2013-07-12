@@ -10,7 +10,6 @@
  */
 class Blog extends AppModel
 {
-	public $name = 'Blog';
 
 /**
  * バリデート処理

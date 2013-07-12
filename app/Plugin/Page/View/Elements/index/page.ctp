@@ -1,7 +1,7 @@
 <?php if(!empty($menus)): ?>
 	<?php foreach ($menus as $page): ?>
 		<?php
-			if($page['Page']['display_flag'] != NC_DISPLAY_FLAG_ON && $page['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
+			if($page['Page']['display_flag'] != NC_DISPLAY_FLAG_ON && $page['PageAuthority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
 				// 非公開
 				continue;
 			}
@@ -16,11 +16,11 @@
 
 			if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_OFF) {
 				$class .= ' nonpublic';
-			} else if(!empty($page['Page']['display_to_date']) && $page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
+			} else if(!empty($page['Page']['display_to_date']) && $page['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
     			$class .= ' to-nonpublic';
 			}
 			$tooltip_title = '';
-			if($page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
+			if($page['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
 				$tooltip_title = $this->TimeZone->getPublishedLabel($page['Page']['display_from_date'], $page['Page']['display_to_date']);
 				if($tooltip_title != '') {
 					$tooltip_title = ' title="' . $tooltip_title . '"';

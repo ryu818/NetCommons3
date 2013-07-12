@@ -10,5 +10,4 @@
  */
 class PageColumn extends AppModel
 {
-	public $name = 'PageColumn';
 }

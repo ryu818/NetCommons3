@@ -10,9 +10,7 @@
  */
 class BlogStyle extends AppModel
 {
-	public $name = 'BlogStyle';
-
-	public $order = array("BlogStyle.col_num" => "ASC", "BlogStyle.row_num" => "ASC");
+	public $order = array("col_num" => "ASC", "row_num" => "ASC");
 
 /**
  * 各ウジェットのoptionsのValidate

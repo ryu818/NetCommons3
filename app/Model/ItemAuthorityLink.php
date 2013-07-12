@@ -10,8 +10,6 @@
  */
 class ItemAuthorityLink extends AppModel
 {
-	public $name = 'ItemAuthorityLink';
-
 /**
  * data[user_authority_id][higher|self|lower][item_id] = $public_flagとして取得
  * @param   string $type

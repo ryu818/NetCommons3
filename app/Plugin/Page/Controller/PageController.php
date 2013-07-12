@@ -201,10 +201,10 @@ class PageController extends PageAppController {
 			$is_add_community = false;
 
 			if($center_page['Page']['thread_num'] <= 1) {
-				if($center_page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
+				if($center_page['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
 					$is_add = true;
 				}
-			} else if($parent_page['Authority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
+			} else if($parent_page['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
 				$is_add = true;
 			}
 			if($admin_hierarchy >= NC_AUTH_MIN_MODERATE) {

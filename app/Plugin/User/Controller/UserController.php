@@ -280,6 +280,7 @@ class UserController extends UserAppController {
 	public function edit($userId = null) {
 		$user = array();
 		$userItemLinks = array();
+		$loginUserId = $this->Auth->user('id');
 
 		// 言語切替
 		$this->_setLanguage();
@@ -294,7 +295,7 @@ class UserController extends UserAppController {
 		if(!empty($userId)) {
 			// 編集
 			$user = $this->User->findById(intval($userId));
-			if(!isset($user['User']) || $this->hierarchy < $user['Authority']['hierarchy']) {
+			if(!isset($user['User']) || ($loginUserId != $userId && $this->hierarchy < $user['Authority']['hierarchy'])) {
 				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'User.edit.002');
 				return;
 			}
@@ -435,12 +436,13 @@ class UserController extends UserAppController {
  * @since   v 3.0.0.0
  */
 	public function select_group($userId = null) {
+		$loginUserId = $this->Auth->user('id');
 		if(empty($userId)) {
 			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'User.select_group.001');
 			return;
 		}
 		$user = $this->User->findById(intval($userId));
-		if(!isset($user['User']) || $this->hierarchy < $user['Authority']['hierarchy']) {
+		if(!isset($user['User']) || ($loginUserId != $userId && $this->hierarchy < $user['Authority']['hierarchy'])) {
 			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'User.select_group.002');
 			return;
 		}
@@ -519,12 +521,13 @@ class UserController extends UserAppController {
  * @since   v 3.0.0.0
  */
 	public function select_auth($userId = null) {
+		$loginUserId = $this->Auth->user('id');
 		if(empty($userId)) {
 			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'User.select_group.001');
 			return;
 		}
-		$user = $this->User->findById(intval($userId));
-		if(!isset($user['User']) || $this->hierarchy < $user['Authority']['hierarchy']) {
+		$user = $this->User->findById($userId);
+		if(!isset($user['User']) || ($loginUserId != $userId && $this->hierarchy < $user['Authority']['hierarchy'])) {
 			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'User.select_group.002');
 			return;
 		}
@@ -560,7 +563,7 @@ class UserController extends UserAppController {
 					$spaceType = $enrollRooms[$pageId]['Page']['space_type'];
 					$threadNum = $enrollRooms[$pageId]['Page']['thread_num'];
 					$rootId = $enrollRooms[$pageId]['Page']['root_id'];
-					$authorityId = $enrollRooms[$pageId]['Authority']['id'];
+					$authorityId = $enrollRooms[$pageId]['PageAuthority']['id'];
 					$publicationRangeFlag = $enrollRooms[$pageId]['Community']['publication_range_flag'];
 				} else {
 					$pageIdArr[] = $pageId;
@@ -581,6 +584,7 @@ class UserController extends UserAppController {
 					'Community' => array(
 						'publication_range_flag' => $publicationRangeFlag
 					),
+					'Authority' => $user['Authority'],
 				);
 			}
 			// spaceTypeよりデフォルトの権限設定
@@ -588,12 +592,9 @@ class UserController extends UserAppController {
 				$pages = $this->Page->findAuthById($pageIdArr, $userId);
 				foreach($pageUserLinks as $pageId => $PageUserLink) {
 					if(!isset($PageUserLink['PageUserLink']['authority_id'])) {
-						$pageUserLinks[$pageId]['PageUserLink']['authority_id'] = $pages[$PageUserLink['PageUserLink']['room_id']]['Authority']['id'];
+						$pageUserLinks[$pageId]['PageUserLink']['authority_id'] = $pages[$PageUserLink['PageUserLink']['room_id']]['PageAuthority']['id'];
 					}
-					if($pageUserLinks[$pageId]['PageUserLink']['authority_id'] == NC_AUTH_OTHER_ID) {
-						// 不参加であっても必ずチェックをつける
-						$pageUserLinks[$pageId]['PageUserLink']['authority_id'] = Configure::read(NC_CONFIG_KEY.'.default_entry_group_authority_id');
-					}
+
 					if(!isset($PageUserLink['Page']['page_name'])) {
 						$pageUserLinks[$pageId]['Page']['page_name'] = $pages[$PageUserLink['PageUserLink']['room_id']]['Page']['page_name'];
 						$pageUserLinks[$pageId]['Page']['space_type'] = $pages[$PageUserLink['PageUserLink']['room_id']]['Page']['space_type'];
@@ -641,7 +642,8 @@ class UserController extends UserAppController {
 				));
 
 				foreach($insertPageUserLinks as $pageId => $insertPageUserLink) {
-					$defaultAuthorityId = $this->Page->getDefaultAuthorityId($insertPageUserLink, true);
+					$insertPageUserLink['Authority'] = $user['Authority'];
+					$defaultAuthorityId = $this->Page->getDefaultAuthorityId($insertPageUserLink);
 					// パブリックは不参加->デフォルト値へ
 					if($insertPageUserLink['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC &&
 						$insertPageUserLink['PageUserLink']['authority_id'] == NC_AUTH_OTHER_ID) {

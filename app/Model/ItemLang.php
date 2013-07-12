@@ -10,5 +10,4 @@
  */
 class ItemLang extends AppModel
 {
-	public $name = 'ItemLang';
 }

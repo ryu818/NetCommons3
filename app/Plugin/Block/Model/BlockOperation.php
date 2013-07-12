@@ -13,9 +13,8 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 class BlockOperation extends AppModel {
-	public $name = 'BlockOperation';
-    public $useTable = 'blocks';
-    public $alias = 'Block';
+	public $useTable = 'blocks';
+	public $alias = 'Block';
 
 	public function findRowCount($page_id, $parent_id, $col_num)
 	{

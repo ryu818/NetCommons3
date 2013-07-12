@@ -10,7 +10,6 @@
  */
 class Community extends AppModel
 {
-	public $name = 'Community';
 	public $validate = array();
 
 /**

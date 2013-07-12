@@ -10,9 +10,6 @@
  */
 class AnnouncementEdit extends AppModel
 {
-	public $name = 'AnnouncementEdit';
-
-
 	/**
 	 * バリデート処理
 	 * @param   void

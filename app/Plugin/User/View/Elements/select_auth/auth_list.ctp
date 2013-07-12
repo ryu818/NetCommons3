@@ -4,14 +4,17 @@ if(empty($auth[$authority_id]['authority_name'])) {
 } else {
 	$authorityName = $auth[$authority_id]['authority_name'];
 }
+
 if(!empty($auth[$authority_id])) {
 	$value = $authority_id;
+} else if(!empty($auth[$user['User']['authority_id']])) {
+	$value = $user['User']['authority_id'];
 } else {
 	$value = $def_authority_id;
 }
 
 if($authority_id == NC_AUTH_OTHER_ID) {
-	$authority_id = $defaultEntryAuthorityId;
+	$authority_id = $value;
 }
 
 $room_id = isset($room_id) ? $room_id : '0';

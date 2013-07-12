@@ -10,8 +10,6 @@
  */
 class ModuleSystemLink extends AppModel
 {
-	public $name = 'ModuleSystemLink';
-
 /**
  * 管理権限をプラグイン名称から求める
  * @param   string  $pluginName

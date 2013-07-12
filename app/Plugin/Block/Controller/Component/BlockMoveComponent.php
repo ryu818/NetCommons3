@@ -66,13 +66,13 @@ class BlockMoveComponent extends Component {
 
 		if($pre_page['Page']['room_id'] != $room_id || $content['Content']['shortcut_type'] != NC_SHORTCUT_TYPE_OFF) {
 			// ショートカット
-			$user_id = $this->_controller->Auth->user('id');
-			$master_content = $this->_controller->Content->findAuthById($content['Content']['master_id'], $user_id);
-			if(!isset($master_content['Content'])) {
+			$userId = $this->_controller->Auth->user('id');
+			$masterContent = $this->_controller->Content->findAuthById($content['Content']['master_id'], $userId);
+			if(!isset($masterContent['Content'])) {
 				// error
 				return __d('block','Because an origin of contents is deleted, You can\'t be operated.');
 			}
-			if($master_content['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
+			if($masterContent['PageAuthority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
 				return __d('block','Because there is not the room editing authority of the origin of contents, You can\'t be operated.');
 			}
 		}

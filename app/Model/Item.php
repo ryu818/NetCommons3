@@ -10,8 +10,6 @@
  */
 class Item extends AppModel
 {
-	public $name = 'Item';
-
 	public $order = array("Item.list_num" => "ASC", "Item.col_num" => "ASC", "Item.row_num" => "ASC");
 
 /**

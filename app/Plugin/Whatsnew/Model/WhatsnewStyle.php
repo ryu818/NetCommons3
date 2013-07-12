@@ -10,5 +10,4 @@
  */
 class WhatsnewStyle extends AppModel
 {
-	public $name = 'WhatsnewStyle';
 }

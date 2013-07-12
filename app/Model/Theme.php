@@ -10,8 +10,6 @@
  */
 class Theme extends AppModel
 {
-	public $name = 'Theme';
-
 	public $actsAs = array('File','Validation');
 
 	public $useTable = false;

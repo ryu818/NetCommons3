@@ -10,7 +10,6 @@
  */
 class CommunityLang extends AppModel
 {
-	public $name = 'CommunityLang';
 	public $validate = array();
 
 	/**

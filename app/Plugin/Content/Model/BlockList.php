@@ -13,11 +13,10 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 class BlockList extends AppModel {
-	public $name = 'BlockList';
-    public $useTable = 'blocks';
-    public $alias = 'Block';
+	public $useTable = 'blocks';
+	public $alias = 'Block';
 
-	public $actsAs = array('Page');
+	public $actsAs = array('Page', 'Auth' => array('joins' => false, 'afterFind' => false));
 
 /**
  * コンテンツ一覧表示
@@ -60,9 +59,9 @@ class BlockList extends AppModel {
 			$fields = array(
 				'Block.*',
 				'Page.permalink',
-				'Page.id','Page.page_name','Page.space_type','Page.thread_num','Page.display_sequence','Page.room_id',
+				'Page.id','Page.page_name','Page.space_type','Page.thread_num','Page.display_sequence','Page.root_id','Page.room_id',
 				'RoomPage.id','RoomPage.page_name','RoomPage.space_type','RoomPage.thread_num','RoomPage.display_sequence',
-				'Authority.hierarchy',
+				'PageAuthority.hierarchy',
 				'Content.id','Content.title','Content.room_id','Content.shortcut_type'
 			);
 			if($blockId > 0) {
@@ -104,8 +103,8 @@ class BlockList extends AppModel {
 					),
 					array("type" => "LEFT",
 						"table" => "authorities",
-						"alias" => "Authority",
-						"conditions" => "`Authority`.`id`=`PagesUsersLink`.`authority_id`"
+						"alias" => "PageAuthority",
+						"conditions" => "`PageAuthority`.`id`=`PagesUsersLink`.`authority_id`"
 					),
 				),
 				'limit' => $limit,
@@ -126,7 +125,7 @@ class BlockList extends AppModel {
 				$blocks[$i] = $this->setPageName($blocks[$i], 0, 'RoomPage');
 				$blocks[$i]['Page']['permalink'] = $this->getPermalink($blocks[$i]['Page']['permalink'], $blocks[$i]['Page']['space_type']);
 				if(!isset($blocks[$i]['Authority']['hierarchy'])) {
-					$blocks[$i]['Authority']['hierarchy'] = $this->getDefaultHierarchy($blocks[$i], $userId);
+					$blocks[$i]['Authority']['hierarchy'] = $this->getDefaultHierarchy($blocks[$i]);
 				}
 			}
 		}

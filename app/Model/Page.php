@@ -15,8 +15,7 @@
 
 class Page extends AppModel
 {
-	public $name = 'Page';
-	public $actsAs = array('Page', 'TimeZone');	// , 'Validation'
+	public $actsAs = array('Page', 'TimeZone', 'Auth' => array('joins' => false, 'afterFind' => false));	// , 'Validation'
 	public $validate = array();
 
 // 公開日付をsaveする前に変換するかどうかのフラグ
@@ -401,14 +400,14 @@ class Page extends AppModel
 
 /**
  * ページリストからページ取得
- * @param   integer or array    $page_id_arr
+ * @param   integer or array    $pageIdArr
  * @param   integer  $userId
  * @param   integer  $spaceType
  * @return  array    $pages
  * @since   v 3.0.0.0
  */
-	public function findAuthById($page_id_arr, $userId, $spaceType = null) {
-		$conditions = array('Page.id' => $page_id_arr);
+	public function findAuthById($pageIdArr, $userId, $spaceType = null) {
+		$conditions = array('Page.id' => $pageIdArr);
 
 		$params = array(
 			'fields' => $this->getFieldsArray($userId, $spaceType),
@@ -416,7 +415,7 @@ class Page extends AppModel
 			'conditions' => $conditions
 		);
 
-		if(is_array($page_id_arr)) {
+		if(is_array($pageIdArr)) {
 			return $this->afterFindIds($this->find('all', $params), $userId);
 		}
 		$ret = $this->afterFindIds($this->find('first', $params), $userId);
@@ -495,16 +494,35 @@ class Page extends AppModel
 					}
 				}
 			}
+			if($userId == 'all') {
+				$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
+				$setUserId = isset($loginUser['id']) ? $loginUser['id'] : _OFF;
+			} else {
+				$setUserId = $userId;
+			}
+			if(!empty($setUserId)) {
+				App::uses('User', 'Model');
+				$User = new User();
+				$currentUser = $User->findById($setUserId);
+			}
+
 			if($type == "thread") {
 				$bufRootPages = array();
 				$bufPages = array();
 				foreach ($results as $key => $val) {
 					$val = $this->setPageName($val);
+
 					if($userId != 'all') {
-						if(!isset($val['PageUserLink']['authority_id'])) {
-							$val['Authority'] = $this->getDefaultAuthority($val, $userId);
+						if(!empty($setUserId)) {
+							$val['Authority'] = $currentUser['Authority'];
 						}
-						if($val['Authority']['hierarchy'] == NC_AUTH_OTHER) {
+						if(!isset($val['PageAuthority']['hierarchy'])) {
+							$retDefault = $this->getDefaultAuthority($val);
+							$val['PageAuthority']['id'] = $retDefault['id'];
+							$val['PageAuthority']['hierarchy'] = $retDefault['hierarchy'];
+						}
+
+						if($val['PageAuthority']['hierarchy'] == NC_AUTH_OTHER) {
 							continue;
 						}
 					}
@@ -528,10 +546,15 @@ class Page extends AppModel
 			} else {
 				$parentDisplayArr = array();
 				foreach ($results as $key => $val) {
-					if(!isset($val['PageUserLink']['authority_id'])) {
-						$val['Authority'] = $this->getDefaultAuthority($val, $userId);
-					}
 					$val = $this->setPageName($val);
+					if(!empty($setUserId)) {
+						$val['Authority'] = $currentUser['Authority'];
+					}
+					if(!isset($val['PageAuthority']['hierarchy'])) {
+						$retDefault = $this->getDefaultAuthority($val);
+						$val['PageAuthority']['id'] = $retDefault['id'];
+						$val['PageAuthority']['hierarchy'] = $retDefault['hierarchy'];
+					}
 					if($type == "menu") {
 						$preDisplayFlag = $val[$this->alias]['display_flag'];
 
@@ -599,8 +622,8 @@ class Page extends AppModel
 	function findBreadcrumb($page, $userId = null) {
 		$results = array();
 
-		if(!isset($page['Authority']['hierarchy'])) {
-			$page['Authority']['hierarchy'] = $this->getDefaultHierarchy($page);
+		if(!isset($page['PageAuthority']['hierarchy'])) {
+			$page['PageAuthority']['hierarchy'] = $this->getDefaultHierarchy($page);
 		}
 		if(isset($page['CommunityLang']['community_name'])) {
 			$page['Page']['page_name'] = $page['CommunityLang']['community_name'];
@@ -753,10 +776,6 @@ class Page extends AppModel
 				}
 				$currentPrivate = $loginUser['private_page_id'];
 			} else {
-				/*$currentUser = array('Authority' =>array(
-				 'myportal_use_flag' => $loginUser['allow_myportal_viewing_hierarchy'],
-					'allow_myportal_viewing_hierarchy' => $loginUser['allow_myportal_viewing_hierarchy'],
-				));*/
 				$currentMyPortal = $loginUser['myportal_page_id'];
 				$currentPrivate = $loginUser['private_page_id'];
 			}
@@ -833,8 +852,8 @@ class Page extends AppModel
 			$joins[] = array(
 				"type" => "LEFT",
 				"table" => "authorities",
-				"alias" => "Authority",
-				"conditions" => "`Authority`.`id`=`PageUserLink`.`authority_id`"
+				"alias" => "PageAuthority",
+				"conditions" => "`PageAuthority`.`id`=`PageUserLink`.`authority_id`"
 			);
 		}
 		$spaceType = null;
@@ -861,15 +880,9 @@ class Page extends AppModel
 		$page = (isset($addParams['page'])) ? $addParams['page'] : null;
 		$limit = (isset($addParams['limit'])) ? $addParams['limit'] : null;
 		if($type != 'count') {
-			//if(isset($addParams['fields'])) {
-			//	$fields = $addParams['fields'];
-			//} else if(!isset($addParams['fields']) && $type == 'list') {
-			//	$fields = array('Page.id');
-			//} else {
 			$fields = $this->getFieldsArray($userId, $spaceType);
-			//}
 			if(!isset($addParams['fields']) && $type == 'list') {
-				$addParams['fields'] = array('Page.room_id', 'Authority.id');
+				$addParams['fields'] = array('Page.room_id', 'PageAuthority.id');
 			}
 
 			if(isset($addParams['order'])) {
@@ -1085,8 +1098,8 @@ class Page extends AppModel
 			$ret = array(
 				'Page.*',
 				'PageUserLink.authority_id',
-				'Authority.id',
-				'Authority.myportal_use_flag', 'Authority.private_use_flag', 'Authority.hierarchy'
+				'PageAuthority.id',
+				'PageAuthority.myportal_use_flag', 'PageAuthority.private_use_flag', 'PageAuthority.hierarchy'
 			);
 		}
 		if(empty($spaceType) || $spaceType == NC_SPACE_TYPE_GROUP || (is_array($spaceType) && in_array(NC_SPACE_TYPE_GROUP, $spaceType))) {
@@ -1115,8 +1128,8 @@ class Page extends AppModel
 			array(
 				"type" => "LEFT",
 				"table" => "authorities",
-				"alias" => "Authority",
-				"conditions" => "`Authority`.`id`=`PageUserLink`.`authority_id`"
+				"alias" => "PageAuthority",
+				"conditions" => "`PageAuthority`.`id`=`PageUserLink`.`authority_id`"
 			)
 		);
 		if(empty($spaceType) || $spaceType == NC_SPACE_TYPE_GROUP) {

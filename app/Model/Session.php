@@ -10,5 +10,4 @@
  */
 class Session extends AppModel
 {
-	public $name = 'Session';
 }

@@ -13,8 +13,6 @@
  */
 class Revision extends AppModel
 {
-	public $name = 'Revision';
-
 	public $validate = array();
 
 	public $actsAs = array('TimeZone');

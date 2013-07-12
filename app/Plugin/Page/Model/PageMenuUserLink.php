@@ -9,9 +9,8 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 class PageMenuUserLink extends AppModel {
-	public $name = 'PageMenuUserLink';
-    public $useTable = 'page_user_links';
-    public $alias = 'PageUserLink';
+	public $useTable = 'page_user_links';
+	public $alias = 'PageUserLink';
 
 /**
  * 参加情報コピー処理

@@ -10,10 +10,9 @@
  */
 class AuthorityLang extends AppModel
 {
-	public $name = 'AuthorityLang';
 	public $validate = array();
 
-    public function __construct() {
+	public function __construct() {
 		parent::__construct();
 
 		//エラーメッセージ取得

@@ -10,8 +10,6 @@
  */
 class TempData extends AppModel
 {
-	public $name = 'TempData';
-
 	//public $useTable = 'temporaries';
 
 /**

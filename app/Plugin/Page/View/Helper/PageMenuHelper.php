@@ -33,22 +33,22 @@ class PageMenuHelper extends AppHelper {
 		//	// コミュニティを作成する本人
 		//	$authorityId = NC_AUTH_CHIEF_ID;
 		//	$hierarchy = $authList[NC_AUTH_CHIEF][NC_AUTH_CHIEF_ID];
-		} else if(isset($user['PageUserLink']['authority_id'])) {
+		} else if(isset($user['PageAuthority']['id'])) {
 			// データあり
-			$authorityId = $user['PageUserLink']['authority_id'];
-			if(isset($user['Authority']['hierarchy'])) {
-				$hierarchy = $user['Authority']['hierarchy'];
-			} else {
-				$hierarchy = NC_AUTH_OTHER;
-			}
-		} else if(isset($user['PageUserLinkParent']['authority_id']) && $page['Page']['id'] != $page['Page']['room_id']) {
+			$authorityId = $user['PageAuthority']['id'];
+			//if(isset($user['PageAuthority']['hierarchy'])) {
+				$hierarchy = $user['PageAuthority']['hierarchy'];
+			//} else {
+			//	$hierarchy = NC_AUTH_OTHER;
+			//}
+		} else if(isset($user['AuthorityParent']['id']) && $page['Page']['id'] != $page['Page']['room_id']) {
 			// 新規
-			$authorityId = $user['PageUserLinkParent']['authority_id'];
-			if(isset($user['AuthorityParent']['hierarchy'])) {
+			$authorityId = $user['AuthorityParent']['id'];
+			//if(isset($user['AuthorityParent']['hierarchy'])) {
 				$hierarchy = $user['AuthorityParent']['hierarchy'];
-			} else {
-				$hierarchy = NC_AUTH_OTHER;
-			}
+			//} else {
+			//	$hierarchy = NC_AUTH_OTHER;
+			//}
 		} else {
 			$authorityId = $defaultAuthorityId;
 			$hierarchy = $this->_getHierarchy($authorityId, $authList);

@@ -9,9 +9,8 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 class PageBlock extends AppModel {
-	public $name = 'PageBlock';
-    public $useTable = 'blocks';
-    public $alias = 'Block';
+	public $useTable = 'blocks';
+	public $alias = 'Block';
 
 /**
  * 権限の割り当てで、子ルームを割り当てると、そこにはってあったブロックの変更処理

@@ -33,7 +33,6 @@ class BlogController extends BlogAppController {
  * @since   v 3.0.0.0
  */
 	public $paginate = array(
-		'fields' => array('BlogPost.*', 'Revision.content', 'Revision.revision_name', 'Authority.hierarchy'),
 		'order' => array(
 			'BlogPost.post_date' => 'DESC',
 			'BlogPost.id' => 'DESC',

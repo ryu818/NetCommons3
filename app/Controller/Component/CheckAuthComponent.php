@@ -359,8 +359,8 @@ class CheckAuthComponent extends Component {
 					return false;
 				}
 				$page = $controller->Page->findAuthById($content['Content']['room_id'], $userId);
-				if(isset($page['Authority']['hierarchy'])) {
-					$controller->hierarchy = $page['Authority']['hierarchy'];
+				if(isset($page['PageAuthority']['hierarchy'])) {
+					$controller->hierarchy = $page['PageAuthority']['hierarchy'];
 				}
 
 				//$content['Block']['id'] = 0;
@@ -426,13 +426,13 @@ class CheckAuthComponent extends Component {
 				$controller->nc_page = isset($active_page) ? $active_page : $page;	// blockから取得できるPage優先
 				$controller->nc_current_page = $page;								// pageから取得できるPage
 				if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_DISABLE ||
-						($page['Page']['display_flag'] == NC_DISPLAY_FLAG_OFF && $page['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF)) {
+						($page['Page']['display_flag'] == NC_DISPLAY_FLAG_OFF && $page['PageAuthority']['hierarchy'] < NC_AUTH_MIN_CHIEF)) {
 					$controller->flash(__('Content not found.'), $redirect_url, 'CheckAuth.checkGeneral.008', '404');
 					return false;
 				}
 
 				// PageとBlockのhierarchyの低いほうをセット
-				$page_hierarchy = (isset($page) && !is_null($page['Authority']['hierarchy'])) ? intval($page['Authority']['hierarchy']) : NC_AUTH_OTHER;
+				$page_hierarchy = (isset($page) && !is_null($page['PageAuthority']['hierarchy'])) ? intval($page['PageAuthority']['hierarchy']) : NC_AUTH_OTHER;
 				$block_hierarchy = (isset($block) && !is_null($block['Block']['hierarchy'])) ? intval($block['Block']['hierarchy']) : $page_hierarchy;
 				$controller->hierarchy = min($block_hierarchy, $page_hierarchy);
 				if(isset($block) && !is_null($block['Block']['block_hierarchy'])) {

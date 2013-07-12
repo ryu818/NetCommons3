@@ -10,8 +10,6 @@
  */
 class UserItemLink extends AppModel
 {
-	public $name = 'UserItemLink';
-
 	public $validate = array();
 
 	public $emailTags = array();

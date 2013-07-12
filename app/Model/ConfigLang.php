@@ -10,5 +10,4 @@
  */
 class ConfigLang extends AppModel
 {
-	public $name = 'ConfigLang';
 }

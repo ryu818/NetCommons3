@@ -10,7 +10,6 @@
  */
 class Authority extends AppModel
 {
-	public $name = 'Authority';
 	public $validate = array();
 
 	public function __construct() {

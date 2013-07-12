@@ -191,7 +191,7 @@ class ContentController extends ContentAppController {
 			$this->flash(__('Content not found.'), null, 'Content.block.002', '404');
 			return;
 		}
-		if(!$this->CheckAuth->checkAuth($content['Authority']['hierarchy'], NC_AUTH_CHIEF)) {
+		if(!$this->CheckAuth->checkAuth($content['PageAuthority']['hierarchy'], NC_AUTH_CHIEF)) {
 			$this->flash(__('Forbidden permission to access the page.'), null, 'Content.block.003', '403');
 			return;
 		}
@@ -218,7 +218,7 @@ class ContentController extends ContentAppController {
 			$this->flash(__('Content not found.'), null, 'Content.block_list.002', '404');
 			return;
 		}
-		if(!$this->CheckAuth->checkAuth($content['Authority']['hierarchy'], NC_AUTH_CHIEF)) {
+		if(!$this->CheckAuth->checkAuth($content['PageAuthority']['hierarchy'], NC_AUTH_CHIEF)) {
 			$this->flash(__('Forbidden permission to access the page.'), null, 'Content.block_list.003', '403');
 			return;
 		}
@@ -253,7 +253,7 @@ class ContentController extends ContentAppController {
 			$this->flash(__('Content not found.'), null, 'Content.edit.001', '404');
 			return;
 		}
-		if(!$this->CheckAuth->checkAuth($content['Authority']['hierarchy'], NC_AUTH_CHIEF)) {
+		if(!$this->CheckAuth->checkAuth($content['PageAuthority']['hierarchy'], NC_AUTH_CHIEF)) {
 			$this->flash(__('Forbidden permission to access the page.'), null, 'Content.edit.002', '403');
 			return;
 		}
@@ -291,7 +291,7 @@ class ContentController extends ContentAppController {
 			$this->flash(__('Content not found.'), null, 'Content.delete.002', '404');
 			return;
 		}
-		if(!$this->CheckAuth->checkAuth($content['Authority']['hierarchy'], NC_AUTH_CHIEF)) {
+		if(!$this->CheckAuth->checkAuth($content['PageAuthority']['hierarchy'], NC_AUTH_CHIEF)) {
 			$this->flash(__('Forbidden permission to access the page.'), null, 'Content.delete.003', '403');
 			return;
 		}

@@ -10,5 +10,4 @@
  */
 class GroupLink extends AppModel
 {
-	public $name = 'GroupLink';
 }

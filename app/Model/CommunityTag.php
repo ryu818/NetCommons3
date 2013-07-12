@@ -10,5 +10,4 @@
  */
 class CommunityTag extends AppModel
 {
-	public $name = 'CommunityTag';
 }

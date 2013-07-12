@@ -10,41 +10,20 @@
  */
 class BlogPost extends AppModel
 {
-	public $name = 'BlogPost';
-
-	public $actsAs = array('TimeZone', 'Validation', 'Common');
+	public $actsAs = array('TimeZone', 'Validation', 'Common', 'Auth');
 
 	public $belongsTo = array(
 		'Revision'      => array(
 			'foreignKey'    => '',
 			'type' => 'LEFT',
-			'fields' => array('Revision.id', 'Revision.group_id', 'Revision.content',
-				'Revision.revision_name', 'Revision.is_approved_pointer', 'Revision.created', 'Revision.created_user_id', 'Revision.created_user_name'),
+			'fields' => array('id', 'group_id', 'content',
+				'revision_name', 'is_approved_pointer', 'created', 'created_user_id', 'created_user_name'),
 			'conditions' => array(
 				'BlogPost.revision_group_id = Revision.group_id',
 				'Revision.pointer' => _ON,
 				'Revision.revision_name !=' => 'auto-draft',
 				'Revision.is_approved_pointer' => _ON
 			),
-		),
-		'Content'      => array(
-			'type' => 'INNER',
-			'fields' => array('Content.title')
-		),
-		'PageUserLink' => array(
-			'foreignKey'    => '',
-			'fields' => array(),
-			'conditions' => array(
-				'BlogPost.created_user_id = PageUserLink.user_id',
-				'Content.room_id = PageUserLink.room_id'
-			)
-		),
-		'Authority'    => array(
-			'foreignKey'    => '',
-			'fields' => array('Authority.hierarchy'),
-			'conditions' => array(
-				'PageUserLink.authority_id = Authority.id',
-			)
 		),
 	);
 
@@ -337,7 +316,7 @@ class BlogPost extends AppModel
 					'BlogPost.is_approved' => _ON
 				),
 
-				'Authority.hierarchy '.$separator => $hierarchy,
+				'PageAuthority.hierarchy '.$separator => $hierarchy,
 				'BlogPost.created_user_id' => $user_id,
 			)
 		);

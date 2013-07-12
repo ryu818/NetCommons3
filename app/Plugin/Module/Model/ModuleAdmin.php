@@ -13,17 +13,16 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 class ModuleAdmin extends AppModel {
-	public $name = 'ModuleAdmin';
-    public $useTable = 'modules';
-    public $alias = 'Module';
-    public $actsAs = array('File');
+	public $useTable = 'modules';
+	public $alias = 'Module';
+	public $actsAs = array('File');
 
-    /**
-     * Schema class being used.
-     *
-     * @var CakeSchema
-     */
-    public $Schema;
+/**
+ * Schema class being used.
+ *
+ * @var CakeSchema
+ */
+	public $Schema;
 
 /**
  * コンストラクター
@@ -33,10 +32,10 @@ class ModuleAdmin extends AppModel {
  */
 	public function __construct() {
 		parent::__construct();
-    	App::uses('File', 'Core');
-    	App::uses('CakeSchema', 'Model');
-    	$this->Schema = new CakeSchema(compact('name', 'path', 'file', 'connection', 'plugin'));
-    }
+		App::uses('File', 'Core');
+		App::uses('CakeSchema', 'Model');
+		$this->Schema = new CakeSchema(compact('name', 'path', 'file', 'connection', 'plugin'));
+	}
 
 /**
  * 一般モジュール一覧取得

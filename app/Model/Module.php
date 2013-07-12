@@ -15,8 +15,6 @@
 
 class Module extends AppModel
 {
-	public $name = 'Module';
-
 /**
  * Moduleの値取得
  * @param  string  $dir_name
