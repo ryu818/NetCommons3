@@ -405,8 +405,21 @@ class CheckAuthComponent extends Component {
 						($page === false || $page['Page']['id'] != $active_page['Page']['id'])) {
 					// パーマリンクからのPageとblock_idのはってあるページが一致しなければエラー
 					// ３０１をかえして、その後、移動後のページへ遷移させる
+					// ただし、pパラメータがある場合、短縮URLとしてエラーとしない。（p固定）
 					// TODO:中央カラムのみにはってあるブロックのみチェックしているが、ヘッダーのブロックのチェックもするべき
 					$activePermalink = $controller->Page->getPermalink($active_page['Page']['permalink'], $active_page['Page']['space_type']);
+					if(isset($controller->request->query['p'])) {
+						$controller->redirect(array(
+							'permalink' => trim($activePermalink, '/'),
+							'block_type' => 'blocks',
+							'plugin' => $plugin_name,
+							'controller' => $plugin_name,
+							'action' => $action_name,
+							'block_id' => $block_id,
+							'?' => array('p' => intval($controller->request->query['p']))
+						));
+						return;
+					}
 					if($permalink == '') {
 						$redirect_url = $activePermalink. '/' .$url;
 					} else {

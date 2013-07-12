@@ -49,7 +49,7 @@
 
 		<?php if($detail_type == 'subject'):?>
 			<?php // 短縮URLの取得
-				$url = array('plugin' => 'blog', 'controller' => 'blog', '?' => array('p' => $blog_post['BlogPost']['id']));
+				$url = array('permalink' => '', 'plugin' => 'blog', 'controller' => 'blog', '?' => array('p' => $blog_post['BlogPost']['id']));
 				echo $this->Html->link(__d('blog', 'Short URLs'), $this->html->url($url, true), array(
 					'title' => __d('blog', 'Get %s', __d('blog', 'Short URLs')), 'class' => 'nc-button small',
 					'onclick' => "prompt('" .__d('blog', 'Short URLs'). ':'. "'  ,$(this).attr('href')); return false;"
