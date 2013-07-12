@@ -42,6 +42,7 @@ class ContentList extends AppModel {
 		if(isset($isApproved)) {
 			$conditions['Content.is_approved'] = $isApproved;
 		}
+		$conditions['Content.shortcut_type'] = array(NC_SHORTCUT_TYPE_OFF, NC_SHORTCUT_TYPE_SHOW_AUTH);
 		$conditions['Content.display_flag'] = array(NC_DISPLAY_FLAG_ON, NC_DISPLAY_FLAG_OFF);
 
 		$join = array(
