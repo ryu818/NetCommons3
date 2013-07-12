@@ -404,7 +404,6 @@ class BlogPost extends AppModel
 			'conditions' => $conditions,
 			'order' => array('BlogPost.post_date' => 'DESC'),
 			'limit' => intval($visible_item),
-			'recursive' => -1,
 			'page' => 1
 		);
 		return $this->find('all', $params);
