@@ -3,3 +3,4 @@ controller_action = "whatsnew"
 ;edit_controller_action = "whatsnew/edits"
 ;style_controller_action = "whatsnew/styles"
 default_enable_flag = 1
+module_operation = 1
