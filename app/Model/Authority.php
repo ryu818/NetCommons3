@@ -238,9 +238,45 @@ class Authority extends AppModel
 					'required' => false,
 					'message' => __('The input must be a boolean.')
 				)
-			)
+			),
 
-	    );
+			'allow_move_operation' => array(
+				'boolean'  => array(
+					'rule' => array('boolean'),
+					'last' => true,
+					'required' => false,
+					'message' => __('The input must be a boolean.')
+				)
+			),
+
+			'allow_copy_operation' => array(
+				'boolean'  => array(
+					'rule' => array('boolean'),
+					'last' => true,
+					'required' => false,
+					'message' => __('The input must be a boolean.')
+				)
+			),
+
+			'allow_shortcut_operation' => array(
+				'boolean'  => array(
+					'rule' => array('boolean'),
+					'last' => true,
+					'required' => false,
+					'message' => __('The input must be a boolean.')
+				)
+			),
+
+			'allow_operation_of_shortcut' => array(
+				'boolean'  => array(
+					'rule' => array('boolean'),
+					'last' => true,
+					'required' => false,
+					'message' => __('The input must be a boolean.')
+				)
+			),
+
+		);
 	}
 
 /**
@@ -346,6 +382,10 @@ class Authority extends AppModel
 		$changeRightcolumnFlagArr = explode('|', AUTHORITY_CHANGE_RIGHTCOLUMN_FLAG);
 		$changeHeadercolumnFlagArr = explode('|', AUTHORITY_CHANGE_HEADERCOLUMN_FLAG);
 		$changeFootercolumnFlagArr = explode('|', AUTHORITY_CHANGE_FOOTERCOLUMN_FLAG);
+		$allowMoveOperationArr = explode('|', AUTHORITY_ALLOW_MOVE_OPERATION);
+		$allowCopyOperationArr = explode('|', AUTHORITY_ALLOW_COPY_OPERATION);
+		$allowOperationOfShortcutArr = explode('|', AUTHORITY_ALLOW_SHORTCUT_OPERATION);
+		$allowShortcutOperationArr = explode('|', AUTHORITY_ALLOW_OPERATION_OF_SHORTCUT);
 
 		$ret = array(
 			'Authority' => array(
@@ -372,6 +412,10 @@ class Authority extends AppModel
 				'change_headercolumn_flag' => $changeHeadercolumnFlagArr[$index],
 				'change_footercolumn_flag' => $changeFootercolumnFlagArr[$index],
 				'display_participants_editing' => _OFF,
+				'allow_move_operation' => $allowMoveOperationArr[$index],
+				'allow_copy_operation' => $allowCopyOperationArr[$index],
+				'allow_shortcut_operation' => $allowShortcutOperationArr[$index],
+				'allow_operation_of_shortcut' => $allowShortcutOperationArr[$index],
 			)
 		);
 

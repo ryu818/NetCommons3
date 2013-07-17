@@ -431,6 +431,68 @@
 		</li>
 		</ul>
 	</fieldset>
+	<fieldset class="authority-fieldset">
+		<legend>
+			<?php echo __d('authority', 'Page block operation');?>
+		</legend>
+		<ul>
+		<li>
+		<?php
+			$columnName = 'allow_move_operation';
+			$settings = array(
+				'type' => 'checkbox',
+				'value' => $authority['Authority'][$columnName],
+				'checked' => ($authority['Authority'][$columnName]) ? true : false,
+				'label' => __d('authority', 'Allow to move of the page block.'),
+				'div' => false,
+				'disabled' => $authorityDisabled['Authority'][$columnName],
+			);
+			echo $this->Form->input('Authority.'.$columnName, $settings);
+		?>
+		</li>
+		<li>
+		<?php
+			$columnName = 'allow_copy_operation';
+			$settings = array(
+				'type' => 'checkbox',
+				'value' => $authority['Authority'][$columnName],
+				'checked' => ($authority['Authority'][$columnName]) ? true : false,
+				'label' => __d('authority', 'Allow to copy of the page block.'),
+				'div' => false,
+				'disabled' => $authorityDisabled['Authority'][$columnName],
+			);
+			echo $this->Form->input('Authority.'.$columnName, $settings);
+		?>
+		</li>
+		<li>
+		<?php
+			$columnName = 'allow_shortcut_operation';
+			$settings = array(
+				'type' => 'checkbox',
+				'value' => $authority['Authority'][$columnName],
+				'checked' => ($authority['Authority'][$columnName]) ? true : false,
+				'label' => __d('authority', 'Allow to create shortcut of the page block.'),
+				'div' => false,
+				'disabled' => $authorityDisabled['Authority'][$columnName],
+			);
+			echo $this->Form->input('Authority.'.$columnName, $settings);
+		?>
+		</li>
+		<?php
+			$columnName = 'allow_operation_of_shortcut';
+			$settings = array(
+				'type' => 'checkbox',
+				'value' => $authority['Authority'][$columnName],
+				'checked' => ($authority['Authority'][$columnName]) ? true : false,
+				'label' => __d('authority', 'Allow creating shortcuts, copy or move the shortcut page block.'),
+				'div' => false,
+				'disabled' => $authorityDisabled['Authority'][$columnName],
+			);
+			echo $this->Form->input('Authority.'.$columnName, $settings);
+		?>
+		</li>
+		</ul>
+	</fieldset>
 	<?php
 		// TODO:  change_leftcolumn_flag,change_rightcolumn_flag,change_headercolumn_flag,change_footercolumn_flag未作成。
 		// カラムチェンジャー用

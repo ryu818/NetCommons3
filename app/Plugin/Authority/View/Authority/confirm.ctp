@@ -400,6 +400,41 @@
 		</li>
 		</ul>
 	</fieldset>
+	<fieldset class="authority-fieldset">
+		<legend>
+			<?php echo __d('authority', 'Page block operation');?>
+		</legend>
+		<ul>
+		<li>
+		<?php
+			if($authority['Authority']['allow_move_operation']) {
+				echo __d('authority', 'Allow to move of the page block.');
+			}
+		?>
+		</li>
+		<li>
+		<?php
+			if($authority['Authority']['allow_copy_operation']) {
+				echo __d('authority', 'Allow to copy of the page block.');
+			}
+		?>
+		</li>
+		<li>
+		<?php
+			if($authority['Authority']['allow_shortcut_operation']) {
+				echo __d('authority', 'Allow to create shortcut of the page block.');
+			}
+		?>
+		</li>
+		<li>
+		<?php
+			if($authority['Authority']['allow_operation_of_shortcut']) {
+				echo __d('authority', 'Allow creating shortcuts, copy or move the shortcut page block.');
+			}
+		?>
+		</li>
+		</ul>
+	</fieldset>
 	<?php
 		// TODO:  change_leftcolumn_flag,change_rightcolumn_flag,change_headercolumn_flag,change_footercolumn_flag未作成。
 		// カラムチェンジャー用

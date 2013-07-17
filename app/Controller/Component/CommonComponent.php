@@ -59,6 +59,8 @@ class CommonComponent extends Component {
 									'Authority.allow_attachment', 'Authority.allow_video', 'Authority.change_leftcolumn_flag',
 									'Authority.change_rightcolumn_flag', 'Authority.change_headercolumn_flag', 'Authority.change_footercolumn_flag',
 									'Authority.display_participants_editing',
+									'Authority.allow_move_operation', 'Authority.allow_copy_operation', 'Authority.allow_shortcut_operation',
+									'Authority.allow_operation_of_shortcut',
 								),
 			)
 		);

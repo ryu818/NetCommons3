@@ -28,6 +28,10 @@ $detailColumns = array(
 	'change_headercolumn_flag',
 	'change_footercolumn_flag',
 	'display_participants_editing',
+	'allow_move_operation',
+	'allow_copy_operation',
+	'allow_shortcut_operation',
+	'allow_operation_of_shortcut',
 );
 if($this->action != 'detail') {
 	$fieldsList = array_merge($fieldsList, $detailColumns);
