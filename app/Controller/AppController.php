@@ -82,7 +82,7 @@ class AppController extends Controller {
  * @return  void
  * @since   v 3.0.0.0
  */
-    public function constructClasses() {
+	public function constructClasses() {
 		$this->_setExecuteTimes();
 		$this->response->disableCache();	// 全体的にキャッシュをしないように設定。TODO:画面によってはキャッシュさせるほうがよい。
 
@@ -90,7 +90,7 @@ class AppController extends Controller {
 
 		// ******************************************************************************************
 		// Config
-		// Sessionのsession_gc_maxlifetimeをstart前にセットする必要があるため、別途取得
+		// Sessionのsession_timeoutをstart前にセットする必要があるため、別途取得
 		// ******************************************************************************************
 
 		/*
@@ -101,8 +101,8 @@ class AppController extends Controller {
 			return;
 		}
 
-    	$conditions = array(
-			'name' => array('session_gc_maxlifetime', 'session_name', 'language'),
+		$conditions = array(
+			'name' => array('session_timeout', 'session_name', 'autoRegenerate', 'language'),
 			'module_id' => 0
 		);
 		$params = array(
@@ -117,10 +117,14 @@ class AppController extends Controller {
 		$configs = $this->Config->find('all', $params);
 		Configure::write(NC_CONFIG_KEY.'.'.'config_language', $configs['language']);
 		Configure::write('Session.cookieTimeout', 0);
-		Configure::write('Session.timeout', intval($configs['session_gc_maxlifetime']));
+		Configure::write('Session.timeout', intval($configs['session_timeout']));
+		if(intval($configs['autoRegenerate']) == _ON) {
+			// 10(CakeSession::$requestCountdown)回でSessionを再作成。
+			Configure::write('Session.autoRegenerate', true);
+		}
 
 		Configure::write('Session.cookie', $configs['session_name']);
-    }
+	}
 
 /**
  * 実行前処理
@@ -174,7 +178,8 @@ class AppController extends Controller {
 
 		// Security Token
 		if ($this->Components->enabled('Security')) {
-			$this->Security->csrfExpires = '+1 hour';		// Tokenの有効期限　TODO: Configに持つべき？
+			$sessionTimeout = Configure::read(NC_CONFIG_KEY.'.'.'session_timeout');
+			$this->Security->csrfExpires = '+'.$sessionTimeout.' minutes';		// Tokenの有効期限　Session.timeoutと同じとする。
 			$this->Security->blackHoleCallback = 'errorToken';
 		}
 	}

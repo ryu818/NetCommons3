@@ -1348,7 +1348,7 @@ class Page extends AppModel
 		$Config = new Config();
 		$conditions = array(
 			'module_id' => 0,
-			'cat_id' => NC_LOGIN_CATID,
+			'cat_id' => NC_SYSTEM_CATID,
 			'name' => array('first_startpage_id','second_startpage_id','third_startpage_id')
 		);
 		$params = array(

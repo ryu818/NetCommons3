@@ -89,7 +89,7 @@ class SetConfigComponent extends Component {
 		// ******************************************************************************************
 		$conditions = array(
 			'module_id' => 0,
-			'cat_id' => array(NC_SYSTEM_CATID, NC_LOGIN_CATID, NC_SERVER_CATID, NC_DEVELOPMENT_CATID)
+			'cat_id' => array(NC_SYSTEM_CATID, NC_LOGIN_CATID, NC_SERVER_CATID, NC_STYLE_CATID, NC_DEVELOPMENT_CATID)
 		);
 		$params = array(
 			'fields' => array(
@@ -154,9 +154,6 @@ class SetConfigComponent extends Component {
 		// ******************************************************************************************
 		// ini_set
 		// ******************************************************************************************
-		ini_set('session.gc_maxlifetime', $configs['gc_maxlifetime'] * 60);
-		// TODO:Session.timeoutで行うべき？
-		////Configure::write("Session.timeout", $configs['gc_maxlifetime'] * 60);
 		ini_set('memory_limit', $configs['memory_limit']);
 
 		////$controller->set('nc_temp_name', $configs['temp_name']);

@@ -195,9 +195,12 @@ define('NC_LOGIN_CATID',       1);
 define('NC_SERVER_CATID',      2);
 define('NC_MAIL_CATID',        3);
 define('NC_META_CATID',        4);
-define('NC_MEMBERSHIP_CATID',  5);
-define('NC_DEVELOPMENT_CATID', 6);
-define('NC_SECURITY_CATID',    7);
+define('NC_STYLE_CATID',       5);
+define('NC_MODULE_CATID',      6);
+define('NC_MEMBERSHIP_CATID',  7);
+define('NC_COMMUNITY_CATID',   8);
+define('NC_DEVELOPMENT_CATID', 9);
+define('NC_SECURITY_CATID',   10);
 
 //-----------------autologin_use-------------------------------------------
 

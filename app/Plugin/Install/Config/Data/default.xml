@@ -63,6 +63,10 @@
         <column name="change_headercolumn_flag">1</column>
         <column name="change_footercolumn_flag">1</column>
         <column name="display_participants_editing">1</column>
+        <column name="allow_move_operation">1</column>
+        <column name="allow_copy_operation">1</column>
+        <column name="allow_shortcut_operation">1</column>
+        <column name="allow_operation_of_shortcut">1</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -94,6 +98,10 @@
         <column name="change_headercolumn_flag">0</column>
         <column name="change_footercolumn_flag">0</column>
         <column name="display_participants_editing">1</column>
+        <column name="allow_move_operation">1</column>
+        <column name="allow_copy_operation">1</column>
+        <column name="allow_shortcut_operation">1</column>
+        <column name="allow_operation_of_shortcut">1</column>
         <column name="created">2012-07-17 06:10:25</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -125,6 +133,10 @@
         <column name="change_headercolumn_flag">0</column>
         <column name="change_footercolumn_flag">0</column>
         <column name="display_participants_editing">1</column>
+        <column name="allow_move_operation">0</column>
+        <column name="allow_copy_operation">0</column>
+        <column name="allow_shortcut_operation">0</column>
+        <column name="allow_operation_of_shortcut">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -156,6 +168,10 @@
         <column name="change_headercolumn_flag">0</column>
         <column name="change_footercolumn_flag">0</column>
         <column name="display_participants_editing">1</column>
+        <column name="allow_move_operation">0</column>
+        <column name="allow_copy_operation">0</column>
+        <column name="allow_shortcut_operation">0</column>
+        <column name="allow_operation_of_shortcut">0</column>
         <column name="created">2012-07-17 06:10:37</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -187,72 +203,14 @@
         <column name="change_headercolumn_flag">0</column>
         <column name="change_footercolumn_flag">0</column>
         <column name="display_participants_editing">1</column>
+        <column name="allow_move_operation">0</column>
+        <column name="allow_copy_operation">0</column>
+        <column name="allow_shortcut_operation">0</column>
+        <column name="allow_operation_of_shortcut">0</column>
         <column name="created">2012-07-17 06:10:51</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
         <column name="modified">2012-07-17 06:10:51</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="authorities">
-        <column name="id">6</column>
-        <column name="default_authority_name">モデレーター２</column>
-        <column name="system_flag">0</column>
-        <column name="hierarchy">253</column>
-        <column name="allow_creating_community">1</column>
-        <column name="allow_new_participant">0</column>
-        <column name="myportal_use_flag">0</column>
-        <column name="allow_myportal_viewing_hierarchy">1</column>
-        <column name="private_use_flag">1</column>
-        <column name="public_createroom_flag">0</column>
-        <column name="group_createroom_flag">0</column>
-        <column name="myportal_createroom_flag">0</column>
-        <column name="private_createroom_flag">0</column>
-        <column name="allow_htmltag_flag">0</column>
-        <column name="allow_layout_flag">0</column>
-        <column name="allow_attachment">2</column>
-        <column name="allow_video">0</column>
-        <column name="max_size">104857600</column>
-        <column name="change_leftcolumn_flag">0</column>
-        <column name="change_rightcolumn_flag">0</column>
-        <column name="change_headercolumn_flag">0</column>
-        <column name="change_footercolumn_flag">0</column>
-        <column name="display_participants_editing">1</column>
-        <column name="created">2013-01-17 02:26:45</column>
-        <column name="created_user_id">1</column>
-        <column name="created_user_name">adminさん</column>
-        <column name="modified">2013-07-09 00:49:32</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="authorities">
-        <column name="id">7</column>
-        <column name="default_authority_name">一般２</column>
-        <column name="system_flag">0</column>
-        <column name="hierarchy">149</column>
-        <column name="allow_creating_community">1</column>
-        <column name="allow_new_participant">0</column>
-        <column name="myportal_use_flag">1</column>
-        <column name="allow_myportal_viewing_hierarchy">1</column>
-        <column name="private_use_flag">1</column>
-        <column name="public_createroom_flag">0</column>
-        <column name="group_createroom_flag">0</column>
-        <column name="myportal_createroom_flag">0</column>
-        <column name="private_createroom_flag">0</column>
-        <column name="allow_htmltag_flag">0</column>
-        <column name="allow_layout_flag">1</column>
-        <column name="allow_attachment">1</column>
-        <column name="allow_video">1</column>
-        <column name="max_size">5242880</column>
-        <column name="change_leftcolumn_flag">0</column>
-        <column name="change_rightcolumn_flag">0</column>
-        <column name="change_headercolumn_flag">0</column>
-        <column name="change_footercolumn_flag">0</column>
-        <column name="display_participants_editing">1</column>
-        <column name="created">2012-07-17 06:10:37</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">2013-07-08 11:12:05</column>
         <column name="modified_user_id">1</column>
         <column name="modified_user_name">admin</column>
     </table>
@@ -317,40 +275,16 @@
         <column name="modified_user_id">0</column>
         <column name="modified_user_name"></column>
     </table>
-    <table name="authority_langs">
-        <column name="id">6</column>
-        <column name="authority_id">6</column>
-        <column name="lang">ja</column>
-        <column name="authority_name">モデレーター２</column>
-        <column name="created">NULL</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">2013-07-09 00:49:32</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="authority_langs">
-        <column name="id">7</column>
-        <column name="authority_id">7</column>
-        <column name="lang">ja</column>
-        <column name="authority_name">一般２</column>
-        <column name="created">NULL</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">2013-07-08 11:12:05</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
     <!-- テーブル blocks -->
     <table name="blocks">
-        <column name="id">17</column>
+        <column name="id">19</column>
         <column name="page_id">12</column>
         <column name="content_id">17</column>
         <column name="module_id">5</column>
         <column name="title">{X-CONTENT}</column>
         <column name="show_title">1</column>
         <column name="controller_action">blog</column>
-        <column name="root_id">17</column>
+        <column name="root_id">19</column>
         <column name="parent_id">0</column>
         <column name="thread_num">0</column>
         <column name="col_num">1</column>
@@ -364,13 +298,13 @@
         <column name="right_margin">8</column>
         <column name="top_margin">8</column>
         <column name="bottom_margin">8</column>
-        <column name="min_width_size">772</column>
-        <column name="min_height_size">410</column>
+        <column name="min_width_size">811</column>
+        <column name="min_height_size">0</column>
         <column name="lock_authority_id">0</column>
-        <column name="created">2013-05-01 03:27:18</column>
+        <column name="created">2013-07-09 09:08:45</column>
         <column name="created_user_id">1</column>
         <column name="created_user_name">admin</column>
-        <column name="modified">2013-05-01 03:27:18</column>
+        <column name="modified">2013-07-09 09:08:45</column>
         <column name="modified_user_id">1</column>
         <column name="modified_user_name">admin</column>
     </table>
@@ -565,150 +499,6 @@
         <column name="modified_user_name">admin</column>
     </table>
     <!-- テーブル blog_styles -->
-    <table name="blog_styles">
-        <column name="id">1</column>
-        <column name="block_id">17</column>
-        <column name="widget_type">6</column>
-        <column name="display_flag">1</column>
-        <column name="col_num">2</column>
-        <column name="row_num">1</column>
-        <column name="visible_item">5</column>
-        <column name="options">a:1:{s:12:&quot;display_type&quot;;s:1:&quot;1&quot;;}</column>
-        <column name="created">2013-05-30 04:02:21</column>
-        <column name="created_user_id">1</column>
-        <column name="created_user_name">admin</column>
-        <column name="modified">2013-05-30 04:02:21</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="blog_styles">
-        <column name="id">2</column>
-        <column name="block_id">17</column>
-        <column name="widget_type">1</column>
-        <column name="display_flag">1</column>
-        <column name="col_num">2</column>
-        <column name="row_num">2</column>
-        <column name="visible_item">10</column>
-        <column name="options">a:4:{s:21:&quot;visible_item_comments&quot;;s:1:&quot;5&quot;;s:17:&quot;position_comments&quot;;s:1:&quot;0&quot;;s:14:&quot;order_comments&quot;;s:1:&quot;0&quot;;s:17:&quot;threaded_comments&quot;;s:1:&quot;0&quot;;}</column>
-        <column name="created">2013-05-30 04:02:21</column>
-        <column name="created_user_id">1</column>
-        <column name="created_user_name">admin</column>
-        <column name="modified">2013-05-30 04:02:21</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="blog_styles">
-        <column name="id">3</column>
-        <column name="block_id">17</column>
-        <column name="widget_type">2</column>
-        <column name="display_flag">1</column>
-        <column name="col_num">3</column>
-        <column name="row_num">1</column>
-        <column name="visible_item">5</column>
-        <column name="options"></column>
-        <column name="created">2013-05-30 04:02:21</column>
-        <column name="created_user_id">1</column>
-        <column name="created_user_name">admin</column>
-        <column name="modified">2013-05-30 04:02:21</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="blog_styles">
-        <column name="id">4</column>
-        <column name="block_id">17</column>
-        <column name="widget_type">3</column>
-        <column name="display_flag">1</column>
-        <column name="col_num">3</column>
-        <column name="row_num">2</column>
-        <column name="visible_item">5</column>
-        <column name="options"></column>
-        <column name="created">2013-05-30 04:02:21</column>
-        <column name="created_user_id">1</column>
-        <column name="created_user_name">admin</column>
-        <column name="modified">2013-05-30 04:02:21</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="blog_styles">
-        <column name="id">5</column>
-        <column name="block_id">17</column>
-        <column name="widget_type">4</column>
-        <column name="display_flag">1</column>
-        <column name="col_num">3</column>
-        <column name="row_num">3</column>
-        <column name="visible_item">5</column>
-        <column name="options"></column>
-        <column name="created">2013-05-30 04:02:21</column>
-        <column name="created_user_id">1</column>
-        <column name="created_user_name">admin</column>
-        <column name="modified">2013-05-30 04:02:21</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="blog_styles">
-        <column name="id">6</column>
-        <column name="block_id">17</column>
-        <column name="widget_type">5</column>
-        <column name="display_flag">1</column>
-        <column name="col_num">3</column>
-        <column name="row_num">4</column>
-        <column name="visible_item">5</column>
-        <column name="options"></column>
-        <column name="created">2013-05-30 04:02:21</column>
-        <column name="created_user_id">1</column>
-        <column name="created_user_name">admin</column>
-        <column name="modified">2013-05-30 04:02:21</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="blog_styles">
-        <column name="id">7</column>
-        <column name="block_id">17</column>
-        <column name="widget_type">7</column>
-        <column name="display_flag">0</column>
-        <column name="col_num">3</column>
-        <column name="row_num">6</column>
-        <column name="visible_item">10</column>
-        <column name="options"></column>
-        <column name="created">2013-05-30 04:02:21</column>
-        <column name="created_user_id">1</column>
-        <column name="created_user_name">admin</column>
-        <column name="modified">2013-05-30 04:02:21</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="blog_styles">
-        <column name="id">8</column>
-        <column name="block_id">17</column>
-        <column name="widget_type">8</column>
-        <column name="display_flag">0</column>
-        <column name="col_num">3</column>
-        <column name="row_num">5</column>
-        <column name="visible_item">0</column>
-        <column name="options"></column>
-        <column name="created">2013-05-30 04:02:21</column>
-        <column name="created_user_id">1</column>
-        <column name="created_user_name">admin</column>
-        <column name="modified">2013-05-30 04:02:21</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="blog_styles">
-        <column name="id">9</column>
-        <column name="block_id">17</column>
-        <column name="widget_type">9</column>
-        <column name="display_flag">0</column>
-        <column name="col_num">3</column>
-        <column name="row_num">7</column>
-        <column name="visible_item">0</column>
-        <column name="options"></column>
-        <column name="created">2013-05-30 04:02:21</column>
-        <column name="created_user_id">1</column>
-        <column name="created_user_name">admin</column>
-        <column name="modified">2013-05-30 04:02:21</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
     <!-- テーブル blog_terms -->
     <table name="blog_terms">
         <column name="id">1</column>
@@ -1070,7 +860,7 @@
         <column name="name">sitename</column>
         <column name="type">text</column>
         <column name="title"></column>
-        <column name="value">サイト名未設定(舛川)</column>
+        <column name="value">Undefined site name</column>
         <column name="description"></column>
         <column name="attribute">size=&quot;50&quot;</column>
         <column name="display_sequence">0</column>
@@ -1155,10 +945,32 @@
         <column name="id">5</column>
         <column name="module_id">0</column>
         <column name="cat_id">0</column>
-        <column name="name">gc_maxlifetime</column>
+        <column name="name">first_startpage_id</column>
         <column name="type">select</column>
         <column name="title"></column>
-        <column name="value">1440</column>
+        <column name="value">0</column>
+        <column name="description"></column>
+        <column name="attribute"></column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">0000-00-00 00:00:00</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">0000-00-00 00:00:00</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">6</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">0</column>
+        <column name="name">second_startpage_id</column>
+        <column name="type">select</column>
+        <column name="title"></column>
+        <column name="value">-2</column>
         <column name="description"></column>
         <column name="attribute"></column>
         <column name="display_sequence">0</column>
@@ -1174,15 +986,15 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">6</column>
+        <column name="id">7</column>
         <column name="module_id">0</column>
         <column name="cat_id">0</column>
-        <column name="name">session_gc_maxlifetime</column>
+        <column name="name">third_startpage_id</column>
         <column name="type">select</column>
         <column name="title"></column>
-        <column name="value">60</column>
+        <column name="value">-1</column>
         <column name="description"></column>
-        <column name="attribute">style=&quot;width:100px;&quot;</column>
+        <column name="attribute"></column>
         <column name="display_sequence">0</column>
         <column name="minlength">0</column>
         <column name="maxlength">0</column>
@@ -1196,7 +1008,29 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">7</column>
+        <column name="id">8</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">0</column>
+        <column name="name">fourth_startpage_id</column>
+        <column name="type">select</column>
+        <column name="title"></column>
+        <column name="value">0</column>
+        <column name="description"></column>
+        <column name="attribute"></column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">9</column>
         <column name="module_id">0</column>
         <column name="cat_id">0</column>
         <column name="name">default_entry_public_authority_id</column>
@@ -1218,7 +1052,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">8</column>
+        <column name="id">10</column>
         <column name="module_id">0</column>
         <column name="cat_id">0</column>
         <column name="name">default_entry_myportal_authority_id</column>
@@ -1240,7 +1074,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">9</column>
+        <column name="id">11</column>
         <column name="module_id">0</column>
         <column name="cat_id">0</column>
         <column name="name">default_entry_private_authority_id</column>
@@ -1262,7 +1096,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">10</column>
+        <column name="id">12</column>
         <column name="module_id">0</column>
         <column name="cat_id">0</column>
         <column name="name">default_entry_group_authority_id</column>
@@ -1284,59 +1118,15 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">11</column>
-        <column name="module_id">0</column>
-        <column name="cat_id">0</column>
-        <column name="name">is_maintenance</column>
-        <column name="type">radio</column>
-        <column name="title"></column>
-        <column name="value">0</column>
-        <column name="description"></column>
-        <column name="attribute"></column>
-        <column name="display_sequence">0</column>
-        <column name="minlength">0</column>
-        <column name="maxlength">0</column>
-        <column name="regexp"></column>
-        <column name="lang_flag">0</column>
-        <column name="created">2012-07-06 03:38:17</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">2012-07-06 03:50:29</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name"></column>
-    </table>
-    <table name="configs">
-        <column name="id">12</column>
-        <column name="module_id">0</column>
-        <column name="cat_id">0</column>
-        <column name="name">maintenance_text</column>
-        <column name="type">textarea</column>
-        <column name="title"></column>
-        <column name="value">This site is on maintenance.Please try again later.</column>
-        <column name="description"></column>
-        <column name="attribute">cols=&quot;50&quot; rows=&quot;5&quot;</column>
-        <column name="display_sequence">0</column>
-        <column name="minlength">0</column>
-        <column name="maxlength">0</column>
-        <column name="regexp"></column>
-        <column name="lang_flag">1</column>
-        <column name="created">NULL</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">NULL</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
-    </table>
-    <table name="configs">
         <column name="id">13</column>
         <column name="module_id">0</column>
         <column name="cat_id">0</column>
-        <column name="name">is_closed_site</column>
-        <column name="type">radio</column>
+        <column name="name">myportal_space_name</column>
+        <column name="type">text</column>
         <column name="title"></column>
-        <column name="value">0</column>
+        <column name="value">Myportal of {X-HANDLE}</column>
         <column name="description"></column>
-        <column name="attribute"></column>
+        <column name="attribute">size=&quot;15&quot;</column>
         <column name="display_sequence">0</column>
         <column name="minlength">0</column>
         <column name="maxlength">0</column>
@@ -1353,12 +1143,12 @@
         <column name="id">14</column>
         <column name="module_id">0</column>
         <column name="cat_id">0</column>
-        <column name="name">display_header_menu</column>
-        <column name="type">select</column>
+        <column name="name">private_space_name</column>
+        <column name="type">text</column>
         <column name="title"></column>
-        <column name="value">1</column>
+        <column name="value">Private room of {X-HANDLE}</column>
         <column name="description"></column>
-        <column name="attribute">style=&quot;width:150px;&quot;</column>
+        <column name="attribute">size=&quot;15&quot;</column>
         <column name="display_sequence">0</column>
         <column name="minlength">0</column>
         <column name="maxlength">0</column>
@@ -1441,116 +1231,6 @@
         <column name="id">18</column>
         <column name="module_id">0</column>
         <column name="cat_id">1</column>
-        <column name="name">first_startpage_id</column>
-        <column name="type">select</column>
-        <column name="title"></column>
-        <column name="value">0</column>
-        <column name="description"></column>
-        <column name="attribute"></column>
-        <column name="display_sequence">0</column>
-        <column name="minlength">0</column>
-        <column name="maxlength">0</column>
-        <column name="regexp"></column>
-        <column name="lang_flag">0</column>
-        <column name="created">2012-07-06 04:23:36</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">2012-07-06 04:47:07</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name"></column>
-    </table>
-    <table name="configs">
-        <column name="id">19</column>
-        <column name="module_id">0</column>
-        <column name="cat_id">1</column>
-        <column name="name">second_startpage_id</column>
-        <column name="type">select</column>
-        <column name="title"></column>
-        <column name="value">-2</column>
-        <column name="description"></column>
-        <column name="attribute"></column>
-        <column name="display_sequence">0</column>
-        <column name="minlength">0</column>
-        <column name="maxlength">0</column>
-        <column name="regexp"></column>
-        <column name="lang_flag">0</column>
-        <column name="created">NULL</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">NULL</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
-    </table>
-    <table name="configs">
-        <column name="id">20</column>
-        <column name="module_id">0</column>
-        <column name="cat_id">1</column>
-        <column name="name">third_startpage_id</column>
-        <column name="type">select</column>
-        <column name="title"></column>
-        <column name="value">-1</column>
-        <column name="description"></column>
-        <column name="attribute"></column>
-        <column name="display_sequence">0</column>
-        <column name="minlength">0</column>
-        <column name="maxlength">0</column>
-        <column name="regexp"></column>
-        <column name="lang_flag">0</column>
-        <column name="created">NULL</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">NULL</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
-    </table>
-    <table name="configs">
-        <column name="id">21</column>
-        <column name="module_id">0</column>
-        <column name="cat_id">1</column>
-        <column name="name">fourth_startpage_id</column>
-        <column name="type">select</column>
-        <column name="title"></column>
-        <column name="value">0</column>
-        <column name="description"></column>
-        <column name="attribute"></column>
-        <column name="display_sequence">0</column>
-        <column name="minlength">0</column>
-        <column name="maxlength">0</column>
-        <column name="regexp"></column>
-        <column name="lang_flag">0</column>
-        <column name="created">NULL</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">NULL</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
-    </table>
-    <table name="configs">
-        <column name="id">22</column>
-        <column name="module_id">0</column>
-        <column name="cat_id">1</column>
-        <column name="name">upload_max_capacity_community</column>
-        <column name="type">select</column>
-        <column name="title"></column>
-        <column name="value">0</column>
-        <column name="description"></column>
-        <column name="attribute"></column>
-        <column name="display_sequence">0</column>
-        <column name="minlength">0</column>
-        <column name="maxlength">0</column>
-        <column name="regexp"></column>
-        <column name="lang_flag">0</column>
-        <column name="created">NULL</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">NULL</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
-    </table>
-    <table name="configs">
-        <column name="id">23</column>
-        <column name="module_id">0</column>
-        <column name="cat_id">1</column>
         <column name="name">login_autocomplete</column>
         <column name="type">radio</column>
         <column name="title"></column>
@@ -1570,7 +1250,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">24</column>
+        <column name="id">19</column>
         <column name="module_id">0</column>
         <column name="cat_id">1</column>
         <column name="name">use_ssl</column>
@@ -1592,7 +1272,73 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">25</column>
+        <column name="id">20</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">0</column>
+        <column name="name">is_maintenance</column>
+        <column name="type">radio</column>
+        <column name="title"></column>
+        <column name="value">0</column>
+        <column name="description"></column>
+        <column name="attribute"></column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">0000-00-00 00:00:00</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">0000-00-00 00:00:00</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">21</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">0</column>
+        <column name="name">maintenance_text</column>
+        <column name="type">textarea</column>
+        <column name="title"></column>
+        <column name="value">This site is on maintenance.Please try again later.</column>
+        <column name="description"></column>
+        <column name="attribute">cols=&quot;50&quot; rows=&quot;5&quot;</column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">1</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">22</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">0</column>
+        <column name="name">is_closed_site</column>
+        <column name="type">radio</column>
+        <column name="title"></column>
+        <column name="value">0</column>
+        <column name="description"></column>
+        <column name="attribute"></column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">23</column>
         <column name="module_id">0</column>
         <column name="cat_id">2</column>
         <column name="name">memory_limit</column>
@@ -1614,7 +1360,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">26</column>
+        <column name="id">24</column>
         <column name="module_id">0</column>
         <column name="cat_id">2</column>
         <column name="name">session_name</column>
@@ -1633,6 +1379,50 @@
         <column name="created_user_name"></column>
         <column name="modified">NULL</column>
         <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">25</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">2</column>
+        <column name="name">session_timeout</column>
+        <column name="type">select</column>
+        <column name="title"></column>
+        <column name="value">60</column>
+        <column name="description"></column>
+        <column name="attribute">style=&quot;width:100px;&quot;</column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">26</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">2</column>
+        <column name="name">autoRegenerate</column>
+        <column name="type">radio</column>
+        <column name="title"></column>
+        <column name="value">0</column>
+        <column name="description"></column>
+        <column name="attribute"></column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">0000-00-00 00:00:00</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">0000-00-00 00:00:00</column>
+        <column name="modified_user_id">1</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
@@ -1836,28 +1626,6 @@
     <table name="configs">
         <column name="id">36</column>
         <column name="module_id">0</column>
-        <column name="cat_id">4</column>
-        <column name="name">meta_author</column>
-        <column name="type">text</column>
-        <column name="title"></column>
-        <column name="value">NetCommons</column>
-        <column name="description"></column>
-        <column name="attribute">size=&quot;50&quot;</column>
-        <column name="display_sequence">0</column>
-        <column name="minlength">0</column>
-        <column name="maxlength">0</column>
-        <column name="regexp"></column>
-        <column name="lang_flag">0</column>
-        <column name="created">NULL</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">NULL</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
-    </table>
-    <table name="configs">
-        <column name="id">37</column>
-        <column name="module_id">0</column>
         <column name="cat_id">3</column>
         <column name="name">mailmethod</column>
         <column name="type">select</column>
@@ -1878,7 +1646,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">38</column>
+        <column name="id">37</column>
         <column name="module_id">0</column>
         <column name="cat_id">3</column>
         <column name="name">sendmailpath</column>
@@ -1900,7 +1668,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">39</column>
+        <column name="id">38</column>
         <column name="module_id">0</column>
         <column name="cat_id">3</column>
         <column name="name">smtphost</column>
@@ -1922,7 +1690,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">40</column>
+        <column name="id">39</column>
         <column name="module_id">0</column>
         <column name="cat_id">3</column>
         <column name="name">smtpuser</column>
@@ -1944,7 +1712,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">41</column>
+        <column name="id">40</column>
         <column name="module_id">0</column>
         <column name="cat_id">3</column>
         <column name="name">smtppass</column>
@@ -1966,7 +1734,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">42</column>
+        <column name="id">41</column>
         <column name="module_id">0</column>
         <column name="cat_id">3</column>
         <column name="name">smtptls</column>
@@ -1988,7 +1756,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">43</column>
+        <column name="id">42</column>
         <column name="module_id">0</column>
         <column name="cat_id">3</column>
         <column name="name">mailheader</column>
@@ -2010,7 +1778,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">44</column>
+        <column name="id">43</column>
         <column name="module_id">0</column>
         <column name="cat_id">3</column>
         <column name="name">mailfooter</column>
@@ -2032,51 +1800,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">45</column>
-        <column name="module_id">0</column>
-        <column name="cat_id">4</column>
-        <column name="name">meta_copyright</column>
-        <column name="type">text</column>
-        <column name="title"></column>
-        <column name="value">Copyright © 2012</column>
-        <column name="description"></column>
-        <column name="attribute">size=&quot;50&quot;</column>
-        <column name="display_sequence">0</column>
-        <column name="minlength">0</column>
-        <column name="maxlength">0</column>
-        <column name="regexp"></column>
-        <column name="lang_flag">0</column>
-        <column name="created">NULL</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">NULL</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
-    </table>
-    <table name="configs">
-        <column name="id">46</column>
-        <column name="module_id">0</column>
-        <column name="cat_id">4</column>
-        <column name="name">meta_robots</column>
-        <column name="type">select</column>
-        <column name="title"></column>
-        <column name="value">index,follow</column>
-        <column name="description"></column>
-        <column name="attribute"></column>
-        <column name="display_sequence">0</column>
-        <column name="minlength">0</column>
-        <column name="maxlength">0</column>
-        <column name="regexp"></column>
-        <column name="lang_flag">0</column>
-        <column name="created">NULL</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">NULL</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
-    </table>
-    <table name="configs">
-        <column name="id">47</column>
+        <column name="id">44</column>
         <column name="module_id">0</column>
         <column name="cat_id">4</column>
         <column name="name">meta_rating</column>
@@ -2098,9 +1822,339 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
+        <column name="id">45</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">4</column>
+        <column name="name">meta_description</column>
+        <column name="type">textarea</column>
+        <column name="title"></column>
+        <column name="value">CMS,Netcommons</column>
+        <column name="description"></column>
+        <column name="attribute"></column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">46</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">4</column>
+        <column name="name">meta_keywords</column>
+        <column name="type">textarea</column>
+        <column name="title"></column>
+        <column name="value">CMS,Netcommons</column>
+        <column name="description"></column>
+        <column name="attribute"></column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">47</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">4</column>
+        <column name="name">meta_robots</column>
+        <column name="type">select</column>
+        <column name="title"></column>
+        <column name="value">index,follow</column>
+        <column name="description"></column>
+        <column name="attribute"></column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
         <column name="id">48</column>
         <column name="module_id">0</column>
+        <column name="cat_id">4</column>
+        <column name="name">meta_author</column>
+        <column name="type">text</column>
+        <column name="title"></column>
+        <column name="value">NetCommons</column>
+        <column name="description"></column>
+        <column name="attribute">size=&quot;50&quot;</column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">49</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">4</column>
+        <column name="name">meta_copyright</column>
+        <column name="type">text</column>
+        <column name="title"></column>
+        <column name="value">Copyright © 2013</column>
+        <column name="description"></column>
+        <column name="attribute">size=&quot;50&quot;</column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">50</column>
+        <column name="module_id">0</column>
         <column name="cat_id">5</column>
+        <column name="name">display_header_menu</column>
+        <column name="type">select</column>
+        <column name="title"></column>
+        <column name="value">1</column>
+        <column name="description"></column>
+        <column name="attribute">style=&quot;width:150px;&quot;</column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">51</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">5</column>
+        <column name="name">display_page_menu</column>
+        <column name="type">select</column>
+        <column name="title"></column>
+        <column name="value">1</column>
+        <column name="description"></column>
+        <column name="attribute">style=&quot;width:150px;&quot;</column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">52</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">5</column>
+        <column name="name">pagemenu_community_limit</column>
+        <column name="type">select</column>
+        <column name="title"></column>
+        <column name="value">10</column>
+        <column name="description"></column>
+        <column name="attribute"></column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">53</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">5</column>
+        <column name="name">pagemenu_display_public_community</column>
+        <column name="type">select</column>
+        <column name="title"></column>
+        <column name="value">1</column>
+        <column name="description"></column>
+        <column name="attribute"></column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">54</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">5</column>
+        <column name="name">temp_name</column>
+        <column name="type">text</column>
+        <column name="title"></column>
+        <column name="value">default</column>
+        <column name="description"></column>
+        <column name="attribute"></column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">55</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">6</column>
+        <column name="name">copy_operation_modules</column>
+        <column name="type">checkbox</column>
+        <column name="title"></column>
+        <column name="value">1|5|7|</column>
+        <column name="description"></column>
+        <column name="attribute">style=&quot;width:70px;&quot;</column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">56</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">6</column>
+        <column name="name">shortcut_operation_modules</column>
+        <column name="type">checkbox</column>
+        <column name="title"></column>
+        <column name="value">1|5|7|</column>
+        <column name="description"></column>
+        <column name="attribute">style=&quot;width:70px;&quot;</column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">57</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">6</column>
+        <column name="name">move_operation_modules</column>
+        <column name="type">checkbox</column>
+        <column name="title"></column>
+        <column name="value">1|5|7|</column>
+        <column name="description"></column>
+        <column name="attribute">style=&quot;width:70px;&quot;</column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">58</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">6</column>
+        <column name="name">upload_normal_width_size</column>
+        <column name="type">text</column>
+        <column name="title"></column>
+        <column name="value">10</column>
+        <column name="description"></column>
+        <column name="attribute"></column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">59</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">6</column>
+        <column name="name">upload_normal_height_size</column>
+        <column name="type">text</column>
+        <column name="title"></column>
+        <column name="value">10</column>
+        <column name="description"></column>
+        <column name="attribute"></column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">60</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">7</column>
         <column name="name">autoregist_use</column>
         <column name="type">radio</column>
         <column name="title"></column>
@@ -2120,9 +2174,9 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">49</column>
+        <column name="id">61</column>
         <column name="module_id">0</column>
-        <column name="cat_id">5</column>
+        <column name="cat_id">7</column>
         <column name="name">autoregist_approver</column>
         <column name="type">select</column>
         <column name="title"></column>
@@ -2142,9 +2196,9 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">50</column>
+        <column name="id">62</column>
         <column name="module_id">0</column>
-        <column name="cat_id">5</column>
+        <column name="cat_id">7</column>
         <column name="name">autoregist_use_input_key</column>
         <column name="type">text</column>
         <column name="title"></column>
@@ -2164,9 +2218,9 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">51</column>
+        <column name="id">63</column>
         <column name="module_id">0</column>
-        <column name="cat_id">5</column>
+        <column name="cat_id">7</column>
         <column name="name">autoregist_author</column>
         <column name="type">select</column>
         <column name="title"></column>
@@ -2186,35 +2240,13 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">52</column>
+        <column name="id">64</column>
         <column name="module_id">0</column>
-        <column name="cat_id">5</column>
-        <column name="name">autoregist_defcommunity</column>
-        <column name="type">radio</column>
-        <column name="title"></column>
-        <column name="value">1</column>
-        <column name="description"></column>
-        <column name="attribute"></column>
-        <column name="display_sequence">0</column>
-        <column name="minlength">0</column>
-        <column name="maxlength">0</column>
-        <column name="regexp"></column>
-        <column name="lang_flag">0</column>
-        <column name="created">NULL</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">NULL</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
-    </table>
-    <table name="configs">
-        <column name="id">53</column>
-        <column name="module_id">0</column>
-        <column name="cat_id">5</column>
+        <column name="cat_id">7</column>
         <column name="name">autoregist_use_items</column>
         <column name="type">select</column>
         <column name="title"></column>
-        <column name="value">1:1|2:1|3:1|4:1|5:1|</column>
+        <column name="value">1:1:1|2:1:1|3:1:1|4:1:1|5:1:1|</column>
         <column name="description"></column>
         <column name="attribute">style=&quot;width:70px;&quot;</column>
         <column name="display_sequence">0</column>
@@ -2230,9 +2262,9 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">54</column>
+        <column name="id">65</column>
         <column name="module_id">0</column>
-        <column name="cat_id">5</column>
+        <column name="cat_id">7</column>
         <column name="name">autoregist_disclaimer</column>
         <column name="type">textarea</column>
         <column name="title"></column>
@@ -2276,9 +2308,9 @@ from this site, etc.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">55</column>
+        <column name="id">66</column>
         <column name="module_id">0</column>
-        <column name="cat_id">5</column>
+        <column name="cat_id">7</column>
         <column name="name">mail_approval_subject</column>
         <column name="type">text</column>
         <column name="title"></column>
@@ -2298,9 +2330,9 @@ from this site, etc.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">56</column>
+        <column name="id">67</column>
         <column name="module_id">0</column>
-        <column name="cat_id">5</column>
+        <column name="cat_id">7</column>
         <column name="name">mail_approval_body</column>
         <column name="type">textarea</column>
         <column name="title"></column>
@@ -2324,9 +2356,9 @@ and confirm registration.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">57</column>
+        <column name="id">68</column>
         <column name="module_id">0</column>
-        <column name="cat_id">5</column>
+        <column name="cat_id">7</column>
         <column name="name">mail_add_announce_subject</column>
         <column name="type">text</column>
         <column name="title"></column>
@@ -2346,9 +2378,9 @@ and confirm registration.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">58</column>
+        <column name="id">69</column>
         <column name="module_id">0</column>
-        <column name="cat_id">5</column>
+        <column name="cat_id">7</column>
         <column name="name">mail_add_announce_body</column>
         <column name="type">textarea</column>
         <column name="title"></column>
@@ -2369,9 +2401,9 @@ Clicking on the link below will activate the account of this user.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">59</column>
+        <column name="id">70</column>
         <column name="module_id">0</column>
-        <column name="cat_id">5</column>
+        <column name="cat_id">7</column>
         <column name="name">mail_add_user_subject</column>
         <column name="type">text</column>
         <column name="title"></column>
@@ -2391,9 +2423,9 @@ Clicking on the link below will activate the account of this user.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">60</column>
+        <column name="id">71</column>
         <column name="module_id">0</column>
-        <column name="cat_id">5</column>
+        <column name="cat_id">7</column>
         <column name="name">mail_add_user_body</column>
         <column name="type">textarea</column>
         <column name="title"></column>
@@ -2419,9 +2451,9 @@ You may now log in by clicking on this link or copying and pasting it in your br
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">61</column>
+        <column name="id">72</column>
         <column name="module_id">0</column>
-        <column name="cat_id">5</column>
+        <column name="cat_id">7</column>
         <column name="name">mail_get_password_subject</column>
         <column name="type">text</column>
         <column name="title"></column>
@@ -2441,9 +2473,9 @@ You may now log in by clicking on this link or copying and pasting it in your br
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">62</column>
+        <column name="id">73</column>
         <column name="module_id">0</column>
-        <column name="cat_id">5</column>
+        <column name="cat_id">7</column>
         <column name="name">mail_get_password_body</column>
         <column name="type">textarea</column>
         <column name="title"></column>
@@ -2467,9 +2499,9 @@ You can still login with your password until now.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">63</column>
+        <column name="id">74</column>
         <column name="module_id">0</column>
-        <column name="cat_id">5</column>
+        <column name="cat_id">7</column>
         <column name="name">mail_new_password_subject</column>
         <column name="type">text</column>
         <column name="title"></column>
@@ -2489,9 +2521,9 @@ You can still login with your password until now.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">64</column>
+        <column name="id">75</column>
         <column name="module_id">0</column>
-        <column name="cat_id">5</column>
+        <column name="cat_id">7</column>
         <column name="name">mail_new_password_body</column>
         <column name="type">textarea</column>
         <column name="title"></column>
@@ -2512,9 +2544,9 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">65</column>
+        <column name="id">76</column>
         <column name="module_id">0</column>
-        <column name="cat_id">5</column>
+        <column name="cat_id">7</column>
         <column name="name">withdraw_membership_use</column>
         <column name="type">select</column>
         <column name="title"></column>
@@ -2534,9 +2566,9 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">66</column>
+        <column name="id">77</column>
         <column name="module_id">0</column>
-        <column name="cat_id">5</column>
+        <column name="cat_id">7</column>
         <column name="name">withdraw_disclaimer</column>
         <column name="type">textarea</column>
         <column name="title"></column>
@@ -2556,9 +2588,9 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">67</column>
+        <column name="id">78</column>
         <column name="module_id">0</column>
-        <column name="cat_id">5</column>
+        <column name="cat_id">7</column>
         <column name="name">withdraw_membership_send_admin</column>
         <column name="type">radio</column>
         <column name="title"></column>
@@ -2578,9 +2610,9 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">68</column>
+        <column name="id">79</column>
         <column name="module_id">0</column>
-        <column name="cat_id">5</column>
+        <column name="cat_id">7</column>
         <column name="name">mail_withdraw_membership_subject</column>
         <column name="type">text</column>
         <column name="title"></column>
@@ -2600,13 +2632,13 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">69</column>
+        <column name="id">80</column>
         <column name="module_id">0</column>
-        <column name="cat_id">5</column>
+        <column name="cat_id">7</column>
         <column name="name">mail_withdraw_membership_body</column>
         <column name="type">textarea</column>
         <column name="title"></column>
-        <column name="value">{X-SITE_NAME}'s{X-HANDLE} is already leaved.</column>
+        <column name="value">{X-SITE_NAME}'s {X-HANDLE} is already leaved.</column>
         <column name="description"></column>
         <column name="attribute">cols=&quot;50&quot; rows=&quot;5&quot;</column>
         <column name="display_sequence">0</column>
@@ -2622,35 +2654,13 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">70</column>
+        <column name="id">81</column>
         <column name="module_id">0</column>
-        <column name="cat_id">6</column>
-        <column name="name">debug</column>
-        <column name="type">select</column>
+        <column name="cat_id">8</column>
+        <column name="name">community_participate_sendmail</column>
+        <column name="type">radio</column>
         <column name="title"></column>
-        <column name="value">2</column>
-        <column name="description"></column>
-        <column name="attribute">style=&quot;width:200px;&quot;</column>
-        <column name="display_sequence">0</column>
-        <column name="minlength">0</column>
-        <column name="maxlength">0</column>
-        <column name="regexp"></column>
-        <column name="lang_flag">0</column>
-        <column name="created">2012-06-22 07:59:33</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">2012-07-02 03:07:04</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name"></column>
-    </table>
-    <table name="configs">
-        <column name="id">71</column>
-        <column name="module_id">0</column>
-        <column name="cat_id">6</column>
-        <column name="name">temp_name</column>
-        <column name="type">text</column>
-        <column name="title"></column>
-        <column name="value">default</column>
+        <column name="value">1</column>
         <column name="description"></column>
         <column name="attribute"></column>
         <column name="display_sequence">0</column>
@@ -2666,9 +2676,347 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">72</column>
+        <column name="id">82</column>
         <column name="module_id">0</column>
-        <column name="cat_id">7</column>
+        <column name="cat_id">8</column>
+        <column name="name">community_mail_participate_announce_subject</column>
+        <column name="type">text</column>
+        <column name="title"></column>
+        <column name="value">[{X-SITE_NAME}]Notification of {X-ROOM}'s participation.</column>
+        <column name="description"></column>
+        <column name="attribute">size=&quot;50&quot;</column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">1</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">83</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">8</column>
+        <column name="name">community_mail_participate_announce_body</column>
+        <column name="type">textarea</column>
+        <column name="title"></column>
+        <column name="value">{X-HANDLE} has joined {X-ROOM}.</column>
+        <column name="description"></column>
+        <column name="attribute">cols=&quot;50&quot; rows=&quot;5&quot;</column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">1</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">84</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">8</column>
+        <column name="name">community_withdraw_use</column>
+        <column name="type">select</column>
+        <column name="title"></column>
+        <column name="value">0</column>
+        <column name="description"></column>
+        <column name="attribute">style=&quot;width:150px;&quot;</column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">85</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">8</column>
+        <column name="name">community_withdraw_sendmail</column>
+        <column name="type">radio</column>
+        <column name="title"></column>
+        <column name="value">1</column>
+        <column name="description"></column>
+        <column name="attribute"></column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">86</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">8</column>
+        <column name="name">community_mail_withdraw_subject</column>
+        <column name="type">text</column>
+        <column name="title"></column>
+        <column name="value">[{X-SITE_NAME}]Notification of {X-ROOM}'s membership removal.</column>
+        <column name="description"></column>
+        <column name="attribute">size=&quot;50&quot;</column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">1</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">87</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">8</column>
+        <column name="name">community_mail_withdraw_body</column>
+        <column name="type">textarea</column>
+        <column name="title"></column>
+        <column name="value">Membership of {X-HANDLE} has been removed from {X-ROOM}.</column>
+        <column name="description"></column>
+        <column name="attribute">cols=&quot;50&quot; rows=&quot;5&quot;</column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">1</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">88</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">8</column>
+        <column name="name">community_mail_invite_subject</column>
+        <column name="type">text</column>
+        <column name="title"></column>
+        <column name="value">Invitation to [{X-SITE_NAME}]{X-ROOM}</column>
+        <column name="description"></column>
+        <column name="attribute">size=&quot;50&quot;</column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">1</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">89</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">8</column>
+        <column name="name">community_mail_invite_body</column>
+        <column name="type">textarea</column>
+        <column name="title"></column>
+        <column name="value">At {X-SITE_NAME}, community named `{X-ROOM}` that we are participating has been created. Please join us.
+</column>
+        <column name="description"></column>
+        <column name="attribute">cols=&quot;50&quot; rows=&quot;5&quot;</column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">1</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">90</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">8</column>
+        <column name="name">community_mail_wait_approval_subject</column>
+        <column name="type">text</column>
+        <column name="title"></column>
+        <column name="value">[{X-SITE_NAME}]Your participation for {X-ROOM} is accepted</column>
+        <column name="description"></column>
+        <column name="attribute">size=&quot;50&quot;</column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">1</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">91</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">8</column>
+        <column name="name">community_mail_wait_approval_body</column>
+        <column name="type">textarea</column>
+        <column name="title"></column>
+        <column name="value">Your participation for {X-ROOM} is accepted.Please wait until it is approved.</column>
+        <column name="description"></column>
+        <column name="attribute">cols=&quot;50&quot; rows=&quot;5&quot;</column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">1</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">92</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">8</column>
+        <column name="name">community_mail_confirm_approval_subject</column>
+        <column name="type">text</column>
+        <column name="title"></column>
+        <column name="value">[{X-SITE_NAME}]{X-ROOM} Need room manager's approval</column>
+        <column name="description"></column>
+        <column name="attribute">size=&quot;50&quot;</column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">1</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">93</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">8</column>
+        <column name="name">community_mail_confirm_approval_body</column>
+        <column name="type">textarea</column>
+        <column name="title"></column>
+        <column name="value">{X-HANDLE} want to join {X-ROOM}.
+Click the link below to view {X-HANDLE}'s profile.
+{X-MYPORTAL_URL}
+
+To allow participant and send a mail to the user, please click the link below.
+{X-APPROVE_URL}</column>
+        <column name="description"></column>
+        <column name="attribute">cols=&quot;50&quot; rows=&quot;5&quot;</column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">1</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">94</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">8</column>
+        <column name="name">community_mail_approved_subject</column>
+        <column name="type">text</column>
+        <column name="title"></column>
+        <column name="value">[{X-SITE_NAME}]{X-ROOM}Approval of participation</column>
+        <column name="description"></column>
+        <column name="attribute">size=&quot;50&quot;</column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">1</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">95</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">8</column>
+        <column name="name">community_mail_approved_body</column>
+        <column name="type">textarea</column>
+        <column name="title"></column>
+        <column name="value">You was allowed to join {X-ROOM}
+This is the community's URL:
+{X-COMMUNITY_URL}</column>
+        <column name="description"></column>
+        <column name="attribute">cols=&quot;50&quot; rows=&quot;5&quot;</column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">1</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">96</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">9</column>
+        <column name="name">debug</column>
+        <column name="type">select</column>
+        <column name="title"></column>
+        <column name="value">2</column>
+        <column name="description"></column>
+        <column name="attribute">style=&quot;width:200px;&quot;</column>
+        <column name="display_sequence">0</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">0000-00-00 00:00:00</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">0000-00-00 00:00:00</column>
+        <column name="modified_user_id">1</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">97</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">10</column>
         <column name="name">allow_extension</column>
         <column name="type">textarea</column>
         <column name="title"></column>
@@ -2692,7 +3040,7 @@ We recommend that you change your password after login.</column>
         <column name="id">1</column>
         <column name="config_name">sitename</column>
         <column name="lang">ja</column>
-        <column name="value">サイト名未設定(舛川)</column>
+        <column name="value">サイト名未設定</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -2726,6 +3074,78 @@ We recommend that you change your password after login.</column>
     </table>
     <table name="config_langs">
         <column name="id">4</column>
+        <column name="config_name">mailheader</column>
+        <column name="lang">ja</column>
+        <column name="value"></column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="config_langs">
+        <column name="id">5</column>
+        <column name="config_name">mailfooter</column>
+        <column name="lang">ja</column>
+        <column name="value"></column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="config_langs">
+        <column name="id">6</column>
+        <column name="config_name">meta_description</column>
+        <column name="lang">ja</column>
+        <column name="value">CMS,Netcommons</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="config_langs">
+        <column name="id">7</column>
+        <column name="config_name">meta_keywords</column>
+        <column name="lang">ja</column>
+        <column name="value">CMS,Netcommons</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="config_langs">
+        <column name="id">8</column>
+        <column name="config_name">meta_author</column>
+        <column name="lang">ja</column>
+        <column name="value">NetCommons</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="config_langs">
+        <column name="id">9</column>
+        <column name="config_name">meta_copyright</column>
+        <column name="lang">ja</column>
+        <column name="value">Copyright © 2013</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="config_langs">
+        <column name="id">10</column>
         <column name="config_name">autoregist_disclaimer</column>
         <column name="lang">ja</column>
         <column name="value">本規約は、当サイトにより提供されるコンテンツの利用条件を定めるものです。以下の利用条件をよくお読みになり、これに同意される場合にのみご登録いただきますようお願いいたします。
@@ -2754,7 +3174,7 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="config_langs">
-        <column name="id">5</column>
+        <column name="id">11</column>
         <column name="config_name">mail_approval_subject</column>
         <column name="lang">ja</column>
         <column name="value">[{X-SITE_NAME}]会員登録確認メール</column>
@@ -2766,7 +3186,7 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="config_langs">
-        <column name="id">6</column>
+        <column name="id">12</column>
         <column name="config_name">mail_approval_body</column>
         <column name="lang">ja</column>
         <column name="value">{X-SITE_NAME}におけるユーザー登録用メールアドレスとしてあなたのメールアドレスが使用されました。
@@ -2781,7 +3201,7 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="config_langs">
-        <column name="id">7</column>
+        <column name="id">13</column>
         <column name="config_name">mail_add_announce_subject</column>
         <column name="lang">ja</column>
         <column name="value">[{X-SITE_NAME}]承認待ち会員のお知らせ</column>
@@ -2793,8 +3213,8 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="config_langs">
-        <column name="id">8</column>
-        <column name="config_name">mail_add_announce_subject</column>
+        <column name="id">14</column>
+        <column name="config_name">mail_add_announce_body</column>
         <column name="lang">ja</column>
         <column name="value">{X-SITE_NAME}にて新規登録ユーザーがありました。
 
@@ -2807,7 +3227,7 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="config_langs">
-        <column name="id">9</column>
+        <column name="id">15</column>
         <column name="config_name">mail_add_user_subject</column>
         <column name="lang">ja</column>
         <column name="value">{X-SITE_NAME}へようこそ</column>
@@ -2819,8 +3239,8 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="config_langs">
-        <column name="id">10</column>
-        <column name="config_name">mail_add_user_subject</column>
+        <column name="id">16</column>
+        <column name="config_name">mail_add_user_body</column>
         <column name="lang">ja</column>
         <column name="value">会員登録が完了しましたのでお知らせします。
 ハンドル：{X-HANDLE}
@@ -2837,7 +3257,7 @@ e-mail：{X-EMAIL}
         <column name="modified_user_name"></column>
     </table>
     <table name="config_langs">
-        <column name="id">11</column>
+        <column name="id">17</column>
         <column name="config_name">mail_get_password_subject</column>
         <column name="lang">ja</column>
         <column name="value">[{X-SITE_NAME}]新規パスワードのリクエスト</column>
@@ -2849,8 +3269,8 @@ e-mail：{X-EMAIL}
         <column name="modified_user_name"></column>
     </table>
     <table name="config_langs">
-        <column name="id">12</column>
-        <column name="config_name">mail_get_password_subject</column>
+        <column name="id">18</column>
+        <column name="config_name">mail_get_password_body</column>
         <column name="lang">ja</column>
         <column name="value">{X-SITE_NAME}におけるログイン用パスワードの新規発行リクエストがありました。
 新たにパスワードを発行する場合は下記のリンクをクリックしてください。
@@ -2866,7 +3286,7 @@ e-mail：{X-EMAIL}
         <column name="modified_user_name"></column>
     </table>
     <table name="config_langs">
-        <column name="id">13</column>
+        <column name="id">19</column>
         <column name="config_name">mail_get_password_subject</column>
         <column name="lang">ja</column>
         <column name="value">[{X-SITE_NAME}]新規パスワードの発行</column>
@@ -2878,7 +3298,7 @@ e-mail：{X-EMAIL}
         <column name="modified_user_name"></column>
     </table>
     <table name="config_langs">
-        <column name="id">14</column>
+        <column name="id">20</column>
         <column name="config_name">mail_new_password_body</column>
         <column name="lang">ja</column>
         <column name="value">{X-SITE_NAME}におけるログイン用パスワードの新規発行リクエストがありました。
@@ -2892,7 +3312,7 @@ e-mail：{X-EMAIL}
         <column name="modified_user_name"></column>
     </table>
     <table name="config_langs">
-        <column name="id">15</column>
+        <column name="id">21</column>
         <column name="config_name">mail_withdraw_membership_subject</column>
         <column name="lang">ja</column>
         <column name="value">[{X-SITE_NAME}]会員退会のお知らせ</column>
@@ -2904,7 +3324,7 @@ e-mail：{X-EMAIL}
         <column name="modified_user_name"></column>
     </table>
     <table name="config_langs">
-        <column name="id">16</column>
+        <column name="id">22</column>
         <column name="config_name">mail_withdraw_membership_body</column>
         <column name="lang">ja</column>
         <column name="value">{X-SITE_NAME}の{X-HANDLE}が退会しました。</column>
@@ -2916,10 +3336,10 @@ e-mail：{X-EMAIL}
         <column name="modified_user_name"></column>
     </table>
     <table name="config_langs">
-        <column name="id">17</column>
-        <column name="config_name">mailheader</column>
+        <column name="id">23</column>
+        <column name="config_name">community_mail_participate_announce_subject</column>
         <column name="lang">ja</column>
-        <column name="value"></column>
+        <column name="value">[{X-SITE_NAME}]{X-ROOM}参加のお知らせ</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -2928,10 +3348,138 @@ e-mail：{X-EMAIL}
         <column name="modified_user_name"></column>
     </table>
     <table name="config_langs">
-        <column name="id">18</column>
-        <column name="config_name">mailfooter</column>
+        <column name="id">24</column>
+        <column name="config_name">community_mail_participate_announce_body</column>
         <column name="lang">ja</column>
-        <column name="value"></column>
+        <column name="value">{X-HANDLE}さんが{X-ROOM}に参加しました。</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="config_langs">
+        <column name="id">25</column>
+        <column name="config_name">community_mail_withdraw_subject</column>
+        <column name="lang">ja</column>
+        <column name="value">[{X-SITE_NAME}]{X-ROOM}退会のお知らせ</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="config_langs">
+        <column name="id">26</column>
+        <column name="config_name">community_mail_withdraw_body</column>
+        <column name="lang">ja</column>
+        <column name="value">{X-HANDLE}さんが{X-ROOM}を退会しました。</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="config_langs">
+        <column name="id">27</column>
+        <column name="config_name">community_mail_invite_subject</column>
+        <column name="lang">ja</column>
+        <column name="value">[{X-SITE_NAME}]{X-ROOM}への招待</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="config_langs">
+        <column name="id">28</column>
+        <column name="config_name">community_mail_invite_body</column>
+        <column name="lang">ja</column>
+        <column name="value">私たちが参加している{X-SITE_NAME}に「{X-ROOM}」というコミュニティを作りました。ぜひ参加してください。
+</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="config_langs">
+        <column name="id">29</column>
+        <column name="config_name">community_mail_wait_approval_subject</column>
+        <column name="lang">ja</column>
+        <column name="value">[{X-SITE_NAME}]承認待ちのお知らせ</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="config_langs">
+        <column name="id">30</column>
+        <column name="config_name">community_mail_wait_approval_body</column>
+        <column name="lang">ja</column>
+        <column name="value">{X-ROOM}への参加を申請しました。承認されるまでお待ちください。</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="config_langs">
+        <column name="id">31</column>
+        <column name="config_name">community_mail_confirm_approval_subject</column>
+        <column name="lang">ja</column>
+        <column name="value">[{X-SITE_NAME}]{X-ROOM}承認待ち会員のお知らせ</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="config_langs">
+        <column name="id">32</column>
+        <column name="config_name">community_mail_confirm_approval_body</column>
+        <column name="lang">ja</column>
+        <column name="value">{X-HANDLE}さんから{X-ROOM}への参加申請がありました。
+{X-HANDLE}さんの詳細はこちら
+{X-MYPORTAL_URL}
+
+参加を許可する場合は、下記のリンクをクリックして参加ユーザ宛てに承認メールを送信してください。
+{X-APPROVE_URL}</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="config_langs">
+        <column name="id">33</column>
+        <column name="config_name">community_mail_approved_subject</column>
+        <column name="lang">ja</column>
+        <column name="value">[{X-SITE_NAME}]{X-ROOM}参加承認完了通知</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="config_langs">
+        <column name="id">34</column>
+        <column name="config_name">community_mail_approved_body</column>
+        <column name="lang">ja</column>
+        <column name="value">{X-ROOM}参加の承認が完了しました。
+参加したコミュニティのURL:
+{X-COMMUNITY_URL}</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -5522,32 +6070,6 @@ e-mail：{X-EMAIL}
         <column name="modified_user_name"></column>
     </table>
     <table name="module_links">
-        <column name="id">32</column>
-        <column name="space_type">4</column>
-        <column name="authority_id">6</column>
-        <column name="room_id">0</column>
-        <column name="module_id">5</column>
-        <column name="created">2013-03-28 17:24:36</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">2013-03-28 17:24:36</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
-    </table>
-    <table name="module_links">
-        <column name="id">31</column>
-        <column name="space_type">3</column>
-        <column name="authority_id">6</column>
-        <column name="room_id">0</column>
-        <column name="module_id">5</column>
-        <column name="created">2013-07-09 00:49:32</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">2013-07-09 00:49:32</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="module_links">
         <column name="id">30</column>
         <column name="space_type">3</column>
         <column name="authority_id">5</column>
@@ -5611,19 +6133,6 @@ e-mail：{X-EMAIL}
         <column name="modified">2013-03-28 17:24:36</column>
         <column name="modified_user_id">0</column>
         <column name="modified_user_name"></column>
-    </table>
-    <table name="module_links">
-        <column name="id">25</column>
-        <column name="space_type">2</column>
-        <column name="authority_id">6</column>
-        <column name="room_id">0</column>
-        <column name="module_id">5</column>
-        <column name="created">2013-07-09 00:49:23</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">2013-07-09 00:49:23</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
     </table>
     <table name="module_links">
         <column name="id">24</column>
@@ -5717,19 +6226,6 @@ e-mail：{X-EMAIL}
         <column name="modified_user_name">admin</column>
     </table>
     <table name="module_links">
-        <column name="id">63</column>
-        <column name="space_type">3</column>
-        <column name="authority_id">6</column>
-        <column name="room_id">0</column>
-        <column name="module_id">1</column>
-        <column name="created">2013-07-09 00:49:32</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">2013-07-09 00:49:32</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="module_links">
         <column name="id">60</column>
         <column name="space_type">3</column>
         <column name="authority_id">5</column>
@@ -5791,19 +6287,6 @@ e-mail：{X-EMAIL}
         <column name="created_user_id">1</column>
         <column name="created_user_name">admin</column>
         <column name="modified">2013-05-30 09:54:48</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="module_links">
-        <column name="id">76</column>
-        <column name="space_type">2</column>
-        <column name="authority_id">6</column>
-        <column name="room_id">0</column>
-        <column name="module_id">1</column>
-        <column name="created">2013-07-09 00:49:23</column>
-        <column name="created_user_id">1</column>
-        <column name="created_user_name">admin</column>
-        <column name="modified">2013-07-09 00:49:23</column>
         <column name="modified_user_id">1</column>
         <column name="modified_user_name">admin</column>
     </table>
@@ -5899,19 +6382,6 @@ e-mail：{X-EMAIL}
         <column name="modified_user_name">admin</column>
     </table>
     <table name="module_links">
-        <column name="id">61</column>
-        <column name="space_type">3</column>
-        <column name="authority_id">6</column>
-        <column name="room_id">0</column>
-        <column name="module_id">7</column>
-        <column name="created">2013-07-09 00:49:32</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">2013-07-09 00:49:32</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="module_links">
         <column name="id">57</column>
         <column name="space_type">3</column>
         <column name="authority_id">2</column>
@@ -5977,84 +6447,6 @@ e-mail：{X-EMAIL}
         <column name="modified_user_name">admin</column>
     </table>
     <table name="module_links">
-        <column name="id">69</column>
-        <column name="space_type">2</column>
-        <column name="authority_id">7</column>
-        <column name="room_id">0</column>
-        <column name="module_id">1</column>
-        <column name="created">2013-07-08 11:12:05</column>
-        <column name="created_user_id">1</column>
-        <column name="created_user_name">admin</column>
-        <column name="modified">2013-07-08 11:12:05</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="module_links">
-        <column name="id">70</column>
-        <column name="space_type">2</column>
-        <column name="authority_id">7</column>
-        <column name="room_id">0</column>
-        <column name="module_id">5</column>
-        <column name="created">2013-07-08 11:12:05</column>
-        <column name="created_user_id">1</column>
-        <column name="created_user_name">admin</column>
-        <column name="modified">2013-07-08 11:12:05</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="module_links">
-        <column name="id">71</column>
-        <column name="space_type">2</column>
-        <column name="authority_id">7</column>
-        <column name="room_id">0</column>
-        <column name="module_id">7</column>
-        <column name="created">2013-07-08 11:12:05</column>
-        <column name="created_user_id">1</column>
-        <column name="created_user_name">admin</column>
-        <column name="modified">2013-07-08 11:12:05</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="module_links">
-        <column name="id">72</column>
-        <column name="space_type">3</column>
-        <column name="authority_id">7</column>
-        <column name="room_id">0</column>
-        <column name="module_id">1</column>
-        <column name="created">2013-07-08 11:12:05</column>
-        <column name="created_user_id">1</column>
-        <column name="created_user_name">admin</column>
-        <column name="modified">2013-07-08 11:12:05</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="module_links">
-        <column name="id">73</column>
-        <column name="space_type">3</column>
-        <column name="authority_id">7</column>
-        <column name="room_id">0</column>
-        <column name="module_id">5</column>
-        <column name="created">2013-07-08 11:12:05</column>
-        <column name="created_user_id">1</column>
-        <column name="created_user_name">admin</column>
-        <column name="modified">2013-07-08 11:12:05</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="module_links">
-        <column name="id">74</column>
-        <column name="space_type">3</column>
-        <column name="authority_id">7</column>
-        <column name="room_id">0</column>
-        <column name="module_id">7</column>
-        <column name="created">2013-07-08 11:12:05</column>
-        <column name="created_user_id">1</column>
-        <column name="created_user_name">admin</column>
-        <column name="modified">2013-07-08 11:12:05</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="module_links">
         <column name="id">51</column>
         <column name="space_type">2</column>
         <column name="authority_id">2</column>
@@ -6064,19 +6456,6 @@ e-mail：{X-EMAIL}
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
         <column name="modified">2013-07-09 00:48:45</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="module_links">
-        <column name="id">55</column>
-        <column name="space_type">2</column>
-        <column name="authority_id">6</column>
-        <column name="room_id">0</column>
-        <column name="module_id">7</column>
-        <column name="created">2013-07-09 00:49:23</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">2013-07-09 00:49:23</column>
         <column name="modified_user_id">1</column>
         <column name="modified_user_name">admin</column>
     </table>
@@ -6174,30 +6553,6 @@ e-mail：{X-EMAIL}
         <column name="created_user_id">1</column>
         <column name="created_user_name">admin</column>
         <column name="modified">2013-07-01 03:18:07</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="module_system_links">
-        <column name="id">9</column>
-        <column name="authority_id">6</column>
-        <column name="module_id">8</column>
-        <column name="hierarchy">200</column>
-        <column name="created">2013-07-09 00:49:32</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">2013-07-09 00:49:32</column>
-        <column name="modified_user_id">1</column>
-        <column name="modified_user_name">admin</column>
-    </table>
-    <table name="module_system_links">
-        <column name="id">13</column>
-        <column name="authority_id">7</column>
-        <column name="module_id">8</column>
-        <column name="hierarchy">200</column>
-        <column name="created">2013-07-08 11:12:05</column>
-        <column name="created_user_id">1</column>
-        <column name="created_user_name">admin</column>
-        <column name="modified">2013-07-08 11:12:05</column>
         <column name="modified_user_id">1</column>
         <column name="modified_user_name">admin</column>
     </table>
@@ -6547,7 +6902,7 @@ e-mail：{X-EMAIL}
         <column name="page_column_id">1</column>
         <column name="room_id">9</column>
         <column name="space_type">1</column>
-        <column name="show_count">102</column>
+        <column name="show_count">110</column>
         <column name="display_flag">1</column>
         <column name="display_from_date">NULL</column>
         <column name="display_to_date">NULL</column>
@@ -6558,7 +6913,7 @@ e-mail：{X-EMAIL}
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
-        <column name="modified">2013-07-09 00:50:49</column>
+        <column name="modified">2013-07-12 07:13:42</column>
         <column name="modified_user_id">1</column>
         <column name="modified_user_name">admin</column>
     </table>
@@ -7070,7 +7425,7 @@ Valley以降、一貫してテーマとしてきたのも、まさにそのこ�
     <table name="users">
         <column name="id">1</column>
         <column name="login_id">admin</column>
-        <column name="password"></column>
+        <column name="password">d195ac90cd6e8840ac50898e95e618c47d810cd3</column>
         <column name="handle">admin</column>
         <column name="authority_id">1</column>
         <column name="is_active">1</column>
@@ -7084,12 +7439,12 @@ Valley以降、一貫してテーマとしてきたのも、まさにそのこ�
         <column name="email"></column>
         <column name="mobile_email"></column>
         <column name="password_regist">NULL</column>
-        <column name="last_login">2013-07-08 10:16:12</column>
-        <column name="previous_login">2013-07-03 01:19:32</column>
-        <column name="created">NULL</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">2013-07-08 10:16:12</column>
+        <column name="last_login">2013-07-16 11:12:37</column>
+        <column name="previous_login">2013-07-16 11:05:40</column>
+        <column name="created">2013-07-09 09:06:09</column>
+        <column name="created_user_id">1</column>
+        <column name="created_user_name">admin</column>
+        <column name="modified">2013-07-16 11:12:37</column>
         <column name="modified_user_id">0</column>
         <column name="modified_user_name"></column>
     </table>
