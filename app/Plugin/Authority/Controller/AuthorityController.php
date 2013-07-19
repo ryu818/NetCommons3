@@ -137,6 +137,8 @@ class AuthorityController extends AuthorityAppController {
 				//echo $this->requestAction(array('action' => 'set_level', $authorityId), array('data' => $this->request->data, 'return'));
 				//$this->render(false);
 				return;
+			} else if(!isset($authority['Authority']['base_authority_id'])) {
+				$authority['Authority']['base_authority_id'] = $this->request->data['Authority']['base_authority_id'];
 			}
 		}
 		$this->set('authority', $authority);
