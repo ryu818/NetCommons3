@@ -47,46 +47,47 @@ class AppModel extends Model {
  */
 	public function save($data = null, $validate = true, $fieldList = array()) {
 		$fields = array();
-		if (isset($data[$this->alias])) {
-			$fields = array_keys($data[$this->alias]);
+		$this->set($data);
+		if (isset($this->data[$this->alias])) {
+			$fields = array_keys($this->data[$this->alias]);
 		} else {
 			$fields = array_keys($data);
-			$data[$this->alias] = $data;
+			$this->data[$this->alias] = $data;
 		}
 		$user = Configure::read(NC_SYSTEM_KEY.'.user');
 
 		$id = isset($user['id']) ? $user['id'] : _OFF;
 		$usename = isset($user['handle']) ? $user['handle'] : '';
 
-		if ($this->hasField('created_user_id') && empty($data[$this->alias][$this->primaryKey])
-			 && (!in_array('created_user_id', $fields) || !isset($data[$this->alias]['created_user_id']))) {
+		if ($this->hasField('created_user_id') && empty($this->data[$this->alias][$this->primaryKey])
+			 && (!in_array('created_user_id', $fields) || !isset($this->data[$this->alias]['created_user_id']))) {
 			if(count($fieldList) > 0)
 				$fieldList[] = 'created_user_id';
-			$data[$this->alias]['created_user_id'] = $id;
+			$this->data[$this->alias]['created_user_id'] = $id;
 		}
 		if ($this->hasField('modified_user_id')) {
 			if(count($fieldList) > 0)
 				$fieldList[] = 'modified_user_id';
-			$data[$this->alias]['modified_user_id'] = $id;
+			$this->data[$this->alias]['modified_user_id'] = $id;
 		}
 
-		if ($this->hasField('created_user_name') && empty($data[$this->alias][$this->primaryKey])
-			&&(!in_array('created_user_name', $fields) || !isset($data[$this->alias]['created_user_name']))) {
+		if ($this->hasField('created_user_name') && empty($this->data[$this->alias][$this->primaryKey])
+			&&(!in_array('created_user_name', $fields) || !isset($this->data[$this->alias]['created_user_name']))) {
 			if(count($fieldList) > 0)
 				$fieldList[] = 'created_user_name';
-			$data[$this->alias]['created_user_name'] = $usename;
+			$this->data[$this->alias]['created_user_name'] = $usename;
 		}
 		if ($this->hasField('modified_user_name')) {
 			if(count($fieldList) > 0)
 				$fieldList[] = 'modified_user_name';
-			$data[$this->alias]['modified_user_name'] = $usename;
+			$this->data[$this->alias]['modified_user_name'] = $usename;
 		}
 
 		/*if (isset($this->data) && isset($this->data[$this->name]))
 		 unset($this->data[$this->name]['modified']);
 		if (isset($data) && isset($data[$this->name]))
 			unset($data[$this->name]['modified']);*/
-		return parent::save($data, $validate, $fieldList);
+		return parent::save(null, $validate, $fieldList);
 	}
 
 /**
