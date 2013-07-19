@@ -122,11 +122,6 @@
 						data = {};
 					} else {
 						data = $el.serializeArray();
-						var dataHash = new Object();
-						$(data).each(function(){
-							dataHash[this['name']] = this['value'];
-						});
-						data = dataHash;
 					}
 					is_form = true;
 				} else {
@@ -160,11 +155,6 @@
 						// Postでデータが空でparentにFormタグがあれば、シリアライズしてセット
 						// Token等を含める
 						data = $form.serializeArray();
-						var dataHash = new Object();
-						$(data).each(function(){
-							dataHash[this['name']] = this['value'];
-						});
-						data = dataHash;
 					}
 				}
 			}
