@@ -37,7 +37,7 @@ if($item['ItemLang']['lang'] == '') {
 }
 $attribute = array();
 if(!empty($item['Item']['attribute'])) {
-	$attributeNames = array('class', 'cols', 'rows', 'style');
+	$attributeNames = array('class', 'cols', 'rows', 'style', 'size', 'div', 'maxlength');
 	$regexp = "\s*=\s*([\"'])?([^ \"']*)";
 	foreach($attributeNames as $attributeName) {
 		if(preg_match("/".$attributeName.$regexp."/i" , $item['Item']['attribute'], $matches)) {
