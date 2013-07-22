@@ -226,8 +226,7 @@ define('NC_AUTOREGIST_ADMIN', 2);					//管理者の承認が必要
 //-----------------ヘッダーメニュー表示-------------
 define('NC_HEADER_MENU_NONE', 0);					//ログイン前非表示
 define('NC_HEADER_MENU_MOUSEOVER' ,1);				//マウスオーバー時表示
-define('NC_HEADER_MENU_CLICK', 2);					//クリック時表示
-define('NC_HEADER_MENU_ALWAYS', 3);					//常に表示
+define('NC_HEADER_MENU_ALWAYS', 2);					//常に表示
 
 //-----------------システム管理者ID-------------------------------------------
 define('NC_SYSTEM_USER_ID',       1);

@@ -10,13 +10,39 @@
  */
 class Config extends AppModel
 {
-	/*public $hasMany = array(
-		'ConfigLang' => array(
-			'className'  => 'ConfigLang',
-			'conditions' => array('ConfigLang.lang'  => 'en'),
-			'order'      => 'Recipe.created DESC'
-		)
-	);*/
+/**
+ * Configリスト取得
+ * @param   string  $type  list or all
+ * @param   integer $moduleId
+ * @param   integer $catId
+ * @param   string  $lang
+ * @param   boolean $afterFindOptions
+ * @return  array
+ * @since   v 3.0.0.0
+ */
+	public function findList($type, $moduleId, $catId, $lang = null, $afterFindOptions = false) {
+		if(!isset($lang)) {
+			$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
+		}
+		$conditions = array(
+			$this->alias.'.module_id' => $moduleId,
+			$this->alias.'.cat_id' => $catId
+		);
+		if($type == 'list') {
+			$fields = array('Config.name', 'Config.value', 'ConfigLang.value');
+		} else {
+			$fields = array('Config.*', 'ConfigLang.value');
+		}
+		$results = $this->find('all', array(
+			'fields' => $fields,
+			'joins' => $this->getJoinsArray($lang, $moduleId),
+			'conditions' => $conditions,
+		));
+		if($afterFindOptions) {
+			$results = $this->afterFindOptions($results);
+		}
+		return $results;
+	}
 
 /**
  * afterFind
@@ -28,11 +54,6 @@ class Config extends AppModel
  */
 	public function afterFind($results, $primary = false) {
 		$ret = array();
-		//$single_flag = false;
-		//if(isset($results['Config'])) {
-		//	$single_flag = true;
-		//	$results = array($results);
-		//}
 		if(isset($results[0]['Config']) && count($results[0]['Config']) == 2 &&
 			 isset($results[0]['Config']['name']) && isset($results[0]['Config']['value'])) {
 			// key = value
@@ -66,11 +87,82 @@ class Config extends AppModel
 				$ret[$result['Config']['name']] = $result['Config'];
 			}
 		}
-		//if($single_flag) {
-			//$buf_ret = array($ret);
-			//return $buf_ret;
-		//}
 		return $ret;
+	}
+
+/**
+ * afterFindAttributeOptions
+ * Config.attribute, Config.options用AfterFind
+ *
+ * @param  array   $results
+ * @return array $results
+ * @since   v 3.0.0.0
+ */
+	public function afterFindOptions($results) {
+		foreach($results as $key => $result) {
+			if(isset($result['options']) && isset($result['domain'])) {
+				$domain = ($result['name'] == 'default_TZ') ? 'user_items' : $result['domain'];
+				$results[$key]['options'] = $this->convertOptions($result['options'], $domain);
+			}
+			if(isset($result['attribute'])) {
+				$results[$key]['attribute'] = $this->convertAttribute($result['attribute']);
+			}
+		}
+		return $results;
+	}
+
+/**
+ * options配列変換処理
+ *
+ * @param  string $attribute
+ * @param  string $domain
+ * @return array
+ * @since   v 3.0.0.0
+ */
+	public function convertOptions($options, $domain = '') {
+		$retOptions = array();
+		if(!empty($options)) {
+			$bufOptions = unserialize($options);
+			foreach($bufOptions as $key => $value) {
+				if(defined($key)) {
+					$key = constant($key);
+				} else if($key != $value) {
+					if(!isset($domain) || $domain == '') {
+						$key = __($key);
+					} else {
+						$key = __d($domain, $key);
+					}
+				}
+				if(!isset($domain) || $domain == '') {
+					$value = __($value);
+				} else {
+					$value = __d($domain, $value);
+				}
+				$retOptions[$key] = $value;
+			}
+		}
+		return $retOptions;
+	}
+
+/**
+ * attribute配列変換処理
+ *
+ * @param  string $attribute
+ * @return array
+ * @since   v 3.0.0.0
+ */
+	public function convertAttribute($attribute) {
+		$retAttribute = array();
+		if(!empty($attribute)) {
+			$attributeNames = array('class', 'cols', 'rows', 'style', 'size', 'div', 'maxlength');
+			$regexp = "\s*=\s*([\"'])?([^ \"']*)";
+			foreach($attributeNames as $attributeName) {
+				if(preg_match("/".$attributeName.$regexp."/i" , $attribute, $matches)) {
+					$retAttribute[$attributeName] = $matches[2];
+				}
+			}
+		}
+		return $retAttribute;
 	}
 
 /**
@@ -102,10 +194,11 @@ class Config extends AppModel
 /**
  * Configモデル共通JOIN文
  * @param   string  $lang
+ * @param   integer $moduleId
  * @return  array   $joins
  * @since   v 3.0.0.0
  */
-	public function getJoinsArray($lang) {
+	public function getJoinsArray($lang, $moduleId = 0) {
 		return array(
 			array(
 				"type" => "LEFT",
@@ -113,7 +206,8 @@ class Config extends AppModel
 				"alias" => "ConfigLang",
 				"conditions" => array(
 					"`ConfigLang`.`config_name`=`Config`.`name`",
-					"`ConfigLang`.`lang`" => $lang
+					"`ConfigLang`.`module_id`" => $moduleId,
+					"`ConfigLang`.`lang`" => $lang,
 				)
 			),
 		);

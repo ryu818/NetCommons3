@@ -16,6 +16,89 @@
 class Module extends AppModel
 {
 /**
+ * バリデート処理
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function __construct() {
+		parent::__construct();
+
+		/*
+		 * エラーメッセージ設定
+		*/
+		$this->validate = array(
+			// dir_name
+			// version
+
+			'system_flag' => array(
+				'boolean'  => array(
+					'rule' => array('boolean'),
+					'allowEmpty' => true,
+					'message' => __('The input must be a boolean.')
+				)
+			),
+			'disposition_flag' => array(
+				'boolean'  => array(
+					'rule' => array('boolean'),
+					'allowEmpty' => true,
+					'message' => __('The input must be a boolean.')
+				)
+			),
+			// controller_action
+			// edit_controller_action
+			// style_controller_action
+
+
+			'display_sequence' => array(
+				'numeric' => array(
+					'rule' => array('numeric'),
+					'allowEmpty' => true,
+					'message' => __('The input must be a number.')
+				)
+			),
+			// module_icon
+			// temp_name
+			// content_has_one
+			//
+
+			'copy_operation' => array(
+				'inList' => array(
+					'rule' => array('inList', array(
+						'enable',		// 使用可能だがデフォルト使用不可(システム管理より変更可)
+						'enabled',		// 使用可能
+						'disabled',		// 使用不可
+					), false),
+					'allowEmpty' => false,
+					'message' => __('It contains an invalid string.')
+				)
+			),
+			'shortcut_operation' => array(
+				'inList' => array(
+					'rule' => array('inList', array(
+						'enable',		// 使用可能だがデフォルト使用不可(システム管理より変更可)
+						'enabled',		// 使用可能
+						'disabled',		// 使用不可
+					), false),
+					'allowEmpty' => false,
+					'message' => __('It contains an invalid string.')
+				)
+			),
+			'move_operation' => array(
+				'inList' => array(
+					'rule' => array('inList', array(
+						'enable',		// 使用可能だがデフォルト使用不可(システム管理より変更可)
+						'enabled',		// 使用可能
+						'disabled',		// 使用不可
+					), false),
+					'allowEmpty' => false,
+					'message' => __('It contains an invalid string.')
+				)
+			),
+		);
+	}
+
+/**
  * Moduleの値取得
  * @param  string  $dir_name
  * @return array $module

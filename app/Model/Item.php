@@ -45,7 +45,7 @@ class Item extends AppModel
 				)
 			),
 			'tag_name' => array(
-				'numeric' => array(
+				'inList' => array(
 					'rule' => array('inList', array(
 						'login_id',
 						'password',
@@ -105,7 +105,7 @@ class Item extends AppModel
 					'message' => __('The input must be a number.')
 				)
 			),
-			'regexp' => array(
+			'maxLength' => array(
 				'maxlength'  => array(
 					'rule' => array('maxLength', NC_VALIDATOR_VARCHAR_LEN),
 					'message' => __('The input must be up to %s characters.', NC_VALIDATOR_VARCHAR_LEN)
@@ -182,6 +182,26 @@ class Item extends AppModel
 					'message' => __('The input must be a boolean.')
 				)
 			),
+			// 自動登録時の入力項目
+			'autoregist_use' => array(
+				'inList' => array(
+					'rule' => array('inList', array(
+						'required',		// 必須
+						'optional',		// 任意
+						'hide',			// 非表示
+						'disabled',		// 使用不可
+					), false),
+					'allowEmpty' => false,
+					'message' => __('It contains an invalid string.')
+				)
+			),
+			// 自動登録時の入力項目のメール送信有無
+			'autoregist_sendmail' => array(
+				'boolean'  => array(
+					'rule' => array('boolean'),
+					'message' => __('The input must be a boolean.')
+				)
+			),
 		);
 	}
 
@@ -212,6 +232,9 @@ class Item extends AppModel
 				'attribute' => '',
 				'default_selected' => '',
 				'display_title' => _ON,
+				'is_lang' => _OFF,
+				'autoregist_use' => 'hide',
+				'autoregist_sendmail' => _ON,
 			),
 			'ItemLang' => array(
 				'name' => '',

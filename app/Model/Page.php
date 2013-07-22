@@ -645,7 +645,7 @@ class Page extends AppModel
 	}
 
 /**
- * 閲覧可能のルームリストを取得
+ * 閲覧可能のルームリストを取得(セレクトボックス用)
  *
  * @param   integer|string 'all'  $userId
  * @param   integer  $spaceType nullならば、すべてのルームが対象
@@ -877,6 +877,7 @@ class Page extends AppModel
 		}
 		$fields = array();
 		$order = array();
+		$offset = (isset($addParams['offset'])) ? $addParams['offset'] : null;
 		$page = (isset($addParams['page'])) ? $addParams['page'] : null;
 		$limit = (isset($addParams['limit'])) ? $addParams['limit'] : null;
 		if($type != 'count') {
@@ -909,6 +910,7 @@ class Page extends AppModel
 			'joins' => $joins,
 			'order' => $order,
 			'page' => $page,
+			'offset' => $offset,
 			'limit' => $limit,
 		);
 

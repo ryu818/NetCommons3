@@ -87,20 +87,7 @@ class SetConfigComponent extends Component {
 		// ******************************************************************************************
 		// Config
 		// ******************************************************************************************
-		$conditions = array(
-			'module_id' => 0,
-			'cat_id' => array(NC_SYSTEM_CATID, NC_LOGIN_CATID, NC_SERVER_CATID, NC_STYLE_CATID, NC_DEVELOPMENT_CATID)
-		);
-		$params = array(
-			'fields' => array(
-								'Config.name',
-								'Config.value',
-								'ConfigLang.value'
-			),
-			'conditions' => $conditions,
-			'joins' => $controller->Config->getJoinsArray($lang),
-		);
-		$configs = $controller->Config->find('all', $params);
+		$configs = $controller->Config->findList('list', 0, array(NC_SYSTEM_CATID, NC_LOGIN_CATID, NC_SERVER_CATID, NC_STYLE_CATID, NC_DEVELOPMENT_CATID), $lang);
 		$configs['language'] = $lang;
 
 		// ******************************************************************************************

@@ -214,7 +214,8 @@ class AppSchema extends CakeSchema {
 
 	public $config_langs = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
-		'config_name' => array('type' => 'string', 'null' => false, 'default' => null, 'key' => 'index', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'module_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'key' => 'index'),
+		'config_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 64, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'lang' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 10, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'value' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
@@ -225,7 +226,7 @@ class AppSchema extends CakeSchema {
 		'modified_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'indexes' => array(
 			'PRIMARY' => array('column' => 'id', 'unique' => 1),
-			'config_name' => array('column' => array('config_name', 'lang'), 'unique' => 0)
+			'module_id' => array('column' => array('module_id', 'config_name', 'lang'), 'unique' => 1)
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
@@ -236,11 +237,13 @@ class AppSchema extends CakeSchema {
 		'cat_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 64, 'key' => 'index', 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'type' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 20, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'title' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 64, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'title' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'value' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'description' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'options' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'domain' => array('type' => 'string', 'null' => false, 'default' => 'system', 'length' => 64, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'attribute' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'display_sequence' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'required' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'minlength' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'maxlength' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'regexp' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
@@ -382,6 +385,8 @@ class AppSchema extends CakeSchema {
 		'default_selected' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'display_title' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
 		'is_lang' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
+		'autoregist_use' => array('type' => 'string', 'null' => false, 'default' => 'hide', 'length' => 16, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'autoregist_sendmail' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'created_user_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'created_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
@@ -455,6 +460,9 @@ class AppSchema extends CakeSchema {
 		'module_icon' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 100, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'temp_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 100, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'content_has_one' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3),
+		'copy_operation' => array('type' => 'string', 'null' => false, 'default' => 'disabled', 'length' => 16, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'shortcut_operation' => array('type' => 'string', 'null' => false, 'default' => 'disabled', 'length' => 16, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'move_operation' => array('type' => 'string', 'null' => false, 'default' => 'disabled', 'length' => 16, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'created_user_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'created_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),

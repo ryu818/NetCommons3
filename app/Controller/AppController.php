@@ -102,7 +102,7 @@ class AppController extends Controller {
 		}
 
 		$conditions = array(
-			'name' => array('session_timeout', 'session_name', 'autoRegenerate', 'language'),
+			'name' => array('session_timeout', 'session_name', 'session_auto_regenerate', 'language'),
 			'module_id' => 0
 		);
 		$params = array(
@@ -118,7 +118,7 @@ class AppController extends Controller {
 		Configure::write(NC_CONFIG_KEY.'.'.'config_language', $configs['language']);
 		Configure::write('Session.cookieTimeout', 0);
 		Configure::write('Session.timeout', intval($configs['session_timeout']));
-		if(intval($configs['autoRegenerate']) == _ON) {
+		if(intval($configs['session_auto_regenerate']) == _ON) {
 			// 10(CakeSession::$requestCountdown)回でSessionを再作成。
 			Configure::write('Session.autoRegenerate', true);
 		}
