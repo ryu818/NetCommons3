@@ -46,6 +46,9 @@ class UserController extends UserAppController {
 			// back
 			$this->Security->validatePost = false;
 		} else if($this->action == "index" || $this->action == "display_setting" || $this->action == "select_group" || $this->action == "select_auth") {
+			if($this->action == "select_auth" && empty($this->request->data['submit'])) {
+				$this->Security->csrfCheck = false;
+			}
 			$this->Security->validatePost = false;
 			if(isset($this->request->data['isSearch']) && $this->request->data['isSearch']) {
 				$this->Security->csrfUseOnce = false;
