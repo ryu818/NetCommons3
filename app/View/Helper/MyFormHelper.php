@@ -326,7 +326,7 @@ class MyFormHelper extends FormHelper {
 		if($rooms === false || count($rooms) == 0) {
 			return '';
 		}
-		$attributes = array_merge( array('escape' => false, 'class' => 'select_rooms'), $attributes);
+		$attributes = array_merge( array('escape' => false, 'empty' => false, 'class' => 'select_rooms'), $attributes);
 		foreach($rooms as $key => $room) {
 			if(is_array($room)) {
 				$optionNameSpace = '';
