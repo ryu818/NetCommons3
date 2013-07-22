@@ -47,10 +47,10 @@ class WhatsnewSchema extends CakeSchema {
 		'myroom_flag' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'select_myportal_users' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
-		'created_user_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'created_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
 		'created_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => null),
-		'modified_user_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'modified_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
 		'modified_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'indexes' => array(
 			'PRIMARY' => array('column' => 'id', 'unique' => 1)
