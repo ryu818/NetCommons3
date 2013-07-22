@@ -703,8 +703,8 @@ class User extends AppModel
 					),
 					array("type" => $type,
 						"table" => "authorities",
-						"alias" => "Authority",
-						"conditions" => "`Authority`.`id`=`PageUserLink`.`authority_id`"
+						"alias" => "PageAuthority",
+						"conditions" => "`PageAuthority`.`id`=`PageUserLink`.`authority_id`"
 					),
 				),
 				'conditions' => $conditions,
