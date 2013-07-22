@@ -497,6 +497,7 @@ ul.nc-paginator li {
     border: 1px solid #ccc;
     color: #ccc;
     float: left;
+    clear:none !important;
 }
 
 ul.nc-paginator li,ul.nc-paginator a {
