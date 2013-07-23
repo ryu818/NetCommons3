@@ -463,7 +463,7 @@ class User extends AppModel
 		if(!is_null($participantType) && $page['Page']['thread_num'] > 1) {
 		//if($page['Page']['id'] != $page['Page']['room_id'] && $page['Page']['thread_num'] > 1) {
 			// 親ルームが存在するならば、親ルームの参加者のみ表示
-			////$fields[] = 'PageUserLinkParent.authority_id';
+			$fields[] = 'PageUserLinkParent.authority_id';
 			$fields[] = 'AuthorityParent.id';
 			$fields[] = 'AuthorityParent.hierarchy';
 
@@ -544,7 +544,7 @@ class User extends AppModel
 		foreach($users as $key => $user) {
 			$user['Page'] = $page['Page'];
 			$ret = $this->getDefaultAuthority($user);
-			if(!isset($users[$key]['PageUserLink']['authority_id'])) {
+			if(!isset($users[$key]['PageUserLinkParent']['authority_id']) && !isset($users[$key]['PageUserLink']['authority_id'])) {
 				$users[$key]['PageAuthority']['id'] = $ret['id'];
 				$users[$key]['PageAuthority']['hierarchy'] = $ret['hierarchy'];
 			}
