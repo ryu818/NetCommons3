@@ -58,6 +58,23 @@
 			var dialog, default_options, dialogTarget;
 			var target_pjax, confirm, confirm_again, is_pjax;
 			var $el = $(el), buf_options = options;
+			var matchArray = function(dataHash, name, value, ret) {
+				ret = (ret == undefined) ? 0 : ret;
+				if(name.match(/\[\]$/)) {
+					return matchArray(dataHash, name.replace(/\[\]$/, ''), value, ret+1);
+				} else {
+					if(ret > 0) {
+						// 一次元配列のみ
+						if(dataHash[name].length == 0) {
+							dataHash[name] = new Array();
+						}
+						dataHash[name][dataHash[name].length] = value;
+					} else {
+						dataHash[name] = value;
+					}
+				}
+				return dataHash;
+			};
 			if(params != undefined && params != null) {
 				target_pjax =  params['data-pjax'];
 				confirm = (typeof _confirm == "undefined") ? params['data-ajax-confirm'] : _confirm;
@@ -122,6 +139,11 @@
 						data = {};
 					} else {
 						data = $el.serializeArray();
+						var dataHash = new Object();
+						$(data).each(function(){
+							dataHash = matchArray(dataHash, this['name'], this['value']);
+						});
+						data = dataHash;
 					}
 					is_form = true;
 				} else {
@@ -155,6 +177,11 @@
 						// Postでデータが空でparentにFormタグがあれば、シリアライズしてセット
 						// Token等を含める
 						data = $form.serializeArray();
+						var dataHash = new Object();
+						$(data).each(function(){
+							dataHash = matchArray(dataHash, this['name'], this['value']);
+						});
+						data = dataHash;
 					}
 				}
 			}
