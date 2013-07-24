@@ -32,3 +32,10 @@
 	text-align:right;
 	width:50px;
 }
+
+li.system-autoregist-use-items dt {
+	width:140px !important;
+}
+li.system-autoregist-use-items dd {
+	width:210px !important;
+}

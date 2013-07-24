@@ -21,6 +21,7 @@
 			echo $this->element('item', array('item' => $configs['copy_operation_modules']));
 			echo $this->element('item', array('item' => $configs['shortcut_operation_modules']));
 			echo $this->element('item', array('item' => $configs['move_operation_modules']));
+			echo '<li>'.$this->Form->error('ConfigRegist.modules_operation').'</li>';
 		?>
 	</ul>
 </fieldset>

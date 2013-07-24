@@ -18,7 +18,7 @@ class SystemController extends SystemAppController {
  *
  * @var array
  */
-	public $uses = array('ConfigLang', 'System.ConfigRegist');
+	public $uses = array('ConfigLang', 'System.ConfigRegist', 'Item');
 
 /**
  * Component name
@@ -177,7 +177,36 @@ class SystemController extends SystemAppController {
  * @since   v 3.0.0.0
  */
 	public function module() {
-		$this->_actionCommon(NC_MODULE_CATID);
+		$isError = false;
+		if($this->request->is('post') && isset($this->request->data['Module'])) {
+			$operationModules = $this->request->data['Module'];
+			foreach ($operationModules as $moduleId => $checkMap) {
+				$data = array('id' => $moduleId);
+				foreach ($checkMap as $key => $check) {
+					$key = str_replace('_modules', '', $key);
+					$data[$key] = ($check == _ON) ? 'enabled' : 'enable';
+				}
+				if(!$this->Module->save($data)) {
+					$isError = true;
+				}
+			}
+		}
+
+		if ($isError) {
+			$this->ConfigRegist->invalidate('modules_operation', __('Failed to update the database, (%s).', 'Module'));
+		}
+
+		$this->_actionCommon(NC_MODULE_CATID, !$isError);
+
+		$params = array(
+			'conditions' => array(
+				'Module.system_flag' => _OFF,
+				'Module.disposition_flag' => _ON
+			),
+			'order' => array('Module.display_sequence' => 'ASC')
+		);
+
+		$this->set('modules_operation', $this->Module->find('all', $params));
 	}
 
 /**
@@ -197,7 +226,27 @@ class SystemController extends SystemAppController {
  * @since   v 3.0.0.0
  */
 	public function autoregist() {
-		$this->_actionCommon(NC_MEMBERSHIP_CATID);
+
+		$isError = false;
+		if($this->request->is('post') && isset($this->request->data['Item'])) {
+			$dataItems = $this->request->data['Item'];
+			foreach ($dataItems as $itemId => $dataItem) {
+				$dataItem['id'] = $itemId;
+				if(!$this->Item->save($dataItem)) {
+					$isError = true;
+				}
+			}
+		}
+
+		if ($isError) {
+			$this->ConfigRegist->invalidate('autoregist_use_items', __('Failed to update the database, (%s).', 'Item'));
+		}
+		$this->_actionCommon(NC_MEMBERSHIP_CATID, !$isError);
+
+		$this->set('autoregist_author', $this->Authority->findSelectList());
+		$conditions = array('autoregist_use != ' => 'disabled');
+		$this->set('autoregist_use_items', $this->Item->findList('all', $conditions));
+
 	}
 
 /**
@@ -227,7 +276,7 @@ class SystemController extends SystemAppController {
  * @return  void
  * @since   v 3.0.0.0
  */
-	protected function _actionCommon($catId) {
+	protected function _actionCommon($catId, $doSave=true) {
 		$requestConfigs = isset($this->request->data['ConfigRegist']) ? $this->request->data['ConfigRegist'] : array();
 		$id = $this->id.'-'.$this->action;
 
@@ -236,7 +285,7 @@ class SystemController extends SystemAppController {
 
 		$configs = $this->Config->findList('all', 0, $catId, null, true);
 		$this->ConfigRegist->convertConfig($id, $configs, $requestConfigs);
-		if($this->request->is('post')) {
+		if($this->request->is('post') && $doSave) {
 			// 登録処理
 			if($this->ConfigRegist->save($configs, $requestConfigs)) {
 				$this->Session->setFlash(__('Has been successfully registered.'));

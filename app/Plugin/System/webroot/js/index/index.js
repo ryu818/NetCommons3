@@ -66,6 +66,25 @@
 			} else {
 				$('#' + id).show();
 			}
+		},
+/**
+ * 自動登録時の入力項目－非表示項目の表示切替
+ * @param   element el
+ * @param   boolean  displayAll
+ * @return  void
+ */
+		toggleAutoregistUseItems: function(el, displayAll) {
+			if (displayAll) {
+				$(el).hide();
+				$(el).next().show();
+			} else {
+				$(el).hide();
+				$(el).prev().show();
+			}
+			var hideEl = $(el).parents('dd').find('.system-autoregist-item-hide');
+			$.each(hideEl, function() {
+				$(this).toggleClass('none');
+			});
 		}
 	}
 })(jQuery);

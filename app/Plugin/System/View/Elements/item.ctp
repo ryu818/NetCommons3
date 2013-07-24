@@ -84,9 +84,78 @@
 					echo $this->Form->selectRooms($name, $pages, $attributes);
 					echo '<div id="communities'.$id.'"'.$display.' class="system-communities">'.$this->element('community_list').'</div>';
 				} else if($item['type'] == 'modules_operation') {
-					// TODO:未作成
+					echo '<div>';
+					foreach ($modules_operation as $module) {
+						$checked = false;
+						$disabled = false;
+						$key = str_replace('_modules', '', $item['name']);
+						if ($module['Module'][$key] == 'enabled') {
+							$checked = true;
+						} elseif ($module['Module'][$key] == 'disabled') {
+							$disabled = true;
+						}
+						$settings = array(
+							'id' => $item['liId'].$module['Module']['id'],
+							'type' => 'checkbox',
+							'value' => _ON,
+							'checked' => $checked,
+							'label' => $module['Module']['module_name'],
+							'div' => false,
+							'disabled' => $disabled
+						);
+						echo $this->Form->input('Module.'.$module['Module']['id'].'.'.$item['name'], $settings);
+					}
+					echo '</div>';
 				} else if($item['type'] == 'autoregist_use_items') {
-					// TODO:未作成
+					echo '<div class="align-right">'
+							.'<a href="#" class="link" onclick="$.System.toggleAutoregistUseItems(this, true);return false;">'.__d('system', 'Display all the items').'</a>'
+							.'<a href="#" class="link" onclick="$.System.toggleAutoregistUseItems(this, false);return false;" style="display:none;">'.__d('system', 'Display only the selected items').'</a>'
+						.'</div>';
+
+					$autoregist_use_items_options = array(
+						'optional' => __d('system', 'Voluntary'),
+						'required' => __d('system', 'Required'),
+						'hide' => __d('system', 'Not show')
+					);
+					$autoregist_sendmail_options = array(
+						_ON => __d('system', 'Output it to email.'),
+						_OFF => __d('system', 'Do not output it to email.')
+					);
+					echo '<ul>';
+					foreach ($autoregist_use_items as $useItem) {
+						$autoregist_use_settings = array(
+							'type' => 'select',
+							'value' => $useItem['Item']['autoregist_use'],
+							'options' => $autoregist_use_items_options,
+							'label' => false,
+							'div' => false
+						);
+						if ($useItem['Item']['tag_name'] == 'login_id'
+							|| $useItem['Item']['tag_name'] == 'password'
+							|| $useItem['Item']['tag_name'] == 'handle') {
+							$autoregist_use_settings['disabled'] = true;
+						}
+						$autoregist_sendmail_settings = array(
+							'type' => 'select',
+							'value' => ($useItem['Item']['autoregist_sendmail'] == _ON) ? _ON : _OFF,
+							'options' => $autoregist_sendmail_options,
+							'label' => false,
+							'div' => false
+						);
+						$hideClass = '';
+						if ($useItem['Item']['autoregist_use'] == 'hide') {
+							$hideClass .= ' system-autoregist-item-hide none';
+						}
+						echo '<li class="system-autoregist-use-items'.$hideClass.'"><dl>'
+								.'<dt><span>'.__d('user_items', $useItem['ItemLang']['name']).'</span></dt>'
+								.'<dd>'
+									.'<span>'.$this->Form->input('Item.'.$useItem['Item']['id'].'.autoregist_use', $autoregist_use_settings).'</span>'
+									.'<span>'.$this->Form->input('Item.'.$useItem['Item']['id'].'.autoregist_sendmail', $autoregist_sendmail_settings).'</span>'
+								.'</dd>'
+							.'</dl></li>';
+					}
+					echo '</ul>';
+					echo $this->Form->error('ConfigRegist.autoregist_use_items');
 				} else {
 					$settings = array_merge($settings, $item['attribute']);
 					echo $this->Form->input($name, $settings);

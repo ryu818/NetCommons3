@@ -18,8 +18,10 @@
 			echo $this->element('item', array('item' => $configs['autoregist_use']));
 			echo $this->element('item', array('item' => $configs['autoregist_approver']));
 			echo $this->element('item', array('item' => $configs['autoregist_use_input_key']));
-			// TODO:未作成:autoregist_author
-			// echo $this->element('item', array('item' => $configs['autoregist_author']));
+			foreach($autoregist_author as $key => $value) {
+				$options[$key] = __($value);
+			}
+			echo $this->element('item', array('item' => $configs['autoregist_author'], 'options' => $options));
 			echo $this->element('item', array('item' => $configs['autoregist_use_items']));
 			echo $this->element('item', array('item' => $configs['autoregist_disclaimer']));
 			echo $this->element('item', array('item' => $configs['mail_approval_subject']));
