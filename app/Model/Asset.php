@@ -97,7 +97,7 @@ class Asset extends AppModel
 		$create_arr = array();
 		$options_arr = array();
 
-		if(extension_loaded('zlib') && !empty($_SERVER['HTTP_ACCEPT_ENCODING']) && preg_match('/gzip/i', $_SERVER['HTTP_ACCEPT_ENCODING'])) {
+		if(NC_ASSET_GZIP && extension_loaded('zlib') && !empty($_SERVER['HTTP_ACCEPT_ENCODING']) && preg_match('/gzip/i', $_SERVER['HTTP_ACCEPT_ENCODING'])) {
 			$postfix = '.gz';
 		} else {
 			$postfix = '';
