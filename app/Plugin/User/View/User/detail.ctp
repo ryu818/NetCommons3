@@ -54,13 +54,13 @@
 			$editTitle = __d('user', 'Edit member info[%s]', $user['User']['handle']);
 			$adminStr .= $this->Html->link(__('Edit'), $editLink.'/'.$user['User']['id'], array(
 				'title' => $editTitle,
-				'onclick' =>'$.User.memberEdit(this); return false;',
+				'onclick' =>'$.User.memberEdit(event,this); return false;',
 				'data-user-id' => $user['User']['id'],
 			));
 			$adminStr .= "&nbsp;|&nbsp;".$this->Html->link(__d('user', 'Select Groups to join'), $groupLink.'/'.$user['User']['id'], array(
 				'title' => __d('user', 'Select Groups to join'),
 				'data-tab-title' => $editTitle,
-				'onclick' =>'$.User.memberEdit(this); return false;',
+				'onclick' =>'$.User.memberEdit(event,this); return false;',
 				'data-user-id' => $user['User']['id'],
 			));
 			if($user['Authority']['hierarchy'] <= $loginUser['hierarchy'] && $user['User']['id'] != NC_SYSTEM_USER_ID) {

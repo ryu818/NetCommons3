@@ -266,11 +266,12 @@
 			$.User.displaySettingInit(false);
 		},
 		// 会員編集
-		memberEdit : function(a) {
+		memberEdit : function(e, a) {
 			var ul = $('#user-init-tab-ul');
 			var tabs = ul.parent(), active;
 			var userId = $(a).attr('data-user-id'),count = 0,active_li, w,title;
 
+			$.Event(e).preventDefault();
 			if($.User.editIds[userId]) {
 				// 既に表示中
 				ul.children().each(function(){
@@ -287,7 +288,6 @@
 				$.User.editIds[userId] = active_li.get(0);
 
 				tabs.tabs( "option", "active", 1 );
-
 			}
 		},
 		memberQuit : function(userId, a, active) {
