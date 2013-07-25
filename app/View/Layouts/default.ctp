@@ -25,7 +25,11 @@
 </head>
 <body>
 	<?php echo $this->fetch('content'); ?>
-	<?php echo($this->element('Pages/include_footer')); ?>
+	<?php
+	if(!$this->request->query('_iframe_upload')) {
+		echo($this->element('Pages/include_footer'));
+	}
+	?>
 	<?php echo $this->element('flash_mes'); ?>
 	<?php echo $this->element('sql_dump'); ?>
 </body>

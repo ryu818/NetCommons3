@@ -56,6 +56,9 @@
                         options.url = options.url + addParamChar + '_method=PATCH';
                         options.type = 'POST';
                     }
+// Add Start Ryuji.M iframeでsubmitの場合、パラメータを追加し、このパラメータならばajaxでの処理と同等に扱う。
+                     options.url = options.url + '&_iframe_upload=1';
+// Add End
                     // javascript:false as initial iframe src
                     // prevents warning popups on HTTPS in IE6.
                     // IE versions below IE8 cannot set the name property of
@@ -86,6 +89,12 @@
                                 } catch (e) {
                                     response = undefined;
                                 }
+
+// Add start Ryuji.M デバッグ情報を下部に表示するように修正。
+								if(response[0]) {	// $._debug != 0 &&
+									response[0].body.innerHTML = $.ncShowLog(response[0].body.innerHTML);
+								}
+// Add End Ryuji.M
                                 // The complete callback returns the
                                 // iframe content document as response object:
                                 completeCallback(
@@ -188,7 +197,10 @@
                 return iframe && $.parseJSON($(iframe[0].body).text());
             },
             'iframe html': function (iframe) {
-                return iframe && $(iframe[0].body).html();
+// Add start Ryuji.M trimしないと、$関数でエラーとなるため
+                return iframe && $.trim($(iframe[0].body).html());
+                // return iframe && $(iframe[0].body).html();
+// End end Ryuji.M
             },
             'iframe xml': function (iframe) {
                 var xmlDoc = iframe && iframe[0];

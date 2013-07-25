@@ -144,7 +144,8 @@ class AppController extends Controller {
 			$this->layout = 'ajax';
 		}
 
-		if ($this->request->is('ajax')) {
+		if ($this->request->is('ajax') || $this->request->query('_iframe_upload')) {
+			// iframeでsubmitの場合、パラメータを追加し、このパラメータならばajaxでの処理と同等に扱う。
 			$pluginName = isset($this->request->params['plugin']) ? $this->request->params['plugin'] :
 			(isset($this->request->params['active_plugin']) ? $this->request->params['active_plugin'] : '');
 			if($pluginName != '') {

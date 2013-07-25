@@ -31,6 +31,10 @@ if(Configure::read('debug') == _OFF) {
 }
 ?>
 <?php echo $this->element('sql_dump'); ?>
-<?php echo($this->element('Pages/include_footer')); ?>
+<?php
+if(!$this->request->query('_iframe_upload')) {
+	echo($this->element('Pages/include_footer'));
+}
+?>
 </body>
 </html>
