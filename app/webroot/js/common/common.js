@@ -12,6 +12,7 @@
 		zIndex : 2000,
 		blockZIndex : 1000,
 		regEvents : {},
+		tempSetting : {},
 
 		pjaxCacheMapping : [],
 		pjaxCacheUniqueId: 0,
@@ -21,38 +22,48 @@
 		isPopstate : false,
 		//pjaxMaxCacheLength : 40,
 
-		// data-pjax属性の値を targetとして置換する。その際、リクエストしたURLに変更される。
-		// data-ajax属性ならば、targetと入れ替える。
-		// data-ajax-inner属性の値をtargetとして、targetにinnerHtmlを行う。
-		//		data-pjax, data-pjax-inner, data-ajax, data-ajax-innerはいずれかを設定すること。
-		// data-ajax-url:URL default：href属性から取得
-		// data-ajax-type: post or get
-		// data-ajax-serialize: default:false boolean　postリクエスト時のみformのpostでない場合でも、elの親elementにformがあればserializeしてdataにセットする。
-		// data-ajax-data: postする場合のdataのhash配列を文字列に変換したものをセットすることにより、POSTのdataを送信することができる。
-		// data-ajax-effect: 遷移時effect
-		// data-ajax-force: default:false falseの場合、urlが現状と同じURLならばajaxを送信しない。
-		// data-ajax-confirm: メッセージをValueに設定すると確認ダイアログ表示
-		// data-ajax-confirm-again: メッセージをValueに設定すると再度確認ダイアログ表示
-		// data-ajax-dialog: ダイアログとして表示する場合、true trueの場合、data-ajaxが指定dialogTopのid属性となる。
-		// data-ajax-dialog-class: ダイアログとして表示した場合のダイアログクラス名
-		// data-ajax-dialog-options: ダイアログとして表示した場合のダイアログオプション jquery dialogのoptionsをhash配列を文字列に変換したもの
-		//		"position" : "mouse"指定があればマウス位置にダイアログ表示
-		//      data-width:ajaxのレスポンスのtopノードにdata-widthがあれば、その広さでダイアログを表示する。
-		//      data-height:ajaxのレスポンスのtopノードにdata-heightがあれば、その高さでダイアログを表示する。
-		// カスタムイベント ajax:
-		// ajax:beforeSend - Ajaxリクエスト前に呼ばれる。falseを返せば処理を中断する。
-		// ajax:beforeSendのみ、return値(string or array)でURL及びdataの内容を上書き可。dataはマージ
-		//							string url or array('url' => string, 'data' => array) or array(0 => url string, 1 => data array)
-		// ajax:success - Ajaxリクエスト直後に呼ばれる。falseを返せば処理を中断する。
-		//        @param Event ajax:success event object
-		//        @param res ajax response
-		//        @param Event parent event object
-		// 例：$('form:first', this).on('ajax:beforeSuccess', function(e, res) {
-		//	       e.preventDefault();
-		//     });
-		//
-		// params：上記属性情報をパラメータによりセットする場合、使用
-		// options：ajax時のoptions マージされる
+/**
+ * $.ajaxのpjax対応版。属性値により、ajax(pjax)を行う。
+ *
+ * @param event e
+ * @param element el
+ * @param array params：上記属性情報をパラメータによりセットする場合、使用
+ * @param array options：ajax時のoptions マージされる
+ * @return  void
+ *
+ * [属性値]
+ * data-pjax:data-pjax属性の値を targetとして置換する。その際、リクエストしたURLに変更される。
+ * data-ajax:data-ajax属性ならば、targetと入れ替える。
+ * data-ajax-inner:data-ajax-inner属性の値をtargetとして、targetにinnerHtmlを行う。
+ *		data-pjax, data-pjax-inner, data-ajax, data-ajax-innerはいずれかを設定すること。'this'を設定すると、el自身がtargetとなる。
+ * data-ajax-url:URL default：href属性から取得
+ * data-ajax-type: post or get
+ * data-ajax-serialize: default:false boolean　postリクエスト時のみformのpostでない場合でも、elの親elementにformがあればserializeしてdataにセットする。
+ * data-ajax-data: postする場合のdataのhash配列を文字列に変換したものをセットすることにより、POSTのdataを送信することができる。
+ * 					例：'data-ajax-data' => '{"data[ModelName][value]": "'._ON.'"}'
+ * data-ajax-effect: 遷移時effect
+ * data-ajax-force: default:false falseの場合、urlが現状と同じURLならばajaxを送信しない。
+ * data-ajax-confirm: メッセージをValueに設定すると確認ダイアログ表示
+ * data-ajax-confirm-again: メッセージをValueに設定すると再度確認ダイアログ表示
+ * data-ajax-dialog: ダイアログとして表示する場合、true trueの場合、data-ajaxが指定dialogTopのid属性となる。
+ * data-ajax-dialog-class: ダイアログとして表示した場合のダイアログクラス名
+ * data-ajax-dialog-options: ダイアログとして表示した場合のダイアログオプション jquery dialogのoptionsをhash配列を文字列に変換したもの
+ *		"position" : "mouse"指定があればマウス位置にダイアログ表示
+ *      data-width:ajaxのレスポンスのtopノードにdata-widthがあれば、その広さでダイアログを表示する。
+ *      data-height:ajaxのレスポンスのtopノードにdata-heightがあれば、その高さでダイアログを表示する。
+ *
+ * [カスタムイベント] ajax:
+ * ajax:beforeSend - Ajaxリクエスト前に呼ばれる。falseを返せば処理を中断する。
+ * ajax:beforeSendのみ、return値(string or array)でURL及びdataの内容を上書き可。dataはマージ
+ *						string url or array('url' => string, 'data' => array) or array(0 => url string, 1 => data array)
+ * ajax:success - Ajaxリクエスト直後に呼ばれる。falseを返せば処理を中断する。
+ *        @param Event ajax:success event object
+ *        @param res ajax response
+ *        @param Event parent event object
+ * 例：$('form:first', this).on('ajax:beforeSuccess', function(e, res) {
+ *       e.preventDefault();
+ *     });
+ */
 		ajax : function(e, el, params, options, _confirm, _force_url) {
 			var data_pjax, top, url, data = {}, input_type, type, params, is_form, ret, data_url, data_serialize, data_data, data_force;
 			var dialog, default_options, dialogTarget;
@@ -104,6 +115,12 @@
 			}
 			data_force = (data_force == undefined) ? false : data_force;
 			is_pjax = target_pjax && $.support.pjax && !_force_url;
+			if(target_pjax == 'this') {
+				target_pjax = el;
+			}
+			if(dialogTarget == 'this') {
+				dialogTarget = el;
+			}
 
 			if($el.hasClass('disable-lbl') && !_force_url) {
 				if(e) e.preventDefault();
@@ -170,7 +187,7 @@
 				url = data_url ? data_url : url;
 			}
 			type = (type == 'GET' || type == 'get' || type == 'POST' || type == 'post') ? type.toLowerCase() : input_type.toLowerCase();
-			if(data_serialize == true && type == 'post' && Object.keys(data).length == 0) {
+			if(data_serialize == true && type == 'post' && $.isEmptyObject(data)) {
 				if(!is_form) {
 					var $form = $el.parents('form');
 					if($form.get(0)) {
@@ -208,12 +225,15 @@
 				}
 				data = $.extend({}, data, data_data);
 			}
-
 			default_options = {
 				type: type,
 				url: url,
 				data: data,
 				success: function(res, status, xhr){
+					//if(typeof res == 'object' && res.get(0).body) {
+					//	// iframe ajax用
+					//	res = res.get(0).body.innerHTML;
+					//}
 					if (!$.Common.fire('ajax:success', [res, e, status, xhr], $el, e)) {
 						return false;
 					}
@@ -396,6 +416,9 @@
 					dialog_options = $.extend({}, {zIndex: ++$.Common.zIndex}, dialog_options);
 				}
 				target = target || replace_target;
+				if(target == 'this') {
+					target = el;
+				}
 				dialog = $(target);
 				if(!dialog.get(0)) {
 					dialog = $('<div id='+ target.slice(1) +' style="display:none;"></div>').appendTo($(document.body));
@@ -648,9 +671,16 @@
 
 		// targetのouterHtmlを取得
 		outerHtml : function(target) {
-			var buf = $(target).clone().html('');	// 内部scriptが実行する必要はないため、TopElementのみappend
-			var buf_div = $("<div>").append(buf).html($(target).html());
-			var ret = buf_div.html();
+			var buf, buf_div, ret;
+			if($(target).html() == '') {
+				buf = $(target).clone();
+				buf_div = $("<div>").append(buf);
+				ret = buf_div.html();
+			} else {
+				buf = $(target).clone().html('');	// 内部scriptが実行する必要はないため、TopElementのみappend
+				buf_div = $("<div>").append(buf).html($(target).html());
+				ret = buf_div.html();
+			}
 			buf.remove();
 			buf_div.remove();
 			return ret;
