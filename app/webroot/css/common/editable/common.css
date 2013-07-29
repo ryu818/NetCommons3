@@ -1,12 +1,20 @@
 /* 共通 */
 body {
-    color:#000000;
-    font:13px/1.231 Meiryo, 'Lucida Grande','Hiragino Kaku Gothic ProN', sans-serif;*font-size:small;*font:x-small;
+	color:#000000;
+	font:13px/1.231 Meiryo, 'Lucida Grande','Hiragino Kaku Gothic ProN', sans-serif;*font-size:small;*font:x-small;
 	line-height: 1.5;
-    letter-spacing: 0;
+	letter-spacing: 0;
 }
 button, input, textarea {
-    font-family: Meiryo, 'Lucida Grande','Hiragino Kaku Gothic ProN', sans-serif;*font-size:small;
+	font-family: Meiryo, 'Lucida Grande','Hiragino Kaku Gothic ProN', sans-serif;*font-size:small;
+}
+
+select {
+	padding:2px;
+	border-color: #aaa;
+	border-radius: 2px;
+	border-style: solid;
+	border-width: 1px;
 }
 
 .require {
