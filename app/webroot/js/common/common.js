@@ -397,6 +397,12 @@
 				return false;
 			}
 
+			if(target == 'this') {
+				target = el;
+			}
+			if(replace_target == 'this') {
+				replace_target = el;
+			}
 			if (dialog == 'true' || dialog == true) {
 				if(typeof dialog_options == 'string') {
 					dialog_options = $.parseJSON(dialog_options);
@@ -416,9 +422,6 @@
 					dialog_options = $.extend({}, {zIndex: ++$.Common.zIndex}, dialog_options);
 				}
 				target = target || replace_target;
-				if(target == 'this') {
-					target = el;
-				}
 				dialog = $(target);
 				if(!dialog.get(0)) {
 					dialog = $('<div id='+ target.slice(1) +' style="display:none;"></div>').appendTo($(document.body));
