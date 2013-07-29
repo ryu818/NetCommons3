@@ -7590,8 +7590,8 @@ jQuery.extend({
 			//doc_write = true;
 		}
 		if($._debug != 0) {
-			var re_sys_error = new RegExp("<pre class=\"cake-error\">(.|\n|\r|\t)*<\/pre>", 'i');
-			var re_log = new RegExp("<table class=\"nc-log\">(.|\n|\r|\t)*<\/table>", 'i');
+			var re_sys_error = new RegExp("<pre class=[\"]{0,1}cake-error[\"]{0,1}>(.|\n|\r|\t)*<\/pre>", 'i');
+			var re_log = new RegExp("<table class=[\"]{0,1}nc-log[\"]{0,1}>(.|\n|\r|\t)*<\/table>", 'i');
 			var re_fatal = new RegExp("^(<br \/>)*\n*(<b>)*(Fatal|Parse) (E|e)rror(<\/b>)*:(.|\n|\r|\t)*", 'i');
 			var fatal_flag = false, content = '', log, logger_block = '';
 			if(data.match(re_fatal)) {
