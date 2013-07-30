@@ -74,6 +74,8 @@ class ModuleLink extends AppModel
  * @since   v 3.0.0.0
  */
 	public function afterFind($results) {
+		$Module = ClassRegistry::init('Module');
+
 		if(!isset($results[0]['Module']['dir_name'])) {
 			return $results;
 		}
@@ -88,24 +90,17 @@ class ModuleLink extends AppModel
 			// 1.みているroom_idのデータ(ルーム)
 			// 2.みているspace_type, authority_id(会員権限)のデータ(マイポータル、マイルーム)
 			// 3.みているspace_type(パブリック、マイポータル、マイルーム、コミュニティー、デフォルト)
-			$val['Module']['module_name'] = __('New module');
-			$file_path = App::pluginPath($val['Module']['dir_name']) . 'Locale'. '/' . $locale. '/'. NC_MODINFO_FILENAME;
-			if (file_exists($file_path)) {
-	 	        $modinfo_ini = parse_ini_file($file_path);
-	 	        if(!empty($modinfo_ini["module_name"])) {
-	 	        	$val['Module']['module_name'] = $modinfo_ini["module_name"];
-	 	        }
-	       	}
+			$val['Module']['module_name'] = $Module->loadModuleName($val['Module']['dir_name']);
 
-	       	if( $val['ModuleLink']['room_id'] > 0 ) {
-	       		$ret_room_id[$val['ModuleLink']['module_id']] = $val;
-	       	} else if($val['ModuleLink']['authority_id'] > 0 && $val['ModuleLink']['space_type'] > 0) {
-	       		$ret_space_authority_id[$val['ModuleLink']['module_id']] = $val;
-	       	} else if($val['ModuleLink']['authority_id'] > 0) {
-	       		$ret_authority_id[$val['ModuleLink']['module_id']] = $val;
-	       	} else {
-	       		$ret_space_type[$val['ModuleLink']['module_id']] = $val;
-	       	}
+			if( $val['ModuleLink']['room_id'] > 0 ) {
+				$ret_room_id[$val['ModuleLink']['module_id']] = $val;
+			} else if($val['ModuleLink']['authority_id'] > 0 && $val['ModuleLink']['space_type'] > 0) {
+				$ret_space_authority_id[$val['ModuleLink']['module_id']] = $val;
+			} else if($val['ModuleLink']['authority_id'] > 0) {
+				$ret_authority_id[$val['ModuleLink']['module_id']] = $val;
+			} else {
+				$ret_space_type[$val['ModuleLink']['module_id']] = $val;
+			}
 		}
 		if(count($ret_room_id) > 0)
 			return $ret_room_id;

@@ -235,18 +235,23 @@ class Module extends AppModel
  * @return string  $module_name
  */
 	public static function loadModuleName($dir_name, $locale = null) {
-		$module_name = __('New module');
+		$module_name = __('Untitled').'['.$dir_name.']';
 		if(!isset($locale)) {
 			$locale = Configure::read(NC_SYSTEM_KEY.'.locale');
 		}
+
+		if (!CakePlugin::loaded($dir_name)) {
+			return $module_name;
+		}
+
 		$file_path = App::pluginPath($dir_name) . 'Locale'. '/' . $locale. '/'. NC_MODINFO_FILENAME;
 		if (file_exists($file_path)) {
- 	        $modinfo_ini = parse_ini_file($file_path);
- 	        if(!empty($modinfo_ini["module_name"])) {
- 	        	$module_name = $modinfo_ini["module_name"];
- 	        }
-       	}
-       	return $module_name;
+			$modinfo_ini = parse_ini_file($file_path);
+			if(!empty($modinfo_ini["module_name"])) {
+				$module_name = $modinfo_ini["module_name"];
+			}
+		}
+		return $module_name;
 	}
 
 /**

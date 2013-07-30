@@ -120,7 +120,7 @@ class ModuleAdmin extends AppModel {
 				if(!isset($not_install_modules[$plugin_name]) && @file_exists($install_inc_ini_path)) {
 					$install_inc_ini = parse_ini_file($install_inc_ini_path);
 					$not_install_modules[$plugin_name]['Module'] = $install_inc_ini;
-					$not_install_modules[$plugin_name]['Module']['module_name'] = __('New module');
+					$not_install_modules[$plugin_name]['Module']['module_name'] = __('Untitled').'['.$plugin_name.']';
 
 					if(@file_exists($full_path . DS . 'Locale'. DS . $locale. '/'. NC_MODINFO_FILENAME)) {
 						$modinfo_ini = parse_ini_file($full_path . DS . 'Locale'. DS . $locale. DS. NC_MODINFO_FILENAME);

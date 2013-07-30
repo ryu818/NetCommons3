@@ -536,9 +536,6 @@ msgstr 	"コミュニティー名称"
 msgid  	"Control panel"
 msgstr 	"コントロールパネル"
 
-msgid  	"New module"
-msgstr 	"新規モジュール"
-
 msgid  	"Grouping"
 msgstr 	"グループ化"
 msgid  	"Cancel grouping"
