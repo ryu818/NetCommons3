@@ -234,7 +234,8 @@
 		if($is_edit_detail) {
 			echo $this->Html->link('', array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'detail'),
 				array('title' => __('Edit'), 'class' => 'pages-menu-edit-icon' . ' nc-tooltip',
-				'data-ajax-inner' => '#pages-menu-edit-detail-'.$page['Page']['id'], 'data-page-edit-id' => $page['Page']['id']));
+				'data-ajax' => '#pages-menu-edit-detail-'.$page['Page']['id'], 'data-ajax-method' => 'inner',
+				'data-page-edit-id' => $page['Page']['id']));
 		} else {
 			echo $this->Html->link('', '#',
 				array('title' => __('Edit'), 'class' => 'pages-menu-edit-icon disable-lbl',
@@ -249,7 +250,8 @@
 			}
 			echo $this->Html->link('', '#',
 				array('title' => __d('page', 'Other operations'), 'class' => 'pages-menu-other-icon' . ' nc-tooltip'.$operation_class,
-				'data-ajax-inner' => '#pages-menu-edit-view-'.$page['Page']['id'],
+				'data-ajax' => '#pages-menu-edit-view-'.$page['Page']['id'],
+				'data-ajax-method' => 'inner',
 				'data-is-parent-chief' => $is_parent_chief,
 				'data-is-chief' => $is_chief,
 				'data-is-sel-modules' => $is_sel_modules,

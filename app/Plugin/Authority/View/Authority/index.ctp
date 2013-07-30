@@ -62,7 +62,8 @@
 						<?php
 							echo $this->Html->link(__('Delete'), array('action' => 'delete', 'language' => $language, $authority['Authority']['id']), array(
 								'title' => __('Delete'),
-								'data-ajax-inner' =>'#'.$id,
+								'data-ajax' =>'#'.$id,
+								'data-ajax-method' =>'inner',
 								'data-ajax-type' =>'post',
 								'data-ajax-data' => '{"data[_Token][key]": "'.$this->params['_Token']['key'].'"}',
 								'data-ajax-confirm' =>__('Deleting %s. <br />Are you sure to proceed?', $authorityName),

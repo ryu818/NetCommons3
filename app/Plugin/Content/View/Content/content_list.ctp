@@ -79,7 +79,8 @@
 				array('action' => 'block', $val['Content']['id']),
 				array(
 					'title' =>__d('content', 'List of blocks'),
-					'data-ajax-inner' =>'#nc-content-block-list-'.$id. '-' .$val['Content']['id'],
+					'data-ajax' =>'#nc-content-block-list-'.$id. '-' .$val['Content']['id'],
+					'data-ajax-method' => 'inner',
 					'data-ajax-dialog' => true,
 					'data-ajax-effect' => 'fold',
 					'data-ajax-dialog-options' => '{"title" : "'.$this->Js->escape(__d('content', 'List of blocks[%1$s]', h($val['Content']['title']))).'","modal": true, "resizable": true, "width":640}',
@@ -93,7 +94,8 @@
 			array('action' => 'edit', $val['Content']['id']),
 			array(
 				'title' =>__('Edit'),
-				'data-ajax-inner' =>'#nc-content-edit-dialog'.$id. '-' .$val['Content']['id'],
+				'data-ajax' =>'#nc-content-edit-dialog'.$id. '-' .$val['Content']['id'],
+				'data-ajax-method' => 'inner',
 				'data-ajax-dialog' => true,
 				'data-ajax-effect' => 'fold',
 				'data-ajax-dialog-options' => '{"title" : "'.$this->Js->escape(__d('content', 'Edit content[%1$s]', h($val['Content']['title']))).'","modal": true, "resizable": true, "width":440, "position":"mouse"}',

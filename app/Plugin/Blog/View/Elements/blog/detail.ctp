@@ -35,7 +35,8 @@
 				echo $this->Html->link(__('Pending'), $approveUrl, array(
 					'title' => __('Pending'),
 					'class' => 'nc-button nc-button-red small',
-					'data-ajax-inner' =>'#blog-posts-approve-'.$id,
+					'data-ajax' =>'#blog-posts-approve-'.$id,
+					'data-ajax-method' => 'inner',
 					'data-ajax-dialog' => true,
 					'data-ajax-effect' => 'fold',
 					'data-ajax-dialog-options' => '{"title" : "'.$this->Js->escape(__('Pending [%s]', h($title))).'","modal": true, "resizable": true, "position":"mouse", "width":"600"}',

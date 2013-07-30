@@ -45,7 +45,7 @@
 			$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'common-btn')).
 			$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
 				'onclick' => "$.PageMenu.hideDetail(".$page['Page']['id'].");", 'data-ajax-url' => $this->Html->url(array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'participant_cancel', $page['Page']['id'])),
-				'data-ajax-inner' => '#pages-menu-edit-participant-tmp')).$deallocation
+				'data-ajax' => '#pages-menu-edit-participant-tmp', 'data-ajax-method' => 'inner')).$deallocation
 		);
 		if(isset($this->request->data['isSearch']) && $this->request->data['isSearch']) {
 			echo $this->Form->hiddenVars('User', array(), false);

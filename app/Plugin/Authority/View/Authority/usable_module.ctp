@@ -75,7 +75,7 @@
 			$this->Form->button(__('&lt;&lt;Back'), $backAttr).
 			$this->Form->button(__('Next&gt;&gt;'), array('name' => 'next', 'class' => 'common-btn', 'type' => 'submit')).
 			$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
-				'data-ajax-inner' => '#'.$id, 'data-ajax-url' =>  $this->Html->url(array('action' => 'index', 'language' => $language))))
+				'data-ajax' => '#'.$id, 'data-ajax-method' => 'inner', 'data-ajax-url' =>  $this->Html->url(array('action' => 'index', 'language' => $language))))
 		);
 		echo $this->element('hidden');
 		echo $this->Form->end();

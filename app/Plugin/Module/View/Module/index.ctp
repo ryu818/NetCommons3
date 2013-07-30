@@ -29,7 +29,7 @@ if(isset($success_mes) && count($success_mes) > 0) {
 
 	<div id="module-init-tab-list">
 		<?php
-			echo $this->Form->create(null, array('id' => 'form'.$id, 'data-ajax-inner' => '#'.$id, 'data-ajax-effect' => 'fold'));
+			echo $this->Form->create(null, array('id' => 'form'.$id, 'data-ajax' => '#'.$id, 'data-ajax-method' => 'inner', 'data-ajax-effect' => 'fold'));
 		?>
 		<div id="module-list-tab">
 			<ul>

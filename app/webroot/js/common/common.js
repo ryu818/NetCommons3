@@ -34,8 +34,14 @@
  * [属性値]
  * data-pjax:data-pjax属性の値を targetとして置換する。その際、リクエストしたURLに変更される。
  * data-ajax:data-ajax属性ならば、targetと入れ替える。
- * data-ajax-inner:data-ajax-inner属性の値をtargetとして、targetにinnerHtmlを行う。
- *		data-pjax, data-pjax-inner, data-ajax, data-ajax-innerはいずれかを設定すること。'this'を設定すると、el自身がtargetとなる。
+ *		data-pjax, data-ajaxはいずれかを設定すること。'this'を設定すると、el自身がtargetとなる。
+ *
+ * data-ajax-method: default=replace data-ajaxのターゲットに対してレスポンスをどのように実行するか。(現状、pjaxの場合、Back,Forwardするため、replace固定)
+ * 		replace: ターゲットとレスポンスを置換(replaceWith())
+ * 		inner:   ターゲット内部をレスポンスに置き換える。(html())
+ * 		append:  ターゲットにレスポンスに追加。(append())
+ * 		after:   ターゲットの後ろにレスポンスを追加。(after())
+ * 		before:  ターゲットの前にレスポンスを追加。(before())
  * data-ajax-url:URL default：href属性から取得
  * data-ajax-type: post or get
  * data-ajax-serialize: default:false boolean　postリクエスト時のみformのpostでない場合でも、elの親elementにformがあればserializeしてdataにセットする。
@@ -51,6 +57,7 @@
  *		"position" : "mouse"指定があればマウス位置にダイアログ表示
  *      data-width:ajaxのレスポンスのtopノードにdata-widthがあれば、その広さでダイアログを表示する。
  *      data-height:ajaxのレスポンスのtopノードにdata-heightがあれば、その高さでダイアログを表示する。
+ * data-ajax-callback: ajax success時 callback関数　thisは設定したemenent自身
  *
  * [カスタムイベント] ajax:
  * ajax:beforeSend - Ajaxリクエスト前に呼ばれる。falseを返せば処理を中断する。
@@ -97,7 +104,7 @@
 				data_force = params['data-ajax-force'];
 				dialog = params['data-ajax-dialog'];
 				if (dialog == 'true' || dialog == true) {
-					dialogTarget = params['data-ajax-inner'] || params['data-ajax'];
+					dialogTarget = params['data-ajax'];
 				}
 			} else {
 				target_pjax =  $el.attr("data-pjax");
@@ -110,7 +117,7 @@
 				data_force = $el.attr("data-ajax-force");
 				dialog = $el.attr("data-ajax-dialog");
 				if (dialog == 'true' || dialog == true) {
-					dialogTarget = $el.attr("data-ajax-inner") || $el.attr("data-ajax");
+					dialogTarget = $el.attr("data-ajax");
 				}
 			}
 			data_force = (data_force == undefined) ? false : data_force;
@@ -375,33 +382,31 @@
 			}
 		},
 		ajaxSuccess : function(e, el, res, params) {
-			var target,replace_target,effect;
+			var target,method, effect, callback, $res, callbackFunc;
 			var buf_a, res_target, res_other_target, buf_res_target, effect_cnt = 0, effect_index = -1;
 			var dialog_title, dialog_options, dialog, w, h;
 			var $el = $(el);
 			if (params) {
-				target = params['data-ajax-inner'];
-				replace_target = params['data-ajax'];
+				target = params['data-ajax'];
+				method = params['data-ajax-method'];
 				effect = params['data-ajax-effect'];
 				dialog = params['data-ajax-dialog'];
 				dialog_class = params['data-ajax-dialog-class'];
 				dialog_options = params['data-ajax-dialog-options'];
+				callback = params['data-ajax-callback'];
 			} else if($el.get(0)) {
-				target = $el.attr("data-ajax-inner");
-				replace_target = $el.attr("data-ajax");
+				target = $el.attr("data-ajax");
+				method = $el.attr("data-ajax-method");
 				effect = $el.attr("data-ajax-effect") ? $el.attr("data-ajax-effect") : null;
 				dialog = $el.attr("data-ajax-dialog");
 				dialog_class = $el.attr("data-ajax-dialog-class");
 				dialog_options = $el.attr("data-ajax-dialog-options");
+				callback = $el.attr("data-ajax-callback");
 			} else {
 				return false;
 			}
-
 			if(target == 'this') {
 				target = el;
-			}
-			if(replace_target == 'this') {
-				replace_target = el;
 			}
 			if (dialog == 'true' || dialog == true) {
 				if(typeof dialog_options == 'string') {
@@ -421,7 +426,6 @@
 					}
 					dialog_options = $.extend({}, {zIndex: ++$.Common.zIndex}, dialog_options);
 				}
-				target = target || replace_target;
 				dialog = $(target);
 				if(!dialog.get(0)) {
 					dialog = $('<div id='+ target.slice(1) +' style="display:none;"></div>').appendTo($(document.body));
@@ -439,22 +443,22 @@
 				if(dialog_class) {
 					dialog.parent().addClass(dialog_class);
 				}
-			} else if(target) {
+			} else if(method == 'inner') {
 				res_target = $(target);
-				if(effect && $(target).css('display') != 'none') {
+				if(effect && res_target.css('display') != 'none') {
 					$(target).hide(effect, function(){
-						$(target).html(res);
-						$(target).show(effect);
+						res_target.html(res);
+						res_target.show(effect);
 					});
 				} else {
-					$(target).html(res);
+					res_target.html(res);
 				}
-			} else if(replace_target) {
+			} else if(method == undefined || method == 'replace') {
 				res_target = $();
 				res_other_target = $();
 				buf_res_target = $($.trim(res));
 				buf_res_target.each(function(){
-					if (this.nodeType == 1 && $(this).is(replace_target)) {
+					if (this.nodeType == 1 && $(this).is(target)) {
 						res_target.push(this);
 					} else {
 						res_other_target.push(this);
@@ -465,16 +469,49 @@
 					res_other_target = $();
 				}
 				if(effect && res_target.get(0)) {
-					$(replace_target).hide(effect, function(){
+					$(target).hide(effect, function(){
 						$(res_target).css('display', 'none');
-						$(replace_target).replaceWith(res_target);
-						$(replace_target).after(res_other_target);
+						$(target).replaceWith(res_target);
+						$(target).after(res_other_target);
 						$(res_target).show(effect);
 					});
 				} else {
-					$(replace_target).replaceWith(res_target);
-					$(replace_target).after(res_other_target);
+					$(target).replaceWith(res_target);
+					$(target).after(res_other_target);
 				}
+			} else if(method == 'append') {
+				res_target = $(target);
+				if(effect && res_target.css('display') != 'none') {
+					$(res).hide().appendTo(res_target).show(effect);
+				} else {
+					$(res_target).append(res);
+				}
+			} else if(method == 'before') {
+				res_target = $(target);
+				if(effect && res_target.css('display') != 'none') {
+					$res = $(res);
+					$res.hide();
+					res_target.before($res);
+					$res.show(effect);
+				} else {
+					res_target.before(res);
+				}
+			} else if(method == 'after') {
+				res_target = $(target);
+				if(effect && res_target.css('display') != 'none') {
+					$res = $(res);
+					$res.hide();
+					res_target.after($res);
+					$res.show(effect);
+				} else {
+					res_target.after(res);
+				}
+			}
+			if(callback) {
+				callbackFunc = $.proxy(function(e) {
+					eval(callback);
+				}, el);
+				callbackFunc(e);
 			}
 			return res_target;
 		},
@@ -553,7 +590,6 @@
 					// WYSIWYGのような画面だと、キャッシュの画面からjavascriptを再度、実行しても同様の画面にはならないため再取得
 					top.attr('data-ajax', '#' + top_id);
 					top.removeAttr('data-pjax');
-					top.removeAttr('data-ajax-inner');
 					$.Common.ajax(e, top, null, {async : false}, false, url);
 				} else {
 					if (!$.Common.fire('ajax:success', [contents, e, status], top, e)) {

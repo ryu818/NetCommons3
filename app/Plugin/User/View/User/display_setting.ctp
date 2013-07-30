@@ -22,7 +22,8 @@
 			echo $this->Html->link(__d('user', 'Add Item'), array('action' => 'add_item'), array(
 				'title' => __d('user', 'Add Item'),
 				'class' => 'add-btn-link',
-				'data-ajax-inner' =>'#user-add-item'.$id,
+				'data-ajax' =>'#user-add-item'.$id,
+				'data-ajax-method' =>'inner',
 				'data-ajax-dialog' => true,
 				'data-ajax-effect' => 'fold',
 				'data-ajax-dialog-options' => '{"title" : "'.$this->Js->escape(__d('user', 'Add Item')).'","modal": true, "resizable": true, "position":"mouse", "width":"440"}',

@@ -1,6 +1,7 @@
 <?php
 	echo $this->Form->create('User', array(
-		'data-ajax-inner' => '#user-init-tab-list',
+		'data-ajax' => '#user-init-tab-list',
+		'data-ajax-method' => 'inner',
 		'data-ajax-confirm' => __d('user', 'Deleting the selected user(s). <br />Are you sure?'),
 		'data-ajax-confirm-again' => __d('user', 'All the data of this user will be completely deleted from the database.<br />Are you sure?'),
 	));

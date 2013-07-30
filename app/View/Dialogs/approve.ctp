@@ -1,6 +1,6 @@
 <div class="nc-diff-outer">
 	<?php
-		echo $this->Form->create(null, array('id' => 'FormApprove'.$id, 'data-ajax-inner' => '#'.$dialog_id));
+		echo $this->Form->create(null, array('id' => 'FormApprove'.$id, 'data-ajax' => '#'.$dialog_id, 'data-ajax-method' =>'inner'));
 	?>
 	<?php if(!isset($pre_approval)): ?>
 		<div class="nc-diff-outer">

@@ -5,7 +5,7 @@
 		<ul class="nc-paginator">
 			<li class="prev">
 			<?php if($page > 1): ?>
-				<?php echo $this->Html->link(__('&lt;'), array('action' => 'community_list', 'page' => $page - 1), array('data-ajax-inner' => '#communities'.$id, 'escape' => false)); ?>
+				<?php echo $this->Html->link(__('&lt;'), array('action' => 'community_list', 'page' => $page - 1), array('data-ajax' => '#communities'.$id, 'data-ajax-method' =>'inner', 'escape' => false)); ?>
 			<?php else: ?>
 				<?php echo __('&lt;'); ?>
 			<?php endif; ?>
@@ -13,7 +13,7 @@
 			<li class="system-paginator-center">&nbsp;</li>
 			<li class="next">
 			<?php if($hasNext): ?>
-				<?php echo $this->Html->link(__('&gt;'), array('action' => 'community_list', 'page' => $page + 1), array('data-ajax-inner' => '#communities'.$id, 'escape' => false)); ?>
+				<?php echo $this->Html->link(__('&gt;'), array('action' => 'community_list', 'page' => $page + 1), array('data-ajax' => '#communities'.$id, 'data-ajax-method' =>'inner', 'escape' => false)); ?>
 			<?php else: ?>
 				<?php echo __('&gt;'); ?>
 			<?php endif; ?>

@@ -24,7 +24,8 @@
 			$options['data-ajax'] = '#pages-menu-edit-participant-'.intval($this->request->named['post_page_id']);
 		} else {
 			$options['action'] = 'index';
-			$options['data-ajax-inner'] = '#user-init-tab-list';
+			$options['data-ajax'] = '#user-init-tab-list';
+			$options['data-ajax-method'] = 'inner';
 		}
 
 		echo $this->Form->create('User', $options);

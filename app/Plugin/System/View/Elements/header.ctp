@@ -12,5 +12,5 @@
 <div id="<?php echo $id ?>">
 	<?php echo $this->element('language'); ?>
 	<?php
-		echo $this->Form->create('ConfigRegist', array('data-ajax-inner' => '#'.$id));
+		echo $this->Form->create('ConfigRegist', array('data-ajax' => '#'.$id, 'data-ajax-method' =>'inner'));
 	?>

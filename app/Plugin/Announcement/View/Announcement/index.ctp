@@ -29,7 +29,8 @@ if(!empty($announcement['Announcement']['id'])) {
 				echo $this->Html->link(__('Pending'), $approveUrl, array(
 					'title' => __('Pending'),
 					'class' => 'nc-button nc-button-red small',
-					'data-ajax-inner' =>'#announcement-approve-'.$id,
+					'data-ajax' =>'#announcement-approve-'.$id,
+					'data-ajax-method' =>'inner',
 					'data-ajax-dialog' => true,
 					'data-ajax-dialog-options' => '{"title" : "'.$this->Js->escape(__('Pending [%s]', h($announcement['Content']['title']))).'","modal": true, "resizable": true, "position":"mouse", "width":"600"}',
 					'data-ajax-effect' => 'fold'

@@ -67,7 +67,8 @@
 				$deleteTitle = __d('user', 'Delete member [%s]', $user['User']['handle']);
 				$adminStr .= "&nbsp;|&nbsp;".$this->Html->link(__('Delete'), $deleteLink, array(
 					'title' => $deleteTitle,
-					'data-ajax-inner' => '#user-init-tab-list',
+					'data-ajax' => '#user-init-tab-list',
+					'data-ajax-method' =>'inner',
 					'data-ajax-type' => 'post',
 					'data-ajax-serialize' => true,
 					'data-ajax-data' => '{"data[DelSingleUser]['.$user['User']['id'].'][delete]": "'._ON.'"}',
