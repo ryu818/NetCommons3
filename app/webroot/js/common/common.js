@@ -44,6 +44,7 @@
  * 		before:  ターゲットの前にレスポンスを追加。(before())
  * data-ajax-url:URL default：href属性から取得
  * data-ajax-type: post or get
+ * data-ajax-data-type: xml, json, script, or html
  * data-ajax-serialize: default:false boolean　postリクエスト時のみformのpostでない場合でも、elの親elementにformがあればserializeしてdataにセットする。
  * data-ajax-data: postする場合のdataのhash配列を文字列に変換したものをセットすることにより、POSTのdataを送信することができる。
  * 					例：'data-ajax-data' => '{"data[ModelName][value]": "'._ON.'"}'
@@ -61,8 +62,8 @@
  *
  * [カスタムイベント] ajax:
  * ajax:beforeSend - Ajaxリクエスト前に呼ばれる。falseを返せば処理を中断する。
- * ajax:beforeSendのみ、return値(string or array)でURL及びdataの内容を上書き可。dataはマージ
- *						string url or array('url' => string, 'data' => array) or array(0 => url string, 1 => data array)
+ * ajax:beforeSendのみ、return値(string or array)でURL及びdata, optionsの内容を上書き可。data, optionsはマージ
+ *						string url or array('url' => string, 'data' => array, 'options' => array) or array(0 => url string, 1 => data array, 2 => options array)
  * ajax:success - Ajaxリクエスト直後に呼ばれる。falseを返せば処理を中断する。
  *        @param Event ajax:success event object
  *        @param res ajax response
@@ -72,7 +73,7 @@
  *     });
  */
 		ajax : function(e, el, params, options, _confirm, _force_url) {
-			var data_pjax, top, url, data = {}, input_type, type, params, is_form, ret, data_url, data_serialize, data_data, data_force;
+			var data_pjax, top, url, data = {}, input_type, type, params, is_form, ret, data_url, data_serialize, data_data, data_force, data_type, callback;
 			var dialog, default_options, dialogTarget;
 			var target_pjax, confirm, confirm_again, is_pjax;
 			var $el = $(el), buf_options = options;
@@ -106,6 +107,8 @@
 				if (dialog == 'true' || dialog == true) {
 					dialogTarget = params['data-ajax'];
 				}
+				data_type = params['data-ajax-data-type'];
+				callback = params['data-ajax-callback'];
 			} else {
 				target_pjax =  $el.attr("data-pjax");
 				confirm = (typeof _confirm == "undefined") ? $el.attr("data-ajax-confirm") : _confirm;
@@ -119,6 +122,8 @@
 				if (dialog == 'true' || dialog == true) {
 					dialogTarget = $el.attr("data-ajax");
 				}
+				data_type = $el.attr("data-ajax-data-type");
+				callback = $el.attr("data-ajax-callback");
 			}
 			data_force = (data_force == undefined) ? false : data_force;
 			is_pjax = target_pjax && $.support.pjax && !_force_url;
@@ -220,10 +225,17 @@
 				} else if(ret['url'] || ret['data']) {
 					if((ret['url'] != undefined))
 						url = ret['url'];
-					data = $.extend({}, data, ret['data']);
+					if((ret['data'] != undefined))
+						data = $.extend({}, data, ret['data']);
+					if((ret['options'] != undefined))
+						options = $.extend({}, options, ret['options']);
 				} else {
 					url = ret[0];
 					data = $.extend({}, data, ret[1]);
+					if(ret[2]) {
+						// options
+						options = $.extend({}, options, ret[2]);
+					}
 				}
 			}
 			if(data_data) {
@@ -241,6 +253,13 @@
 					//	// iframe ajax用
 					//	res = res.get(0).body.innerHTML;
 					//}
+					if(callback) {
+						eval('fun = function(e){'+callback+'}');
+						callbackFunc = $.proxy(fun, el);
+						if(!callbackFunc(e)) {
+							return false;
+						}
+					}
 					if (!$.Common.fire('ajax:success', [res, e, status, xhr], $el, e)) {
 						return false;
 					}
@@ -343,6 +362,9 @@
 					}
 				}
 			};
+			if(data_type) {
+				default_options['dataType'] = data_type;
+			}
 			if(options != undefined && options != null) {
 				options = $.extend(default_options, options);
 			} else {
@@ -382,7 +404,7 @@
 			}
 		},
 		ajaxSuccess : function(e, el, res, params) {
-			var target,method, effect, callback, $res, callbackFunc;
+			var target,method, effect, $res, callbackFunc, fun;
 			var buf_a, res_target, res_other_target, buf_res_target, effect_cnt = 0, effect_index = -1;
 			var dialog_title, dialog_options, dialog, w, h;
 			var $el = $(el);
@@ -393,7 +415,6 @@
 				dialog = params['data-ajax-dialog'];
 				dialog_class = params['data-ajax-dialog-class'];
 				dialog_options = params['data-ajax-dialog-options'];
-				callback = params['data-ajax-callback'];
 			} else if($el.get(0)) {
 				target = $el.attr("data-ajax");
 				method = $el.attr("data-ajax-method");
@@ -401,7 +422,6 @@
 				dialog = $el.attr("data-ajax-dialog");
 				dialog_class = $el.attr("data-ajax-dialog-class");
 				dialog_options = $el.attr("data-ajax-dialog-options");
-				callback = $el.attr("data-ajax-callback");
 			} else {
 				return false;
 			}
@@ -506,12 +526,6 @@
 				} else {
 					res_target.after(res);
 				}
-			}
-			if(callback) {
-				callbackFunc = $.proxy(function(e) {
-					eval(callback);
-				}, el);
-				callbackFunc(e);
 			}
 			return res_target;
 		},
