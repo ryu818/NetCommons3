@@ -222,7 +222,7 @@
 			if(ret !== true) {
 				if(typeof ret == "string") {
 					url = ret;
-				} else if(ret['url'] || ret['data']) {
+				} else if(ret['url'] || ret['data'] || ret['options']) {
 					if((ret['url'] != undefined))
 						url = ret['url'];
 					if((ret['data'] != undefined))
