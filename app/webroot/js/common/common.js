@@ -68,7 +68,7 @@
  *        @param Event ajax:success event object
  *        @param res ajax response
  *        @param Event parent event object
- * 例：$('form:first', this).on('ajax:beforeSuccess', function(e, res) {
+ * 例：$('form:first', this).on('ajax:success', function(e, res) {
  *       e.preventDefault();
  *     });
  */
