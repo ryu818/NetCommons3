@@ -19,6 +19,7 @@
 	<ul class="lists">
 		<?php
 			echo $this->element('item', array('item' => $configs['memory_limit']));
+			echo $this->element('item', array('item' => $configs['script_compress_gzip']));
 		?>
 	</ul>
 </fieldset>

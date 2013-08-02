@@ -296,9 +296,10 @@ define("NC_CATEGORY_INIFILE",          "category.ini");
 define("NC_THEME_INIFILE",             "theme.ini");
 
 //-----------------JS,CSSファイル関連-------------------------------------------
-define("NC_ASSET_PREFIX", 'application-');
-define("NC_ASSET_GC_PROBABILITY", 100);		// JS、CSSファイルガーベージコレクション発生確率(Page表示時：100回に一度)
-define("NC_ASSET_GC_LIFETIME", 604800);		// JS、CSSファイル保持期間（デフォルト1週間）
+define('NC_ASSET_PREFIX', 'application-');
+define('NC_ASSET_GC_PROBABILITY', 100);		// JS、CSSファイルガーベージコレクション発生確率(Page表示時：100回に一度)
+define('NC_ASSET_GC_LIFETIME', 604800);		// JS、CSSファイル保持期間（デフォルト1週間）
+define('NC_ASSET_GZIP', 1);					// gzip圧縮の有効化
 //-----------------Revision 履歴(リビジョン)-------------------------------------------
 define("NC_REVISION_RETENTION_NUMBER", 20);					// 履歴の保存最大個数を超えた場合、古いものから削除
 define("NC_REVISION_SHOW_LIMIT", 5);						// WYSIWYG編集画面のリビジョンの表示件数

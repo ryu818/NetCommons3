@@ -1269,7 +1269,7 @@
         <column name="name">login_autocomplete</column>
         <column name="type">radio</column>
         <column name="title">Use autocomplete for sign in?</column>
-        <column name="value">1</column>
+        <column name="value">on</column>
         <column name="description">Select yes to use autocomplete for sign in.</column>
         <column name="options">a:2:{s:2:&quot;on&quot;;s:3:&quot;Yes&quot;;s:3:&quot;off&quot;;s:2:&quot;No&quot;;}</column>
         <column name="domain">system</column>
@@ -1410,6 +1410,30 @@
         <column name="id">24</column>
         <column name="module_id">0</column>
         <column name="cat_id">2</column>
+        <column name="name">script_compress_gzip</column>
+        <column name="type">radio</column>
+        <column name="title">Compress JavaScript files in gzip format?</column>
+        <column name="value">1</column>
+        <column name="description">Through the gzip compressed CSS and JavaScript to be HTTP transport, loading faster. However, it may fail to transfer the JavaScript in the browser, etc. that do not support gzip compression.</column>
+        <column name="options">a:2:{i:1;s:3:&quot;Yes&quot;;i:0;s:2:&quot;No&quot;;}</column>
+        <column name="domain">system</column>
+        <column name="attribute"></column>
+        <column name="required">1</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
+        <column name="lang_flag">0</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">25</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">2</column>
         <column name="name">session_name</column>
         <column name="type">text</column>
         <column name="title">Coockie for session ID</column>
@@ -1431,7 +1455,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">25</column>
+        <column name="id">26</column>
         <column name="module_id">0</column>
         <column name="cat_id">2</column>
         <column name="name">session_timeout</column>
@@ -1455,7 +1479,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">26</column>
+        <column name="id">27</column>
         <column name="module_id">0</column>
         <column name="cat_id">2</column>
         <column name="name">session_auto_regenerate</column>
@@ -1479,7 +1503,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">27</column>
+        <column name="id">28</column>
         <column name="module_id">0</column>
         <column name="cat_id">2</column>
         <column name="name">proxy_mode</column>
@@ -1503,7 +1527,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">28</column>
+        <column name="id">29</column>
         <column name="module_id">0</column>
         <column name="cat_id">2</column>
         <column name="name">proxy_host</column>
@@ -1527,7 +1551,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">29</column>
+        <column name="id">30</column>
         <column name="module_id">0</column>
         <column name="cat_id">2</column>
         <column name="name">proxy_port</column>
@@ -1551,7 +1575,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">30</column>
+        <column name="id">31</column>
         <column name="module_id">0</column>
         <column name="cat_id">2</column>
         <column name="name">proxy_user</column>
@@ -1575,7 +1599,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">31</column>
+        <column name="id">32</column>
         <column name="module_id">0</column>
         <column name="cat_id">2</column>
         <column name="name">proxy_pass</column>
@@ -1599,7 +1623,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">32</column>
+        <column name="id">33</column>
         <column name="module_id">0</column>
         <column name="cat_id">3</column>
         <column name="name">from</column>
@@ -1623,7 +1647,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">33</column>
+        <column name="id">34</column>
         <column name="module_id">0</column>
         <column name="cat_id">3</column>
         <column name="name">fromname</column>
@@ -1647,7 +1671,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">34</column>
+        <column name="id">35</column>
         <column name="module_id">0</column>
         <column name="cat_id">3</column>
         <column name="name">htmlmail</column>
@@ -1671,7 +1695,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">35</column>
+        <column name="id">36</column>
         <column name="module_id">0</column>
         <column name="cat_id">3</column>
         <column name="name">mobile_htmlmail</column>
@@ -1695,7 +1719,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">36</column>
+        <column name="id">37</column>
         <column name="module_id">0</column>
         <column name="cat_id">3</column>
         <column name="name">mailmethod</column>
@@ -1719,7 +1743,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">37</column>
+        <column name="id">38</column>
         <column name="module_id">0</column>
         <column name="cat_id">3</column>
         <column name="name">sendmailpath</column>
@@ -1743,7 +1767,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">38</column>
+        <column name="id">39</column>
         <column name="module_id">0</column>
         <column name="cat_id">3</column>
         <column name="name">smtphost</column>
@@ -1767,7 +1791,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">39</column>
+        <column name="id">40</column>
         <column name="module_id">0</column>
         <column name="cat_id">3</column>
         <column name="name">smtpuser</column>
@@ -1791,7 +1815,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">40</column>
+        <column name="id">41</column>
         <column name="module_id">0</column>
         <column name="cat_id">3</column>
         <column name="name">smtppass</column>
@@ -1815,7 +1839,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">41</column>
+        <column name="id">42</column>
         <column name="module_id">0</column>
         <column name="cat_id">3</column>
         <column name="name">smtptls</column>
@@ -1839,7 +1863,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">42</column>
+        <column name="id">43</column>
         <column name="module_id">0</column>
         <column name="cat_id">3</column>
         <column name="name">mailheader</column>
@@ -1863,7 +1887,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">43</column>
+        <column name="id">44</column>
         <column name="module_id">0</column>
         <column name="cat_id">3</column>
         <column name="name">mailfooter</column>
@@ -1887,7 +1911,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">44</column>
+        <column name="id">45</column>
         <column name="module_id">0</column>
         <column name="cat_id">4</column>
         <column name="name">meta_author</column>
@@ -1911,7 +1935,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">45</column>
+        <column name="id">46</column>
         <column name="module_id">0</column>
         <column name="cat_id">4</column>
         <column name="name">meta_copyright</column>
@@ -1935,7 +1959,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">46</column>
+        <column name="id">47</column>
         <column name="module_id">0</column>
         <column name="cat_id">4</column>
         <column name="name">meta_keywords</column>
@@ -1959,7 +1983,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">47</column>
+        <column name="id">48</column>
         <column name="module_id">0</column>
         <column name="cat_id">4</column>
         <column name="name">meta_description</column>
@@ -1983,7 +2007,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">48</column>
+        <column name="id">49</column>
         <column name="module_id">0</column>
         <column name="cat_id">4</column>
         <column name="name">meta_robots</column>
@@ -2007,7 +2031,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">49</column>
+        <column name="id">50</column>
         <column name="module_id">0</column>
         <column name="cat_id">4</column>
         <column name="name">meta_rating</column>
@@ -2031,7 +2055,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">50</column>
+        <column name="id">51</column>
         <column name="module_id">0</column>
         <column name="cat_id">5</column>
         <column name="name">display_header_menu</column>
@@ -2055,7 +2079,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">51</column>
+        <column name="id">52</column>
         <column name="module_id">0</column>
         <column name="cat_id">5</column>
         <column name="name">display_page_menu</column>
@@ -2079,7 +2103,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">52</column>
+        <column name="id">53</column>
         <column name="module_id">0</column>
         <column name="cat_id">5</column>
         <column name="name">pagemenu_community_limit</column>
@@ -2103,7 +2127,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">53</column>
+        <column name="id">54</column>
         <column name="module_id">0</column>
         <column name="cat_id">5</column>
         <column name="name">pagemenu_display_public_community</column>
@@ -2127,7 +2151,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">54</column>
+        <column name="id">55</column>
         <column name="module_id">0</column>
         <column name="cat_id">5</column>
         <column name="name">temp_name</column>
@@ -2151,7 +2175,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">55</column>
+        <column name="id">56</column>
         <column name="module_id">0</column>
         <column name="cat_id">6</column>
         <column name="name">copy_operation_modules</column>
@@ -2175,7 +2199,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">56</column>
+        <column name="id">57</column>
         <column name="module_id">0</column>
         <column name="cat_id">6</column>
         <column name="name">shortcut_operation_modules</column>
@@ -2199,7 +2223,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">57</column>
+        <column name="id">58</column>
         <column name="module_id">0</column>
         <column name="cat_id">6</column>
         <column name="name">move_operation_modules</column>
@@ -2223,7 +2247,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">58</column>
+        <column name="id">59</column>
         <column name="module_id">0</column>
         <column name="cat_id">6</column>
         <column name="name">upload_normal_width_size</column>
@@ -2247,7 +2271,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">59</column>
+        <column name="id">60</column>
         <column name="module_id">0</column>
         <column name="cat_id">6</column>
         <column name="name">upload_normal_height_size</column>
@@ -2271,7 +2295,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">60</column>
+        <column name="id">61</column>
         <column name="module_id">0</column>
         <column name="cat_id">7</column>
         <column name="name">autoregist_use</column>
@@ -2295,7 +2319,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">61</column>
+        <column name="id">62</column>
         <column name="module_id">0</column>
         <column name="cat_id">7</column>
         <column name="name">autoregist_approver</column>
@@ -2319,7 +2343,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">62</column>
+        <column name="id">63</column>
         <column name="module_id">0</column>
         <column name="cat_id">7</column>
         <column name="name">autoregist_use_input_key</column>
@@ -2343,7 +2367,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">63</column>
+        <column name="id">64</column>
         <column name="module_id">0</column>
         <column name="cat_id">7</column>
         <column name="name">autoregist_author</column>
@@ -2367,7 +2391,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">64</column>
+        <column name="id">65</column>
         <column name="module_id">0</column>
         <column name="cat_id">7</column>
         <column name="name">autoregist_use_items</column>
@@ -2391,7 +2415,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">65</column>
+        <column name="id">66</column>
         <column name="module_id">0</column>
         <column name="cat_id">7</column>
         <column name="name">autoregist_disclaimer</column>
@@ -2439,7 +2463,7 @@ from this site, etc.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">66</column>
+        <column name="id">67</column>
         <column name="module_id">0</column>
         <column name="cat_id">7</column>
         <column name="name">mail_approval_subject</column>
@@ -2463,7 +2487,7 @@ from this site, etc.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">67</column>
+        <column name="id">68</column>
         <column name="module_id">0</column>
         <column name="cat_id">7</column>
         <column name="name">mail_approval_body</column>
@@ -2491,7 +2515,7 @@ and confirm registration.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">68</column>
+        <column name="id">69</column>
         <column name="module_id">0</column>
         <column name="cat_id">7</column>
         <column name="name">mail_add_announce_subject</column>
@@ -2515,7 +2539,7 @@ and confirm registration.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">69</column>
+        <column name="id">70</column>
         <column name="module_id">0</column>
         <column name="cat_id">7</column>
         <column name="name">mail_add_announce_body</column>
@@ -2540,7 +2564,7 @@ Clicking on the link below will activate the account of this user.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">70</column>
+        <column name="id">71</column>
         <column name="module_id">0</column>
         <column name="cat_id">7</column>
         <column name="name">mail_add_user_subject</column>
@@ -2564,7 +2588,7 @@ Clicking on the link below will activate the account of this user.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">71</column>
+        <column name="id">72</column>
         <column name="module_id">0</column>
         <column name="cat_id">7</column>
         <column name="name">mail_add_user_body</column>
@@ -2594,7 +2618,7 @@ You may now log in by clicking on this link or copying and pasting it in your br
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">72</column>
+        <column name="id">73</column>
         <column name="module_id">0</column>
         <column name="cat_id">7</column>
         <column name="name">mail_get_password_subject</column>
@@ -2618,7 +2642,7 @@ You may now log in by clicking on this link or copying and pasting it in your br
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">73</column>
+        <column name="id">74</column>
         <column name="module_id">0</column>
         <column name="cat_id">7</column>
         <column name="name">mail_get_password_body</column>
@@ -2646,7 +2670,7 @@ You can still login with your password until now.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">74</column>
+        <column name="id">75</column>
         <column name="module_id">0</column>
         <column name="cat_id">7</column>
         <column name="name">mail_new_password_subject</column>
@@ -2670,7 +2694,7 @@ You can still login with your password until now.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">75</column>
+        <column name="id">76</column>
         <column name="module_id">0</column>
         <column name="cat_id">7</column>
         <column name="name">mail_new_password_body</column>
@@ -2695,7 +2719,7 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">76</column>
+        <column name="id">77</column>
         <column name="module_id">0</column>
         <column name="cat_id">7</column>
         <column name="name">withdraw_membership_use</column>
@@ -2719,7 +2743,7 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">77</column>
+        <column name="id">78</column>
         <column name="module_id">0</column>
         <column name="cat_id">7</column>
         <column name="name">withdraw_disclaimer</column>
@@ -2743,7 +2767,7 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">78</column>
+        <column name="id">79</column>
         <column name="module_id">0</column>
         <column name="cat_id">7</column>
         <column name="name">withdraw_membership_send_admin</column>
@@ -2767,7 +2791,7 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">79</column>
+        <column name="id">80</column>
         <column name="module_id">0</column>
         <column name="cat_id">7</column>
         <column name="name">mail_withdraw_membership_subject</column>
@@ -2791,7 +2815,7 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">80</column>
+        <column name="id">81</column>
         <column name="module_id">0</column>
         <column name="cat_id">7</column>
         <column name="name">mail_withdraw_membership_body</column>
@@ -2815,7 +2839,7 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">81</column>
+        <column name="id">82</column>
         <column name="module_id">0</column>
         <column name="cat_id">8</column>
         <column name="name">community_participate_sendmail</column>
@@ -2839,7 +2863,7 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">82</column>
+        <column name="id">83</column>
         <column name="module_id">0</column>
         <column name="cat_id">8</column>
         <column name="name">community_mail_participate_announce_subject</column>
@@ -2863,7 +2887,7 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">83</column>
+        <column name="id">84</column>
         <column name="module_id">0</column>
         <column name="cat_id">8</column>
         <column name="name">community_mail_participate_announce_body</column>
@@ -2887,7 +2911,7 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">84</column>
+        <column name="id">85</column>
         <column name="module_id">0</column>
         <column name="cat_id">8</column>
         <column name="name">community_withdraw_use</column>
@@ -2911,7 +2935,7 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">85</column>
+        <column name="id">86</column>
         <column name="module_id">0</column>
         <column name="cat_id">8</column>
         <column name="name">community_withdraw_sendmail</column>
@@ -2935,7 +2959,7 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">86</column>
+        <column name="id">87</column>
         <column name="module_id">0</column>
         <column name="cat_id">8</column>
         <column name="name">community_mail_withdraw_subject</column>
@@ -2959,7 +2983,7 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">87</column>
+        <column name="id">88</column>
         <column name="module_id">0</column>
         <column name="cat_id">8</column>
         <column name="name">community_mail_withdraw_body</column>
@@ -2983,7 +3007,7 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">88</column>
+        <column name="id">89</column>
         <column name="module_id">0</column>
         <column name="cat_id">8</column>
         <column name="name">community_mail_invite_subject</column>
@@ -3007,7 +3031,7 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">89</column>
+        <column name="id">90</column>
         <column name="module_id">0</column>
         <column name="cat_id">8</column>
         <column name="name">community_mail_invite_body</column>
@@ -3031,7 +3055,7 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">90</column>
+        <column name="id">91</column>
         <column name="module_id">0</column>
         <column name="cat_id">8</column>
         <column name="name">community_mail_wait_approval_subject</column>
@@ -3055,7 +3079,7 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">91</column>
+        <column name="id">92</column>
         <column name="module_id">0</column>
         <column name="cat_id">8</column>
         <column name="name">community_mail_wait_approval_body</column>
@@ -3079,7 +3103,7 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">92</column>
+        <column name="id">93</column>
         <column name="module_id">0</column>
         <column name="cat_id">8</column>
         <column name="name">community_mail_confirm_approval_subject</column>
@@ -3103,7 +3127,7 @@ We recommend that you change your password after login.</column>
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">93</column>
+        <column name="id">94</column>
         <column name="module_id">0</column>
         <column name="cat_id">8</column>
         <column name="name">community_mail_confirm_approval_body</column>
@@ -3132,7 +3156,7 @@ To allow participant and send a mail to the user, please click the link below.
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">94</column>
+        <column name="id">95</column>
         <column name="module_id">0</column>
         <column name="cat_id">8</column>
         <column name="name">community_mail_approved_subject</column>
@@ -3156,7 +3180,7 @@ To allow participant and send a mail to the user, please click the link below.
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">95</column>
+        <column name="id">96</column>
         <column name="module_id">0</column>
         <column name="cat_id">8</column>
         <column name="name">community_mail_approved_body</column>
@@ -3182,7 +3206,7 @@ This is the community's URL:
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">96</column>
+        <column name="id">97</column>
         <column name="module_id">0</column>
         <column name="cat_id">9</column>
         <column name="name">debug</column>
@@ -3206,7 +3230,7 @@ This is the community's URL:
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">97</column>
+        <column name="id">98</column>
         <column name="module_id">0</column>
         <column name="cat_id">10</column>
         <column name="name">allow_extension</column>

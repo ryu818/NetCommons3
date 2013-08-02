@@ -97,7 +97,11 @@ class Asset extends AppModel
 		$create_arr = array();
 		$options_arr = array();
 
-		if(extension_loaded('zlib') && !empty($_SERVER['HTTP_ACCEPT_ENCODING']) && preg_match('/gzip/i', $_SERVER['HTTP_ACCEPT_ENCODING'])) {
+		$doGzipCompression = false;
+		if (NC_ASSET_GZIP) {
+			$doGzipCompression = Configure::read(NC_CONFIG_KEY.'.'.'script_compress_gzip');
+		}
+		if($doGzipCompression && extension_loaded('zlib') && !empty($_SERVER['HTTP_ACCEPT_ENCODING']) && preg_match('/gzip/i', $_SERVER['HTTP_ACCEPT_ENCODING'])) {
 			$postfix = '.gz';
 		} else {
 			$postfix = '';
