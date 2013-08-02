@@ -107,9 +107,9 @@ class UsersController extends AppController {
 		$this->Cookie->name = $configs['autologin_cookie_name'];
 		if(!empty($this->request->data)){
 			if(!$this->Auth->login()) {
-                $this->Session->setFlash(__('Incorrect Login.Again, please enter.'), 'default', array(), 'auth');
-            }
-            $this->Session->setFlash(__('Login.'));
+				$this->Session->setFlash(__('Incorrect sign in.Again, please enter.'), 'default', array(), 'auth');
+			}
+			$this->Session->setFlash(__('Sign in.'));
 			$user = $this->Auth->user();//認証済みユーザーを取得
 
 			//フォームからのデータの場合
@@ -144,7 +144,7 @@ class UsersController extends AppController {
 		if (isset($user)) {
 			//認証できたユーザー。
 			$this->Auth->loginRedirect = $this->Common->redirectStartpage($configs);
-			$this->flash(__('You are already logged in.'), $this->Auth->redirect());
+			$this->flash(__('You are already signed in.'), $this->Auth->redirect());
 		} else if($configs['autologin_use'] == NC_AUTOLOGIN_LOGIN) {
 			$cookiePassport=$this->Cookie->Read('User');
 			if(isset($cookiePassport['login_id'])){
@@ -161,14 +161,14 @@ class UsersController extends AppController {
  * @return  void
  * @since   v 3.0.0.0
  */
-    function logout() {
-    	$configs = Configure::read(NC_CONFIG_KEY);
-    	$user = $this->Auth->user();
-    	//if($configs['autologin_use'] == NC_AUTOLOGIN_OFF) {
-	        $this->Common->passportDelete($user);
-    	//}
+	function logout() {
+		$configs = Configure::read(NC_CONFIG_KEY);
+		$user = $this->Auth->user();
+		//if($configs['autologin_use'] == NC_AUTOLOGIN_OFF) {
+			$this->Common->passportDelete($user);
+		//}
 		$this->Session->renew();
-        $this->Session->setFlash(__('You are now logged out.'));
-        $this->redirect($this->Auth->logout());	//ログアウトし、ログイン画面へリダイレクト
-    }
+		$this->Session->setFlash(__('You are now signed out.'));
+		$this->redirect($this->Auth->logout());	//ログアウトし、ログイン画面へリダイレクト
+	}
 }

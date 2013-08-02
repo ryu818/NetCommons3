@@ -13,7 +13,7 @@
 	<ul style="display:none;">
 		<li><a href="#system-init-tab-general"><?php echo(__d('system', 'General setting'));?></a></li>
 
-		<li><a href="<?php echo $this->Html->url(array('action' => 'login_logout'));?>"><?php echo(__d('system', 'Login and Logout'));?></a></li>
+		<li><a href="<?php echo $this->Html->url(array('action' => 'login_logout'));?>"><?php echo(__d('system', 'Sign in and Sign out'));?></a></li>
 		<li><a href="<?php echo $this->Html->url(array('action' => 'closed'));?>"><?php echo(__d('system', 'Turn your site off'));?></a></li>
 
 		<li><a href="<?php echo $this->Html->url(array('action' => 'server'));?>"><?php echo(__d('system', 'Server setting'));?></a></li>

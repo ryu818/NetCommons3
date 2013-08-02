@@ -958,7 +958,7 @@
         <column name="type">pages</column>
         <column name="title">Default start page</column>
         <column name="value">-1</column>
-        <column name="description">Set the first page shown after logging in.</column>
+        <column name="description">Set the first page shown after signing in.</column>
         <column name="options"></column>
         <column name="domain">system</column>
         <column name="attribute"></column>
@@ -1220,7 +1220,7 @@
         <column name="cat_id">1</column>
         <column name="name">autologin_cookie_name</column>
         <column name="type">text</column>
-        <column name="title">Cookie for login</column>
+        <column name="title">Cookie for sign in</column>
         <column name="value">nc_login</column>
         <column name="description"></column>
         <column name="options"></column>
@@ -1244,7 +1244,7 @@
         <column name="cat_id">1</column>
         <column name="name">autologin_expires</column>
         <column name="type">select</column>
-        <column name="title">Expiration date  of automatic login</column>
+        <column name="title">Expiration date  of automatic sign in</column>
         <column name="value">1 days</column>
         <column name="description"></column>
         <column name="options">a:5:{s:6:&quot;1 days&quot;;s:6:&quot;1 days&quot;;s:6:&quot;1 week&quot;;s:6:&quot;1 week&quot;;s:6:&quot;2 week&quot;;s:6:&quot;2 week&quot;;s:6:&quot;3 week&quot;;s:6:&quot;3 week&quot;;s:7:&quot;1 month&quot;;s:7:&quot;1 month&quot;;}</column>
@@ -1268,9 +1268,9 @@
         <column name="cat_id">1</column>
         <column name="name">login_autocomplete</column>
         <column name="type">radio</column>
-        <column name="title">Use autocomplete for login?</column>
+        <column name="title">Use autocomplete for sign in?</column>
         <column name="value">1</column>
-        <column name="description">Select yes to use autocomplete for login.</column>
+        <column name="description">Select yes to use autocomplete for sign in.</column>
         <column name="options">a:2:{s:2:&quot;on&quot;;s:3:&quot;Yes&quot;;s:3:&quot;off&quot;;s:2:&quot;No&quot;;}</column>
         <column name="domain">system</column>
         <column name="attribute"></column>
@@ -1292,7 +1292,7 @@
         <column name="cat_id">1</column>
         <column name="name">use_ssl</column>
         <column name="type">radio</column>
-        <column name="title">Use SSL for login?</column>
+        <column name="title">Use SSL for sign in?</column>
         <column name="value">0</column>
         <column name="description">To effective this setting you have to set up SSL on the server first.</column>
         <column name="options">a:2:{i:1;s:3:&quot;Yes&quot;;i:0;s:2:&quot;No&quot;;}</column>
@@ -1436,9 +1436,9 @@
         <column name="cat_id">2</column>
         <column name="name">session_timeout</column>
         <column name="type">select</column>
-        <column name="title">Time for automatic logout (the unit: Amount)</column>
+        <column name="title">Time for automatic sign out (the unit: Amount)</column>
         <column name="value">60</column>
-        <column name="description">If user login while setting the system will not anwers request from the browser,Automatically Logout.</column>
+        <column name="description">If user sign in while setting the system will not anwers request from the browser,Automatically Sign out.</column>
         <column name="options">a:8:{i:15;s:10:&quot;15 minutes&quot;;i:30;s:10:&quot;30 minutes&quot;;i:45;s:10:&quot;45 minutes&quot;;i:60;s:6:&quot;1 hour&quot;;i:180;s:7:&quot;3 hours&quot;;i:360;s:7:&quot;6 hours&quot;;i:720;s:8:&quot;12 hours&quot;;i:1440;s:5:&quot;1 day&quot;;}</column>
         <column name="domain">system</column>
         <column name="attribute">style=&quot;width:100px;&quot;</column>
@@ -2039,7 +2039,7 @@
         <column name="title">Display header menu</column>
         <column name="value">1</column>
         <column name="description"></column>
-        <column name="options">a:3:{s:19:&quot;NC_HEADER_MENU_NONE&quot;;s:16:&quot;Always displayed&quot;;s:24:&quot;NC_HEADER_MENU_MOUSEOVER&quot;;s:19:&quot;Mouseover displayed&quot;;s:21:&quot;NC_HEADER_MENU_ALWAYS&quot;;s:24:&quot;Non-display before login&quot;;}</column>
+        <column name="options">a:3:{s:19:&quot;NC_HEADER_MENU_NONE&quot;;s:16:&quot;Always displayed&quot;;s:24:&quot;NC_HEADER_MENU_MOUSEOVER&quot;;s:19:&quot;Mouseover displayed&quot;;s:21:&quot;NC_HEADER_MENU_ALWAYS&quot;;s:24:&quot;Non-display before sign in&quot;;}</column>
         <column name="domain">system</column>
         <column name="attribute">style=&quot;width:200px;&quot;</column>
         <column name="required">1</column>

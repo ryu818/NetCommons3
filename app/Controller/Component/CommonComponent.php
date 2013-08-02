@@ -112,7 +112,7 @@ class CommonComponent extends Component {
 							$this->passportWrite($user, $passport, $configs);
 
 							$this->_controller->Auth->loginRedirect = $this->redirectStartpage($this->configs);
-							$this->_controller->flash(__('The automatic login.'), $this->_controller->Auth->redirect());
+							$this->_controller->flash(__('The automatic sign in.'), $this->_controller->Auth->redirect());
 							return true;
 						}
 					}

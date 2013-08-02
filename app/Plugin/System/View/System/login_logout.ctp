@@ -14,7 +14,7 @@
 ?>
 <fieldset class="form system-fieldset">
 	<legend>
-		<?php echo __('Login');?>
+		<?php echo __('Sign in');?>
 	</legend>
 	<ul class="lists">
 		<?php
@@ -28,7 +28,7 @@
 </fieldset>
 <fieldset class="form system-fieldset">
 	<legend>
-		<?php echo __('Logout');?>
+		<?php echo __('Sign out');?>
 	</legend>
 	<ul class="lists">
 		<?php
