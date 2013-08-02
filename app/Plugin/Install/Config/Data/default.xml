@@ -1271,7 +1271,7 @@
         <column name="title">Use autocomplete for login?</column>
         <column name="value">1</column>
         <column name="description">Select yes to use autocomplete for login.</column>
-        <column name="options">a:2:{i:1;s:3:&quot;Yes&quot;;i:0;s:2:&quot;No&quot;;}</column>
+        <column name="options">a:2:{s:2:&quot;on&quot;;s:3:&quot;Yes&quot;;s:3:&quot;off&quot;;s:2:&quot;No&quot;;}</column>
         <column name="domain">system</column>
         <column name="attribute"></column>
         <column name="required">1</column>

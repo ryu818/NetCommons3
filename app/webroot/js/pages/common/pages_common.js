@@ -76,8 +76,8 @@
 		// ログイン
 		var nc_login = $('#nc-login');
 		nc_login.click(function(e){
-			var url = nc_login.attr('href');
-			$.PagesCommon.showLogin(e, url);
+			$.Event(e).preventDefault();
+			$('#nc-login-popup').dialog('open');
 		});
 		var nc_pages_setting = $('#nc-pages-setting');
 		nc_pages_setting.click(function(e){
@@ -88,10 +88,6 @@
 
 	// ページ共通
 	$.PagesCommon ={
-		showLogin: function(e, url) {
-			$.Event(e).preventDefault();
-			$.Common.showDialog('nc_login_dialog', {'url' : url}, {'title' : __('Login')});
-		},
 		showPageSetting: function(e, url) {
 			var id = 'nc-pages-setting-dialog-outer', w, h;
 			var a = $(e.target);

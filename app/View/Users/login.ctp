@@ -1,13 +1,13 @@
 <?php
-$this->assign('title', __('Login'));
+$this->assign('title', __('Sign in'));
 $class = "";
-if (!$this->request->is('ajax')) {
+if (!$this->request->is('ajax') && empty($this->request->named['popup'])) {
 	$this->extend('/Frame/base');
 	$class = " login-base";
 }
 ?>
 <?php echo $this->Session->flash('auth'); ?>
-<?php echo $this->Form->create('User');?>
+<?php echo $this->Form->create('User', array('url'=>array('popup'=>_OFF)));?>
 <?php
 $this->Form->inputDefaults(array(
 	'label' => false,
@@ -40,8 +40,8 @@ $this->Form->inputDefaults(array(
 					<?php if($autologin_use == NC_AUTOLOGIN_ON): ?>
 					<div class="login-save-my-info">
 						<label for="login-save-my-info">
-							<?php echo $this->Form->input('login_save_my_info', array('type' => 'checkbox', 'value' => _ON, 'id' => 'login_save_my_info')); ?>
-							&nbsp;<?php echo(__('Save my info?')); ?>
+							<?php echo $this->Form->input('login_save_my_info', array('type' => 'checkbox', 'value' => _ON, 'id' => 'login-save-my-info')); ?>
+							&nbsp;<?php echo(__('Stay signed in.')); ?>
 						</label>
 					</div>
 					<?php endif; ?>
@@ -50,7 +50,7 @@ $this->Form->inputDefaults(array(
 		</li>
 	</ul>
 	<p class="align-right">
-		<?php echo $this->Form->button(__('Login'), array('name' => 'login', 'class' => 'common-btn')); ?>
+		<?php echo $this->Form->button(__('Sign in'), array('name' => 'login', 'class' => 'common-btn')); ?>
 	</p>
 </fieldset>
 <?php echo $this->Form->end();?>

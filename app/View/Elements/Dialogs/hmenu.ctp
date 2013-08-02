@@ -64,9 +64,22 @@ $is_controls = ($this->request->controller == 'controls') ? true : false;
 			</li>
 			<li class="nc-hmenu-li">
 				<?php if(empty($nc_user['id'])): ?>
-					<?php echo $this->Html->link(__('Login'), array('controller' => 'users', 'action' => 'login'), array('id' => 'nc-login', 'class' => 'nc-hmenu-menu-a', 'aria-haspopup' => 'true')); ?>
+					<?php
+						$loginUrl = array('controller' => 'users', 'action' => 'login');
+						$loginStr = $this->requestAction(array_merge($loginUrl, array('popup' => _ON)), array('return'));
+						echo $this->Html->link(__('Sign in'), $loginUrl, array('id' => 'nc-login', 'class' => 'nc-hmenu-menu-a', 'aria-haspopup' => 'true'));
+						echo '<div id="nc-login-popup" style="display:none;">'.$loginStr.'</div>';
+					?>
+					<script>
+					$(function(){
+						$("#nc-login-popup").dialog({
+							title:'<?php echo __('Sign in'); ?>',
+							autoOpen: false
+						});
+					});
+					</script>
 				<?php else: ?>
-					<?php echo $this->Html->link(__('Logout'), array('controller' => 'users', 'action' => 'logout'), array('class' => 'nc-hmenu-menu-a')); ?>
+					<?php echo $this->Html->link(__('Sign out'), array('controller' => 'users', 'action' => 'logout'), array('class' => 'nc-hmenu-menu-a')); ?>
 				<?php endif; ?>
 			</li>
 			<?php if(!$is_controls && !empty($nc_user['id']) && $hierarchy >= NC_AUTH_MIN_CHIEF): ?>
