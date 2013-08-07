@@ -2063,7 +2063,7 @@
         <column name="title">Display header menu</column>
         <column name="value">1</column>
         <column name="description"></column>
-        <column name="options">a:3:{s:19:&quot;NC_HEADER_MENU_NONE&quot;;s:16:&quot;Always displayed&quot;;s:24:&quot;NC_HEADER_MENU_MOUSEOVER&quot;;s:19:&quot;Mouseover displayed&quot;;s:21:&quot;NC_HEADER_MENU_ALWAYS&quot;;s:24:&quot;Non-display before sign in&quot;;}</column>
+        <column name="options">a:3:{s:19:&quot;NC_HEADER_MENU_NONE&quot;;s:16:&quot;Always displayed&quot;;s:24:&quot;NC_HEADER_MENU_MOUSEOVER&quot;;s:19:&quot;Mouseover displayed&quot;;s:21:&quot;NC_HEADER_MENU_ALWAYS&quot;;s:26:&quot;Non-display before sign in&quot;;}</column>
         <column name="domain">system</column>
         <column name="attribute">style=&quot;width:200px;&quot;</column>
         <column name="required">1</column>
@@ -2087,7 +2087,7 @@
         <column name="title">Display page setting</column>
         <column name="value">0</column>
         <column name="description"></column>
-        <column name="options">a:2:{i:1;s:7:&quot;Display&quot;;i:0;s:24:&quot;Non-display before login&quot;;}</column>
+        <column name="options">a:2:{i:1;s:7:&quot;Display&quot;;i:0;s:26:&quot;Non-display before sign in&quot;;}</column>
         <column name="domain">system</column>
         <column name="attribute">style=&quot;width:200px;&quot;</column>
         <column name="required">1</column>
