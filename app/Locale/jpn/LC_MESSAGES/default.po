@@ -7,6 +7,8 @@ msgid  	"Reset"
 msgstr 	"リセット"
 msgid  	"Apply"
 msgstr 	"適用"
+msgid  	"Clear"
+msgstr 	"クリア"
 
 msgid  	"Save temporally"
 msgstr 	"一時保存"
@@ -84,6 +86,8 @@ msgstr	"自動的に%sに公開する。"
 msgid	"Authority to post root articles"
 msgstr	"記事投稿権限"
 
+msgid	"Description"
+msgstr	"説明"
 msgid	"Date Created"
 msgstr	"作成日"
 msgid	"Creator"
@@ -664,6 +668,9 @@ msgstr 	"ファイルの高さが大きすぎます。%u pixelまでにしてく
 msgid  	"File size too large. Max %u byte."
 msgstr 	"ファイルサイズが大きすぎます。%s Byteまでにしてください。"
 
+msgid  	"Ecxeeded upload capacity."
+msgstr 	"アップロード容量を超えました。ファイルを削除してからアップロードしてください。"
+
 msgid  	"The uploaded file is too big! It exceeds the upload_max_filesize defined in php.ini."
 msgstr 	"アップロードされたファイルは、php.ini の upload_max_filesize ディレクティブの値を超えています。"
 
@@ -672,6 +679,18 @@ msgstr 	"アップロードされたファイルは、htmlフォームで指定�
 
 msgid  	"Only partially uploaded."
 msgstr 	"アップロードされたファイルは一部のみしかアップロードされていません。"
+
+msgid  	"No file was uploaded."
+msgstr 	"ファイルはアップロードされませんでした。"
+
+msgid  	"There is no temporary folder."
+msgstr 	"テンポラリフォルダがありません。"
+
+msgid  	"Failed to write to disk."
+msgstr 	"ディスクへの書き込みに失敗しました。"
+
+msgid  	"PHP Extension is aborted file uploads."
+msgstr 	"PHP の拡張モジュールがファイルのアップロードを中止しました。"
 
 msgid  	"Failed uploading file."
 msgstr 	"ファイルのアップロードに失敗しました。"
@@ -727,6 +746,8 @@ msgstr 	"y/m/d H:i"
 ## 日時フォーマット(漢字)
 msgid  	"(Y-m-d h:i A)"
 msgstr 	"Y年m月d日 h:i A"
+msgid  	"(Y-m-d h:i)"
+msgstr 	"Y年m月d日 h:i"
 msgid  	"(Y-m-d)"
 msgstr 	"Y年m月d日"
 msgid  	"(Y-m)"
@@ -736,6 +757,8 @@ msgstr 	"Y年"
 
 msgid "(%1$s-%2$s)"
 msgstr 	"%1$s年%2$s月"
+msgid "(%s)"
+msgstr 	"%s年"
 
 ## 新規カラム追加
 msgid  	"Leftcolumn"

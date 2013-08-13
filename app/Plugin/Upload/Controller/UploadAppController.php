@@ -1,6 +1,6 @@
 <?php
 /**
- * AnnouncementAppControllerクラス
+ * UploadAppControllerクラス
  *
  * @copyright     Copyright 2012, NetCommons Project
  * @package       App.Controller
@@ -10,4 +10,15 @@
  */
 App::uses('AppPluginController', 'Controller');
 class UploadAppController extends AppPluginController {
+
+/**
+ * __construct
+ *
+ * @param CakeRequest $request
+ * @param CakeResponse $response
+ */
+	public function __construct($request = null, $response = null) {
+		parent::__construct($request, $response);
+		include_once dirname(dirname(__FILE__)).'/Config/defines.inc.php';
+	}
 }

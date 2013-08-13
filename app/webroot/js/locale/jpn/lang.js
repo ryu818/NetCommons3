@@ -41,6 +41,10 @@ $._lang['block'] = {
 	'To the placement page': '配置ページへ遷移'
 }
 
+$._lang['upload'] = {
+	'Please select files to add.': '追加するファイルを指定してください。'
+}
+
 $._lang['nc_wysiwyg'] = {
 	edit    : "編集",
 	html    : "HTML",
@@ -123,8 +127,9 @@ $._lang['nc_wysiwyg'] = {
     	del_js         : "scriptタグ,object(embed）タグは使用できない権限です。削除しました。",
     	del_empty      : "内容が空の&lt;%s&gt;要素を削除しました。"
     },
-    fileUploadTitle : "ファイルアップロード",
-    imageUploadTitle : "画像アップロード"
+	'File upload' : "ファイルアップロード",
+	'Image upload' : "画像アップロード",
+	'Edit file' : "ファイルの編集"
 };
 
 $._lang['nc_wysiwyg_smiley'] = {

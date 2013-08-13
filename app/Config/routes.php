@@ -63,6 +63,10 @@ Router::connect(
 	'/users/:action/*',
 	array('controller' => 'users')
 );
+Router::connect(
+	'/nc-downloads/*',
+	array('controller' => 'nc_downloads')
+);
 
 Router::connect(
 	'/controls/*',

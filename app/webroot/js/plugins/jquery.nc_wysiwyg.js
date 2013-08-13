@@ -38,6 +38,7 @@
         }
 
         var options = $.extend({
+            plugin   : null,			// プラグイン名称(default:null autoでnc-blockクラスのdata-actionより求める)
             html : '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>INITIAL_TITLE</title>INITIAL_HEADER</head><body>INITIAL_CONTENT</body></html>',
             title: 'wysiwyg editor',
 			css  : [],                // css src
@@ -64,11 +65,11 @@
 			autoRegistForm    : false,		// 自動登録を行う場合、登録のForm Elementをセット
 			autoRegistTime    : 30000,		// 30秒
 
-            formatMes    : true,             // 空のelement等のメッセージを画面上に表示するかどうか
-            format_time  : 3000,				// 3秒
+            formatMes    : true,			// 空のelement等のメッセージを画面上に表示するかどうか
+            format_time  : 3000,			// 3秒
             focus        : false,
-            image        : null,
-			file         : null
+            image        : false,			// 画像アップロードを有効にする場合、true
+			file         : false			// ファイルアップロードを有効にする場合、true
         }, options);
         options.css = options.css.concat(css);
         options.js = options.js.concat(js);
@@ -860,7 +861,8 @@
 				{
 					group :   "011",
 					value : {
-						insertvideo : { visible : true,exec : function(e) {
+						insertvideo : { visible : true,
+										exec : function(e) {
 											var self = this;
 											var callback = function(){
 																var opts = {
@@ -897,7 +899,7 @@
 											var src = $(n).attr("src");
 											var re = new RegExp(/.*\/nccommon\/mimetex\/\?c=(.*)/i);
 											if(!src.match(re)) {
-												self.components.insertimageDetail.call(self, e, n);
+												self.components.insertimageDetail.call(self, e, n, 'image');
 												return true;
 											}
 											return false;
@@ -906,34 +908,60 @@
 											var self = this;
 											self.components.insertimageDetail.call(self, e);
 										},
-										components : {
-											insertimageDetail : function (e, img, type) {
-												var self = this;
-												var url = $._base_url+'active-blocks/upload';
-												var options = {
-													//width: w,
-													//height: h,
-													position: [e.pageX - $(window).scrollLeft(), e.pageY - $(window).scrollTop()],
-													modal: true,
-													resizable: true,
-													show:'fold',
-													hide:'fold'
-												}
-												type = (type == undefined) ? 'image' : type;
-												if(type == 'image') {
-													options['title'] = $._lang['nc_wysiwyg']['imageUploadTitle'];
-												} else {
-													options['title'] = $._lang['nc_wysiwyg']['fileUploadTitle'];
-												}
-												$.get(url, function(res) {
-													var top_id = self.id + "-insert" + type;
-													var el = $('<div>').attr('id', top_id).html(res);
-													el.dialog(options);
-													$('#' + top_id).Upload({
-														wysiwyg:self
-													});
-												});
 
+										components : {
+											insertimageDetail : function (e, img, popup_type) {
+												var self = this;
+												var id = 'dialog-'+self.id;
+												var url = null;
+												var plugin = self.options.plugin;
+												var li, pos, params, dialog_title, options, el;
+												if(!plugin) {
+													plugin = $('#' + self.id).parents('.nc-block:first').attr('data-action').split("/")[0];
+												}
+												img = (img == undefined) ? null : img;
+												popup_type = (popup_type == undefined) ? 'image' : popup_type;
+												params = {id: id, popup_type: popup_type};
+												if(img) {
+													url = $._full_base_url + $._block_type + '/upload/ref_url/' + plugin;
+													params['src'] = $(img).attr('src');
+												} else {
+													url = $._full_base_url + $._block_type + '/upload/index/' + plugin;
+												}
+
+												li = $('#' + self.id + '-btn-insert' + popup_type);
+												pos = li.offset();
+												dialog_title = (popup_type == 'image') ? __d('nc_wysiwyg', 'Image upload') :
+													__d('nc_wysiwyg', 'File upload');
+												options = {
+													title: dialog_title,
+													minWidth: 470,
+													position : [pos.left, pos.top + li.outerHeight() - $(window).scrollTop()],
+													//position: [e.pageX - $(window).scrollLeft(), e.pageY - $(window).scrollTop()],
+													modal: true,
+													resizable: false,
+													show:'fold',
+													hide:'fold',
+													close:function(e) {
+														$('form.upload-files:first', el).fileupload('option', 'disabled', true);
+														$(window).unbind("resize.uploadResizeLibrary");
+													}
+												};
+												el = $('#'+id);
+												$.get(url, params, function(res) {
+													$.Common.tempSetting.upload = {
+														img: img,
+														wysiwyg: self
+													};
+													if (el.get(0)) {
+														el.html(res);
+													} else {
+														el = $('<div>').attr('id', id).html(res);
+													}
+
+													options.position = [pos.left, pos.top + li.outerHeight() - $(window).scrollTop()];
+													el.dialog(options);
+												});
 											}
 										}
 						},
@@ -1133,12 +1161,12 @@ IEで、iframe中のbodyのborderがつくから削除していると
 
             $(this.editorDoc).keydown(function( e )
             {
-            	if($.browser.webkit && (e.keyCode == 46 || e.keyCode == 8)) {
+            	/*if($.browser.webkit && (e.keyCode == 46 || e.keyCode == 8)) {
             		// １行選択してdelete(backspace)ボタン、
             		// または、1行にわたるNodeを選択してdelete(backspace)
             		// ボタンを押すと、そのelementが削除されないため対処
-            		// ->ChromeでStringのバックスペースでカーソルが行の先頭に移動してしまうためコメントに。
-					/*var data = null, p, pre_p, cur_flag, r = self.getRange(), f = self.getSelectNode();
+					// ->ChromeでStringのバックスペースでカーソルが行の先頭に移動してしまうためコメントに。
+					var data = null, p, pre_p, cur_flag, r = self.getRange(), f = self.getSelectNode();
 					switch (r.startContainer.nodeType) {
 					    case 3:
 					    case 4:
@@ -1167,8 +1195,8 @@ IEで、iframe中のbodyのborderがつくから削除していると
 						self.setRange(r);
                   	}
                   	// 削除後、さらに入力すると削除前のスタイルが残ってしまうため対処
-                  	setTimeout(function() {self.collapse();}, 100);*/
-				}
+                  	setTimeout(function() {self.collapse();}, 100);
+				}*/
             	if(e.ctrlKey && e.keyCode == 90) {
             		// undo
             		self.undo();
@@ -2477,6 +2505,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			content = this.content(root);
 			var form = $(t.options.autoRegistForm);
 			if(form.get(0) && (!autoregist_flag || (autoregist_flag && t.autoregist != content))) {
+				t.saveContent();
 				t.autoregist = content;			// エラーがでても、contentがかわるまではPOSTを投げるのをやめる。
 				var data = form.serializeArray();
 				data[data.length] = {name : 'data[AutoRegist][on]',value : true};
@@ -3331,7 +3360,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			function replaceFonts() {
 				var bm, c_el, r_el;
 				$.each(t.select('span,font,img'), function(k, el) {
-					if (el.style.fontFamily == 'nc-wysiwygfont' || (el.face && el.face == 'nc-wysiwygfont') || (el.src && el.src.match(/nc-wysiwygurl$/))) {
+					if (el.style.fontFamily == 'nc-wysiwygfont' || (el.face && el.face == 'nc-wysiwygfont') || (el.src && el.src.match(/upload\/img\/nc-wysiwyg-dummy.gif$/))) {
 						if (!bm)
 							bm = t.getBookmark();
 
@@ -3414,7 +3443,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			// Create inline elements
 			t.focus();
 			if(collapsed)
-				t.editorDoc.execCommand('insertImage', false, 'nc-wysiwygurl');
+				t.editorDoc.execCommand('insertImage', false, $._full_base_url+'upload/img/nc-wysiwyg-dummy.gif');
 			else
 				t.editorDoc.execCommand('fontName', false, 'nc-wysiwygfont');
 			r_el = replaceFonts();

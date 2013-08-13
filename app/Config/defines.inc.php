@@ -167,7 +167,7 @@ define('NC_FOOTER_PAGE_ID', 8);
 define('NC_PERMALINK_CONTENT', '(%| |#|<|>|\+|\\\\|\"|\'|&|\?|\.$|=|\/|~|:|;|,|\$|@|^\.|\||\]|\[|\!|\(|\)|\*)');
 define('NC_PERMALINK_PROHIBITION', "/".NC_PERMALINK_CONTENT."/i");
 define('NC_PERMALINK_PROHIBITION_REPLACE', "-");
-define('NC_PERMALINK_DIR_CONTENT', "^(users\/|controls\/|active-controls\/|active-contents\/|blocks\/|active-blocks\/|img\/|css\/|js\/|frame\/|theme\/)$");
+define('NC_PERMALINK_DIR_CONTENT', "^(users\/|controls\/|active-controls\/|active-contents\/|blocks\/|active-blocks\/|img\/|css\/|js\/|frame\/|theme\/|nc-downloads\/)$");
 define('NC_PERMALINK_PROHIBITION_DIR_PATTERN', "/".NC_PERMALINK_DIR_CONTENT."/i");
 
 define('NC_SPACE_PUBLIC_PREFIX', '');
@@ -228,6 +228,12 @@ define('NC_HEADER_MENU_NONE', 0);					//ログイン前非表示
 define('NC_HEADER_MENU_MOUSEOVER' ,1);				//マウスオーバー時表示
 define('NC_HEADER_MENU_ALWAYS', 2);					//常に表示
 
+//-----------------SSL設定-------------
+define('NC_USE_SSL_ALWAYS', 3);				//常にSSLを有効にする
+define('NC_USE_SSL_AFTER_LOGIN', 2);		//ログイン後にSSLを有効にする
+define('NC_USE_SSL_FOR_LOGIN', 1);			//ログインと新規登録のみでSSLを有効にする
+define('NC_USE_SSL_NO_USE', 0);				//SSLを有効にしない
+
 //-----------------システム管理者ID-------------------------------------------
 define('NC_SYSTEM_USER_ID',       1);
 
@@ -274,14 +280,12 @@ define("NC_ALLOW_ATTACHMENT_ALL", 2);
 define("NC_UPLOAD_MAX_SIZE_IMAGE", 2000000);
 define("NC_UPLOAD_MAX_SIZE_ATTACHMENT", 2000000);
 
-define("NC_UPLOAD_MAX_WIDTH_IMAGE", 1024);
-define("NC_UPLOAD_MAX_HEIGHT_IMAGE", 1280);
-
-define("NC_UPLOAD_MAX_WIDTH_AVATAR", 145);
-define("NC_UPLOAD_MAX_HEIGHT_AVATAR", 145);
+define("NC_UPLOAD_MAX_WIDTH_AVATAR", 170);
+define("NC_UPLOAD_MAX_HEIGHT_AVATAR", 170);
 define("NC_UPLOAD_MAX_WIDTH_AVATAR_THUMBNAIL", 66);
 define("NC_UPLOAD_MAX_HEIGHT_AVATAR_THUMBNAIL", 66);
-define("NC_UPLOAD_USER_CONTROLLER_ACTION", 'nccommon/download_avatar');
+define("NC_UPLOAD_LIBRARY_GEOMETRY_FIT_WIDTH", '110w');
+define("NC_UPLOAD_LIBRARY_GEOMETRY_FIT_HEIGHT", '110h');
 
 define('NC_UPLOAD_FOLDER_MODE', 0777);
 define('NC_UPLOAD_FILE_MODE', 0666);
@@ -291,6 +295,9 @@ define('NC_UPLOAD_FILE_MODE', 0666);
 define('NC_UPLOAD_IMAGEFILE_EXTENSION', 'gif,jpg,jpe,jpeg,png,bmp');
 define('NC_UPLOAD_ATTACHMENT_EXTENSION', 'Config');		// configテーブルの許す拡張子の一覧から拡張子チェックを行う
 define('NC_UPLOAD_COMPRESSIONFILE_EXTENSION', 'zip,tar,tgz,gz');
+
+define('NC_UPLOAD_PROHIBITION_CHAR_FOLDER', '/[\/\?\|:<>*\'\\\"\.\\\]/');
+define('NC_UPLOAD_PROHIBITION_CHAR_FILE', '/[\/\?\|:<>*\'\\\"\\\]/');
 
 define("NC_CATEGORY_INIFILE",          "category.ini");
 define("NC_THEME_INIFILE",             "theme.ini");

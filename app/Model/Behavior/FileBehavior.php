@@ -39,6 +39,25 @@ class FileBehavior extends ModelBehavior {
 	}
 
 /**
+ * パスの最後にある名前の部分を返す(マルチバイト版)
+ *
+ * @param   Model  $Model
+ * @param   string $path
+ * @param   string $suffix
+ * @return	 string
+ * @since   v 3.0.0.0
+ **/
+	public function basename(Model $Model, $path, $suffix = null){
+		$tmp = preg_split('/[\/\\\\]/', $path);
+		$res = end($tmp);
+		if(strlen($suffix)){
+			$suffix = preg_quote($suffix);
+			$res = preg_replace("/({$suffix})$/u", "", $res);
+		}
+		return $res;
+	}
+
+/**
  * 指定パスにあるファイル、それに対応したgzファイルを削除する
  *
  * @param   Model  $Model

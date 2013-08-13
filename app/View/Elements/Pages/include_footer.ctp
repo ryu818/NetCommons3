@@ -11,7 +11,13 @@
 	$nc_user = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 	$ncMode = intval($this->Session->read(NC_SYSTEM_KEY.'.'.'mode'));
 
-	$common_js = array('plugins/chosen.jquery.js');
+	$common_js = array(
+			'plugins/fileupload/jquery.fileupload',				// fileuploadを複数includeすると
+			'plugins/fileupload/jquery.iframe-transport',		// javascriptで「too much recursion」エラーになるため、親でinclude
+			'plugins/chosen.jquery',
+			'plugins/select2',
+			'plugins/jquery.tmpl'
+	);
 	if($this->params['controller'] == 'pages') {
 		$common_js[] = 'pages/common/';
 	}

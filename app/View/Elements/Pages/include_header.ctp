@@ -68,7 +68,14 @@ $.Common.pjaxPrevUrl = location.href;
 	if($locale) {
 		echo $this->Html->script(array('locale/'.$locale.'/lang.js', 'locale/'.$locale.'/jquery/ui/jquery.ui.datepicker.js'), array('inline' => true));
 	}
-	$common_css = array('common/vendors/', 'common/main/', 'jquery/base/', 'common/editable/common', 'plugins/chosen.css', );
+	$common_css = array(
+		'common/vendors/',
+		'common/main/',
+		'jquery/base/',
+		'common/editable/common',
+		'plugins/chosen.css',
+		'plugins/select2.css'
+	);
 	//if($this->params['controller'] == 'pages') {	// TODO:system_flagがOFFの場合にincludeするように後に修正。
 		$common_css[] = 'pages/common/';
 	//}

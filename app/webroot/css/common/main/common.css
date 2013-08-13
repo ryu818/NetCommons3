@@ -32,6 +32,11 @@ input[type="checkbox"], input[type="radio"] {
 .float-right {
 	float:right !important;
 }
+.block-center {
+	display:block;
+	margin-left:auto !important;
+	margin-right:auto !important;
+}
 
 .clear {
 	clear : both !important;
@@ -220,7 +225,6 @@ div.message {
 	font-size: 85%;
 }
 
-
 /* 一時保存 */
 .temporary {
 	margin: 2px 5px 2px 0;
@@ -250,6 +254,8 @@ div.message {
 .nc-button,.nc-button:link,.nc-button:visited,.nc-button:active {
 	-moz-user-select: none;
 	-webkit-user-select: none;
+	-ms-user-select:     none;
+	-o-user-select:      none;
 	user-select: none;
 	background-image: -moz-linear-gradient(center top , #f5f5f5, #f0f0f0);
 	background-image: linear-gradient(center top , #f5f5f5, #f0f0f0);
