@@ -466,7 +466,7 @@ img.icon {
 .nc-arrow-outer-pos {
 	position: relative;
 }
-.nc-arrow-outer-pos a {
+.nc-arrow-outer-pos a.nc-arrow-outer {
 	position: absolute;
 	right:0;
 	top:0;
@@ -478,7 +478,7 @@ img.icon {
 	padding:0 2px;
 	border:1px solid #c9c9c9;
 	display:block;
-	margin:8px 2px;
+	margin:4px 2px;
 	background-color:#fff;
 }
 .nc-arrow-header-link {

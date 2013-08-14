@@ -44,18 +44,18 @@ if(!empty($announcement['Announcement']['id'])) {
 		<?php /* 編集メニュー切替 */  ?>
 		<div class="nc-arrow-outer-pos">
 			<a href="#" title="<?php echo __('Switching edit menu');  ?>" class="float-right nc-arrow-outer" onclick="$(this).next().slideToggle();return false;"><span class="nc-arrow"></span></a>
-		</div>
-		<div class="nc-panel-color nc-arrow-header-link">
-		<?php if(isset($announcement['Announcement'])): ?>
+			<div class="nc-panel-color nc-arrow-header-link">
+			<?php if(isset($announcement['Announcement'])): ?>
+				<?php
+					/* TODO:後にリンクにする */
+					echo (h($announcement['Revision']['created_user_name']));
+				?>
+				 |
+			<?php endif; ?>
 			<?php
-				/* TODO:後にリンクにする */
-				echo (h($announcement['Revision']['created_user_name']));
+				echo $this->Html->link(__('Edit'), $url, array('data-pjax' => '#'.$id));
 			?>
-			 |
-		<?php endif; ?>
-		<?php
-			echo $this->Html->link(__('Edit'), $url, array('data-pjax' => '#'.$id));
-		?>
+			</div>
 		</div>
 	<?php endif; ?>
 	<?php echo ($announcement['Revision']['content']);?>
