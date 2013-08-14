@@ -37,7 +37,7 @@ class AnnouncementPostsController extends AnnouncementAppController {
  *
  * @var array
  */
-	public $uses = array('Revision');
+	public $uses = array('Revision', 'UploadLink');
 
 /**
  * Helper name
@@ -186,6 +186,17 @@ class AnnouncementPostsController extends AnnouncementAppController {
 					return;
 				}
 
+				// アップロード更新
+				$options = array(
+					'plugin' => Inflector::camelize($this->plugin),
+					'contentId' => $this->content_id,
+					'uniqueId' => $announcement['Announcement']['revision_group_id'],
+				);
+				if(!$this->UploadLink->updateUploadInfoForWysiwyg($announcement['Revision']['content'], $options)) {
+					$this->flash(__('Failed to update the database, (%s).', 'upload_links'), null, 'AnnouncementPosts.index.003', '500');
+					return;
+				}
+
 				// 新着・検索
 				$archive = array(
 					'Archive' => array(
@@ -201,7 +212,7 @@ class AnnouncementPostsController extends AnnouncementAppController {
 					)
 				);
 				if(!$this->Archive->saveAuto($this->params, $archive)) {
-					$this->flash(__('Failed to update the database, (%s).', 'archives'), null, 'AnnouncementPosts.index.003', '500');
+					$this->flash(__('Failed to update the database, (%s).', 'archives'), null, 'AnnouncementPosts.index.004', '500');
 					return;
 				}
 

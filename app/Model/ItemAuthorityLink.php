@@ -40,4 +40,34 @@ class ItemAuthorityLink extends AppModel
 		}
 		return $ret;
 	}
+
+/**
+ * ログインユーザーが閲覧する際の公開フラグを取得
+ * @param   array $owner 情報の所有者の会員情報
+ * @return  array data[item_id] = $public_flag
+ * @since   v 3.0.0.0
+ */
+	public function findPublicFlagForLoginUser($owner) {
+		$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
+		$loginUserId = isset($loginUser['id']) ? $loginUser['id'] : _OFF;
+
+		$params = array(
+			'conditions'=>array(
+				'ItemAuthorityLink.user_authority_id'=>$owner['Authority']['id']
+			)
+		);
+		$itemAuthorityLinks = $this->findList('all', $params);
+
+		if ($loginUserId === _OFF) {
+			$publicFlagKey = 'lower';
+		} elseif ($loginUserId == $owner['User']['id']) {
+			$publicFlagKey = 'self';
+		} elseif ($loginUser['hierarchy'] >= $owner['Authority']['hierarchy']) {
+			$publicFlagKey = 'higher';
+		} else {
+			$publicFlagKey = 'lower';
+		}
+
+		return $itemAuthorityLinks[$owner['Authority']['id']][$publicFlagKey];
+	}
 }

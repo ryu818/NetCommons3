@@ -289,4 +289,50 @@ class Revision extends AppModel
 		}
 		return true;
 	}
+/**
+ * beforeDelete
+ * @return  boolean
+ * @since   v 3.0.0.0
+ */
+	public function beforeDelete() {
+		$this->data = $this->findById($this->id);
+		return true;
+	}
+/**
+ * afterDelete
+ * @return  boolean
+ * @since   v 3.0.0.0
+ */
+	public function afterDelete() {
+		$UploadLink = ClassRegistry::init('UploadLink');
+
+		// 未使用になったUploadLinkのレコードを削除
+		$params = array(
+			'conditions' => array(
+				'Revision.group_id' => $this->data['Revision']['group_id'],
+			),
+		);
+		$revisions = $this->find('all', $params);
+
+		$text = '';
+		foreach ($revisions as $revision) {
+			$text .= $revision['Revision']['content'];
+		}
+		$revisionsUploadIdArr = $UploadLink->getExtractedUploadId($text);
+		$uploadIdArr = $UploadLink->getExtractedUploadId($this->data['Revision']['content']);
+
+		$unusedUploadIdArr = array_diff($uploadIdArr, $revisionsUploadIdArr);
+		if (!empty($unusedUploadIdArr)) {
+			$delConditions = array(
+				'UploadLink.upload_id' => $unusedUploadIdArr,
+				'UploadLink.unique_id' => $this->data['Revision']['group_id'],
+				'UploadLink.model_name' => 'Revision',
+				'UploadLink.field_name' => 'content'
+			);
+			if(!$UploadLink->deleteAll($delConditions, true, true)){
+				return false;
+			}
+		}
+		return true;
+	}
 }
