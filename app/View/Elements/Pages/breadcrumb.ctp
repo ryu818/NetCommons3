@@ -1,5 +1,10 @@
 <?php if($pages_list[count($pages_list) - 1]['Page']['permalink'] == ''): ?>
 	<?php echo(__('Home')); return;?>
+<?php elseif($pages_list[0]['Page']['permalink'] != ''): ?>
+	<a href="<?php echo($this->webroot); ?>">
+		<?php echo(__('Home'));?>
+	</a>
+	&nbsp;&gt;&gt;&nbsp;
 <?php endif; ?>
 
 <?php foreach ($pages_list as $key => $page_list): ?>
