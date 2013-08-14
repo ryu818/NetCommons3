@@ -198,10 +198,10 @@ class Content extends AppModel
  */
 	public function deleteContent($content, $allDelete = _OFF, $parentRoomId = null) {
 		App::uses('Page', 'Model');
-		App::uses('Upload', 'Model');
+		App::uses('UploadLink', 'Model');
 		App::uses('Revision', 'Model');
 		$Page = new Page();
-		$Upload = new Upload();
+		$UploadLink = new UploadLink();
 		$Revision = new Revision();
 
 		$id = $content['Content']['id'];
@@ -258,11 +258,11 @@ class Content extends AppModel
 			if(!$Revision->deleteAll($conditions)) {
 				return false;
 			}
-			// TODO:uploads関連削除 仮実装
+
 			$conditions = array(
-				"Upload.content_id" => $id
+				"UploadLink.content_id" => $id
 			);
-			if(!$Upload->deleteAll($conditions)) {
+			if(!$UploadLink->deleteAll($conditions, true, true)) {
 				return false;
 			}
 		} else if($content['Content']['room_id'] != $parentRoomId) {

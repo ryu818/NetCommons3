@@ -10,7 +10,9 @@
 ;(function($) {
 	$.fn.BlogPosts = function(id, is_error) {
 		var wysiwyg = $('#RevisionContent'+id).nc_wysiwyg({
-			autoRegistForm : $('#Form' + id)
+			autoRegistForm : $('#Form' + id),
+			image : true,
+			file : true
 		});
 		var date = $('#BlogPostPostDate' + id);
 		var area_outer = $('#blog-post-widget-area' + id);

@@ -486,12 +486,12 @@ class ModuleAdmin extends AppModel {
 		App::uses('Content', 'Model');
 		App::uses('ModuleSystemLink', 'Model');
 		App::uses('ModuleLink', 'Model');
-		App::uses('Upload', 'Model');
+		App::uses('UploadLink', 'Model');
 		$Content = new Content();
 		$Module = new Module();
 		$ModuleLink = new ModuleLink();
 		$ModuleSystemLink = new ModuleSystemLink();
-		$Upload = new Upload();
+		$UploadLink = new UploadLink();
 
 		$successMes = array();
 		$errorMes = array();
@@ -500,6 +500,7 @@ class ModuleAdmin extends AppModel {
 			return array($successMes, $errorMes);
 		}
 		$module_id = $module['Module']['id'];
+		$dir_name = $module['Module']['dir_name'];
 		$plugin_name = Inflector::camelize($module['Module']['dir_name']);
 		$module_name = $module['Module']['module_name'];
 		$prefix = __d('module', 'Module %s:', h($module_name));
@@ -560,16 +561,11 @@ class ModuleAdmin extends AppModel {
 		}
 
 		// ------------------------------------------------------
-		// --- アップロードテーブルのデータ削除＆ファイル削除 ---
+		// --- アップロードテーブルのデータ削除(ファイルの削除はライブラリから行う) ---
 		// ------------------------------------------------------
-		if(is_dir(NC_UPLOADS_DIR.$dirName) && !$this->File->delDir(NC_UPLOADS_DIR.$dirName)) {
-			// upload file
-			$errorMes[] = $prefix.__d('module', 'Failed to %s.', __d('module', 'Delete upload file'));
-			return array($successMes, $errorMes);
-		}
-		$condition = array('Upload.module_id' => $module_id);
-		if(!$Upload->deleteAll($condition)) {
-			$errorMes[] = $prefix.__('Failed to delete the database, (%s).','uploads');
+		$condition = array('UploadLink.plugin' => $dir_name);
+		if(!$UploadLink->deleteAll($condition)) {
+			$errorMes[] = $prefix.__('Failed to delete the database, (%s).','upload_links');
 			return array($successMes, $errorMes);
 		}
 

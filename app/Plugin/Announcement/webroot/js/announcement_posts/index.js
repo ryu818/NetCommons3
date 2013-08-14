@@ -11,7 +11,9 @@
 	$.fn.AnnouncementPosts = function(id) {
 		var wysiwyg = $('#RevisionContent'+id).nc_wysiwyg({
 			autoRegistForm : $('#Form' + id),
-			focus : true
+			focus : true,
+			image : true,
+			file : true
 		});
 		var pre_change_flag = $('#AnnouncementPreChangeFlag' + id);
 		var date = $('#AnnouncementPreChangeDate' + id);

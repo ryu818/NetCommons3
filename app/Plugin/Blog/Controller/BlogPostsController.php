@@ -26,7 +26,7 @@ class BlogPostsController extends BlogAppController {
  *
  * @var array
  */
-	public $uses = array('Blog.BlogTermLink', 'Revision');
+	public $uses = array('Blog.BlogTermLink', 'Revision', 'UploadLink');
 
 /**
  * 実行前処理
@@ -207,21 +207,33 @@ class BlogPostsController extends BlogAppController {
 					return;
 				}
 
+				// アップロード更新
+				$options = array(
+					'plugin' => Inflector::camelize($this->plugin),
+					'contentId' => $this->content_id,
+					'uniqueId' => $blogPost['BlogPost']['revision_group_id'],
+				);
+				if(!$this->UploadLink->updateUploadInfoForWysiwyg($blogPost['Revision']['content'], $options)) {
+					$this->flash(__('Failed to update the database, (%s).', 'upload_links'), null, 'BlogPosts.index.005', '500');
+					return;
+				}
+
 				if($blogPost['BlogPost']['is_future'] == _ON || $blogPost['BlogPost']['status'] == NC_STATUS_TEMPORARY) {
 					$isAfterUpdateTermCount = false;
 				} else {
 					$isAfterUpdateTermCount = true;
 				}
+
 				// カテゴリー登録
 				if(!$this->BlogTermLink->saveTermLinks($this->content_id, $this->BlogPost->id, $isBeforeUpdateTermCount, $isAfterUpdateTermCount,
 					$activeCategoryArr, 'id', 'category')) {
-					$this->flash(__('Failed to register the database, (%s).', 'blog_term_links'), null, 'BlogPosts.index.005', '500');
+					$this->flash(__('Failed to register the database, (%s).', 'blog_term_links'), null, 'BlogPosts.index.006', '500');
 					return;
 				}
 				// タグ登録
 				if(!$this->BlogTermLink->saveTermLinks($this->content_id, $this->BlogPost->id, $isBeforeUpdateTermCount, $isAfterUpdateTermCount,
 						$activeTagArr, 'name', 'tag')) {
-					$this->flash(__('Failed to register the database, (%s).', 'blog_term_links'), null, 'BlogPosts.index.006', '500');
+					$this->flash(__('Failed to register the database, (%s).', 'blog_term_links'), null, 'BlogPosts.index.007', '500');
 					return;
 				}
 
@@ -276,7 +288,7 @@ class BlogPostsController extends BlogAppController {
 					)
 				);
 				if(!$this->Archive->saveAuto($this->params, $archive)) {
-					$this->flash(__('Failed to update the database, (%s).', 'archives'), null, 'AnnouncementPosts.index.003', '500');
+					$this->flash(__('Failed to update the database, (%s).', 'archives'), null, 'BlogPosts.index.008', '500');
 					return;
 				}
 
@@ -382,6 +394,17 @@ class BlogPostsController extends BlogAppController {
 		// revision削除
 		if(!$this->Revision->deleteRevison($blogPost['BlogPost']['revision_group_id'])){
 			$this->flash(__('Failed to delete the database, (%s).', 'revisions'), null, 'BlogPosts.delete.007', '500');
+			return;
+		}
+
+		// UploadLink削除
+		$delConditions = array(
+			'UploadLink.unique_id'=>$blogPost['BlogPost']['revision_group_id'],
+			'UploadLink.model_name'=>'Revision',
+			'UploadLink.field_name'=>'content'
+		);
+		if(!$this->UploadLink->deleteAll($delConditions, true, true)){
+			$this->flash(__('Failed to delete the database, (%s).', 'revisions'), null, 'BlogPosts.delete.008', '500');
 			return;
 		}
 

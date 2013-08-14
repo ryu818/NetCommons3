@@ -618,11 +618,9 @@ class Block extends AppModel
 						}
 					}
 
-					if(isset($content['Content']) && $content['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_OFF && $allDelete == _ON &&
-						$page['Page']['room_id'] == $content['Content']['room_id'] && method_exists($class_name, 'delete')) {
-						// 削除アクション
-						$ret = $class->delete($content);
-						if(!$ret) {
+					if(isset($content['Content']) && $content['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_OFF
+						&& $allDelete == _ON && $page['Page']['room_id'] == $content['Content']['room_id']) {
+						if(!$Content->deleteContent($content, $allDelete, $parentRoomId)) {
 							return false;
 						}
 					}
