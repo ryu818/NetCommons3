@@ -42,7 +42,9 @@ if(!empty($announcement['Announcement']['id'])) {
 			</span>
 		<?php endif; ?>
 		<?php /* 編集メニュー切替 */  ?>
-		<a href="#" title="<?php echo __('Switching edit menu');  ?>" class="float-right nc-arrow-outer" onclick="$(this).next().slideToggle();return false;"><span class="nc-arrow"></span></a>
+		<div class="nc-arrow-outer-pos">
+			<a href="#" title="<?php echo __('Switching edit menu');  ?>" class="float-right nc-arrow-outer" onclick="$(this).next().slideToggle();return false;"><span class="nc-arrow"></span></a>
+		</div>
 		<div class="nc-panel-color nc-arrow-header-link">
 		<?php if(isset($announcement['Announcement'])): ?>
 			<?php

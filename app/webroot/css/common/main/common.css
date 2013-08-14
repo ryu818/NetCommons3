@@ -463,7 +463,14 @@ img.icon {
 	border-bottom: 4px solid transparent;
 	border-left: 5px solid #565656;
 }
-
+.nc-arrow-outer-pos {
+	position: relative;
+}
+.nc-arrow-outer-pos a {
+	position: absolute;
+	right:0;
+	top:0;
+}
 .nc-arrow-outer {
 	border-radius:2px;
 	width:9px;
