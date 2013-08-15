@@ -110,7 +110,7 @@ class AuthBehavior extends ModelBehavior {
  * @return array $results
  * @since   v 3.0.0.0
  */
-	public function afterFind($Model, $results, $primary = false) {
+	public function afterFind(Model $Model, $results, $primary = false) {
 		if($this->settings[$Model->alias]['afterFind'] == false) {
 			return $results;
 		}

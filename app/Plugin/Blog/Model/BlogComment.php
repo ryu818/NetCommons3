@@ -131,7 +131,7 @@ class BlogComment extends AppModel
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	public function beforeDelete() {
+	public function beforeDelete($cascade = true) {
 		App::uses('Archive', 'Model');
 		$Archive = new Archive();
 		// アーカイブ削除
