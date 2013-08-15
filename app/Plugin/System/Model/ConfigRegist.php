@@ -120,7 +120,7 @@ class ConfigRegist extends AppModel {
  * @return  array|boolean false
  * @since   v 3.0.0.0
  */
-	public function save(&$configs, $requestConfigs) {
+	public function saveValues(&$configs, $requestConfigs) {
 		$ret = true;
 
 		// バリデート
