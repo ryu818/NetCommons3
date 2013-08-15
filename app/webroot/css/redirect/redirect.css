@@ -19,3 +19,13 @@ ul.nc-redirect li {
 	list-style-image: none;
 	font-size:116%;
 }
+
+/* メンテナンス */
+.nc-hmenu-maintenance {
+	height:40px;
+	line-height:40px;
+	text-align:right;
+	padding:0 15px;
+	background-color:#ffffff;
+	border-bottom:1px solid #bbbbbb;
+}

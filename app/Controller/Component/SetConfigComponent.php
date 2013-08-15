@@ -91,21 +91,13 @@ class SetConfigComponent extends Component {
 		$configs['language'] = $lang;
 
 		// ******************************************************************************************
-		// 自動ログイン
-		// ******************************************************************************************
-		$user = $this->Auth->user();//認証済みユーザーを取得
-		$user_id = isset($user['id']) ? intval($user['id']) : 0;
-		if(!$user && $this->Common->autoLogin($configs)) {
-			$user = $this->Auth->user();//認証済みユーザーを取得
-			$user_id = isset($user['id']) ? intval($user['id']) : 0;
-		}
-		// ******************************************************************************************
 		// タイムゾーン
 		// ******************************************************************************************
-		if($user_id == 0) {
-			$configs['timezone_offset'] = $configs['default_TZ'];
-		} else {
+		$user = $this->Auth->user();//認証済みユーザーを取得
+		if(isset($user['id'])) {
 			$configs['timezone_offset'] = $user['timezone_offset'];
+		} else {
+			$configs['timezone_offset'] = $configs['default_TZ'];
 		}
 
 		// ******************************************************************************************
@@ -155,21 +147,21 @@ class SetConfigComponent extends Component {
 		Configure::write(NC_SYSTEM_KEY.'.locale', $catalog['locale']);
 
 		// ******************************************************************************************
-		// サイトClose
+		// メンテナンスモード
 		// ******************************************************************************************
-		/*if($configs['closesite'] == _ON) {
-			if($user_id != 0  && $user['hierarchy'] < NC_AUTH_MIN_ADMIN) {
+		if($configs['is_maintenance'] == _ON) {
+			if($user['id'] != 0  && $user['hierarchy'] < NC_AUTH_MIN_ADMIN) {
 				// 強制ログアウト
 				$this->Auth->logout();
-				$user_id = 0;
+				$user['id'] = 0;
 			}
-			if($user_id == 0 && !($controller->params['controller'] == 'users' && $controller->params['action'] == 'login')) {
+			if($user['id'] == 0 && !($controller->params['controller'] == 'users' && $controller->params['action'] == 'login')) {
 				$controller->set('page_title', $configs['sitename']);
-				$controller->set('message', $configs['closesite_text']);
-				echo $controller->render(false, "closesite");
+				$controller->set('message', $configs['maintenance_text']);
+				echo $controller->render(false, 'maintenance');
 				exit;
 			}
-		}*/
+		}
 	}
 
 /**

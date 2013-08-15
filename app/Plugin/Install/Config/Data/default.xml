@@ -1289,30 +1289,6 @@
     <table name="configs">
         <column name="id">19</column>
         <column name="module_id">0</column>
-        <column name="cat_id">1</column>
-        <column name="name">use_ssl</column>
-        <column name="type">radio</column>
-        <column name="title">Use SSL for sign in?</column>
-        <column name="value">0</column>
-        <column name="description">To effective this setting you have to set up SSL on the server first.</column>
-        <column name="options">a:2:{i:1;s:3:&quot;Yes&quot;;i:0;s:2:&quot;No&quot;;}</column>
-        <column name="domain">system</column>
-        <column name="attribute"></column>
-        <column name="required">1</column>
-        <column name="minlength">0</column>
-        <column name="maxlength">0</column>
-        <column name="regexp"></column>
-        <column name="lang_flag">0</column>
-        <column name="created">NULL</column>
-        <column name="created_user_id">0</column>
-        <column name="created_user_name"></column>
-        <column name="modified">NULL</column>
-        <column name="modified_user_id">0</column>
-        <column name="modified_user_name"></column>
-    </table>
-    <table name="configs">
-        <column name="id">20</column>
-        <column name="module_id">0</column>
         <column name="cat_id">0</column>
         <column name="name">is_maintenance</column>
         <column name="type">radio</column>
@@ -1335,7 +1311,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">21</column>
+        <column name="id">20</column>
         <column name="module_id">0</column>
         <column name="cat_id">0</column>
         <column name="name">maintenance_text</column>
@@ -1359,7 +1335,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">22</column>
+        <column name="id">21</column>
         <column name="module_id">0</column>
         <column name="cat_id">0</column>
         <column name="name">is_closed_site</column>
@@ -1383,7 +1359,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">23</column>
+        <column name="id">22</column>
         <column name="module_id">0</column>
         <column name="cat_id">2</column>
         <column name="name">memory_limit</column>
@@ -1407,7 +1383,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">24</column>
+        <column name="id">23</column>
         <column name="module_id">0</column>
         <column name="cat_id">2</column>
         <column name="name">script_compress_gzip</column>
@@ -1431,7 +1407,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">25</column>
+        <column name="id">24</column>
         <column name="module_id">0</column>
         <column name="cat_id">2</column>
         <column name="name">session_name</column>
@@ -1455,7 +1431,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">26</column>
+        <column name="id">25</column>
         <column name="module_id">0</column>
         <column name="cat_id">2</column>
         <column name="name">session_timeout</column>
@@ -1479,7 +1455,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">27</column>
+        <column name="id">26</column>
         <column name="module_id">0</column>
         <column name="cat_id">2</column>
         <column name="name">session_auto_regenerate</column>
@@ -1503,7 +1479,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">28</column>
+        <column name="id">27</column>
         <column name="module_id">0</column>
         <column name="cat_id">2</column>
         <column name="name">proxy_mode</column>
@@ -1527,7 +1503,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">29</column>
+        <column name="id">28</column>
         <column name="module_id">0</column>
         <column name="cat_id">2</column>
         <column name="name">proxy_host</column>
@@ -1551,7 +1527,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">30</column>
+        <column name="id">29</column>
         <column name="module_id">0</column>
         <column name="cat_id">2</column>
         <column name="name">proxy_port</column>
@@ -1575,7 +1551,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">31</column>
+        <column name="id">30</column>
         <column name="module_id">0</column>
         <column name="cat_id">2</column>
         <column name="name">proxy_user</column>
@@ -1599,7 +1575,7 @@
         <column name="modified_user_name"></column>
     </table>
     <table name="configs">
-        <column name="id">32</column>
+        <column name="id">31</column>
         <column name="module_id">0</column>
         <column name="cat_id">2</column>
         <column name="name">proxy_pass</column>
@@ -1614,6 +1590,30 @@
         <column name="minlength">0</column>
         <column name="maxlength">64</column>
         <column name="regexp">/^[ -~]+$/</column>
+        <column name="lang_flag">0</column>
+        <column name="created">NULL</column>
+        <column name="created_user_id">0</column>
+        <column name="created_user_name"></column>
+        <column name="modified">NULL</column>
+        <column name="modified_user_id">0</column>
+        <column name="modified_user_name"></column>
+    </table>
+    <table name="configs">
+        <column name="id">32</column>
+        <column name="module_id">0</column>
+        <column name="cat_id">2</column>
+        <column name="name">use_ssl</column>
+        <column name="type">radio</column>
+        <column name="title">Use SSL for sign in?</column>
+        <column name="value">0</column>
+        <column name="description">To effective this setting you have to set up SSL on the server first.</column>
+        <column name="options">a:4:{i:3;s:15:&quot;Use SSL always?&quot;;i:2;s:22:&quot;Use SSL after sign in?&quot;;i:1;s:20:&quot;Use SSL for sign in?&quot;;i:0;s:11:&quot;No Use SSL.&quot;;}</column>
+        <column name="domain">system</column>
+        <column name="attribute"></column>
+        <column name="required">1</column>
+        <column name="minlength">0</column>
+        <column name="maxlength">0</column>
+        <column name="regexp"></column>
         <column name="lang_flag">0</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
@@ -3212,7 +3212,7 @@ This is the community's URL:
         <column name="name">debug</column>
         <column name="type">select</column>
         <column name="title">Debuging mode Setting</column>
-        <column name="value">2</column>
+        <column name="value">0</column>
         <column name="description"></column>
         <column name="options">a:3:{i:0;s:17:&quot;No error messages&quot;;i:1;s:19:&quot;Errors and warnings&quot;;i:2;s:34:&quot;Full debug messages and SQL output&quot;;}</column>
         <column name="domain">system</column>

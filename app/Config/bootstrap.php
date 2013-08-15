@@ -157,13 +157,14 @@ CakePlugin::loadAll(array(array('routes' => true)));	// Loads all plugins at onc
 Configure::write('Session', array(
 	'defaults' => 'database',
 	'handler' => array(
-        'model' => 'Session'
-    ),
-    'cookie' => 'nc_session',	// 初期値
-	/*'ini' => Array(
-        'session.cookie_lifetime' => 2580000,
-        'session.gc_maxlifetime' => 2580000,
-        'session.gc_probability' => 1,
-        'session.gc_divisor' => 100
-    )*/
+		'model' => 'Session'
+	),
+	'cookie' => 'nc_session',	// 初期値
+	'ini' => array(
+		'session.cookie_path' => preg_replace('/^' . preg_quote($_SERVER['DOCUMENT_ROOT'], '/').'/i', '', str_replace('\\', '/', ROOT)),
+//         'session.cookie_lifetime' => 2580000,
+//         'session.gc_maxlifetime' => 2580000,
+//         'session.gc_probability' => 1,
+//         'session.gc_divisor' => 100
+	)
 ));

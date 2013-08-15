@@ -14,20 +14,19 @@ class Passport extends AppModel
 
 /**
  * 自動ログインパスポートキー削除
- * @param   array  $user
  * @param   string $cookiePassport
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function passportDelete($user, $cookiePassport) {
-        if(isset($user)) {
-        	$condition = array(
-        		'Passport.user_id' => $user['id'],
-        		'Passport.passport' => $cookiePassport
-        	);
-        	$this->deleteAll($condition);
-        }
-    }
+	public function passportDelete($cookiePassport) {
+		if (empty($cookiePassport)) {
+			return;
+		}
+		$condition = array(
+			'Passport.passport' => $cookiePassport
+		);
+		$this->deleteAll($condition);
+	}
 
 /**
  * 自動ログインパスポートキー書き込み
@@ -36,17 +35,17 @@ class Passport extends AppModel
  * @return  string $passport
  * @since   v 3.0.0.0
  */
-    public function passportWrite($user, $passport = array()) {
-    	if(isset($user)) {
-	        //$passport = array();
-	        $passport['Passport']['user_id'] = $user['id'];//isset($user['User']['id']) ? $user['User']['id'] : $user['Passport']['user_id'];
-	        $passport['Passport']['passport'] = Security::generateAuthKey();	//識別用にユニークなキーを生成
-	        //if(isset($user['Passport']['id']))$passport['Passport']['id'] = $user['Passport']['id'];
-	        $this->save($passport);
+	public function passportWrite($user, $passport = array()) {
+		if(isset($user)) {
+			//$passport = array();
+			$passport['Passport']['user_id'] = $user['id'];//isset($user['User']['id']) ? $user['User']['id'] : $user['Passport']['user_id'];
+			$passport['Passport']['passport'] = Security::generateAuthKey();	//識別用にユニークなキーを生成
+			//if(isset($user['Passport']['id']))$passport['Passport']['id'] = $user['Passport']['id'];
+			$this->save($passport);
 
-	        return $passport['Passport']['passport'];
-    	}
+			return $passport['Passport']['passport'];
+		}
 
-        return '';
-    }
+		return '';
+	}
 }

@@ -249,6 +249,9 @@
 				url: url,
 				data: data,
 				success: function(res, status, xhr){
+					if (res === false) {
+						return false;
+					}
 					//if(typeof res == 'object' && res.get(0).body) {
 					//	// iframe ajax用
 					//	res = res.get(0).body.innerHTML;

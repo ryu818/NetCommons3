@@ -51,7 +51,7 @@ class AppController extends Controller {
 	public $isChief = null;
 
 	public $components = array(
-		'Init', 'SetConfig', 'Session', 'Common', 'CheckAuth', 'Auth',
+		'Init', 'SetConfig', 'Session', 'Common', 'CheckAuth', 'Auth', 'Cookie'
 	);
 	// 'DebugKit.Toolbar','Cookie', 'RequestHandler'
 /**
@@ -102,19 +102,27 @@ class AppController extends Controller {
 		}
 
 		$conditions = array(
-			'name' => array('session_timeout', 'session_name', 'session_auto_regenerate', 'language'),
+			'name' => array(
+				'session_timeout',
+				'session_name',
+				'session_auto_regenerate',
+				'language',
+				'use_ssl',
+				'autologin_cookie_name',
+			),
 			'module_id' => 0
 		);
 		$params = array(
 			'fields' => array(
-					'Config.name',
-					'Config.value'
+				'Config.name',
+				'Config.value'
 			),
 			'conditions' => $conditions,
-			'limit' => 4
+			'limit' => 6
 			//'order' => 'Config.id'
 		);
 		$configs = $this->Config->find('all', $params);
+
 		Configure::write(NC_CONFIG_KEY.'.'.'config_language', $configs['language']);
 		Configure::write('Session.cookieTimeout', 0);
 		Configure::write('Session.timeout', intval($configs['session_timeout']));
@@ -123,7 +131,14 @@ class AppController extends Controller {
 			Configure::write('Session.autoRegenerate', true);
 		}
 
-		Configure::write('Session.cookie', $configs['session_name']);
+		$this->Cookie->name = $configs['autologin_cookie_name'];
+		if ($this->Cookie->read('logged_in') == _ON && !$this->request->is('ssl')) {
+			Configure::write('Session.cookie', $configs['session_name'].'_once');
+		} else {
+			Configure::write('Session.cookie', $configs['session_name']);
+		}
+
+		$this->forceSsl($configs['use_ssl'], $configs['autologin_cookie_name']);
 	}
 
 /**
@@ -159,21 +174,17 @@ class AppController extends Controller {
 				}
 			}
 		}
-		// Configセット
 		if ($this->Components->enabled('Auth')) {
+			// Configセット
 			$this->SetConfig->set();
-		}
 
-		$isClosedSite = Configure::read(NC_CONFIG_KEY.'.'.'is_closed_site');
-		if(!$isClosedSite) {
-			$this->Auth->allow();
-		}
+			// クローズドサイト設定
+			$isClosedSite = Configure::read(NC_CONFIG_KEY.'.'.'is_closed_site');
+			if(!$isClosedSite) {
+				$this->Auth->allow();
+			}
 
-		// 権限チェック
-		//if($blockType == 'active-controls') {
-		//	// 管理系モジュール
-		//} else
-		if ($controllerName != 'controls' && $this->Components->enabled('Auth')) {
+			// 権限チェック
 			$this->CheckAuth->check();
 		}
 
@@ -182,6 +193,17 @@ class AppController extends Controller {
 			$sessionTimeout = Configure::read(NC_CONFIG_KEY.'.'.'session_timeout');
 			$this->Security->csrfExpires = '+'.$sessionTimeout.' minutes';		// Tokenの有効期限　Session.timeoutと同じとする。
 			$this->Security->blackHoleCallback = 'errorToken';
+		}
+
+		if ($this->Components->enabled('Cookie')) {
+			// ログイン後に作成されるCookieのsecureを0にするため
+			$configUseSsl = Configure::read(NC_CONFIG_KEY.'.'.'use_ssl');
+			if($configUseSsl == NC_USE_SSL_NO_USE
+				|| ($configUseSsl == NC_USE_SSL_FOR_LOGIN
+						&& $controllerName == 'users'
+						&& $this->request->params['action'] != 'logout')) {
+				ini_set('session.cookie_secure', 0);
+			}
 		}
 	}
 
@@ -415,5 +437,30 @@ class AppController extends Controller {
 		$this->Security->unlockedFields = array(
 			'AutoRegist'
 		);
+	}
+
+/**
+ * 強制的にSSLにリダイレクト処理
+ * @param   int $useSsl
+ * @param   string $autologinCookieName
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function forceSsl($useSsl, $autologinCookieName)
+	{
+		// SSLを有効にする設定でhttp://でリクエストされた場合はhttps://にリダイレクト
+		$isUseSslAction = false;
+		if ($this->request->params['controller'] == 'users'
+			&& $this->request->params['action'] != 'logout') {
+			$isUseSslAction = true;
+		}
+		$this->Cookie->name = $autologinCookieName;
+		if ($useSsl == NC_USE_SSL_ALWAYS
+			|| ($useSsl == NC_USE_SSL_AFTER_LOGIN && ($this->Cookie->read('logged_in') == _ON || $isUseSslAction))
+			|| ($useSsl == NC_USE_SSL_FOR_LOGIN && $isUseSslAction)) {
+			if (!$this->request->is('ssl')) {
+				$this->redirect('https://'.env('SERVER_NAME').$this->here);
+			}
+		}
 	}
 }

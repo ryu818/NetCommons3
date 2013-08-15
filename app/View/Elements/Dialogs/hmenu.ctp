@@ -66,9 +66,13 @@ $is_controls = ($this->request->controller == 'controls') ? true : false;
 				<?php if(empty($nc_user['id'])): ?>
 					<?php
 						$loginUrl = array('controller' => 'users', 'action' => 'login');
-						$loginStr = $this->requestAction(array_merge($loginUrl, array('popup' => _ON)), array('return'));
-						echo $this->Html->link(__('Sign in'), $loginUrl, array('id' => 'nc-login', 'class' => 'nc-hmenu-menu-a', 'aria-haspopup' => 'true'));
-						echo '<div id="nc-login-popup" style="display:none;">'.$loginStr.'</div>';
+						if (Configure::read(NC_CONFIG_KEY.'.'.'use_ssl') != NC_USE_SSL_NO_USE) {
+							echo $this->Html->link(__('Sign in'), $loginUrl, array('id' => 'nc-login-ssl', 'class' => 'nc-hmenu-menu-a'));
+						} else {
+							echo $this->Html->link(__('Sign in'), $loginUrl, array('id' => 'nc-login', 'class' => 'nc-hmenu-menu-a', 'aria-haspopup' => 'true'));
+							$loginStr = $this->requestAction(array_merge($loginUrl, array('popup' => _ON)), array('return'));
+							echo '<div id="nc-login-popup" style="display:none;">'.$loginStr.'</div>';
+						}
 					?>
 					<script>
 					$(function(){

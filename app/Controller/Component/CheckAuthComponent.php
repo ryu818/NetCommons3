@@ -145,18 +145,32 @@ class CheckAuthComponent extends Component {
 			Configure::write(NC_SYSTEM_KEY.'.Modules.'.$camel_plugin_name, $module);
 		}
 
-		if($plugin_name == 'page' || $controller_name == 'pages' || $plugin_name == 'group' ||
-			$controller_name == 'users' || $module['Module']['system_flag'] == _OFF) {
+		if ($plugin_name == 'page' || $controller_name == 'pages'
+			|| $plugin_name == 'group' || $controller_name == 'users'
+			|| (isset($module['Module']) && $module['Module']['system_flag'] == _OFF)) {
 			// 一般系モジュール
 			$page = $this->checkGeneral();
 			if($page === false) {
 				return;
 			}
+			$autoLoginUrl = null;
+			if (isset($page['Page'])) {
+				$autoLoginUrl = $this->_controller->Page->getPermalink($page['Page']['permalink'], $page['Page']['space_type']);
+			}
 		} else {
 			// 管理系モジュール
-			if(!$this->checkAdmin($module['Module']['id'])) {
+			if($controller_name != 'controls' && !$this->checkAdmin($module['Module']['id'])) {
 				return;
 			}
+			$autoLoginUrl = array('plugin'=>'', 'controller' => 'controls', 'action' => 'index');
+		}
+
+		// ******************************************************************************************
+		// 自動ログイン
+		// ******************************************************************************************
+		if(empty($user['id']) && $controller_name != 'users' && $action_name != 'logout') {
+			// ログインに成功したらリダイレクト
+			$this->_controller->Common->autoLogin(Configure::read(NC_CONFIG_KEY), $autoLoginUrl);
 		}
 
 		if($block_type == 'active-controls' || $block_type == 'active-contents') {

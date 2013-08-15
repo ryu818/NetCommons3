@@ -112,10 +112,6 @@ msgid	"Use autocomplete for sign in?"
 msgstr	"ログインのオートコンプリートを有効にする。"
 msgid	"Select yes to use autocomplete for sign in."
 msgstr	"ログインの際にログインIDとパスワードをブラウザに記憶する事ができるようになります。"
-msgid	"Use SSL for sign in?"
-msgstr	"ログインと新規登録でSSLを有効にする。"
-msgid	"To effective this setting you have to set up SSL on the server first."
-msgstr	"サーバ上でSSLの設定を行わないと上記の設定は有効になりません。<br />共有SSLでは、動作しない場合があります。"
 
 # Turn your site off, closed site
 msgid	"Turn your site off?"
@@ -185,6 +181,21 @@ msgstr	"プロキシが認証を必要とする場合、そのパスワードを
 #msgstr	"接続先ドメイン"
 #msgid	"Please input the Domain's name or RDN(Relative Distinguished Name)."
 #msgstr	"接続先のドメイン名、またはRDN（相対識別名）を記述します。"
+
+msgid	"Security Communication"
+msgstr	"セキュリティ通信"
+msgid	"SSL setting?"
+msgstr	"SSLを有効にする"
+msgid	"Use SSL always?"
+msgstr	"常にSSLを有効にする"
+msgid	"Use SSL after sign in?"
+msgstr	"ログイン以降にSSLを有効にする"
+msgid	"Use SSL for sign in?"
+msgstr	"ログインと新規登録のみでSSLを有効にする"
+msgid	"No Use SSL."
+msgstr	"SSLを有効にしない"
+msgid	"To effective this setting you have to set up SSL on the server first."
+msgstr	"サーバ上でSSLの設定を行わないと上記の設定は有効になりません。<br />共有SSLでは、動作しない場合があります。"
 
 # Mail setting
 msgid	"FROM address"

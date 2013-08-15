@@ -72,11 +72,20 @@ class CommonComponent extends Component {
 		//$this->_controller->Auth->loginRedirect = '/users/index';
 	}
 
-	public function autoLogin($configs) {
+/**
+ * 自動ログイン処理
+ * @param   array  $configs
+ * @param   mixed  $redirectUrl array or string
+ * @return  boolean
+ * @since   v 3.0.0.0
+ */
+	public function autoLogin($configs, $redirectUrl=null) {
 		if($configs['autologin_use'] == NC_AUTOLOGIN_ON) {
-			//認証でなかったユーザー。
+			//認証できなかったユーザー。
+			$sessionIni = Configure::read('Session.ini');
 			$this->Cookie->name = $configs['autologin_cookie_name'];
-			$cookiePassport = $this->Cookie->Read('User');
+			$this->Cookie->path = $sessionIni['session.cookie_path'];
+			$cookiePassport = $this->Cookie->read('User');
 			if(isset($cookiePassport['passport'])){
 				//クッキーに記録したパスポートでログインしてみる
 				$deadline = gmdate(NC_DB_DATE_FORMAT, strtotime("-".$configs['autologin_expires']));
@@ -111,9 +120,12 @@ class CommonComponent extends Component {
 							//ログインできたので、クッキーを更新してリダイレクトする
 							$this->passportWrite($user, $passport, $configs);
 
-							$this->_controller->Auth->loginRedirect = $this->redirectStartpage($this->configs);
-							$this->_controller->flash(__('The automatic sign in.'), $this->_controller->Auth->redirect());
-							return true;
+							if (!isset($redirectUrl)) {
+								$startPage = $this->redirectStartpage($configs);
+								$this->_controller->Auth->loginRedirect = $startPage;
+								$redirectUrl = $this->_controller->Auth->redirect($startPage);
+							}
+							$this->_controller->flash(__('The automatic sign in.'), $redirectUrl);
 						}
 					}
 				}
@@ -124,19 +136,18 @@ class CommonComponent extends Component {
 
 /**
  * 自動ログインパスポートキー削除
- * @param   array  $user
  * @param   array  $configs
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function passportDelete($user, $configs = array()) {
+	public function passportDelete($configs = array()) {
 		$configs = isset($configs['autologin_cookie_name']) ? $configs : Configure::read(NC_CONFIG_KEY);
 		$this->Cookie->name = $configs['autologin_cookie_name'];
-		$cookiePassport = $this->Cookie->Read('User');
+		$cookiePassport = $this->Cookie->read('User');
 
-        $this->Cookie->delete('User');
-        $this->_controller->Passport->passportDelete($user, $cookiePassport);
-    }
+		$this->Cookie->delete('User');
+		$this->_controller->Passport->passportDelete($cookiePassport['passport']);
+	}
 
 /**
  * 自動ログインパスポートキー書き込み
@@ -146,14 +157,18 @@ class CommonComponent extends Component {
  * @return  void
  * @since   v 3.0.0.0
  */
-    public function passportWrite($user, $passport = array(), $configs = array()) {
-    	$configs = isset($configs['autologin_expires']) ? $configs : Configure::read(NC_CONFIG_KEY);
-        $this->Cookie->name = $configs['autologin_cookie_name'];
-        $passport = $this->_controller->Passport->passportWrite($user, $passport);
+	public function passportWrite($user, $passport = array(), $configs = array()) {
+		$configs = isset($configs['autologin_expires']) ? $configs : Configure::read(NC_CONFIG_KEY);
+		$this->Cookie->name = $configs['autologin_cookie_name'];
+		// 常にSSLを有効にする場合はPassportをsecureにする
+		if ($configs['use_ssl'] == NC_USE_SSL_ALWAYS) {
+			$this->Cookie->secure = true;
+		}
+		$passport = $this->_controller->Passport->passportWrite($user, $passport);
 
-        $cookie = array('passport' => $passport);
-        $this->Cookie->write('User', $cookie, true,"+ ".$configs['autologin_expires']);
-    }
+		$cookie = array('passport' => $passport);
+		$this->Cookie->write('User', $cookie, true,"+ ".$configs['autologin_expires']);
+	}
 
 /**
  * リダイレクトのURLを取得
@@ -161,8 +176,8 @@ class CommonComponent extends Component {
  * @return  string   $url
  * @since   v 3.0.0.0
  */
-    public function redirectStartpage($configs) {
-    	$redirect_url = $this->_redirectStartpage($configs['first_startpage_id']);
+	public function redirectStartpage($configs) {
+		$redirect_url = $this->_redirectStartpage($configs['first_startpage_id']);
 		if(!$redirect_url)
 			$redirect_url = $this->_redirectStartpage($configs['second_startpage_id']);
 		if(!$redirect_url)
@@ -195,17 +210,21 @@ class CommonComponent extends Component {
 			$ret_url = '/';
 		} else {
 			$page = $this->_controller->Page->findAuthById($page_id, $user_id);
-    		if($page['PageAuthority']['hierarchy'] != NC_AUTH_OTHER) {
-    			if(isset($use_column) && !$page['Authority'][$use_column]) {
-    				// マイポータル OR マイルーム使用不可
-    				return false;
-    			}
+			if($page['PageAuthority']['hierarchy'] != NC_AUTH_OTHER) {
+				if(isset($use_column) && !$page['Authority'][$use_column]) {
+					// マイポータル OR マイルーム使用不可
+					return false;
+				}
 				$ret_url = '/' . $this->_controller->Page->getPermalink($page['Page']['permalink'], $page['Page']['space_type']);
 			}
 		}
+		// ログイン時のみSSLを使用する場合はログイン後、http://～にアクセスする
+		if ($ret_url && Configure::read(NC_CONFIG_KEY.'.'.'use_ssl') == NC_USE_SSL_FOR_LOGIN) {
+			$ret_url = 'http://'.env('SERVER_NAME').$this->_controller->request->base.$ret_url;
+		}
 
 		return $ret_url;
-    }
+	}
 /**
  * URLのURLエンコード処理
  * (phpマニュアルより抜粋)
@@ -213,42 +232,42 @@ class CommonComponent extends Component {
  * @return  string  $url
  * @since   v 3.0.0.0
  */
-    public function linkEncode($p_url) {
-    	$ta = array_merge (array(
-    			'scheme' => '',
-    			'user' => '',
-    			'pass' => '',
-    			'host' => '',
-    			'port' => '',
-    			'path' => '',
-    			'query' => '',
-    			'fragment' => '',
-    	), parse_url($p_url));
-    	if (!empty($ta['scheme'])) { $ta['scheme'].='://'; }
-    	if (!empty($ta['pass']) and !empty($ta['user'])) {
-    		$ta['user'].=':';
-    		$ta['pass']=rawurlencode($ta['pass']).'@';
-    	} elseif (!empty($ta['user'])) {
-    		$ta['user'].='@';
-    	}
-    	if (!empty($ta['port']) and !empty($ta['host'])) {
-    		$ta['host']=''.$ta['host'].':';
-    	} elseif    (!empty($ta['host'])) {
-    		$ta['host']=$ta['host'];
-    	}
-    	if (!empty($ta['path'])) {
-    		$tu='';
-    		$tok=strtok($ta['path'], "\\/");
-    		while (strlen($tok)) {
-    			$tu.=rawurlencode($tok).'/';
-    			$tok=strtok("\\/");
-    		}
-    		$ta['path']='/'.trim(str_replace('%3A', ':', $tu), '/');	// :はnamed属性で使用するため再変換。
-    	}
-    	if (!empty($ta['query'])) { $ta['query']='?'.$ta['query']; }
-    	if (!empty($ta['fragment'])) { $ta['fragment']='#'.$ta['fragment']; }
-    	return implode('', array($ta['scheme'], $ta['user'], $ta['pass'], $ta['host'], $ta['port'], $ta['path'], $ta['query'], $ta['fragment']));
-    }
+	public function linkEncode($p_url) {
+		$ta = array_merge (array(
+				'scheme' => '',
+				'user' => '',
+				'pass' => '',
+				'host' => '',
+				'port' => '',
+				'path' => '',
+				'query' => '',
+				'fragment' => '',
+		), parse_url($p_url));
+		if (!empty($ta['scheme'])) { $ta['scheme'].='://'; }
+		if (!empty($ta['pass']) and !empty($ta['user'])) {
+			$ta['user'].=':';
+			$ta['pass']=rawurlencode($ta['pass']).'@';
+		} elseif (!empty($ta['user'])) {
+			$ta['user'].='@';
+		}
+		if (!empty($ta['port']) and !empty($ta['host'])) {
+			$ta['host']=''.$ta['host'].':';
+		} elseif (!empty($ta['host'])) {
+			$ta['host']=$ta['host'];
+		}
+		if (!empty($ta['path'])) {
+			$tu='';
+			$tok=strtok($ta['path'], "\\/");
+			while (strlen($tok)) {
+				$tu.=rawurlencode($tok).'/';
+				$tok=strtok("\\/");
+			}
+			$ta['path']='/'.trim(str_replace('%3A', ':', $tu), '/');	// :はnamed属性で使用するため再変換。
+		}
+		if (!empty($ta['query'])) { $ta['query']='?'.$ta['query']; }
+		if (!empty($ta['fragment'])) { $ta['fragment']='#'.$ta['fragment']; }
+		return implode('', array($ta['scheme'], $ta['user'], $ta['pass'], $ta['host'], $ta['port'], $ta['path'], $ta['query'], $ta['fragment']));
+	}
 
 /**
  * Page.controller_actionを分解し、配列を返す

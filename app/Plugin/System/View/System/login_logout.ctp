@@ -22,7 +22,6 @@
 			echo $this->element('item', array('item' => $configs['autologin_cookie_name']));
 			echo $this->element('item', array('item' => $configs['autologin_expires']));
 			echo $this->element('item', array('item' => $configs['login_autocomplete']));
-			echo $this->element('item', array('item' => $configs['use_ssl']));
 		?>
 	</ul>
 </fieldset>

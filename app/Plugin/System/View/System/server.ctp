@@ -48,6 +48,16 @@
 		?>
 	</ul>
 </fieldset>
+<fieldset class="form system-fieldset">
+	<legend>
+		<?php echo __d('system', 'Security Communication');?>
+	</legend>
+	<ul class="lists">
+		<?php
+			echo $this->element('item', array('item' => $configs['use_ssl'], 'separator'=> true));
+		?>
+	</ul>
+</fieldset>
 <?php
 	echo $this->element('footer');
 ?>

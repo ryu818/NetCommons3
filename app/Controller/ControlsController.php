@@ -33,6 +33,13 @@ class ControlsController extends AppController {
 	public $name = 'Controls';
 
 /**
+ * Component name
+ *
+ * @var array
+ */
+	public $components = array('CheckAuth' => array('allowUserAuth' => NC_AUTH_GUEST));
+	
+/**
  * コントロールパネル表示
  * @param   void
  * @return  void
@@ -40,10 +47,6 @@ class ControlsController extends AppController {
  */
 	public function index() {
 		$user = $this->Session->read(NC_AUTH_KEY.'.'.'User');
-		if(!isset($user['authority_id'])) {
-			$this->flash(__('Forbidden permission to access the page.'), '/users/login', 'Controls.001', '403');
-			return;
-		}
 		$modules = $this->Module->findSystemModule($user['authority_id']);
 		$this->set('modules', $modules);
 
@@ -51,7 +54,8 @@ class ControlsController extends AppController {
 		$base_url = Router::url('/', true);
 		// TODO:管理系の画面を１つでも動作させると、refererが管理系の画面となり管理終了時に元の画面には遷移しない。
 		if(preg_match('/^'.preg_quote($base_url, '/').'/', $referer) && !preg_match('/\/users\/login$/', $referer)
-			 && !preg_match('/'.preg_quote($base_url, '/').'active-controls\/.*/', $referer)  && !preg_match('/'.preg_quote($base_url, '/').'controls\/.*/', $referer)) {
+			 && !preg_match('/'.preg_quote($base_url, '/').'active-controls\/.*/', $referer) 
+			 && !preg_match('/'.preg_quote($base_url, '/').'controls\/{0,1}.*/', $referer)) {
 			$this->set('referer', $referer);
 		} else {
 			$this->set('referer', $base_url);

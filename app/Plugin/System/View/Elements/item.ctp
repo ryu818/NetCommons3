@@ -38,6 +38,7 @@
 							//'label' => false,
 							'div' => false,
 							'legend' => false,
+							'separator' => isset($separator) ? '<br />' : '',
 							'onchange' => isset($item['onclick']) ? $item['onclick'] : false,
 						);
 						break;
@@ -50,6 +51,7 @@
 							'label' => false,
 							'div' => false,
 							//'legend' => false,
+							'separator' => isset($separator) ? '<br />' : '',
 							'onchange' => isset($item['onchange']) ? $item['onchange'] : false,
 						);
 						if($item['type'] == 'checkbox') {
