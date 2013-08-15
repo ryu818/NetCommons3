@@ -287,7 +287,7 @@ class SystemController extends SystemAppController {
 		$this->ConfigRegist->convertConfig($id, $configs, $requestConfigs);
 		if($this->request->is('post') && $doSave) {
 			// 登録処理
-			if($this->ConfigRegist->save($configs, $requestConfigs)) {
+			if($this->ConfigRegist->saveValues($configs, $requestConfigs)) {
 				$this->Session->setFlash(__('Has been successfully registered.'));
 			}
 		}

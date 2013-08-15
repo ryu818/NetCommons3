@@ -123,7 +123,7 @@ class UploadLink extends AppModel
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	public function beforeDelete() {
+	public function beforeDelete($cascade = true) {
 		$this->data = $this->findById($this->id);
 	}
 /**
@@ -135,7 +135,7 @@ class UploadLink extends AppModel
 		// 未使用になったUploadテーブルのレコードのis_useを_OFFにする
 		$this->updateUploadToUnuse($this->data['UploadLink']['upload_id']);
 	}
-	
+
 /**
  * ファイル項目の登録更新に伴うアップロード情報の更新
  *
