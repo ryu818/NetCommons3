@@ -50,18 +50,31 @@ class DownloadComponent extends Component {
 			return true;
 		}
 
+		$joins = array(array(
+			'type'=>'INNER',
+			'table'=>'contents',
+			'alias'=>'Content',
+			'conditions'=>'`Page`.`room_id`=`Content`.`room_id`'
+		));
+
+		// パブリックルーム・ポータルに張られていれば許可
+		$params = array(
+			'conditions' => array(
+				'Content.id' => $uploadLink['content_id'],
+				'Page.space_type' => array(NC_SPACE_TYPE_PUBLIC, NC_SPACE_TYPE_MYPORTAL)
+			),
+			'joins' => $joins
+		);
+		$rooms = $Page->find('all', $params);
+		if (!empty($rooms)) {
+			return true;
+		}
+
 		$addParams = array(
 			'conditions' => array(
 				'Content.id' => $uploadLink['content_id']
 			),
-			'joins' => array(
-				array(
-					'type'=>'INNER',
-					'table'=>'contents',
-					'alias'=>'Content',
-					'conditions'=>'`Page`.`room_id`=`Content`.`room_id`'
-				)
-			)
+			'joins' => $joins
 		);
 		$rooms = $Page->findViewableRoom('all', $loginUserId, $addParams);
 		if (empty($rooms)) {
