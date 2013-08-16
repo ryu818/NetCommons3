@@ -156,7 +156,6 @@ if($announcement_edit['AnnouncementEdit']['approved_flag'] == _ON && $hierarchy 
 </div>
 <?php endif; ?>
 <?php
-echo $this->Form->end();
 echo ($this->Html->script(array('Announcement.announcement_posts/index', 'plugins/jquery.nc_wysiwyg.js','plugins/jquery-ui-timepicker-addon.js', 'locale/'.$locale.'/plugins/jquery-ui-timepicker.js')));
 echo ($this->Html->css(array('plugins/jquery.nc_wysiwyg.css', 'plugins/jquery-ui-timepicker-addon.css')));
 ?>
@@ -167,3 +166,6 @@ $(function(){
 </script>
 </div>
 </div>
+<?php
+echo $this->Form->end();
+?>
