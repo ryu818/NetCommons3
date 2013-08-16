@@ -124,8 +124,8 @@ $._lang['nc_wysiwyg'] = {
     	ok             : "自動保存 "
     },
     mes        : {
-    	del_js         : "scriptタグ,object(embed）タグは使用できない権限です。削除しました。",
-    	del_empty      : "内容が空の&lt;%s&gt;要素を削除しました。"
+    	'It is an authority that script tag, objec(embed) tag can not be used. Has been deleted.'         : "scriptタグ,object(embed）タグは使用できない権限です。削除しました。",
+    	'Content has removed an empty &lt;%s&gt; element.'      : "内容が空の&lt;%s&gt;要素を削除しました。"
     },
 	'File upload' : "ファイルアップロード",
 	'Image upload' : "画像アップロード",

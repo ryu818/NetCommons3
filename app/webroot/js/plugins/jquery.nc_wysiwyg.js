@@ -2079,12 +2079,16 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			}else
 				root = root || this.editorDoc.body;
 
-        	if($.browser.mozilla && $(root.lastChild) && $(root.lastChild).attr("type") == "_moz") {
-        		// mozBRの削除処理（type=_moz）
-        		$(root.lastChild).remove();
+			if($.browser.mozilla) {
+				// mozBRの削除処理（type=_moz）
+				var moz = $('[type=_moz]',root);
+				if(moz.get(0)) {
+					moz.each(function(){$(this).remove();});
+				}
 			}
+
 			if($.browser.mozilla && $(root.firstChild) && $(root.firstChild).attr("_moz_editor_bogus_node")) {
-        		//_moz_editor_bogus_nodeの削除処理（type=_moz）
+        		//_moz_editor_bogus_nodeの削除処理
         		$(root.firstChild).remove();
 			}
         	//WYSIWYGで自動的に付与される属性を削除（_moz_･･･等）
@@ -2095,7 +2099,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
         		var html ="";
         		var tab_space_num = (blank_flag) ? '' : this.options.tabStr;		// tabの半角スペース数
         		var closingTags = " head noscript script style div span tr td tbody table em strong b i code cite dfn abbr acronym font a title sub sup object em strike s ";
-        		var allowEmpty = " td script object iframe video ";
+        		var allowEmpty = " td script object iframe video a ";
 
         		var deleteNode = /[\t\r\n ]/g;
         		if($.browser.opera)
@@ -2126,11 +2130,11 @@ IEで、iframe中のbodyのborderがつくから削除していると
 										// 1つ前がTextならば、最後の改行削除
 										html = html.replace(re, '');
 									}
-									if(!clone_flag) mes.push(__d(['nc_wysiwyg', 'mes'], 'del_empty').replace(/%s/, node_name));
+									if(!clone_flag) mes.push(__d(['nc_wysiwyg', 'mes'], 'Content has removed an empty &lt;%s&gt; element.').replace(/%s/, node_name));
 									continue;
 								} else if($._nc.nc_wysiwyg['allow_js'] == 0 && (node_name == "script" || node_name == "object")) {
 									// allow_jsが0ならば、javascript上から無害化(サーバ上アプリからも無害化する必要あり)
-									if(!clone_flag) mes.push(__d(['nc_wysiwyg', 'mes'], 'del_js'));
+									if(!clone_flag) mes.push(__d(['nc_wysiwyg', 'mes'], 'It is an authority that script tag, objec(embed) tag can not be used. Has been deleted.'));
 									continue;
 								}
 								attrs = node.attributes;
@@ -2347,7 +2351,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 										else
 											row_html = self.htmlEncode(node.data);
 									} else {
-										row_html = self.htmlEncode(node.data).replace(/^ /ig, "&nbsp;").replace(/ $/ig, "&nbsp;");
+										row_html = self.htmlEncode(node.data).replace(/^[ ]+/, '').replace(/[ ]+$/, '');
 									}
 								}
 		        				break;
