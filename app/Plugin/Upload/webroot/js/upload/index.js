@@ -927,7 +927,7 @@
 			var id = $.Upload.setting.id, isInsert = false;
 			var file = null;
 			if (action == 'index') {
-				file = $('#'+$.Upload.libraryId+'-selection').find('a.upload-attachment');
+				file = $('#upload-preview-list' + $.Upload.indexId).find('a');
 			} else if(action == 'library') {
 				file = $('#'+$.Upload.libraryId+'-selection').children();
 			}
