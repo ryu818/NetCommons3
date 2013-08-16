@@ -252,6 +252,14 @@
 					if (res === false) {
 						return false;
 					}
+					//if($.browser.msie) {
+						// IEの場合、statusコードが30Xで返すとgetResponseHeaderが取得できなくなるため。
+						var pjaxUrl = xhr.getResponseHeader('X-PJAX-Location');
+						if(pjaxUrl) {
+							$.Common.pjaxRedirect(e, $el, target_pjax, buf_options, pjaxUrl);
+							return;
+						}
+					//}
 					//if(typeof res == 'object' && res.get(0).body) {
 					//	// iframe ajax用
 					//	res = res.get(0).body.innerHTML;
@@ -329,31 +337,7 @@
 					if ( textStatus !== 'abort' ) {
 						var pjaxUrl = xhr.getResponseHeader('X-PJAX-Location');
 						if(pjaxUrl) {
-							var re_url = new RegExp("^"+ $.Common.quote($._full_base_url) , 'i');
-							var buf_url = pjaxUrl.replace(re_url, '');
-							var redirect_params = new Object();
-
-							if(pjaxUrl != buf_url) {
-								pjaxUrl = $._base_url + buf_url;
-							}
-
-							redirect_params['data-ajax-type'] = 'GET';
-
-							if(!pjaxUrl.match(/.*(#.*)/i)) {
-								location.href.match(/.*(#.*)/i);
-								redirect_params['data-ajax-url'] = pjaxUrl + RegExp.$1;
-							} else {
-								redirect_params['data-ajax-url'] = pjaxUrl;
-							}
-							redirect_params['data-pjax'] = target_pjax;
-							redirect_params['data-ajax-force'] = true;
-							if(buf_options) {
-								buf_options['async'] = false;
-							} else {
-								buf_options = {async : false};
-							}
-							$.Common.ajax(e, $el, redirect_params, buf_options);
-
+							$.Common.pjaxRedirect(e, $el, target_pjax, buf_options, pjaxUrl);
 							return;
 						}
 
@@ -405,6 +389,32 @@
 				$.ajax(options);
 				if(e) e.preventDefault();
 			}
+		},
+		pjaxRedirect : function(e, $el, target_pjax, buf_options, pjaxUrl) {
+			var re_url = new RegExp("^"+ $.Common.quote($._full_base_url) , 'i');
+			var buf_url = pjaxUrl.replace(re_url, '');
+			var redirect_params = new Object();
+
+			if(pjaxUrl != buf_url) {
+				pjaxUrl = $._base_url + buf_url;
+			}
+
+			redirect_params['data-ajax-type'] = 'GET';
+
+			if(!pjaxUrl.match(/.*(#.*)/i)) {
+				location.href.match(/.*(#.*)/i);
+				redirect_params['data-ajax-url'] = pjaxUrl + RegExp.$1;
+			} else {
+				redirect_params['data-ajax-url'] = pjaxUrl;
+			}
+			redirect_params['data-pjax'] = target_pjax;
+			redirect_params['data-ajax-force'] = true;
+			if(buf_options) {
+				buf_options['async'] = false;
+			} else {
+				buf_options = {async : false};
+			}
+			$.Common.ajax(e, $el, redirect_params, buf_options);
 		},
 		ajaxSuccess : function(e, el, res, params) {
 			var target,method, effect, $res, callbackFunc, fun;

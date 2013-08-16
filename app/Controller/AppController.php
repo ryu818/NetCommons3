@@ -326,7 +326,11 @@ class AppController extends Controller {
 // Edit Start Ryuji.M
 			if($this->request->header('X-PJAX')) {
 				if (!$status) {
-					$this->response->statusCode('302');
+					// IEの場合、statusコードが30Xで返すとjquery.getResponseHeaderが取得できなくなるため。
+					$userAgent = $_SERVER['HTTP_USER_AGENT'];
+					if(!preg_match('/MSIE/', $userAgent)) {
+						$this->response->statusCode('303');
+					}
 				}
 				$this->response->header('X-PJAX-Location', Router::url($url, true));
 			} else {
