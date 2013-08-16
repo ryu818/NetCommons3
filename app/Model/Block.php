@@ -286,18 +286,6 @@ class Block extends AppModel
 			$val['Block']['class_name'] = "nc-block";
 		}
 
-		if(!isset($val['Block']['theme_name'])) {
-			return $val;
-		}
-
-		if($val['Block']['theme_name'] == '') {
-			// TODO:test
-			//$page_style_arr = Configure::read(NC_SYSTEM_KEY.'.page_style_arr');
-			//$theme_name = $page_style_arr[$val['Block']['page_id']];
-			$theme_name = 'Default.gray';
-			$val['Block']['theme_name'] = $theme_name;
-		}
-
 		// array_merge();
 		if(isset($val['Content']['id'])) {
 			$val['Block']['room_id'] = $val['Content']['room_id'];
@@ -321,12 +309,8 @@ class Block extends AppModel
 			}
 		}
 
-		if(!isset($val['PageAuthority']['hierarchy'])) {
-			$val['PageAuthority']['hierarchy'] = $this->getDefaultHierarchy($val, null, 'Page', true);
-		}
-		if(!isset($val['BlockAuthority']['hierarchy'])) {
-			$val['BlockAuthority']['hierarchy'] = $this->getDefaultHierarchy($val, NC_SHORTCUT_TYPE_OFF, 'BlockPage', true);
-		}
+		$val = $this->setDefaultAuthority($val);
+
 		$val['Block']['hierarchy'] = $val['PageAuthority']['hierarchy'];
 		$val['Block']['block_hierarchy'] = $val['BlockAuthority']['hierarchy'];
 
@@ -340,6 +324,19 @@ class Block extends AppModel
 		unset($val['BlockAuthority']);
 		//unset($val['Content']);
 		//unset($val['Module']);
+
+		if(!isset($val['Block']['theme_name'])) {
+			return $val;
+		}
+
+		if($val['Block']['theme_name'] == '') {
+			// TODO:test
+			//$page_style_arr = Configure::read(NC_SYSTEM_KEY.'.page_style_arr');
+			//$theme_name = $page_style_arr[$val['Block']['page_id']];
+			$theme_name = 'Default.gray';
+			$val['Block']['theme_name'] = $theme_name;
+		}
+
 		return $val;
 	}
 

@@ -147,6 +147,7 @@ class CheckAuthComponent extends Component {
 
 		if ($plugin_name == 'page' || $controller_name == 'pages'
 			|| $plugin_name == 'group' || $controller_name == 'users'
+			|| $plugin_name == 'block' || $plugin_name == 'content'
 			|| (isset($module['Module']) && $module['Module']['system_flag'] == _OFF)) {
 			// 一般系モジュール
 			$page = $this->checkGeneral();

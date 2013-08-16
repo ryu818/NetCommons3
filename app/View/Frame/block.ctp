@@ -76,11 +76,15 @@ $block['Block']['theme_name'] = 'th-' . str_replace('.', '-', Inflector::undersc
 if($block['Block']['display_flag'] == NC_DISPLAY_FLAG_OFF || (isset($block['Content']['display_flag']) && $block['Content']['display_flag'] == NC_DISPLAY_FLAG_OFF)) {
 	$class_name .= ' nonpublic';
 } else if(!empty($block['Block']['display_to_date']) && $ncMode == NC_BLOCK_MODE) {
-    $class_name .= ' to-nonpublic';
+	$class_name .= ' to-nonpublic';
+}
+$hasOperationAuth = false;
+if ($ncMode == NC_BLOCK_MODE && $block_hierarchy >= NC_AUTH_MIN_CHIEF) {
+	$hasOperationAuth = true;
 }
 ?>
 <div id="<?php echo($id); ?>" class="<?php echo($class_name); ?>"<?php echo($block['Block']['margin_style']); ?> data-block='<?php echo($block['Block']['id']); ?>' data-page='<?php echo($block['Block']['page_id']); ?>' data-action='<?php echo($block['Block']['controller_action']); ?>' data-ajax-url='<?php echo(h($current_url)); ?>'<?php echo($attr); ?>>
-	<div class="<?php if(isset($parent_class_name)): ?><?php echo($parent_class_name.' '); ?><?php endif; ?><?php echo($block['Block']['theme_name']); ?> nc-frame table"<?php echo($block['Block']['style']); ?>>
+	<div class="<?php if(isset($parent_class_name)): ?><?php echo($parent_class_name.' '); ?><?php endif; ?><?php echo($block['Block']['theme_name']); ?><?php if($hasOperationAuth): ?> nc-frame<?php endif; ?> table"<?php echo($block['Block']['style']); ?>>
 		<?php if($block_hierarchy >= NC_AUTH_MIN_CHIEF && !isset($ncIsError)): ?>
 			<?php if($block['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_SHOW_ONLY): ?>
 				<div class="nc-block-header-shortcut nc-block-header-shortcut-show"><div></div></div>
@@ -89,7 +93,7 @@ if($block['Block']['display_flag'] == NC_DISPLAY_FLAG_OFF || (isset($block['Cont
 			<?php endif; ?>
 		<?php endif; ?>
 		<?php /* ブロックヘッダー */ ?>
-		<?php if($ncMode == NC_BLOCK_MODE && $block_hierarchy >= NC_AUTH_MIN_CHIEF): ?>
+		<?php if($hasOperationAuth): ?>
 			<?php echo($this->element('Frame/block_header')); ?>
 		<?php endif; ?>
 		<section>
@@ -110,7 +114,7 @@ if($block['Block']['display_flag'] == NC_DISPLAY_FLAG_OFF || (isset($block['Cont
 			}
 		?>
 	</div>
-	<?php if($ncMode == NC_BLOCK_MODE && $block_hierarchy >= NC_AUTH_MIN_CHIEF): ?>
+	<?php if($hasOperationAuth): ?>
 		<script>
 		$(function(){
 			$.PagesBlock.initBlock('<?php echo($id); ?>');
