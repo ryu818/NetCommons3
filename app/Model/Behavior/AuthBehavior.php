@@ -177,14 +177,17 @@ class AuthBehavior extends ModelBehavior {
 			// ゲスト固定
 			$val['PageAuthority']['id'] = NC_AUTH_GUEST_ID;
 			$val['PageAuthority']['hierarchy'] = NC_AUTH_GUEST;
-			return;
+			return $val;
 		}
 
-
-
-		$ret = $this->getDefaultAuthority($Model, $val, $modelName);
-		$val['PageAuthority']['id'] = $ret['id'];
-		$val['PageAuthority']['hierarchy'] = $ret['hierarchy'];
+		if(isset($val['BlockAuthority']['id']) && isset($val['BlockAuthority']['hierarchy'])) {
+			$val['PageAuthority']['id'] = $val['BlockAuthority']['id'];
+			$val['PageAuthority']['hierarchy'] = $val['BlockAuthority']['hierarchy'];
+		} else {
+			$ret = $this->getDefaultAuthority($Model, $val, $modelName);
+			$val['PageAuthority']['id'] = $ret['id'];
+			$val['PageAuthority']['hierarchy'] = $ret['hierarchy'];
+		}
 
 		return $val;
 	}
@@ -199,20 +202,17 @@ class AuthBehavior extends ModelBehavior {
  * 				公開ルーム Config.default_entry_XXXX_authority_id:4
  * 					=> 会員Aが公開ルームを一般2の権限で閲覧可能
  * @param  Model Object           $Model
- * @param  Model
- * @param  integer $shortcutFlag
+ * @param  array $val
  * @param  stinrg $modelName default 'Page'
  * @param  boolean ログイン会員の権限を取得
  * @return array('id' => integer authority_id,'hierarchy' => integer hierarchy)
  * @since  v 3.0.0.0
  */
-	public function getDefaultAuthority($Model, $val, $shortcutFlag = null, $modelName = 'Page', $isLoginUser = false) {
+	public function getDefaultAuthority($Model, $val, $modelName = 'Page', $isLoginUser = false) {
 		$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
 		$loginUserId = isset($loginUser['id']) ? $loginUser['id'] : _OFF;
-		if(isset($shortcutFlag)) {
-			$val['Content']['shortcut_type'] = $shortcutFlag;
-		}
-		if(isset($val['PageUserLink']['authority_id']) && $val['PageUserLink']['authority_id'] == NC_AUTH_OTHER_ID) {
+		$pageUserLinkModelName = ($modelName == 'BlockPage') ? 'BlockPageUserLink' : 'PageUserLink';
+		if(isset($val[$pageUserLinkModelName]['authority_id']) && $val[$pageUserLinkModelName]['authority_id'] == NC_AUTH_OTHER_ID) {
 			return array(
 				'id' => NC_AUTH_OTHER_ID,
 				'hierarchy' => NC_AUTH_OTHER
@@ -269,8 +269,8 @@ class AuthBehavior extends ModelBehavior {
 		// User取得
 		if($isLoginUser) {
 			$userId = $loginUserId;
-		} else if(isset($val['PageUserLink']['user_id'])) {
-			$userId = $val['PageUserLink']['user_id'];
+		} else if(isset($val[$pageUserLinkModelName]['user_id'])) {
+			$userId = $val[$pageUserLinkModelName]['user_id'];
 		} else if(isset($val[$Model->alias]['user_id'])) {
 			$userId = $val[$Model->alias]['user_id'];
 		} else if($Model->alias != 'Page' && $Model->alias != 'Block' && $Model->alias != 'Content' && isset($val[$Model->alias]['created_user_id'])) {
@@ -349,30 +349,28 @@ class AuthBehavior extends ModelBehavior {
 /**
  * 会員ID、ページ情報からHierarchyを返す
  * @param  Model Object           $Model
- * @param  Model
- * @param  integer $shortcutFlag
+ * @param  array $val
  * @param  stinrg $modelName default 'Page'
  * @param  boolean ログイン会員の権限を取得
  * @return integer hierarchy
  * @since  v 3.0.0.0
  */
-	public function getDefaultHierarchy($Model, $val, $shortcutFlag = null, $modelName = 'Page', $isLoginUser = false) {
-		$authority = $this->getDefaultAuthority($Model, $val, $shortcutFlag, $modelName, $isLoginUser);
+	public function getDefaultHierarchy($Model, $val, $modelName = 'Page', $isLoginUser = false) {
+		$authority = $this->getDefaultAuthority($Model, $val, $modelName, $isLoginUser);
 		return $authority['hierarchy'];
 	}
 
 /**
  * ページにおけるデフォルトの権限を取得
  * @param  Model Object           $Model
- * @param  Model
- * @param  integer $shortcutFlag
+ * @param  array $val
  * @param  stinrg $modelName default 'Page'
  * @param  boolean ログイン会員の権限を取得
  * @return integer authority_id
  * @since  v 3.0.0.0
  */
-	public function getDefaultAuthorityId($Model, $val, $shortcutFlag = null, $modelName = 'Page', $isLoginUser = false) {
-		$authority = $this->getDefaultAuthority($Model, $val, $shortcutFlag, $modelName, $isLoginUser);
+	public function getDefaultAuthorityId($Model, $val, $modelName = 'Page', $isLoginUser = false) {
+		$authority = $this->getDefaultAuthority($Model, $val, $modelName, $isLoginUser);
 		return $authority['id'];
 	}
 }
