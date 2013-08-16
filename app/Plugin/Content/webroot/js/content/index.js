@@ -11,7 +11,7 @@
 	$.fn.Content = function(id, active_url, active_id) {
 		var form = $(this);
 
-		setTimeout(function(){$("#nc-content-sel-module" + id).chosen().change(function(e){
+		setTimeout(function(){$("#nc-content-sel-module" + id).select2().change(function(e){
 			$(this).attr('data-ajax-url', $(this).attr('data-ajax-url')+ '/module_id:' + $(this).val());
 			$(this).attr('data-ajax', form.attr('data-ajax'));
 			$.Common.ajax(e, this);

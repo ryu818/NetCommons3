@@ -23,7 +23,9 @@
 	</div>
 	<script>
 		$(function(){
-			$('#authoriy-language<?php echo $id; ?>').chosen({disable_search : true}).change( function(e){
+			$('#authoriy-language<?php echo $id; ?>').select2({
+				minimumResultsForSearch:-1
+			}).change( function(e){
 				var lang = $(this).val();
 				var url = lang;
 				$.get(url, function(res) {

@@ -136,7 +136,7 @@ class BlogTerm extends AppModel
 	}
 
 /**
- * parentチェック(現状、1階層までしか許していない。投稿画面：jquery.chosenにより表示しているため)
+ * parentチェック(現状、1階層までしか許していない。投稿画面：jquery.select2により表示しているため)
  * 0ならばOK
  * @param   array    $check
  * @return  boolean

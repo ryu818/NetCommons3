@@ -26,6 +26,8 @@ ul.blog-posts-categories-children li {
 
 .blog-posts-select {
 	width:200px;
+}
+select.blog-posts-select {
 	display:none;
 }
 

@@ -14,7 +14,6 @@
 	$common_js = array(
 			'plugins/fileupload/jquery.fileupload',				// fileuploadを複数includeすると
 			'plugins/fileupload/jquery.iframe-transport',		// javascriptで「too much recursion」エラーになるため、親でinclude
-			'plugins/chosen.jquery',
 			'plugins/select2',
 			'plugins/jquery.tmpl'
 	);

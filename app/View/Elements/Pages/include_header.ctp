@@ -73,7 +73,6 @@ $.Common.pjaxPrevUrl = location.href;
 		'common/main/',
 		'jquery/base/',
 		'common/editable/common',
-		'plugins/chosen.css',
 		'plugins/select2.css'
 	);
 	//if($this->params['controller'] == 'pages') {	// TODO:system_flagがOFFの場合にincludeするように後に修正。

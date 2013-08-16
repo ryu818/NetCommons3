@@ -10,13 +10,15 @@
 ;(function($) {
 	$(function(){
 	//$(document).ready(function(){
-		$(".nc-add-block").chosen().change( function(e){
+		$(".nc-add-block").select2({
+			placeholderOption: 'first'
+		}).change( function(e){
 			var module_id = $(this).val();
 			if(module_id != 0) {
 				$.PagesBlock.addBlock($(this), module_id);
 				$('option:first', $(this)).prop('selected', true);
 			}
-			$(this).trigger("liszt:updated");
+			$(this).trigger('change');
 		} );
 		$.PagesBlock.showOperationBlock($(".nc-copy-block"));
 	});
@@ -1087,8 +1089,8 @@
 			if(!select.get(0)) {
 				return;
 			}
-			select.chosen({
-				disable_search : true
+			select.select2({
+				minimumResultsForSearch:-1
 			}).change( function(e){
 				var url = $(this).val();
 				var params = new Object();

@@ -45,7 +45,7 @@
 			$.Event(e).preventDefault();
 		});
 
-		sel_tags.chosen();
+		sel_tags.select2();
 
 		$.BlogPosts.initCategory(id);
 	};
@@ -59,9 +59,12 @@
 			add_category_outer = $('#blog-posts-add-category-outer' + id);
 			add_category = $('.blog-posts-add-text', add_category_outer);
 
-			sel_categories.chosen();
+			sel_categories.select2();
 			if(parent_select_category.get(0)) {
-				parent_select_category.chosen({allow_single_deselect: true});
+				parent_select_category.select2({
+					placeholderOption: 'first',
+					allowClear: true
+				});
 			}
 			add_category_outer.prev().click(function(e){
 				$(this).next().slideToggle();
@@ -121,7 +124,7 @@
 
 				}
 			});
-			tags_select.trigger("liszt:updated");
+			tags_select.trigger('change');
 			tag_names.val('');
 		}
 	}

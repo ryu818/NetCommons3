@@ -12,10 +12,12 @@
 		// 表示件数
 		var chgLimit = function() {
 			// 表示件数
-			$('select.blog-widget-selectbox:visible', $('#' + id)).chosen({disable_search : true}).change( function(e){
+			$('select.blog-widget-selectbox:visible', $('#' + id)).select2({
+				minimumResultsForSearch:-1
+			}).change( function(e){
 				$(e.target).attr('data-ajax-url', $(this).val());
 				$.Common.ajax(e, $(this));
-			} );
+			});
 		};
 		chgLimit();
 

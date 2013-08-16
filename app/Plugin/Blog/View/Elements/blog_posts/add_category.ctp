@@ -35,7 +35,7 @@
 ?>
 <?php endif; ?>
 <?php if($hierarchy >= $blog['Blog']['term_hierarchy']): ?>
-	<a href='#'><span class="ui-icon ui-icon-plus float-left"></span><?php echo(__d('blog', 'Add New Category')); ?></a>
+	<a class="nowrap" href='#'><span class="ui-icon ui-icon-plus float-left"></span><?php echo(__d('blog', 'Add New Category')); ?></a>
 	<div id="blog-posts-add-category-outer<?php echo ($id);?>"<?php if(!$this->request->is('post') || count($this->validationErrors['BlogTerm']) == 0): ?> style="display:none;"<?php endif; ?>>
 		<?php
 			$settings = array(
