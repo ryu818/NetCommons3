@@ -44,29 +44,10 @@ class DownloadComponent extends Component {
 
 		$loginUser = $this->_controller->Auth->user();
 		$loginUserId = isset($loginUser['id']) ? intval($loginUser['id']) : 0;
+		$loginUserHierarchy = isset($loginUser['hierarchy']) ? intval($loginUser['hierarchy']) : 0;
 
 		// 自分自身がアップロードしたファイルは常に許可
 		if ($loginUserId == $fileOwnerId) {
-			return true;
-		}
-
-		$joins = array(array(
-			'type'=>'INNER',
-			'table'=>'contents',
-			'alias'=>'Content',
-			'conditions'=>'`Page`.`room_id`=`Content`.`room_id`'
-		));
-
-		// パブリックルーム・ポータルに張られていれば許可
-		$params = array(
-			'conditions' => array(
-				'Content.id' => $uploadLink['content_id'],
-				'Page.space_type' => array(NC_SPACE_TYPE_PUBLIC, NC_SPACE_TYPE_MYPORTAL)
-			),
-			'joins' => $joins
-		);
-		$rooms = $Page->find('all', $params);
-		if (!empty($rooms)) {
 			return true;
 		}
 
@@ -74,14 +55,21 @@ class DownloadComponent extends Component {
 			'conditions' => array(
 				'Content.id' => $uploadLink['content_id']
 			),
-			'joins' => $joins
+			'joins' => array(
+				array(
+					'type'=>'INNER',
+					'table'=>'contents',
+					'alias'=>'Content',
+					'conditions'=>'`Page`.`room_id`=`Content`.`room_id`'
+				)
+			)
 		);
-		$rooms = $Page->findViewableRoom('all', $loginUserId, $addParams);
+		$rooms = $Page->findViewableRoom('first', $loginUserId, $addParams);
 		if (empty($rooms)) {
 			return false;
 		}
 
-		if ($uploadLink['access_hierarchy'] > $loginUser['hierarchy']) {
+		if ($uploadLink['access_hierarchy'] > $loginUserHierarchy) {
 			return false;
 		}
 
