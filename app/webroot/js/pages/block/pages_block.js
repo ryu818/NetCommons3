@@ -1110,7 +1110,7 @@
 
 		// ブロック操作
 		operationBlock: function(target, url, params) {
-			var pos = $(target).next().offset();
+			var pos = $(target).prev().offset();
 			$.post(url,
 				params,
 				function(res){
@@ -1136,7 +1136,6 @@
 						};
 						_buttons[cancel] = function(){
 							$(target).val('');
-							$(target).trigger("liszt:updated");
 							$( this ).remove();
 						};
 						var dialog_params = $.extend({buttons: _buttons}, default_params);
