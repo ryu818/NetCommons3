@@ -69,8 +69,7 @@ class BlogTermLink extends AppModel
 		$before_update_term_count = !$is_before_update_term_count ? 0 : 1;
 		$after_update_term_count = !$is_after_update_term_count ? -1 : 1;
 
-		App::uses('BlogTerm', 'Blog.Model');
-		$BlogTerm = new BlogTerm();
+		$BlogTerm = ClassRegistry::init('Blog.BlogTerm');
 		$blog_terms = $BlogTerm->findByBlogPostId($blog_post_id, 'LEFT', $taxonomy);
 		if($arr_column_name == 'name') {
 			// マスタになければ新規追加

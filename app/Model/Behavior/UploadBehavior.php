@@ -1917,8 +1917,7 @@ class UploadBehavior extends ModelBehavior {
 // 		return $this->__filesToRemove;
 // 	}
 	public function _prepareFilesForDeletion(Model $model, $field, $data, $options) {
-		App::import('Model','Upload');
-		$Upload = new Upload;
+		$Upload = ClassRegistry::init('Upload');
 		if ($model->alias == 'Upload') {
 			$uploadData = $Upload->findById($model->id);
 		} else {

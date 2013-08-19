@@ -217,8 +217,7 @@ class Archive extends AppModel
 		}
 		if(!empty($data['Archive']['content_id'])) {
 			// masterのcontent_idで常に登録
-			App::uses('Content', 'Model');
-			$Content = new Content();
+			$Content = ClassRegistry::init('Content');
 			$content = $Content->findById($data['Archive']['content_id']);
 			if(!isset($content['Content'])) {
 				return false;
@@ -327,8 +326,7 @@ class Archive extends AppModel
 			)
 		);
 
-		App::uses('Page', 'Model');
-		$Page = new Page();
+		$Page = ClassRegistry::init('Page');
 		// $isDisplayAllMyportal + ルーム指定の新着はSQLが複雑になりそうなので対処しない。
 		if(!$isDisplayAllMyportal) {
 			$addParams = array();

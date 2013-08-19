@@ -23,10 +23,10 @@ class TimeZoneHelper extends AppHelper {
  */
 	public function date($timeUtc = null, $format = null) {
 		// TimeZoneBehaviorのdateファンクションを呼び出し
-		App::uses('TimeZoneBehavior', 'Model/Behavior');
-		$timeZoneBehavior = new TimeZoneBehavior();
-		return $timeZoneBehavior->date(new Model(), $timeUtc, $format);
-    }
+		$timeZoneBehavior = ClassRegistry::init('TimeZoneBehavior');
+		// ヘルパーからモデルを使用するのは非推奨のため、モデルインスタンスを使用しないようにnullを渡す
+		return $timeZoneBehavior->date(null, $timeUtc, $format);
+	}
 /**
  * 協定世界時を地方標準時に変換し、日付を年、月、日、日付、時間、Atom, Full形式で取得
  *

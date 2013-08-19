@@ -33,27 +33,17 @@ class BlogOperationComponent extends Component {
  * @since   v 3.0.0.0
  */
 	public function startup() {
-		App::uses('Content', 'Model');
-		App::uses('Revision', 'Model');
-		App::uses('Archive', 'Model');
+		$this->Content = ClassRegistry::init('Content');
+		$this->Revision = ClassRegistry::init('Revision');
+		$this->Archive = ClassRegistry::init('Archive');
 
-		App::uses('Blog', 'Blog.Model');
-		App::uses('BlogComment', 'Blog.Model');
-		App::uses('BlogPost', 'Blog.Model');
-		App::uses('BlogStyle', 'Blog.Model');
-		App::uses('BlogTerm', 'Blog.Model');
-		App::uses('BlogTermLink', 'Blog.Model');
+		$this->Blog = ClassRegistry::init('Blog.Blog');
+		$this->BlogComment = ClassRegistry::init('Blog.BlogComment');
+		$this->BlogPost = ClassRegistry::init('Blog.BlogPost');
+		$this->BlogStyle = ClassRegistry::init('Blog.BlogStyle');
+		$this->BlogTerm = ClassRegistry::init('Blog.BlogTerm');
+		$this->BlogTermLink = ClassRegistry::init('Blog.BlogTermLink');
 
-		$this->Content = new Content();
-		$this->Revision = new Revision();
-		$this->Archive = new Archive();
-
-		$this->Blog = new Blog();
-		$this->BlogComment = new BlogComment();
-		$this->BlogPost = new BlogPost();
-		$this->BlogStyle = new BlogStyle();
-		$this->BlogTerm = new BlogTerm();
-		$this->BlogTermLink = new BlogTermLink();
 		$this->BlogPost->unbindModel( array( 'belongsTo' => array_keys( $this->BlogPost->belongsTo ) ) );
 	}
 

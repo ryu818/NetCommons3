@@ -501,8 +501,7 @@ class Page extends AppModel
 				$setUserId = $userId;
 			}
 			if(!empty($setUserId)) {
-				App::uses('User', 'Model');
-				$User = new User();
+				$User = ClassRegistry::init('User');
 				$currentUser = $User->findById($setUserId);
 			}
 
@@ -761,8 +760,7 @@ class Page extends AppModel
 				$centerPage['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
 				// マイポータルで、現在のカレントのもの取得
 				// TODO:マイポータルに子グループを作成できる仕様にすると動作しない。
-				App::uses('User', 'Model');
-				$User = new User();
+				$User = ClassRegistry::init('User');
 				$currentUser = $User->currentUser($centerPage, $loginUser);
 
 				// allow_myportal_viewing_hierarchyは、会員権限の上下でみせるべきかいなか
@@ -780,8 +778,7 @@ class Page extends AppModel
 				$currentPrivate = $loginUser['private_page_id'];
 			}
 		} else if(!empty($userId) && $userId != 'all') {
-			App::uses('User', 'Model');
-			$User = new User();
+			$User = ClassRegistry::init('User');
 			$currentUser = $User->findById($userId);
 			$currentMyPortal = $currentUser['User']['myportal_page_id'];
 			$currentPrivate = $currentUser['User']['private_page_id'];
@@ -1182,8 +1179,7 @@ class Page extends AppModel
 		/*
 		 * ブロック削除
 		*/
-		App::uses('Block', 'Model');
-		$Block = new Block();
+		$Block = ClassRegistry::init('Block');
 		$blocks = $Block->findAllByPageId($id);
 		if($blocks != false && count($blocks) > 0) {
 			if(isset($blocks['Block'])) {
@@ -1230,8 +1226,7 @@ class Page extends AppModel
 
 		if($page['Page']['id'] == $page['Page']['room_id']) {
 			// ルーム
-			App::uses('PageUserLink', 'Model');
-			$PageUserLink = new PageUserLink();
+			$PageUserLink = ClassRegistry::init('PageUserLink');
 			$conditions = array(
 				"PageUserLink.room_id" => $page['Page']['id']
 			);
@@ -1240,8 +1235,7 @@ class Page extends AppModel
 				return false;
 			}
 
-			App::uses('ModuleLink', 'Model');
-			$ModuleLink = new ModuleLink();
+			$ModuleLink = ClassRegistry::init('ModuleLink');
 			$conditions = array(
 				"ModuleLink.room_id" => $page['Page']['id']
 			);
@@ -1252,8 +1246,7 @@ class Page extends AppModel
 
 			if($page['Page']['thread_num'] == 1 && $page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
 				// コミュニティー削除
-				App::uses('Community', 'Model');
-				$Community = new Community();
+				$Community = ClassRegistry::init('Community');
 				$conditions = array(
 					"Community.room_id" => $page['Page']['id']
 				);
@@ -1262,8 +1255,7 @@ class Page extends AppModel
 					return false;
 				}
 
-				App::uses('CommunityLang', 'Model');
-				$CommunityLang = new CommunityLang();
+				$CommunityLang = ClassRegistry::init('CommunityLang');
 				$conditions = array(
 					"CommunityLang.room_id" => $page['Page']['id']
 				);
@@ -1272,8 +1264,7 @@ class Page extends AppModel
 					return false;
 				}
 
-				App::uses('CommunityTag', 'Model');
-				$CommunityTag = new CommunityTag();
+				$CommunityTag = ClassRegistry::init('CommunityTag');
 				$params = array(
 					'fields' => array('CommunityTag.tag_id'),
 					'conditions' => array(
@@ -1291,8 +1282,7 @@ class Page extends AppModel
 						return false;
 					}
 
-					App::uses('Tag', 'Model');
-					$Tag = new Tag();
+					$Tag = ClassRegistry::init('Tag');
 					$params = array(
 						'conditions' => array(
 							"Tag.id" => $communities_tag_ids
@@ -1320,8 +1310,7 @@ class Page extends AppModel
 			}
 
 			// ブロックとして配置していない該当ルームのコンテンツを親ルームがあれば、そちらへ移動、なければ完全に削除。
-			App::uses('Content', 'Model');
-			$Content = new Content();
+			$Content = ClassRegistry::init('Content');
 			$params = array(
 				'conditions' => array(
 					"Content.room_id" => $page['Page']['room_id']
@@ -1346,8 +1335,7 @@ class Page extends AppModel
 		 * 削除されたページがConfig.first_startpage_id,second_startpage_id,third_startpage_idならば、更新
 		* (パブリックに更新)
 		*/
-		App::uses('Config', 'Model');
-		$Config = new Config();
+		$Config = ClassRegistry::init('Config');
 		$conditions = array(
 			'module_id' => 0,
 			'cat_id' => NC_SYSTEM_CATID,
@@ -1451,8 +1439,7 @@ class Page extends AppModel
  * @since   v 3.0.0.0
  */
 	public function createDefaultEntry($user) {
-		App::uses('Authority', 'Model');
-		$Authority = new Authority();
+		$Authority = ClassRegistry::init('Authority');
 
 		$authority = $Authority->find('first', array(
 			'fields' => array('myportal_use_flag', 'private_use_flag'),
@@ -1582,8 +1569,7 @@ class Page extends AppModel
 		/*
 		 * page_user_links Insert
 		 */
-		App::uses('PageUserLink', 'Model');
-		$PageUserLink = new PageUserLink();
+		$PageUserLink = ClassRegistry::init('PageUserLink');
 		$pageUserLink = array('PageUserLink');
 		$pageUserLink['PageUserLink']['room_id'] = $newRoomId;
 		$pageUserLink['PageUserLink']['user_id'] = $userId;

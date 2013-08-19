@@ -132,8 +132,7 @@ class BlogComment extends AppModel
  * @since   v 3.0.0.0
  */
 	public function beforeDelete($cascade = true) {
-		App::uses('Archive', 'Model');
-		$Archive = new Archive();
+		$Archive = ClassRegistry::init('Archive');
 		// アーカイブ削除
 		if(!$Archive->deleteUnique($this->alias, $this->id)) {
 			return false;
@@ -151,8 +150,7 @@ class BlogComment extends AppModel
 */
 	public function afterSave($created) {
 		if (!$created) {
-			App::uses('Archive', 'Model');
-			$Archive = new Archive();
+			$Archive = ClassRegistry::init('Archive');
 			if($this->data[$this->alias]['is_approved'] == NC_APPROVED_FLAG_ON) {
 				if(!$Archive->updateApprove('BlogComment', $this->id, $this->data[$this->alias]['is_approved'])) {
 					return false;
@@ -247,8 +245,7 @@ class BlogComment extends AppModel
  */
 	public function beforeValidate($options = array()) {
 		if(isset($this->data['BlogComment']['content_id']) && !Configure::read(NC_SYSTEM_KEY.'.isLogin')){
-			App::uses('Blog', 'Blog.Model');
-			$blog = new Blog();
+			$Blog = ClassRegistry::init('Blog');
 			$blog = $blog->findByContentId($this->data['BlogComment']['content_id']);
 
 			// 投稿者名とEmailアドレスを必須に変更

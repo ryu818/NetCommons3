@@ -72,8 +72,7 @@ class UserItemLink extends AppModel
 			return true;
 		}
 		if(!isset($options['items'])) {
-			App::uses('Item', 'Model');
-			$Item = new Item();
+			$Item = ClassRegistry::init('Item');
 			$items = $Item->findList();
 		} else {
 			$items = $options['items'];

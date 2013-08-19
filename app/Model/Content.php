@@ -197,12 +197,9 @@ class Content extends AppModel
  * @since   v 3.0.0.0
  */
 	public function deleteContent($content, $allDelete = _OFF, $parentRoomId = null) {
-		App::uses('Page', 'Model');
-		App::uses('UploadLink', 'Model');
-		App::uses('Revision', 'Model');
-		$Page = new Page();
-		$UploadLink = new UploadLink();
-		$Revision = new Revision();
+		$Page = ClassRegistry::init('Page');
+		$UploadLink = ClassRegistry::init('UploadLink');
+		$Revision = ClassRegistry::init('Revision');
 
 		$id = $content['Content']['id'];
 		$module_id = $content['Content']['module_id'];
@@ -234,8 +231,7 @@ class Content extends AppModel
 			if(isset($content['Module'])) {
 				$module['Module'] = $content['Module'];
 			} else {
-				App::uses('Module', 'Model');
-				$Module = new Module();
+				$Module = ClassRegistry::init('Module');
 				$module = $Module->findById($module_id);
 			}
 			$plugin = $module['Module']['dir_name'];
@@ -297,8 +293,7 @@ class Content extends AppModel
 		$cancel_contents_list = $this->findCancelShortcut($id, $parentRoomId);
 		if(count($cancel_contents_list) > 0) {
 			$this->delete($cancel_contents_list);
-			App::uses('Block', 'Model');
-			$Block = new Block();
+			$Block = ClassRegistry::init('Block');
 			$fields = array(
 				'Block.content_id' => $id
 			);

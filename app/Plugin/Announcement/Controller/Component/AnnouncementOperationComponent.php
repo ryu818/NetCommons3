@@ -29,17 +29,11 @@ class AnnouncementOperationComponent extends Component {
  * @since   v 3.0.0.0
  */
 	public function startup() {
-		App::uses('Content', 'Model');
-		App::uses('Revision', 'Model');
-		App::uses('Archive', 'Model');
-		App::uses('Announcement', 'Announcement.Model');
-		App::uses('AnnouncementEdit', 'Announcement.Model');
-
-		$this->Content = new Content();
-		$this->Revision = new Revision();
-		$this->Archive = new Archive();
-		$this->Announcement = new Announcement();
-		$this->AnnouncementEdit = new AnnouncementEdit();
+		$this->Content = ClassRegistry::init('Content');
+		$this->Revision = ClassRegistry::init('Revision');
+		$this->Archive = ClassRegistry::init('Archive');
+		$this->Announcement = ClassRegistry::init('Announcement.Announcement');
+		$this->AnnouncementEdit = ClassRegistry::init('Announcement.AnnouncementEdit');
 		$this->Announcement->unbindModel( array( 'belongsTo' => array_keys( $this->Announcement->belongsTo ) ) );
 	}
 

@@ -91,8 +91,6 @@ class ModuleAdmin extends AppModel {
  * @since   v 3.0.0.0
  */
 	public function findInstallList($general_modules, $system_modules) {
-		App::uses('Module', 'Model');
-		$Module = new Module();
 		$locale = Configure::read(NC_SYSTEM_KEY.'.locale');
 
 		$installed = array();
@@ -147,8 +145,7 @@ class ModuleAdmin extends AppModel {
  * @since   v 3.0.0.0
  */
 	public function afterFind($results, $primary = false) {
-		App::uses('Module', 'Model');
-		$Module = new Module();
+		$Module = ClassRegistry::init('Module');
 		return $Module->afterFind($results, $primary);
 	}
 
@@ -160,8 +157,7 @@ class ModuleAdmin extends AppModel {
  * @since   v 3.0.0.0
  */
 	public function installModule($dirName) {
-		App::uses('Module', 'Model');
-		$Module = new Module();
+		$Module = ClassRegistry::init('Module');
 		$successMes = array();
 		$errorMes = array();
 		if(empty($dirName)) {
@@ -262,10 +258,8 @@ class ModuleAdmin extends AppModel {
  */
 	public function updateModule($tables, $dirName) {
 		App::uses('Sanitize', 'Utility');
-		App::uses('ModuleSystemLink', 'Model');
-		App::uses('ModuleLink', 'Model');
-		$ModuleLink = new ModuleLink();
-		$ModuleSystemLink = new ModuleSystemLink();
+		$ModuleLink = ClassRegistry::init('ModuleLink');
+		$ModuleSystemLink = ClassRegistry::init('ModuleSystemLink');
 
 		$successMes = array();
 		$errorMes = array();
@@ -296,8 +290,7 @@ class ModuleAdmin extends AppModel {
 			/**
 			 * Block Update
 			 */
-			App::uses('Block', 'Model');
-			$Block = new Block();
+			$Block = ClassRegistry::init('Block');
 			$fields = array('Block.controller_action' => "'" . Sanitize::escape($module['Module']['ini']['controller_action']) . "'");
 			$conditions = array(
 				"Block.module_id" => $module_id
@@ -423,8 +416,7 @@ class ModuleAdmin extends AppModel {
 		// ----------------------------------------------
 		// --- Assetの全削除処理                      ---
 		// ----------------------------------------------
-		App::uses('Asset', 'Model');
-		$Asset = new Asset();
+		$Asset = ClassRegistry::init('Asset');
 		$Asset->gc(null, true, true);
 
 		// ----------------------------------------------
@@ -459,8 +451,7 @@ class ModuleAdmin extends AppModel {
 		// ----------------------------------------------
 		// --- バージョンアップデート                 ---
 		// ----------------------------------------------
-		App::uses('Config', 'Model');
-		$Config = new Config();
+		$Config = ClassRegistry::init('Config');
 		$fields = array(
 			'Config.value'=> '"'.NC_VERSION.'"'
 		);
@@ -482,16 +473,11 @@ class ModuleAdmin extends AppModel {
  */
 	public function uninstallModule($dirName) {
 		App::uses('Sanitize', 'Utility');
-		App::uses('Module', 'Model');
-		App::uses('Content', 'Model');
-		App::uses('ModuleSystemLink', 'Model');
-		App::uses('ModuleLink', 'Model');
-		App::uses('UploadLink', 'Model');
-		$Content = new Content();
-		$Module = new Module();
-		$ModuleLink = new ModuleLink();
-		$ModuleSystemLink = new ModuleSystemLink();
-		$UploadLink = new UploadLink();
+		$Module = ClassRegistry::init('Module');
+		$Content = ClassRegistry::init('Content');
+		$ModuleSystemLink = ClassRegistry::init('ModuleSystemLink');
+		$ModuleLink = ClassRegistry::init('ModuleLink');
+		$UploadLink = ClassRegistry::init('UploadLink');
 
 		$successMes = array();
 		$errorMes = array();
@@ -511,8 +497,7 @@ class ModuleAdmin extends AppModel {
 		// TODO: col_num,row_num,グループ化ブロック等を整列しなおす必要があるため、現状、コメント
 		// deleteBlockにその処理もいれて、ブロックの削除もそちらを呼ぶだけにするほうが望ましい。
 		/*
-		App::uses('Block', 'Model');
-		$Block = new Block();
+		$Block = ClassRegistry::init('Block');
 		$conditions = array(
 			'module_id' => $module_id
 		);
@@ -631,8 +616,7 @@ class ModuleAdmin extends AppModel {
  * @since   v 3.0.0.0
  */
 	private function _getModule($dirName, &$errorMes) {
-		App::uses('Module', 'Model');
-		$Module = new Module();
+		$Module = ClassRegistry::init('Module');
 
 		if(empty($dirName)) {
 			$errorMes[] = __('Unauthorized request.<br />Please reload the page.');
@@ -655,8 +639,7 @@ class ModuleAdmin extends AppModel {
  * @since   v 3.0.0.0
  */
 	private function _deleteAsset($plugin_name, &$errorMes) {
-		App::uses('Asset', 'Model');
-		$Asset = new Asset();
+		$Asset = ClassRegistry::init('Asset');
 		$conditions = array(
 			"Asset.plugin" => $plugin_name
 		);
@@ -822,8 +805,7 @@ class ModuleAdmin extends AppModel {
  * @return Model Authority
  */
 	public function saveModuleLinkDefaultEnableFlag($module_id, $default_enable_flag = null) {
-		App::uses('ModuleLink', 'Model');
-		$ModuleLink = new ModuleLink();
+		$ModuleLink = ClassRegistry::init('ModuleLink');
 
 		$module_link = array(
 			'ModuleLink' => array(
@@ -875,8 +857,7 @@ class ModuleAdmin extends AppModel {
  * @return Model Authority
  */
 	public function saveModuleSystemLinkAdmin($module_id, $hierarchy = NC_AUTH_ADMIN) {
-		App::uses('ModuleSystemLink', 'Model');
-		$ModuleSystemLink = new ModuleSystemLink();
+		$ModuleSystemLink = ClassRegistry::init('ModuleSystemLink');
 		$authority_ids = $this->findAuthorityIdList(array('Authority.hierarchy >=' => NC_AUTH_MIN_ADMIN));
 
 		$module_system_link = array(
@@ -903,8 +884,7 @@ class ModuleAdmin extends AppModel {
  * @return Model Authority
  */
 	public function findAuthorityIdList($conditions = array()) {
-		App::uses('Authority', 'Model');
-		$Authority = new Authority();
+		$Authority = ClassRegistry::init('Authority');
 		//$conditions = array('Authority.hierarchy >=' => NC_AUTH_MIN_ADMIN);
 		$params = array(
 			'fields' => array(

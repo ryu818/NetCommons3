@@ -23,10 +23,8 @@ class PageMenuCommunity extends AppModel {
  * @since  v 3.0.0.0
  */
 	public function copyCommunity($new_room_id, $copy_room_id, $rename_count = 0) {
-		App::uses('CommunityLang', 'Model');
-		$CommunityLang = new CommunityLang();
-		App::uses('CommunityTag', 'Model');
-		$CommunityTag = new CommunityTag();
+		$CommunityLang = ClassRegistry::init('CommunityLang');
+		$CommunityTag = ClassRegistry::init('CommunityTag');
 		$conditions = array(
 			'Community.room_id' => $copy_room_id
 		);

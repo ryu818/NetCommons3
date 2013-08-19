@@ -555,8 +555,7 @@ class Block extends AppModel
  **/
 	public function deleteBlock($block, $allDelete = _OFF, $parentRoomId = null, $isDeletePage = false)
 	{
-		App::uses('Content', 'Model');
-		$Content = new Content();
+		$Content = ClassRegistry::init('Content');
 
 		$controller_action = $block['Block']['controller_action'];
 		$page_id = $block['Block']['page_id'];
@@ -593,10 +592,8 @@ class Block extends AppModel
 			// -------------------------------------
 			// --- 削除関数                      ---
 			// -------------------------------------
-			App::uses('Page', 'Model');
-			$Page = new Page();
-			App::uses('Module', 'Model');
-			$Module = new Module();
+			$Page = ClassRegistry::init('Page');
+			$Module = ClassRegistry::init('Module');
 			$module = $Module->findById($module_id);
 			$page = $Page->findById($page_id);
 			if(!empty($module['Module'])) {

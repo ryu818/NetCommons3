@@ -59,8 +59,7 @@ class PageMenuUserLink extends AppModel {
  * @since  v 3.0.0.0
  */
 	public function deallocationRoom($room_id) {
-		App::uses('ModuleLink', 'Model');
-		$ModuleLink = new ModuleLink();
+		$ModuleLink = ClassRegistry::init('ModuleLink');
 
 		$conditions = array(
 			"PageUserLink.room_id" => $room_id

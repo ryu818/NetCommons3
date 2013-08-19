@@ -24,8 +24,7 @@ class ModuleList extends AppModel {
  * @since   v 3.0.0.0
  */
 	public function findGeneralModules() {
-		App::uses('Module', 'Model');
-		$Module = new Module();
+		$Module = ClassRegistry::init('Module');
 
 		$params = array(
 			'conditions' => array(

@@ -187,8 +187,7 @@ class ConfigRegist extends AppModel {
 
 		if($ret == true) {
 			// 登録
-			App::uses('ConfigLang', 'Model');
-			$ConfigLang = new ConfigLang();
+			$ConfigLang = ClassRegistry::init('ConfigLang');
 
 			$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 			foreach($requestConfigs as $name => $value) {
@@ -233,8 +232,7 @@ class ConfigRegist extends AppModel {
  * @since   v 3.0.0.0
  */
 	public function findDefaultStartPage($isCommunity) {
-		App::uses('Page', 'Model');
-		$Page = new Page();
+		$Page = ClassRegistry::init('Page');
 		$addParams = array(
 			'conditions' => array(
 				'Page.space_type' => NC_SPACE_TYPE_PUBLIC
@@ -271,9 +269,7 @@ class ConfigRegist extends AppModel {
  * @since   v 3.0.0.0
  */
 	public function findDefaultStartPageGroup($limit, $page) {
-
-		App::uses('Page', 'Model');
-		$Page = new Page();
+		$Page = ClassRegistry::init('Page');
 		$addParams = array(
 			'conditions' => array(
 				'Page.space_type' => NC_SPACE_TYPE_GROUP,

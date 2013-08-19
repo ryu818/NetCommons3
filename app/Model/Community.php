@@ -154,11 +154,8 @@ class Community extends AppModel
  * @since   v 3.0.0.0
  */
 	public function getCommunityData($room_id) {
-		App::uses('CommunityLang', 'Model');
-		$CommunityLang = new CommunityLang();
-		App::uses('CommunityTag', 'Model');
-		$CommunityTag = new CommunityTag();
-
+		$CommunityLang = ClassRegistry::init('CommunityLang');
+		$CommunityTag = ClassRegistry::init('CommunityTag');
 
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 

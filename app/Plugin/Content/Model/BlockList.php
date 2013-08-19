@@ -31,8 +31,7 @@ class BlockList extends AppModel {
  */
 	public function findBlocks($userId, $masterId, $blockId, $sortname = 'title', $sortorder = 'asc', $page = 1, $limit= 20) {
 		// TODO:英語と日本語のブロックが混じって表示されても違和感がないかどうか。また問題なく動作するか確認する。
-		App::uses('Content', 'Model');
-		$Content = new Content();
+		$Content = ClassRegistry::init('Content');
 		$conditions = array(
 			'Content.master_id' => intval($masterId)
 		);

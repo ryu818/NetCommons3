@@ -25,8 +25,7 @@ class PageBlock extends AppModel {
  * @since  v 3.0.0.0
  */
 	public function addAuthBlock($page_id_arr, $parent_room_id) {
-		App::uses('Content', 'Model');
-		$Content = new Content();
+		$Content = ClassRegistry::init('Content');
 
 		$addauth_room_id = $page_id_arr[0];
 
@@ -133,8 +132,7 @@ class PageBlock extends AppModel {
  * @since  v 3.0.0.0
  */
 	public function deallocationBlock($page_id_arr, $parent_room_id) {
-		App::uses('Content', 'Model');
-		$Content = new Content();
+		$Content = ClassRegistry::init('Content');
 
 		$deallocation_room_id = $page_id_arr[0];
 		$conditions = array(

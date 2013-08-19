@@ -147,8 +147,7 @@ class PageUserLink extends AppModel
 		if(count($deleteUserIdArr) == 0) {
 			return true;
 		}
-		App::uses('Page', 'Model');
-		$Page = new Page();
+		$Page = ClassRegistry::init('Page');
 		$roomIdListArr = array();
 		$child_pages = $Page->findChilds('all', $page);
 		if(count($child_pages) > 0) {

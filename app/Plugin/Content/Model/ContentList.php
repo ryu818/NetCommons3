@@ -123,8 +123,7 @@ class ContentList extends AppModel {
 			for($i =0; $i < count($rets); $i++) {
 				if($rets[$i]['Content']['shortcut_type'] != NC_SHORTCUT_TYPE_OFF) {
 					// コンテンツ元取得
-					App::uses('Content', 'Model');
-					$Content = new Content();
+					$Content = ClassRegistry::init('Content');
 					$parentContent = $Content->findAuthById($rets[$i]['Content']['master_id'], $userId);
 					if(isset($parentContent['Page']['page_name'])) {
 						$parentContent = $this->setPageName($parentContent);

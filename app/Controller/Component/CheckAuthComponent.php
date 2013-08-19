@@ -532,8 +532,7 @@ class CheckAuthComponent extends Component {
 		if(!isset($allowAuth)) {
 			$allowAuth = ($this->allowAuth == null) ? NC_AUTH_OTHER : $this->allowAuth;
 		}
-		App::uses('Authority', 'Model');
-		$Authority = new Authority();
+		$Authority = ClassRegistry::init('Authority');
 		$allowAuth = $Authority->getMinHierarchy($allowAuth);
 		if($hierarchy < $allowAuth) {	// $page_id != 0 &&
 			return false;
@@ -553,8 +552,7 @@ class CheckAuthComponent extends Component {
 		if(!isset($allowUserAuth)) {
 			$allowUserAuth = ($this->allowUserAuth == null) ? NC_AUTH_OTHER : $this->allowUserAuth;
 		}
-		App::uses('Authority', 'Model');
-		$Authority = new Authority();
+		$Authority = ClassRegistry::init('Authority');
 		$allowUserAuth = $Authority->getMinHierarchy($allowUserAuth);
 		if(intval($hierarchy) < $allowUserAuth) {
 			return false;

@@ -151,8 +151,7 @@ class AuthBehavior extends ModelBehavior {
 		}
 		// Content取得
 		/*if(!isset($val['Content']['shortcut_type']) && !isset($shortcutFlag) && isset($val[$Model->alias]['content_id'])) {
-			App::uses('Content', 'Model');
-			$Content = new Content();
+			$Content = ClassRegistry::init('Content');
 			$params = array(
 				'fields' => array(
 					'Content.title',
@@ -221,8 +220,7 @@ class AuthBehavior extends ModelBehavior {
 
 		// Page取得
 		if((!isset($val[$modelName]['space_type']) || !isset($val[$modelName]['root_id'])) && isset($val['Content']['room_id'])) {
-			App::uses('Page', 'Model');
-			$Page = new Page();
+			$Page = ClassRegistry::init('Page');
 			$params = array(
 				'fields' => array(
 					'Page.space_type',
@@ -248,8 +246,7 @@ class AuthBehavior extends ModelBehavior {
 		}
 		// Community取得
 		if(!isset($val['Community']['publication_range_flag']) && $val[$modelName]['space_type'] == NC_SPACE_TYPE_GROUP && $val[$modelName]['root_id'] != 0) {
-			App::uses('Community', 'Model');
-			$Community = new Community();
+			$Community = ClassRegistry::init('Community');
 			$params = array(
 				'fields' => array(
 					'Community.publication_range_flag'
@@ -290,8 +287,7 @@ class AuthBehavior extends ModelBehavior {
 			$val['Authority']['display_participants_editing'] = $loginUser['display_participants_editing'];
 		} else if((!isset($bufAuthorityId) || !isset($val['Authority']['hierarchy']) ||
 			!isset($val['Authority']['display_participants_editing'])) && isset($userId)) {
-			App::uses('User', 'Model');
-			$User = new User();
+			$User = ClassRegistry::init('User');
 			$currentUser = $User->find('first', array(
 				'fields' => array(
 					'User.authority_id', 'Authority.hierarchy','Authority.display_participants_editing'
@@ -332,8 +328,7 @@ class AuthBehavior extends ModelBehavior {
 				$hierarchy = Configure::read(NC_CONFIG_KEY.'.default_entry_group_hierarchy');
 			}
 		}
-		App::uses('Authority', 'Model');
-		$Authority = new Authority();
+		$Authority = ClassRegistry::init('Authority');
 		list($minHierarchy, $maxHierarchy) = $Authority->getHierarchyByUserAuthorityId($authorityId);
 		if(isset($val['Authority']['display_participants_editing']) && $val['Authority']['display_participants_editing'] &&
 			$val['Authority']['hierarchy'] >= $minHierarchy && $val['Authority']['hierarchy'] <= $maxHierarchy) {

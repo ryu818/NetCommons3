@@ -122,8 +122,7 @@ class BlockOperation extends AppModel {
 		// グループ化ブロック（ショートカット）ならば、該当グループ内のmoduleのチェックが必要。
 		// はりつけたあと、表示されませんで終わらす方法も？？？ -> グループ化ブロックはペースト不可
 
-		App::uses('Content', 'Model');
-		$Content = new Content();
+		$Content = ClassRegistry::init('Content');
 
 		if(!isset($page)) {
 			$page = $prePage;
@@ -350,8 +349,7 @@ class BlockOperation extends AppModel {
 
 
 		if($block['Block']['module_id'] != 0) {
-			App::uses('Module', 'Model');
-			$Module = new Module();
+			$Module = ClassRegistry::init('Module');
 
 			if($action != 'add_block') {
 				// ブロック移動(表示順変更)、ペースト、ショートカット作成

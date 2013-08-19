@@ -20,8 +20,7 @@ class ModuleSystemLink extends AppModel
 		$dirname = Inflector::camelize($pluginName);
 		$nc_module = Configure::read(NC_SYSTEM_KEY.'.Modules.'.$dirname);
 		if(!isset($nc_module['Module'])) {
-			App::uses('Module', 'Model');
-			$Module = new Module();
+			$Module = ClassRegistry::init('Module');
 			$module = $Module->findByDirname($dirname);
 			$moduleId = $module['Module']['id'];
 		} else {

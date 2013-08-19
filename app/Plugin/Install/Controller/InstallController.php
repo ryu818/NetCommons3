@@ -618,8 +618,7 @@ class InstallController extends Controller {
 	public function admin_setting() {
 		App::uses('Sanitize', 'Utility');
 		App::uses('AppModel', 'Model');
-		App::uses('User', 'Model');
-		$User = new User();
+		$User = ClassRegistry::init('User');
 		$user['User'] = empty($this->request->data['User']) ? null : $this->request->data['User'];
 
 		$config = $this->_check();
@@ -666,11 +665,9 @@ class InstallController extends Controller {
 		// ----------------------------------------------
 		// --- サイト名の更新処理                    ---
 		// ----------------------------------------------
-		App::uses('Config', 'Model');
-		App::uses('ConfigLang', 'Model');
+		$Config = ClassRegistry::init('Config');
+		$ConfigLang = ClassRegistry::init('ConfigLang');
 
-		$Config = new Config();
-		$ConfigLang = new ConfigLang();
 		$fields = array('Config.value' => "'" . Sanitize::escape($config['site_name']) . "'");
 		$conditions = array('Config.id' => 1);
 		$retConfig = $Config->updateAll($fields, $conditions);

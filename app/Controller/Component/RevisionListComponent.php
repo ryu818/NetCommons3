@@ -426,8 +426,7 @@ class RevisionListComponent extends Component {
 				$currentModel->unbindModel( array( 'belongsTo' => array_keys( $currentModel->belongsTo ) ) );
 				$currentModel->updateAll($fields, $conditions);
 
-				App::uses('Revision', 'Model');
-				$Revision = new Revision();
+				$Revision = ClassRegistry::init('Revision');
 				$revision = $Revision->findRevisions(null, $data[$currentModel->alias]['revision_group_id'], 1, true);
 				if(isset($revision[0]['Revision'])) {
 					$fields = array(

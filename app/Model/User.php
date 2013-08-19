@@ -48,9 +48,7 @@ class User extends AppModel
 		 * エラーメッセージ設定
 		 */
 		if(!isset($options['items'])) {
-			App::uses('Item', 'Model');
-			$Item = new Item();
-
+			$Item = ClassRegistry::init('Item');
 			$items = $Item->findList();
 		} else {
 			$items = $options['items'];
@@ -207,10 +205,8 @@ class User extends AppModel
  */
 	public function afterSave($created) {
 		if (!$created && count($this->changedAuthorityId) > 0) {
-			App::uses('Authority', 'Model');
-			$Authority = new Authority();
-			App::uses('Page', 'Model');
-			$Page = new Page();
+			$Authority = ClassRegistry::init('Authority');
+			$Page = ClassRegistry::init('Page');
 
 			$oldAuthorityId = $this->changedAuthorityId['pre_authority_id'];
 			$newAuthorityId = $this->changedAuthorityId['authority_id'];
@@ -277,8 +273,7 @@ class User extends AppModel
 
 		// $this->emailTagsからuser_item_linksテーブルのチェック
 		if(count($this->emailTags) > 0) {
-			App::uses('UserItemLink', 'Model');
-			$UserItemLink = new UserItemLink();
+			$UserItemLink = ClassRegistry::init('UserItemLink');
 			$conditions = array(
 				'item_id' => $this->emailTags,
 				'content' => $values[0],
@@ -467,8 +462,7 @@ class User extends AppModel
 			$fields[] = 'AuthorityParent.id';
 			$fields[] = 'AuthorityParent.hierarchy';
 
-			App::uses('Page', 'Model');
-			$Page = new Page();
+			$Page = ClassRegistry::init('Page');
 			$parentPage = $Page->findById($page['Page']['parent_id']);
 			$parentRoomId = $parentPage['Page']['room_id'];
 			$type = ($participantType == 0) ? "INNER" : "LEFT";
@@ -574,8 +568,7 @@ class User extends AppModel
 		$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
 		$userId = $loginUser['id'];
 		//$emailRes = array('email' => array(), 'mobileEmail' => array());
-		App::uses('Content', 'Model');
-		$Content = new Content();
+		$Content = ClassRegistry::init('Content');
 		$content = $Content->findById($contentId);
 
 		if (!isset($content['Content'])) {
@@ -602,8 +595,7 @@ class User extends AppModel
 						continue;
 					}
 					// 配置ルームのゲスト以上にメール送信
-					App::uses('Block', 'Model');
-					$Block = new Block();
+					$Block = ClassRegistry::init('Block');
 					$blockParams = array(
 						'fields' => array('Page.room_id'),
 						'conditions' => array(
@@ -658,8 +650,7 @@ class User extends AppModel
 		$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
 		$userId = $loginUser['id'];
 		$emailRes = array('email' => array(), 'mobileEmail' => array());
-		App::uses('Page', 'Model');
-		$Page = new Page();
+		$Page = ClassRegistry::init('Page');
 
 		$page_params = array(
 			'fields' => array('Page.*', 'Community.publication_range_flag'),
@@ -798,8 +789,7 @@ class User extends AppModel
 	public function getRefineSearch($request, $userAuthorityId = null, $adminHierarchy = null, $itemAuthorityLinks = null) {
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
-		App::uses('Authority', 'Model');
-		$Authority = new Authority();
+		$Authority = ClassRegistry::init('Authority');
 
 		list($baseMinHierarchy, $baseMaxHierarchy) = $Authority->getHierarchyByUserAuthorityId($userAuthorityId);
 
@@ -810,8 +800,7 @@ class User extends AppModel
 		if(isset($request->data['User']) || isset($request->data['UserItemLink'])) {
 			if($adminHierarchy < NC_AUTH_MIN_CHIEF && !isset($itemAuthorityLinks)) {
 				// 会員管理が編集不可能(会員管理が編集可能ならば、すべてから検索可能, 会員管理が編集可能ならば、public_flagはみない。)
-				App::uses('ItemAuthorityLink', 'Model');
-				$ItemAuthorityLink = new ItemAuthorityLink();
+				$ItemAuthorityLink = ClassRegistry::init('ItemAuthorityLink');
 				$params = array(
 					'conditions' => array('user_authority_id' => $userAuthorityId)
 				);
@@ -819,8 +808,7 @@ class User extends AppModel
 				$itemAuthorityLinks = $rets[$userAuthorityId];
 			}
 
-			App::uses('Item', 'Model');
-			$Item = new Item();
+			$Item = ClassRegistry::init('Item');
 
 			$allItems = $Item->find('all', array(
 				'fields' => 'id, tag_name, type, allow_public_flag',
@@ -858,8 +846,7 @@ class User extends AppModel
 
 							// 公開コミュニティーがあれば、PageUserLink.authority_id = NC_AUTH_OTHER_IDの会員が検索対象
 							// 公開コミュニティーがなければ、PageUserLink.authority_id がNULL OR NC_AUTH_OTHER_IDの会員すべて
-							App::uses('Community', 'Model');
-							$Community = new Community();
+							$Community = ClassRegistry::init('Community');
 							$roomIds = $Community->find('list', array(
 								'fields' => array('Community.id', 'Community.room_id'),
 								'conditions' => array('publication_range_flag' =>
@@ -875,8 +862,7 @@ class User extends AppModel
 								$isPublicCommunity = false;
 							}
 
-							App::uses('PageUserLink', 'Model');
-							$PageUserLink = new PageUserLink();
+							$PageUserLink = ClassRegistry::init('PageUserLink');
 							if($isPublicCommunity) {
 								// DISTINCT等で同じIDを省いていない。
 								$params = array(
@@ -928,8 +914,7 @@ class User extends AppModel
 									'Page.id' => $roomId
 								),
 							);
-							App::uses('Page', 'Model');
-							$Page = new Page();
+							$Page = ClassRegistry::init('Page');
 							$room = $Page->find('first', $params);
 							if($room['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_ONLY_USER) {
 								$joins[$joinsCount] = array(
@@ -1182,14 +1167,10 @@ class User extends AppModel
  * @since   v 3.0.0.0
  */
 	public function deleteUser($userId) {
-		App::uses('Page', 'Model');
-		$Page = new Page();
-		App::uses('UserItemLink', 'Model');
-		$UserItemLink = new UserItemLink();
-		App::uses('Passport', 'Model');
-		$Passport = new Passport();
-		App::uses('PageUserLink', 'Model');
-		$PageUserLink = new PageUserLink();
+		$Page = ClassRegistry::init('Page');
+		$UserItemLink = ClassRegistry::init('UserItemLink');
+		$Passport = ClassRegistry::init('Passport');
+		$PageUserLink = ClassRegistry::init('PageUserLink');
 		if(isset($userId[0]['User'])) {
 			$deleteUsers = $userId;
 		} else if(isset($userId['User'])) {

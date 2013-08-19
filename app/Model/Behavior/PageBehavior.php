@@ -31,8 +31,7 @@ class PageBehavior extends ModelBehavior {
 						if($user['myportal_page_id'] == $page[$alias]['id']) {
 							$page[$alias]['page_name'] = __('Myportal of %s', $user['handle']);
 						} else {
-							App::uses('User', 'Model');
-							$User = new User();
+							$User = ClassRegistry::init('User');
 							$conditions = array('myportal_page_id' => $page[$alias]['id']);
 							$user = $User->find( 'first', array('conditions' => $conditions, 'recursive' => -1) );
 							$page[$alias]['page_name'] = __('Myportal of %s', $user['User']['handle']);
@@ -42,8 +41,7 @@ class PageBehavior extends ModelBehavior {
 						if($user['private_page_id'] == $page[$alias]['id']) {
 							$page[$alias]['page_name'] = __('Private room of %s', $user['handle']);
 						} else {
-							App::uses('User', 'Model');
-							$User = new User();
+							$User = ClassRegistry::init('User');
 							$conditions = array('User.private_page_id' => $page[$alias]['id']);
 							$user = $User->find( 'first', array('conditions' => $conditions, 'recursive' => -1) );
 							$page[$alias]['page_name'] = __('Private room of %s', $user['User']['handle']);
@@ -52,8 +50,7 @@ class PageBehavior extends ModelBehavior {
 				} else if($page[$alias]['thread_num'] == 1 && $page[$alias]['space_type'] == NC_SPACE_TYPE_GROUP) {
 					if(!isset($page['CommunityLang']['community_name'])) {
 						$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
-						App::uses('CommunityLang', 'Model');
-						$CommunityLang = new CommunityLang();
+						$CommunityLang = ClassRegistry::init('CommunityLang');
 						$page['CommunityLang'] = $CommunityLang->find('first', array('conditions' => array('room_id' => $page[$alias]['id'], 'lang' => $lang)));
 					}
 					if(isset($page['CommunityLang']['community_name'])) {

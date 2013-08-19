@@ -97,8 +97,7 @@ class EmailConfig {
  */
 	public function __construct() {
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
-		App::uses('Config', 'Model');
-		$Config = new Config();
+		$Config = ClassRegistry::init('Config');
 
 		$params = array(
 			'fields' => array(

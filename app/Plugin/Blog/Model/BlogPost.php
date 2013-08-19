@@ -239,8 +239,7 @@ class BlogPost extends AppModel
  * @since   v 3.0.0.0
  */
 	public function beforeDelete($cascade = true) {
-		App::uses('Archive', 'Model');
-		$Archive = new Archive();
+		$Archive = ClassRegistry::init('Archive');
 		// アーカイブ削除
 		if(!$Archive->deleteParent($this->alias, $this->id)) {
 			return false;
@@ -679,8 +678,7 @@ class BlogPost extends AppModel
  * @since   v 3.0.0.0
  */
 	protected function _replaceBlogNameTags($blogPost) {
-		App::uses('Blog', 'Blog.Model');
-		$this->Blog = new Blog();
+		$this->Blog = ClassRegistry::init('Blog.Blog');
 
 		$params = array(
 			'conditions' => array('Blog.content_id' => $blogPost['BlogPost']['content_id']),
