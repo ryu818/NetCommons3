@@ -73,7 +73,7 @@ class ModuleLink extends AppModel
  * @return array $results
  * @since   v 3.0.0.0
  */
-	public function afterFind($results) {
+	public function afterFind($results, $primary = false) {
 		$Module = ClassRegistry::init('Module');
 
 		if(!isset($results[0]['Module']['dir_name'])) {
