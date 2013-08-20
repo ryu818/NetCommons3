@@ -840,7 +840,7 @@ class User extends AppModel
 							// コミュニティに参加していない会員
 							// 自分のコミュニティに参加している会員を取得
 							if($adminHierarchy < NC_AUTH_MIN_CHIEF) {
-								// 会員管理の主坦より小さい場合、検索不可
+								// 会員管理の主担より小さい場合、検索不可
 								continue;
 							}
 

@@ -58,7 +58,7 @@ msgstr 	"ルーム一覧を表示します。"
 msgid  	"Groups"
 msgstr 	"参加ルーム"
 msgid  	"In the [%1$s], the only chief did not exist. When do not appoint a chief again, in the [%2$s] cannot edit it."
-msgstr 	"[%1$s]は、唯一の主坦が存在しなくなりました。再度、主坦を任命しないと[%2$s]における編集ができません。"
+msgstr 	"[%1$s]は、唯一の主担が存在しなくなりました。再度、主担を任命しないと[%2$s]における編集ができません。"
 
 msgid  	"Email notification"
 msgstr 	"メール通達"

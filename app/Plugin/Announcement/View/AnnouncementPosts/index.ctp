@@ -100,7 +100,7 @@ if($announcement_edit['AnnouncementEdit']['approved_flag'] == _ON && $hierarchy 
 						$preChangeFlag = ($announcement_edit['AnnouncementEdit']['approved_pre_change_flag']) ? true : false;
 					} else {
 						if($announcement['Announcement']['is_approved'] == _OFF) {
-							// 承認制で未承認コンテンツを主坦が更新しようとした場合
+							// 承認制で未承認コンテンツを主担が更新しようとした場合
 							$preChangeFlag = false;
 						} else {
 							$preChangeFlag = ($announcement['Announcement']['pre_change_flag']) ? true : false;

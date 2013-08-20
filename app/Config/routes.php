@@ -123,7 +123,7 @@ if ($plugins = CakePlugin::loaded()) {
 		) + $pluginParams
 	);
 
-	/* 参照（ブロックID指定なしでプラグイン表示：主坦以外表示不可。強制的にゲスト権限へ。） */
+	/* 参照（ブロックID指定なしでプラグイン表示：主担以外表示不可。強制的にゲスト権限へ。） */
 	Router::connect(
 		'/:block_type/:content_id/:plugin/:controller/:action/*',
 		array('block_type' => 'active-contents'),

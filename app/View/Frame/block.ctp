@@ -22,7 +22,7 @@ if($this->request->params['block_type'] == 'active-contents') {
 }
 if($content == '') {
 	if($block_hierarchy < NC_AUTH_MIN_CHIEF) {
-		// コンテンツが空で、主坦以下の権限ならば、非表示にする。
+		// コンテンツが空で、主担以下の権限ならば、非表示にする。
 		return;
 	}
 	$content = __('Content not found.');

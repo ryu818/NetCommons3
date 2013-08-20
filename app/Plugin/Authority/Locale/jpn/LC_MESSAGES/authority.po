@@ -93,7 +93,7 @@ msgid  	"The default authority of the public community can be set from system ma
 msgstr 	"公開コミュニティーでのデフォルトの権限はシステム管理より設定できます。"
 
 msgid  	"Allow to add new participants in the community."
-msgstr 	"コミュニティーで主坦ならば、新規に参加者の追加を許す。"
+msgstr 	"コミュニティーで主担ならば、新規に参加者の追加を許す。"
 msgid  	"If you do not allow new participants, available as SNS."
 msgstr 	"新規追加を許さない場合、SNSとしてご利用いただけます。"
 msgid  	"Used the participant setting of the room."

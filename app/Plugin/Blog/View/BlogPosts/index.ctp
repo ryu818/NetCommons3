@@ -264,7 +264,7 @@ if($blog['Blog']['approved_flag'] == _ON && $hierarchy  <= NC_AUTH_MODERATE) {
 					$preChangeFlag = ($blog['Blog']['approved_pre_change_flag']) ? true : false;
 				} else {
 					if($blog_post['BlogPost']['is_approved'] == _OFF) {
-						// 承認制で未承認コンテンツを主坦が更新しようとした場合
+						// 承認制で未承認コンテンツを主担が更新しようとした場合
 						$preChangeFlag = false;
 					} else {
 						$preChangeFlag = ($blog_post['BlogPost']['pre_change_flag']) ? true : false;

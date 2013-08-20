@@ -261,7 +261,7 @@ class UserController extends UserAppController {
 		$this->set('itemAuthorityLinks', $rets[$userAuthorityId]);
 		// 参加コミュニティー
 		if($this->hierarchy >= NC_AUTH_MIN_CHIEF) {
-			// 会員管理のhierarchyが主坦以上ならば、参加してないルームもセットし、すべてのルーム一覧を取得
+			// 会員管理のhierarchyが主担以上ならば、参加してないルームもセットし、すべてのルーム一覧を取得
 			// TODO:すべてのコミュニティーの一覧の取得はコミュニティー数が増大すると重くなる。
 			$userId = 'all';
 		}
@@ -271,7 +271,7 @@ class UserController extends UserAppController {
 /**
  * 会員追加・編集
  * <pre>
- * 会員管理の編集は、会員管理が主坦以上ならば許す。
+ * 会員管理の編集は、会員管理が主担以上ならば許す。
  * </pre>
  * @param   integer $userId
  * @return  void
@@ -672,7 +672,7 @@ class UserController extends UserAppController {
 					}
 				}
 
-				// 会員一覧に唯一の主坦が消された場合、メッセージを表示する
+				// 会員一覧に唯一の主担が消された場合、メッセージを表示する
 				$successMessage = '';
 				$uniqueChiefRoomIds = $this->UserCommon->isUniqueChief($insertPageUserLinks);
 				if(count($uniqueChiefRoomIds) > 0) {

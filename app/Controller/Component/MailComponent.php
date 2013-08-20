@@ -176,7 +176,7 @@ class MailComponent extends Component {
 			// 承認完了通知
 			$ret['Approved'] = true;
 		} else if(isset($isApproved) && $isApproved == _OFF && $status == NC_STATUS_PUBLISH) {
-			// 未承認記事　主坦通知
+			// 未承認記事　主担通知
 			$ret['Unapproved'] = true;
 		}
 		if(!isset($ret['Unapproved']) && $mailFlag && $beforeStatus == NC_STATUS_TEMPORARY_BEFORE_RELEASED && $status == NC_STATUS_PUBLISH) {

@@ -93,7 +93,7 @@
 	}
 
 	if($is_chief && (($is_top && $page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) || !$is_node_top_page)) {
-		// 主坦ならばTopNodeでもなく、各ノードのトップページでなければ公開設定を許す
+		// 主担ならばTopNodeでもなく、各ノードのトップページでなければ公開設定を許す
 		$is_display = true;
 	}
 

@@ -89,10 +89,10 @@ class PageMenuComponent extends Component {
  * 権限チェック
  * <pre>
  * TODO:Authority.allow_creating_communityによるチェックに切替予定
- *  管理者：コミュニティーの表示順変更、自分が主坦でなくても追加・編集・削除・参加者修正、モジュール選択を許す。
- *  主坦：コミュニティーの表示順変更(参加コミュニティのみ) TODO:未テスト。公開ルームの作成。
+ *  管理者：コミュニティーの表示順変更、自分が主担でなくても追加・編集・削除・参加者修正、モジュール選択を許す。
+ *  主担：コミュニティーの表示順変更(参加コミュニティのみ) TODO:未テスト。公開ルームの作成。
  *  モデレータ：コミュニティーの作成、編集、削除。（公開コミュニティーの作成。モデレータのHierarchyを２つに分離する）
- *  一般：主坦権限のルームへのページ追加、編集、削除
+ *  一般：主担権限のルームへのページ追加、編集、削除
  *  	一般権限のHierarchyも２つに分離し、ページ操作、ブロック操作を行えるかどうかを追加するほうが望ましい。
  *  ゲスト：ページメニューをみるだけ。
  * </pre>
@@ -673,7 +673,7 @@ class PageMenuComponent extends Component {
 			}
 
 			if($userHierarchy < NC_AUTH_MIN_ADMIN) {
-				// ページメニューが管理者権限でないならば、ログイン会員は必ず主坦として参加
+				// ページメニューが管理者権限でないならば、ログイン会員は必ず主担として参加
 				$bufPageUserLinksParams['PageUserLink'][$userId] = array(
 					'id' => 0,
 					'room_id' => $pageId,
@@ -970,7 +970,7 @@ class PageMenuComponent extends Component {
 		if(isset($move_page['Page'])) {
 			if($move_page['Page']['thread_num'] <= 1) {
 				if($move_page['Page']['space_type'] != NC_SPACE_TYPE_GROUP || $adminHierarchy <= NC_AUTH_MODERATE) {
-					// 主坦以上
+					// 主担以上
 					// TODO:現状、パブリック、マイポータル、マイページ直下への操作はエラーとする
 					$this->_controller->flash(__('Forbidden permission to access the page.'), null, 'PageMenu/operatePage.003', '403');
 					return false;

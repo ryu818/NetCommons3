@@ -232,7 +232,7 @@
         <column name="id">2</column>
         <column name="authority_id">2</column>
         <column name="lang">ja</column>
-        <column name="authority_name">主坦</column>
+        <column name="authority_name">主担</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>

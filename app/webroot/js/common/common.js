@@ -1045,7 +1045,7 @@
 			}
 			$.ajax(ajax_options);
 		},
-		/* 権限[主坦　モデレータ　一般]スライダー */
+		/* 権限[主担　モデレータ　一般]スライダー */
 		sliderAuthority: function(id, disable, display_guest) {
 			display_guest = (typeof display_guest == "undefined") ? false : display_guest;
 			var _hierarchy = function(authority_id) {

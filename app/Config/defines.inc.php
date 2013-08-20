@@ -85,13 +85,13 @@ define('NC_ALLOW_CREATING_COMMUNITY_ALL', 		3);			// 公開（すべてのユー
 define('NC_ALLOW_CREATING_COMMUNITY_ADMIN', 	4);			// 公開コミュニティーまで作成でき、すべてのコミュニティーの表示順変更、削除が可能
 
 //-----------------権限(Authority.allow_new_participant)------------------------------------
-// _ON:netcommonsのように主坦が参加者を追加・変更・削除を行うことができる。
+// _ON:netcommonsのように主担が参加者を追加・変更・削除を行うことができる。
 // _OFF:SNSのようにしてコミュニティーの参加者を募り、参加者の新規追加は許さない。
 
 //-----------------権限(Authority.myportal_use_flag)------------------------------------
 define('NC_MYPORTAL_USE_NOT', 0);			// 使用しない
 define('NC_MYPORTAL_USE_ALL', 1);			// すべて公開
-define('NC_MYPORTAL_MEMBERS', 2);			// ログイン会員のみ公開(allow_myportal_viewing_hierarchyの権限以上で閲覧可能とする[主坦、モデレータ、一般、ゲスト])
+define('NC_MYPORTAL_MEMBERS', 2);			// ログイン会員のみ公開(allow_myportal_viewing_hierarchyの権限以上で閲覧可能とする[主担、モデレータ、一般、ゲスト])
 
 //-----------------item_authority_links.XXXX_public_flag------------------------------------
 

@@ -14,9 +14,9 @@
  */
 class UserCommonComponent extends Component {
 /**
- * 唯一の主坦であるかどうかのチェック
+ * 唯一の主担であるかどうかのチェック
  * @param   Model PageUserLinks
- * @return  array(room_id) 唯一の主坦のIDのリスト
+ * @return  array(room_id) 唯一の主担のIDのリスト
  * @since   v 3.0.0.0
  */
 	public function isUniqueChief($pageUserLinks) {
@@ -38,7 +38,7 @@ class UserCommonComponent extends Component {
 
 		foreach($pageUserLinks as $pageUserLink) {
 			if(isset($chiefAuthorities[$pageUserLink['PageUserLink']['authority_id']])) {
-				// 主坦として登録されるデータ
+				// 主担として登録されるデータ
 				continue;
 			}
 			$PageUserLinkParams = array('conditions' => array(

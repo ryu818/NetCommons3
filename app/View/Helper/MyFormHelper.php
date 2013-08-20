@@ -300,7 +300,7 @@ class MyFormHelper extends FormHelper {
 	}
 
 /**
- * 権限[主坦 モデレータ 一般]スライダー表示
+ * 権限[主担 モデレータ 一般]スライダー表示
  * @param   string $fieldName A field name, like "Modelname.fieldname"
  * @param   array  $options Array of HTML attributes.
  * 	### Options:

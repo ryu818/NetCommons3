@@ -50,7 +50,7 @@ class BlockMoveComponent extends Component {
  * コンテンツ情報バリデータ(移動、ペースト、ショートカット作成時)
  * <pre>
  * ショートカットブロックの移動、ペースト、ショートカット作成を許さない
- * （但し、ショートカット先コンテンツルームも主坦か、同じルーム内での操作であれば可能とする）
+ * （但し、ショートカット先コンテンツルームも主担か、同じルーム内での操作であれば可能とする）
  * </pre>
  * @param  Content Model $content
  * @param  Page Model $pre_page
