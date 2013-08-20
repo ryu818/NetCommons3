@@ -312,7 +312,7 @@ class Upload extends AppModel
 /**
  * ユーザに紐づくアップロードファイルのサイズ総計取得
  * @param   array $userId
- * @return  int アップロードファイルサイズ総計
+ * @return  integer アップロードファイルサイズ総計
  * @since   v 3.0.0.0
  */
 	public function findFilesizeSumByUserId($userId) {
@@ -328,7 +328,7 @@ class Upload extends AppModel
 		if (empty($fileSizeResult)) {
 			return false;
 		}
-		return $fileSizeResult[0][0]['Upload.file_size_sum'];
+		return !empty($fileSizeResult[0][0]['Upload.file_size_sum']) ? $fileSizeResult[0][0]['Upload.file_size_sum'] : 0;
 	}
 
 /**
