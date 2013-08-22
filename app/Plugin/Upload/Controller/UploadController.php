@@ -317,7 +317,7 @@ class UploadController extends UploadAppController
 			return true;
 		}
 		$plugin = Inflector::camelize($plugin);
-		$module = $this->Module->findByDirname($plugin);
+		$module = $this->Module->findByDirName($plugin);
 		if(!isset($module['Module'])) {
 			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Upload.validatePlugin.001', '500');
 			return false;

@@ -21,7 +21,7 @@ class ModuleSystemLink extends AppModel
 		$nc_module = Configure::read(NC_SYSTEM_KEY.'.Modules.'.$dirname);
 		if(!isset($nc_module['Module'])) {
 			$Module = ClassRegistry::init('Module');
-			$module = $Module->findByDirname($dirname);
+			$module = $Module->findByDirName($dirname);
 			$moduleId = $module['Module']['id'];
 		} else {
 			$moduleId = $nc_module['Module']['id'];

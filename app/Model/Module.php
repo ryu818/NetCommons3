@@ -99,23 +99,6 @@ class Module extends AppModel
 	}
 
 /**
- * Moduleの値取得
- * @param  string  $dir_name
- * @return array $module
- */
-	public function findByDirname($dir_name) {
-		$module_params = array(
-			//'fields' => array('Module.*'),
-			'conditions' => array('Module.dir_name' => $dir_name)
-		);
-		$module = $this->find('first', $module_params);
-		if(empty($module['Module'])) {
-			return false;
-		}
-		return $module;
-	}
-
-/**
  * afterFind
  *
  * @param  array   $results
