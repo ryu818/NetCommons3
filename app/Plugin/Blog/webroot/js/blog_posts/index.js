@@ -86,7 +86,7 @@
 			var params = new Object();
 			params[add_category.attr('name')] = add_category.val();
 			params[parent_select_category.attr('name')] = parent_select_category.val();
-			params[sel_categories.attr('name')] = sel_categories.trigger("liszt:updated").val();
+			params[sel_categories.attr('name')] = sel_categories.trigger('change').val();
 			params['token'] = $('input[name="data[_Token][key]"]:first', top.parents('form:first')).val();
 			$.Event(e).preventDefault();
 

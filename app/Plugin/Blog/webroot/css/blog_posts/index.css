@@ -26,6 +26,7 @@ ul.blog-posts-categories-children li {
 
 .blog-posts-select {
 	width:200px;
+	margin-bottom:5px;
 }
 select.blog-posts-select {
 	display:none;

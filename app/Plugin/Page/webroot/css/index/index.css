@@ -85,11 +85,11 @@
 
 /* 言語切替 */
 .pages-menu-language-outer {
-	padding: 8px;
-    position: absolute;
-    right: 40px;
-    top: 0;
-    height:24px;
+	padding: 0 8px;
+	position: absolute;
+	right: 40px;
+	top: 0;
+	height:24px;
 }
 #pages-menu-language {
 	width:130px;
