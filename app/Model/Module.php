@@ -120,55 +120,64 @@ class Module extends AppModel
  *
  * @param  array   $results
  * @param  boolean $primary
+ * @param  string  $alias
  * @return array $results
  * @since   v 3.0.0.0
  */
-	public function afterFind($results, $primary = false) {
+	public function afterFind($results, $primary = false, $alias=null) {
+		if(isset($results[0][0])) {
+			// max等
+			return $results;
+		}
+
 		$ret = array();
 		$locale = Configure::read(NC_SYSTEM_KEY.'.locale');
+		if(empty($alias)) {
+			$alias = $this->alias;
+		}
 
 		$single_flag = false;
-		if(isset($results['Module']['dir_name'])) {
+		if(isset($results[$alias]['dir_name'])) {
 			$single_flag = true;
 			$results = array($results);
 		}
 
 		foreach ($results as $key => $result) {
-			if(!isset($result['Module']['dir_name'])) {
+			if(!isset($result[$alias]['dir_name'])) {
 				continue;
 			}
-			$dir_name = $result['Module']['dir_name'];
+			$dir_name = $result[$alias]['dir_name'];
 
-			$result['Module']['ini'] = $this->loadInstallIni($dir_name);
+			$result[$alias]['ini'] = $this->loadInstallIni($dir_name);
 
 			//
  	        // default値
  	        //
-			if(!isset($result['Module']['ini']['system_flag'])) {
-				$result['Module']['ini']['system_flag'] = _OFF;
+			if(!isset($result[$alias]['ini']['system_flag'])) {
+				$result[$alias]['ini']['system_flag'] = _OFF;
 			}
-			if(!isset($result['Module']['ini']['disposition_flag'])) {
- 	        	$result['Module']['ini']['disposition_flag'] = _ON;
+			if(!isset($result[$alias]['ini']['disposition_flag'])) {
+ 	        	$result[$alias]['ini']['disposition_flag'] = _ON;
  	        }
-			if(!isset($result['Module']['ini']['module_icon'])) {
- 	        	$result['Module']['ini']['module_icon'] = '';
+			if(!isset($result[$alias]['ini']['module_icon'])) {
+ 	        	$result[$alias]['ini']['module_icon'] = '';
  	        }
-			if(!isset($result['Module']['ini']['temp_name'])) {
-				$result['Module']['ini']['temp_name'] = '';
+			if(!isset($result[$alias]['ini']['temp_name'])) {
+				$result[$alias]['ini']['temp_name'] = '';
 			}
 			// TODO:content_has_oneカラム自体使用するかどうか未検討
-			if(!isset($result['Module']['ini']['content_has_one'])) {
-				$result['Module']['ini']['content_has_one'] = _OFF;
+			if(!isset($result[$alias]['ini']['content_has_one'])) {
+				$result[$alias]['ini']['content_has_one'] = _OFF;
 			}
 
-			$result['Module']['module_name'] = $this->loadModuleName($dir_name, $locale);
+			$result[$alias]['module_name'] = $this->loadModuleName($dir_name, $locale);
 
-			if(empty($result['Module']['temp_name'])) {
-	       		$result['Module']['temp_name'] = $result['Module']['ini']['temp_name'];
+			if(empty($result[$alias]['temp_name'])) {
+	       		$result[$alias]['temp_name'] = $result[$alias]['ini']['temp_name'];
 	       	}
 
 			//if(isset($result['ModuleLink']['hierarchy'])) {
-	       	//	$result['Module']['hierarchy'] = $result['ModuleLink']['hierarchy'];
+	       	//	$result[$alias]['hierarchy'] = $result['ModuleLink']['hierarchy'];
 	       	//}
 
 			$ret[] = $result;

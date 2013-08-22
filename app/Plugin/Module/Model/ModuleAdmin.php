@@ -14,7 +14,6 @@
  */
 class ModuleAdmin extends AppModel {
 	public $useTable = 'modules';
-	public $alias = 'Module';
 	public $actsAs = array('File');
 
 /**
@@ -46,10 +45,10 @@ class ModuleAdmin extends AppModel {
  */
 	public function findList() {
 		$order = array(
-			'Module.display_sequence' => "ASC"
+			$this->alias.'.display_sequence' => "ASC"
 		);
 		$params = array(
-			'conditions' => array('Module.system_flag' => _OFF),
+			'conditions' => array($this->alias.'.system_flag' => _OFF),
 			'order' => $order
 		);
 
@@ -69,10 +68,10 @@ class ModuleAdmin extends AppModel {
  */
 	public function findSystemList() {
 		$order = array(
-			'Module.display_sequence' => "ASC"
+			$this->alias.'.display_sequence' => "ASC"
 		);
 		$params = array(
-			'conditions' => array('Module.system_flag' => _ON),
+			'conditions' => array($this->alias.'.system_flag' => _ON),
 			'order' => $order
 		);
 		$system_modules = $this->find('all', $params);
@@ -95,10 +94,10 @@ class ModuleAdmin extends AppModel {
 
 		$installed = array();
 		foreach($system_modules as $system_module) {
-			$installed[] = $system_module['Module']['dir_name'];
+			$installed[] = $system_module['ModuleAdmin']['dir_name'];
 		}
 		foreach($general_modules as $general_module) {
-			$installed[] = $general_module['Module']['dir_name'];
+			$installed[] = $general_module['ModuleAdmin']['dir_name'];
 		}
 
 		$not_install_modules = array();
@@ -117,18 +116,18 @@ class ModuleAdmin extends AppModel {
 				$install_inc_ini_path = $full_path. DS .NC_INSTALL_INC_FILE;
 				if(!isset($not_install_modules[$plugin_name]) && @file_exists($install_inc_ini_path)) {
 					$install_inc_ini = parse_ini_file($install_inc_ini_path);
-					$not_install_modules[$plugin_name]['Module'] = $install_inc_ini;
-					$not_install_modules[$plugin_name]['Module']['module_name'] = __('Untitled').'['.$plugin_name.']';
+					$not_install_modules[$plugin_name][$this->alias] = $install_inc_ini;
+					$not_install_modules[$plugin_name][$this->alias]['module_name'] = __('Untitled').'['.$plugin_name.']';
 
 					if(@file_exists($full_path . DS . 'Locale'. DS . $locale. '/'. NC_MODINFO_FILENAME)) {
 						$modinfo_ini = parse_ini_file($full_path . DS . 'Locale'. DS . $locale. DS. NC_MODINFO_FILENAME);
 					}
 					if(!empty($modinfo_ini["module_name"])) {
-						$not_install_modules[$plugin_name]['Module']['module_name'] = $modinfo_ini["module_name"];
+						$not_install_modules[$plugin_name][$this->alias]['module_name'] = $modinfo_ini["module_name"];
 					}
 
-					$not_install_modules[$plugin_name]['Module']['dir_name'] = $plugin_name;
-					$not_install_modules[$plugin_name]['Module']['install_flag'] = _ON;
+					$not_install_modules[$plugin_name][$this->alias]['dir_name'] = $plugin_name;
+					$not_install_modules[$plugin_name][$this->alias]['install_flag'] = _ON;
 				}
 			}
 		}
@@ -146,7 +145,7 @@ class ModuleAdmin extends AppModel {
  */
 	public function afterFind($results, $primary = false) {
 		$Module = ClassRegistry::init('Module');
-		return $Module->afterFind($results, $primary);
+		return $Module->afterFind($results, $primary, $this->alias);
 	}
 
 /**
@@ -157,7 +156,6 @@ class ModuleAdmin extends AppModel {
  * @since   v 3.0.0.0
  */
 	public function installModule($dirName) {
-		$Module = ClassRegistry::init('Module');
 		$successMes = array();
 		$errorMes = array();
 		if(empty($dirName)) {
@@ -166,9 +164,9 @@ class ModuleAdmin extends AppModel {
 		}
 
 		$module = array();
-		$module['Module']['dir_name'] = $dirName;
+		$module[$this->alias]['dir_name'] = $dirName;
 		$module = $this->afterFind($module);
-		$module_name = $module['Module']['module_name'];
+		$module_name = $module[$this->alias]['module_name'];
 		$prefix = __d('module', 'Module %s:', h($module_name));
 
 		// ----------------------------------------------
@@ -183,23 +181,23 @@ class ModuleAdmin extends AppModel {
 		// ------------------------------------------------------------
 		// --- 同一のディレクトリ名で既に登録されていないかチェック ---
 		// ------------------------------------------------------------
-		if($Module->findByDirname($dirName) !== false) {
+		if(count($this->findByDirName($dirName)) > 0) {
 			$errorMes[] = $prefix.__d('module', 'This module is already installed.');
 			return array($successMes, $errorMes);
 		}
 
-		$default_enable_flag = isset($module['Module']['ini']['default_enable_flag']) ? intval($module['Module']['ini']['default_enable_flag']) : _ON;
-		$module['Module'] = array_merge($module['Module'], $module['Module']['ini']);
-		unset($module['Module']['ini']);
-		unset($module['Module']['module_name']);
+		$default_enable_flag = isset($module[$this->alias]['ini']['default_enable_flag']) ? intval($module[$this->alias]['ini']['default_enable_flag']) : _ON;
+		$module[$this->alias] = array_merge($module[$this->alias], $module[$this->alias]['ini']);
+		unset($module[$this->alias]['ini']);
+		unset($module[$this->alias]['module_name']);
 		$displayseq_conditions = array(
-			"Module.system_flag" => $module['Module']['system_flag']
+			$this->alias.".system_flag" => $module[$this->alias]['system_flag']
 		);
-		$max_result = $this->find('first', array("fields" => "MAX(Module.display_sequence) as max_number", "conditions" => $displayseq_conditions));
+		$max_result = $this->find('first', array("fields" => "MAX(".$this->alias.".display_sequence) as max_number", "conditions" => $displayseq_conditions));
 		if(isset($max_result[0])) {
-			$module['Module']['display_sequence'] = $max_result[0]['max_number'] + 1;
+			$module[$this->alias]['display_sequence'] = $max_result[0]['max_number'] + 1;
 		} else {
-			$module['Module']['display_sequence'] = 1;
+			$module[$this->alias]['display_sequence'] = 1;
 		}
 
 		// ----------------------------------------------
@@ -230,7 +228,7 @@ class ModuleAdmin extends AppModel {
 		// -------------------------------------------------------------------------------------------
 		// --- 権限モジュールリンクデータ登録, システム権限リンクデータ登録                       ---
 		// -------------------------------------------------------------------------------------------
-		if($module['Module']['system_flag']) {
+		if($module[$this->alias]['system_flag']) {
 			// module_system_links Insert
 			if(!$this->saveModuleSystemLinkAdmin($module_id)) {
 				$errorMes[] = $prefix.__('Failed to register the database, (%s).','module_system_links');
@@ -267,9 +265,9 @@ class ModuleAdmin extends AppModel {
 		if($module === false) {
 			return array($successMes, $errorMes);
 		}
-		$module_id = $module['Module']['id'];
-		$plugin_name = Inflector::camelize($module['Module']['dir_name']);
-		$default_enable_flag = isset($module['Module']['ini']['default_enable_flag']) ? intval($module['Module']['ini']['default_enable_flag']) : _OFF;
+		$module_id = $module[$this->alias]['id'];
+		$plugin_name = Inflector::camelize($module[$this->alias]['dir_name']);
+		$default_enable_flag = isset($module[$this->alias]['ini']['default_enable_flag']) ? intval($module[$this->alias]['ini']['default_enable_flag']) : _OFF;
 
 		// ----------------------------------------------
 		//  チェック処理
@@ -283,15 +281,15 @@ class ModuleAdmin extends AppModel {
 		// ----------------------------------------------
 		// --- アップデートアクション実行(update)	 ---
 		// ----------------------------------------------
-		$module_name = $module['Module']['module_name'];
+		$module_name = $module[$this->alias]['module_name'];
 		$prefix = __d('module', 'Module %s:', h($module_name));
 
-		if($module['Module']['ini']['controller_action'] != $module['Module']['controller_action']) {
+		if($module[$this->alias]['ini']['controller_action'] != $module[$this->alias]['controller_action']) {
 			/**
 			 * Block Update
 			 */
 			$Block = ClassRegistry::init('Block');
-			$fields = array('Block.controller_action' => "'" . Sanitize::escape($module['Module']['ini']['controller_action']) . "'");
+			$fields = array('Block.controller_action' => "'" . Sanitize::escape($module[$this->alias]['ini']['controller_action']) . "'");
 			$conditions = array(
 				"Block.module_id" => $module_id
 			);
@@ -301,9 +299,9 @@ class ModuleAdmin extends AppModel {
 			}
 		}
 
-		if($module['Module']['ini']['disposition_flag'] != $module['Module']['disposition_flag'] &&
-				$module['Module']['ini']['disposition_flag'] == _OFF) {
-			if($module['Module']['system_flag'] == _ON) {
+		if($module[$this->alias]['ini']['disposition_flag'] != $module[$this->alias]['disposition_flag'] &&
+				$module[$this->alias]['ini']['disposition_flag'] == _OFF) {
+			if($module[$this->alias]['system_flag'] == _ON) {
 				/**
 				 * モジュールリンクデータ削除(module_system_links)
 				 *    配置不可能モジュールの場合
@@ -324,9 +322,9 @@ class ModuleAdmin extends AppModel {
 			}
 		}
 
-		if($module['Module']['ini']['system_flag'] != $module['Module']['system_flag'] &&
-			$module['Module']['ini']['disposition_flag'] == _ON) {
-			if($module['Module']['system_flag'] == _ON) {
+		if($module[$this->alias]['ini']['system_flag'] != $module[$this->alias]['system_flag'] &&
+			$module[$this->alias]['ini']['disposition_flag'] == _ON) {
+			if($module[$this->alias]['system_flag'] == _ON) {
 				// module_links Delete
 				if(!$ModuleLink->deleteByModuleId($module_id)) {
 					$errorMes[] = $prefix.__('Failed to delete the database, (%s).','module_links');
@@ -351,9 +349,9 @@ class ModuleAdmin extends AppModel {
 			}
 		}
 
-		$module['Module'] = array_merge($module['Module'], $module['Module']['ini']);
-		unset($module['Module']['ini']);
-		unset($module['Module']['module_name']);
+		$module[$this->alias] = array_merge($module[$this->alias], $module[$this->alias]['ini']);
+		unset($module[$this->alias]['ini']);
+		unset($module[$this->alias]['module_name']);
 
 		// ----------------------------------------------
 		// --- Module Update                     	 ---
@@ -428,11 +426,11 @@ class ModuleAdmin extends AppModel {
 
 		$params = array(
 			'fields' => array(
-				'Module.dir_name'
+				$this->alias.'.dir_name'
 			),
 			'order' => array(
-				'Module.system_flag',
-				'Module.display_sequence'
+				$this->alias.'.system_flag',
+				$this->alias.'.display_sequence'
 			)
 		);
 		$modules = $this->find('list', $params);
@@ -473,7 +471,6 @@ class ModuleAdmin extends AppModel {
  */
 	public function uninstallModule($dirName) {
 		App::uses('Sanitize', 'Utility');
-		$Module = ClassRegistry::init('Module');
 		$Content = ClassRegistry::init('Content');
 		$ModuleSystemLink = ClassRegistry::init('ModuleSystemLink');
 		$ModuleLink = ClassRegistry::init('ModuleLink');
@@ -485,10 +482,10 @@ class ModuleAdmin extends AppModel {
 		if($module === false) {
 			return array($successMes, $errorMes);
 		}
-		$module_id = $module['Module']['id'];
-		$dir_name = $module['Module']['dir_name'];
-		$plugin_name = Inflector::camelize($module['Module']['dir_name']);
-		$module_name = $module['Module']['module_name'];
+		$module_id = $module[$this->alias]['id'];
+		$dir_name = $module[$this->alias]['dir_name'];
+		$plugin_name = Inflector::camelize($module[$this->alias]['dir_name']);
+		$module_name = $module[$this->alias]['module_name'];
 		$prefix = __d('module', 'Module %s:', h($module_name));
 
 		// ------------------------------------------------------
@@ -558,7 +555,7 @@ class ModuleAdmin extends AppModel {
 		// --- システム権限モジュールリンクデータ削除         ---
 		// --- 権限モジュールリンクデータ削除                 ---
 		// ------------------------------------------------------
-		if($module['Module']['system_flag']) {
+		if($module[$this->alias]['system_flag']) {
 			// module_system_links Delete
 			if(!$ModuleSystemLink->deleteByModuleId($module_id)) {
 				$errorMes[] = $prefix.__('Failed to delete the database, (%s).','module_system_links');
@@ -582,16 +579,16 @@ class ModuleAdmin extends AppModel {
 		// ------------------------------------------------------
 		// --- モジュールテーブルのデータ削除                ---
 		// ------------------------------------------------------
-		if(!$Module->delete($module_id)) {
+		if(!$this->delete($module_id)) {
 			$errorMes[] = $prefix.__('Failed to delete the database, (%s).','modules');
 			return array($successMes, $errorMes);
 		}
-		$displayseq_fields = array('Module.display_sequence'=>'Module.display_sequence-1');
+		$displayseq_fields = array($this->alias.'.display_sequence'=>$this->alias.'.display_sequence-1');
 		$displayseq_conditions = array(
-			"Module.system_flag" => $module['Module']['system_flag'],
-			"Module.display_sequence >=" => $module['Module']['display_sequence']
+			$this->alias.".system_flag" => $module[$this->alias]['system_flag'],
+			$this->alias.".display_sequence >=" => $module[$this->alias]['display_sequence']
 		);
-		if(!$Module->updateAll($displayseq_fields, $displayseq_conditions)) {
+		if(!$this->updateAll($displayseq_fields, $displayseq_conditions)) {
 			$errorMes[] = $prefix.__('Failed to update the database, (%s).','modules');
 			return array($successMes, $errorMes);
 		}
@@ -616,13 +613,11 @@ class ModuleAdmin extends AppModel {
  * @since   v 3.0.0.0
  */
 	private function _getModule($dirName, &$errorMes) {
-		$Module = ClassRegistry::init('Module');
-
 		if(empty($dirName)) {
 			$errorMes[] = __('Unauthorized request.<br />Please reload the page.');
 			return false;
 		}
-		$module = $Module->findByDirname($dirName);
+		$module = $this->findByDirName($dirName);
 		if(!$module) {
 			$errorMes[] = __('Unauthorized request.<br />Please reload the page.');
 			return false;
@@ -657,27 +652,27 @@ class ModuleAdmin extends AppModel {
  * @since   v 3.0.0.0
  */
 	protected function check($module) {
-		$module_name = $module['Module']['module_name'];
-		$module_icon = !isset($module['Module']['ini']['module_icon']) ? '' : $module['Module']['ini']['module_icon'];
-		$temp_name = !isset($module['Module']['ini']['temp_name']) ? '' : $module['Module']['ini']['temp_name'];
+		$module_name = $module[$this->alias]['module_name'];
+		$module_icon = !isset($module[$this->alias]['ini']['module_icon']) ? '' : $module[$this->alias]['ini']['module_icon'];
+		$temp_name = !isset($module[$this->alias]['ini']['temp_name']) ? '' : $module[$this->alias]['ini']['temp_name'];
 		$prefix = __d('module', 'Module %s:', h($module_name));
 
-		$plugin_path = App::pluginPath($module['Module']['dir_name']);
+		$plugin_path = App::pluginPath($module[$this->alias]['dir_name']);
 		$install_ini_path =  $plugin_path . NC_INSTALL_INC_FILE;
 		$module_icon_path = $plugin_path . 'webroot' . DS . 'img' . DS;
 		if($temp_name != '') {
 			$module_temp_name_path = $plugin_path . 'View' . DS . 'Themed' . DS . $temp_name . DS;
 		}
 
-		if(!isset($module['Module']['ini'])) {
+		if(!isset($module[$this->alias]['ini'])) {
 			return $prefix.__d('module', '[%s] does not found.', h($install_ini_path));
 		}
 
-		if(!isset($module['Module']['ini']['version'])) {
+		if(!isset($module[$this->alias]['ini']['version'])) {
 			return $prefix.__d('module', '[%s] does not found in the [%s].', 'version', h($install_ini_path));
 		}
 
-		if(!isset($module['Module']['ini']['controller_action'])) {
+		if(!isset($module[$this->alias]['ini']['controller_action'])) {
 			return $prefix.__d('module', '[controller_action] has not been described in [%s].', h($install_ini_path));
 		}
 
@@ -685,27 +680,27 @@ class ModuleAdmin extends AppModel {
 			return $prefix.__d('module', '[%s] does not found in the [%s].', h($module_icon), h($module_icon_path));
 		}
 
-		// Module.temp_name
+		// ModuleAdmin.temp_name
 		if($temp_name != '' && !file_exists($module_temp_name_path)) {
 			return $prefix.__d('module', '[%s] does not found.', h($module_temp_name_path));
 		}
 
-		$result = $this->fileExistsController($plugin_path, $module['Module']['dir_name'], $module['Module']['ini']['controller_action']);
+		$result = $this->fileExistsController($plugin_path, $module[$this->alias]['dir_name'], $module[$this->alias]['ini']['controller_action']);
 		if($result !== true) {
 			return $prefix.$result;
 		}
 
 		// edit_controller_actionチェック
-		if(isset($module['Module']['ini']['edit_controller_action'])) {
-			$result = $this->fileExistsController($plugin_path, $module['Module']['dir_name'], $module['Module']['ini']['edit_controller_action'], true);
+		if(isset($module[$this->alias]['ini']['edit_controller_action'])) {
+			$result = $this->fileExistsController($plugin_path, $module[$this->alias]['dir_name'], $module[$this->alias]['ini']['edit_controller_action'], true);
 			if($result !== true) {
 				return $prefix.$result;
 			}
 		}
 
 		// style_controller_actionチェック
-		if(isset($module['Module']['ini']['style_controller_action'])) {
-			$result = $this->fileExistsController($plugin_path, $module['Module']['dir_name'], $module['Module']['ini']['style_controller_action'], true);
+		if(isset($module[$this->alias]['ini']['style_controller_action'])) {
+			$result = $this->fileExistsController($plugin_path, $module[$this->alias]['dir_name'], $module[$this->alias]['ini']['style_controller_action'], true);
 			if($result !== true) {
 				return $prefix.$result;
 			}
