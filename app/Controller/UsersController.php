@@ -95,7 +95,11 @@ class UsersController extends AppController {
         //$this->Auth->loginRedirect = '/users/index';
          */
 
-		$this->Security->csrfUseOnce = false;
+		// ログインは、ページ表示時にログイン画面を非表示にして取得されたままになっており、
+		// 時間がたつと、セキュリティエラーになってしまうため、チェックしないように修正。
+		// ログイン、ログアウト処理なので、Tokenチェックもする意味もあまりないと判断。
+		$this->Security->csrfCheck = false;
+		//$this->Security->unlockedFields = array('UploadSearch.file_type', 'UploadSearch.page');
 	}
 
 /**
