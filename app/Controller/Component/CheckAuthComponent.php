@@ -136,7 +136,7 @@ class CheckAuthComponent extends Component {
 
 		if(isset($plugin_name) && $plugin_name != 'group') {
 			$camel_plugin_name = Inflector::camelize($plugin_name);
-			$module = $controller->Module->findByDirname($camel_plugin_name);
+			$module = $controller->Module->findByDirName($camel_plugin_name);
 			if(isset($module['Module']['dir_name']) && $module['Module']['dir_name'] != $camel_plugin_name) {
 				$controller->flash(__('Content not found.'), '', 'CheckAuth.check.001', '404');
 				return;
