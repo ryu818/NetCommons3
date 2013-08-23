@@ -24,7 +24,8 @@ class TimeZoneHelper extends AppHelper {
 	public function date($timeUtc = null, $format = null) {
 		// TimeZoneBehaviorのdateファンクションを呼び出し
 		$timeZoneBehavior = ClassRegistry::init('TimeZoneBehavior');
-		// ヘルパーからモデルを使用するのは非推奨のため、モデルインスタンスを使用しないようにnullを渡す
+		// ビューでもモデルと同様の関数を使用したいため、ここでビヘイビアの関数を呼ぶ
+		// モデルインスタンスは使用しないためnullを渡す
 		return $timeZoneBehavior->date(null, $timeUtc, $format);
 	}
 /**

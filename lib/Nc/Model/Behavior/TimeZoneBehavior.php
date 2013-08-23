@@ -31,7 +31,7 @@ class TimeZoneBehavior extends ModelBehavior {
  * @return  string  Date 日付を表す文字列
  * @since   v 3.0.0.0
  */
-	public function date(Model $Model, $timeUtc = null, $format = null) {
+	public function date(Model $Model=null, $timeUtc = null, $format = null) {
 		if($format === null) {
 			$format =  __('Y-m-d H:i:s');
 		}
