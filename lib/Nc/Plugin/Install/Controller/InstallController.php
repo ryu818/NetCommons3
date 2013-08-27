@@ -506,31 +506,40 @@ class InstallController extends Controller {
 		/*
 		 * Plugin テーブル作成
 		 */
-		$dir = new Folder(APP . 'Plugin');
-		list($dirs, $files) = $dir->read();
-		foreach($dirs as $dir) {
-			$schemaPlugin = new CakeSchema(array('name' => $dir, 'plugin' => $dir));
-			$schemaPlugin = $schemaPlugin->load();
-			if($schemaPlugin === false) {
-				continue;
-			}
-			if(!isset($columnNameArr[$dir])) {
-				continue;
-			}
-
-			foreach($schemaPlugin->tables as $table => $fields) {
-				if(in_array($table, $tables)) {
-					// 既にcreate済
+		$paths = App::path('Plugin');
+		$pluginArr = array();
+		foreach($paths as $path) {
+			$dir = new Folder($path);
+			list($dirs, $files) = $dir->read();
+			foreach($dirs as $dir) {
+				$schemaPlugin = new CakeSchema(array('name' => $dir, 'plugin' => $dir));
+				$schemaPlugin = $schemaPlugin->load();
+				if($schemaPlugin === false) {
 					continue;
 				}
-				$create = $db->createSchema($schemaPlugin, $table);
-				if($db->execute($create)) {
-					$tables[] = $table;
-				} else {
-					$not_tables[] = $table;
+				if(!isset($columnNameArr[$dir])) {
+					continue;
 				}
+				if(in_array($dir, $pluginArr)) {
+					continue;
+				}
+			
+				foreach($schemaPlugin->tables as $table => $fields) {
+					if(in_array($table, $tables)) {
+						// 既にcreate済
+						continue;
+					}
+					$create = $db->createSchema($schemaPlugin, $table);
+					if($db->execute($create)) {
+						$tables[] = $table;
+					} else {
+						$not_tables[] = $table;
+					}
+				}
+				$pluginArr[] = $dir;
 			}
 		}
+		
 
 		$this->set("tables", $tables);
 		$this->set("not_tables", $not_tables);
