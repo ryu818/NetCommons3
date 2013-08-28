@@ -609,18 +609,15 @@ class HttpSocket extends CakeSocket {
 		if (empty($this->_proxy) || !isset($this->_proxy['host'], $this->_proxy['port'])) {
 // Add Start R.Ohga
 // システム管理のプロキシサーバーの設定を使用する
-			if ($this->config['nc_proxy']) {
-				// システム管理の設定チェック
-				$systemConfig = Configure::read(NC_CONFIG_KEY);
-				if ($systemConfig['proxy_mode'] == _ON) {
-					$this->configProxy(
-						$systemConfig['proxy_host'],
-						$systemConfig['proxy_port'],
-						'Basic',
-						$systemConfig['proxy_user'],
-						$systemConfig['proxy_pass']
-					);
-				}
+			$systemConfig = Configure::read(NC_CONFIG_KEY);
+			if ($this->config['nc_proxy'] && $systemConfig['proxy_mode'] == _ON) {
+				$this->configProxy(
+					$systemConfig['proxy_host'],
+					$systemConfig['proxy_port'],
+					'Basic',
+					$systemConfig['proxy_user'],
+					$systemConfig['proxy_pass']
+				);
 			} else {
 				return;
 			}
