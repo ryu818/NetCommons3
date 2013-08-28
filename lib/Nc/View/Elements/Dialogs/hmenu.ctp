@@ -22,10 +22,11 @@ if(isset($page_menu)) {
 	$sub_action = "close";
 }
 $is_controls = ($this->request->controller == 'controls') ? true : false;
+$displayHeaderMenu = Configure::read(NC_CONFIG_KEY.'.'.'display_header_menu');
 ?>
-<div id="nc-hmenu" class="nc-panel-color"<?php if($is_controls || $ncMode == NC_BLOCK_MODE){ echo(' style="top:0;"'); } ?>>
+<div id="nc-hmenu" class="nc-panel-color"<?php if($is_controls || $ncMode == NC_BLOCK_MODE || $displayHeaderMenu == NC_HEADER_MENU_ALWAYS){ echo(' style="top:0;"'); } ?><?php if(isset($nc_user)): ?> data-user-id="<?php echo $nc_user['id']; ?>"<?php endif; ?>>
 	<div id="nc-hmenu-l" class="nc-panel-color">
-		<ul class="nc-hmenu-ul ">
+		<ul class="nc-hmenu-ul">
 			<li class="nc-hmenu-li nc-hmenu-logo-li">
 				<a class="nc-hmenu-menu-a" title="NetCommons" href="<?php echo($this->Html->url('/')); ?>">
 					<span class="nc-hmenu-logo"></span>
@@ -97,7 +98,7 @@ $is_controls = ($this->request->controller == 'controls') ? true : false;
 	</div>
 	<?php if(!$is_controls): ?>
 	<div class="nc-hmenu-arrow">
-		<a id="nc-hmenu-arrow" class="nc-arrow<?php if($ncMode == NC_BLOCK_MODE){ echo(' nc-arrow-up'); } ?>" href="#"></a>
+		<a id="nc-hmenu-arrow" class="nc-arrow<?php if($ncMode == NC_BLOCK_MODE || $displayHeaderMenu == NC_HEADER_MENU_ALWAYS){ echo(' nc-arrow-up'); } ?>" href="#"></a>
 	</div>
 	<?php endif; ?>
 </div>
@@ -130,7 +131,7 @@ if(!empty($this->params['active_plugin']) && $this->params['active_plugin'] == '
 	$params['block_type'] = 'active-blocks';
 }
 
-if($show_page_setting) {
+if($show_page_setting && (isset($nc_user) || Configure::read(NC_CONFIG_KEY.'.'.'display_page_menu') != _OFF)) {
 	$c = $this->requestAction($params, $options);	// $this->Html->url($params,true)
 	echo('<div id="nc-pages-setting-dialog-outer">'.$c.'</div>');
 }

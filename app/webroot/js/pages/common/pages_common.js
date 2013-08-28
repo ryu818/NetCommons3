@@ -16,7 +16,9 @@
 
 		if(!hmenu.get(0))
 			return;
-		if($._mode == 0 && $._display_header_menu == 1) {
+		if($._mode == 0
+				&& ($._display_header_menu == 1
+					|| hmenu.attr('data-user-id') && $._display_header_menu == 0)) {
 			$(document).mousemove(function(e){
 				if(e.pageY-$(window).scrollTop() <= 40) {
 					hover = true;
@@ -58,8 +60,8 @@
 			}
 			$(document).unbind('mousemove', pathMouseMove);
 			path.stop().animate({
-    			width: path_w + 'px'
-  			}, 'normal');
+				width: path_w + 'px'
+			}, 'normal');
 		};
 		path.mouseover(function(e) {
 			var span = path.children(':first');
@@ -67,10 +69,10 @@
 				return;
 			}
 			path.stop().animate({
-    			width: span.width() + 10 + 'px'
-  			}, 'normal', function(){
-  				$(document).mousemove(pathMouseMove);
-  			});
+			width: span.width() + 10 + 'px'
+			}, 'normal', function(){
+				$(document).mousemove(pathMouseMove);
+			});
 		});
 
 		// ログイン
