@@ -126,6 +126,7 @@ class CommonComponent extends Component {
 								$redirectUrl = $this->_controller->Auth->redirect($startPage);
 							}
 							$this->_controller->flash(__('The automatic sign in.'), $redirectUrl);
+							return;
 						}
 					}
 				}
@@ -166,7 +167,7 @@ class CommonComponent extends Component {
 		}
 		$passport = $this->_controller->Passport->passportWrite($user, $passport);
 
-		$cookie = array('passport' => $passport);
+		$cookie = array('login_id'=>$user['login_id'], 'passport' => $passport);
 		$this->Cookie->write('User', $cookie, true,"+ ".$configs['autologin_expires']);
 	}
 

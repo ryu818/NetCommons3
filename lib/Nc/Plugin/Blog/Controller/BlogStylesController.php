@@ -45,22 +45,19 @@ class BlogStylesController extends BlogAppController {
 		if(empty($blog_styles)) {
 			$blog_styles = $this->BlogStyle->findDefault($this->block_id, true);
 			if($blog_styles === false) {
-				$this->flash(__('Failed to register the database, (%s).', 'blog_styles'), null, 'BlogStyles.index.001', '500');
-				return;
+				throw new InternalErrorException(__('Failed to register the database, (%s).', 'blog_styles'));
 			}
 		}
 		$blog_styles = $this->BlogStyle->afterFindColRow($blog_styles);
 
 		if($this->request->is('post')) {
 			if(!isset($this->request->data['widget_type']) || !isset($this->request->data['col_num']) || !isset($this->request->data['row_num'])) {
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogStyles.index.002', '500');
-				return;
+				throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 			}
 
 			// 表示順変更処理
 			if(!$this->BlogStyle->changeDisplay($this->block_id, $this->request->data['widget_type'], $this->request->data['col_num'], $this->request->data['row_num'])) {
-				$this->flash(__('Failed to update the database, (%s).', 'blog_styles'), null, 'BlogStyles.index.003', '500');
-				return;
+				throw new InternalErrorException(__('Failed to update the database, (%s).', 'blog_styles'));
 			}
 
 			$this->render(false);
@@ -76,9 +73,10 @@ class BlogStylesController extends BlogAppController {
  * @since   v 3.0.0.0
  */
 	public function display() {
-		if(!$this->request->is('post') || !isset($this->request->data['widget_type']) || !isset($this->request->data['display_flag'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogStyles.display.001', '500');
-			return;
+		if(!$this->request->is('post')
+			|| !isset($this->request->data['widget_type'])
+			|| !isset($this->request->data['display_flag'])) {
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 		$fields = array(
 			'BlogStyle.display_flag' => intval($this->request->data['display_flag'])
@@ -87,10 +85,8 @@ class BlogStylesController extends BlogAppController {
 			"BlogStyle.block_id" => $this->block_id,
 			"BlogStyle.widget_type" => intval($this->request->data['widget_type'])
 		);
-		$result = $this->BlogStyle->updateAll($fields, $conditions);
-		if(!$result) {
-			$this->flash(__('Failed to update the database, (%s).', 'blog_styles'), null, 'BlogStyles.display.002', '500');
-			return;
+		if(!$this->BlogStyle->updateAll($fields, $conditions)) {
+			throw new InternalErrorException(__('Failed to update the database, (%s).', 'blog_styles'));
 		}
 		$this->render(false);
 		return;
@@ -105,14 +101,16 @@ class BlogStylesController extends BlogAppController {
 	public function widget() {
 
 		if(!$this->request->is('post') || !isset($this->request->data['BlogStyle']['widget_type'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogStyles.widget.001', '500');
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		$widget_type = intval($this->request->data['BlogStyle']['widget_type']);
 		$params = array('conditions' => array('block_id' => $this->block_id, 'widget_type' => $widget_type));
 		$blog_style = $this->BlogStyle->find('first', $params);
 		if(!isset($blog_style['BlogStyle'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogStyles.widget.002', '500');
+			$this->response->statusCode('404');
+			$this->flash(__('Content not found.'), '');
+			return;
 		}
 		$data_blog_style = $this->request->data;
 
@@ -156,7 +154,7 @@ class BlogStylesController extends BlogAppController {
 				$this->render('Elements/blog_styles/widget/rss');
 				break;
 			default:
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogStyles.widget.003', '500');
+				throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 	}
 }

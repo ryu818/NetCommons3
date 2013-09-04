@@ -96,7 +96,8 @@ class UserController extends UserAppController {
 			if(isset($this->request->data['DelUser'])) {
 				// 削除処理
 				if($this->hierarchy < NC_AUTH_MIN_CHIEF) {
-					$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'User.index.001', '500');
+					$this->response->statusCode('403');
+					$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 					return;
 				}
 				$deleteUserIds = array();
@@ -115,8 +116,7 @@ class UserController extends UserAppController {
 				));
 
 				if(!$this->User->deleteUser($deleteUsers)) {
-					$this->flash(__('Failed to delete the database, (%s).', 'users'), null, 'User.index.002', '500');
-					return;
+					throw new InternalErrorException(__('Failed to delete the database, (%s).', 'users'));
 				}
 			}
 
@@ -286,7 +286,8 @@ class UserController extends UserAppController {
 		$this->_setLanguage();
 
 		if($this->hierarchy < NC_AUTH_MIN_CHIEF) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'User.edit.001', '500');
+			$this->response->statusCode('403');
+			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 			return;
 		}
 
@@ -296,17 +297,16 @@ class UserController extends UserAppController {
 			// 編集
 			$user = $this->User->findById(intval($userId));
 			if(!isset($user['User']) || ($loginUserId != $userId && $this->hierarchy < $user['Authority']['hierarchy'])) {
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'User.edit.002');
+				$this->response->statusCode('403');
+				$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 				return;
 			}
-
 		}
 
 		$items = $this->Item->findList();
 		if ($this->request->is('post') && !isset($this->request->data['PageUserLink'])) {
 			if(!isset($this->request->data['User'])) {
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'User.edit.003');
-				return;
+				throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 			}
 			if(isset($user['User']['permalink'])) {
 				$prePermalink = $user['User']['permalink'];
@@ -345,8 +345,7 @@ class UserController extends UserAppController {
 			if($this->User->validates(array('items' => $items), $fieldList) && $ret) {
 				$isAdd = empty($user['User']['id']) ? true : false;
 				if(!$this->User->save($user, false, $fieldList)) {
-					$this->flash(__('Failed to update the database, (%s).', 'users'), null, 'User.edit.005', '500');
-					return;
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'users'));
 				}
 				$user['User']['id'] = $this->User->id;
 
@@ -366,8 +365,7 @@ class UserController extends UserAppController {
 				if($isAdd) {
 					$ret = $this->Page->createDefaultEntry($user);
 					if($ret === false) {
-						$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'User.edit.004');
-						return;
+						throw new InternalErrorException(__('Failed to register the database, (%s).', 'pages'));
 					}
 					$fields = array(
 						'myportal_page_id' => $ret[0],
@@ -377,17 +375,15 @@ class UserController extends UserAppController {
 						"User.id" => $user['User']['id']
 					);
 					if(!$this->User->updateAll($fields, $conditions)) {
-						$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'User.edit.005');
-						return;
+						throw new InternalErrorException(__('Failed to update the database, (%s).', 'users'));
 					}
 				}
 
 				// Page.permalink更新
 				if(!$isAdd && $prePermalink != $user['User']['permalink']) {
-					if(!$this->Page->updPermalinks($user['User']['myportal_page_id'], $user['User']['permalink']) ||
-						!$this->Page->updPermalinks($user['User']['private_page_id'], $user['User']['permalink'])) {
-						$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'User.edit.006');
-						return;
+					if(!$this->Page->updPermalinks($user['User']['myportal_page_id'], $user['User']['permalink'])
+						|| !$this->Page->updPermalinks($user['User']['private_page_id'], $user['User']['permalink'])) {
+						throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 					}
 				}
 
@@ -438,12 +434,12 @@ class UserController extends UserAppController {
 	public function select_group($userId = null) {
 		$loginUserId = $this->Auth->user('id');
 		if(empty($userId)) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'User.select_group.001');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 		$user = $this->User->findById(intval($userId));
 		if(!isset($user['User']) || ($loginUserId != $userId && $this->hierarchy < $user['Authority']['hierarchy'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'User.select_group.002');
+			$this->response->statusCode('403');
+			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 			return;
 		}
 
@@ -523,12 +519,12 @@ class UserController extends UserAppController {
 	public function select_auth($userId = null) {
 		$loginUserId = $this->Auth->user('id');
 		if(empty($userId)) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'User.select_group.001');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 		$user = $this->User->findById($userId);
 		if(!isset($user['User']) || ($loginUserId != $userId && $this->hierarchy < $user['Authority']['hierarchy'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'User.select_group.002');
+			$this->response->statusCode('403');
+			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 			return;
 		}
 
@@ -660,14 +656,12 @@ class UserController extends UserAppController {
 					if($insertPageUserLink['PageUserLink']['authority_id'] == $defaultAuthorityId) {
 						// 参加するルームのデフォルト値->削除
 						if(isset($insertPageUserLink['PageUserLink']['id']) && !$this->PageUserLink->delete($insertPageUserLink['PageUserLink']['id'])) {
-							$this->flash(__('Failed to register the database, (%s).', 'page_user_links'), null, 'User.select_group.003', '500');
-							return;
+							throw new InternalErrorException(__('Failed to delete the database, (%s).', 'page_user_links'));
 						}
 					} else if($insertPageUserLink['PageUserLink']['authority_id'] !== $bufAuthorityId) {
 						// 変更があれば更新-追加
 						if(!$this->PageUserLink->save($insertPageUserLink)) {
-							$this->flash(__('Failed to delete the database, (%s).', 'page_user_links'), null, 'User.select_group.004', '500');
-							return;
+							throw new InternalErrorException(__('Failed to register the database, (%s).', 'page_user_links'));
 						}
 					}
 				}
@@ -705,8 +699,7 @@ class UserController extends UserAppController {
 		if ($this->request->is('post')) {
 			foreach($this->request->data as $data) {
 				if(!isset($data['Item'])) {
-					$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'User.display_setting.001', '500');
-					return;
+					throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 				}
 				// 会員管理管理者しか使用しないため、リクエストを信用してupdate
 				$fields = array(
@@ -717,10 +710,8 @@ class UserController extends UserAppController {
 				$conditions = array(
 					"Item.id" => intval($data['Item']['id'])
 				);
-				$result = $this->Item->updateAll($fields, $conditions);
-				if(!$result) {
-					$this->flash(__('Failed to update the database, (%s).', 'items'), null, 'User.display_setting.002', '500');
-					return;
+				if(!$this->Item->updateAll($fields, $conditions)) {
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'items'));
 				}
 			}
 			$this->Session->setFlash(__('Has been successfully updated.'));
@@ -739,8 +730,7 @@ class UserController extends UserAppController {
 			$conditions = array('Item.id' => $itemId);
 			$item = $this->Item->findList('first', $conditions);
 			if(!isset($item['Item'])) {
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'User.add_item.001', '500');
-				return;
+				throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 			}
 		} else {
 			$item = $this->Item->findDefault();

@@ -39,8 +39,7 @@ class ContentController extends ContentAppController {
 		$authorityId = isset($user['authority_id']) ? $user['authority_id'] : 0;
 
 		if(!isset($this->nc_block['Module']['id'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Content.index.001', '500');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 		$activeModuleId = isset($this->request->named['module_id']) ? intval($this->request->named['module_id']) : $this->nc_block['Module']['id'];
 
@@ -50,15 +49,16 @@ class ContentController extends ContentAppController {
 
 		if($this->request->is('post')) {
 			if(!isset($this->request->data['Content']['id'])) {
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Content.index.002', '500');
-				return;
+				throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 			}
 			$activeContentId = $this->request->data['Content']['id'];
 			$activeContent = $this->Content->findById($activeContentId);
 			$activeModule = isset($activeContent['Content']['module_id']) ? $this->Module->findById($activeContent['Content']['module_id']) : null;
-			if(!isset($activeContent['Content']) || !isset($activeModule['Module']) || $activeContent['Content']['display_flag'] == NC_DISPLAY_FLAG_DISABLE
+			if(!isset($activeContent['Content']) || !isset($activeModule['Module'])
+				|| $activeContent['Content']['display_flag'] == NC_DISPLAY_FLAG_DISABLE
 				|| $activeContent['Content']['module_id'] == 0 || $activeModule['Module']['system_flag'] == _ON) {
-				$this->flash(__('Content not found.'), null, 'Content.index.003', '404');
+				$this->response->statusCode('404');
+				$this->flash(__('Content not found.'), '');
 				return;
 			}
 			// 登録処理
@@ -82,16 +82,14 @@ class ContentController extends ContentAppController {
 						$page,
 					);
 					if(!$this->Module->operationAction($dirName, 'delete_block', $args)) {
-						$this->flash(__('Failed to execute the %s.', __d('content', 'Delete block func')), null, 'Content.index.004', '500');
-						return;
+						throw new InternalErrorException(__('Failed to execute the %s.', __d('content', 'Delete block')));
 					}
 				}
 			}
 
 			if($this->nc_block['Content']['display_flag'] == NC_DISPLAY_FLAG_DISABLE && !$this->Content->delete($this->nc_block['Content']['id'])) {
 				// コンテンツがまだ設定前のデータなので削除
-				$this->flash(__('Failed to delete the database, (%s).', 'contents'), null, 'Content.index.005', '500');
-				return;
+				throw new InternalErrorException(__('Failed to delete the database, (%s).', 'contents'));
 			}
 
 			if($this->Block->save($block, true, $fieldList)) {
@@ -108,7 +106,8 @@ class ContentController extends ContentAppController {
 		if(!isset($activeContent)) {
 			$activeContent = $this->Content->findById($activeContentId);
 			if(!isset($activeRoomId) && !isset($activeContent['Content']['id'])) {
-				$this->flash(__('No Content.'), null, 'Content.index.006', '404');
+				$this->response->statusCode('404');
+				$this->flash(__('No Content.'), '');
 				return;
 			}
 			$activeRoomId = !isset($activeRoomId) ? $activeContent['Content']['room_id'] : $activeRoomId;
@@ -116,7 +115,8 @@ class ContentController extends ContentAppController {
 
 		$activeRoom = $this->Page->findById($activeRoomId);
 		if(!isset($activeRoom['Page']['id'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Content.index.007', '500');
+			$this->response->statusCode('404');
+			$this->flash(__('No Content.'), '');
 			return;
 		}
 		$activeRoom = $this->Page->setPageName($activeRoom);
@@ -138,8 +138,7 @@ class ContentController extends ContentAppController {
  */
 	public function content_list() {
 		if(!$this->request->is('post')) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Content.content_list.001', '500');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		$userId = $this->Auth->user('id');
@@ -153,8 +152,7 @@ class ContentController extends ContentAppController {
 		$activeRoomId = $this->request->named['active_room_id'];
 		$activeContentId = isset($this->request->named['active_content_id']) ? intval($this->request->named['active_content_id']) : $this->content_id;
 		if(!isset($activeRoomId)) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Content.content_list.001', '500');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		$order = null;
@@ -182,17 +180,18 @@ class ContentController extends ContentAppController {
 		$userId = $this->Auth->user('id');
 
 		if (!$this->request->is('ajax') || empty($contentId)) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Content.block.001', '500');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		$content = $this->Content->findAuthById($contentId, $userId);
 		if(!isset($content['Content'])) {
-			$this->flash(__('Content not found.'), null, 'Content.block.002', '404');
+			$this->response->statusCode('404');
+			$this->flash(__('Content not found.'), '');
 			return;
 		}
 		if(!$this->CheckAuth->checkAuth($content['PageAuthority']['hierarchy'], NC_AUTH_CHIEF)) {
-			$this->flash(__('Forbidden permission to access the page.'), null, 'Content.block.003', '403');
+			$this->response->statusCode('403');
+			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 			return;
 		}
 
@@ -209,17 +208,18 @@ class ContentController extends ContentAppController {
 		$userId = $this->Auth->user('id');
 
 		if(!$this->request->is('post') || empty($contentId)) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Content.block_list.001', '500');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		$content = $this->Content->findAuthById($contentId, $userId);
 		if(!isset($content['Content'])) {
-			$this->flash(__('Content not found.'), null, 'Content.block_list.002', '404');
+			$this->response->statusCode('404');
+			$this->flash(__('Content not found.'), '');
 			return;
 		}
 		if(!$this->CheckAuth->checkAuth($content['PageAuthority']['hierarchy'], NC_AUTH_CHIEF)) {
-			$this->flash(__('Forbidden permission to access the page.'), null, 'Content.block_list.003', '403');
+			$this->response->statusCode('403');
+			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 			return;
 		}
 		$rp = intval($this->request->data['rp']);
@@ -229,8 +229,7 @@ class ContentController extends ContentAppController {
 
 		$rets = $this->BlockList->findBlocks($userId, $content['Content']['master_id'], $this->block_id, $sortname, $sortorder, $pageNum, $rp);
 		if($rets == false) {
-			$this->flash(__('Failed to obtain the database, (%s).', 'blocks'), null, 'Content.block_list.004', '500');
-			return;
+			throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'blocks'));
 		}
 		list($total, $blocks) = $rets;
 
@@ -250,11 +249,13 @@ class ContentController extends ContentAppController {
 		$userId = $this->Auth->user('id');
 		$content = $this->Content->findAuthById($contentId, $userId);
 		if(!isset($content['Content'])) {
-			$this->flash(__('Content not found.'), null, 'Content.edit.001', '404');
+			$this->response->statusCode('404');
+			$this->flash(__('Content not found.'), '');
 			return;
 		}
 		if(!$this->CheckAuth->checkAuth($content['PageAuthority']['hierarchy'], NC_AUTH_CHIEF)) {
-			$this->flash(__('Forbidden permission to access the page.'), null, 'Content.edit.002', '403');
+			$this->response->statusCode('403');
+			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 			return;
 		}
 
@@ -283,22 +284,22 @@ class ContentController extends ContentAppController {
 	public function delete($contentId) {
 		$userId = $this->Auth->user('id');
 		if(!$this->request->is('post') || empty($contentId)) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Content.delete.001', '500');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 		$content = $this->Content->findAuthById($contentId, $userId);
 		if(!isset($content['Content'])) {
-			$this->flash(__('Content not found.'), null, 'Content.delete.002', '404');
+			$this->response->statusCode('404');
+			$this->flash(__('Content not found.'), '');
 			return;
 		}
 		if(!$this->CheckAuth->checkAuth($content['PageAuthority']['hierarchy'], NC_AUTH_CHIEF)) {
-			$this->flash(__('Forbidden permission to access the page.'), null, 'Content.delete.003', '403');
+			$this->response->statusCode('403');
+			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 			return;
 		}
 
 		if(!$this->Content->deleteContent($content, true)) {
-			$this->flash(__('Failed to %s.', __d('content', 'Delete content')), null, 'Content.delete.004', '500');
-			return;
+			throw new InternalErrorException(__('Failed to execute the %s.', __d('content', 'Delete content')));
 		}
 		$this->Session->setFlash(__('Has been successfully deleted.'));
 

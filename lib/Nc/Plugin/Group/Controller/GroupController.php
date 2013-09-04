@@ -32,8 +32,7 @@ class GroupController extends GroupAppController {
 		if($block['Block']['controller_action'] != 'group') {
 			// Error
 			// TODO:test
-			//$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'group.001', '400');
-			//return;
+			//throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 		$this->set('blocks', $blocks);
 	}

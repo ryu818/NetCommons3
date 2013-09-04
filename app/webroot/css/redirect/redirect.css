@@ -29,3 +29,9 @@ ul.nc-redirect li {
 	background-color:#ffffff;
 	border-bottom:1px solid #bbbbbb;
 }
+
+/* 例外処理 */
+.nc-exception-text {
+	list-style-image: url("../../img/redirect/alert_large.png");
+	font-size:210%;
+}

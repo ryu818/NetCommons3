@@ -81,8 +81,7 @@ class BlockOperationsController extends BlockAppController {
 
 		if($block['Block']['module_id'] == 0) {
 			// グループのショートカットは許さない。
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlockOperations.shortcut.001', '500');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		// 確認メッセージ表示
@@ -111,7 +110,8 @@ class BlockOperationsController extends BlockAppController {
 
 		$add_block =  $this->Block->findAuthById(intval($ret_add_block), $user_id, false);
 		if(!isset($add_block['Block'])) {
-			$this->flash(__('The server encountered an internal error and was unable to complete your request.'), null, 'BlockOperations.shortcut.002', '500');
+			$this->response->statusCode('404');
+			$this->flash(__('Content not found.'), '');
 			return;
 		}
 
@@ -147,8 +147,7 @@ class BlockOperationsController extends BlockAppController {
 
 		if($block['Block']['module_id'] == 0) {
 			// グループのコピーは許さない。
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlockOperations.paste.001', '500');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		// 確認メッセージ表示
@@ -175,7 +174,8 @@ class BlockOperationsController extends BlockAppController {
 		$ret_add_block = $this->requestAction($url, $params);
 		$add_block =  $this->Block->findAuthById(intval($ret_add_block), $user_id, false);
 		if(!isset($add_block['Block'])) {
-			$this->flash(__('The server encountered an internal error and was unable to complete your request.'), null, 'BlockOperations.paste.002', '500');
+			$this->response->statusCode('404');
+			$this->flash(__('Content not found.'), '');
 			return;
 		}
 
@@ -229,8 +229,7 @@ class BlockOperationsController extends BlockAppController {
 			'return'
 		);
 		if($this->requestAction($url, $params) != 'true') {
-			$this->flash(__('The server encountered an internal error and was unable to complete your request.'), null, 'BlockOperations.move.001', '500');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		$this->cancel();
@@ -261,9 +260,7 @@ class BlockOperationsController extends BlockAppController {
 	protected function validatorRequest($request, $page, $module) {
 		$dir_name = $module['Module']['dir_name'];
 		if (!isset($request->data) || !isset($request->data['show_count']) || !isset($request->data['page_id'])) {
-			// Error
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlockOperations.validatorRequest.001', '400');
-			return false;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		$block_id = $this->block_id;
@@ -271,21 +268,18 @@ class BlockOperationsController extends BlockAppController {
 		$copy_content_id = intval($this->Session->read('Blocks.'.'copy_content_id'));
 
 		if(empty($copy_block_id) || $block_id != $copy_block_id || !isset($this->nc_block['Block']) || $this->nc_block['Block']['content_id'] != $copy_content_id) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlockOperations.validatorRequest.002', '400');
-			return false;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		// module_linksで移動先ルームに貼り付けることができるかどうか確認
 		if(!$this->ModuleLink->isAddModule($page, $module['Module']['id'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlockOperations.validatorRequest.003', '403');
-			return false;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		if($this->action == 'paste') {
 			// ショートカットと移動は関数がなくてもエラーとしない
 			if(!$this->Module->isOperationAction($dir_name, $this->action)) {
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlockOperations.validatorRequest.004', '403');
-				return false;
+				throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 			}
 		}
 

@@ -100,7 +100,8 @@ class PageMenusController extends PageAppController {
 		$currentPage = $this->Page->findAuthById($currentPageId, $userId);
 
 		if($currentPageId == 0 || !isset($currentPage['Page'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenus/add.001', '400');
+			$this->response->statusCode('403');
+			$this->flash(__('Forbidden permission to access the page.'), '');
 			return;
 		}
 
@@ -113,8 +114,7 @@ class PageMenusController extends PageAppController {
 		// デフォルトページ情報取得
 		$page = $this->PageMenu->getDefaultPage($type, $currentPage, $parentPage);
 		if(!isset($page['Page'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenus/add.002', '400');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		// 権限チェック
@@ -128,15 +128,13 @@ class PageMenusController extends PageAppController {
 		$this->Page->set($insPage);
 		$this->Page->autoConvert = false;
 		if(!$this->Page->save($insPage)) {
-			$this->flash(__('Failed to register the database, (%s).', 'pages'), null, 'PageMenus/add.003', '500');
-			return;
+			throw new InternalErrorException(__('Failed to register the database, (%s).', 'pages'));
 		}
 		$page['Page']['id'] = $this->Page->id;
 
 		// display_sequence インクリメント処理
 		if(!$this->Page->incrementDisplaySeq($page, 1, array('not' => array('Page.id' => $page['Page']['id'])))) {
-			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenus/add.004', '500');
-			return;
+			throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 		}
 		$this->_renderItem($page, $parentPage, $adminHierarchy);
 	}
@@ -152,7 +150,8 @@ class PageMenusController extends PageAppController {
 		// モデレータ以上
 		$adminHierarchy = $this->ModuleSystemLink->findHierarchyByPluginName($this->request->params['plugin'], $user['authority_id']);
 		if($adminHierarchy <= NC_AUTH_GENERAL || !$this->request->is('post')) {
-			$this->flash(__('Forbidden permission to access the page.'), null, 'PageMenus/add_community.001', '403');
+			$this->response->statusCode('403');
+			$this->flash(__('Forbidden permission to access the page.'), '');
 			return;
 		}
 
@@ -161,8 +160,7 @@ class PageMenusController extends PageAppController {
 		$insPage = $this->PageMenu->getDefaultCommunityPage($currentPageId, $allCommunityCnt);
 		$this->Page->create();
 		if(!$this->Page->save($insPage)) {
-			$this->flash(__('Failed to register the database, (%s).', 'pages'), null, 'PageMenus/add_community.002', '500');
-			return;
+			throw new InternalErrorException(__('Failed to register the database, (%s).', 'pages'));
 		}
 		$insPage['Page']['id'] = $insPage['Page']['root_id'] = $insPage['Page']['room_id'] = $this->Page->id;
 
@@ -172,16 +170,14 @@ class PageMenusController extends PageAppController {
 			'room_id'
 		);
 		if(!$this->Page->save($insPage, true, $fieldList)) {
-			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenus/add_community.003', '500');
-			return;
+			throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 		}
 
 		// display_sequence インクリメント処理
 		if( $allCommunityCnt + 1 != $insPage['Page']['display_sequence']) {
 			// インクリメント
 			if(!$this->Page->incrementDisplaySeq($insPage, 1, array('not' => array('Page.id' => $insPage['Page']['id'])))) {
-				$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenus/add_community.004', '500');
-				return;
+				throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 			}
 		}
 
@@ -195,8 +191,7 @@ class PageMenusController extends PageAppController {
 		$insTopPage['Page']['page_name'] = 'Community Top';
 		$this->Page->create();
 		if(!$this->Page->save($insTopPage)) {
-			$this->flash(__('Failed to register the database, (%s).', 'pages'), null, 'PageMenus/add_community.005', '500');
-			return;
+			throw new InternalErrorException(__('Failed to register the database, (%s).', 'pages'));
 		}
 
 		// page_user_links Insert
@@ -206,23 +201,20 @@ class PageMenusController extends PageAppController {
 			'authority_id' => NC_AUTH_CHIEF_ID
 		));
 		if(!$this->PageUserLink->save($insPageUserLink)) {
-			$this->flash(__('Failed to register the database, (%s).', 'page_user_links'), null, 'PageMenus/add_community.006', '500');
-			return;
+			throw new InternalErrorException(__('Failed to register the database, (%s).', 'page_user_links'));
 		}
 
 		// Community Insert
 		$insCommunity = $this->Community->getDefault();
 		$insCommunity['Community']['room_id'] = $insPage['Page']['id'];
 		if(!$this->Community->save($insCommunity)) {
-			$this->flash(__('Failed to register the database, (%s).', 'communities'), null, 'PageMenus/add_community.007', '500');
-			return;
+			throw new InternalErrorException(__('Failed to register the database, (%s).', 'communities'));
 		}
 
 		// CommunityLang Insert
 		$insCommunityLang = $this->CommunityLang->getDefault($insPage['Page']['page_name'], $insPage['Page']['id']);
 		if(!$this->CommunityLang->save($insCommunityLang)) {
-			$this->flash(__('Failed to register the database, (%s).', 'community_langs'), null, 'PageMenus/add_community.008', '500');
-			return;
+			throw new InternalErrorException(__('Failed to register the database, (%s).', 'community_langs'));
 		}
 
 		$permalink = (NC_SPACE_GROUP_PREFIX != '') ? NC_SPACE_GROUP_PREFIX  . '/'. $insPage['Page']['permalink'] : $insPage['Page']['permalink'];
@@ -253,8 +245,7 @@ class PageMenusController extends PageAppController {
 			// コミュニティー
 			$ret = $this->Community->getCommunityData($currentPage['Page']['room_id'], $this->request->data);
 			if($ret === false) {
-				$this->flash(__('Failed to obtain the database, (%s).', 'communities'), null, 'PageMenus/edit.001', '500');
-				return;
+				throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'communities'));
 			}
 			list($community, $communityLang, $communityTag) = $ret;
 			$fieldCommunityList = array('photo', 'upload_id', 'publication_range_flag', 'participate_flag',
@@ -287,13 +278,15 @@ class PageMenusController extends PageAppController {
 		}
 
 		if(!isset($currentPage['Page'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenus/edit.002', '400');
+			$this->response->statusCode('404');
+			$this->flash(__('Page not found.'), '');
 			return;
 		}
 		$bufCurrentPermalink = $currentPage['Page']['permalink'];
 		$parentPage = $this->Page->findAuthById($currentPage['Page']['parent_id'], $userId);
 		if(!isset($parentPage['Page'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenus/edit.003', '400');
+			$this->response->statusCode('404');
+			$this->flash(__('Page not found.'), '');
 			return;
 		}
 
@@ -382,14 +375,12 @@ class PageMenusController extends PageAppController {
 		if ($ret && !$errorFlag && $retChilds !== false) {
 			// 更新処理
 			if (!$this->Page->save($insPage, false, $fieldList)) {
-				$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenus/edit.004', '500');
-				return;
+				throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 			}
 			// 子供更新処理
 			if(is_array($retChilds)) {
 				if (!$this->PageMenu->childsUpdate($this->action, $retChilds[0], $retChilds[1])) {
-					$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenus/edit.005', '500');
-					return;
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 				}
 			}
 
@@ -404,18 +395,15 @@ class PageMenusController extends PageAppController {
 					'display_sequence' => 1,
 				);
 				if (!$this->Page->updateAll($fields, $conditions)) {
-					$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenus/edit.006', '500');
-					return;
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 				}
 
 				// コミュニティー登録処理
 				if (!$this->Community->save($community, false, $fieldCommunityList)) {
-					$this->flash(__('Failed to update the database, (%s).', 'communities'), null, 'PageMenus/edit.007', '500');
-					return;
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'communities'));
 				}
 				if (!$this->CommunityLang->save($communityLang, false, $fieldCommunityLangList)) {
-					$this->flash(__('Failed to update the database, (%s).', 'community_langs'), null, 'PageMenus/edit.008', '500');
-					return;
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'community_langs'));
 				}
 
 				// Community.publication_range_flagが一部公開（すべてのログイン会員が閲覧可能）以外に更新されたら、PageUserLinkの不参加会員削除
@@ -425,8 +413,7 @@ class PageMenusController extends PageAppController {
 						"PageUserLink.authority_id" => NC_AUTH_OTHER_ID
 					);
 					if(!$this->PageUserLink->deleteAll($conditions)) {
-						$this->flash(__('Failed to delete the database, (%s).', 'page_user_links'), null, 'PageMenus/edit.009', '500');
-						return;
+						throw new InternalErrorException(__('Failed to delete the database, (%s).', 'page_user_links'));
 					}
 				}
 			}
@@ -475,7 +462,8 @@ class PageMenusController extends PageAppController {
 
 		$parentPage = $this->Page->findById($page['Page']['parent_id']);
 		if(!isset($parentPage['Page'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenus/detail.001', '400');
+			$this->response->statusCode('404');
+			$this->flash(__('Page not found.'), '');
 			return;
 		}
 
@@ -486,8 +474,7 @@ class PageMenusController extends PageAppController {
 			// コミュニティーならば
 			$ret = $this->Community->getCommunityData($page['Page']['room_id']);
 			if($ret === false) {
-				$this->flash(__('Failed to obtain the database, (%s).', 'communities'), null, 'PageMenus/detail.002', '500');
-				return;
+				throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'communities'));
 			}
 			list($community, $communityLang, $communityTag) = $ret;
 			$community_params = array(
@@ -512,13 +499,13 @@ class PageMenusController extends PageAppController {
 		$userId = $this->Auth->user('id');
 		$page = $this->request->data;
 		if(!isset($page['Page']['id']) || !isset($page['Page']['display_flag'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenus/display.001', '400');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		$currentPage = $this->Page->findAuthById($page['Page']['id'], $userId);
 		if(!isset($currentPage['Page'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenus/display.002', '400');
+			$this->response->statusCode('404');
+			$this->flash(__('Page not found.'), '');
 			return;
 		}
 
@@ -531,8 +518,7 @@ class PageMenusController extends PageAppController {
 		// 更新処理
 		$this->Page->id = $page['Page']['id'];
 		if(!$this->Page->saveField('display_flag', $page['Page']['display_flag'])) {
-			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenus/display.003', '500');
-			return;
+			throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 		}
 
 		$childPages = $this->Page->findChilds('all', $currentPage);
@@ -540,8 +526,7 @@ class PageMenusController extends PageAppController {
 		foreach($childPages as $key => $childPage) {
 			$this->Page->id = $childPage['Page']['id'];
 			if(!$this->Page->saveField('display_flag', $page['Page']['display_flag'])) {
-				$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenus/display.004', '500');
-				return;
+				throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 			}
 		}
 
@@ -562,13 +547,13 @@ class PageMenusController extends PageAppController {
 		$isRedirect = false;
 
 		if(!isset($page['Page']['id']) ) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenus/delete.001', '400');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		$currentPage = $this->Page->findAuthById($page['Page']['id'], $userId);
 		if(!isset($currentPage['Page'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenus/delete.002', '400');
+			$this->response->statusCode('404');
+			$this->flash(__('Page not found.'), '');
 			return;
 		}
 		if($currentPage['Page']['id'] == $this->page_id) {
@@ -612,8 +597,7 @@ class PageMenusController extends PageAppController {
 
 		// 削除処理
 		if(!$this->Page->deletePage($currentPage['Page']['id'], $allDelete, $childPages, $parentRoomId)) {
-			$this->flash(__('Failed to delete the database, (%s).', 'pages'), null, 'PageMenus/delete.004', '500');
-			return;
+			throw new InternalErrorException(__('Failed to delete the database, (%s).', 'pages'));
 		}
 
 		$this->Session->setFlash(__('Has been successfully deleted.'));
@@ -656,8 +640,7 @@ class PageMenusController extends PageAppController {
 		$position = $this->request->data['position'];
 		$isConfirm = isset($this->request->data['is_confirm']) ? intval($this->request->data['is_confirm']) : _OFF;
 		if(!isset($page['Page']['id']) || !isset($page['DropPage']['id']) || $page['Page']['id'] == $page['DropPage']['id'] ) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenus/chgsequence.001', '400');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		// 権限チェック
@@ -672,7 +655,8 @@ class PageMenusController extends PageAppController {
 		$hashKey = $this->PageMenu->getOperationKey($page['Page']['id'], $page['DropPage']['id']);
 		if($this->TempData->read($hashKey) !== false) {
 			// 既に実行中
-			$this->flash(__d('page', 'You are already running. Please try again at a later time.'), null, 'PageMenus/chgsequence.002', '200');
+			$this->response->statusCode('200');
+			$this->flash(__d('page', 'You are already running. Please try again at a later time.'), '');
 			return;
 		}
 
@@ -690,8 +674,7 @@ class PageMenusController extends PageAppController {
 		list($copyPageIdArr, $copyPages, $insPages) = $results;
 
 		if(!$this->PageMenu->operateBlock('move', $hashKey, $userId, $copyPageIdArr, $copyPages, $insPages)) {
-			$this->flash(__('Failed to execute the %s.', __('Move')), null, 'PageMenus/chgsequence.003', '500');
-			return;
+			throw new InternalErrorException(__('Failed to execute the %s.', __('Move')));
 		}
 
 		$this->Session->setFlash(__('Has been successfully updated.'));
@@ -738,8 +721,7 @@ class PageMenusController extends PageAppController {
 			// 登録処理
 			$authority = $this->Authority->findById($user['authority_id']);
 			if(!isset($authority['Authority'])) {
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenus/participant.001', '400');
-				return;
+				throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 			}
 			$pageUserLinks = $this->PageMenu->participantSession($this->request, $pageId, $user['hierarchy'], $authList);
 
@@ -765,8 +747,7 @@ class PageMenusController extends PageAppController {
 					$result = $this->PageUserLink->saveParticipant($page, $pageUserLinks['PageUserLink'], $users, $parentUsers, $participantType);
 				}
 				if(!$result) {
-					$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenus/participant.002', '400');
-					return;
+					throw new InternalErrorException(__('Failed to register the database, (%s).', 'page_user_links'));
 				}
 			}
 			$childPages = $this->Page->findChilds('all', $page, null, $userId);
@@ -781,8 +762,7 @@ class PageMenusController extends PageAppController {
 					'id' => $pageIdListArr
 				);
 				if(!$this->Page->updateAll($fields, $conditions)) {
-					$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenus/participant.003', '500');
-					return;
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 				}
 				if($page['Page']['parent_id'] > 0) {
 					// 権限の割り当てで、子ルームを割り当てると、そこにはってあったブロックの変更処理
@@ -922,18 +902,15 @@ class PageMenusController extends PageAppController {
 			'id' => $pageIdListArr
 		);
 		if(!$this->Page->updateAll($fields, $conditions)) {
-			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenus/deallocation.001', '500');
-			return;
+			throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 		}
 		if(!$this->PageMenuUserLink->deallocationRoom($page['Page']['room_id'])) {
-			$this->flash(__('Failed to delete the database, (%s).', 'page_user_links'), null, 'PageMenus/deallocation.002', '500');
-			return false;
+			throw new InternalErrorException(__('Failed to delete the database, (%s).', 'page_user_links'));
 		}
 		$page['Page']['room_id'] = $parentPage['Page']['room_id'];
 		// 権限の割り当て解除で、そこにはってあったブロックの変更処理
 		if(!$this->PageBlock->deallocationBlock($pageIdListArr, $parentPage['Page']['room_id'])) {
-			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenus/deallocation.003', '500');
-			return;
+			throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 		}
 
 		$this->Session->setFlash(__('Has been successfully updated.'));

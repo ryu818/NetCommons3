@@ -192,7 +192,8 @@ class PageController extends PageAppController {
 
 		$parent_page = $this->Page->findAuthById($center_page['Page']['parent_id'], $userId);
 		if(!isset($parent_page['Page'])) {
-			$this->flash(__('Failed to obtain the database, (%s).','pages'), null, 'Page/index.002', '500');
+			$this->response->statusCode('404');
+			$this->flash(__('Page not found.'), '');
 			return;
 		}
 		if($is_edit) {
@@ -224,7 +225,8 @@ class PageController extends PageAppController {
 				// Topページ
 				$parent_page = $this->Page->findAuthById($parent_page['Page']['parent_id'], $userId);	// 再取得
 				if(!isset($parent_page['Page'])) {
-					$this->flash(__('Failed to obtain the database, (%s).','pages'), null, 'Page/index.003', '500');
+					$this->response->statusCode('404');
+					$this->flash(__('Page not found.'), '');
 					return;
 				}
 				$page_id = $center_page['Page']['parent_id'];
@@ -235,8 +237,7 @@ class PageController extends PageAppController {
 				// コミュニティーならば
 				$ret = $this->Community->getCommunityData($center_page['Page']['room_id']);
 				if($ret === false) {
-					$this->flash(__('Failed to obtain the database, (%s).', 'communities'), null, 'Page/index.004', '500');
-					return;
+					throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'communities'));
 				}
 				list($community, $community_lang, $community_tag) = $ret;
 

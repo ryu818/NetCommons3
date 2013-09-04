@@ -133,11 +133,11 @@ class BlockMoveComponent extends Component {
 
 		$fields = array(
 			'Block.parent_id'=>$parent_id,
-    		'Block.root_id'=>$root_id,
-    		'Block.col_num'=>$col_num,
-    		'Block.row_num'=>$row_num,
+			'Block.root_id'=>$root_id,
+			'Block.col_num'=>$col_num,
+			'Block.row_num'=>$row_num,
 			'Block.thread_num'=>$thread_num
-    	);
+		);
 		if($insert_page) {
 			$fields['Block.page_id'] = $insert_page['Page']['id'];
 
@@ -146,9 +146,9 @@ class BlockMoveComponent extends Component {
 				// Content更新
 				$content_fields = array(
 					'Content.shortcut_type'=> NC_SHORTCUT_TYPE_OFF,
-		    		'Content.master_id'=>$block['Block']['content_id'],
-		    		'Content.room_id'=>$insert_room_id
-		    	);
+					'Content.master_id'=>$block['Block']['content_id'],
+					'Content.room_id'=>$insert_room_id
+				);
 				$content_conditions = array(
 					"Content.id" => $block['Block']['content_id']
 				);
@@ -161,7 +161,7 @@ class BlockMoveComponent extends Component {
 			"Block.id" => $id
 		);
 		$result = $this->_controller->Block->updateAll($fields, $conditions);
-    	if(!$result) {
+		if(!$result) {
 			return false;
 		}
 
@@ -247,11 +247,11 @@ class BlockMoveComponent extends Component {
 
 		$fields = array(
 			'Block.parent_id'=>$parent_id,
-    		'Block.root_id'=>$root_id,
-    		'Block.col_num'=>$col_num,
-    		'Block.row_num'=>$row_num,
+			'Block.root_id'=>$root_id,
+			'Block.col_num'=>$col_num,
+			'Block.row_num'=>$row_num,
 			'Block.thread_num'=>$thread_num
-    	);
+		);
 		if($insert_page['Page']['id'] != $page['Page']['id']) {
 			// ブロック移動時
 			$fields['Block.page_id'] = $insert_page['Page']['id'];
@@ -278,9 +278,9 @@ class BlockMoveComponent extends Component {
 			if(!isset($fields['Block.content_id']) && $page['Page']['room_id'] == $block['Content']['room_id']) {
 				// Content更新
 				$content_fields = array(
-		    		'Content.room_id'=> $insert_room_id
-		    	);
-		    	if($block['Content']['master_id'] == $block['Block']['content_id']) {
+					'Content.room_id'=> $insert_room_id
+				);
+				if($block['Content']['master_id'] == $block['Block']['content_id']) {
 					$content_fields['Content.master_id'] = $block['Block']['content_id'];
 				}
 
@@ -348,18 +348,18 @@ class BlockMoveComponent extends Component {
 		$conditions = array('Block.parent_id =' => $parent_id);
 		$blocks = $this->_controller->Block->findUsers("all", $conditions, $user_id);
 		foreach($blocks as $block) {
-    		if($block['Block']['controller_action'] == "group"){
-    			$this->_updRootIdByParentId($block['Block']['id'],$root_id,$thread_num+1, $page, $insert_page);
-    		}
+			if($block['Block']['controller_action'] == "group"){
+				$this->_updRootIdByParentId($block['Block']['id'],$root_id,$thread_num+1, $page, $insert_page);
+			}
 			if($insert_page) {
 				// 移動元のPage.room_id == Content.room_idならば、移動先のコンテンツとして更新
 				if($page['Page']['room_id'] == $block['Content']['room_id']) {
 					// Content更新
 					$content_fields = array(
 						'Content.shortcut_type'=>NC_SHORTCUT_TYPE_OFF,
-			    		'Content.master_id'=>$block['Block']['content_id'],
-			    		'Content.room_id'=>$insert_room_id
-			    	);
+						'Content.master_id'=>$block['Block']['content_id'],
+						'Content.room_id'=>$insert_room_id
+					);
 					$content_conditions = array(
 						"Content.id" => $block['Block']['content_id']
 					);
@@ -368,12 +368,12 @@ class BlockMoveComponent extends Component {
 					}
 				}
 			}
-    	}
+		}
 
-    	$fields = array(
-    		'Block.root_id'=>$root_id,
-    		'Block.thread_num'=>$thread_num
-    	);
+		$fields = array(
+			'Block.root_id'=>$root_id,
+			'Block.thread_num'=>$thread_num
+		);
 		if($insert_page) {
 			$fields['Block.page_id'] = $insert_page['Page']['id'];
 		}
@@ -410,15 +410,15 @@ class BlockMoveComponent extends Component {
 			));
 
 			if($block_count == 0) {
-			    //削除処理
+				//削除処理
 				$this->_controller->Content->delete($block['Block']['content_id']);
-			    $this->_controller->Block->delete($parent_id);
-			    if($block_id) {
-			    	// 操作対象block_idがあれば、更新対象にしない
-			    	$block['Block']['id'] = $block_id;
-			    }
-			    //前詰め処理(移動元)
-			    $result = $this->_controller->BlockOperation->decrementRowNum($block);
+				$this->_controller->Block->delete($parent_id);
+				if($block_id) {
+					// 操作対象block_idがあれば、更新対象にしない
+					$block['Block']['id'] = $block_id;
+				}
+				//前詰め処理(移動元)
+				$result = $this->_controller->BlockOperation->decrementRowNum($block);
 				if(!$result) {
 					return false;
 				}
@@ -431,13 +431,13 @@ class BlockMoveComponent extends Component {
 						return false;
 					}
 				}
-			    //再帰処理
-			    if($block['Block']['parent_id'] != 0) {
-				    $result = $this->deleteGroupingBlock($block['Block']['parent_id'], $block_id);
-				    if(!$result) {
+				//再帰処理
+				if($block['Block']['parent_id'] != 0) {
+					$result = $this->deleteGroupingBlock($block['Block']['parent_id'], $block_id);
+					if(!$result) {
 						return false;
 					}
-			    }
+				}
 			}
 		}
 		return true;

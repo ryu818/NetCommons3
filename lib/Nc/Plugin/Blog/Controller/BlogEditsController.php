@@ -46,8 +46,7 @@ class BlogEditsController extends BlogAppController {
 
 		if($this->request->is('post')) {
 			if(!isset($this->request->data['Blog']) || !isset($this->request->data['Content']['title'])) {
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Blog.index.001', '500');
-				return;
+				throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 			}
 
 			// 登録処理

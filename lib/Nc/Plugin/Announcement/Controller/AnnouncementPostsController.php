@@ -84,8 +84,7 @@ class AnnouncementPostsController extends AnnouncementAppController {
 		if(isset($postId)) {
 			// 編集
 			if(!isset($announcement['Announcement']) || $announcement['Announcement']['id'] != $postId) {
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'AnnouncementPosts.index.001', '500');
-				return;
+				throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 			}
 			$beforeContent = $announcement['Revision']['content'];
 			// 自動保存等で最新のデータがあった場合、表示
@@ -102,8 +101,7 @@ class AnnouncementPostsController extends AnnouncementAppController {
 
 		if($this->request->is('post')) {
 			if(!isset($this->request->data['Content']['title']) || !isset($this->request->data['Revision']['content'])) {
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'AnnouncementPosts.index.002', '500');
-				return;
+				throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 			}
 			// 登録処理
 			$content['Content'] = array(
@@ -193,8 +191,7 @@ class AnnouncementPostsController extends AnnouncementAppController {
 					'uniqueId' => $announcement['Announcement']['revision_group_id'],
 				);
 				if(!$this->UploadLink->updateUploadInfoForWysiwyg($announcement['Revision']['content'], $options)) {
-					$this->flash(__('Failed to update the database, (%s).', 'upload_links'), null, 'AnnouncementPosts.index.003', '500');
-					return;
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'upload_links'));
 				}
 
 				// 新着・検索
@@ -212,8 +209,7 @@ class AnnouncementPostsController extends AnnouncementAppController {
 					)
 				);
 				if(!$this->Archive->saveAuto($this->params, $archive)) {
-					$this->flash(__('Failed to update the database, (%s).', 'archives'), null, 'AnnouncementPosts.index.004', '500');
-					return;
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'archives'));
 				}
 
 				// メール送信
@@ -270,22 +266,32 @@ class AnnouncementPostsController extends AnnouncementAppController {
  */
 	public function revision($postId) {
 		// TODO:権限チェックが未作成
-		// TODO:復元のバリデートでそのrevision番号が本当に戻せるかどうか確認すること auto-drafutのデータ等
+		// TODO:復元のバリデートでそのrevision番号が本当に戻せるかどうか確認すること auto-draftのデータ等
 		$announcementEdit = $this->AnnouncementEdit->findByContentId($this->content_id);
 		if(!isset($announcementEdit['AnnouncementEdit'])) {
 			$announcementEdit = $this->AnnouncementEdit->findDefault($this->content_id);
 		}
 		$announcement = $this->Announcement->findById($postId);
 		if(!isset($announcement['Announcement'])) {
-			$this->flash(__('Content not found.'), null, 'AnnouncementPosts.revision.001', '404');
+			$this->response->statusCode('404');
+			$this->flash(__('Content not found.'), '');
 			return;
 		}
 
 		$cancelUrl = array('action' => 'index', $postId, '#' => $this->id);
-		if(!$this->RevisionList->showRegist($this->nc_block['Content']['title'], array($postId), $cancelUrl,
-			$this->Announcement, $announcement, $this->hierarchy,
-			$announcementEdit['AnnouncementEdit']['approved_flag'], $announcementEdit['AnnouncementEdit']['approved_pre_change_flag'])) {
-			$this->flash(__('Content not found.'), null, 'AnnouncementPosts.revision.002', '404');
+		if(!$this->RevisionList->showRegist(
+				$this->nc_block['Content']['title'],
+				array($postId),
+				$cancelUrl,
+				$this->Announcement,
+				$announcement,
+				$this->hierarchy,
+				$announcementEdit['AnnouncementEdit']['approved_flag'],
+				$announcementEdit['AnnouncementEdit']['approved_pre_change_flag'])
+			) {
+			$this->response->statusCode('404');
+			$this->flash(__('Content not found.'), '');
+			return;
 		}
 
 		if($this->request->is('post')) {
@@ -310,18 +316,19 @@ class AnnouncementPostsController extends AnnouncementAppController {
 		}
 		$announcement = $this->Announcement->findByContentId($this->content_id);
 		if(empty($announcement)) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'AnnouncementEdits.approve.001', '500');
+			$this->response->statusCode('400');
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), '');
 			return;
 		}
 
 		if ($this->request->is('post') && !$this->CheckAuth->checkAuth($this->hierarchy, NC_AUTH_CHIEF)) {
-			$this->flash(__('Forbidden permission to access the page.'), null, 'AnnouncementEdit.approve.002', '403');
+			$this->response->statusCode('403');
+			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 			return;
 		}
 
 		if(!$this->RevisionList->approve($this->Announcement, $announcement)) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'AnnouncementEdit.approve.003', '500');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		if($this->request->is('post') && $this->request->data['is_approve']) {

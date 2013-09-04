@@ -88,8 +88,7 @@ class PageOperationsController extends PageAppController {
 
 		$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $current_page);
 		if(!$admin_hierarchy) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.', 'pages'), null, 'PageOperations.copy.001', '500');
-			return false;
+			return;
 		}
 		// $copy_page_id = $this->request->query['page_id'];
 
@@ -139,7 +138,8 @@ class PageOperationsController extends PageAppController {
 		$hash_key = $this->PageMenu->getOperationKey($copy_page_id, $move_page_id);
 		if($this->TempData->read($hash_key) !== false) {
 			// 既に実行中
-			$this->flash(__d('page', 'You are already running. Please try again at a later time.'), null, 'PageOperations.'.$this->action.'.001', '200');
+			$this->response->statusCode('200');
+			$this->flash(__d('page', 'You are already running. Please try again at a later time.'), '');
 			return;
 		}
 
@@ -158,8 +158,7 @@ class PageOperationsController extends PageAppController {
 		list($copy_page_id_arr, $copy_pages, $ins_pages) = $results;
 
 		if(!$this->PageMenu->operateBlock($this->action, $hash_key, $user_id, $copy_page_id_arr, $copy_pages, $ins_pages, $shortcut_type)) {
-			$this->flash(__('Failed to execute the %s.', __('Paste')), null, 'PageOperations.'.$this->action.'.002', '500');
-			return;
+			throw new InternalErrorException(__('Failed to execute the %s.', __('Paste')));
 		}
 
 		// 正常終了

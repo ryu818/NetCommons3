@@ -42,26 +42,27 @@ class PageMenuComponent extends Component {
 		$loginUser = $this->_controller->Auth->user();
 		$userId = $loginUser['id'];
 
-		if($request->params['action'] != 'detail' && $request->params['action'] != 'participant'  && $request->params['action'] != 'participant_cancel') {
-			if(!$request->is('post')) {
-				$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPage.001', '400');
-				return false;
-			}
+		if(!$request->is('post') && $request->params['action'] != 'detail'
+			&& $request->params['action'] != 'participant'
+			&& $request->params['action'] != 'participant_cancel') {
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
-		if($request->params['action'] == 'detail' || $request->params['action'] == 'delete' ||
-				$request->params['action'] == 'participant' || $request->params['action'] == 'participant_detail' ||
-				$request->params['action'] == 'participant_cancel' || $request->params['action'] == 'deallocation' ||
-				$request->params['action'] == 'copy' || $request->params['action'] == 'paste' ||
-				$request->params['action'] == 'move' || $request->params['action'] == 'shortcut') {
-			if(!$request->is('ajax')) {
-				$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPage.002', '400');
-				return false;
-			}
+		if(!$request->is('ajax')
+			&& ($request->params['action'] == 'detail' || $request->params['action'] == 'delete'
+				|| $request->params['action'] == 'participant'
+				|| $request->params['action'] == 'participant_detail'
+				|| $request->params['action'] == 'participant_cancel'
+				|| $request->params['action'] == 'deallocation'
+				|| $request->params['action'] == 'copy' || $request->params['action'] == 'paste'
+				|| $request->params['action'] == 'move' || $request->params['action'] == 'shortcut')
+			) {
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		$adminHierarchy = $this->_controller->ModuleSystemLink->findHierarchyByPluginName($request->params['plugin'], $loginUser['authority_id']);
 		if($adminHierarchy < NC_AUTH_MIN_GENERAL) {
-			$this->_controller->flash(__('Forbidden permission to access the page.'), null, 'PageMenu.validatorPage.003', '403');
+			$this->_controller->response->statusCode('403');
+			$this->_controller->flash(__('Forbidden permission to access the page.'), '');
 			return false;
 		}
 
@@ -69,12 +70,14 @@ class PageMenuComponent extends Component {
 			return $adminHierarchy;
 		}
 		if(!isset($page['Page'])) {
-			$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPage.004', '400');
-			return false;
+			$this->_controller->response->statusCode('404');
+			$this->_controller->flash(__('Page not found.'), '');
+			return;
 		}
 
 		if(!$this->checkAuth($adminHierarchy, $page, $parentPage)) {
-			$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPage.005', '400');
+			$this->_controller->response->statusCode('403');
+			$this->_controller->flash(__('Forbidden permission to access the page.'), '');
 			return false;
 		}
 
@@ -135,28 +138,24 @@ class PageMenuComponent extends Component {
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		if($is_child == false && $page['Page']['lang'] != '' && $page['Page']['lang'] != $lang) {
 			// 編集のlangと現在のlangが異なる
-			$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.001', '400');
-			return false;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		switch($request->params['action']) {
 			case 'add':
 				if($page['Page']['thread_num'] == 0) {
-					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.002', '400');
-					return false;
+					throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 				}
 				break;
 			case 'display':
 				// 親がOFFならば変更を許さない。
 				$parentPage = $this->_controller->Page->findById($page['Page']['parent_id']);
 				if(!isset($parentPage['Page']) || $parentPage['Page']['display_flag'] != NC_DISPLAY_FLAG_ON) {
-					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.003', '400');
-					return false;
+					throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 				}
 				if($page['Page']['thread_num'] <= 1 && $page['Page']['space_type'] != NC_SPACE_TYPE_GROUP) {
 					//コミュニティー以外のTop Nodeの編集は許さない
-					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.004', '400');
-					return false;
+					throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 				}
 				break;
 			case 'delete':
@@ -195,13 +194,11 @@ class PageMenuComponent extends Component {
 			case 'edit':
 				if($page['Page']['thread_num'] == 0 || ($page['Page']['thread_num'] == 1 && $page['Page']['space_type'] != NC_SPACE_TYPE_GROUP)) {
 					//コミュニティーのTop Node以外の編集は許さない
-					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.005', '400');
-					return false;
+					throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 				}
 				/*if($page['Page']['space_type'] != NC_SPACE_TYPE_PUBLIC && $page['Page']['thread_num'] == 2 && $page['Page']['display_sequence'] == 1) {
 					//パブリック以外の各ノードのTopページの編集は許さない
-					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.006', '400');
-					return false;
+					throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 				}*/
 				break;
 			case 'chgsequence':
@@ -219,7 +216,7 @@ class PageMenuComponent extends Component {
 					if($page['Page']['space_type'] != NC_SPACE_TYPE_GROUP || $adminHierarchy < NC_AUTH_MIN_CHIEF) {
 						//コミュニティーの表示順変更等は$adminHierarchy=NC_AUTH_MIN_CHIEF以上
 						// TODO:後にパブリックのものをコミュニティへペースト等ができるようにしたほうが望ましい。
-						$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.006', '400');
+						throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 					}
 				}
 				break;
@@ -227,16 +224,13 @@ class PageMenuComponent extends Component {
 			case "deallocation":
 				if($page['Page']['space_type'] == NC_SPACE_TYPE_PRIVATE) {
 					// プライベートスペースは権限を設定不可
-					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.007', '400');
-					return false;
+					throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 				}
 				if($page['Page']['thread_num'] == 0 || ($page['Page']['thread_num'] == 2 && $page['Page']['display_sequence'] == 1)) {
-					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.008', '400');
-					return false;
+					throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 				}
 				if($request->params['action'] == "deallocation" && $page['Page']['thread_num'] == 1) {
-					$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorPageDetail.009', '400');
-					return false;
+					throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 				}
 		}
 		return true;
@@ -255,32 +249,32 @@ class PageMenuComponent extends Component {
 	public function validatorMovePage($page, $move_page, $position, $parentPage) {
 		$userId = $this->_controller->Auth->user('id');
 
-
 		if(($page['Page']['space_type'] != NC_SPACE_TYPE_GROUP && $page['Page']['thread_num'] == 1)
-				|| $page['Page']['thread_num'] == 0 || $move_page['Page']['thread_num'] == 0 ||
-				($page['Page']['space_type'] != NC_SPACE_TYPE_GROUP && $move_page['Page']['thread_num'] == 1 && $position != 'inner')) {
+				|| $page['Page']['thread_num'] == 0
+				|| $move_page['Page']['thread_num'] == 0
+				|| ($page['Page']['space_type'] != NC_SPACE_TYPE_GROUP
+						&& $move_page['Page']['thread_num'] == 1
+						&& $position != 'inner')) {
 			// 移動元がコミュニティー以外のノード,移動先が Top Node
-			$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorMovePage.001', '400');
-			return false;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		if($position != 'inner' && $position != 'top' && $position != 'bottom') {
-			$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorMovePage.002', '400');
-			return false;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
-		if($move_page['Page']['thread_num'] == 2 &&
-				$move_page['Page']['display_sequence'] == 1 && ($position == 'inner' || $position == 'top')) {
+		if($move_page['Page']['thread_num'] == 2
+			&& $move_page['Page']['display_sequence'] == 1
+			&& ($position == 'inner' || $position == 'top')) {
 			// 各スペースタイプのトップページの中か上に移動しようとした。
-			$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorMovePage.003', '400');
-			return false;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
-		if($position != 'inner' && (($page['Page']['thread_num'] == 1 && $move_page['Page']['thread_num'] != 1) ||
-				($move_page['Page']['thread_num'] == 1 && $page['Page']['thread_num'] != 1))) {
+		if($position != 'inner'
+			&& (($page['Page']['thread_num'] == 1 && $move_page['Page']['thread_num'] != 1)
+				|| ($move_page['Page']['thread_num'] == 1 && $page['Page']['thread_num'] != 1))) {
 			// コミュニティーTopノードへの移動チェック
-			$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'PageMenu.validatorMovePage.004', '400');
-			return false;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 		return true;
 	}
@@ -916,7 +910,8 @@ class PageMenuComponent extends Component {
 		//
 		$results = $this->getOperationPage($copy_page_id, $move_page_id, $position);
 		if($results === false) {
-			$this->_controller->flash(__('Failed to obtain the database, (%s).', 'pages'), null, 'PageMenu/operatePage.001', '500');
+			$this->_controller->response->statusCode('404');
+			$this->_controller->flash(__('Page not found.'), '');
 			return false;
 		}
 		list($copy_page, $move_page, $copy_parent_page, $move_parent_page, $move_room_name, $copy_page_id_arr,
@@ -944,7 +939,6 @@ class PageMenuComponent extends Component {
 		// 権限チェック
 		$adminHierarchy = $this->validatorPage($this->_controller->request, $copy_page);
 		if(!$adminHierarchy) {
-			$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.', 'pages'), null, 'PageMenu/operatePage.002', '500');
 			return false;
 		}
 
@@ -972,11 +966,13 @@ class PageMenuComponent extends Component {
 				if($move_page['Page']['space_type'] != NC_SPACE_TYPE_GROUP || $adminHierarchy <= NC_AUTH_MODERATE) {
 					// 主担以上
 					// TODO:現状、パブリック、マイポータル、マイページ直下への操作はエラーとする
-					$this->_controller->flash(__('Forbidden permission to access the page.'), null, 'PageMenu/operatePage.003', '403');
+					$this->_controller->response->statusCode('403');
+					$this->_controller->flash(__('Forbidden permission to access the page.'), '');
 					return false;
 				}
 			} else if(!$this->checkAuth($adminHierarchy, $move_page, $move_parent_page)) {
-				$this->_controller->flash(__('Forbidden permission to access the page.'), null, 'PageMenu/operatePage.004', '403');
+				$this->_controller->response->statusCode('403');
+				$this->_controller->flash(__('Forbidden permission to access the page.'), '');
 				return false;
 			}
 
@@ -1204,8 +1200,7 @@ class PageMenuComponent extends Component {
 			}
 			$this->_controller->Page->create();
 			if(!$this->_controller->Page->save($ins_page, true, $currentFieldList)) {
-				//$this->_controller->flash(__($error_mes, 'pages'), null, 'PageMenu/operatePage.003', '500');
-				return false;
+				throw new InternalErrorException(__($error_mes, 'pages'));
 			}
 			$ins_page['Page']['id'] = $this->_controller->Page->id;
 			$ins_pages[0] = $ins_page;	// 再セット
@@ -1229,16 +1224,13 @@ class PageMenuComponent extends Component {
 					'Page.id' => $copy_page_id_arr
 				);
 			}
-			$ret = $this->_controller->Page->updateAll($fields, $conditions);
-			if(!$ret) {
-				$this->_controller->flash(__($error_mes, 'pages'), null, 'PageMenu/operatePage.005', '500');
-				return false;
+			if(!$this->_controller->Page->updateAll($fields, $conditions)) {
+				throw new InternalErrorException(__($error_mes, 'pages'));
 			}
 		} else if(isset($ret_childs) && is_array($ret_childs)) {
 			$new_child_pages = $this->childsUpdate($action, $ret_childs[0], $ret_childs[1], $copy_page['Page']['id'], $ins_page['Page']['id']);
 			if (!$new_child_pages) {
-				$this->_controller->flash(__($error_mes, 'pages'), null, 'PageMenu/operatePage.006', '500');
-				return false;
+				throw new InternalErrorException(__($error_mes, 'pages'));
 			}
 
 			$ins_pages = array_merge ( $ins_pages, $new_child_pages );
@@ -1306,8 +1298,7 @@ class PageMenuComponent extends Component {
 			}
 			$fields = array('Page.display_sequence'=>'Page.display_sequence+('.$upd_display_sequence.')');
 			if(!$this->_controller->Page->updateAll($fields, $conditions)) {
-				$this->_controller->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/operatePage.007', '500');
-				return false;
+				throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 			}
 		} else {
 			$conditions = array(
@@ -1335,8 +1326,7 @@ class PageMenuComponent extends Component {
 				$pre_conditions["Page.lang"] = $copy_page['Page']['lang'];
 				$pre_conditions["Page.root_id"] = $copy_page['Page']['root_id'];
 				if(!$this->_controller->Page->updateAll($pre_fields, $pre_conditions)) {
-					$this->_controller->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/operatePage.008', '500');
-					return false;
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 				}
 				if($position == 'bottom' || $position == 'inner') {
 					$conditions["Page.display_sequence >="] = $display_sequence;
@@ -1395,8 +1385,7 @@ class PageMenuComponent extends Component {
 			}
 			$fields = array('Page.display_sequence'=>'Page.display_sequence+('.$upd_display_sequence.')');
 			if(!$this->_controller->Page->updateAll($fields, $conditions)) {
-				$this->_controller->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/operatePage.009', '500');
-				return false;
+				throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 			}
 		}
 
@@ -1404,8 +1393,7 @@ class PageMenuComponent extends Component {
 		if($action == 'move' && $copy_parent_page['Page']['room_id'] != $move_parent_page['Page']['room_id'] && count($copy_room_id_arr) > 0) {
 			foreach($copy_room_id_arr as $copy_room_id) {
 				if(!$this->_controller->PageMenuUserLink->deallocationRoom($copy_room_id)) {
-					$this->_controller->flash(__('Failed to delete the database, (%s).', 'page_user_links'), null, 'PageMenu/operatePage.010', '500');
-					return false;
+					throw new InternalErrorException(__('Failed to delete the database, (%s).', 'page_user_links'));
 				}
 			}
 		} else if(($action == 'shortcut' || $action == 'paste') && $copy_parent_page['Page']['room_id'] == $move_parent_page['Page']['room_id'] &&
@@ -1433,22 +1421,19 @@ class PageMenuComponent extends Component {
 				}
 				$this->_controller->Page->id = $buf_ins_page_id;
 				if(!$this->_controller->Page->saveField('room_id', $upd_room_id)) {
-					$this->_controller->flash(__('Failed to update the database, (%s).', 'pages'), null, 'PageMenu/operatePage.011', '500');
-					return false;
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 				}
 			}
 
 			// 同じルーム内でのペースト、ショートカット作成は、権限を引き継ぐ。
 			if(!$this->_controller->PageMenuUserLink->copyPageUserLink($ins_room_id_arr, $copy_room_id_arr)) {
-				$this->_controller->flash(__('Failed to register the database, (%s).', 'page_user_links'), null, 'PageMenu/operatePage.012', '500');
-				return false;
+				throw new InternalErrorException(__('Failed to register the database, (%s).', 'page_user_links'));
 			}
 
 			// コミュニティ直下のショートカット作成、ペーストでコミュニティ関連を作成
 			if($move_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP && $move_page['Page']['thread_num'] == 1) {
 				if(!$this->_controller->PageMenuCommunity->copyCommunity($ins_new_room_id, $copy_room_id_arr[0], $rename_count)) {
-					$this->_controller->flash(__('Failed to register the database, (%s).', 'communities'), null, 'PageMenu/operatePage.013', '500');
-					return false;
+					throw new InternalErrorException(__('Failed to register the database, (%s).', 'communities'));
 				}
 			}
 		}
@@ -1619,7 +1604,7 @@ class PageMenuComponent extends Component {
  * @param   string      $permalink
  * @param   integr      $space_type
  * @param   string      $lang
- * @return  array(integer count ,string      $permalink)
+ * @return  array(integer count, string $permalink)
  * @since   v 3.0.0.0
  */
 	protected function renamePermalink($id, $permalink, $space_type, $lang) {

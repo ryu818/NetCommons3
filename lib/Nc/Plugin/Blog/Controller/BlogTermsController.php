@@ -38,8 +38,7 @@ class BlogTermsController extends BlogAppController {
 			}
 
 			if(!isset($this->request->data['BlogTerm']['name'])) {
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogTerms.add_category.001', '500');
-				return;
+				throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 			}
 
 			$parent = !isset($this->request->data['BlogTerm']['parent']) ? 0 : intval($this->request->data['BlogTerm']['parent']);

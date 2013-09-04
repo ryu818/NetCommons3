@@ -17,14 +17,14 @@
 		<li class="nc-redirect-subtext">
 			<?php echo(sprintf($sub_message, h($url))); ?>
 		</li>
-		<?php if(isset($error_id_str) && $error_id_str != ''): ?>
+		<?php if(isset($file) && isset($line)): ?>
 			<li class="nc-redirect-subtext">
-				(error:<?php echo($error_id_str); ?>)
+				<?php echo(sprintf('%s (line %s)', $file, $line)); ?>
 			</li>
 		<?php endif; ?>
 	</ul>
 <?php
-if(Configure::read('debug') == _OFF) {
+if(Configure::read('debug') == 0) {
 	echo "<script>".
 	"setTimeout(function(){var location_str = '".h($url)."';location.href=location_str.replace(/&amp;/ig,\"&\");}, ".$pause."*1000);".
 	"</script>";

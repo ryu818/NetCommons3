@@ -202,12 +202,14 @@ class UploadController extends UploadAppController
 
 		$upload = $this->Upload->findById(intval($uploadId));
 		if(!isset($upload['Upload'])) {
-			$this->flash(__d('upload', 'The file does not exist. It might be deleted.'), null, 'Upload.edit.001', '404');
+			$this->response->statusCode('404');
+			$this->flash(__d('upload', 'The file does not exist. It might be deleted.'), '');
 			return;
 
 		}
 		if($upload['Upload']['user_id'] != $userId && !$isAdmin) {
-			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), null, 'Upload.edit.002', '403');
+			$this->response->statusCode('403');
+			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 			return;
 		}
 
@@ -319,8 +321,7 @@ class UploadController extends UploadAppController
 		$plugin = Inflector::camelize($plugin);
 		$module = $this->Module->findByDirName($plugin);
 		if(!isset($module['Module'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Upload.validatePlugin.001', '500');
-			return false;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 		return true;
 	}

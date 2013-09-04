@@ -70,7 +70,8 @@ class BlogPostsController extends BlogAppController {
 
 		$blog = $this->Blog->findByContentId($this->content_id);
 		if(!isset($blog['Blog'])) {
-			$this->flash(__('Content not found.'), null, 'BlogPosts.index.001', '404');
+			$this->response->statusCode('404');
+			$this->flash(__('Content not found.'), '');
 			return;
 		}
 
@@ -78,7 +79,8 @@ class BlogPostsController extends BlogAppController {
 			// 編集
 			$blogPost = $this->BlogPost->findById($postId);
 			if(!isset($blogPost['BlogPost'])) {
-				$this->flash(__('Content not found.'), null, 'BlogPosts.index.002', '404');
+				$this->response->statusCode('404');
+				$this->flash(__('Content not found.'), '');
 				return;
 			}
 			if($blogPost['BlogPost']['is_future'] == _ON || $blogPost['BlogPost']['status'] == NC_STATUS_TEMPORARY) {
@@ -113,7 +115,8 @@ class BlogPostsController extends BlogAppController {
 		}
 
 		if (!$isEdit) {
-			$this->flash(__('Forbidden permission to access the page.'), null, 'BlogPosts.index.003', '403');
+			$this->response->statusCode('403');
+			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 			return;
 		}
 
@@ -121,8 +124,7 @@ class BlogPostsController extends BlogAppController {
 		$activeTagArr = null;
 		if($this->request->is('post')) {
 			if(!isset($this->request->data['BlogPost']) || !isset($this->request->data['Revision']['content'])) {
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPosts.index.004', '500');
-				return;
+				throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 			}
 			// 登録処理
 			unset($this->request->data['BlogPost']['id']);
@@ -214,8 +216,7 @@ class BlogPostsController extends BlogAppController {
 					'uniqueId' => $blogPost['BlogPost']['revision_group_id'],
 				);
 				if(!$this->UploadLink->updateUploadInfoForWysiwyg($blogPost['Revision']['content'], $options)) {
-					$this->flash(__('Failed to update the database, (%s).', 'upload_links'), null, 'BlogPosts.index.005', '500');
-					return;
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'upload_links'));
 				}
 
 				if($blogPost['BlogPost']['is_future'] == _ON || $blogPost['BlogPost']['status'] == NC_STATUS_TEMPORARY) {
@@ -225,16 +226,28 @@ class BlogPostsController extends BlogAppController {
 				}
 
 				// カテゴリー登録
-				if(!$this->BlogTermLink->saveTermLinks($this->content_id, $this->BlogPost->id, $isBeforeUpdateTermCount, $isAfterUpdateTermCount,
-					$activeCategoryArr, 'id', 'category')) {
-					$this->flash(__('Failed to register the database, (%s).', 'blog_term_links'), null, 'BlogPosts.index.006', '500');
-					return;
+				if(!$this->BlogTermLink->saveTermLinks(
+						$this->content_id,
+						$this->BlogPost->id,
+						$isBeforeUpdateTermCount,
+						$isAfterUpdateTermCount,
+						$activeCategoryArr,
+						'id',
+						'category'
+						)) {
+					throw new InternalErrorException(__('Failed to register the database, (%s).', 'blog_term_links'));
 				}
 				// タグ登録
-				if(!$this->BlogTermLink->saveTermLinks($this->content_id, $this->BlogPost->id, $isBeforeUpdateTermCount, $isAfterUpdateTermCount,
-						$activeTagArr, 'name', 'tag')) {
-					$this->flash(__('Failed to register the database, (%s).', 'blog_term_links'), null, 'BlogPosts.index.007', '500');
-					return;
+				if(!$this->BlogTermLink->saveTermLinks(
+						$this->content_id,
+						$this->BlogPost->id,
+						$isBeforeUpdateTermCount,
+						$isAfterUpdateTermCount,
+						$activeTagArr,
+						'name',
+						'tag'
+						)) {
+					throw new InternalErrorException(__('Failed to register the database, (%s).', 'blog_term_links'));
 				}
 
 				// トラックバック送信
@@ -288,8 +301,7 @@ class BlogPostsController extends BlogAppController {
 					)
 				);
 				if(!$this->Archive->saveAuto($this->params, $archive)) {
-					$this->flash(__('Failed to update the database, (%s).', 'archives'), null, 'BlogPosts.index.008', '500');
-					return;
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'archives'));
 				}
 
 				// メッセージ表示
@@ -344,25 +356,26 @@ class BlogPostsController extends BlogAppController {
  */
 	public function delete($postId = null) {
 		if(empty($postId) || !$this->request->is('post')) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPosts.delete.001', '500');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 		$blogPost = $this->BlogPost->findById($postId);
 		if(!isset($blogPost['BlogPost'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPosts.delete.002', '500');
+			$this->response->statusCode('404');
+			$this->flash(__('Content not found.'), '');
 			return;
 		}
 
 		// コメント削除
 		$delConditions = array('BlogComment.blog_post_id'=>$postId);
 		if(!$this->BlogComment->deleteAll($delConditions, false)){
-			$this->flash(__('Failed to delete the database, (%s).', 'blog_comments'), null, 'BlogPosts.delete.003', '500');
-			return;
+			throw new InternalErrorException(__('Failed to delete the database, (%s).', 'blog_comments'));
 		}
 
 		// 一般会員が閲覧できるカウント数のカウントダウン
 
-		if($blogPost['BlogPost']['is_future'] != _ON && $blogPost['BlogPost']['status'] != NC_STATUS_TEMPORARY  && $blogPost['BlogPost']['is_approved'] != NC_DISPLAY_FLAG_OFF){
+		if($blogPost['BlogPost']['is_future'] != _ON
+			&& $blogPost['BlogPost']['status'] != NC_STATUS_TEMPORARY
+			&& $blogPost['BlogPost']['is_approved'] != NC_DISPLAY_FLAG_OFF){
 			$termLinks = $this->BlogTermLink->findAllByBlogPostId($postId);
 			if($termLinks){
 				// blogに結びつくすべてのtermがカウントダウン対象
@@ -372,8 +385,7 @@ class BlogPostsController extends BlogAppController {
 				}
 				$cntdown_conditions = array('BlogTerm.id'=>$termIds);
 				if(!$this->BlogTerm->decrementSeq($cntdown_conditions, 'count')){
-					$this->flash(__('Failed to update the database, (%s).', 'blog_term_links'), null, 'BlogPosts.delete.004', '500');
-					return;
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'blog_term_links'));
 				}
 			}
 		}
@@ -381,20 +393,17 @@ class BlogPostsController extends BlogAppController {
 		// タームリンク削除
 		$delConditions = array('BlogTermLink.blog_post_id'=>$postId);
 		if(!$this->BlogTermLink->deleteAll($delConditions)){
-			$this->flash(__('Failed to delete the database, (%s).', 'blog_term_links'), null, 'BlogPosts.delete.005', '500');
-			return;
+			throw new InternalErrorException(__('Failed to delete the database, (%s).', 'blog_term_links'));
 		}
 
 		// blog削除
 		if(!$this->BlogPost->delete($postId)){
-			$this->flash(__('Failed to delete the database, (%s).', 'blog_posts'), null, 'BlogPosts.delete.006', '500');
-			return;
+			throw new InternalErrorException(__('Failed to delete the database, (%s).', 'blog_posts'));
 		}
 
 		// revision削除
 		if(!$this->Revision->deleteRevison($blogPost['BlogPost']['revision_group_id'])){
-			$this->flash(__('Failed to delete the database, (%s).', 'revisions'), null, 'BlogPosts.delete.007', '500');
-			return;
+			throw new InternalErrorException(__('Failed to delete the database, (%s).', 'revisions'));
 		}
 
 		// UploadLink削除
@@ -404,8 +413,7 @@ class BlogPostsController extends BlogAppController {
 			'UploadLink.field_name'=>'content'
 		);
 		if(!$this->UploadLink->deleteAll($delConditions, true, true)){
-			$this->flash(__('Failed to delete the database, (%s).', 'revisions'), null, 'BlogPosts.delete.008', '500');
-			return;
+			throw new InternalErrorException(__('Failed to delete the database, (%s).', 'upload_links'));
 		}
 
 		$this->Session->setFlash(__('The post with %s has been deleted.', $blogPost['BlogPost']['title']));
@@ -506,22 +514,32 @@ class BlogPostsController extends BlogAppController {
  */
 	public function revision($postId) {
 		// TODO:権限チェックが未作成
-		// TODO:復元のバリデートでそのrevision番号が本当に戻せるかどうか確認すること auto-drafutのデータ等
+		// TODO:復元のバリデートでそのrevision番号が本当に戻せるかどうか確認すること auto-draftのデータ等
 		$blog = $this->Blog->findByContentId($this->content_id);
 		if(!isset($blog['Blog'])) {
 			$blog = $this->Blog->findDefault($this->content_id);
 		}
 		$blogPost = $this->BlogPost->findById($postId);
 		if(!isset($blogPost['BlogPost'])) {
-			$this->flash(__('Content not found.'), null, 'BlogPosts.revision.001', '404');
+			$this->response->statusCode('404');
+			$this->flash(__('Content not found.'), '');
 			return;
 		}
 
 		$cancelUrl = array('action' => 'index', $postId, '#' => $this->id);
-		if(!$this->RevisionList->showRegist($this->nc_block['Content']['title'], array($postId), $cancelUrl,
-			$this->BlogPost, $blogPost, $this->hierarchy,
-			$blog['Blog']['approved_flag'], $blog['Blog']['approved_pre_change_flag'])) {
-			$this->flash(__('Content not found.'), null, 'BlogPosts.revision.002', '404');
+		if(!$this->RevisionList->showRegist(
+				$this->nc_block['Content']['title'],
+				array($postId),
+				$cancelUrl,
+				$this->BlogPost,
+				$blogPost,
+				$this->hierarchy,
+				$blog['Blog']['approved_flag'],
+				$blog['Blog']['approved_pre_change_flag'])
+			) {
+			$this->response->statusCode('404');
+			$this->flash(__('Content not found.'), '');
+			return;
 		}
 
 		if($this->request->is('post')) {
@@ -546,17 +564,20 @@ class BlogPostsController extends BlogAppController {
 		}
 		$blogPost = $this->BlogPost->findById($postId);
 		if(empty($blogPost)) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPosts.approve.001', '500');
+			$this->response->statusCode('404');
+			$this->flash(__('Content not found.'), '');
 			return;
 		}
 
 		if ($this->request->is('post') && !$this->CheckAuth->checkAuth($this->hierarchy, NC_AUTH_CHIEF)) {
-			$this->flash(__('Forbidden permission to access the page.'), null, 'BlogPosts.approve.002', '403');
+			$this->response->statusCode('403');
+			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 			return;
 		}
 
 		if(!$this->RevisionList->approve($this->BlogPost, $blogPost)) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPosts.approve.003', '500');
+			$this->response->statusCode('400');
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), '');
 			return;
 		}
 

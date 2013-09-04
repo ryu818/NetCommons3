@@ -58,8 +58,7 @@ class AnnouncementEditsController extends AnnouncementAppController {
 
 		if ($this->request->is('post')) {
 			if(!isset($this->request->data['AnnouncementEdit'])) {
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'AnnouncementEdit.index.001', '500');
-				return;
+				throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 			}
 
 			// 登録処理

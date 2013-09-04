@@ -137,10 +137,6 @@ class CheckAuthComponent extends Component {
 		if(isset($plugin_name) && $plugin_name != 'group') {
 			$camel_plugin_name = Inflector::camelize($plugin_name);
 			$module = $controller->Module->findByDirName($camel_plugin_name);
-			if(isset($module['Module']['dir_name']) && $module['Module']['dir_name'] != $camel_plugin_name) {
-				$controller->flash(__('Content not found.'), '', 'CheckAuth.check.001', '404');
-				return;
-			}
 			$controller->nc_module = $module;
 			Configure::write(NC_SYSTEM_KEY.'.Modules.'.$camel_plugin_name, $module);
 		}
@@ -262,7 +258,8 @@ class CheckAuthComponent extends Component {
 			if($userId == 0) {
 				$this->Session->setFlash(__('Forbidden permission to access the page.'), 'default', array(), 'auth');
 			}
-			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.check.003', '403');
+			$controller->response->statusCode('403');
+			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url);
 			return;
 		}
 
@@ -277,7 +274,8 @@ class CheckAuthComponent extends Component {
 			if($userId == 0) {
 				$this->Session->setFlash(__('Forbidden permission to access the page.'), 'default', array(), 'auth');
 			}
-			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url, 'CheckAuth.check.004', '403');
+			$controller->response->statusCode('403');
+			$controller->flash(__('Forbidden permission to access the page.'), $redirect_url);
 			return;
 		}
 
@@ -364,13 +362,16 @@ class CheckAuthComponent extends Component {
 				$content =  $controller->Content->findAuthById($contentId, $userId);
 				if(!isset($content['Content'])) {
 					// 置いているpluginが異なる
-					$controller->flash(__('Content not found.'), '', 'CheckAuth.checkGeneral.001', '404');
+					$controller->response->statusCode('404');
+					$controller->flash(__('Content not found.'), '');
 					return false;
 				}
 				$controller->content_id = intval($content['Content']['master_id']);
-				if($this->chkPlugin && $plugin_name != 'group' && $content['Module']['dir_name'] != Inflector::camelize($plugin_name)) {
+				if($this->chkPlugin && $plugin_name != 'group'
+						&& $content['Module']['dir_name'] != Inflector::camelize($plugin_name)) {
 					// 置いているpluginが異なる（dir_nameから）
-					$controller->flash(__('Content not found.'), '', 'CheckAuth.checkGeneral.002', '404');
+					$controller->response->statusCode('404');
+					$controller->flash(__('Content not found.'), '');
 					return false;
 				}
 				$page = $controller->Page->findAuthById($content['Content']['room_id'], $userId);
@@ -388,12 +389,15 @@ class CheckAuthComponent extends Component {
 					$block =  $controller->Block->findAuthById($block_id, $userId);
 					if($block === false || !isset($block['Block'])) {
 						// 置いているpluginが異なる
-						$controller->flash(__('Content not found.'), '', 'CheckAuth.checkGeneral.003', '404');
+						$controller->response->statusCode('404');
+						$controller->flash(__('Content not found.'), '');
 						return false;
 					}
-					if($this->chkPlugin && $plugin_name != 'group' && $block['Module']['dir_name'] != Inflector::camelize($plugin_name)) {
+					if($this->chkPlugin && $plugin_name != 'group'
+							&& $block['Module']['dir_name'] != Inflector::camelize($plugin_name)) {
 						// 置いているpluginが異なる（dir_nameから）
-						$controller->flash(__('Content not found.'), '', 'CheckAuth.checkGeneral.004', '404');
+						$controller->response->statusCode('404');
+						$controller->flash(__('Content not found.'), '');
 						return false;
 					}
 					$controller->nc_block = $block;
@@ -402,7 +406,8 @@ class CheckAuthComponent extends Component {
 					$active_page = $controller->Page->findIncludeComunityLang($block['Block']['page_id']);
 					if(!$active_page) {
 						// ブロックIDに対応したページが存在しない
-						$controller->flash(__('Page not found.'), $redirect_url, 'CheckAuth.checkGeneral.005', '404');
+						$controller->response->statusCode('404');
+						$controller->flash(__('Page not found.'), $redirect_url);
 						return false;
 					}
 				}
@@ -441,21 +446,25 @@ class CheckAuthComponent extends Component {
 						$redirect_url = preg_replace('$^'.$permalink.'$i', $activePermalink, $url);
 					}
 					$redirect_url .= '#_'.$block_id;
-					$controller->flash(__('Moved Permanently.'), $redirect_url, 'CheckAuth.checkGeneral.006', '301');
+					$controller->response->statusCode('301');
+					$controller->flash(__('Moved Permanently.'), $redirect_url);
 					return false;
 				}
 
 				if($page === false || $center_page === false) {
 					// ページが存在しない
-					$controller->flash(__('Page not found.'), $redirect_url, 'CheckAuth.checkGeneral.007', '404');
+					$controller->response->statusCode('404');
+					$controller->flash(__('Page not found.'), $redirect_url);
 					return false;
 				}
 
 				$controller->nc_page = isset($active_page) ? $active_page : $page;	// blockから取得できるPage優先
 				$controller->nc_current_page = $page;								// pageから取得できるPage
-				if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_DISABLE ||
-						($page['Page']['display_flag'] == NC_DISPLAY_FLAG_OFF && $page['PageAuthority']['hierarchy'] < NC_AUTH_MIN_CHIEF)) {
-					$controller->flash(__('Content not found.'), $redirect_url, 'CheckAuth.checkGeneral.008', '404');
+				if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_DISABLE
+					|| ($page['Page']['display_flag'] == NC_DISPLAY_FLAG_OFF
+							&& $page['PageAuthority']['hierarchy'] < NC_AUTH_MIN_CHIEF)) {
+					$controller->response->statusCode('404');
+					$controller->flash(__('Page not found.'), $redirect_url);
 					return false;
 				}
 
@@ -492,7 +501,8 @@ class CheckAuthComponent extends Component {
 		// block_idチェック
 		if($this->chkBlockId && !$isActiveContent) {
 			if(!isset($block_id) || $block_id == 0) {
-				$controller->flash(__('Content not found.'), $redirect_url, 'CheckAuth.checkGeneral.009', '404');
+				$controller->response->statusCode('404');
+				$controller->flash(__('Content not found.'), $redirect_url);
 				return false;
 			}
 		}

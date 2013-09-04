@@ -17,14 +17,26 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 ?>
-<?php echo $name; ?>:
-<p class="error">
-	<strong><?php echo __d('cake', 'Error'); ?>: </strong>
-	<?php printf(
-		__d('cake', 'The requested address %s was not found on this server.'),
-		"<strong>'{$url}'</strong>"
-	); ?>
-</p>
+<?php echo $this->Html->css('redirect/', null, array('inline' => true, 'data-title' => 'Redirect')); ?>
+	<ul class="nc-redirect">
+		<li class="nc-exception-text">
+			<?php echo($name); ?>
+		</li>
+		<li class="nc-redirect-subtext">
+			<?php
+			if (Configure::read('debug') > 0) {
+				$file = str_replace(array(CAKE_CORE_INCLUDE_PATH, ROOT), '', $error->getFile());
+				echo(sprintf('%s (line %s)', $file, $error->getLine()));
+			}
+			?>
+		</li>
+		<li class="nc-redirect-subtext">
+			<?php
+				echo(__d('cake', 'The requested address %s was not found on this server.'
+						,"<strong>'{$url}'</strong>"));
+			?>
+		</li>
+	</ul>
 <?php
 if (Configure::read('debug') > 0 ):
 	echo $this->element('exception_stack_trace');

@@ -91,15 +91,15 @@ class AuthorityController extends AuthorityAppController {
 
 		if($this->request->is('post')) {
 			if (!isset($this->request->data['Authority'])) {
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Authority.edit.001', 500);
-				return;
+				throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 			}
 			$authority = array('Authority' => $this->request->data['Authority']);
 		} else if(!empty($authorityId)) {
 			// 編集
 			$authority = $this->Authority->findList('first',array('conditions' => array('Authority.id' => intval($authorityId))));
 			if(!isset($authority['Authority'])) {
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Authority.edit.002', 500);
+				$this->response->statusCode('400');
+				$this->flash(__('Unauthorized request.<br />Please reload the page.'), '');
 				return;
 			}
 			if(isset($authority['AuthorityLang']['authority_name'])) {
@@ -262,8 +262,7 @@ class AuthorityController extends AuthorityAppController {
 
 			$this->Authority->set($authority);
 			if(!$this->Authority->save($authority)) {
-				$this->flash(__('Failed to register the database, (%s).', 'authorities'), null, 'Authority.confirm.001', 500);
-				return;
+				throw new InternalErrorException(__('Failed to register the database, (%s).', 'authorities'));
 			}
 			$authorityId = $this->Authority->id;
 
@@ -282,8 +281,7 @@ class AuthorityController extends AuthorityAppController {
 			$authorityLang['AuthorityLang']['authority_name'] = $authorityName;
 
 			if(!$this->AuthorityLang->save($authorityLang)) {
-				$this->flash(__('Failed to register the database, (%s).', 'authority_langs'), null, 'Authority.confirm.002', 500);
-				return;
+				throw new InternalErrorException(__('Failed to register the database, (%s).', 'authority_langs'));
 			}
 
 			/**
@@ -299,8 +297,7 @@ class AuthorityController extends AuthorityAppController {
 			);
 			$this->ModuleSystemLink->create();
 			if(!$this->ModuleSystemLink->deleteAll($conditions)) {
-				$this->flash(__('Failed to delete the database, (%s).', 'module_links'), null, 'Authority.confirm.003', 500);
-				return;
+				throw new InternalErrorException(__('Failed to delete the database, (%s).', 'module_links'));
 			}
 			$modules = array();
 			foreach($siteModules as $dirName => $module) {
@@ -338,8 +335,7 @@ class AuthorityController extends AuthorityAppController {
 				);
 				$this->ModuleSystemLink->create();
 				if(!$this->ModuleSystemLink->save($dataModuleLink)) {
-					$this->flash(__('Failed to register the database, (%s).', 'module_links'), null, 'Authority.confirm.004', 500);
-					return;
+					throw new InternalErrorException(__('Failed to register the database, (%s).', 'module_links'));
 				}
 			}
 
@@ -359,8 +355,7 @@ class AuthorityController extends AuthorityAppController {
 				));
 				$this->ModuleLink->create();
 				if(!$this->ModuleLink->deleteAll($conditions)) {
-					$this->flash(__('Failed to delete the database, (%s).', 'module_links'), null, 'Authority.confirm.005', 500);
-					return;
+					throw new InternalErrorException(__('Failed to delete the database, (%s).', 'module_links'));
 				}
 				foreach($this->request->data['MyportalModuleLink'] as $moduleId => $moduleLink) {
 					$dataModuleLink['ModuleLink'] = array(
@@ -372,8 +367,7 @@ class AuthorityController extends AuthorityAppController {
 					);
 					$this->ModuleLink->create();
 					if(!$this->ModuleLink->save($dataModuleLink)) {
-						$this->flash(__('Failed to register the database, (%s).', 'module_links'), null, 'Authority.confirm.006', 500);
-						return;
+						throw new InternalErrorException(__('Failed to register the database, (%s).', 'module_links'));
 					}
 				}
 			}
@@ -391,8 +385,7 @@ class AuthorityController extends AuthorityAppController {
 				));
 				$this->ModuleLink->create();
 				if(!$this->ModuleLink->deleteAll($conditions)) {
-					$this->flash(__('Failed to delete the database, (%s).', 'module_links'), null, 'Authority.confirm.007', 500);
-					return;
+					throw new InternalErrorException(__('Failed to delete the database, (%s).', 'module_links'));
 				}
 				foreach($this->request->data['PrivateModuleLink'] as $moduleId => $moduleLink) {
 					$dataModuleLink['ModuleLink'] = array(
@@ -404,8 +397,7 @@ class AuthorityController extends AuthorityAppController {
 					);
 					$this->ModuleLink->create();
 					if(!$this->ModuleLink->save($dataModuleLink)) {
-						$this->flash(__('Failed to register the database, (%s).', 'module_links'), null, 'Authority.confirm.008', 500);
-						return;
+						throw new InternalErrorException(__('Failed to register the database, (%s).', 'module_links'));
 					}
 				}
 
@@ -424,8 +416,7 @@ class AuthorityController extends AuthorityAppController {
 							"PageUserLink.authority_id" => $authorityId
 						);
 						if(!$this->PageUserLink->updateAll($fields, $conditions)) {
-							$this->flash(__('Failed to update the database, (%s).', 'page_user_links'), null, 'Authority.confirm.009', 500);
-							return;
+							throw new InternalErrorException(__('Failed to update the database, (%s).', 'page_user_links'));
 						}
 					}
 				}
@@ -462,8 +453,7 @@ class AuthorityController extends AuthorityAppController {
 							"Page.root_id" => $pageIds
 						);
 						if(!$this->Page->updateAll($fields, $conditions)) {
-							$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'Authority.confirm.010', 500);
-							return;
+							throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 						}
 					}
 				}
@@ -480,8 +470,7 @@ class AuthorityController extends AuthorityAppController {
 							"Page.root_id" => $pageIds
 						);
 						if(!$this->Page->updateAll($fields, $conditions)) {
-							$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'Authority.confirm.011', 500);
-							return;
+							throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 						}
 					}
 				}
@@ -507,13 +496,13 @@ class AuthorityController extends AuthorityAppController {
  */
 	public function delete($authorityId = null) {
 		if(!$this->request->is('post') || empty($authorityId)) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Authority.delete.001', 500);
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		$authority = $this->Authority->findById($authorityId);
 		if(!isset($authority['Authority']) || $authority['Authority']['system_flag'] == _ON) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Authority.delete.002', 500);
+			$this->response->statusCode('400');
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), '');
 			return;
 		}
 		$userAuthorityId = $this->Authority->getUserAuthorityId($authority['Authority']['hierarchy']);
@@ -535,8 +524,7 @@ class AuthorityController extends AuthorityAppController {
 				"Config.id" => $config['autoregist_author']['id']
 			);
 			if(!$this->Config->updateAll($fields, $conditions)) {
-				$this->flash(__('Failed to update the database, (%s).', 'configs'), null, 'Authority.delete.003', 500);
-				return;
+				throw new InternalErrorException(__('Failed to update the database, (%s).', 'configs'));
 			}
 		}
 		// page_user_linksで該当データがあれば、authority_id更新
@@ -550,8 +538,7 @@ class AuthorityController extends AuthorityAppController {
 				"PageUserLink.authority_id" => $authorityId
 			);
 			if(!$this->PageUserLink->updateAll($fields, $conditions)) {
-				$this->flash(__('Failed to update the database, (%s).', 'page_user_links'), null, 'Authority.delete.004', 500);
-				return;
+				throw new InternalErrorException(__('Failed to update the database, (%s).', 'page_user_links'));
 			}
 		}
 
@@ -559,29 +546,25 @@ class AuthorityController extends AuthorityAppController {
 			'ModuleSystemLink.authority_id' => $authorityId
 		);
 		if(!$this->ModuleSystemLink->deleteAll($conditions)) {
-			$this->flash(__('Failed to delete the database, (%s).', 'module_system_links'), null, 'BlogComment.delete.005', '500');
-			return;
+			throw new InternalErrorException(__('Failed to delete the database, (%s).', 'module_system_links'));
 		}
 
 		$conditions = array(
 			'ModuleLink.authority_id' => $authorityId
 		);
 		if(!$this->ModuleLink->deleteAll($conditions)) {
-			$this->flash(__('Failed to delete the database, (%s).', 'module_links'), null, 'BlogComment.delete.006', '500');
-			return;
+			throw new InternalErrorException(__('Failed to delete the database, (%s).', 'module_links'));
 		}
 
 		$conditions = array(
 			'AuthorityLang.authority_id' => $authorityId
 		);
 		if(!$this->AuthorityLang->deleteAll($conditions)) {
-			$this->flash(__('Failed to delete the database, (%s).', 'authority_langs'), null, 'BlogComment.delete.007', '500');
-			return;
+			throw new InternalErrorException(__('Failed to delete the database, (%s).', 'authority_langs'));
 		}
 
 		if(!$this->Authority->delete($authorityId)) {
-			$this->flash(__('Failed to delete the database, (%s).', 'authority'), null, 'Authority.delete.008', '500');
-			return;
+			throw new InternalErrorException(__('Failed to delete the database, (%s).', 'authorities'));
 		}
 		$this->Session->setFlash(__('Has been successfully deleted.'));
 		$this->redirect(array('action' => 'index'));

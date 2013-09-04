@@ -55,34 +55,31 @@ class BlockController extends BlockAppController {
 			$block = $this->Block->findById($copy_block_id);	// 再取得
 			$pre_page = $this->Page->findAuthById(intval($block['Block']['page_id']), $user_id);
 			if(!$pre_page || $pre_page['PageAuthority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
-				$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), null, 'add_block.001', '403');
+				$this->response->statusCode('403');
+				$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 				return;
 			}
 			$content = array('Content' => $this->nc_block['Content']);
 			$ret_validator = $this->BlockMove->validatorRequestContent($content, $pre_page, $page);
 			if($ret_validator !== true) {
-				// error
-				$this->flash($ret_validator, null, 'add_block.002', '400');
-				return;
+				throw new BadRequestException($ret_validator);
 			}
 		}
 
-		if (!isset($this->request->data) || !isset($this->request->data['show_count']) || !isset($this->request->data['module_id'])
-				|| !isset($this->request->data['page_id'])) {
-			// Error
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'add_block.003', '400');
-			return;
+		if (!isset($this->request->data) || !isset($this->request->data['show_count'])
+			|| !isset($this->request->data['module_id']) || !isset($this->request->data['page_id'])) {
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		if(!$page || $page['Page']['show_count'] != $show_count) {
-			$this->flash(__d('block', 'Because of the possibility of inconsistency happening, update will not be executed. <br /> Please redraw and update again.'), null, 'add_block.004', '400');
+			$this->response->statusCode('400');
+			$this->flash(__d('block', 'Because of the possibility of inconsistency happening, update will not be executed. <br /> Please redraw and update again.'), '');
 			return;
 		}
 
 		$module = $this->Module->findById($module_id);
 		if(!$module) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'add_block.005', '400');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		if(!empty($this->request->params['requested']) && !empty($copy_block_id)) {
@@ -100,8 +97,7 @@ class BlockController extends BlockAppController {
 			$ins_ret = $this->BlockOperation->addBlock($this->action, $pre_page, $module);
 		}
 		if($ins_ret === false) {
-			$this->flash(__('Failed to execute the %s.', __($title)), null, 'add_block.006', '500');
-			return;
+			throw new InternalErrorException(__('Failed to execute the %s.', __($title)));
 		}
 		list($operation_ret, $ins_block, $ins_content) = $ins_ret;
 
@@ -109,28 +105,24 @@ class BlockController extends BlockAppController {
 		$ins_block['Block']['row_num'] = 0;
 		$inc_ret = $this->BlockOperation->incrementRowNum($ins_block);
 		if(!$inc_ret) {
-			$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_block.007', '500');
-			return;
+			throw new InternalErrorException(__('Failed to update the database, (%s).', 'blocks'));
 		}
 
 		// 表示カウント++
 		$this->Page->id = $page_id;
 		if(!$this->Page->saveField('show_count', intval($show_count) + 1)) {
-			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'add_block.008', '500');
-			return;
+			throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 		}
 		if($pre_page['Page']['id'] != $page['Page']['id']) {
 			// 移動元表示カウント++(ブロック移動時)
 			$this->Page->id = $pre_page['Page']['id'];
 			if(!$this->Page->saveField('show_count', intval($pre_page['Page']['show_count']) + 1)) {
-				$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'add_block.009', '500');
-				return;
+				throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 			}
 		}
 
 		if($operation_ret === false) {
-			$this->flash(__('Failed to execute the %s.', __($title)), null, 'add_block.010', '500');
-			return;
+			throw new InternalErrorException(__('Failed to execute the %s.', __($title)));
 		}
 
 		if(!empty($this->request->params['requested']) && !empty($copy_block_id)) {
@@ -167,17 +159,17 @@ class BlockController extends BlockAppController {
 		$all_delete = $this->request->data['all_delete'];
 
 		if(!$page || $page['Page']['show_count'] != $show_count) {
-			$this->flash(__d('block', 'Because of the possibility of inconsistency happening, update will not be executed. <br /> Please redraw and update again.'), null, 'del_block.001', '400');
+			$this->response->statusCode('400');
+			$this->flash(__d('block', 'Because of the possibility of inconsistency happening, update will not be executed. <br /> Please redraw and update again.'), '');
 			return;
 		}
 
 		// --------------------------------------
-		// --- 前詰め処理(移動元)		      ---
+		// --- 前詰め処理(移動元)			  ---
 		// --------------------------------------
 		$dec_ret = $this->BlockOperation->decrementRowNum($block);
 		if(!$dec_ret) {
-			$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'del_block.002', '500');
-			return;
+			throw new InternalErrorException(__('Failed to update the database, (%s).', 'blocks'));
 		}
 
 		$count_row_num = $this->BlockOperation->findRowCount($block['Block']['page_id'], $block['Block']['parent_id'], $block['Block']['col_num']);
@@ -186,32 +178,28 @@ class BlockController extends BlockAppController {
 			//列--
 			$dec_ret = $this->BlockOperation->decrementColNum($block);
 			if(!$dec_ret) {
-				$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'del_block.003', '500');
-				return;
+				throw new InternalErrorException(__('Failed to update the database, (%s).', 'blocks'));
 			}
 		}
 
-        // --------------------------------------
-		// --- ブロック削除処理     	      ---
+		// --------------------------------------
+		// --- ブロック削除処理	 			  ---
 		// --------------------------------------
 		if(!$this->Block->deleteBlock($block, $all_delete)) {
-			$this->flash(__('Failed to delete the database, (%s).', 'blocks'), null, 'del_block.004', '500');
-			return;
+			throw new InternalErrorException(__('Failed to delete the database, (%s).', 'blocks'));
 		}
 
 		//グループ化した空ブロック削除処理
 		if($count_row_num == 1) {
 			if(!$this->BlockMove->deleteGroupingBlock($block['Block']['parent_id'])) {
-				$this->flash(__('Failed to delete the database, (%s).', 'blocks'), null, 'del_block.005', '500');
-				return;
+				throw new InternalErrorException(__('Failed to delete the database, (%s).', 'blocks'));
 			}
 		}
 
 		// 表示カウント++
 		$this->Page->id = $page_id;
 		if(!$this->Page->saveField('show_count', intval($show_count) + 1)) {
-			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'del_block.006', '500');
-			return;
+			throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 		}
 
 		echo 'true';
@@ -236,48 +224,43 @@ class BlockController extends BlockAppController {
 		if(!empty($this->request->params['requested'])) {
 			$pre_page = $this->Page->findAuthById(intval($block['Block']['page_id']), $user_id);
 			if(!$pre_page || $pre_page['PageAuthority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
-				$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), null, 'insert_row.001', '403');
+				$this->response->statusCode('403');
+				$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 				return;
 			}
 			$content = array('Content' => $block['Content']);
 			$ret_validator = $this->BlockMove->validatorRequestContent($content, $pre_page, $page);
 			if($ret_validator !== true) {
-				// error
-				$this->flash($ret_validator, null, 'insert_row.002', '400');
-				return;
+				throw new BadRequestException($ret_validator);
 			}
 		}
 
 		if(!$this->BlockMove->validatorRequest($this->request)) {
-			// Error
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'insert_row.003', '400');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		if(!$page || $page['Page']['show_count'] != $show_count) {
-			$this->flash(__d('block', 'Because of the possibility of inconsistency happening, update will not be executed. <br /> Please redraw and update again.'), null, 'insert_row.004', '400');
+			$this->response->statusCode('400');
+			$this->flash(__d('block', 'Because of the possibility of inconsistency happening, update will not be executed. <br /> Please redraw and update again.'), '');
 			return;
 		}
 
 		$ret = $this->BlockMove->InsertRow($block, $this->request->data['parent_id'], $this->request->data['col_num'], $this->request->data['row_num'], $pre_page, $page);
 		if(!$ret) {
-			$this->flash(__('The server encountered an internal error and was unable to complete your request.'), null, 'insert_row.005', '500');
-			return;
+			throw new InternalErrorException(__('Failed to update the database, (%s).', 'blocks'));
 		}
 
 		// 表示カウント++
 		$this->Page->id = $page_id;
 		if(!$this->Page->saveField('show_count', intval($show_count) + 1)) {
-			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'insert_row.006', '500');
-			return;
+			throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 		}
 
 		if($pre_page['Page']['id'] != $page['Page']['id']) {
 			// 移動元表示カウント++(ブロック移動時)
 			$this->Page->id = $pre_page['Page']['id'];
 			if(!$this->Page->saveField('show_count', intval($pre_page['Page']['show_count']) + 1)) {
-				$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'insert_row.007', '500');
-				return;
+				throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 			}
 		}
 		if(!empty($this->request->params['requested'])) {
@@ -304,8 +287,7 @@ class BlockController extends BlockAppController {
 				);
 
 				if(!$this->Module->operationAction($module['Module']['dir_name'], 'move', $args)) {
-					$this->flash(__('Failed to execute the %s.', __('Move')), null, 'insert_row.007', '500');
-					return;
+					throw new InternalErrorException(__('Failed to execute the %s.', __('Move')));
 				}
 			}
 			$this->autoRender = false;
@@ -333,19 +315,20 @@ class BlockController extends BlockAppController {
 		if(!empty($this->request->params['requested']) && isset($this->request->data['page_id'])) {
 			$insert_page = $this->Page->findAuthById(intval($this->request->data['page_id']), $user_id);
 			if(!$insert_page || $insert_page['PageAuthority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
-				$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), null, 'insert_cell.001', '403');
+				$this->response->statusCode('403');
+				$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 				return;
 			}
 		}
 
 		if(!$this->BlockMove->validatorRequest($this->request)) {
 			// Error
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'insert_cell.002', '400');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		if(!$page || $page['Page']['show_count'] != $show_count) {
-			$this->flash(__d('block', 'Because of the possibility of inconsistency happening, update will not be executed. <br /> Please redraw and update again.'), null, 'insert_cell.003', '400');
+			$this->response->statusCode('400');
+			$this->flash(__d('block', 'Because of the possibility of inconsistency happening, update will not be executed. <br /> Please redraw and update again.'), '');
 			return;
 		}
 
@@ -353,15 +336,13 @@ class BlockController extends BlockAppController {
 
 		$ret = $this->BlockMove->InsertCell($block,  $this->request->data['parent_id'], $this->request->data['col_num'], $this->request->data['row_num'], $page, $insert_page);
 		if(!$ret) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'insert_cell.005', '500');
-			return;
+			throw new InternalErrorException(__('Failed to update the database, (%s).', 'blocks'));
 		}
 
 		// 表示カウント++
 		$this->Page->id = $page_id;
 		if(!$this->Page->saveField('show_count', intval($show_count) + 1)) {
-			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'insert_cell.006', '500');
-			return;
+			throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 		}
 
 		echo 'true';
@@ -377,9 +358,7 @@ class BlockController extends BlockAppController {
 	public function add_group() {
 
 		if(!is_array($this->request->data['groups']) || count($this->request->data['groups']) == 0) {
-			// Error
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'add_group.001', '400');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		$block = $this->nc_block;
@@ -388,7 +367,8 @@ class BlockController extends BlockAppController {
 		$show_count = $this->request->data['show_count'];
 
 		if(!$page || $page['Page']['show_count'] != $show_count) {
-			$this->flash(__d('block', 'Because of the possibility of inconsistency happening, update will not be executed. <br /> Please redraw and update again.'), null, 'add_group.002', '400');
+			$this->response->statusCode('400');
+			$this->flash(__d('block', 'Because of the possibility of inconsistency happening, update will not be executed. <br /> Please redraw and update again.'), '');
 			return;
 		}
 
@@ -408,16 +388,18 @@ class BlockController extends BlockAppController {
 			$ret_pos[$group_block['Block']['col_num']][$group_block['Block']['row_num']] = $group_block;
 			$max_thread_num = $this->BlockMove->maxThreadNum($group_block);
 			if($max_thread_num >= 5) {
-				$this->flash(__d('block', 'More than this, can not be grouped complex.'), null, 'add_group.003');
+				$this->response->statusCode('400');
+				$this->flash(__d('block', 'More than this, can not be grouped complex.'), '');
 				return;
 			}
-			if($group_block['Block']['page_id'] != $page_id ||
-				(!empty($pre_block) && ($group_block['Block']['page_id'] != $pre_block['Block']['page_id'] ||
-					 $group_block['Block']['parent_id'] != $pre_block['Block']['parent_id'] ||
-					 in_array($block_id, $upd_block_id_arr)))) {
+			if($group_block['Block']['page_id'] != $page_id
+				|| (!empty($pre_block)
+					&& ($group_block['Block']['page_id'] != $pre_block['Block']['page_id']
+						|| $group_block['Block']['parent_id'] != $pre_block['Block']['parent_id']
+						|| in_array($block_id, $upd_block_id_arr)))
+				) {
 				// グループ化する基点とpage_id,parent_id相違
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'add_group.004', '500');
-				return;
+				throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 			}
 			$upd_block_id_arr[] = $block_id;
 			$pre_block = $group_block;
@@ -462,13 +444,11 @@ class BlockController extends BlockAppController {
 				$this->Content->create();
 				$ins_ret = $this->Content->save($ins_content);
 				if(!$ins_ret) {
-					$this->flash(__('Failed to register the database, (%s).', 'contents'), null, 'add_group.005', '500');
-					return;
+					throw new InternalErrorException(__('Failed to register the database, (%s).', 'contents'));
 				}
 				$last_content_id = $this->Content->id;
 				if(!$this->Content->saveField('master_id', $last_content_id)) {
-					$this->flash(__('Failed to update the database, (%s).', 'contents'), null, 'add_group.006', '500');
-					return;
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'contents'));
 				}
 
 				/*
@@ -481,8 +461,7 @@ class BlockController extends BlockAppController {
 
 				$ins_ret = $this->Block->save($ins_block);
 				if(!$ins_ret) {
-					$this->flash(__('Failed to register the database, (%s).', 'blocks'), null, 'add_group.007', '500');
-					return;
+					throw new InternalErrorException(__('Failed to register the database, (%s).', 'blocks'));
 				}
 				$last_id = $this->Block->id;
 				$ins_ret['Block']['id'] = $last_id;
@@ -493,8 +472,7 @@ class BlockController extends BlockAppController {
 
 				$ins_ret = $this->Block->save($ins_ret);
 				if(!$ins_ret) {
-					$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_group.008', '500');
-					return;
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'blocks'));
 				}
 
 				$upd_blocks[$key]['Block'] = $group_block['Block'];
@@ -517,8 +495,7 @@ class BlockController extends BlockAppController {
 				//前詰め処理(移動元)
 				$dec_ret = $this->BlockOperation->decrementRowNum($group_block);
 				if(!$dec_ret) {
-					$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_group.009', '500');
-					return;
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'blocks'));
 				}
 				//$dec_row_num--;
 
@@ -536,8 +513,7 @@ class BlockController extends BlockAppController {
 					//列--
 					$dec_ret = $this->BlockOperation->decrementColNum($group_block);
 					if(!$dec_ret) {
-						$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_group.010', '500');
-						return;
+						throw new InternalErrorException(__('Failed to update the database, (%s).', 'blocks'));
 					}
 				}
 
@@ -549,36 +525,33 @@ class BlockController extends BlockAppController {
 			//$this->Block->create($upd_blocks[$key - 1]);
 			$upd_ret = $this->Block->save($upd_blocks[$key]);
 			if(!$upd_ret) {
-				$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_group.011', '500');
-				return;
+				throw new InternalErrorException(__('Failed to update the database, (%s).', 'blocks'));
 			}
 			//グループ化しているブロックならば,そのグループの子供を求める
-	    	if($upd_blocks[$key]['Block']['controller_action'] == "group") {
-	    		$block_children =& $this->Block->findByRootId($root_id);
-	    		$parent_id_arr = array($upd_blocks[$key]['Block']['id']);
-	    		foreach ($block_children as $block_child) {
-	    			if(in_array($block_child['Block']['parent_id'], $parent_id_arr)) {
-	    				$parent_id_arr[] = $block_child['Block']['id'];
-	    			} else {
-	    				continue;
-	    			}
-
-		    		$block_child['Block']['root_id'] = $ins_ret['Block']['root_id'];
-		    		$block_child['Block']['thread_num'] = intval($block_child['Block']['thread_num']) + 1;
-		    		$save_ret = $this->Block->save($block_child);
-		    		if(!$save_ret) {
-						$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'add_group.012', '500');
-						return;
+			if($upd_blocks[$key]['Block']['controller_action'] == "group") {
+				$block_children =& $this->Block->findByRootId($root_id);
+				$parent_id_arr = array($upd_blocks[$key]['Block']['id']);
+				foreach ($block_children as $block_child) {
+					if(in_array($block_child['Block']['parent_id'], $parent_id_arr)) {
+						$parent_id_arr[] = $block_child['Block']['id'];
+					} else {
+						continue;
 					}
-	    		}
-	    	}
+
+					$block_child['Block']['root_id'] = $ins_ret['Block']['root_id'];
+					$block_child['Block']['thread_num'] = intval($block_child['Block']['thread_num']) + 1;
+					$save_ret = $this->Block->save($block_child);
+					if(!$save_ret) {
+						throw new InternalErrorException(__('Failed to update the database, (%s).', 'blocks'));
+					}
+				}
+			}
 		}
 
 		// 表示カウント++
 		$this->Page->id = $page_id;
 		if(!$this->Page->saveField('show_count', intval($show_count) + 1)) {
-			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'add_group.013', '500');
-			return;
+			throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 		}
 
 		$params = array('block_id' => $last_id, 'plugin' => 'group', 'controller' => 'group', 'action' => 'index');
@@ -593,9 +566,7 @@ class BlockController extends BlockAppController {
  */
 	public function cancel_group() {
 		if(!is_array($this->request->data['cancel_groups']) || count($this->request->data['cancel_groups']) == 0) {
-			// Error
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'cancel_group.001', '400');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		$block = $this->nc_block;
@@ -604,7 +575,8 @@ class BlockController extends BlockAppController {
 		$show_count = $this->request->data['show_count'];
 
 		if(!$page || $page['Page']['show_count'] != $show_count) {
-			$this->flash(__d('block', 'Because of the possibility of inconsistency happening, update will not be executed. <br /> Please redraw and update again.'), null, 'add_group.002', '400');
+			$this->response->statusCode('400');
+			$this->flash(__d('block', 'Because of the possibility of inconsistency happening, update will not be executed. <br /> Please redraw and update again.'), '');
 			return;
 		}
 
@@ -621,13 +593,15 @@ class BlockController extends BlockAppController {
 
 			$group_block = $this->Block->findById($block_id);
 
-			if($group_block['Block']['controller_action'] != 'group' || $group_block['Block']['page_id'] != $page_id ||
-				(!empty($pre_block) && ($group_block['Block']['page_id'] != $pre_block['Block']['page_id'] ||
-					 $group_block['Block']['parent_id'] != $pre_block['Block']['parent_id'] ||
-					 in_array($block_id, $upd_block_id_arr)))) {
+			if($group_block['Block']['controller_action'] != 'group'
+				|| $group_block['Block']['page_id'] != $page_id
+				|| (!empty($pre_block)
+						&& ($group_block['Block']['page_id'] != $pre_block['Block']['page_id']
+							|| $group_block['Block']['parent_id'] != $pre_block['Block']['parent_id']
+							|| in_array($block_id, $upd_block_id_arr)))
+				) {
 				// グループ化する基点とpage_id,parent_id相違
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'cancel_group.003', '400');
-				return;
+				throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 			}
 			$upd_block_id_arr[] = $block_id;
 			$pre_block = $group_block;
@@ -637,10 +611,10 @@ class BlockController extends BlockAppController {
 // Validator End
 		foreach($ret as $block_id => $group_block) {
 			//グルーピングブロック削除
-    		$this->Block->delete($group_block['Block']['id']);
-    		$this->Content->delete($group_block['Block']['content_id']);
+			$this->Block->delete($group_block['Block']['id']);
+			$this->Content->delete($group_block['Block']['content_id']);
 
-    		$params = array(
+			$params = array(
 				'conditions' => array('Block.parent_id =' => $block_id),
 				'fields' => array('Block.*'),
 				'recursive' =>  -1
@@ -648,91 +622,86 @@ class BlockController extends BlockAppController {
 			$blocks = $this->Block->find("all", $params);
 
 			$row_count = -1;
-	    	$col_count = 0;
-	    	if(!empty($blocks)) {
-		    	foreach($blocks as $sub_block) {
-		    		if($sub_block['Block']['col_num'] == 1) {
-		    			$row_count++;
-		    		} else if($col_count < $sub_block['Block']['col_num'] - 1) {
-		    			$col_count = $sub_block['Block']['col_num'] - 1;
-		    		}
-		    	}
-	    	}
+			$col_count = 0;
+			if(!empty($blocks)) {
+				foreach($blocks as $sub_block) {
+					if($sub_block['Block']['col_num'] == 1) {
+						$row_count++;
+					} else if($col_count < $sub_block['Block']['col_num'] - 1) {
+						$col_count = $sub_block['Block']['col_num'] - 1;
+					}
+				}
+			}
 
-    		//親移動
-	    	if($row_count != 0) {
+			//親移動
+			if($row_count != 0) {
 			$inc_ret = $this->BlockOperation->incrementRowNum($group_block, $row_count);
 				if(!$inc_ret) {
-					$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'cancel_group.004', '500');
-					return;
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'blocks'));
 				}
-	    	}
+			}
 			if($col_count != 0) {
 				$buf_group_block = $group_block;
 				$buf_group_block['Block']['col_num']++;
 				$inc_ret = $this->BlockOperation->incrementColNum($buf_group_block, $col_count);
 				if(!$inc_ret) {
-					$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'cancel_group.005', '500');
-					return;
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'blocks'));
 				}
 			}
 
 			//
-	    	// グルーピング解除処理
-	    	//
-	    	foreach($blocks as $sub_block) {
-	    		if($group_block['Block']['id'] != $group_block['Block']['root_id'])
-	    			$root_id = $block['Block']['root_id'];
-	    		else
-	    			$root_id = $sub_block['Block']['id'];
+			// グルーピング解除処理
+			//
+			foreach($blocks as $sub_block) {
+				if($group_block['Block']['id'] != $group_block['Block']['root_id'])
+					$root_id = $block['Block']['root_id'];
+				else
+					$root_id = $sub_block['Block']['id'];
 
-			    $sub_block['Block']['parent_id'] = $group_block['Block']['parent_id'];
-			    $pre_root_id = $sub_block['Block']['root_id'];
-			    $sub_block['Block']['root_id'] = $root_id;
-			    $sub_block['Block']['thread_num'] = $group_block['Block']['thread_num'];
+				$sub_block['Block']['parent_id'] = $group_block['Block']['parent_id'];
+				$pre_root_id = $sub_block['Block']['root_id'];
+				$sub_block['Block']['root_id'] = $root_id;
+				$sub_block['Block']['thread_num'] = $group_block['Block']['thread_num'];
 
-	    		if($sub_block['Block']['col_num'] == 1) {
-	    			$sub_block['Block']['col_num'] = intval($group_block['Block']['col_num']);
-			    	$sub_block['Block']['row_num'] = intval($sub_block['Block']['row_num']) + intval($group_block['Block']['row_num']) - 1;
-	    		} else {
-	    			$sub_block['Block']['col_num'] = intval($sub_block['Block']['col_num']) + intval($group_block['Block']['col_num']) - 1;
-	    		}
+				if($sub_block['Block']['col_num'] == 1) {
+					$sub_block['Block']['col_num'] = intval($group_block['Block']['col_num']);
+					$sub_block['Block']['row_num'] = intval($sub_block['Block']['row_num']) + intval($group_block['Block']['row_num']) - 1;
+				} else {
+					$sub_block['Block']['col_num'] = intval($sub_block['Block']['col_num']) + intval($group_block['Block']['col_num']) - 1;
+				}
 
-	    		//$this->Block->create();
-	    		$save_ret = $this->Block->save($sub_block);
-	    		if(!$save_ret) {
-					$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'cancel_group.006', '500');
-					return;
+				//$this->Block->create();
+				$save_ret = $this->Block->save($sub_block);
+				if(!$save_ret) {
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'blocks'));
 				}
 				//グループ化しているブロックならば,そのグループの子供を求める
 				if($sub_block['Block']['controller_action'] == "group") {
-		    		$block_children =& $this->Block->findByRootId($pre_root_id);
-		    		$parent_id_arr = array($sub_block['Block']['id']);
-		    		foreach ($block_children as $block_child) {
-		    			if(in_array($block_child['Block']['parent_id'], $parent_id_arr)) {
-		    				$parent_id_arr[] = $block_child['Block']['id'];
-		    			} else {
-		    				continue;
-		    			}
-
-			    		$block_child['Block']['root_id'] = $root_id;
-			    		$block_child['Block']['thread_num'] = intval($block_child['Block']['thread_num']) - 1;
-			    		//$this->Block->create();
-			    		$save_ret = $this->Block->save($block_child);
-			    		if(!$save_ret) {
-							$this->flash(__('Failed to update the database, (%s).', 'blocks'), null, 'cancel_group.007', '500');
-							return;
+					$block_children =& $this->Block->findByRootId($pre_root_id);
+					$parent_id_arr = array($sub_block['Block']['id']);
+					foreach ($block_children as $block_child) {
+						if(in_array($block_child['Block']['parent_id'], $parent_id_arr)) {
+							$parent_id_arr[] = $block_child['Block']['id'];
+						} else {
+							continue;
 						}
-		    		}
-		    	}
-	    	}
+
+						$block_child['Block']['root_id'] = $root_id;
+						$block_child['Block']['thread_num'] = intval($block_child['Block']['thread_num']) - 1;
+						//$this->Block->create();
+						$save_ret = $this->Block->save($block_child);
+						if(!$save_ret) {
+							throw new InternalErrorException(__('Failed to update the database, (%s).', 'blocks'));
+						}
+					}
+				}
+			}
 		}
 
 		// 表示カウント++
 		$this->Page->id = $page_id;
 		if(!$this->Page->saveField('show_count', intval($show_count) + 1)) {
-			$this->flash(__('Failed to update the database, (%s).', 'pages'), null, 'cancel_group.008', '500');
-			return;
+			throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 		}
 
 		echo 'true';

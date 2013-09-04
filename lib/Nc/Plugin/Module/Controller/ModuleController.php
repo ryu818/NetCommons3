@@ -55,13 +55,11 @@ class ModuleController extends AppPluginController {
 		}
 		$general_modules = $this->ModuleAdmin->findList();
 		if($general_modules === false) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.', true), null, 'Module.index.001');
-			return;
+			throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'modules'));
 		}
 		$system_modules = $this->ModuleAdmin->findSystemList();
 		if($system_modules === false) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.', true), null, 'Module.index.002');
-			return;
+			throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'modules'));
 		}
 		$not_install_modules = $this->ModuleAdmin->findInstallList($general_modules, $system_modules);
 

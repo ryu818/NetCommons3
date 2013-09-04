@@ -237,29 +237,14 @@ class AppController extends Controller {
  * リダイレクト画面表示
  * @param string  $message          エラーメッセージ
  * @param string  $url              リダイレクトURL
- * @param string  $errorIdStr     エラーID
- * @param string  $status           Optional HTTP status code (eg: 404) default: 200
  * @param integer $pause            リダイレクト画面表示時間(秒) default 2秒
  * @param string  $layout			レイアウト名称
- * @param boolean $stop 			処理を終了するかどうか
+ * @param boolean $exit 			処理を終了するかどうか
  * @return void Renders flash layout
  * @link http://book.cakephp.org/2.0/en/controllers.html#Controller::flash
  */
-	public function flash($message, $url, $errorIdStr = '', $status = '200', $pause = 2, $layout = 'flash', $exit = true) {
+	public function flash($message, $url, $pause = 2, $layout = 'flash', $exit = true) {
 		$this->autoRender = false;
-
-		///404 Not Found 403 Forbidden 400 Bad Request
-		if (is_array($status)) {
-			extract($status, EXTR_OVERWRITE);
-		} else {
-			$codes = array_flip($this->response->httpCodes());
-			if (isset($codes[$status])) {
-				$status = $codes[$status];
-			}
-		}
-		if ($status) {
-			$this->response->statusCode($status);
-		}
 
 		if(!isset($url) || $url === '') {
 			// 空ならばリファラから自動リダイレクト
@@ -272,12 +257,14 @@ class AppController extends Controller {
 		$this->set('message', $message);
 		$this->set('pause', $pause);
 		$this->set('page_title', $message);
-		if(Configure::read('debug') != _OFF) {
-			$this->set('error_id_str', $errorIdStr);
-		} else {
-			$this->set('error_id_str', '');
+
+		if (Configure::read('debug') > 0) {
+			$trace = Debugger::trace(array('start' => 1, 'depth' => 2, 'format' => 'array'));
+			$this->set('file', str_replace(array(CAKE_CORE_INCLUDE_PATH, ROOT), '', $trace[0]['file']));
+			$this->set('line', $trace[0]['line']);
 		}
 		$this->set('sub_message', __('The page will be automatically reloaded.If otherwise, please click <a href="%s">here</a>.'));
+
 		if($exit) {
 			$this->autoLayout = true;
 			$this->render(false, $layout);
@@ -407,7 +394,7 @@ class AppController extends Controller {
  */
 	public function errorToken()
 	{
-		$this->flash(__('The request has been disabled by the security check.'), null, 'AppController.errorToken', '400');
+		throw new BadRequestException(__('The request has been disabled by the security check.'));
 	}
 
 /**

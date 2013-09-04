@@ -168,7 +168,8 @@ class UsersController extends AppController {
 			$startPage = $this->Common->redirectStartpage($configs);
 			$this->Auth->loginRedirect = $startPage;
 			$this->flash(__('You are already signed in.'), $this->Auth->redirect($startPage));
-		} else if($configs['autologin_use'] == NC_AUTOLOGIN_LOGIN) {
+			return;
+		} else if($configs['autologin_use'] != NC_AUTOLOGIN_OFF) {
 			$cookiePassport=$this->Cookie->read('User');
 			if(isset($cookiePassport['login_id'])){
 				$this->request->data['User']['login_id'] = $cookiePassport['login_id'];

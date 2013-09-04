@@ -88,7 +88,8 @@ class BlogController extends BlogAppController {
 		if($this->request->is('get') && !empty($this->request->query['p']) && is_numeric($this->request->query['p'])) {
 			$tmpBlogPost = $this->BlogPost->findById($this->request->query['p']);
 			if(empty($tmpBlogPost['BlogPost'])) {
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Blog.index.001', '500');
+				$this->response->statusCode('404');
+				$this->flash(__('Content not found.'), '');
 				return;
 			}
 			$this->redirect($this->BlogCommon->getDetailRedirectUrl($tmpBlogPost));
@@ -315,7 +316,8 @@ class BlogController extends BlogAppController {
 	protected function _comments($blogPost) {
 		$blog = $this->Blog->findByContentId($this->content_id);
 		if(!isset($blog['Blog'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Blog.comments.001', '500');
+			$this->response->statusCode('404');
+			$this->flash(__('Content not found.'), '');
 			return;
 		}
 
@@ -336,7 +338,8 @@ class BlogController extends BlogAppController {
 			if(isset($this->request->named['comment_edit'])) {
 				$comment = $this->BlogComment->findById($this->request->named['comment_edit']);
 				if(!isset($comment['BlogComment'])) {
-					$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Blog.comments.002', '500');
+					$this->response->statusCode('400');
+					$this->flash(__('Unauthorized request.<br />Please reload the page.'), '');
 					return;
 				}
 			} else {
@@ -377,8 +380,7 @@ class BlogController extends BlogAppController {
 
 			// 新着・検索
 			if(!$this->_commentArchiveSave($blogPost, $comment, $redirectUrl)) {
-				$this->flash(__('Failed to update the database, (%s).', 'archives'), null, 'Blog.comments.003', '500');
-				return;
+				throw new InternalErrorException(__('Failed to update the database, (%s).', 'archives'));
 			}
 			$this->redirect($redirectUrl);
 		}
@@ -435,15 +437,17 @@ class BlogController extends BlogAppController {
 		$savedId = 0;
 		if($mode == 'edit') {
 			// 編集
-			$comment = $this->BlogComment->findById( $this->request->data['BlogComment']['comment_id']);
+			$comment = $this->BlogComment->findById($this->request->data['BlogComment']['comment_id']);
 			if(!isset($comment['BlogComment'])) {
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Blog.commentSave.001', '500');
+				$this->response->statusCode('404');
+				$this->flash(__('Content not found.'), '');
 				return;
 			}
 		} else {
 			// 新規または返信
 			if(!$blog['Blog']['comment_flag']) {
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Blog.commentSave.002', '500');
+				$this->response->statusCode('400');
+				$this->flash(__('Unauthorized request.<br />Please reload the page.'), '');
 				return;
 			}
 			$comment = $this->BlogComment->findDefault($this->content_id, $blogPost['BlogPost']['id']);
@@ -471,12 +475,10 @@ class BlogController extends BlogAppController {
 					'scope' => array('BlogComment.blog_post_id' => $blogPost['BlogPost']['id'])
 			));
 			if(!$this->BlogComment->save($comment, false, $fieldList)) {
-				$this->flash(__('Failed to register the database, (%s).', 'blog_comments'), null, 'Blog.commentSave.003', '500');
-				return;
+				throw new InternalErrorException(__('Failed to register the database, (%s).', 'blog_comments'));
 			}
 			if(!$this->BlogPost->adjustCommentCount($mode, $blogPost['BlogPost']['id'], $comment['BlogComment']['is_approved'], $blog['Blog']['comment_approved_flag'], $this->hierarchy)) {
-				$this->flash(__('Failed to update the database, (%s).', 'blog_posts'), null, 'Blog.commentSave.004', '500');
-				return;
+				throw new InternalErrorException(__('Failed to update the database, (%s).', 'blog_posts'));
 			}
 			if(empty($comment['BlogComment']['id'])) {
 				$this->Session->setFlash(__('Has been successfully registered.'));
@@ -617,7 +619,8 @@ class BlogController extends BlogAppController {
 		if($this->request->is('get') && !empty($this->request->query['p']) && is_numeric($this->request->query['p'])) {
 			$tmpBlogPost = $this->BlogPost->findById($this->request->query['p']);
 			if(empty($tmpBlogPost['BlogPost'])) {
-				$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Blog.index.001', '500');
+				$this->response->statusCode('404');
+				$this->flash(__('Content not found.'), '');
 				return;
 			}
 			$this->redirect($this->BlogCommon->getDetailRedirectUrl($tmpBlogPost));
@@ -683,26 +686,26 @@ class BlogController extends BlogAppController {
 	public function vote($postId = null){
 
 		if(empty($postId) || !$this->request->is('post')) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Blog.vote.001', '500');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		$blogPost = $this->BlogPost->findById($postId);
 		if(empty($blogPost)) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPost.vote.003', '500');
+			$this->response->statusCode('404');
+			$this->flash(__('Content not found.'), '');
 			return;
 		}
 		$blog = $this->Blog->findByContentId($blogPost['BlogPost']['content_id']);
 		if(empty($blog)) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogPost.vote.004', '500');
+			$this->response->statusCode('404');
+			$this->flash(__('Content not found.'), '');
 			return;
 		}
 
 		$userId = $this->Auth->user('id');
 		// behaviorを利用して更新
 		if(!$this->BlogPost->voting($postId, $userId)){
-			$this->flash(__('Failed to update the database, (%s).', 'blog_posts'), null, 'BlogPost.vote.002', '500');
-			return;
+			throw new InternalErrorException(__('Failed to update the database, (%s).', 'blog_posts'));
 		}
 
 		$this->Session->setFlash(__('Has been successfully updated.'));
@@ -722,12 +725,12 @@ class BlogController extends BlogAppController {
  */
 	public function moreTrackback($postId = null){
 		if(empty($postId) || !$this->request->is('get')) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Blog.moreTrackback.001', '500');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 		$blogPost = $this->BlogPost->findById($postId);
 		if(empty($blogPost)) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Blog.moreTrackback.002', '500');
+			$this->response->statusCode('404');
+			$this->flash(__('Content not found.'), '');
 			return;
 		}
 		$this->_trackbacks($postId);

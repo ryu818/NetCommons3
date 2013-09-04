@@ -53,26 +53,28 @@ class BlogCommentsController extends BlogAppController {
  */
 	public function delete($blogPostId = null, $commentId = null) {
 		if(empty($blogPostId) || empty($commentId) || !$this->request->is('post')) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogComment.delete.001', '500');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		// 削除するコメントの取得
 		$comment = $this->BlogComment->findById($commentId);
 		if(!isset($comment['BlogComment']['id'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogComment.delete.002', '500');
+			$this->response->statusCode('404');
+			$this->flash(__('Content not found.'), '');
 			return;
 		}
 
 		$blogPost = $this->BlogPost->findById($blogPostId);
 		if(!isset($blogPost['BlogPost'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogComment.delete.003', '500');
+			$this->response->statusCode('404');
+			$this->flash(__('Content not found.'), '');
 			return;
 		}
 		// TODO:削除する人の権限チェック
 // 		$isOverChief = $this->CheckAuth->checkAuth($this->hierarchy, NC_AUTH_CHIEF);
 // 		if(!$isOverChief) {
-// 			$this->flash(__('Forbidden permission to access the page.'), null, 'BlogComment.delete.003', '403');
+// 			$this->response->statusCode('403');
+// 			$this->flash(__('Forbidden permission to access the page.'), '');
 // 			return;
 // 		}
 
@@ -81,8 +83,7 @@ class BlogCommentsController extends BlogAppController {
 			'scope' => array('BlogComment.blog_post_id' => $blogPostId)
 		));
 		if(!$this->BlogComment->removeFromTree($commentId, true)) {
-			$this->flash(__('Failed to delete the database, (%s).', 'blog_comments'), null, 'BlogComment.delete.004', '500');
-			return;
+			throw new InternalErrorException(__('Failed to delete the database, (%s).', 'blog_comments'));
 		}
 
 		// コメント数デクリメント
@@ -92,8 +93,7 @@ class BlogCommentsController extends BlogAppController {
 			$result = $this->BlogPost->adjustTrackbackCount('delete', $blogPostId, $comment['BlogComment']['is_approved']);
 		}
 		if(!$result) {
-			$this->flash(__('Failed to update the database, (%s).', 'blog_posts'), null, 'BlogComment.delete.005', '500');
-			return;
+			throw new InternalErrorException(__('Failed to update the database, (%s).', 'blog_posts'));
 		}
 
 		$this->Session->setFlash(__('Has been successfully deleted.'));
@@ -114,37 +114,44 @@ class BlogCommentsController extends BlogAppController {
  */
 	public function approve($blogPostId = null, $commentId = null) {
 		if(empty($blogPostId) || empty($commentId) || !$this->request->is('post')) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogComment.approve.001', '500');
-			return;
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
 		$isOverChief = $this->CheckAuth->checkAuth($this->hierarchy, NC_AUTH_CHIEF);
 		if(!$isOverChief) {
-			$this->flash(__('Forbidden permission to access the page.'), null, 'BlogComment.approve.002', '403');
+			$this->response->statusCode('403');
+			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 			return;
 		}
 
 		$blogPost = $this->BlogPost->findById($blogPostId);
 		if(!isset($blogPost['BlogPost'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogComment.approve.003', '500');
+			$this->response->statusCode('404');
+			$this->flash(__('Content not found.'), '');
 			return;
 		}
 		$blog = $this->Blog->findByContentId($blogPost['BlogPost']['content_id']);
 		if(!isset($blog['Blog'])) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogComment.approve.004', '500');
+			$this->response->statusCode('404');
+			$this->flash(__('Content not found.'), '');
 			return;
 		}
 
-		$comment = $this->BlogComment->findById($commentId, 'is_approved','is_approved');
-		if(empty($comment['BlogComment']) || $comment['BlogComment']['is_approved']) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogComment.approve.005', '500');
+		$comment = $this->BlogComment->findById($commentId, 'is_approved');
+		if(empty($comment['BlogComment'])) {
+			$this->response->statusCode('404');
+			$this->flash(__('Content not found.'), '');
+			return;
+		}
+		if($comment['BlogComment']['is_approved']) {
+			$this->response->statusCode('400');
+			$this->flash(__('Unauthorized request.<br />Please reload the page.'), '');
 			return;
 		}
 
 		$this->BlogComment->id = $commentId;
 		if(!$this->BlogComment->saveField('is_approved', NC_APPROVED_FLAG_ON)) {
-			$this->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'BlogComment.approve.006', '500');
-			return;
+			throw new InternalErrorException(__('Failed to update the database, (%s).', 'blog_comments'));
 		}
 
 		if(empty($this->request->query['is_trackback'])) {
@@ -153,8 +160,7 @@ class BlogCommentsController extends BlogAppController {
 			$result = $this->BlogPost->adjustTrackbackCount('approve', $blogPostId, $comment['BlogComment']['is_approved']);
 		}
 		if(!$result) {
-			$this->flash(__('Failed to update the database, (%s).', 'blog_posts'), null, 'BlogComment.approve.007', '500');
-			return;
+			throw new InternalErrorException(__('Failed to update the database, (%s).', 'blog_posts'));
 		}
 
 		$this->Session->setFlash(__('Has been successfully updated.'));

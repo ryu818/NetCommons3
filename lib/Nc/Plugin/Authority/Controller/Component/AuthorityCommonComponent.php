@@ -60,9 +60,9 @@ class AuthorityCommonComponent extends Component {
  */
 	public function setInit($authorityId = null) {
 		$authorityId = !isset($authorityId) ? 0: $authorityId;
-		if (!isset($this->_controller->request->data['Authority']) || $this->_controller->request->data['Authority']['id'] != $authorityId) {
-			$this->_controller->flash(__('Unauthorized request.<br />Please reload the page.'), null, 'Authority.setInit.001');
-			return;
+		if (!isset($this->_controller->request->data['Authority'])
+			|| $this->_controller->request->data['Authority']['id'] != $authorityId) {
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 		$authority = array('Authority' => $this->_controller->request->data['Authority']);
 		$this->setHierarchy($authority);
