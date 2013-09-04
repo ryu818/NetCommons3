@@ -7787,7 +7787,9 @@ jQuery.extend({
 			if($.support.pjax) {
 				window.history.pushState(null, "", url);
 			}
+			document.open();
 			document.write(data);
+			document.close();
 			return false;	//data;
 			//doc_write = true;
 		}
