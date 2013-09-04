@@ -468,7 +468,7 @@ class Block extends AppModel
 			'BlockPage.thread_num','BlockPage.room_id','BlockPage.root_id','BlockPage.space_type',
 			'Content.id','Content.module_id','Content.title','Content.shortcut_type','Content.master_id','Content.room_id','Content.display_flag','Content.is_approved','Content.url',
 			'Module.id','Module.controller_action','Module.edit_controller_action','Module.style_controller_action','Module.dir_name','Module.content_has_one',
-			'PageAuthority.id','PageAuthority.hierarchy','BlockAuthority.hierarchy',
+			'PageAuthority.id','PageAuthority.hierarchy','BlockAuthority.id','BlockAuthority.hierarchy',
 
 		);
 	}

@@ -172,7 +172,7 @@ class AuthBehavior extends ModelBehavior {
 			$val['Content']['shortcut_type'] = $shortcutFlag;
 		}
 
-		if(!isset($val['Content']['shortcut_type']) || $val['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_SHOW_ONLY) {
+		if(isset($val['Content']) && $val['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_SHOW_ONLY) {
 			// ゲスト固定
 			$val['PageAuthority']['id'] = NC_AUTH_GUEST_ID;
 			$val['PageAuthority']['hierarchy'] = NC_AUTH_GUEST;
