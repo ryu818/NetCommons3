@@ -30,6 +30,9 @@ msgstr 	"%s関数が存在します。"
 msgid  	"Call to undefined function %s."
 msgstr 	"%s関数が存在しません。"
 
+msgid  	"Call to undefined function Imagick or GD."
+msgstr 	"Imagick または GD関数が存在しません。"
+
 msgid  	"PHP version %s >= 5.2.8"
 msgstr 	"PHP version %s >= 5.2.8"
 msgid  	"PHP version %s < 5.2.8"

@@ -75,17 +75,25 @@ $this->assign('title', __d('install', 'Setting Check'));
 				}
 
 				// mbstring
-				if (extension_loaded('mbstring') && function_exists("mb_convert_encoding")) {
+				if (extension_loaded('mbstring') && function_exists('mb_convert_encoding')) {
 					echo '<p class="success message">' . __d('install', 'function %s exists.', 'mb_convert_encoding()') . '</p>';
-		    	} else if(function_exists("mb_detect_order")){
-		    		$check = false;
+				} elseif (function_exists("mb_detect_order")) {
+					$check = false;
 					echo '<p class="error message">' . __d('install', 'Call to undefined function %s.', 'mb_convert_encoding()') . '</p>';
-		    	}
+				}
 
-				// TODO:GDがなければ警告程度を出力する。installはそのまま続行可能とする？
+				// 画像処理関数
+				if (extension_loaded('imagick')) {
+					echo '<p class="success message">' . __d('install', 'function %s exists.', 'Imagick') . '</p>';
+				} elseif (extension_loaded('gd')) {
+					echo '<p class="success message">' . __d('install', 'function %s exists.', 'GD') . '</p>';
+				} else {
+					$check = false;
+					echo '<p class="error message">' . __d('install', 'Call to undefined function Imagick or GD.') . '</p>';
+				}
 
 				// php version
-				if (version_compare(phpversion(), "5.2.8", ">=")) {
+				if (version_compare(phpversion(), '5.2.8', '>=')) {
 					echo '<p class="success message">' . __d('install', 'PHP version %s >= 5.2.8', phpversion()) . '</p>';
 				} else {
 					$check = false;
