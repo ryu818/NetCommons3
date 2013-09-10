@@ -245,8 +245,8 @@ class BlogComment extends AppModel
  */
 	public function beforeValidate($options = array()) {
 		if(isset($this->data['BlogComment']['content_id']) && !Configure::read(NC_SYSTEM_KEY.'.isLogin')){
-			$Blog = ClassRegistry::init('Blog');
-			$blog = $blog->findByContentId($this->data['BlogComment']['content_id']);
+			$Blog = ClassRegistry::init('Blog.Blog');
+			$blog = $Blog->findByContentId($this->data['BlogComment']['content_id']);
 
 			// 投稿者名とEmailアドレスを必須に変更
 			if($blog['Blog']['comment_required_name']){
