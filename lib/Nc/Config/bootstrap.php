@@ -46,9 +46,9 @@ App::build(array(
 	'Console'                    => array(APP . 'Console' . DS, NC . 'Console'),
 	'Console/Command'            => array(APP . 'Console' . DS . 'Command' . DS, NC . 'Console' . DS . 'Command' . DS),
 
-	'Model'                     => array(CUSTOM . 'Model' . DS, APP . 'Model' . DS),
-	'Model/Behavior'            => array(CUSTOM . 'Model' . DS . 'Behavior' . DS, APP . 'Model' . DS . 'Behavior' . DS),
-	'Model/Datasource'          => array(CUSTOM . 'Model' . DS . 'Datasource' . DS, APP.'Model' . DS . 'Datasource' . DS),
+	'Model'                     => array(APP . 'Model' . DS, NC . 'Model' . DS),
+	'Model/Behavior'            => array(APP . 'Model' . DS . 'Behavior' . DS, NC . 'Model' . DS . 'Behavior' . DS),
+	'Model/Datasource'          => array(APP.'Model' . DS . 'Datasource' . DS, NC . 'Model' . DS . 'Datasource' . DS),
 
 	//'Model'                     => array(APP . 'Model' . DS, NC . 'Model' . DS),
 	//'Model/Behavior'            => array(APP . 'Model' . DS . 'Behavior' . DS, NC . 'Model' . DS . 'Behavior' . DS),

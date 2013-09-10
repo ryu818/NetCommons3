@@ -1,15 +1,6 @@
 <?php
 /**
  * ディレクトリ定義
- * plugin等をテンプレートではなくコントローラからカスタマイズする場合に用いる
- * ディレクトリを予め準備しておく。
- */
-define('CUSTOM_DIR', 'custom');
-if (!defined('CUSTOM')) {
-	define('CUSTOM', ROOT . DS . CUSTOM_DIR . DS);
-}
-/**
- * ディレクトリ定義
  */
 define('NC_UPLOADS_DIR',      ROOT. DS. 'uploads'. DS);
 
@@ -282,22 +273,33 @@ define("NC_UPLOAD_MAX_SIZE_ATTACHMENT", 2000000);
 
 define("NC_UPLOAD_MAX_WIDTH_AVATAR", 170);
 define("NC_UPLOAD_MAX_HEIGHT_AVATAR", 170);
+define("NC_UPLOAD_AVATAR_RESIZE_MODE", '['.NC_UPLOAD_MAX_WIDTH_AVATAR.'x'.NC_UPLOAD_MAX_HEIGHT_AVATAR.']');
 define("NC_UPLOAD_MAX_WIDTH_AVATAR_THUMBNAIL", 66);
 define("NC_UPLOAD_MAX_HEIGHT_AVATAR_THUMBNAIL", 66);
-define("NC_UPLOAD_LIBRARY_GEOMETRY_FIT_WIDTH", '110w');
-define("NC_UPLOAD_LIBRARY_GEOMETRY_FIT_HEIGHT", '110h');
+define("NC_UPLOAD_AVATAR_THUMBNAIL_RESIZE_MODE", '['.NC_UPLOAD_MAX_WIDTH_AVATAR_THUMBNAIL.'x'.NC_UPLOAD_MAX_HEIGHT_AVATAR_THUMBNAIL.']');
+define("NC_UPLOAD_LIBRARY_THUMBNAIL_WIDTH_RESIZE_MODE", '110w');
+define("NC_UPLOAD_LIBRARY_THUMBNAIL_HEIGHT_RESIZE_MODE", '110h');
 
 define('NC_UPLOAD_FOLDER_MODE', 0777);
 define('NC_UPLOAD_FILE_MODE', 0666);
 
+//-----------画像解像度--------------------------------------------------------
+define('NC_UPLOAD_RESOLUTION_IMAGE_LARGE_WIDTH', 800);// 大-幅
+define('NC_UPLOAD_RESOLUTION_IMAGE_LARGE_HEIGHT', 600);// 大-高さ
+define('NC_UPLOAD_RESOLUTION_IMAGE_MIDDLE_WIDTH', 640);// 中-幅
+define('NC_UPLOAD_RESOLUTION_IMAGE_MIDDLE_HEIGHT', 480);// 中-高さ
+define('NC_UPLOAD_RESOLUTION_IMAGE_SMALL_WIDTH', 480);// 小-幅
+define('NC_UPLOAD_RESOLUTION_IMAGE_SMALL_HEIGHT', 360);// 小-高さ
+define('NC_UPLOAD_RESOLUTION_IMAGE_ICON_SIZE', 48);// アイコン
+
 //define('NC_UPLOAD_IMAGEFILE_TYPE', 'image/gif,image/jpg,image/jpeg,image/pjpeg,image/pipeg,image/png,image/x-png,image/tiff,image/bmp');
 
 define('NC_UPLOAD_IMAGEFILE_EXTENSION', 'gif,jpg,jpe,jpeg,png,bmp');
-define('NC_UPLOAD_ATTACHMENT_EXTENSION', 'Config');		// configテーブルの許す拡張子の一覧から拡張子チェックを行う
+define('NC_UPLOAD_IMAGEFILE_PHP_EXTENSION', 'gif,jpg,jpe,jpeg,png');
 define('NC_UPLOAD_COMPRESSIONFILE_EXTENSION', 'zip,tar,tgz,gz');
 
-define('NC_UPLOAD_PROHIBITION_CHAR_FOLDER', '/[\/\?\|:<>*\'\\\"\.\\\]/');
-define('NC_UPLOAD_PROHIBITION_CHAR_FILE', '/[\/\?\|:<>*\'\\\"\\\]/');
+define('NC_UPLOAD_ALLOW_CHAR_FOLDER', '/^[^\/\?\|:<>*\\\'\"\.\\\]*$/');
+define('NC_UPLOAD_ALLOW_CHAR_FILE', '/^[^\/\?\|:<>*\\\'\"\\\]*$/');
 
 define("NC_CATEGORY_INIFILE",          "category.ini");
 define("NC_THEME_INIFILE",             "theme.ini");
