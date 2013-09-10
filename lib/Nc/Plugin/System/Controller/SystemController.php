@@ -74,7 +74,6 @@ class SystemController extends SystemAppController {
 		$page = !empty($this->request->named['page']) ? intval($this->request->named['page']) : 1;
 		$limit = !empty($this->request->named['limit']) ? intval($this->request->named['limit']) : SYSTEM_COMMUNITY_LIMIT_DEFAULT;
 
-
 		$config = $this->Config->find('all', array(
 			'fields' => 'Config.name, Config.value',
 			'conditions' => array(
@@ -82,11 +81,14 @@ class SystemController extends SystemAppController {
 				'Config.name' => 'first_startpage_id'
 			),
 		));
-		$pageId = !empty($this->request->data['ConfigRegist']['first_startcommunity_id']) ? intval($this->request->data['ConfigRegist']['first_startcommunity_id']) : intval($config['first_startpage_id']);
+		$pageId = intval($config['first_startpage_id']);
+		if (isset($this->request->data['ConfigRegist']) && $this->request->data['ConfigRegist']['first_startpage_id'] == -3) {
+			$pageId = intval($this->request->data['ConfigRegist']['first_startcommunity_id']);
+		}
 		if($pageId > 0) {
 			$firstPage = $this->Page->findById($pageId);
 			if(isset($firstPage['Page'])) {
-				if(empty($this->request->named['page'])) {
+				if(empty($this->request->named['page']) && $firstPage['Page']['display_sequence'] > 0) {
 					$page = ceil($firstPage['Page']['display_sequence']/$limit);
 				}
 				$this->set('first_startpage', $firstPage);
