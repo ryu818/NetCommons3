@@ -12,67 +12,67 @@
 ;(function($) {
 	$.fn.nc_wysiwyg = function(options) {
 
-        /**
-         * もし、カスタムコントローラをセットする場合、
-         * 以下のように動作する。
-         *
-         * ・同じライン、同じグループ（キー）に同じボタンがあった場合は、マージする。
-         * ・そうでない場合は、追加
-         * ・同じライン上にあるグループは、グループのキーでソートした順番で表示する。
-         *
-         */
-        var controls = [], css = [], js = [];
-        if ( options ) {
-        	if (options.controls) {
-        		controls = options.controls;
-            	delete options.controls;
-        	}
-        	if ( options.css ) {
-	            css = options.css;
-	            delete options.css;
-	        }
-	        if ( options.js ) {
-	            js = options.js;
-	            delete options.js;
-	        }
-        }
+		/**
+		 * もし、カスタムコントローラをセットする場合、
+		 * 以下のように動作する。
+		 *
+		 * ・同じライン、同じグループ（キー）に同じボタンがあった場合は、マージする。
+		 * ・そうでない場合は、追加
+		 * ・同じライン上にあるグループは、グループのキーでソートした順番で表示する。
+		 *
+		 */
+		var controls = [], css = [], js = [];
+		if ( options ) {
+			if (options.controls) {
+				controls = options.controls;
+				delete options.controls;
+			}
+			if ( options.css ) {
+				css = options.css;
+				delete options.css;
+			}
+			if ( options.js ) {
+				js = options.js;
+				delete options.js;
+			}
+		}
 
-        var options = $.extend({
-            plugin   : null,			// プラグイン名称(default:null autoでnc-blockクラスのdata-actionより求める)
-            html : '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>INITIAL_TITLE</title>INITIAL_HEADER</head><body>INITIAL_CONTENT</body></html>',
-            title: 'wysiwyg editor',
+		var options = $.extend({
+			plugin   : null,			// プラグイン名称(default:null autoでnc-blockクラスのdata-actionより求める)
+			html : '<!DOCTYPE html><html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>INITIAL_TITLE</title>INITIAL_HEADER</head><body>INITIAL_CONTENT</body></html>',
+			title: 'wysiwyg editor',
 			css  : [],                // css src
 			js   : [],				  // javascript src
 			style: null,
 
-            debug        : false,
+			debug        : false,
 
-            autoSave     : true,
-            rmUnwantedBr : false,
+			autoSave     : true,
+			rmUnwantedBr : false,
 
-            cssInc       : true,	  		// 親のCSSをincludeするかどうか
-            parseHtml    : true,      		// 登録時、htmlモードに移る時にタグを整形（タブ、改行挿入等）するかどうか
-            tabStr       : '    ',    		// parseHtmlがtrueの場合のタブのスペースの数
-            lineBreak    : '\n',      		// parseHtmlがtrueの場合の改行コード
+			cssInc       : true,	  		// 親のCSSをincludeするかどうか
+			parseHtml    : true,      		// 登録時、htmlモードに移る時にタグを整形（タブ、改行挿入等）するかどうか
+			tabStr       : '    ',    		// parseHtmlがtrueの場合のタブのスペースの数
+			lineBreak    : '\n',      		// parseHtmlがtrueの場合の改行コード
 
-            forecolor    : '#ff0000', 		// fontカラーのデフォルト色
-            hilitecolor  : '#ff0000',		// backgroundカラーのデフォルト色
+			forecolor    : '#ff0000', 		// fontカラーのデフォルト色
+			hilitecolor  : '#ff0000',		// backgroundカラーのデフォルト色
 
-            undo_level   : 100,      		// undo redoできる履歴を保持する数
+			undo_level   : 100,      		// undo redoできる履歴を保持する数
 
-            controls     : [],
+			controls     : [],
 
 			autoRegistForm    : false,		// 自動登録を行う場合、登録のForm Elementをセット
 			autoRegistTime    : 30000,		// 30秒
 
-            formatMes    : true,			// 空のelement等のメッセージを画面上に表示するかどうか
-            format_time  : 3000,			// 3秒
-            focus        : false,
-            image        : false,			// 画像アップロードを有効にする場合、true
+			formatMes    : true,			// 空のelement等のメッセージを画面上に表示するかどうか
+			format_time  : 3000,			// 3秒
+			focus        : false,
+			image        : false,			// 画像アップロードを有効にする場合、true
 			file         : false			// ファイルアップロードを有効にする場合、true
-        }, options);
-        options.css = options.css.concat(css);
-        options.js = options.js.concat(js);
+		}, options);
+		options.css = options.css.concat(css);
+		options.js = options.js.concat(js);
 
 		setOptControls(controls);
 
@@ -88,117 +88,117 @@
 		 */
 		function setOptControls(controls) {
 			options.controls = $.extend(true, options.controls, Wysiwyg.TOOLBAR);
-			for ( var line in controls )
-	        {
-				if ( options.controls[line] )
-				{
-					for ( var group in controls[line] )
-					{
+			for (var line in controls) {
+				if (options.controls[line]) {
+					for (var group in controls[line]) {
 						if(options.controls[line][group]["group"] == controls[line][group]["group"]) {
 							for ( var value in controls[line][group]["value"] ) {
 								if ( value in options.controls[line][group]["value"] ) {
-					                $.extend(options.controls[line][group]["value"][value], controls[line][group]["value"][value]);
-					            } else
-					                options.controls[line][group]["value"][value] = controls[line][group]["value"][value];
+									$.extend(options.controls[line][group]["value"][value], controls[line][group]["value"][value]);
+								} else {
+									options.controls[line][group]["value"][value] = controls[line][group]["value"][value];
+								}
 							}
-						} else
+						} else {
 							options.controls[line].push(controls[line][group]);
+						}
 					}
-				} else
+				} else {
 					options.controls[line] = controls[line];
+				}
 
 				// sort
 				options.controls[line].sort(function(a, b){return (a.group > b.group) ? 1 : -1 ;});
 
-	        }
+			}
 		};
 	};
 
 	function Wysiwyg(el, options)
-    {
-        return this instanceof Wysiwyg
-            ? this.init(el, options)
-            : new Wysiwyg(el, options);
-    }
+	{
+		return this instanceof Wysiwyg
+			? this.init(el, options)
+			: new Wysiwyg(el, options);
+	}
 
 	$.extend(Wysiwyg, {
-    	/**
-         * グループ - ボタン
-         *
-         * 説明(value):
-         *          key  className,commandが指定されていなければ、ボタンのクラス名称
-         *            commandが指定されていなければ、execCommandの第一引数（コマンド名）
-         *         	  visible     : boolean  ボタンを表示するかどうか
-         *			  tags        : array    選択範囲が、tagsで書かれてある内部であれば、ボタンをactiveに変更
-         *			  css         : hash     選択範囲が、cssで書かれてあるスタイルであれば、ボタンをactiveに変更
-         *			  active_class: array    選択範囲が、classで書かれてあるclassNameであれば、ボタンをactiveに変更
-         *			  command     : string   execCommandの第一引数（コマンド名）
-         *						             classNameが指定されていなければ、ボタンのクラス名称
-         *    		  arguments   : array    execCommandの第三引数
-         *			  className   : string   ボタンアイコン(a)のクラス名称
-         *			  exec        : function 押下した時の動作を独自で設定（指定しない場合、execCommand)
-         *            list        : hash     ボタンをリストボックスで表示（keyの値がexec指定にした場合の第三引数、valueはリストの表示文字列）
-         *            extend_body : boolean  falseの場合、tag,cssが一致した場合、それ以上親のelementまで遡らない（default true）
-         *                                   例えば、現要素がfont-family指定があり、一致していたら、その親要素で違うfont-family指定がしてあっても
-         *                                   現要素のfont-family指定を優先する。
-         *			  liClassName : string   ボタン(li)のクラス名称
-         *            collapsedDis: boolean  trueの場合、選択範囲が折りたたまれている場合、ボタンを有効化しない(default false)
-         *            eventtags   : array    イベントを実行するタグの一覧（event参照）
+		/**
+		 * グループ - ボタン
+		 *
+		 * 説明(value):
+		 *          key  className,commandが指定されていなければ、ボタンのクラス名称
+		 *            commandが指定されていなければ、execCommandの第一引数（コマンド名）
+		 *            visible     : boolean  ボタンを表示するかどうか
+		 *            tags        : array    選択範囲が、tagsで書かれてある内部であれば、ボタンをactiveに変更
+		 *            css         : hash     選択範囲が、cssで書かれてあるスタイルであれば、ボタンをactiveに変更
+		 *            active_class: array    選択範囲が、classで書かれてあるclassNameであれば、ボタンをactiveに変更
+		 *            command     : string   execCommandの第一引数（コマンド名）
+		 *                                   classNameが指定されていなければ、ボタンのクラス名称
+		 *            arguments   : array    execCommandの第三引数
+		 *            className   : string   ボタンアイコン(a)のクラス名称
+		 *            exec        : function 押下した時の動作を独自で設定（指定しない場合、execCommand)
+		 *            list        : hash     ボタンをリストボックスで表示（keyの値がexec指定にした場合の第三引数、valueはリストの表示文字列）
+		 *            extend_body : boolean  falseの場合、tag,cssが一致した場合、それ以上親のelementまで遡らない（default true）
+		 *                                   例えば、現要素がfont-family指定があり、一致していたら、その親要素で違うfont-family指定がしてあっても
+		 *                                   現要素のfont-family指定を優先する。
+		 *            liClassName : string   ボタン(li)のクラス名称
+		 *            collapsedDis: boolean  trueの場合、選択範囲が折りたたまれている場合、ボタンを有効化しない(default false)
+		 *            eventtags   : array    イベントを実行するタグの一覧（event参照）
 		 *            event       : hash     WYSIWYG内のeventtagsに記述されたタグにおけるイベントによるcallbackを指定する
 		 *                                   記述方法：　{dblclick :function(e){
-		 *								                      alert(e.type);
-		 *								                 }}
+		 *                                                   alert(e.type);
+		 *                                               }}
 		 *                                   等、現状、dblclick,contextmenuのみ指定可能
 		 *            components  : hash     TOOLBAR共通メソッド定義用　呼び出し方：this.components.key_name.appley,this.components.key_name.call等
 		 *                                   hash_key==this.components.key_nameで一意の値を設定する
 		 *            title       : string   アイコンのtitleタグの内容 default __d(['nc_wysiwyg','icons'], key名)
-         */
-        TOOLBAR : [
+		 */
+		TOOLBAR : [
 			// 1行目
 			[
 				{
-					group :   "001",
+					group : "001",
 					value : {
-						fontname      : { visible : true, css : {fontFamily : ''}, list : __d('nc_wysiwyg', 'fontname'), extend_body : false,
-										  exec : function(value) {
-		            					      var n = this.applyInlineStyle('span', {style : {fontFamily : value}});
-		            					      if(n) this.rangeSelect(n);
-		            					      else this.chgList(this.panel_btns['fontname'], '');
-		            					  }
-		            					},
-		            	fontsize      : { visible : true, css : {fontSize : ''}, list : __d('nc_wysiwyg', 'fontsize'), extend_body : false,
-		            					  exec : function(value) {
-		            					      var n = this.applyInlineStyle('span', {style : {fontSize : value}});
-		            					      if(n) this.rangeSelect(n);
-		            					      else this.chgList(this.panel_btns['fontsize'], '');
-		            					  }
-		            					},
-		            	formatblock   : { visible : true, tags : ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'address', 'pre', 'p'], list : __d('nc_wysiwyg', 'formatblock'), extend_body : false,
-		            					  exec : function(value) {
-		            					      var n = this.applyInlineStyle(value);
-		            					      if(n) this.rangeSelect(n);
-		            					      else this.chgList(this.panel_btns['fontname'], '');
-		            					  }
-		            					}
+						fontname        : { visible : true, css : {fontFamily : ''}, list : __d('nc_wysiwyg', 'fontname'), extend_body : false,
+											exec : function(value) {
+												var n = this.applyInlineStyle('span', {style : {fontFamily : value}});
+												if(n) this.rangeSelect(n);
+												else this.chgList(this.panel_btns['fontname'], '');
+											}
+										},
+						fontsize        : { visible : true, css : {fontSize : ''}, list : __d('nc_wysiwyg', 'fontsize'), extend_body : false,
+											exec : function(value) {
+												var n = this.applyInlineStyle('span', {style : {fontSize : value}});
+												if(n) this.rangeSelect(n);
+												else this.chgList(this.panel_btns['fontsize'], '');
+											}
+										},
+						formatblock     : { visible : true, tags : ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'address', 'pre', 'p'], list : __d('nc_wysiwyg', 'formatblock'), extend_body : false,
+											exec : function(value) {
+												var n = this.applyInlineStyle(value);
+												if(n) this.rangeSelect(n);
+												else this.chgList(this.panel_btns['fontname'], '');
+											}
+										}
 					}
 				},
 				{
-					group :   "002",
+					group : "002",
 					value : {
 						bold          : { visible : true, tags : ['b', 'strong'], css : { fontWeight : 'bold' } },
-		            	italic        : { visible : true, tags : ['i', 'em'], css : { fontStyle : 'italic' } },
-		            	underline     : { visible : true, tags : ['u'], css : { textDecoration : 'underline' } },
-		            	strikeThrough : { visible : true, tags : ['s', 'strike'], css : { textDecoration : 'line-through' } }
+						italic        : { visible : true, tags : ['i', 'em'], css : { fontStyle : 'italic' } },
+						underline     : { visible : true, tags : ['u'], css : { textDecoration : 'underline' } },
+						strikeThrough : { visible : true, tags : ['s', 'strike'], css : { textDecoration : 'line-through' } }
 					}
 				},
 				{
-					group :   "003",
+					group : "003",
 					value : {
 						subscript   : { visible : true, tags : ['sub'],
 										exec : function(e) {
 											var sel_n = null;
 											this.editorDoc.execCommand("subscript", false, []);
-		            					    var r = this.getRange();
+											var r = this.getRange();
 											if(r.endContainer && r.endContainer.parentNode) {
 												sel_n = r.endContainer.parentNode;
 												if(sel_n.nodeName.toLowerCase() == 'sup' || sel_n.nodeName.toLowerCase() == 'sub')
@@ -207,23 +207,23 @@
 												sel_n = this.getSelectNode().parentNode;
 											}
 
-		            					    if(sel_n && sel_n.childNodes[0] && sel_n.childNodes[0].nodeName.toLowerCase() == 'sup')
+											if(sel_n && sel_n.childNodes[0] && sel_n.childNodes[0].nodeName.toLowerCase() == 'sup')
 												sel_n = sel_n.childNodes[0];
 											if(sel_n && sel_n.nodeName.toLowerCase() == 'sup' &&
-										   		sel_n.childNodes.length == 1) {
-										   		$(sel_n).after(sel_n.innerHTML);
-										   		this.rangeSelect(sel_n.parentNode, 1);
-										   		$(sel_n).remove();
-										    }
-										    this.checkTargets();
-		            					}
-		            				  },
-		            	superscript : { visible : true, tags : ['sup'],
-		            					exec : function(e) {
+												sel_n.childNodes.length == 1) {
+												$(sel_n).after(sel_n.innerHTML);
+												this.rangeSelect(sel_n.parentNode, 1);
+												$(sel_n).remove();
+											}
+											this.checkTargets();
+										}
+									},
+						superscript : { visible : true, tags : ['sup'],
+										exec : function(e) {
 											var sel_n = null;
 											this.editorDoc.execCommand("superscript", false, []);
-		            					    var r = this.getRange();
-		            					    if(r.endContainer && r.endContainer.parentNode) {
+											var r = this.getRange();
+											if(r.endContainer && r.endContainer.parentNode) {
 												sel_n = r.endContainer.parentNode;
 												if(sel_n.nodeName.toLowerCase() == 'sup' || sel_n.nodeName.toLowerCase() == 'sub')
 													this.rangeSelect(sel_n, 1);
@@ -233,18 +233,18 @@
 											if(sel_n && sel_n.childNodes[0] && sel_n.childNodes[0].nodeName.toLowerCase() == 'sub')
 												sel_n = sel_n.childNodes[0];
 											if(sel_n && sel_n.nodeName.toLowerCase() == 'sub' &&
-										   		sel_n.childNodes.length == 1) {
-										   		$(sel_n).after(sel_n.innerHTML);
-										   		this.rangeSelect(sel_n.parentNode, 1);
-										   		$(sel_n).remove();
-										    }
-										    this.checkTargets();
-		            					}
-		            				  }
+												sel_n.childNodes.length == 1) {
+												$(sel_n).after(sel_n.innerHTML);
+												this.rangeSelect(sel_n.parentNode, 1);
+												$(sel_n).remove();
+											}
+											this.checkTargets();
+										}
+									}
 					}
 				},
 				{
-					group :   "004",
+					group : "004",
 					value : {
 						forecolor   : { visible : true,
 										exec : function(e) {
@@ -256,45 +256,45 @@
 										}
 									  },
 						forecolor_arrow : { visible : true, liClassName : 'nc-wysiwyg-arrow',
-										exec : function(e) {
-											var self = this, event_el = e.target;
-											var c = $.Common.getColorCode($("a.forecolor", this.panel)[0], 'backgroundColor');
-											var callback = function() {self.components.colorpickerCallback.call(self, 'forecolor', c);};
-											var options = {
-												id        : self.id + "-forecolor",
-												js        : [$._base_url+'js/plugins/jquery.colorpicker.js'],
-												jsname    : ['$.fn.nc_colorpicker'],
-												callback  : callback
-											};
-											this.toggleDialog(e, options);
-										},
-										components : {
-											colorpickerCallback : function (name, c) {
-												var self = this;
-												var opts = {
-													colorcode : c,
-													callback  : function(v) {
-														$("a." + name, self.panel).css({'backgroundColor': v});
-														self.removeDialog(self.id + "-" + name);
-														if(name == 'hilitecolor') {
-															var n = self.applyInlineStyle('span', {style : {backgroundColor : v}});
-														} else {
-															var n = self.applyInlineStyle('span', {style : {color : v}});
-														}
-														if(n) {
-															self.rangeSelect(n, 1);
-														}
-													},
-													cancel_callback  : function(v) {
-														self.removeDialog(self.id + "-" + name);
-													}
+											exec : function(e) {
+												var self = this, event_el = e.target;
+												var c = $.Common.getColorCode($("a.forecolor", this.panel)[0], 'backgroundColor');
+												var callback = function() {self.components.colorpickerCallback.call(self, 'forecolor', c);};
+												var options = {
+													id        : self.id + "-forecolor",
+													js        : [$._base_url+'js/plugins/jquery.colorpicker.js'],
+													jsname    : ['$.fn.nc_colorpicker'],
+													callback  : callback
 												};
-												$("#" + self.id + "-" + name).nc_colorpicker(opts);
-
+												this.toggleDialog(e, options);
+											},
+											components : {
+												colorpickerCallback : function (name, c) {
+													var self = this;
+													var opts = {
+														colorcode : c,
+														callback  : function(v) {
+															$("a." + name, self.panel).css({'backgroundColor': v});
+															self.removeDialog(self.id + "-" + name);
+															if(name == 'hilitecolor') {
+																var n = self.applyInlineStyle('span', {style : {backgroundColor : v}});
+															} else {
+																var n = self.applyInlineStyle('span', {style : {color : v}});
+															}
+															if(n) {
+																self.rangeSelect(n, 1);
+															}
+														},
+														cancel_callback  : function(v) {
+															self.removeDialog(self.id + "-" + name);
+														}
+													};
+													$("#" + self.id + "-" + name).nc_colorpicker(opts);
+	
+												}
 											}
-										}
-									  },
-		            	hilitecolor : { visible : true,
+									},
+						hilitecolor : { visible : true,
 										exec : function(e) {
 											var c = $("a.hilitecolor", this.panel).css('backgroundColor');
 											var n = this.applyInlineStyle('span', {style : {backgroundColor : c}});
@@ -302,104 +302,104 @@
 												this.rangeSelect(n, 1);
 											}
 										}
-									  },
-		            	hilitecolor_rarrow : { visible : true, liClassName : 'nc-wysiwyg-rarrow',
-										 exec : function(e) {
-											var self = this, event_el = e.target;
-											var c = $.Common.getColorCode($("a.hilitecolor", this.panel)[0], 'backgroundColor');
-											var callback = function() {self.components.colorpickerCallback.call(self, 'hilitecolor', c);};
-											var options = {
-												id        : self.id + "-hilitecolor",
-												js        : [$._base_url+'js/plugins/jquery.colorpicker.js'],
-												jsname    : ['$.fn.nc_colorpicker'],
-												callback  : callback
-											};
-											this.toggleDialog(e, options);
-										  }
-									    }
+									},
+						hilitecolor_rarrow  : { visible : true, liClassName : 'nc-wysiwyg-rarrow',
+												exec : function(e) {
+													var self = this, event_el = e.target;
+													var c = $.Common.getColorCode($("a.hilitecolor", this.panel)[0], 'backgroundColor');
+													var callback = function() {self.components.colorpickerCallback.call(self, 'hilitecolor', c);};
+													var options = {
+														id        : self.id + "-hilitecolor",
+														js        : [$._base_url+'js/plugins/jquery.colorpicker.js'],
+														jsname    : ['$.fn.nc_colorpicker'],
+														callback  : callback
+													};
+													this.toggleDialog(e, options);
+												}
+									}
 					}
 				},
 				{
-					group :   "005",
+					group : "005",
 					value : {
 						removeFormat : {
-			                visible : true,
-			                exec    : function()
-			                {
-			                	var self = this;
-			                	if($.browser.msie) {
-			                		var spans, font, loop_flag = true;
-			                		var f = self.currentNode ? self.currentNode : self.getSelectNode();
-			                    	// 選択NodeTopをselect
-		                    		var span = null, p = f.parentNode;
-		                    		while(1) {
-		                    			if(p.nodeName.toLowerCase() == 'span' && p.innerHTML == f.outerHTML) {
-		                    				f = p;
-		                    				p = p.parentNode;
-		                    			} else {
-		                    				break;
-		                    			}
-		                    		}
+							visible : true,
+							exec    : function()
+							{
+								var self = this;
+								if($.browser.msie) {
+									var spans, font, loop_flag = true;
+									var f = self.currentNode ? self.currentNode : self.getSelectNode();
+									// 選択NodeTopをselect
+									var span = null, p = f.parentNode;
+									while(1) {
+										if(p.nodeName.toLowerCase() == 'span' && p.innerHTML == f.outerHTML) {
+											f = p;
+											p = p.parentNode;
+										} else {
+											break;
+										}
+									}
 
-		                    		// fontタグへ置換
-		                    		if(f.nodeName.toLowerCase() == 'body') {
-		                    			var bm = self.getBookmark();
-		                    			if(!bm || bm.length == 0) {
-		                    				return;
-		                    			}
-		                    			f = self.applyInlineStyle('font');
-		                    		} else if(f.style.color != '' || f.style.backgroundColor != '' || f.style.fonSize != '' || f.style.fontFamily != '') {
-		                    			font = $("<font></font>", this.editorDoc);
-				                    	f = self.replace(font[0], f, true);
-		                    		}
-		                    		while(loop_flag) {
-			                    		loop_flag = false;
-			                    		spans = $("span", f);
-			                    		for (var i = 0; i < spans.length; ++i) {
-			                    			if(spans[i].style.color != '' || spans[i].style.backgroundColor != '' || spans[i].style.fonSize != '' || spans[i].style.fontFamily != '') {
-				                    			font = $("<font></font>",this.editorDoc);
-						                    	self.replace(font[0], spans[i], true);
-						                    	loop_flag = true;
-						                    	break;
-				                    		}
-			                    		}
-		                    		}
-		                    		self.rangeSelect(f);
-			                    } else if($.browser.webkit) {
-			                    	var f = self.getSelectNode();
-			                    	var formatTags = " font span b script strong em i u ins s strike sub sup ";
-			                    	if(formatTags.indexOf(" " + f.tagName.toLowerCase() + " ") != -1) {
-			                    		var buf_f = f;
-			                    		do {
-			                    			if(!buf_f || buf_f.nodeName.toLowerCase() == "body")
-			                    				break;
-			                    			if(buf_f.childNodes.length == 1)
-			                    				f = buf_f;
-			                    		} while ( buf_f = buf_f.parentNode );
-			                    		if(f.nextSibling && f.nextSibling.nodeName.toLowerCase() == 'br') {
-				                    		var r = self.getRange();
+									// fontタグへ置換
+									if(f.nodeName.toLowerCase() == 'body') {
+										var bm = self.getBookmark();
+										if(!bm || bm.length == 0) {
+											return;
+										}
+										f = self.applyInlineStyle('font');
+									} else if(f.style.color != '' || f.style.backgroundColor != '' || f.style.fonSize != '' || f.style.fontFamily != '') {
+										font = $("<font></font>", this.editorDoc);
+										f = self.replace(font[0], f, true);
+									}
+									while(loop_flag) {
+										loop_flag = false;
+										spans = $("span", f);
+										for (var i = 0; i < spans.length; ++i) {
+											if(spans[i].style.color != '' || spans[i].style.backgroundColor != '' || spans[i].style.fonSize != '' || spans[i].style.fontFamily != '') {
+												font = $("<font></font>",this.editorDoc);
+												self.replace(font[0], spans[i], true);
+												loop_flag = true;
+												break;
+											}
+										}
+									}
+									self.rangeSelect(f);
+								} else if($.browser.webkit) {
+									var f = self.getSelectNode();
+									var formatTags = " font span b script strong em i u ins s strike sub sup ";
+									if(formatTags.indexOf(" " + f.tagName.toLowerCase() + " ") != -1) {
+										var buf_f = f;
+										do {
+											if(!buf_f || buf_f.nodeName.toLowerCase() == "body")
+												break;
+											if(buf_f.childNodes.length == 1)
+												f = buf_f;
+										} while ( buf_f = buf_f.parentNode );
+										if(f.nextSibling && f.nextSibling.nodeName.toLowerCase() == 'br') {
+											var r = self.getRange();
 											r.setStartBefore(f);
 											r.setEndAfter(f.nextSibling);
 											self.setRange(r);
 										}
-			                    	}
-			                    }
-			                    this.editorDoc.execCommand('removeFormat', false, []);
-			                    if($.browser.webkit && f.nodeName.toLowerCase() != "body") {
-			                    	// Class Apple-style-spanを検索し、削除
-			                    	var remove_el_arr = [];
-			                    	var buf_f = f;
-			                    	if(!f.parentNode) {
-			                    		f = this.editorDoc.body;
-			                    	} else {
-				                    	do {
-			                    			if(!buf_f || buf_f.nodeName.toLowerCase() == "body")
-			                    				break;
-			                    			if(buf_f.childNodes.length == 1)
-			                    				f = buf_f;
-			                    		} while ( buf_f = buf_f.parentNode );
-			                    	}
-			                    	$.each(self.select('span,font', f), function(k, el) {
+									}
+								}
+								this.editorDoc.execCommand('removeFormat', false, []);
+								if($.browser.webkit && f.nodeName.toLowerCase() != "body") {
+									// Class Apple-style-spanを検索し、削除
+									var remove_el_arr = [];
+									var buf_f = f;
+									if(!f.parentNode) {
+										f = this.editorDoc.body;
+									} else {
+										do {
+											if(!buf_f || buf_f.nodeName.toLowerCase() == "body")
+												break;
+											if(buf_f.childNodes.length == 1)
+												f = buf_f;
+										} while ( buf_f = buf_f.parentNode );
+									}
+									$.each(self.select('span,font', f), function(k, el) {
 										if ($(el).hasClass("Apple-style-span")) {
 											remove_el_arr.push(el);
 										}
@@ -409,51 +409,51 @@
 										$(rm_el).after(rm_el.innerHTML);
 										$(rm_el).remove();
 									}
-			                    }
-			                    this.checkTargets();
-			                    //this.editorDoc.execCommand('unlink', false, []);
-			                }
-			            }
+								}
+								this.checkTargets();
+								//this.editorDoc.execCommand('unlink', false, []);
+							}
+						}
 					}
 				}
 			],
 			// 2行目
 			[
 				{
-					group :   "001",
+					group : "001",
 					value : {
 						undo : { visible : true, exec : function(){ this.undo();} },
-		            	redo : { visible : true, exec : function(){ this.redo();} }
+						redo : { visible : true, exec : function(){ this.redo();} }
 					}
 				},
 				{
-					group :   "002",
+					group : "002",
 					value : {
-						justifyLeft   : { visible : true, css : { textAlign : 'left' },
-										  exec : function(e) {
-			            				  	this.components.execTextAlign.call(this, "justifyLeft", "left");
-		            					  }
-		            				    },
-			            justifyCenter : { visible : true, tags : ['center'], css : { textAlign : 'center' },
-			            				  exec : function(e) {
-			            				  	this.components.execTextAlign.call(this, "justifyCenter", "center");
-		            					  },
-		            					  components : {
+						justifyLeft     : { visible : true, css : { textAlign : 'left' },
+											exec : function(e) {
+												this.components.execTextAlign.call(this, "justifyLeft", "left");
+											}
+										},
+						justifyCenter   : { visible : true, tags : ['center'], css : { textAlign : 'center' },
+											exec : function(e) {
+												this.components.execTextAlign.call(this, "justifyCenter", "center");
+											},
+											components : {
 											execTextAlign : function (name, type) {
 												if($.browser.msie || $.browser.opera){
-				            				  		var n = this.currentNode ? this.currentNode : this.getSelectNode();
-				            				  		if(n && n.nodeName.toLowerCase() == 'img') {
-				            				  			n = this.applyInlineStyle('<div style="text-align:'+type+'">' + n.outerHTML + '</div>', null, true);
-				            				  		} else if(n && n.nodeName.toLowerCase() != 'div') {
-					            				  		n = this.applyInlineStyle('div', {style : {textAlign : type}});
+													var n = this.currentNode ? this.currentNode : this.getSelectNode();
+													if(n && n.nodeName.toLowerCase() == 'img') {
+														n = this.applyInlineStyle('<div style="text-align:'+type+'">' + n.outerHTML + '</div>', null, true);
+													} else if(n && n.nodeName.toLowerCase() != 'div') {
+														n = this.applyInlineStyle('div', {style : {textAlign : type}});
 													} else {
 														$(n).css({textAlign : type});
 													}
-				            				  	} else {
-				            				  		var sel_n = null;
+												} else {
+													var sel_n = null;
 													this.editorDoc.execCommand(name, false, []);
-				            					    var r = this.getRange();
-				            					    if(r.endContainer && r.endContainer.parentNode) {
+													var r = this.getRange();
+													if(r.endContainer && r.endContainer.parentNode) {
 														sel_n = r.endContainer.parentNode;
 														if(sel_n.nodeName.toLowerCase() != 'div')
 															sel_n = r.startContainer.parentNode;
@@ -463,129 +463,129 @@
 														}
 													}
 													this.checkTargets();
-				            				  	}
+												}
 											}
-										  }
-		            				   },
-			            justifyRight  : { visible : true, css : { textAlign : 'right' },
-										  exec : function(e) {
-			            				  	this.components.execTextAlign.call(this, "justifyRight", "right");
-		            					  }
-		            				    }
+										}
+									},
+						justifyRight  : { visible : true, css : { textAlign : 'right' },
+											exec : function(e) {
+												this.components.execTextAlign.call(this, "justifyRight", "right");
+											}
+										}
 					}
 				},
 				{
-					group :   "003",
+					group : "003",
 					value : {
-						insertOrderedList    : { visible : true, tags : ['ol'],
-														exec : function(e) {
-															if(!$.browser.msie)
-				            				  					this.editorDoc.execCommand("insertOrderedList", false, []);
-				            				  				else {
-				            				  					var n = this.applyInlineStyle('div');
-				            				  					this.rangeSelect(n);
-				            				  					this.editorDoc.execCommand("insertOrderedList", false, []);
-				            				  					if(n && n.parentNode) {
-												   					$(n).before(n.innerHTML);
-																	$(n).remove();
-																}
-				            				  				}
-				            				  				this.checkTargets();
-			            					  			}
-			            					   		},
-			            insertUnorderedList  : { visible : true, tags : ['ul'],
-														exec : function(e) {
-															if(!$.browser.msie)
-				            				  					this.editorDoc.execCommand("insertUnorderedList", false, []);
-				            				  				else {
-				            				  					var n = this.applyInlineStyle('div');
-				            				  					this.rangeSelect(n);
-				            				  					this.editorDoc.execCommand("insertUnorderedList", false, []);
-				            				  					if(n && n.parentNode) {
-												   					$(n).before(n.innerHTML);
-																	$(n).remove();
-																}
-				            				  				}
-				            				  				this.checkTargets();
-			            					  			}
-			            					   		}
+						insertOrderedList   : { visible : true, tags : ['ol'],
+												exec : function(e) {
+													if(!$.browser.msie)
+														this.editorDoc.execCommand("insertOrderedList", false, []);
+													else {
+														var n = this.applyInlineStyle('div');
+														this.rangeSelect(n);
+														this.editorDoc.execCommand("insertOrderedList", false, []);
+														if(n && n.parentNode) {
+															$(n).before(n.innerHTML);
+															$(n).remove();
+														}
+													}
+													this.checkTargets();
+												}
+											},
+						insertUnorderedList     : { visible : true, tags : ['ul'],
+													exec : function(e) {
+														if(!$.browser.msie)
+															this.editorDoc.execCommand("insertUnorderedList", false, []);
+														else {
+															var n = this.applyInlineStyle('div');
+															this.rangeSelect(n);
+															this.editorDoc.execCommand("insertUnorderedList", false, []);
+															if(n && n.parentNode) {
+																$(n).before(n.innerHTML);
+																$(n).remove();
+															}
+														}
+														this.checkTargets();
+													}
+												}
 					}
 				},
 				{
 					group :   "004",
 					value : {
-						outdent    : { visible : true,
-									   exec : function() {
-									   		var n = this.currentNode ? this.currentNode : this.getSelectNode();
-									   		//if(n && n.nodeName.toLowerCase() == 'li') {
-									   		//	this.editorDoc.execCommand('outdent', false, []);
-		            				        //} else
-		            				        if(n && n.nodeName.toLowerCase() == 'div') {
-									   			var marginLeft = parseInt($(n).css("marginLeft"));
-									   			if(marginLeft > 20) {
-									   				$(n).css({marginLeft : (marginLeft - 20) + "px"});
-									   			} else {
-									   				$(n).css({marginLeft : ''});
-									   				if(n.style.length == 0 || $(n).attr("style") == '') {
-									   					$(n).before(n.innerHTML);
+						outdent     : { visible : true,
+										exec : function() {
+											var n = this.currentNode ? this.currentNode : this.getSelectNode();
+											//if(n && n.nodeName.toLowerCase() == 'li') {
+											//	this.editorDoc.execCommand('outdent', false, []);
+											//} else
+											if(n && n.nodeName.toLowerCase() == 'div') {
+												var marginLeft = parseInt($(n).css("marginLeft"));
+												if(marginLeft > 20) {
+													$(n).css({marginLeft : (marginLeft - 20) + "px"});
+												} else {
+													$(n).css({marginLeft : ''});
+													if(n.style.length == 0 || $(n).attr("style") == '') {
+														$(n).before(n.innerHTML);
 														$(n).remove();
 														this.checkTargets();
 													}
 												}
 
 											}
-		            				   }
-		            				 },
-						indent     : { visible : true,
-						               exec : function() {
-									   		var n = this.currentNode ? this.currentNode : this.getSelectNode();
-									   		var r = this.getRange();
-									   		//if(n && n.nodeName.toLowerCase() == 'li') {
-									   		//	this.editorDoc.execCommand('indent', false, []);
-		            				        //} else
-		            				        if(n && n.nodeName.toLowerCase() != 'div') {
-									   			if(!$.browser.opera && r.startContainer && r.endContainer &&
-									   				r.startContainer == r.endContainer) {
+										}
+									},
+						indent      : { visible : true,
+										exec : function() {
+											var n = this.currentNode ? this.currentNode : this.getSelectNode();
+											var r = this.getRange();
+											//if(n && n.nodeName.toLowerCase() == 'li') {
+											//	this.editorDoc.execCommand('indent', false, []);
+											//} else
+											if(n && n.nodeName.toLowerCase() != 'div') {
+												if(!$.browser.opera && r.startContainer && r.endContainer &&
+														r.startContainer == r.endContainer) {
 
-									   				var br = r.startContainer.nextSibling;
-									   				if(!br) {
-									   					br = this.editorDoc.createTextNode("");
-									   					r.insertNode(br);
-									   					br = br.nextSibling;
-									   					r.setStartBefore(br);
-									   				} else {
-									   					r.setStartBefore(r.startContainer);
-									   				}
-									   				r.setEndAfter(br);
-									   				this.setRange(r);
-									   			}
-									   			n = this.applyInlineStyle('div', {style : {marginLeft : "20px"}});
-									   			if(n) {
+													var br = r.startContainer.nextSibling;
+													if(!br) {
+														br = this.editorDoc.createTextNode("");
+														r.insertNode(br);
+														br = br.nextSibling;
+														r.setStartBefore(br);
+													} else {
+														r.setStartBefore(r.startContainer);
+													}
+													r.setEndAfter(br);
+													this.setRange(r);
+												}
+												n = this.applyInlineStyle('div', {style : {marginLeft : "20px"}});
+												if(n) {
 													this.rangeSelect(n, 1);
 												}
 											} else {
 												var m = (parseInt($(n).css("marginLeft"))) ? parseInt($(n).css("marginLeft")) : 0;
 												$(n).css({marginLeft : (m + 20) + "px"});
 											}
-		            				   }
-		            				 },
-						blockquote : { visible : true, tags : ['blockquote'],
-									   exec : function() {
-									   		var n = this.getSelectBlockNode();
-									   		if(n && n.nodeName.toLowerCase() != 'blockquote') {
-									   			n = this.applyInlineStyle("blockquote", {"class" : "quote"});
+										}
+									},
+						blockquote  : { visible : true, tags : ['blockquote'],
+										exec : function() {
+											var n = this.getSelectBlockNode();
+											if(n && n.nodeName.toLowerCase() != 'blockquote') {
+												n = this.applyInlineStyle("blockquote", {"class" : "quote"});
 												if(n) this.rangeSelect(n);
 											} else {
 												$(n).before(n.innerHTML);
 												$(n).remove();
 												this.checkTargets();
 											}
-		            				   }
-		            				 }
+										}
+									}
 					}
 				},
 				{
-					group :   "005",
+					group : "005",
 					value : {
 						inserttable  : { visible : true,exec : function(e) {
 							var self = this;
@@ -653,18 +653,18 @@
 					}
 				},
 				{
-					group :   "006",
+					group : "006",
 					value : {
-						insertHorizontalRule : { visible : true, tags : ['hr'],
+						insertHorizontalRule    : { visible : true, tags : ['hr'],
 													exec : function(e) {
-		            					      			var n = this.applyInlineStyle('hr', {style : {width : "100%", height : "2px"}}, true);
-		            					      			if(n) this.rangeSelect(n);
-		            					  			}
-		            					  	   }
+														var n = this.applyInlineStyle('hr', {style : {width : "100%", height : "2px"}}, true);
+														if(n) this.rangeSelect(n);
+													}
+												}
 					}
 				},
 				{
-					group :   "007",
+					group : "007",
 					value : {
 						insertsmiley : { visible : true,exec : function(e) {
 											var self = this;
@@ -696,7 +696,7 @@
 					}
 				},
 				{
-					group :   "008",
+					group : "008",
 					value : {
 						inserttex : {
 										visible : true,
@@ -705,21 +705,21 @@
 										event : {dblclick :function(e, n){
 											var self = this;
 											var src = $(n).attr("src");
-											var re = new RegExp(/.*\/nccommon\/mimetex\/\?c=(.*)/i);
+											var re = new RegExp(/.*\/nc-downloads\/tex\/\?tex=(.*)/i);
 											if(src.match(re)) {
-												self.components.showInserTex.call(self, e, n);
+												self.components.showInsertTex.call(self, e, n);
 												return true;
 											}
 											return false;
 										}},
-					  					components : {
-											showInserTex : function (e, n) {
-										  		var self = this;
-										  		var text = '';
+										components : {
+											showInsertTex : function (e, n) {
+												var self = this;
+												var text = '';
 												n = (n == undefined) ? $(e.target) : $(n);
 												if(n.get(0) && n.get(0).nodeName.toLowerCase() == 'img') {
 													var src = $(n).attr("src");
-													var re = new RegExp(/.*\/nccommon\/mimetex\/\?c=(.*)/i);
+													var re = new RegExp(/.*\/nc-downloads\/tex\/\?tex=(.*)/i);
 													if(src.match(re)) {
 														text = RegExp.$1;
 													}
@@ -753,43 +753,43 @@
 												};
 												self.toggleDialog($(self.panel_btns['inserttex']).children(":first"), options);
 											}
-					  					},
-									  	exec : function(e) {
-										  	var self = this;
-										    var n = self.currentNode ? self.currentNode : self.getSelectNode();
-										    self.components.showInserTex.call(self, e, n);
+										},
+										exec : function(e) {
+											var self = this;
+											var n = self.currentNode ? self.currentNode : self.getSelectNode();
+											self.components.showInsertTex.call(self, e, n);
 										}
 									}
 					}
 				},
 				{
-					group :   "009",
+					group : "009",
 					value : {
-						createlink : { visible : true,
-									   tags : ['a'],
-									   exec : function(e) {
-									   		var self = this;
-									   		var options = {
-									   			id       : self.id + "-createlink",
+						createlink  : { visible : true,
+										tags : ['a'],
+										exec : function(e) {
+											var self = this;
+											var options = {
+												id       : self.id + "-createlink",
 												css      : [$._base_url+'css/plugins/nc_wysiwyg/insertlink.css'+'?'+$._v],
 												js       : [$._base_url+'js/plugins/nc_wysiwyg/insertlink.js'+'?'+$._v],
 												jsname    : ['$.fn.nc_insertlink'],
 												callback : function(){
 													var n = this.currentNode ? this.currentNode : this.getSelectNode();
 													var opts = {
-										        		callback : function(args) {
-										        			var a, bm, v;
-										        			// リンク挿入
-										        			self.removeDialog(self.id + "-createlink");
-										        			self.focus(true);
-										        			bm = self.bookmark;
-											        		if(n.nodeName.toLowerCase() != "img" && (!bm || ($.browser.msie && bm.length == 0) || (!$.browser.msie && bm.start == bm.end))) {
-									        					var v = (args.title) ? args.title : args.href;
-									        					if($.browser.msie)
-											        				self.moveToBookmark(bm);
+														callback : function(args) {
+															var a, bm, v;
+															// リンク挿入
+															self.removeDialog(self.id + "-createlink");
+															self.focus(true);
+															bm = self.bookmark;
+															if(n.nodeName.toLowerCase() != "img" && (!bm || ($.browser.msie && bm.length == 0) || (!$.browser.msie && bm.start == bm.end))) {
+																var v = (args.title) ? args.title : args.href;
+																if($.browser.msie)
+																	self.moveToBookmark(bm);
 																var a = self.applyInlineStyle('<a>' + v + '</a>', args, true);
-										        			} else if(n && n.nodeName.toLowerCase() != 'a') {
-											        			if(!$.browser.mozilla) {
+															} else if(n && n.nodeName.toLowerCase() != 'a') {
+																if(!$.browser.mozilla) {
 																	if(n.nodeName.toLowerCase() == "img") {
 																		if(!$.browser.opera)
 																			self.rangeSelect(n);
@@ -800,33 +800,33 @@
 																		var a = self.applyInlineStyle('a', args);
 																	}
 																} else
-											        				var a = self.applyInlineStyle('a', args);
-											        		} else {
-											        			// 更新
-											        			$(n).attr(args);
-											        			if(!args['title'])
-											        				$(n).removeAttr('title');
-											        			if(!args['target'])
-											        				$(n).removeAttr('target');
-											        			var a = n;
-										        			}
-										        			self.rangeSelect(a);
-										        			self.addUndo();
+																	var a = self.applyInlineStyle('a', args);
+															} else {
+																// 更新
+																$(n).attr(args);
+																if(!args['title'])
+																	$(n).removeAttr('title');
+																if(!args['target'])
+																	$(n).removeAttr('target');
+																var a = n;
+															}
+															self.rangeSelect(a);
+															self.addUndo();
 
-										        			return true;
-										        		},
-										        		cancel_callback : function() {
-										        			// キャンセル
-										        			self.removeDialog(self.id + "-createlink");
-										        			//self.focus(true);
-										        			//self.moveToBookmark(bm);
-										        			return true;
-										        		}
-											        };
-											        if(n && n.nodeName.toLowerCase() == 'img' &&
-											        	n.parentNode && n.parentNode.nodeName.toLowerCase() == 'a') {
-											        	n = n.parentNode;
-											        }
+															return true;
+														},
+														cancel_callback : function() {
+															// キャンセル
+															self.removeDialog(self.id + "-createlink");
+															//self.focus(true);
+															//self.moveToBookmark(bm);
+															return true;
+														}
+													};
+													if(n && n.nodeName.toLowerCase() == 'img' &&
+															n.parentNode && n.parentNode.nodeName.toLowerCase() == 'a') {
+														n = n.parentNode;
+													}
 													if(n && n.nodeName.toLowerCase() == 'a') {
 														opts = $.extend({
 															url    : $(n).attr("href"),
@@ -839,27 +839,27 @@
 											}
 
 											this.toggleDialog(e, options);
-									   }
-									 },
-						unlink     : { visible : true,
-									   tags : ['a'],
-									   exec : function(e) {
-									   		var n = this.currentNode ? this.currentNode : this.getSelectNode();
-									   		if(n && n.nodeName.toLowerCase() == 'a')
-									   			this.rangeSelect(n);
-									   		this.editorDoc.execCommand('unlink', false, []);
-									   }
-			                         }
+										}
+									},
+						unlink      : { visible : true,
+										tags : ['a'],
+										exec : function(e) {
+											var n = this.currentNode ? this.currentNode : this.getSelectNode();
+											if(n && n.nodeName.toLowerCase() == 'a')
+												this.rangeSelect(n);
+											this.editorDoc.execCommand('unlink', false, []);
+										}
+									}
 					}
 				},
 				{
-					group :   "010",
+					group : "010",
 					value : {
 						savezip : { visible : true }
 					}
 				},
 				{
-					group :   "011",
+					group : "011",
 					value : {
 						insertvideo : { visible : true,
 										exec : function(e) {
@@ -897,7 +897,7 @@
 										event : {dblclick :function(e, n){
 											var self = this;
 											var src = $(n).attr("src");
-											var re = new RegExp(/.*\/nccommon\/mimetex\/\?c=(.*)/i);
+											var re = new RegExp(/.*\/nc-downloads\/tex\/\?tex=(.*)/i);
 											if(!src.match(re)) {
 												self.components.insertimageDetail.call(self, e, n, 'image');
 												return true;
@@ -965,7 +965,7 @@
 											}
 										}
 						},
-						insertfile : { visible : true,
+						insertfile  : { visible : true,
 										exec : function(e) {
 											var self = this;
 											self.components.insertimageDetail.call(self, e, null, 'file');
@@ -975,14 +975,14 @@
 				}
 			]
 		]
-    });
+	});
 
 
 	$.extend(Wysiwyg.prototype,
-    {
-    	id              : null,
+	{
+		id              : null,
 		editor          : null,
-        options         : {},
+		options         : {},
 		panel           : null,
 		panel_btns      : {},
 		statusbar       : null,
@@ -1011,36 +1011,36 @@
 		autoregist      : null,
 		edit_mode       : 'edit',
 
-        init : function(el, options)
-        {
+		init : function(el, options)
+		{
 			var self = this, qel = $(el);
 
 			this.is_mac = navigator.userAgent.indexOf('Mac') != -1;
 
-            this.options = options || {};
+			this.options = options || {};
 
-            this.id = 'nc-wysiwyg' + $(el).attr('id');
-            var newX = qel.width() || el.clientWidth;
-            var newY = qel.height() || el.clientHeight;
-            if($(el).parent().hasClass('nc-wysiwyg-outer')) {
-            	// 初期処理終了済
-            	return;
-            }
+			this.id = 'nc-wysiwyg' + $(el).attr('id');
+			var newX = qel.width() || el.clientWidth;
+			var newY = qel.height() || el.clientHeight;
+			if($(el).parent().hasClass('nc-wysiwyg-outer')) {
+				// 初期処理終了済
+				return;
+			}
 
-            if ( el.nodeName.toLowerCase() == 'textarea' ) {
+			if ( el.nodeName.toLowerCase() == 'textarea' ) {
 				this.original = el;
 				$(el).addClass('nc-wysiwyg');
 
-                if ( newX == 0 && el.cols )
-                    newX = ( el.cols * 8 ) + 21;
+				if ( newX == 0 && el.cols )
+					newX = ( el.cols * 8 ) + 21;
 
-                if ( newY == 0 && el.rows )
-                    newY = ( el.rows * 16 ) + 16;
+				if ( newY == 0 && el.rows )
+					newY = ( el.rows * 16 ) + 16;
 
 				var editor = this.editor = $('<iframe></iframe>').css({
-                    height    : ( newY  ).toString() + 'px',
-                    width     : ( newX  ).toString() + 'px'
-                }).attr('class', 'nc-wysiwyg').load(function(){
+					height    : ( newY  ).toString() + 'px',
+					width     : ( newX  ).toString() + 'px'
+				}).attr('class', 'nc-wysiwyg').load(function(){
 					if(!self.editorDoc) {
 						self.initialContent = $(self.original).val();
 						self.editorDoc = self.getWin().document;
@@ -1060,58 +1060,58 @@
 							self.focus(false);
 						}
 					}
-                });
+				});
 
-            }
+			}
 
-            this.start_w = newX;
-            this.start_h = newY;
+			this.start_w = newX;
+			this.start_h = newY;
 
-            var panel = this.panel = $('<div></div>').addClass('nc-wysiwyg-panels');
+			var panel = this.panel = $('<div></div>').addClass('nc-wysiwyg-panels');
 
 			var statusbar = this.statusbar = $('<ul></ul>').addClass('statusbar');
 
 			/**
 			 * toolbar作成
-             */
-            this.appendControls();
-            this.el = $('<div id="' + this.id + '"></div>').addClass('nc-wysiwyg-outer')
-              .append(panel)
-              .append( $('<div><!-- --></div>').css({ clear : 'both' }) )
-              .append(editor);
+			 */
+			this.appendControls();
+			this.el = $('<div id="' + this.id + '"></div>').addClass('nc-wysiwyg-outer')
+				.append(panel)
+				.append( $('<div><!-- --></div>').css({ clear : 'both' }) )
+				.append(editor);
 			//this.chgEdit();
 			$(el).hide().before(this.el);
 			this.el.css({
-                width : ( newX > 0 ) ? ( newX + parseInt(this.el.css("padding-left") || 0)).toString() + 'px' : '100%'
-            });
+				width : ( newX > 0 ) ? ( newX + parseInt(this.el.css("padding-left") || 0)).toString() + 'px' : '100%'
+			});
 			// $(el).addClass("editor_hidden").css({visibility : 'hidden'}).before(this.el);
 			this.el.append(el)
-              .append(statusbar)
-              .append( $('<div><!-- --></div>').css({ clear : 'both' }) );
+				.append(statusbar)
+				.append( $('<div><!-- --></div>').css({ clear : 'both' }) );
 
 			/**
 			 * statusbar作成
-             */
-            this.appendStatusbar();
+			 */
+			this.appendStatusbar();
 
 /*
 			既にinitFrameにて初期化しているため、必要がないと思われる
-            if ( this.initialContent.length == 0 )
-                this.setContent('');
+			if ( this.initialContent.length == 0 )
+				this.setContent('');
 */
 
-            if ( this.options.autoSave )
-                $('form').submit(function() { self.saveContent(); });
+			if ( this.options.autoSave )
+				$('form').submit(function() { self.saveContent(); });
 
 /*
 			リセットは、関係ないformのリセットボタンの可能性もあるため、コメント
-            $('form').bind('reset', function()
-            {
-                self.setContent( self.initialContent );
-                self.saveContent();
-            });
+			$('form').bind('reset', function()
+			{
+				self.setContent( self.initialContent );
+				self.saveContent();
+			});
 */
-        },
+		},
 		/* iframe initialize */
 		initFrame : function(content) {
 
@@ -1126,217 +1126,217 @@
 /*
 IEで、iframe中のbodyのborderがつくから削除していると
 思われるが、再現しないためコメント
-            if ( $.browser.msie )
-            {
-                //Remove the horrible border it has on IE.
-                setTimeout(function() { $(self.editorDoc.body).css('border', 'none'); }, 0);
-            }
+			if ( $.browser.msie )
+			{
+				//Remove the horrible border it has on IE.
+				setTimeout(function() { $(self.editorDoc.body).css('border', 'none'); }, 0);
+			}
 */
 
 			/*$(this.original).focus(function()
-            {
-                $(self.editorDoc.body).focus();
-            });*/
+			{
+				$(self.editorDoc.body).focus();
+			});*/
 
 			$(this.editorDoc).mouseup(function( e )
-            {
-            	self.bookmark = self.getBookmark();	// IEはbookmarkを保持しないため
-            	self.currentNode = self.getSelectNode();
-                self.checkTargets(e.target);
-                self.addUndo();
-                self.closeDialogs();
-            });
+			{
+				self.bookmark = self.getBookmark();	// IEはbookmarkを保持しないため
+				self.currentNode = self.getSelectNode();
+				self.checkTargets(e.target);
+				self.addUndo();
+				self.closeDialogs();
+			});
 /*
 			$(this.editorDoc).mouseup(function( e )
-            {
-                self.checkTargets(e.target);
-                self.closeDialogs();
-            });
+			{
+				self.checkTargets(e.target);
+				self.closeDialogs();
+			});
 */
-            $(this.editorDoc).bind("contextmenu",function(e){
+			$(this.editorDoc).bind("contextmenu",function(e){
 				// コンテキストメニュー
 				_addEvents(e, "contextmenu");
 			});
 
 
-            $(this.editorDoc).keydown(function( e )
-            {
-            	/*if($.browser.webkit && (e.keyCode == 46 || e.keyCode == 8)) {
-            		// １行選択してdelete(backspace)ボタン、
-            		// または、1行にわたるNodeを選択してdelete(backspace)
-            		// ボタンを押すと、そのelementが削除されないため対処
+			$(this.editorDoc).keydown(function( e )
+			{
+				/*if($.browser.webkit && (e.keyCode == 46 || e.keyCode == 8)) {
+					// １行選択してdelete(backspace)ボタン、
+					// または、1行にわたるNodeを選択してdelete(backspace)
+					// ボタンを押すと、そのelementが削除されないため対処
 					// ->ChromeでStringのバックスペースでカーソルが行の先頭に移動してしまうためコメントに。
 					var data = null, p, pre_p, cur_flag, r = self.getRange(), f = self.getSelectNode();
 					switch (r.startContainer.nodeType) {
-					    case 3:
-					    case 4:
-					    case 8:
-					    	data = r.startContainer.data;
-					    	break;
+						case 3:
+						case 4:
+						case 8:
+							data = r.startContainer.data;
+							break;
 					}
 					p = f;
 					cur_flag = true;
 					do {
 						if(cur_flag == true) {
 							cur_flag = false;
-						 	if(!(p.childNodes.length == 1 && f.innerHTML == data))
-						 		break;
-						 } else {
-						 	if(p.nodeName.toLowerCase() == 'body' || p.childNodes.length != 1) {
-						 		p = pre_p;
-						 		break;
-						 	}
-						 }
-						 pre_p = p;
+							if(!(p.childNodes.length == 1 && f.innerHTML == data))
+								break;
+						} else {
+							if(p.nodeName.toLowerCase() == 'body' || p.childNodes.length != 1) {
+								p = pre_p;
+								break;
+							}
+						}
+						pre_p = p;
 					} while ( p = p.parentNode );
 
-                  	if(data != null && f.innerHTML == data && p.nextSibling.nodeName.toLowerCase() == 'br') {
-                  		r.setEndAfter(p.nextSibling);
+					if(data != null && f.innerHTML == data && p.nextSibling.nodeName.toLowerCase() == 'br') {
+						r.setEndAfter(p.nextSibling);
 						self.setRange(r);
-                  	}
+					}
                   	// 削除後、さらに入力すると削除前のスタイルが残ってしまうため対処
                   	setTimeout(function() {self.collapse();}, 100);
 				}*/
-            	if(e.ctrlKey && e.keyCode == 90) {
-            		// undo
-            		self.undo();
-            		e.preventDefault();
-    				return false;
-            	}
-            	if(e.ctrlKey && e.keyCode == 89) {
-            		// redo
-            		self.redo();
-            		e.preventDefault();
-    				return false;
-            	}
-            	if($.browser.msie && e.keyCode == 8) {
-            		// brのみの状態でBackspaceを押すとpタグに変換されてしまうため対処
-            		setTimeout(function() {
-            			if(self.editorDoc.body.innerHTML.toLowerCase() == "<p>&nbsp;</p>") {
-            				self.editorDoc.body.innerHTML = "<br />";
-            				self.rangeSelect(self.editorDoc.body.childNodes[0]);
-            				self.collapse(true);
-            				self.checkTargets();
-            			}
-            		}, 100);
-            	}
-            });
-
-            $(this.editorDoc).keypress(function( e )
-            {
-            	n = self.getSelectNode();
-            	if( e.keyCode == 13 && e.shiftKey == false && self.detachBlockQuote(n)) {
-            		e.preventDefault();
+				if(e.ctrlKey && e.keyCode == 90) {
+					// undo
+					self.undo();
+					e.preventDefault();
 					return false;
-            	} else if ( !$.browser.mozilla && e.keyCode == 13 ) {
-            		if(n.nodeName.toLowerCase() != 'li') {
-            			if ( $.browser.msie ) {
-            				var rng = self.getRange();
-		                    rng.pasteHTML('<br />');
-		                    rng.collapse(false);
-		                    rng.select();
-		                } else if($.browser.webkit) {
-		                	self.editorDoc.execCommand("InsertLineBreak", false, []);
-		                	var bm = self.getBookmark();
-		                	self.getWin().scrollTo(bm.scrollX, bm.scrollY+16);
-		                } else {
-		                	r = self.getRange();
-		                	sn = r.startContainer;
+				}
+				if(e.ctrlKey && e.keyCode == 89) {
+					// redo
+					self.redo();
+					e.preventDefault();
+					return false;
+				}
+				if($.browser.msie && e.keyCode == 8) {
+					// brのみの状態でBackspaceを押すとpタグに変換されてしまうため対処
+					setTimeout(function() {
+						if(self.editorDoc.body.innerHTML.toLowerCase() == "<p>&nbsp;</p>") {
+							self.editorDoc.body.innerHTML = "<br />";
+							self.rangeSelect(self.editorDoc.body.childNodes[0]);
+							self.collapse(true);
+							self.checkTargets();
+						}
+					}, 100);
+				}
+			});
+
+			$(this.editorDoc).keypress(function( e )
+			{
+				n = self.getSelectNode();
+				if( e.keyCode == 13 && e.shiftKey == false && self.detachBlockQuote(n)) {
+					e.preventDefault();
+					return false;
+				} else if ( !$.browser.mozilla && e.keyCode == 13 ) {
+					if(n.nodeName.toLowerCase() != 'li') {
+						if ( $.browser.msie ) {
+							var rng = self.getRange();
+							rng.pasteHTML('<br />');
+							rng.collapse(false);
+							rng.select();
+						} else if($.browser.webkit) {
+							self.editorDoc.execCommand("InsertLineBreak", false, []);
+							var bm = self.getBookmark();
+							self.getWin().scrollTo(bm.scrollX, bm.scrollY+16);
+						} else {
+							r = self.getRange();
+							sn = r.startContainer;
 							r = self.getRange();
 							if(r.startContainer && r.startContainer.nextSibling)
 								n = r.startContainer.previousSibling;
-	            			self.editorDoc.execCommand('inserthtml', false, '<br><br id="nc-wysiwygbr">');
+							self.editorDoc.execCommand('inserthtml', false, '<br><br id="nc-wysiwygbr">');
 							r = self.getRange();
-	            			en = r.startContainer;
-	            			br = $('#nc-wysiwygbr', self.editorDoc);
-	            			if(sn != en || $.browser.opera) {
-		            			r.setStartBefore(br[0]);
+							en = r.startContainer;
+							br = $('#nc-wysiwygbr', self.editorDoc);
+							if(sn != en || $.browser.opera) {
+								r.setStartBefore(br[0]);
 								r.setEndBefore(br[0]);
 								self.setRange(r);
 							}
 							if(sn != en && !$.browser.opera) {
 								br.removeAttr("id");
 								self.rangeSelect(br[0]);
-		                    } else {
-		                    	br.removeAttr("id");
-		                    	var buf_br = br.prev();
-	                    		br.remove();
-	                    		br = buf_br;
-		                    }
-		                    r.setStartAfter(br[0]);
+							} else {
+								br.removeAttr("id");
+								var buf_br = br.prev();
+								br.remove();
+								br = buf_br;
+							}
+							r.setStartAfter(br[0]);
 							r.setEndAfter(br[0]);
 							self.setRange(r);
 							var bm = self.getBookmark();
 							self.getWin().scrollTo(bm.scrollX, bm.scrollY+16);
-	           			}
-	           			e.preventDefault();
-	           			return false;
-            		}
-            	}
-            });
+						}
+						e.preventDefault();
+						return false;
+					}
+				}
+			});
 
-            $(this.editorDoc).keyup(function( e )
-            {
-            	var k = e.keyCode;
+			$(this.editorDoc).keyup(function( e )
+			{
+				var k = e.keyCode;
 				self.bookmark = self.getBookmark();	// IEはbookmarkを保持しないため
 				self.currentNode = self.getSelectNode();
-                if ((k >= 33 && k <= 36) || (k >= 37 && k <= 40) || k == 13 || k == 45 || k == 46 || k == 8  ||
-                		(e.ctrlKey && (k == 86 || k == 88)) || k.ctrlKey || (this.is_mac && (k == 91 || k == 93))) {
-            		// enter、上下左右、baskspace, Delキー,カット＆ペーストならば、checkTargetsを呼び出す
-            		self.checkTargets(self.currentNode);
-	            	self.addUndo();
-            	}
-            	if ( self.options.autoSave )
-            		self.saveContent();
-            });
+				if ((k >= 33 && k <= 36) || (k >= 37 && k <= 40) || k == 13 || k == 45 || k == 46 || k == 8  ||
+						(e.ctrlKey && (k == 86 || k == 88)) || k.ctrlKey || (this.is_mac && (k == 91 || k == 93))) {
+					// enter、上下左右、baskspace, Delキー,カット＆ペーストならば、checkTargetsを呼び出す
+					self.checkTargets(self.currentNode);
+					self.addUndo();
+				}
+				if ( self.options.autoSave )
+					self.saveContent();
+			});
 
-            $(this.editorDoc).dblclick(function( e )
-            {
-            	if(self.getMode() == 'edit')
-            		_addEvents(e, "dblclick");
-            	e.preventDefault();
-    			return false;
-            });
+			$(this.editorDoc).dblclick(function( e )
+			{
+				if(self.getMode() == 'edit')
+					_addEvents(e, "dblclick");
+				e.preventDefault();
+				return false;
+			});
 
 			// auto regist
-            if( this.options.autoRegistForm ) {
-            	this.autoregist = this.content();
-            	var unique_id = $.Common.uniqueId();
-            	this.el.attr('data-wysiwyg-unique-id', unique_id);
-            	setTimeout(function() {
-            		var buf_el = $('#' + self.id);
-            		if(unique_id == buf_el.attr('data-wysiwyg-unique-id')) {
-            			self.regist(null, null, true);
+			if( this.options.autoRegistForm ) {
+				this.autoregist = this.content();
+				var unique_id = $.Common.uniqueId();
+				this.el.attr('data-wysiwyg-unique-id', unique_id);
+				setTimeout(function() {
+					var buf_el = $('#' + self.id);
+					if(unique_id == buf_el.attr('data-wysiwyg-unique-id')) {
+						self.regist(null, null, true);
 						if (self.options.autoRegistForm && self.el && self.el[0] && self.el[0].nodeName) {
 							setTimeout(arguments.callee, self.options.autoRegistTime);
 						}
-            		}
+					}
 				}, this.options.autoRegistTime);
-            }
+			}
 
-            return;
+			return;
 
-            function _addEvents(e, type) {
-            	var n = e.target;
+			function _addEvents(e, type) {
+				var n = e.target;
 				var node_name = n.nodeName.toLowerCase(), chk = false;
-            	for(var i in self.events) {
-            		if(self.events[i][type]) {
-            			// イベントが一致
-            			for(var j in self.eventstags[i]) {
-            				if(node_name == self.eventstags[i][j]) {
-            					chk = true;
-            					break;
-            				}
-            			}
-            			// タグ一致
-            			var ret = false;
-            			if(chk == true)
-	            			ret = self.events[i][type].call(self, e, n);
-            			if(ret)
-            				break;
-            		}
-            	}
-            }
+				for(var i in self.events) {
+					if(self.events[i][type]) {
+						// イベントが一致
+						for(var j in self.eventstags[i]) {
+							if(node_name == self.eventstags[i][j]) {
+								chk = true;
+								break;
+							}
+						}
+						// タグ一致
+						var ret = false;
+						if(chk == true)
+							ret = self.events[i][type].call(self, e, n);
+						if(ret)
+							break;
+					}
+				}
+			}
 		},
 
 		_initFrame : function(doc, options) {
@@ -1345,12 +1345,12 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			var br = '<br />';
 
 			if (options.css)
-                for ( var i in options.css )
-	                headstr += '<link rel="stylesheet" type="text/css" media="screen"  charset="utf-8" href="' + options.css[i] + '" />';
+				for ( var i in options.css )
+					headstr += '<link rel="stylesheet" type="text/css" media="screen"  charset="utf-8" href="' + options.css[i] + '" />';
 
-            if (options.js)
-            	for ( var i in options.js )
-	                headstr += '<script type="text/javascript" charset="utf-8" src="' + options.js[i] + '"></script>';
+			if (options.js)
+				for ( var i in options.js )
+					headstr += '<script type="text/javascript" charset="utf-8" src="' + options.js[i] + '"></script>';
 
 			if (options.cssInc) {
 				// 親のCSSをinclude
@@ -1378,64 +1378,64 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			if(options.content != undefined && $.trim(options.content).match(re))
 				br = '';						// 最後にbrがある場合は、追加しない
 			doc.open();
-            doc.write(
-                options.html
+			doc.write(
+				options.html
 					.replace(/INITIAL_TITLE/, options.title)
-                    .replace(/INITIAL_CONTENT/, (options.content != undefined) ? options.content + br : '<br />')
-                    .replace(/INITIAL_HEADER/, headstr)
-            );
-            doc.close();
+					.replace(/INITIAL_CONTENT/, (options.content != undefined) ? options.content + br : '<br />')
+					.replace(/INITIAL_HEADER/, headstr)
+			);
+			doc.close();
 
-            if (options.style)
-            {
-                setTimeout(function()
-                {
-                    $(doc).find('body').css(options.style);
-                }, 100);
-            }
-            this._setStyleWithCSS();
+			if (options.style)
+			{
+				setTimeout(function()
+				{
+					$(doc).find('body').css(options.style);
+				}, 100);
+			}
+			this._setStyleWithCSS();
 		},
 
 		getWin : function(iframe) {
 			return (typeof iframe == "undefined") ? this.editor[0].contentWindow : iframe.contentWindow;
 		},
 
-        getContent : function(rmUnwantedBr)
-        {
+		getContent : function(rmUnwantedBr)
+		{
 			var t = this;
 			if(t.getMode() == 'html')
 				t.setContent($(t.original).val());
 
-            var html = $.trim($(t.editorDoc).find('body').html());
-            if (rmUnwantedBr || t.options.rmUnwantedBr ) {
+			var html = $.trim($(t.editorDoc).find('body').html());
+			if (rmUnwantedBr || t.options.rmUnwantedBr ) {
 				var re = new RegExp(/(<br[ ]*\/*>\s*)+$/i);
 				html = $.trim(html).replace(re, '');
 			}
 			return html;
-        },
+		},
 
-        setContent : function(newContent, body)
-        {
-        	body = (body == undefined) ? this.editorDoc.body : body;
-        	//SCRIPTタグをinnerHTMLした場合、IEでは削除されるため
+		setContent : function(newContent, body)
+		{
+			body = (body == undefined) ? this.editorDoc.body : body;
+			//SCRIPTタグをinnerHTMLした場合、IEでは削除されるため
 			if($.browser.msie || $.browser.webkit) {
 				body.innerHTML = "<br />" + newContent;
 				body.removeChild(body.firstChild);
 			} else {
 				body.innerHTML = newContent;
 			}
-        },
+		},
 
-        saveContent : function(parse_flag)
-        {
-            if ( this.original )
-            {
-                var content = (parse_flag && this.options.parseHtml) ? this.parseContent() : this.getContent();
+		saveContent : function(parse_flag)
+		{
+			if ( this.original )
+			{
+				var content = (parse_flag && this.options.parseHtml) ? this.parseContent() : this.getContent();
 
-                $(this.original).val(content);
-                return content;
-            }
-        },
+				$(this.original).val(content);
+				return content;
+			}
+		},
 
 		// getTextAreaと同等の処理 nc2系では、このmethodの別名とする
 		content : function(root)
@@ -1444,20 +1444,20 @@ IEで、iframe中のbodyのborderがつくから削除していると
 		},
 
 		clear : function()
-        {
-            this.setContent('<br />');
-            this.saveContent();
-            this.addUndo();
-        },
+		{
+			this.setContent('<br />');
+			this.saveContent();
+			this.addUndo();
+		},
 
-        appendMenu : function( panel, cmd, args, className, fn )
-        {
-            var self = this;
-            var args = args || [];
-            var li = $('<li></li>').addClass('l').append(
-                $('<a href="javascript:;"><!-- --></a>').addClass("l").addClass(className || cmd)
-                .click(function(e) {
-                	var li = $(e.target).parent("li");
+		appendMenu : function( panel, cmd, args, className, fn )
+		{
+			var self = this;
+			var args = args || [];
+			var li = $('<li></li>').addClass('l').append(
+				$('<a href="javascript:;"><!-- --></a>').addClass("l").addClass(className || cmd)
+				.click(function(e) {
+					var li = $(e.target).parent("li");
 					if(self.getMode() == 'edit' && li.css("opacity") >= 1) {
 						self.closeDialogs($(this).next());
 						args.push(e);
@@ -1472,14 +1472,14 @@ IEで、iframe中のbodyのborderがつくから削除していると
 												});
 					e.preventDefault();
 					return false;
-	            })
-            ).appendTo( panel );
-            self.panel_btns[className] = li;
+				})
+			).appendTo( panel );
+			self.panel_btns[className] = li;
 
-            var id = this.id + '-btn-' + className;
-            li.attr('id', id);
+			var id = this.id + '-btn-' + className;
+			li.attr('id', id);
 
-            if(cmd == 'forecolor') {
+			if(cmd == 'forecolor') {
 				// forecolorのデフォルト色
 				$("a", li).css({'backgroundColor': self.options.forecolor});
 			} else if(cmd == 'hilitecolor') {
@@ -1487,15 +1487,15 @@ IEで、iframe中のbodyのborderがつくから削除していると
 				$("a", li).css({'backgroundColor': self.options.hilitecolor});
 			}
 
-            return li;
-        },
+			return li;
+		},
 
-        appendList : function( panel, cmd, args, className, fn, list )
-        {
-        	var self = this, callback, btn_callback;
-        	var li = $('<li></li>').addClass('l').appendTo( panel );
-        	for(var i in list) {
-        		if(cmd == 'formatblock' && i != '') {
+		appendList : function( panel, cmd, args, className, fn, list )
+		{
+			var self = this, callback, btn_callback;
+			var li = $('<li></li>').addClass('l').appendTo( panel );
+			for(var i in list) {
+				if(cmd == 'formatblock' && i != '') {
 					list[i] = '<' + i + '>' + list[i] + '</' + i + '>';
 				} else if(cmd == 'fontname' && i != '') {
 					list[i] = '<div style="font-family:' + i.replace(/\\/, "\\\\") + '">' + list[i] + '</div>';
@@ -1508,10 +1508,10 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			callback = function(e, key, value) {
 				if(key == "") {
 					if(self.getMode() != 'edit') return false;
-            		self.closeDialogs($(this).next());
-            		return true;
+					self.closeDialogs($(this).next());
+					return true;
 				}
-        		var li = $(e.target).parents("li.l");
+				var li = $(e.target).parents("li.l");
 				if(self.getMode() == 'edit' && li.css("opacity") >= 1) {
 					var args = args || [key] || [];
 					if ( fn ) fn.apply(self, args); else self.editorDoc.execCommand(cmd, false, args);
@@ -1522,14 +1522,14 @@ IEで、iframe中のbodyのborderがつくから削除していると
 												if($.browser.msie)
 													self.moveToBookmark(self.bookmark);
 											});
-        	};
+			};
 
-        	return self.appendListMain(li, list, className || cmd, callback, args);
-        },
+			return self.appendListMain(li, list, className || cmd, callback, args);
+		},
 
-        appendControls : function()
-        {
-        	var t = this, panel = $('<ul></ul>').addClass('nc-wysiwyg-panel').appendTo( this.panel );
+		appendControls : function()
+		{
+			var t = this, panel = $('<ul></ul>').addClass('nc-wysiwyg-panel').appendTo( this.panel );
 
 			for ( var line in this.options.controls ) {
 				// 改行
@@ -1569,28 +1569,28 @@ IEで、iframe中のbodyのborderがつくから削除していると
 								// リスト表示
 								var li = t.appendList(
 									panel,
-			                        control.command || name,
-			                        control.arguments || [],
-			                        control.className || control.command || name || 'empty',
-			                        control.exec,
-			                        control.list
-			                    ).addClass("list");
-			                    li.click(function(e){
-			                    	if($(this.parentNode.parentNode).css("opacity") < 1) {
-			                    		$(this).next().hide();
-			                    		e.preventDefault();
-						            	return false;
-			                    	}
-			                    });
+									control.command || name,
+									control.arguments || [],
+									control.className || control.command || name || 'empty',
+									control.exec,
+									control.list
+								).addClass("list");
+								li.click(function(e){
+									if($(this.parentNode.parentNode).css("opacity") < 1) {
+										$(this).next().hide();
+										e.preventDefault();
+										return false;
+									}
+								});
 							} else {
 								var li = t.appendMenu(
 									panel,
-			                        control.command || name,
-			                        control.arguments || [],
-			                        control.className || control.command || name || 'empty',
-			                        control.exec
-			                    );
-			                    if(control.liClassName)
+									control.command || name,
+									control.arguments || [],
+									control.className || control.command || name || 'empty',
+									control.exec
+								);
+								if(control.liClassName)
 									li.addClass(control.liClassName);
 								if(control.title)
 									li.children().attr("title", control.title);
@@ -1623,15 +1623,15 @@ IEで、iframe中のbodyのborderがつくから削除していると
 
 				}
 			}
-        },
+		},
 
 		appendModeMenu : function( lang_key, active_flag, className )
-        {
-            var self = this;
+		{
+			var self = this;
 			className = className || lang_key;
-            var li = $('<li></li>').append(
-                $('<a>' + __d('nc_wysiwyg', lang_key) + '</a>')
-            );
+			var li = $('<li></li>').append(
+				$('<a>' + __d('nc_wysiwyg', lang_key) + '</a>')
+			);
 			if(active_flag) li.addClass("nc-wysiwyg-active");
 			li.mousedown(function() {
 				var pre_mode = self.getMode();
@@ -1652,13 +1652,13 @@ IEで、iframe中のbodyのborderがつくから削除していると
 						self.chgPreview(pre_mode);
 						break;
 				}
-            }).appendTo( this.statusbar )
+			}).appendTo( this.statusbar )
 			.addClass(className);
-        },
+		},
 
 		appendStatusbar : function()
-        {
-        	var modemenu = ["edit", "html", "preview"];
+		{
+			var modemenu = ["edit", "html", "preview"];
 			for ( var i in modemenu )
 				this.appendModeMenu(modemenu[i], (modemenu[i] == "edit") ? true : false);
 
@@ -1678,83 +1678,83 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			var resize = $('<a></a>');
 			var li = $('<div></div>').append( resize ).addClass(className)
 			.appendTo( this.el );
-            //.css('left', parseInt(this.editor.outerWidth() || 0) - s_w - img_w  + 'px')
-            //.appendTo( this.statusbar );
+			//.css('left', parseInt(this.editor.outerWidth() || 0) - s_w - img_w  + 'px')
+			//.appendTo( this.statusbar );
 
-            // リサイズmousedownイベント
-            resize.mousedown(function() {
-            	var sx = null, sy = null;
-            	var m_w = self.el.width();
-            	var m_h = self.el.height();
-            	var w = self.editor.width() || $(self.original).width();
-            	var h = self.editor.height() || $(self.original).height();
-            	var r_w = resize.width();
+			// リサイズmousedownイベント
+			resize.mousedown(function() {
+				var sx = null, sy = null;
+				var m_w = self.el.width();
+				var m_h = self.el.height();
+				var w = self.editor.width() || $(self.original).width();
+				var h = self.editor.height() || $(self.original).height();
+				var r_w = resize.width();
 
-            	self.editor.blur();
-            	self.editor.hide();
-	            $(self.original).hide();
+				self.editor.blur();
+				self.editor.hide();
+				$(self.original).hide();
 
-	        	self.resize = $('<div></div>')
-	        				.css({
-	        					width    : w,
-			                    height   : h
-			                }).attr('class', 'resizebox')
-			                .insertBefore( self.editor );
+				self.resize = $('<div></div>')
+							.css({
+								width    : w,
+								height   : h
+							}).attr('class', 'resizebox')
+							.insertBefore( self.editor );
 
-            	// リサイズmousemoveイベント
-            	var resizeMouseMove = function(event) {
-            		var x_offset = 0, y_offset = 0;
-            		if(sx == null) {
-            			sx = event.pageX, sy = event.pageY;
-            		} else {
-            			x_offset = event.pageX - sx, y_offset = event.pageY - sy;
-            		}
-            		if(parseInt(w || 0) + x_offset < self.start_w) x_offset = self.start_w - parseInt(w || 0);
-            		if(parseInt(h || 0) + y_offset < self.start_h) y_offset = self.start_h - parseInt(h || 0);
+				// リサイズmousemoveイベント
+				var resizeMouseMove = function(event) {
+					var x_offset = 0, y_offset = 0;
+					if(sx == null) {
+						sx = event.pageX, sy = event.pageY;
+					} else {
+						x_offset = event.pageX - sx, y_offset = event.pageY - sy;
+					}
+					if(parseInt(w || 0) + x_offset < self.start_w) x_offset = self.start_w - parseInt(w || 0);
+					if(parseInt(h || 0) + y_offset < self.start_h) y_offset = self.start_h - parseInt(h || 0);
 
 					// リサイズ
-            		self.resize.css({
-       					width      : parseInt(w || 0) + x_offset + 'px',
-	                    height     : parseInt(h || 0) + y_offset + 'px'
-	                });
-	                self.el.css({
-       					width      : parseInt(m_w || 0) + x_offset + 'px',
-	                    height     : parseInt(m_h || 0) + y_offset + 'px'
-	                });
-	                resize.css({
-       					width      : parseInt(r_w || 0) + x_offset + 'px'
-	                });
-            	};
+					self.resize.css({
+						width      : parseInt(w || 0) + x_offset + 'px',
+						height     : parseInt(h || 0) + y_offset + 'px'
+					});
+					self.el.css({
+						width      : parseInt(m_w || 0) + x_offset + 'px',
+						height     : parseInt(m_h || 0) + y_offset + 'px'
+					});
+					resize.css({
+						width      : parseInt(r_w || 0) + x_offset + 'px'
+					});
+				};
 
-            	// リサイズmouseupイベント
-            	var resizeMouseUp = function(event) {
-            		var mode = self.getMode();
-            		var w = self.resize.width();
-            		var h = self.resize.height();
+				// リサイズmouseupイベント
+				var resizeMouseUp = function(event) {
+					var mode = self.getMode();
+					var w = self.resize.width();
+					var h = self.resize.height();
 
-            		// リサイズ
-            		self.editor.css({
-       					width      : self.resize.width(),
-	                    height     : self.resize.height()
-	                });
-	                $(self.original).css({
-       					width      : self.resize.width(),
-	                    height     : self.resize.height()
-	                });
-	                self.resize.remove();
+					// リサイズ
+					self.editor.css({
+						width      : self.resize.width(),
+						height     : self.resize.height()
+					});
+					$(self.original).css({
+						width      : self.resize.width(),
+						height     : self.resize.height()
+					});
+					self.resize.remove();
 
-            		$(document).unbind('mousemove', resizeMouseMove);
-            		$(document).unbind('mouseup', resizeMouseUp);
+					$(document).unbind('mousemove', resizeMouseMove);
+					$(document).unbind('mouseup', resizeMouseUp);
 
-            		(mode != "html") ? self.editor.show() : $(self.original).show();
-            		self._setStyleWithCSS();
-		            event.preventDefault();
-            	};
+					(mode != "html") ? self.editor.show() : $(self.original).show();
+					self._setStyleWithCSS();
+					event.preventDefault();
+				};
 
-            	$(document).mousemove(resizeMouseMove);
+				$(document).mousemove(resizeMouseMove);
 				$(document).mouseup(resizeMouseUp);
 
-            });
+			});
 		},
 
 		chgEdit : function(pre_mode) {
@@ -1762,9 +1762,9 @@ IEで、iframe中のbodyのborderがつくから削除していると
 				return;
 			var self =this;
 			var re = new RegExp(/(<br[ ]*\/*>\s*)+$/i);
-            $("ul", this.panel).css({opacity : '1.0'});
-            this.closeDialogs();
-            if(pre_mode == "html")
+			$("ul", this.panel).css({opacity : '1.0'});
+			this.closeDialogs();
+			if(pre_mode == "html")
 				this.setContent($(this.original).val());
 			// blankを取り除いたものを表示
 			var content = this.parseContent(true);
@@ -1776,15 +1776,15 @@ IEで、iframe中のbodyのborderがつくから削除していると
 				this.setContent(content);
 			this.editor.show();
 			$('#path-'+ this.id).css({visibility : 'visible'});
-            $(this.original).hide();
-            this.chgDesignMode('on');
+			$(this.original).hide();
+			this.chgDesignMode('on');
 
-        	// フォーカスの移動
-        	this.focus(false, this.checkTargets);
+			// フォーカスの移動
+			this.focus(false, this.checkTargets);
 
-        	// Operaでモードを変更した場合、iframeのイベントがリセットされるようなので修正(Ver9.64)
-            if($.browser.msie || $.browser.opera)
-	            this.initFrame(content);
+			// Operaでモードを変更した場合、iframeのイベントがリセットされるようなので修正(Ver9.64)
+			if($.browser.msie || $.browser.opera)
+				this.initFrame(content);
 
 			setTimeout(function() {self.chgModeInit("edit");}, 100);
 		},
@@ -1799,10 +1799,10 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			this.saveContent(true);
 			$(this.original).show().css({visibility : 'visible'});
 			$('#path-'+ this.id).css({visibility : 'hidden'});
-            this.editor.hide();
+			this.editor.hide();
 
-            // フォーカスの移動
-            this.focus();
+			// フォーカスの移動
+			this.focus();
 		},
 
 		chgPreview : function(pre_mode) {
@@ -1819,14 +1819,14 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			this.closeDialogs();
 			//this.saveContent();
 			this.editor.show();
-            $(this.original).hide();
-            $('#path-'+ this.id).css({visibility : 'hidden'});
-            this.chgDesignMode('off');
+			$(this.original).hide();
+			$('#path-'+ this.id).css({visibility : 'hidden'});
+			this.chgDesignMode('off');
 
 			// IEでdesignModeをoffにした場合、iframeが再読み込みされるため
-            if($.browser.msie)
-	            this.initFrame(content);
-	        setTimeout(function() {self.chgModeInit("preview");}, 100);
+			if($.browser.msie)
+				this.initFrame(content);
+			setTimeout(function() {self.chgModeInit("preview");}, 100);
 		},
 
 		/**
@@ -1903,53 +1903,53 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			var n_el = el, buf_n;
 			do {
 				nodeN = el.nodeName.toLowerCase();
-			    if ( el.nodeType != 1 || nodeN == 'body' ||  nodeN == 'html')
-			        break;
-			    if(nodeN == "b")
-			    	nodeN = "strong";
-			    a = $('<a href="javascript:;"></a>').addClass('nc-wysiwyg-path-' + t)
-	            .click(function(e) {
-	            	var n = e.target;
-	            	if (n.nodeName == 'A') {
-	            		var cth = 0, th = n.className.replace(/^.*nc-wysiwyg-path-([0-9]+).*$/, '$1');
-	            		n = n_el ;	//self.getSelectNode();
-	            		do {
-	            			if(n.nodeType == 1 && cth++ == th) {
-	            				if(($.browser.opera || $.browser.webkit) && n.nodeName == 'TABLE') {
-	            					buf_n = $(n).children("TBODY")[0];
-	            					if(buf_n)
-	            						n = buf_n;
-	            				}
-	            				self.focus(true);
-	            				self.rangeSelect(n);
-	            				self.checkTargets();
-	            				self.bookmark = self.getBookmark();	// IEはbookmarkを保持しないため
-	            				self.currentNode = self.getSelectNode();
-	            				self.closeDialogs();
-	            				break;
-	            			}
-	            			if ( n.nodeName.toLowerCase() == 'body' ||  n.nodeName.toLowerCase() == 'html') break;
-	            		} while ( n = n.parentNode );
+				if ( el.nodeType != 1 || nodeN == 'body' ||  nodeN == 'html')
+					break;
+				if(nodeN == "b")
+					nodeN = "strong";
+				a = $('<a href="javascript:;"></a>').addClass('nc-wysiwyg-path-' + t)
+				.click(function(e) {
+					var n = e.target;
+					if (n.nodeName == 'A') {
+						var cth = 0, th = n.className.replace(/^.*nc-wysiwyg-path-([0-9]+).*$/, '$1');
+						n = n_el ;	//self.getSelectNode();
+						do {
+							if(n.nodeType == 1 && cth++ == th) {
+								if(($.browser.opera || $.browser.webkit) && n.nodeName == 'TABLE') {
+									buf_n = $(n).children("TBODY")[0];
+									if(buf_n)
+										n = buf_n;
+								}
+								self.focus(true);
+								self.rangeSelect(n);
+								self.checkTargets();
+								self.bookmark = self.getBookmark();	// IEはbookmarkを保持しないため
+								self.currentNode = self.getSelectNode();
+								self.closeDialogs();
+								break;
+							}
+							if ( n.nodeName.toLowerCase() == 'body' ||  n.nodeName.toLowerCase() == 'html') break;
+						} while ( n = n.parentNode );
 					}
-	            	e.preventDefault();
-	            	return false;
-	            }).html(nodeN);
-	            if(t == 0) a.insertAfter(spn);
-	            else a.insertBefore(pa);
+					e.preventDefault();
+					return false;
+				}).html(nodeN);
+				if(t == 0) a.insertAfter(spn);
+				else a.insertBefore(pa);
 
-	            pa = a;
-			    t++;
+				pa = a;
+				t++;
 			} while ( el = el.parentNode );
 		},
 
-        checkTargets : function( element )
-        {
-        	var o, bm;
-        	element = element || this.getSelectNode();
+		checkTargets : function( element )
+		{
+			var o, bm;
+			element = element || this.getSelectNode();
 
 			if(this._checkNode != element) {
 				this._checkNode = element;
-	        	// path
+				// path
 				this._nodeChanged( element );
 				this.currentNode = element;
 
@@ -1962,26 +1962,26 @@ IEで、iframe中のbodyのborderがつくから削除していると
 						{
 							var control = this.options.controls[line][group]["value"][name];
 							var className = control.className || control.command || name || 'empty';
-			                var li = this.panel_btns[className]; //$($('.' + className, this.panel)[0].parentNode);
-			                if(!li) continue;
-			                var a_className = li.hasClass("nc-wysiwyg-arrow") ? "nc-wysiwyg-arrow-active" : (li.hasClass("nc-wysiwyg-rarrow") ? "nc-wysiwyg-rarrow-active" : "nc-wysiwyg-active");
-			                li.removeClass(a_className);
-			                if ( !control.visible)
-			                	continue;
-			                if ( control.list) {
-			                	var list_control = $("span.listcontent", li);
-			                	list_control.html(control.list[""]);
-			                }
+							var li = this.panel_btns[className]; //$($('.' + className, this.panel)[0].parentNode);
+							if(!li) continue;
+							var a_className = li.hasClass("nc-wysiwyg-arrow") ? "nc-wysiwyg-arrow-active" : (li.hasClass("nc-wysiwyg-rarrow") ? "nc-wysiwyg-rarrow-active" : "nc-wysiwyg-active");
+							li.removeClass(a_className);
+							if ( !control.visible)
+								continue;
+							if ( control.list) {
+								var list_control = $("span.listcontent", li);
+								list_control.html(control.list[""]);
+							}
 
-			                if ( control.active_class )
-			                {
-			                	var el = $(element), break_flag = false;
-			                    do {
-			                        if ( el[0].nodeType != 1 )
-			                            break;
+							if ( control.active_class )
+							{
+								var el = $(element), break_flag = false;
+								do {
+									if ( el[0].nodeType != 1 )
+										break;
 
-			                        $.each(control.active_class, function(k, v) {
-			                        	if ( $(el).hasClass(v) ) {
+									$.each(control.active_class, function(k, v) {
+										if ( $(el).hasClass(v) ) {
 											// リスト表示に一致するものあり
 											li.addClass(a_className);
 											if(control.list && typeof control.list[v] != 'undefined')
@@ -1992,36 +1992,36 @@ IEで、iframe中のbodyのborderがつくから削除していると
 											return false;
 										}
 									});
-			                        if(break_flag)
+									if(break_flag)
 										break;
-			                    } while ( el = el.parent() );
-			                }
+								} while ( el = el.parent() );
+							}
 
-			                if ( control.tags )
-			                {
-			                    var el = element;
+							if ( control.tags )
+							{
+								var el = element;
 
-			                    do {
-			                        if ( el.nodeType != 1 )
-			                            break;
+								do {
+									if ( el.nodeType != 1 )
+										break;
 
-			                        if ( $.inArray(el.tagName.toLowerCase(), control.tags) != -1 ) {
-			                            li.addClass(a_className);
-			                            if(control.list && typeof control.list[el.tagName.toLowerCase()] != 'undefined')
-			                            	list_control.html(control.list[el.tagName.toLowerCase()]);
-			                        	if(control.extend_body == false) break;
-			                        }
-			                    } while ( el = el.parentNode );
-			                }
+									if ( $.inArray(el.tagName.toLowerCase(), control.tags) != -1 ) {
+										li.addClass(a_className);
+										if(control.list && typeof control.list[el.tagName.toLowerCase()] != 'undefined')
+											list_control.html(control.list[el.tagName.toLowerCase()]);
+										if(control.extend_body == false) break;
+									}
+								} while ( el = el.parentNode );
+							}
 
-			                if ( control.css )
-			                {
-			                    var el = $(element), break_flag = false;
-			                    do {
-			                        if ( el[0].nodeType != 1 )
-			                            break;
+							if ( control.css )
+							{
+								var el = $(element), break_flag = false;
+								do {
+									if ( el[0].nodeType != 1 )
+										break;
 
-			                        for ( var cssProperty in control.css ) {
+									for ( var cssProperty in control.css ) {
 										if(el[0].style[cssProperty] == undefined || el[0].style[cssProperty] == '')
 											continue;
 										if($.browser.webkit && cssProperty == "fontFamily") {
@@ -2038,20 +2038,20 @@ IEで、iframe中のbodyのborderがつくから削除していると
 												break;
 											}
 										} else if ( el.css(cssProperty).toString().toLowerCase() == control.css[cssProperty] ) {
-			                                li.addClass(a_className);
-			                                if(control.extend_body == false) {
-			                                	break_flag = true;
-			                                	break;
-			                                }
+											li.addClass(a_className);
+											if(control.extend_body == false) {
+												break_flag = true;
+												break;
+											}
 										}
 									}
 									if(break_flag)
 										break;
-			                    } while ( el = el.parent() );
-			                }
-			                if ( a_className != "nc-wysiwyg-active" && ( control.tags || control.css || control.active_class)) {
-			                	li.css({opacity : ($(li).hasClass(a_className) ? '1.0' : '0.4')});
-			                }
+								} while ( el = el.parent() );
+							}
+							if ( a_className != "nc-wysiwyg-active" && ( control.tags || control.css || control.active_class)) {
+								li.css({opacity : ($(li).hasClass(a_className) ? '1.0' : '0.4')});
+							}
 						}
 					}
 				}
@@ -2066,13 +2066,13 @@ IEで、iframe中のbodyのborderがつくから削除していると
 				});
 			}else
 				$("li.collapsedDis", this.panel).css({opacity : '1.0'});
-        },
+		},
 
-        parseContent : function(blank_flag, clone_flag, root) {
-        	var self = this, blank_flag = blank_flag || false;
-        	var mes  = [];
-        	var edit_mode = self.edit_mode;
-        	self.edit_mode = this.getMode();
+		parseContent : function(blank_flag, clone_flag, root) {
+			var self = this, blank_flag = blank_flag || false;
+			var mes  = [];
+			var edit_mode = self.edit_mode;
+			self.edit_mode = this.getMode();
 			if( clone_flag ){
 				root = root || $("<div></div>")[0];
 				self.setContent(self.editorDoc.body.innerHTML, root);
@@ -2088,34 +2088,34 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			}
 
 			if($.browser.mozilla && $(root.firstChild) && $(root.firstChild).attr("_moz_editor_bogus_node")) {
-        		//_moz_editor_bogus_nodeの削除処理
-        		$(root.firstChild).remove();
+				//_moz_editor_bogus_nodeの削除処理
+				$(root.firstChild).remove();
 			}
-        	//WYSIWYGで自動的に付与される属性を削除（_moz_･･･等）
-        	if( !clone_flag )
-        		this.setContent(root.innerHTML);
+			//WYSIWYGで自動的に付与される属性を削除（_moz_･･･等）
+			if( !clone_flag )
+				this.setContent(root.innerHTML);
 
-        	//try{
-        		var html ="";
-        		var tab_space_num = (blank_flag) ? '' : this.options.tabStr;		// tabの半角スペース数
-        		var closingTags = " head noscript script style div span tr td tbody table em strong b i code cite dfn abbr acronym font a title sub sup object em strike s ";
-        		var allowEmpty = " td script object iframe video a ";
+			//try{
+				var html ="";
+				var tab_space_num = (blank_flag) ? '' : this.options.tabStr;		// tabの半角スペース数
+				var closingTags = " head noscript script style div span tr td tbody table em strong b i code cite dfn abbr acronym font a title sub sup object em strike s ";
+				var allowEmpty = " td script object iframe video a ";
 
-        		var deleteNode = /[\t\r\n ]/g;
-        		if($.browser.opera)
-        			var deleteText = /(\t|\r|\n)/g;
-        		else
-        			var deleteText = /[\t\r\n]/g;
-        		var parse = function(root, tab_space) {
-        			var html = "",row_html,closed, a,name,value,attrs,alt_flag, node_name,pre_type = null,split_style, split_buf, split_params;
-        			var n = (blank_flag) ? '' : self.options.lineBreak;
-        			var re = new RegExp(n + "$"), unit, embed_flag, embed_at, param_html, param_name, althtml_html;
-        			for (var node = root.firstChild; node; node = node.nextSibling) {
-	        			row_html = "";
-	        			switch (node.nodeType) {
-						    case 1: // Node.ELEMENT_NODE
-						    case 11: // Node.DOCUMENT_FRAGMENT_NODE
-						    	node_name = node.tagName.toLowerCase();
+				var deleteNode = /[\t\r\n ]/g;
+				if($.browser.opera)
+					var deleteText = /(\t|\r|\n)/g;
+				else
+					var deleteText = /[\t\r\n]/g;
+				var parse = function(root, tab_space) {
+					var html = "",row_html,closed, a,name,value,attrs,alt_flag, node_name,pre_type = null,split_style, split_buf, split_params;
+					var n = (blank_flag) ? '' : self.options.lineBreak;
+					var re = new RegExp(n + "$"), unit, embed_flag, embed_at, param_html, param_name, althtml_html;
+					for (var node = root.firstChild; node; node = node.nextSibling) {
+						row_html = "";
+						switch (node.nodeType) {
+							case 1: // Node.ELEMENT_NODE
+							case 11: // Node.DOCUMENT_FRAGMENT_NODE
+								node_name = node.tagName.toLowerCase();
 								if(node_name == 'b') node_name = 'strong';
 								//iframeの場合<iframe src="XXX" />と変換してしまうとjavascriptの読み込みがストップされるようなので
 								//中の値があるなしにかかわらず、閉じタグを挿入する
@@ -2338,11 +2338,11 @@ IEで、iframe中のbodyのborderがつくから削除していると
 									row_html = "<object"+ embed_at + ">" + n + param_html + n + row_html + "</object>" + n;
 								}
 								break;
-		        			case 3: // Node.TEXT_NODE
-		        				node.data = node.data.replace(deleteText,'');
-		        				if(node.data == "") continue;
+							case 3: // Node.TEXT_NODE
+								node.data = node.data.replace(deleteText,'');
+								if(node.data == "") continue;
 
-		        				if(/^noscript|script|style|table|tbody|tr|ul|li$/i.test(node.parentNode.tagName)) {
+								if(/^noscript|script|style|table|tbody|tr|ul|li$/i.test(node.parentNode.tagName)) {
 									row_html = node.data.replace(/^[ ]+/, '').replace(/[ ]+$/, '');
 								} else {
 									if(blank_flag) {
@@ -2354,36 +2354,36 @@ IEで、iframe中のbodyのborderがつくから削除していると
 										row_html = self.htmlEncode(node.data).replace(/^[ ]+/, '').replace(/[ ]+$/, '');
 									}
 								}
-		        				break;
-		        			case 4: // Node.CDATA_SECTION_NODE
-		        				node.data = node.data.replace(deleteText,'');
-		        				if(node.data == "") continue;
-		        				row_html = "<![CDATA[" + node.data + "]]>";
 								break;
-		        			case 8: // Node.COMMENT_NODE
-		        				node.data = node.data.replace(deleteText,'');
-		        				if(node.data == "") continue;
-		        				row_html = "<!--" + node.data + "-->";
+							case 4: // Node.CDATA_SECTION_NODE
+								node.data = node.data.replace(deleteText,'');
+								if(node.data == "") continue;
+								row_html = "<![CDATA[" + node.data + "]]>";
 								break;
-		        		}
-	        			if(node.nodeType == 1 || node.nodeType == 11 || node.nodeType == 3 || node.nodeType == 4 || node.nodeType == 8) {
-		        			var act_n = (row_html != '') ? n : '';
-		        			if(pre_type == 3 && !html.match(re))
-		        				html += row_html + act_n;
-		        			else
-		        				html += tab_space + row_html + act_n;
-		        		}
-		        		pre_type = node.nodeType;
+							case 8: // Node.COMMENT_NODE
+								node.data = node.data.replace(deleteText,'');
+								if(node.data == "") continue;
+								row_html = "<!--" + node.data + "-->";
+								break;
+						}
+						if(node.nodeType == 1 || node.nodeType == 11 || node.nodeType == 3 || node.nodeType == 4 || node.nodeType == 8) {
+							var act_n = (row_html != '') ? n : '';
+							if(pre_type == 3 && !html.match(re))
+								html += row_html + act_n;
+							else
+								html += tab_space + row_html + act_n;
+						}
+						pre_type = node.nodeType;
 					}
 					return html;
 				}
 
 				html = parse(root, "");
-        	//} catch(e){
-        	//	html = $(root).html();
-	    	//}
-	    	if( clone_flag ) $(root).remove();
-	    	if ( clone_flag || this.options.rmUnwantedBr ) {
+			//} catch(e){
+			//	html = $(root).html();
+			//}
+			if( clone_flag ) $(root).remove();
+			if ( clone_flag || this.options.rmUnwantedBr ) {
 				var re = new RegExp(/(<br[ ]*\/*>\s*)+$/i);
 				html = html.replace(re, '');
 			}
@@ -2408,9 +2408,9 @@ IEで、iframe中のbodyのborderがつくから削除していると
 					dialog = $.nc_toggledialog(options);
 				dialog.show(self.el, options);
 			}
-        	return html;
-        },
-        htmlEncode : function(str) {
+			return html;
+		},
+		htmlEncode : function(str) {
 			str = str.replace(/&/ig, "&amp;");
 			str = str.replace(/</ig, "&lt;");
 			str = str.replace(/>/ig, "&gt;");
@@ -2418,31 +2418,31 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			str = str.replace(/\xA0/ig, "&nbsp;");
 			return str;
 		},
-        // edit or html or preview
-        getMode : function() {
-        	var self = this, act_btn = $("li.nc-wysiwyg-active", this.statusbar);
-        	if(act_btn.hasClass("edit"))
-	        	return "edit";
+		// edit or html or preview
+		getMode : function() {
+			var self = this, act_btn = $("li.nc-wysiwyg-active", this.statusbar);
+			if(act_btn.hasClass("edit"))
+				return "edit";
 			else if(act_btn.hasClass("html"))
 				return "html";
 			else if(act_btn.hasClass("preview"))
 				return "preview";
 
 			return "edit"
-        },
+		},
 
-        focus : function(now, callback) {
-        	var self = this, mode = this.getMode();
-        	now = (now == undefined) ? false : now;
-        	if(mode == "edit") {
-	        	if(now)
-	        		self.getWin().focus();
-	        	else
-	        		setTimeout(function() {
-	        			self.getWin().focus();
-	        			if(callback)
-	        				callback.call(self);
-	        		}, 100);
+		focus : function(now, callback) {
+			var self = this, mode = this.getMode();
+			now = (now == undefined) ? false : now;
+			if(mode == "edit") {
+				if(now)
+					self.getWin().focus();
+				else
+					setTimeout(function() {
+						self.getWin().focus();
+						if(callback)
+							callback.call(self);
+					}, 100);
 			} else if(mode == "html") {
 				if(now)
 					$(self.original).focus();
@@ -2450,30 +2450,30 @@ IEで、iframe中のbodyのborderがつくから削除していると
 					setTimeout(function() {
 						$(self.original).focus();
 						if(callback)
-	        				callback.call(self);
+							callback.call(self);
 					}, 100);
 			}
-        },
+		},
 
-        /* Dialog関連 */
-	    toggleDialog : function(o, options) {
-	    	if(o.target) o = $(o.target);
-	    	if(!options.id) options.id = this.dialog_id;
-	    	this.dialogs.toggle(o, options);
-	    },
+		/* Dialog関連 */
+		toggleDialog : function(o, options) {
+			if(o.target) o = $(o.target);
+			if(!options.id) options.id = this.dialog_id;
+			this.dialogs.toggle(o, options);
+		},
 
-	    showDialog : function(o, options) {
-	    	if(o.target) o = $(o.target);
-	    	if(!options.id) options.id = this.dialog_id;
-	    	this.dialogs.show(o, options);
-	    },
+		showDialog : function(o, options) {
+			if(o.target) o = $(o.target);
+			if(!options.id) options.id = this.dialog_id;
+			this.dialogs.show(o, options);
+		},
 
-	    removeDialog : function(id) {
-	    	this.dialogs.hide(id || this.dialog_id);
-	    },
+		removeDialog : function(id) {
+			this.dialogs.hide(id || this.dialog_id);
+		},
 
-	    // 表示中のダイアログ非表示
-	    // self以外を削除する
+		// 表示中のダイアログ非表示
+		// self以外を削除する
 		closeDialogs : function(self) {
 			$("div.listmenu", this.panel).each(function(k, n){
 				if(!self || !self[0] || self[0] != n)
@@ -2482,20 +2482,20 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			this.dialogs.removes(self);
 		},
 
-	    /* Undo Redo関連 */
-	    addUndo : function(init_flag) {
-	    	this.nc_undoManager.add(init_flag);
-	    },
+		/* Undo Redo関連 */
+		addUndo : function(init_flag) {
+			this.nc_undoManager.add(init_flag);
+		},
 
-	    undo : function() {
-	    	this.nc_undoManager.undo();
-	    	this.checkTargets();
-	    },
+		undo : function() {
+			this.nc_undoManager.undo();
+			this.checkTargets();
+		},
 
-	    redo : function() {
-	    	this.nc_undoManager.redo();
-	    	this.checkTargets();
-	    },
+		redo : function() {
+			this.nc_undoManager.redo();
+			this.checkTargets();
+		},
 
 		/* 登録 */
 		regist : function(success, error, autoregist_flag) {
@@ -2550,40 +2550,41 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			}
 		},
 
-        /* Selection関連 */
-        getSelection : function() {
-            return this.getWin().getSelection ? this.getWin().getSelection() : this.editorDoc.selection;
-        },
+		/* Selection関連 */
+		getSelection : function() {
+			return (this.getWin().getSelection && !($.browser.msie && parseInt($.browser.version) >= 9))
+				? this.getWin().getSelection() : this.editorDoc.selection;
+		},
 
-        getRangeCount : function() {
-        	var sel = this.getSelection();
-        	return sel.rangeCount;
-        },
+		getRangeCount : function() {
+			var sel = this.getSelection();
+			return sel.rangeCount;
+		},
 
-        getRanges : function() {
-        	var t = this, ranges=[], r_cnt;
-        	r_cnt = t.getRangeCount();
-        	if(r_cnt == undefined)
-        		ranges.push(t.getRange());
-        	else if(r_cnt > 0) {
-        		for (var i = 0; i < r_cnt; i++)
-        			ranges.push(t.getRange(i));
-        	}
-        	return ranges;
-        },
+		getRanges : function() {
+			var t = this, ranges=[], r_cnt;
+			r_cnt = t.getRangeCount();
+			if(r_cnt == undefined)
+				ranges.push(t.getRange());
+			else if(r_cnt > 0) {
+				for (var i = 0; i < r_cnt; i++)
+					ranges.push(t.getRange(i));
+			}
+			return ranges;
+		},
 
-        getRange : function(r_num) {
-            var range, sel = this.getSelection();
-            r_num = r_num || 0;
-            if (!sel) return null;
-            try {
+		getRange : function(r_num) {
+			var range, sel = this.getSelection();
+			r_num = r_num || 0;
+			if (!sel) return null;
+			try {
 				range = sel.rangeCount > 0 ? sel.getRangeAt(r_num) : (sel.createRange ? sel.createRange() : this.getWin().document.createRange());
 			} catch (ex) {}
 			if (!range || range == '') range = ($.browser.msie) ? this.editorDoc.body.createTextRange() : this.editorDoc.createRange();
 			return range;
-        },
+		},
 
-        createRange : function() {
+		createRange : function() {
 			var sel = this.getSelection();
 			return ($.browser.msie) ? sel.createRange() : this.editorDoc.createRange();
 		},
@@ -2643,13 +2644,13 @@ IEで、iframe中のbodyのborderがつくから削除していると
 
 		getSelectBlockNode : function() {
 			var blockTags = " blockquote center div dl form h1 h2 h3 h4 h5 h6 hr ol p pre table ul ";
-        	var n = this.currentNode ? this.currentNode : this.getSelectNode();
+			var n = this.currentNode ? this.currentNode : this.getSelectNode();
 			do {
-      			if(blockTags.indexOf(" " + n.tagName.toLowerCase() + " ") != -1) {
-      				break;
-      			}
-      			if ( n.nodeName.toLowerCase() == 'body' ||  n.nodeName.toLowerCase() == 'html') break;
-      		} while ( n = n.parentNode );
+				if(blockTags.indexOf(" " + n.tagName.toLowerCase() + " ") != -1) {
+					break;
+				}
+				if ( n.nodeName.toLowerCase() == 'body' ||  n.nodeName.toLowerCase() == 'html') break;
+			} while ( n = n.parentNode );
 
 			return n;
 		},
@@ -2927,24 +2928,24 @@ IEで、iframe中のbodyのborderがつくから削除していると
 				} else {
 					bq.parentNode.insertBefore(new_text_nd, bq.nextSibling);
 				}
-		        var br_el = this.editorDoc.createElement("BR");
-		        bq.parentNode.insertBefore(br_el, new_text_nd);
-		        var br_el = this.editorDoc.createElement("BR");
-		        bq.parentNode.insertBefore(br_el, new_text_nd);
-		        //r = t.getRange();r.move("character", 2);
-		        //r.select();
-		        if($.browser.msie && parseInt($.browser.version) >= 9) {
-			        setTimeout(function() {
-			        	r = t.getRange();
-			        	r.move("character", 2);
-				        r.select();
+				var br_el = this.editorDoc.createElement("BR");
+				bq.parentNode.insertBefore(br_el, new_text_nd);
+				var br_el = this.editorDoc.createElement("BR");
+				bq.parentNode.insertBefore(br_el, new_text_nd);
+				//r = t.getRange();r.move("character", 2);
+				//r.select();
+				if($.browser.msie && parseInt($.browser.version) >= 9) {
+					setTimeout(function() {
+						r = t.getRange();
+						r.move("character", 2);
+						r.select();
 					}, 100);
-		        } else {
-		        	r = t.getRange();
-		        	r.move("character", 2);
-		        	r.select();
-		        }
-		        $(id_name_el).remove();
+				} else {
+					r = t.getRange();
+					r.move("character", 2);
+					r.select();
+				}
+				$(id_name_el).remove();
 			} else {
 				var text_nd, stNode = s.anchorNode;
 				var cpRange = r.cloneRange();
@@ -3574,13 +3575,13 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			return ret;
 		},
 		getNodeName: function(a) {
-        	return a.nodeName.toLowerCase();
-        },
-        getNodeValue: function(node, a) {
-        	var name, value ="";
-        	try {
-	        	name = this.getNodeName(a);
-	        	if (name != "style") {
+			return a.nodeName.toLowerCase();
+		},
+		getNodeValue: function(node, a) {
+			var name, value ="";
+			try {
+				name = this.getNodeName(a);
+				if (name != "style") {
 					// ブラウザによっては、height等の属性は、本来入力していないものを自動的に指定されてしまう可能性があるため、
 					// a.nodeValueを用いる
 					if (typeof node[a.nodeName] != "undefined" && name != "height"  && name != "width"  && name != "href" && name != "src" && !/^on/.test(name)) {
@@ -3598,7 +3599,7 @@ IEで、iframe中のbodyのborderがつくから削除していると
 				}
 			} catch(e){}
 			return value;
-        },
+		},
 
 
 /**
@@ -3614,116 +3615,116 @@ IEで、iframe中のbodyのborderがつくから削除していると
  * @param node_event   boolean すでにnodeに表示非表示のイベントがある場合にtrueセット
  * @return object list element
  */
-    	appendListMain : function (node, list, className, callback, args, node_exists, node_event) {
-    		var t = this, name=null, li, a, a_flag = false;
-    		var umenu = $('<ul></ul>').addClass("listmenu-outer");
-    		var listmenu = $('<div></div>').addClass("listmenu").append(umenu).css("zIndex", $.Common.zIndex++);
-    		node_exists = (node_exists == undefined) ? false : true;
-    		node_event = (node_event == undefined) ? false : true;
-    		if(!node_exists) {
-    			a = $('<a href="javascript:;"></a>');
-    			a_flag = true;
-    		} else {
-    			a = node;
-    		}
-    		if(className) listmenu.addClass(className);
-    		for ( var k in list ) {
-    			if (name === null && a_flag == true) name = list[k];
-    			else if(list[k] != "") {
-    				var a_menu = $('<a href="javascript:;"></a>').attr("title", k).attr("name", k).html(list[k]);
-    				t.registListContentEvent(a_menu, callback, args);
-    				li = $('<li></li>').append(
-    						a_menu
-    				).appendTo( umenu );
-    			}
-    		}
+		appendListMain : function (node, list, className, callback, args, node_exists, node_event) {
+			var t = this, name=null, li, a, a_flag = false;
+			var umenu = $('<ul></ul>').addClass("listmenu-outer");
+			var listmenu = $('<div></div>').addClass("listmenu").append(umenu).css("zIndex", $.Common.zIndex++);
+			node_exists = (node_exists == undefined) ? false : true;
+			node_event = (node_event == undefined) ? false : true;
+			if(!node_exists) {
+				a = $('<a href="javascript:;"></a>');
+				a_flag = true;
+			} else {
+				a = node;
+			}
+			if(className) listmenu.addClass(className);
+			for ( var k in list ) {
+				if (name === null && a_flag == true) name = list[k];
+				else if(list[k] != "") {
+					var a_menu = $('<a href="javascript:;"></a>').attr("title", k).attr("name", k).html(list[k]);
+					t.registListContentEvent(a_menu, callback, args);
+					li = $('<li></li>').append(
+							a_menu
+					).appendTo( umenu );
+				}
+			}
 
-    		if(a_flag == true) {
-    			a.addClass("listbox").append(
-    	              	$('<span></span>').addClass("listbtn")
-    	              ).append(
-    	              	$('<span></span>').addClass("listcontent").attr("title", name).html(name)
-    	              );
-    		}
-    		if(!node_event)
-    			t.registListEvent(a, callback, args);
-            if(className) a.addClass(className);
-            if(a_flag == true) {node.append(a);}
-            a.after(listmenu);
-            return a;
-    	},
-    	registListContentEvent : function(a, callback, args) {
-    		a.click(function(e) {
-    			var d = $(this).parents(".listmenu:first");
-    			var name = $(this).attr("name");
-    			if(typeof name == "undefined") {
-    				name = "";
-    			}
-    			var set_args = [e, name, this.innerHTML];
-    			for(var j in args) {
-    				set_args.push(args[j]);
-    			}
-    			$(".listcontent:first", d.prev()).html(this.innerHTML);
-    			if(callback)
-    				callback.apply(a, set_args);
-    			d.hide();
-    			//d.prev().focus();
-    		});
-    	},
-    	registListEvent : function(a, callback, args) {
-    		a.click(function(e) {
-                 	// 表示非表示切替
-                 	var ret = true;
-                 	var self = this, listcontent = $(".listcontent", this);
-                 	var html = listcontent.html();
-                 	listcontent.html(listcontent.attr("title"));
-                  	if(callback && $(this).next().css("display") == "block") {
-                  		var name = $(self).attr("name");
-            			if(typeof name == "undefined") {
-            				name = "";
-            			}
-            			var set_args = [e, name, this.innerHTML];
-    					for(var j in args) {
-    						set_args.push(args[j]);
-    					}
-    					ret = callback.apply($(self), set_args);
-                  	}
-                  	if(ret) {
-    	            	if($(this).next().css("display") == "block") {
-    		            	$("a", $(this).next()).each(function(k, v){
-    		            		if($(v).html() == html)
-    		            			$(v).addClass("active");
-    		            		else
-    		            			$(v).removeClass("active");
-    		            	});
-    	            	}
-    	            	$(this).next().toggle();
-    	            }
-                	e.preventDefault();
-      		        return false;
-            });
-    	},
+			if(a_flag == true) {
+				a.addClass("listbox").append(
+						$('<span></span>').addClass("listbtn")
+					).append(
+						$('<span></span>').addClass("listcontent").attr("title", name).html(name)
+					);
+			}
+			if(!node_event)
+				t.registListEvent(a, callback, args);
+			if(className) a.addClass(className);
+			if(a_flag == true) {node.append(a);}
+			a.after(listmenu);
+			return a;
+		},
+		registListContentEvent : function(a, callback, args) {
+			a.click(function(e) {
+				var d = $(this).parents(".listmenu:first");
+				var name = $(this).attr("name");
+				if(typeof name == "undefined") {
+					name = "";
+				}
+				var set_args = [e, name, this.innerHTML];
+				for(var j in args) {
+					set_args.push(args[j]);
+				}
+				$(".listcontent:first", d.prev()).html(this.innerHTML);
+				if(callback)
+					callback.apply(a, set_args);
+				d.hide();
+				//d.prev().focus();
+			});
+		},
+		registListEvent : function(a, callback, args) {
+			a.click(function(e) {
+				// 表示非表示切替
+				var ret = true;
+				var self = this, listcontent = $(".listcontent", this);
+				var html = listcontent.html();
+				listcontent.html(listcontent.attr("title"));
+				if(callback && $(this).next().css("display") == "block") {
+					var name = $(self).attr("name");
+					if(typeof name == "undefined") {
+						name = "";
+					}
+					var set_args = [e, name, this.innerHTML];
+					for(var j in args) {
+						set_args.push(args[j]);
+					}
+					ret = callback.apply($(self), set_args);
+				}
+				if(ret) {
+					if($(this).next().css("display") == "block") {
+						$("a", $(this).next()).each(function(k, v){
+							if($(v).html() == html)
+								$(v).addClass("active");
+							else
+								$(v).removeClass("active");
+						});
+					}
+					$(this).next().toggle();
+				}
+				e.preventDefault();
+				return false;
+			});
+		},
 /**
  * リストメニューをjavascriptから選択メソッド
  * @param listbox       element  listbox element
  * @param name          string   リストのキー名称
  * @param callback_flag boolean  変更時にcallbackを実行するかどうか
  */
-    	chgList : function(listbox, name, callback_flag) {
-    		var a = $("a[name='" + name + "']", listbox.next());
-    		var listcontent = $(".listcontent", listbox);
-    		if(name == "") {
-    			listcontent.html(listcontent.attr("title"));
-    			return;
-    		}
-    		if(!a || !a[0])
-    			return false;
-    		if(callback_flag)
-    			a.click();
-    		else
-    			listcontent.html(a.html());
-    		return true;
-    	},
+		chgList : function(listbox, name, callback_flag) {
+			var a = $("a[name='" + name + "']", listbox.next());
+			var listcontent = $(".listcontent", listbox);
+			if(name == "") {
+				listcontent.html(listcontent.attr("title"));
+				return;
+			}
+			if(!a || !a[0])
+				return false;
+			if(callback_flag)
+				a.click();
+			else
+				listcontent.html(a.html());
+			return true;
+		},
 
 /**
  * リストメニューの選択しているキー取得
@@ -3740,45 +3741,45 @@ IEで、iframe中のbodyのborderがつくから削除していると
 	});
 
 	/**
-     * Undo Redo用
-     * @param nc_wysiwyg
-     */
+	 * Undo Redo用
+	 * @param nc_wysiwyg
+	 */
 	function nc_undoManager(nc_wysiwyg)
-    {
-        return this instanceof nc_undoManager
-            ? this.init(nc_wysiwyg)
-            : new nc_undoManager(nc_wysiwyg);
-    }
+	{
+		return this instanceof nc_undoManager
+			? this.init(nc_wysiwyg)
+			: new nc_undoManager(nc_wysiwyg);
+	}
 
-    $.extend(nc_undoManager.prototype,
-    {
-    	nc_wysiwyg : null,
-    	data       : null,
-    	index      : 0,
-    	bm         : null,
+	$.extend(nc_undoManager.prototype,
+	{
+		nc_wysiwyg : null,
+		data       : null,
+		index      : 0,
+		bm         : null,
 
-    	init : function(nc_wysiwyg)
-        {
-        	this.nc_wysiwyg = nc_wysiwyg;
-        	this.data = [];
-        	this.bm = [];
-        	this.index = 0;
-        },
+		init : function(nc_wysiwyg)
+		{
+			this.nc_wysiwyg = nc_wysiwyg;
+			this.data = [];
+			this.bm = [];
+			this.index = 0;
+		},
 
-        add : function(init_flag) {
-        	var t = this, i, ed = t.nc_wysiwyg, content, re, la;
+		add : function(init_flag) {
+			var t = this, i, ed = t.nc_wysiwyg, content, re, la;
 
-        	content = ed.getContent();
-        	la = t.data[t.index > 0 && t.index == t.data.length ? t.index - 1 : t.index];
+			content = ed.getContent();
+			la = t.data[t.index > 0 && t.index == t.data.length ? t.index - 1 : t.index];
 
-        	// br delete
-        	var re = new RegExp(/(<br[ ]*\/*>\s*)+$/i);
-            content = content.replace(re, '') + "<br />";
+			// br delete
+			var re = new RegExp(/(<br[ ]*\/*>\s*)+$/i);
+			content = content.replace(re, '') + "<br />";
 
-        	if(la == content)
-        		return null;
+			if(la == content)
+				return null;
 
-        	if (t.data.length > ed.options.undo_level) {
+			if (t.data.length > ed.options.undo_level) {
 				for (i = 0; i < t.data.length - 1; i++) {
 					t.data[i] = t.data[i + 1];
 					if($.browser.mozilla)
@@ -3805,15 +3806,15 @@ IEで、iframe中のbodyのborderがつくから削除していると
 			if (init_flag)
 				t.index = 0;
 
-        	return content;
-        },
+			return content;
+		},
 
-        undo : function() {
-        	var t = this, ed = t.nc_wysiwyg, content = null, i;
+		undo : function() {
+			var t = this, ed = t.nc_wysiwyg, content = null, i;
 
-        	if (t.index > 0) {
+			if (t.index > 0) {
 				t.add();
-        		// If undo on last index then take snapshot
+				// If undo on last index then take snapshot
 				if (t.index == t.data.length && t.index > 1) {
 					i = t.index;
 					//t.typing = 0;
@@ -3823,16 +3824,16 @@ IEで、iframe中のbodyのborderがつくから削除していると
 
 					--t.index;
 				}
-        		content = t.data[--t.index];
-        		ed.setContent(content);
-        		if($.browser.mozilla)
-	        		ed.moveToBookmark(t.bm[t.index]);
-        	}
+				content = t.data[--t.index];
+				ed.setContent(content);
+				if($.browser.mozilla)
+					ed.moveToBookmark(t.bm[t.index]);
+			}
 
-        	return content;
-        },
+			return content;
+		},
 
-        redo : function() {
+		redo : function() {
 			var t = this, ed = t.nc_wysiwyg, content = null;
 
 			if (t.index < t.data.length - 1) {

@@ -158,4 +158,55 @@ class NcDownloadsController extends AppController {
 		}
 		return true;
 	}
+
+/**
+ * Tex数式画像出力処理
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function tex() {
+		$this->autoRender = false;
+
+		$tex = $this->request->query['tex'];
+		$size = $this->request->query['size'];
+
+		$mimetexPath = VENDORS . 'mimetex/';
+
+		if (substr(PHP_OS, 0, 3) == 'WIN') {
+			$mimetex = $mimetexPath . 'mimetex.exe';
+		} else {
+			$mimetex = $mimetexPath . 'mimetex.cgi';
+		}
+
+		switch ($size) {
+			case 'Large':
+			case 'large':
+			case 'small':
+				$size = '\\'.$size;
+				break;
+			case 'n':
+				$size = '\\normalsize';
+				break;
+			default:
+				$size = '\\Large';
+		}
+
+		if (function_exists('is_executable') && !is_executable($mimetex)) {
+			return;
+		} elseif (!file_exists($mimetex)) {
+			return;
+		}
+
+		$this->response->header('Cache-Control', 'no-store, no-cache, must-revalidate');
+		$this->response->header('Pragma', 'no-cache');
+		$this->response->header('Content-Type', 'image/gif');
+		$this->response->header('Content-Disposition', 'attachment; filename=\"'.md5($tex).'.gif\"');
+		$this->response->header('Content-Transfer-Encoding', 'Binary');
+
+		$tex = rawurldecode(str_replace('%_', '%', $tex));
+
+		passthru($mimetex.' -d '. escapeshellarg($size.' '.$tex));
+
+		return;
+	}
 }

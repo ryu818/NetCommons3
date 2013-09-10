@@ -1,44 +1,22 @@
 /*
  * NC mimeTex 0.0.0.1
  * @param options hash
- * 					url			: string texへの変更のためのphpファイルのアドレス(default : $._base_url + 'mimetex/')
- * 					data		: nc2系のための項目
+ * 					url			: string texへの変更のためのphpファイルのアドレス(default : $._base_url + 'nc-downloads/tex/')
+ * 					data		: クエリストリング
  * 					callback	: function (default : '')
- *                  text        : string textに渡す初期値
+ * 					text		: string textに渡す初期値
  */
   ;(function($) {
 	$.fn.nc_mimetex = function(e, options) {
 		var options = $.extend({
-			url             : $._base_url + 'nccommon/mimetex/',
-			data		 : '',
+			url			: $._base_url + 'nc-downloads/tex/',
+			data		: '',
 			callback	: '',
-			text         : ''
+			text		: ''
 		}, options);
 		var self = this,input,preview,ok,cancel;
 
 		init();
-
-		//クリック時のイベント
-		$(preview).click(function(e){
-			if (inputChecked()) {
-				var texurl = getTexURL(input.val());
-				texurl = texurl.replace(/\'/g, "\\'");
-				$('.nc-wysiwyg-mimetex-preview').css("background","#ffffff url('" + texurl + "') no-repeat");
-			}
-		});
-
-		$(ok).click(function(){
-			if (inputChecked()) {
-				var texurl = getTexURL(input.val());
-				var teximg = '<img class="tex" alt="'+ input.val() +'" src="'+ texurl +'" />';
-				if(options['callback'])
-					options['callback'](teximg);
-			}
-		});
-
-		$(cancel).click(function(){
-			self.remove();
-		});
 
 		return;
 
@@ -62,6 +40,28 @@
 
 			input = $('.nc-wysiwyg-mimetex-input', tex);
 
+			//クリック時のイベント
+			$(preview).click(function(e){
+				if (inputChecked()) {
+					var texurl = getTexURL(input.val());
+					texurl = texurl.replace(/\'/g, "\\'");
+					$('.nc-wysiwyg-mimetex-preview').css("background","#ffffff url('" + texurl + "') no-repeat");
+				}
+			});
+
+			$(ok).click(function(){
+				if (inputChecked()) {
+					var texurl = getTexURL(input.val());
+					var teximg = '<img class="tex" alt="'+ input.val() +'" src="'+ texurl +'" />';
+					if(options['callback'])
+						options['callback'](teximg);
+				}
+			});
+
+			$(cancel).click(function(){
+				self.remove();
+			});
+
 			// focus：2度目の表示がfocusされないため、timerとする
 			setTimeout(function() { input.focus(); }, 100);
 			if(options.text != '') {
@@ -81,19 +81,19 @@
 
 		//指定した文字列をTex変換するためのURLに変換
 		function getTexURL(uri) {
-			var data = options.data == '' ? options.data : options.data + "&";
-			return options.url + "?"+ data +"c=" + encodeURI(uri);
+			var data = options.data == '' ? options.data : options.data + '&';
+			return options.url + '?' + data + 'tex=' + encodeURI(uri);
 		}
 
 		//文字列をURLエンコードする
 		function encodeURI(uri) {
 			uri = uri.replace(/\'/g, "\\'");
-			uri = encodeURIComponent(uri).replace(/%C2%A5/g,"%5C").replace(/%/g, "%_");
+			uri = encodeURIComponent(uri).replace(/%C2%A5/g, '%5C').replace(/%/g, '%_');
 			return uri;
 		}
 		//文字列をURLデコードする
 		function decodeURI(uri) {
-			uri = uri.replace(/%5C/g,"%C2%A5").replace(/%_/g, "%");
+			uri = uri.replace(/%5C/g, '%C2%A5').replace(/%_/g, '%');
 			uri = decodeURIComponent(uri);
 			return uri;
 		}

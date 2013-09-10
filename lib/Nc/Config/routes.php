@@ -63,9 +63,14 @@ Router::connect(
 	'/users/:action/*',
 	array('controller' => 'users')
 );
+
+Router::connect(
+	'/nc-downloads/tex/*',
+	array('controller' => 'nc_downloads', 'action' => 'tex')
+);
 Router::connect(
 	'/nc-downloads/*',
-	array('controller' => 'nc_downloads')
+	array('controller' => 'nc_downloads', 'action' => 'index')
 );
 
 Router::connect(
