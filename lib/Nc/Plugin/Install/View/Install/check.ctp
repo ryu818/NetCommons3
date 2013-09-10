@@ -67,11 +67,11 @@ $this->assign('title', __d('install', 'Setting Check'));
 				} else {
 					$mimetex = "mimetex.cgi";
 				}
-				if (is_writable($mimetex_path. $mimetex)) {
-					echo '<p class="success message">' . __d('install', '[%s] is writable.', 'vendors/'.$mimetex) . '</p>';
+				if (is_executable($mimetex_path. $mimetex)) {
+					echo '<p class="success message">' . __d('install', '[%s] is executable.', 'vendors/'.$mimetex) . '</p>';
 				} else {
 					$check = false;
-					echo '<p class="error message">' . __d('install', '[%s] is NOT writable.', 'vendors/'.$mimetex) . '</p>';
+					echo '<p class="error message">' . __d('install', '[%s] is NOT executable.', 'vendors/'.$mimetex) . '</p>';
 				}
 
 				// mbstring
