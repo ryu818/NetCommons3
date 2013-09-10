@@ -547,9 +547,9 @@ class Block extends AppModel
  * 再帰的に処理
  *
  * @param object  $block
- * @param boolean $allDelete コンテンツもすべて削除するかどうか（NC_DELETE_MOVE_PARENTの場合、コンテンツを親のコンテンツへ）
+ * @param integer $allDelete コンテンツもすべて削除するかどうか（NC_DELETE_MOVE_PARENTの場合、コンテンツを親のコンテンツへ）
  * @param integer $parentRoomId $allDelete NC_DELETE_MOVE_PARENTの場合の振り替え先room_id
- * @param boolean $is_page ページ削除から呼ばれたかどうか
+ * @param boolean $isDeletePage ページ削除から呼ばれたかどうか
  * @return	boolean true or false
  * @since   v 3.0.0.0
  **/
@@ -562,18 +562,18 @@ class Block extends AppModel
 		$module_id = $block['Block']['module_id'];
 		$block_id = $block['Block']['id'];
 		$content_id = $block['Block']['content_id'];
-		if(isset($block['Content'])) {
+		if (isset($block['Content'])) {
 			$content['Content'] = $block['Content'];
 		} else {
 			$content = $Content->findById($content_id);
 		}
 
-		if($controller_action == "group") {
+		if ($controller_action == 'group') {
 			// --------------------------------------
-			// --- 子供に位置するモジュール削除   ---
+			// --- 子供に位置するブロック削除     ---
 			// --------------------------------------
-			//子供取得
-			if(!$isDeletePage) {		// ページから削除する場合は、再帰的に削除する必要なし。
+			// ページから削除する場合は、再帰的に削除する必要なし。
+			if (!$isDeletePage) {
 				$child_blocks = $this->find('all', array(
 					'recursive' => -1,
 					'conditions' => array(
@@ -582,8 +582,7 @@ class Block extends AppModel
 				));
 				foreach($child_blocks as $child_block) {
 					//再帰処理
-					$ret = $this->deleteBlock($child_block, $allDelete, $parentRoomId, $isDeletePage);
-					if(!$ret) {
+					if(!$this->deleteBlock($child_block, $allDelete, $parentRoomId, $isDeletePage)) {
 						return false;
 					}
 				}
@@ -594,41 +593,58 @@ class Block extends AppModel
 			// -------------------------------------
 			$Page = ClassRegistry::init('Page');
 			$Module = ClassRegistry::init('Module');
+			$BlockOperation = ClassRegistry::init('Block.BlockOperation');
+
+			if (!$isDeletePage) {
+				// 行の前詰め処理
+				if(!$BlockOperation->decrementRowNum($block)) {
+					return false;
+				}
+				$count_row_num = $BlockOperation->findRowCount($block['Block']['page_id'], $block['Block']['parent_id'], $block['Block']['col_num']);
+				if($count_row_num == 1) {
+					// 削除する列にブロックが１つしかないので 列の前詰め処理
+					if(!$BlockOperation->decrementColNum($block)) {
+						return false;
+					}
+				}
+			}
+
 			$module = $Module->findById($module_id);
 			$page = $Page->findById($page_id);
-			if(!empty($module['Module'])) {
+			if (!empty($module['Module'])) {
 				// ルームが異なるコンテンツは削除アクションを行わない。
 				$plugin = $module['Module']['dir_name'];
 				App::uses($plugin.'OperationComponent', 'Plugin/'.$plugin.'/Controller/Component');
 				$class_name = $plugin.'OperationComponent';
-				if(class_exists($class_name)) {
+				if (class_exists($class_name)) {
 					eval('$class = new '.$class_name.'(new ComponentCollection());');
 					$class->startup();
-					if(method_exists($class_name,'delete_block')) {
+					if (method_exists($class_name,'delete_block')) {
 						// ブロック削除アクション
-						$ret = $class->delete_block($block, $content, $page);
-						if(!$ret) {
+						if (!$class->delete_block($block, $content, $page)) {
 							return false;
 						}
 					}
 
-					if(isset($content['Content']) && $content['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_OFF
+					if (isset($content['Content']) && $content['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_OFF
 						&& $allDelete == _ON && $page['Page']['room_id'] == $content['Content']['room_id']) {
 						if(!$Content->deleteContent($content, $allDelete, $parentRoomId)) {
 							return false;
 						}
 					}
 				}
-				if(isset($content['Content'])) {
-					if($content['Content']['display_flag'] == NC_DISPLAY_FLAG_DISABLE || $content['Content']['shortcut_type'] != NC_SHORTCUT_TYPE_OFF ||
-						($allDelete == _ON && $page['Page']['room_id'] == $content['Content']['room_id'])) {
+				if (isset($content['Content'])) {
+					if($content['Content']['display_flag'] == NC_DISPLAY_FLAG_DISABLE
+						|| $content['Content']['shortcut_type'] != NC_SHORTCUT_TYPE_OFF
+						|| ($allDelete == _ON && $page['Page']['room_id'] == $content['Content']['room_id'])) {
 
-						// ショートカットか、ショートカットではない場合
+						// ショートカットではない場合
 						// コンテンツがなくてもエラーとしない(コンテンツ一覧からコンテンツを削除後にブロック削除を行うとエラーとなるため)
 						$Content->delete($block['Block']['content_id']);
-					} else if(isset($parentRoomId) && $allDelete == NC_DELETE_MOVE_PARENT && $content['Content']['room_id'] != $parentRoomId) {
+					} elseif (isset($parentRoomId) && $allDelete == NC_DELETE_MOVE_PARENT
+							&& $content['Content']['room_id'] != $parentRoomId) {
 						// 親のルームの持ち物に変換し、親のルーム内のショートカットを解除
-						if(!$Content->cancelShortcutParentRoom($content_id, $parentRoomId)) {
+						if (!$Content->cancelShortcutParentRoom($content_id, $parentRoomId)) {
 							return false;
 						}
 					}
@@ -637,19 +653,82 @@ class Block extends AppModel
 		}
 
 		// --------------------------------------
-		// --- ブロック削除処理     	      ---
+		// --- ブロック削除処理               ---
 		// --------------------------------------
-		if(!$this->delete($block_id)) {
+		$tmp_block = $this->findById($block_id);
+		if (!empty($tmp_block) && !$this->delete($block_id)) {
 			return false;
 		}
-		// --------------------------------------------------------------------------------------
-		// --- contents 削除処理     	                                                      ---
-		// --- group化ブロック                                                      	      ---
-		// --------------------------------------------------------------------------------------
-		if($controller_action == "group") {
+
+		if ($controller_action == 'group') {
+			// グループ化したブロックのcontents 削除処理
 			// コンテンツがなくてもエラーとしない
 			$Content->delete($block['Block']['content_id']);
 		}
+		if (!$isDeletePage && isset($count_row_num) && $count_row_num == 1) {
+			//グループ化した空ブロック削除処理
+			$this->deleteGroupingEmptyBlock($block['Block']['parent_id'], $block_id);
+		}
+
+		return true;
+	}
+
+/**
+ * グループ化した空ブロック削除処理
+ *
+ * @param integer $parent_id グループのblock_id
+ * @param integer $block_id	操作対象block_id
+ * @return boolean true or false
+ * @since   v 3.0.0.0
+ */
+	public function deleteGroupingEmptyBlock($parent_id, $block_id = null)
+	{
+		$Content = ClassRegistry::init('Content');
+		$BlockOperation = ClassRegistry::init('Block.BlockOperation');
+
+		$block = $this->findById($parent_id);
+		if(empty($block)) {
+			return true;
+		}
+
+		$block_count = $this->find('count', array(
+			'fields' => 'COUNT(*) as count',
+			'recursive' => -1,
+			'conditions' => array(
+				'Block.parent_id' => $parent_id
+			)
+		));
+		if ($block_count != 0) {
+			return true;
+		}
+
+		//削除処理
+		$Content->delete($block['Block']['content_id']);
+		$this->delete($parent_id);
+		if($block_id) {
+			// 操作対象block_idがあれば、更新対象にしない
+			$block['Block']['id'] = $block_id;
+		}
+		// 行の前詰め処理
+		if(!$BlockOperation->decrementRowNum($block)) {
+			return false;
+		}
+		$count_row_num = $BlockOperation->findRowCount($block['Block']['page_id'], $block['Block']['parent_id'], $block['Block']['col_num']);
+		if($count_row_num == 0) {
+			//削除列が１つもなくなったので、列の前詰め処理
+			$result = $BlockOperation->decrementColNum($block);
+			if(!$result) {
+				return false;
+			}
+		}
+
+		//再帰処理
+		if($block['Block']['parent_id'] != 0) {
+			if(!$this->deleteGroupingEmptyBlock($block['Block']['parent_id'], $block_id)) {
+				return false;
+			}
+		}
+
 		return true;
 	}
 }

@@ -164,36 +164,9 @@ class BlockController extends BlockAppController {
 			return;
 		}
 
-		// --------------------------------------
-		// --- 前詰め処理(移動元)			  ---
-		// --------------------------------------
-		$dec_ret = $this->BlockOperation->decrementRowNum($block);
-		if(!$dec_ret) {
-			throw new InternalErrorException(__('Failed to update the database, (%s).', 'blocks'));
-		}
-
-		$count_row_num = $this->BlockOperation->findRowCount($block['Block']['page_id'], $block['Block']['parent_id'], $block['Block']['col_num']);
-		if($count_row_num == 1) {
-			//移動前の列が１つしかなかったので
-			//列--
-			$dec_ret = $this->BlockOperation->decrementColNum($block);
-			if(!$dec_ret) {
-				throw new InternalErrorException(__('Failed to update the database, (%s).', 'blocks'));
-			}
-		}
-
-		// --------------------------------------
-		// --- ブロック削除処理	 			  ---
-		// --------------------------------------
+		// ブロック削除処理
 		if(!$this->Block->deleteBlock($block, $all_delete)) {
 			throw new InternalErrorException(__('Failed to delete the database, (%s).', 'blocks'));
-		}
-
-		//グループ化した空ブロック削除処理
-		if($count_row_num == 1) {
-			if(!$this->BlockMove->deleteGroupingBlock($block['Block']['parent_id'])) {
-				throw new InternalErrorException(__('Failed to delete the database, (%s).', 'blocks'));
-			}
 		}
 
 		// 表示カウント++

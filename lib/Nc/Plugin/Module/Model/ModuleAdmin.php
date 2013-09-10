@@ -489,11 +489,8 @@ class ModuleAdmin extends AppModel {
 		$prefix = __d('module', 'Module %s:', h($module_name));
 
 		// ------------------------------------------------------
-		// --- ブロックテーブルのデータ削除                  ---
+		// --- ブロックテーブルのデータ削除                   ---
 		// ------------------------------------------------------
-		// TODO: col_num,row_num,グループ化ブロック等を整列しなおす必要があるため、現状、コメント
-		// deleteBlockにその処理もいれて、ブロックの削除もそちらを呼ぶだけにするほうが望ましい。
-		/*
 		$Block = ClassRegistry::init('Block');
 		$conditions = array(
 			'module_id' => $module_id
@@ -514,14 +511,14 @@ class ModuleAdmin extends AppModel {
 		if(isset($blocks[0])) {
 			foreach($blocks as $block) {
 				if(!$Block->deleteBlock($block)) {
-					$errorMes[] = $prefix.__d('module', 'Failed to %s.',t __d('module', 'Delete block')
+					$errorMes[] = $prefix.__d('module', 'Failed to %s.', __d('module', 'Delete Block'));
 					return array($successMes, $errorMes);
 				}
 			}
-		}*/
+		}
 
 		// ------------------------------------------------------
-		// --- コンテンツテーブルのデータ削除                  ---
+		// --- コンテンツテーブルのデータ削除                 ---
 		// ------------------------------------------------------
 		$conditions = array(
 			'module_id' => $module_id

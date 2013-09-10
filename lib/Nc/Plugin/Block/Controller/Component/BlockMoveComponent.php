@@ -104,15 +104,13 @@ class BlockMoveComponent extends Component {
 		$pre_count_row_num = $this->_controller->BlockOperation->findRowCount($page_id, $pre_parent_id, $pre_col_num);
 
 		//前詰め処理(移動元)
-		$result = $this->_controller->BlockOperation->decrementRowNum($block);
-		if(!$result) {
+		if(!$this->_controller->BlockOperation->decrementRowNum($block)) {
 			return false;
 		}
 		if($pre_count_row_num == 1) {
 			//移動前の列が１つしかなかったので
 			//列--
-			$result = $this->_controller->BlockOperation->decrementColNum($block);
-			if(!$result) {
+			if(!$this->_controller->BlockOperation->decrementColNum($block)) {
 				return false;
 			}
 		}
@@ -160,8 +158,7 @@ class BlockMoveComponent extends Component {
 		$conditions = array(
 			"Block.id" => $id
 		);
-		$result = $this->_controller->Block->updateAll($fields, $conditions);
-		if(!$result) {
+		if(!$this->_controller->Block->updateAll($fields, $conditions)) {
 			return false;
 		}
 
@@ -169,13 +166,13 @@ class BlockMoveComponent extends Component {
 		//if($root_id==0)
 		//	$root_id = $id;
 
-		if($block['Block']['controller_action'] == "group") {
+		if($block['Block']['controller_action'] == 'group') {
 			$this->_updRootIdByParentId($block['Block']['id'], $root_id, $thread_num+1, $page, $insert_page);
 		}
 
 		//グループ化した空ブロック削除処理
 		if($pre_count_row_num == 1) {
-			$this->deleteGroupingBlock($pre_parent_id, $id);
+			$this->_controller->Block->deleteGroupingEmptyBlock($pre_parent_id, $id);
 		}
 
 		//移動先より大きな列+1
@@ -185,9 +182,7 @@ class BlockMoveComponent extends Component {
 		if($insert_page) {
 			$buf_block['Block']['page_id'] = $insert_page['Page']['id'];
 		}
-
-		$result = $this->_controller->BlockOperation->incrementColNum($buf_block);
-		if(!$result) {
+		if(!$this->_controller->BlockOperation->incrementColNum($buf_block)) {
 			return false;
 		}
 		return true;
@@ -218,15 +213,13 @@ class BlockMoveComponent extends Component {
 		$pre_count_row_num = $this->_controller->BlockOperation->findRowCount($pre_page_id, $pre_parent_id, $pre_col_num);
 
 		//前詰め処理(移動元)
-		$result = $this->_controller->BlockOperation->decrementRowNum($block);
-		if(!$result) {
+		if(!$this->_controller->BlockOperation->decrementRowNum($block)) {
 			return false;
 		}
 		if($pre_count_row_num == 1) {
 			//移動前の列が１つしかなかったので
 			//列--
-			$result = $this->_controller->BlockOperation->decrementColNum($block);
-			if(!$result) {
+			if(!$this->_controller->BlockOperation->decrementColNum($block)) {
 				return false;
 			}
 		}
@@ -295,19 +288,18 @@ class BlockMoveComponent extends Component {
 		$conditions = array(
 			"Block.id" => $id
 		);
-		$result = $this->_controller->Block->updateAll($fields, $conditions);
-		if(!$result) {
+		if(!$this->_controller->Block->updateAll($fields, $conditions)) {
 			return false;
 		}
 
 		//更新したブロックの子供のroot_id更新処理
-		if($block['Block']['controller_action'] == "group")
+		if($block['Block']['controller_action'] == 'group') {
 			$this->_updRootIdByParentId($id, $root_id, $thread_num+1, $page, $insert_page);
-
+		}
 
 		//グループ化した空ブロック削除処理
 		if($pre_count_row_num == 1) {
-			$this->deleteGroupingBlock($pre_parent_id, $id);
+			$this->_controller->Block->deleteGroupingEmptyBlock($pre_parent_id, $id);
 		}
 
 		//前詰め処理（移動先)
@@ -318,9 +310,7 @@ class BlockMoveComponent extends Component {
 		if($insert_page['Page']['id'] != $page['Page']['id']) {
 			$buf_block['Block']['page_id'] = $insert_page['Page']['id'];
 		}
-		$result = $this->_controller->BlockOperation->incrementRowNum($buf_block);
-
-		if(!$result) {
+		if(!$this->_controller->BlockOperation->incrementRowNum($buf_block)) {
 			return false;
 		}
 
@@ -383,62 +373,6 @@ class BlockMoveComponent extends Component {
 		$result = $this->_controller->Block->updateAll($fields, $conditions);
 		if(!$result) {
 			return false;
-		}
-		return true;
-	}
-
-/**
- * グループ化した空ブロック削除処理
- *
- * @param integer $parent_id
- * @param integer $block_id	操作対象block_id
- *
- * @return boolean true or false
- * @since   v 3.0.0.0
- */
-	public function deleteGroupingBlock($parent_id, $block_id = null)
-	{
-		$block = $this->_controller->Block->findById($parent_id);
-		if(!empty($block)) {
-
-			$block_count = $this->_controller->Block->find('count', array(
-				'fields' => 'COUNT(*) as count',
-				'recursive' => -1,
-				'conditions' => array(
-					'Block.parent_id' => $parent_id
-				)
-			));
-
-			if($block_count == 0) {
-				//削除処理
-				$this->_controller->Content->delete($block['Block']['content_id']);
-				$this->_controller->Block->delete($parent_id);
-				if($block_id) {
-					// 操作対象block_idがあれば、更新対象にしない
-					$block['Block']['id'] = $block_id;
-				}
-				//前詰め処理(移動元)
-				$result = $this->_controller->BlockOperation->decrementRowNum($block);
-				if(!$result) {
-					return false;
-				}
-				$count_row_num = $this->_controller->BlockOperation->findRowCount($block['Block']['page_id'], $block['Block']['parent_id'], $block['Block']['col_num']);
-				if($count_row_num == 0) {
-					//削除列が１つもなくなったので
-					//列--
-					$result = $this->_controller->BlockOperation->decrementColNum($block);
-					if(!$result) {
-						return false;
-					}
-				}
-				//再帰処理
-				if($block['Block']['parent_id'] != 0) {
-					$result = $this->deleteGroupingBlock($block['Block']['parent_id'], $block_id);
-					if(!$result) {
-						return false;
-					}
-				}
-			}
 		}
 		return true;
 	}
