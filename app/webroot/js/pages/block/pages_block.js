@@ -1076,7 +1076,8 @@
 						block.remove();
 						if(target_remove)
 							target_remove.remove();
-						if(!column.children(':first').hasClass('nc-block') && (column.next().hasClass('nc-column') || column.prev().hasClass('nc-column'))) {
+						if(!column.children('div:first').hasClass('nc-block')
+								&& (column.next().hasClass('nc-column') || column.prev().hasClass('nc-column'))) {
 							column.remove();
 						}
 						$._nc.show_count[page_id]++;
