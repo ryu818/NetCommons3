@@ -25,7 +25,7 @@ class AuthorityLang extends AppModel
 					'allowEmpty' => false,
 					'message' => __('Please be sure to input.')
 				),
-				'maxlength'  => array(
+				'maxLength'  => array(
 					'rule' => array('maxLength', 30),
 					'message' => __('The input must be up to %s characters.', 30)
 				),

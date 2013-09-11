@@ -65,7 +65,7 @@ class Block extends AppModel
 									'allowEmpty' => false,
 									'message' => __('Please be sure to input.')
 								),
-				'maxlength'  => array(
+				'maxLength'  => array(
 									'rule' => array('maxLength', NC_VALIDATOR_BLOCK_TITLE_LEN),
 									'message' => __('The input must be up to %s characters.', NC_VALIDATOR_BLOCK_TITLE_LEN)
 								)

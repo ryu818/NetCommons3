@@ -30,7 +30,7 @@ class CommunityLang extends AppModel
 					'required' => true,
 					'message' => __('Please be sure to input.')
 				),
-				'maxlength'  => array(
+				'maxLength'  => array(
 					'rule' => array('maxLength', 30),
 					'last' => true ,
 					'message' => __('The input must be up to %s characters.', 30)

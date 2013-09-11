@@ -72,7 +72,7 @@ class AnnouncementEdit extends AppModel
 				)
 			),
 			'approved_mail_subject' => array(
-				'maxlength'  => array(
+				'maxLength'  => array(
 					'rule' => array('maxLength', NC_VALIDATOR_TITLE_LEN),
 					'required' => true,
 					//'allowEmpty' => true,

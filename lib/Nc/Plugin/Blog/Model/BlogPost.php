@@ -89,7 +89,7 @@ class BlogPost extends AppModel
 					'allowEmpty' => false,
 					'message' => __('Please be sure to input.')
 				),
-				'maxlength'  => array(
+				'maxLength'  => array(
 					'rule' => array('maxLength', NC_VALIDATOR_TITLE_LEN),
 					'message' => __('The input must be up to %s characters.', NC_VALIDATOR_TITLE_LEN)
 				),
@@ -102,7 +102,7 @@ class BlogPost extends AppModel
 					'allowEmpty' => false,
 					'message' => __('Please be sure to input.')
 				),
-				'maxlength'  => array(
+				'maxLength'  => array(
 					'rule' => array('maxLength', NC_VALIDATOR_TITLE_LEN),
 					'message' => __('The input must be up to %s characters.', NC_VALIDATOR_TITLE_LEN)
 				),
@@ -160,7 +160,7 @@ class BlogPost extends AppModel
 				),
 			),
 			'post_password' => array(
-				'maxlength'  => array(
+				'maxLength'  => array(
 					'rule' => array('maxLength', 20),
 					'message' => __('The input must be up to %s characters.', 20)
 				),

@@ -140,7 +140,7 @@ class UserItemLink extends AppModel
 
 		// maxlengthチェック
 		if($item['Item']['maxlength'] != '0') {
-			$this->validate['content']['maxlength'] = array(
+			$this->validate['content']['maxLength'] = array(
 				'rule' => array('maxLength', $item['Item']['maxlength']),
 				//'last' => true,
 				//'required' => true,

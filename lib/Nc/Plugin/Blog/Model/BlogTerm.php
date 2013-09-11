@@ -44,7 +44,7 @@ class BlogTerm extends AppModel
 					'required' => true,
 					'message' => __('Please be sure to input.')
 				),
-				'maxlength'  => array(
+				'maxLength'  => array(
 					'rule' => array('maxLength', NC_VALIDATOR_TITLE_LEN),
 					'message' => __('The input must be up to %s characters.', NC_VALIDATOR_TITLE_LEN)
 				),
@@ -60,7 +60,7 @@ class BlogTerm extends AppModel
 					'required' => true,
 					'message' => __('Please be sure to input.')
 				),
-				'maxlength'  => array(
+				'maxLength'  => array(
 					'rule' => array('maxLength', NC_VALIDATOR_TITLE_LEN),
 					'message' => __('The input must be up to %s characters.', NC_VALIDATOR_TITLE_LEN)
 				),

@@ -119,7 +119,7 @@ class Blog extends AppModel
 				)
 			),
 			'mail_subject' => array(
-				'maxlength'  => array(
+				'maxLength'  => array(
 					'rule' => array('maxLength', NC_VALIDATOR_TITLE_LEN),
 					'message' => __('The input must be up to %s characters.', NC_VALIDATOR_TITLE_LEN)
 				),
@@ -202,7 +202,7 @@ class Blog extends AppModel
 				)
 			),
 			'comment_mail_subject' => array(
-				'maxlength'  => array(
+				'maxLength'  => array(
 					'rule' => array('maxLength', NC_VALIDATOR_TITLE_LEN),
 					'message' => __('The input must be up to %s characters.', NC_VALIDATOR_TITLE_LEN)
 				),
@@ -241,7 +241,7 @@ class Blog extends AppModel
 					'required' => true,
 					'message' => __('Please be sure to input.')
 				),
-				'maxlength'  => array(
+				'maxLength'  => array(
 					'rule' => array('maxLength', NC_VALIDATOR_TITLE_LEN),
 					'message' => __('The input must be up to %s characters.', NC_VALIDATOR_TITLE_LEN)
 				)
@@ -271,7 +271,7 @@ class Blog extends AppModel
 				)
 			),
 			'approved_mail_subject' => array(
-				'maxlength'  => array(
+				'maxLength'  => array(
 					'rule' => array('maxLength', NC_VALIDATOR_TITLE_LEN),
 					'message' => __('The input must be up to %s characters.', NC_VALIDATOR_TITLE_LEN)
 				),
@@ -313,7 +313,7 @@ class Blog extends AppModel
 				)
 			),
 			'comment_approved_mail_subject' => array(
-				'maxlength'  => array(
+				'maxLength'  => array(
 					'rule' => array('maxLength', NC_VALIDATOR_TITLE_LEN),
 					'message' => __('The input must be up to %s characters.', NC_VALIDATOR_TITLE_LEN)
 				),

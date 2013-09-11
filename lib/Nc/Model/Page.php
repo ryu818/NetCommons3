@@ -40,7 +40,7 @@ class Page extends AppModel
 						//'allowEmpty' => false,
 						'message' => __('Please be sure to input.')
 					),
-					'maxlength'  => array(
+					'maxLength'  => array(
 						'rule' => array('maxLength', NC_VALIDATOR_PAGE_TITLE_LEN),
 						'last' => false ,
 						'message' => __('The input must be up to %s characters.', NC_VALIDATOR_PAGE_TITLE_LEN)
@@ -63,7 +63,7 @@ class Page extends AppModel
 						'last' => true,
 						'message' => __('It contains an invalid string.')
 					),
-					'maxlength'  => array(
+					'maxLength'  => array(
 						'rule' => array('maxLength', NC_VALIDATOR_PERMALINK_LEN),
 						'message' => __('The input must be up to %s characters.', NC_VALIDATOR_PERMALINK_LEN).__('(The total number of the top node)')
 					),

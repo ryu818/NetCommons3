@@ -106,7 +106,7 @@ class Item extends AppModel
 				)
 			),
 			'maxLength' => array(
-				'maxlength'  => array(
+				'maxLength'  => array(
 					'rule' => array('maxLength', NC_VALIDATOR_VARCHAR_LEN),
 					'message' => __('The input must be up to %s characters.', NC_VALIDATOR_VARCHAR_LEN)
 				)

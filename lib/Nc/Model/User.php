@@ -133,7 +133,7 @@ class User extends AppModel
 
 			// maxlengthチェック
 			if($item['Item']['maxlength'] != '0') {
-				$this->validate[$item['Item']['tag_name']]['maxlength'] = array(
+				$this->validate[$item['Item']['tag_name']]['maxLength'] = array(
 					'rule' => array('maxLength', $item['Item']['maxlength']),
 					//'last' => true,
 					//'required' => true,

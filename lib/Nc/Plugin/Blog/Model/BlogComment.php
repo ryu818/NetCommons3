@@ -54,7 +54,7 @@ class BlogComment extends AppModel
 				),
 			),
 			'title' => array(
-				'maxlength'  => array(
+				'maxLength'  => array(
 					'rule' => array('maxLength', NC_VALIDATOR_VARCHAR_LEN),
 					'message' => __('The input must be up to %s characters.', NC_VALIDATOR_VARCHAR_LEN),
 					'allowEmpty' => true,
@@ -68,7 +68,7 @@ class BlogComment extends AppModel
 				),
 			),
 			'author' => array(
-				'maxlength'  => array(
+				'maxLength'  => array(
 					'rule' => array('maxLength', NC_VALIDATOR_USER_NAME_LEN),
 					'message' => __('The input must be up to %s characters.', NC_VALIDATOR_USER_NAME_LEN),
 				),
@@ -80,7 +80,7 @@ class BlogComment extends AppModel
 					'message' => __('The input must be a %s.', __('E-mail')),
 					'allowEmpty' => true,
 				),
-				'maxlength'  => array(
+				'maxLength'  => array(
 					'rule' => array('maxLength', NC_VALIDATOR_VARCHAR_LEN),
 					'message' => __('The input must be up to %s characters.', NC_VALIDATOR_VARCHAR_LEN)
 				),
@@ -92,7 +92,7 @@ class BlogComment extends AppModel
 					'message' => __('The input must be a %s.', __('URL')),
 					'allowEmpty' => true,
 				),
-				'maxlength'  => array(
+				'maxLength'  => array(
 					'rule' => array('maxLength', NC_VALIDATOR_VARCHAR_LEN),
 					'message' => __('The input must be up to %s characters.', NC_VALIDATOR_VARCHAR_LEN)
 				),
@@ -103,7 +103,7 @@ class BlogComment extends AppModel
 					'last' => true,
 					'message' => __('The input must be a %s.', __('IP')),
 				),
-				'maxlength'  => array(
+				'maxLength'  => array(
 					'rule' => array('maxLength', 16),
 					'message' => __('The input must be up to %s characters.', 16)
 				),
@@ -116,7 +116,7 @@ class BlogComment extends AppModel
 				),
 			),
 			'blog_name' => array(
-				'maxlength'  => array(
+				'maxLength'  => array(
 					'rule' => array('maxLength', NC_VALIDATOR_VARCHAR_LEN),
 					'message' => __('The input must be up to %s characters.', NC_VALIDATOR_VARCHAR_LEN),
 					'allowEmpty' => true,
