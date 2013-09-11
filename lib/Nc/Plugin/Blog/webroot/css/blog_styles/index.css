@@ -1,4 +1,12 @@
-/* 表示方法変更 */
+/**
+ * ブログ表示方法変更画面 Css
+ *
+ * @copyright     Copyright 2012, NetCommons Project
+ * @package       Plugin.Announcement.webroot.js
+ * @author        Noriko Arai,Ryuji Masukawa
+ * @since         v 3.0.0.0
+ * @license       http://www.netcommons.org/license.txt  NetCommons License
+ */
 .blog-style-widget-area {
 	width:275px;
 	padding:0 5px;
