@@ -276,6 +276,8 @@ msgstr 	"[%s]から公開"
 msgid  	"Published until from [%s] to [%s]"
 msgstr 	"[%s]～[%s]まで公開"
 
+msgid  	"File not found."
+msgstr 	"ファイルが見つけられませんでした。"
 msgid  	"Content not found."
 msgstr 	"指定したコンテンツを見つけられませんでした。"
 msgid  	"Content removed."
@@ -650,8 +652,14 @@ msgstr 	"アップロードに成功しました。"
 msgid  	"Specify the file."
 msgstr 	"ファイルを指定してください。"
 
+msgid  	"Only GIF,JPEG,PNG files are allowed as image files."
+msgstr 	"GIF,JPEG,PNGファイルのいずれかを指定してください。"
+
 msgid  	"Only BMP,GIF,JPEG,PNG files are allowed as image files."
 msgstr 	"BMP,GIF,JPEG,PNGファイルのいずれかを指定してください。"
+
+msgid  	"Only ZIP,TAR,TGZ,GZ files are allowed as files."
+msgstr 	"ZIP,TAR,TGZ,GZファイルのいずれかを指定してください。"
 
 msgid  	"Invalid MimeType."
 msgstr 	"拡張子に対応したMimeTypeではありません。拡張子を適切に変更して下さい。"
@@ -659,14 +667,26 @@ msgstr 	"拡張子に対応したMimeTypeではありません。拡張子を適
 msgid  	"Invalid extension."
 msgstr 	"無効の拡張子です。"
 
+msgid  	"File width must be larger than %u."
+msgstr 	"ファイルの広さが小さすぎます。%u pixelより大きくしてください。"
+
+msgid  	"File height must be larger than %u."
+msgstr 	"ファイルの高さが小さすぎます。%u pixelより大きくしてください。"
+
 msgid  	"File width must be smaller than %u."
 msgstr 	"ファイルの広さが大きすぎます。%u pixelまでにしてください。"
 
 msgid  	"File height must be smaller than %u."
 msgstr 	"ファイルの高さが大きすぎます。%u pixelまでにしてください。"
 
-msgid  	"File size too large. Max %u byte."
-msgstr 	"ファイルサイズが大きすぎます。%s Byteまでにしてください。"
+msgid  	"File size too large. Max %s."
+msgstr 	"ファイルサイズが大きすぎます。%sまでにしてください。"
+
+msgid  	"File size too large. Min %s."
+msgstr 	"ファイルサイズが小さすぎます。%sまでにしてください。"
+
+msgid  	"Unable to move the uploaded file to %s"
+msgstr 	"%sにアップロードされたファイルを移動することができません"
 
 msgid  	"Ecxeeded upload capacity."
 msgstr 	"アップロード容量を超えました。ファイルを削除してからアップロードしてください。"
@@ -698,11 +718,12 @@ msgstr 	"ファイルのアップロードに失敗しました。"
 msgid  	"Filename rejected."
 msgstr 	"アップロード不可のファイル形式です。"
 
-msgid  	"Total file size uploaded to the room, %s, exceeded the limit.<br />The limit is %sByte(%sByte left)."
-msgstr 	"%sルームにアップロードしたファイルサイズの合計が大きすぎます<br />合計%sbyte(残り:%sbyte)までしか使用できません。"
+msgid  	"Total file size exceeded the limit.Only %s left."
+msgstr 	"ファイルサイズの合計が大きすぎます。あと%sまでしか使用できません。"
 
-msgid  	"Total file size exceeded the limit.<br />Only %sByte left."
-msgstr 	"ファイルサイズの合計が大きすぎます<br />あと%sbyteまでしか使用できません。"
+msgid  	"Failed to resize file."
+msgstr 	"ファイルのリサイズに失敗しました。"
+
 
 msgid  	"Search for the members"
 msgstr 	"対象会員の絞込み"

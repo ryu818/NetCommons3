@@ -55,29 +55,35 @@ class NcDownloadsController extends AppController {
 
 /**
  * 共通ダウンロード処理
- * @param   int $uploadId
- * @param   string $sizeType
- * 				$sizeTypeが渡された場合、[$uploadId]-[$sizeType].拡張子のファイルをダウンロードする
- * 				$sizeTypeが渡されない場合、[$uploadId].拡張子のファイルをダウンロードする
+ * @param   int $fileName (uploadId)_($sizeType).(extension)
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function index($uploadId, $sizeType='') {
+	public function index($fileName) {
 		$this->autoRender = false;
+		
+		if(!preg_match("/^([0-9]+)(_|-){0,1}(.*)\.(.*)/", $fileName, $matches)) {
+			throw new NotFoundException(__('File not found.'));
+		}
+		$uploadId = intval($matches[1]);
+		//$sizeType = $matches[3];
+		//$extension = $matches[4];
 
 		$upload = $this->Upload->findById($uploadId);
 		if (empty($upload)) {
-			exit;
+			throw new NotFoundException(__('File not found.'));
 		}
 
 		$loginUser = $this->Auth->user();
 		$loginUserId = isset($loginUser['id']) ? intval($loginUser['id']) : 0;
 		$isAdmin = ($this->Authority->getUserAuthorityId($loginUser['hierarchy']) == NC_AUTH_ADMIN_ID) ? true : false;
 
-		$downloadPassword = isset($this->request->query['download_password']) ? $this->request->query['download_password'] : '';
+		$downloadPassword = isset($this->request->query['password']) ? $this->request->query['password'] : '';
 
 		$hasDownloadAuth = false;
-		if (!empty($upload['UploadLink'])) {
+		if ($isAdmin || $loginUserId == $upload['Upload']['user_id']) {
+			$hasDownloadAuth = true;
+		} else if (!empty($upload['UploadLink'])) {
 			foreach ($upload['UploadLink'] as $uploadLink) {
 				if (!$this->checkComponent($uploadLink, $upload['Upload']['user_id'], $downloadPassword)) {
 					continue;
@@ -85,20 +91,15 @@ class NcDownloadsController extends AppController {
 				$hasDownloadAuth = true;
 				break;
 			}
-		} elseif ($isAdmin || $loginUserId == $upload['Upload']['user_id']) {
-			$hasDownloadAuth = true;
 		}
 
 		clearstatcache();
 
-		// 管理者で閲覧権限がない場合は別の画像を表示する
-		if ($isAdmin && !$hasDownloadAuth) {
-			$this->response->file(App::pluginPath('Upload').'webroot/img/image.png');
-		} elseif ($hasDownloadAuth) {
-			$this->Download->flush($uploadId, $sizeType);
+		if ($hasDownloadAuth) {
+			$this->Download->flush($uploadId, $fileName);
+		} else {
+			throw new ForbiddenException(__('Forbidden permission to access the page.'));
 		}
-
-		return;
 	}
 
 /**
@@ -111,10 +112,10 @@ class NcDownloadsController extends AppController {
  * @since   v 3.0.0.0
  */
 	public function checkComponent($uploadLink, $fileOwnerId, $downloadPassword) {
-		if (preg_match('/^a:/',$uploadLink['check_component_action'])) {
-			$checkComponentActionArr = unserialize($uploadLink['check_component_action']);
+		if(!empty($uploadLink['check_component_action'])) {
+			$checkComponentActionArr = implode(',', $uploadLink['check_component_action']);
 		} else {
-			$checkComponentActionArr = array($uploadLink['check_component_action']);
+			$checkComponentActionArr = array();
 		}
 
 		foreach ($checkComponentActionArr as $checkComponentAction) {

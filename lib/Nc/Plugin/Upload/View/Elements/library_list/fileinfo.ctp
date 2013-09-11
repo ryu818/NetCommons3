@@ -56,6 +56,7 @@
 	</div>
 	<?php endif; ?>
 	<?php if(!isset($is_edit) || $is_edit): ?>
+	{{if $data['is_edit'] == null || $data['is_edit']}}
 	<div class="upload-fileinfo-link">
 		<?php
 			$uploadId = isset($data['_id']) ? $data['_id'] : $data['id'];
@@ -75,9 +76,18 @@
 		?>
 		&nbsp;|&nbsp;
 		<?php
-			echo __d('upload', 'Delete file');
+			$deleteFileUrl = $this->Html->url(array('action' => 'delete'), true);
+			$deleteFileUrl .= '/'.$uploadId;
+			echo $this->Html->link(__d('upload', 'Delete file'), $deleteFileUrl, array(
+				'class' => 'upload-delete',
+				'data-ajax' => 'this',
+				'data-ajax-confirm' => __('Deleting %s. <br />Are you sure to proceed?', $data['file_name']),
+				'data-ajax-type' => 'post',
+				'data-ajax-callback' => '$.Upload.deleteSuccess(res, '.$uploadId.');',
+			));
 		?>
 	</div>
+	{{/if}}
 	<?php endif; ?>
 	<ul class="lists upload-fileinfo-detail">
 		<?php if(isset($is_self_upload_file) && !$is_self_upload_file): ?>

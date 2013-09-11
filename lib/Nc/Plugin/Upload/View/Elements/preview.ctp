@@ -9,24 +9,31 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 ?>
+<?php 
+	$error = $this->Form->error('UploadLibrary.file_name');
+	if(!empty($error)) {
+		echo $error;
+		return;
+	}
+?>
 <div class="table">
 	<div class="table-cell">
 		<ul id="upload-preview-list<?php echo $id; ?>" class="upload-preview-list upload-library-list">
 		<li class="upload-attachment">
-			<a onclick="return $.Upload.clickItem(event, this, 'preview');" href="#" class="upload-preview upload-type-<?php echo $upload['Upload']['file_type']; ?> upload-<?php echo $upload['Upload']['orientation']; ?>" data-upload-id="<?php echo $upload['Upload']['id']; ?>">
+			<a onclick="return $.Upload.clickItem(event, this, 'preview');" href="#" class="upload-preview upload-type-<?php echo $upload['UploadLibrary']['file_type']; ?> upload-<?php echo $upload['UploadLibrary']['orientation']; ?>" data-upload-id="<?php echo $upload['UploadLibrary']['id']; ?>">
 				<div class="upload-thumbnail">
 					<div class="upload-centered">
-						<img src="<?php echo $upload['Upload']['url']; ?>" alt="" />
+						<img src="<?php echo $upload['UploadLibrary']['url']; ?>" alt="" />
 					</div>
 				</div>
 				<div class="upload-filename">
-					<div><?php echo h($upload['Upload']['file_name']); ?></div>
+					<div><?php echo h($upload['UploadLibrary']['file_name']); ?></div>
 				</div>
 				<div class="upload-check"></div>
 			</a>
 			<script>
 				$(function(){
-					$.Upload.data[<?php echo $upload['Upload']['id']; ?>] = <?php echo json_encode($upload['Upload']); ?>;
+					$.Upload.data[<?php echo $upload['UploadLibrary']['id']; ?>] = <?php echo json_encode($upload['UploadLibrary']); ?>;
 				});
 			</script>
 		</li>

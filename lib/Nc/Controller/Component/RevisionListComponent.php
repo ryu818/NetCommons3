@@ -382,6 +382,21 @@ class RevisionListComponent extends Component {
 				return false;
 			}
 		}
+		
+		// UploadLink更新
+		if(isset($postModel->actsAs['Upload'])) {
+			$uploadFields = $postModel->actsAs['Upload'];
+			$uploadOptions = array(
+				'uniqueIdName' => intval($revision['Revision']['group_id']),
+				'contentId' => $revision['Revision']['content_id'],
+				'wysiwygText' => $revision['Revision']['content'],
+			);
+			foreach($uploadFields as $uploadValue) {
+				if(!$postModel->saveUploadLink($uploadValue, $uploadOptions)) {
+					return false;
+				}
+			}
+		}
 
 		// 新着・検索
 		$archive = array(

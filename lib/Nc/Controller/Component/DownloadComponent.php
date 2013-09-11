@@ -83,29 +83,25 @@ class DownloadComponent extends Component {
 
 /**
  * ファイル内容出力処理
- * @param   int $uploadId
- * @param   string $sizeType
+ * @param   integer $uploadId
+ * @param   string $fileName
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function flush($uploadId, $sizeType='') {
+	public function flush($uploadId, $fileName) {
 
 		$upload = $this->_controller->Upload->findById($uploadId);
 
-		$fileName = $upload['Upload']['file_name'];
+		$physicalFileName = $upload['Upload']['file_name'];
 		$filePath = $upload['Upload']['file_path'];
 		$mimetype = $upload['Upload']['mimetype'];
 		$plugin = $upload['Upload']['plugin'].DS;
-		if (empty($sizeType)) {
-			$physicalFileName = $upload['Upload']['physical_file_name'];
-		} else {
-			$physicalFileName = $upload['Upload']['id'].'-'.$sizeType.'.'.$upload['Upload']['extension'];
-		}
-		$physicalFilePath = NC_UPLOADS_DIR.$plugin.$filePath.$physicalFileName;
+
+		$physicalFilePath = NC_UPLOADS_DIR.$plugin.$filePath.$fileName;
 
 		if (file_exists($physicalFilePath)) {
 			$isUseCache = $this->isUseCache($upload['Upload']['id']);
-			$this->_headerOutput($fileName, $physicalFilePath, $mimetype, $isUseCache);
+			$this->_headerOutput($physicalFileName, $physicalFilePath, $mimetype, $isUseCache);
 			if ($this->_controller->response->statusCode() == '200') {
 				$resource = fopen($physicalFilePath, 'rb');
 				while (!feof($resource)) {
@@ -116,7 +112,8 @@ class DownloadComponent extends Component {
 				fclose($resource);
 			}
 		} else {
-			$this->_controller->response->header('HTTP/1.0 404 not found');
+			//$this->_controller->response->header('HTTP/1.0 404 not found');
+			throw new NotFoundException(__('File not found.'));
 		}
 		$this->_controller->_stop();
 	}

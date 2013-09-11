@@ -10,7 +10,15 @@
  */
 class BlogPost extends AppModel
 {
-	public $actsAs = array('TimeZone', 'Validation', 'Common', 'Auth');
+	public $actsAs = array(
+		'TimeZone',
+		'Validation',
+		'Common',
+		'Auth',
+		'Upload' => array(
+			'revision_group_id'
+		),
+	);
 
 	public $belongsTo = array(
 		'Revision'      => array(

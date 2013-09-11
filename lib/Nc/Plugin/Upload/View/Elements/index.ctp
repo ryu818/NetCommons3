@@ -8,7 +8,7 @@
  * @since         v 3.0.0.0
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
-echo $this->Form->create('Upload', array('class' => 'upload-files', 'enctype' => 'multipart/form-data'));
+echo $this->Form->create('UploadLibrary', array('class' => 'upload-files', 'type' => 'file'));
 ?>
 <div class="upload-dragndrop-area">
 	<div class="upload-dragndrop-text">
@@ -16,7 +16,7 @@ echo $this->Form->create('Upload', array('class' => 'upload-files', 'enctype' =>
 	</div>
 <?php
 if ($this->request->query['popup_type'] == 'image') {
-	echo $this->Form->input('Upload.resolusion', array(
+	echo $this->Form->input('UploadLibrary.resolusion', array(
 		'type' => 'select',
 		'options' => array(
 			'normal'=>__d('upload', 'Normal size'),
@@ -30,7 +30,7 @@ if ($this->request->query['popup_type'] == 'image') {
 		'div' => false,
 	));
 }
-echo $this->Form->input('Upload.file', array(
+echo $this->Form->input('UploadLibrary.file_name', array(
 	'type' => 'file',
 	//'id' => 'nc-upload-inputfile-'.$id,
 	'class' => 'nc-upload-inputfile',

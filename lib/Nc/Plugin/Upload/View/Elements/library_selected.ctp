@@ -14,14 +14,15 @@
 		<?php
 			echo $this->Form->button(__d('upload', 'Delete all'), array(
 				'name' => 'delete',
+				'id' => $id . '-delete-all',
 				'class' => 'common-btn-min nc-button-red',
 				'type' => 'button',
 				'data-ajax-confirm' => __d('upload', 'Deleting the select file. <br />Are you sure to proceed?'),
-				//'data-ajax-type' => 'post',
-				//'data-ajax' => '#nc-upload-form-library-'.$id,
-				//'data-ajax-serialize' => true,
-				//'data-ajax-data' => '{"data[Upload][IsDelete]":"'._ON.'"}',
-				//'data-ajax-url' => $this->Html->url(array('action' => 'library'))
+				'data-ajax-type' => 'post',
+				'data-ajax' => 'this',
+				'data-ajax-url' => $this->Html->url(array('action' => 'delete')),
+				'data-ajax-callback' => '$.Upload.deleteSuccess(res);',
+				'escape' => _ON,
 			));
 			echo $this->Form->button(__('Clear'), array(
 				'name' => 'clear',

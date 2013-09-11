@@ -220,7 +220,32 @@ if(!$isEdit && ($item['Item']['type'] == 'file' || $item['Item']['tag_name'] == 
 					echo $this->Form->input($name, $settings);
 				}
 			} else if($item['Item']['type'] == 'file') {
-				echo '<div class="user-avatar"></div>';
+				echo '<div class="user-avatar-outer">'
+						.$this->element('avatar', array('name'=>$name,'avatar'=>$value))
+					.'</div>';
+				echo $this->Form->input($name.'.file', array(
+					'type' => 'file',
+					'class' => 'none',
+					'label' => false,
+					'div' => false,
+				));
+				echo $this->Form->hidden($name , array(
+					'value' => $value
+				));
+				echo '<div class="user-avatar-btn">';
+					echo $this->Form->button(__d('user', 'Select file'), array(
+						'name' => 'avatar-select',
+						'class' => 'common-btn-min',
+						'type' => 'button',
+						'onclick' => "$.User.selectAvatar('".$id."');return false;"
+					));
+					echo $this->Form->button(__('Delete'), array(
+						'name' => 'avatar-delete',
+						'class' => 'common-btn-min',
+						'type' => 'button',
+						'onclick' => "$.User.deleteAvatar('".$id."');return false;"
+					));
+				echo '</div>';
 			} else if($item['Item']['type'] == 'label') {
 				if($item['Item']['tag_name'] == 'created' || $item['Item']['tag_name'] == 'modified' ||
 					$item['Item']['tag_name'] == 'password_regist' || $item['Item']['tag_name'] == 'last_login' ||

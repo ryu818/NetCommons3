@@ -26,7 +26,7 @@ class BlogPostsController extends BlogAppController {
  *
  * @var array
  */
-	public $uses = array('Blog.BlogTermLink', 'Revision', 'UploadLink');
+	public $uses = array('Blog.BlogTermLink', 'Revision');
 
 /**
  * 実行前処理
@@ -207,16 +207,6 @@ class BlogPostsController extends BlogAppController {
 					// 自動保存時後処理
 					$this->RevisionList->afterAutoRegist($this->BlogPost->id);
 					return;
-				}
-
-				// アップロード更新
-				$options = array(
-					'plugin' => Inflector::camelize($this->plugin),
-					'contentId' => $this->content_id,
-					'uniqueId' => $blogPost['BlogPost']['revision_group_id'],
-				);
-				if(!$this->UploadLink->updateUploadInfoForWysiwyg($blogPost['Revision']['content'], $options)) {
-					throw new InternalErrorException(__('Failed to update the database, (%s).', 'upload_links'));
 				}
 
 				if($blogPost['BlogPost']['is_future'] == _ON || $blogPost['BlogPost']['status'] == NC_STATUS_TEMPORARY) {
@@ -404,16 +394,6 @@ class BlogPostsController extends BlogAppController {
 		// revision削除
 		if(!$this->Revision->deleteRevison($blogPost['BlogPost']['revision_group_id'])){
 			throw new InternalErrorException(__('Failed to delete the database, (%s).', 'revisions'));
-		}
-
-		// UploadLink削除
-		$delConditions = array(
-			'UploadLink.unique_id'=>$blogPost['BlogPost']['revision_group_id'],
-			'UploadLink.model_name'=>'Revision',
-			'UploadLink.field_name'=>'content'
-		);
-		if(!$this->UploadLink->deleteAll($delConditions, true, true)){
-			throw new InternalErrorException(__('Failed to delete the database, (%s).', 'upload_links'));
 		}
 
 		$this->Session->setFlash(__('The post with %s has been deleted.', $blogPost['BlogPost']['title']));

@@ -13,6 +13,7 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 class UserController extends UserAppController {
+
 /**
  * Component name
  *
@@ -40,10 +41,12 @@ class UserController extends UserAppController {
 		parent::beforeFilter();
 
 		if($this->action == "edit") {
-			$this->Security->unlockedFields = array('language', 'activeLang');
+			$this->Security->unlockedFields = array('language', 'activeLang', 'User.avatar');	// , 'User.avatarFile'
 		}
-		if($this->action == "edit" && isset($this->request->data['PageUserLink'])) {
-			// back
+		if($this->action == "edit" && (isset($this->request->data['PageUserLink']) || isset($this->request->data['User']['avatar']['file']))) {
+			// back or avatar
+			$this->Security->validatePost = false;
+		} else if($this->action == "edit" && isset($this->request->data['uploadFlag'])) {
 			$this->Security->validatePost = false;
 		} else if($this->action == "index" || $this->action == "display_setting" || $this->action == "select_group" || $this->action == "select_auth") {
 			$this->Security->validatePost = false;
@@ -278,8 +281,6 @@ class UserController extends UserAppController {
  * @since   v 3.0.0.0
  */
 	public function edit($userId = null) {
-		$user = array();
-		$userItemLinks = array();
 		$loginUserId = $this->Auth->user('id');
 
 		// 言語切替
@@ -292,6 +293,7 @@ class UserController extends UserAppController {
 		}
 
 		$user['User'] = array();
+		$userItemLinks = array();
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		if(!empty($userId)) {
 			// 編集
@@ -301,6 +303,12 @@ class UserController extends UserAppController {
 				$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 				return;
 			}
+		}
+
+		// アバターアップロード
+		if ($this->request->is('post') && !isset($this->request->data['User']['login_id'])) {
+			$this->_uploadAvatar($user);
+			return;
 		}
 
 		$items = $this->Item->findList();
@@ -344,12 +352,16 @@ class UserController extends UserAppController {
 			$fieldList = array('login_id', 'password', 'handle', 'authority_id', 'is_active', 'permalink', 'avatar', 'lang', 'timezone_offset', 'email', 'mobile_email');
 			if($this->User->validates(array('items' => $items), $fieldList) && $ret) {
 				$isAdd = empty($user['User']['id']) ? true : false;
+				
+				if(empty($user['User']['avatar'])) {
+					// Uploadデータ削除
+					$user['User']['avatar']['remove'] = _ON;
+				}
+				
 				if(!$this->User->save($user, false, $fieldList)) {
 					throw new InternalErrorException(__('Failed to update the database, (%s).', 'users'));
 				}
 				$user['User']['id'] = $this->User->id;
-
-				// TODO:アバター登録未作成
 
 				// UserItemLink Save
 				if(isset($this->request->data['UserItemLink'])) {
@@ -423,6 +435,33 @@ class UserController extends UserAppController {
 		$this->set("items", $items);
 		$this->set('authorities', $this->Authority->findSelectList());
 		$this->set('languages', $this->Language->findSelectList());
+	}
+
+/**
+ * アバターアップロード処理
+ * @param   array User 
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	protected function _uploadAvatar($user = array()) {
+		$userId = isset($user['User']['id']) ? intval($user['User']['id']) : 0;
+		if(!empty($userId)) {
+			$this->request->data['User']['id'] = $userId;
+		}
+
+		if($this->User->uploadFile($this->request->data)) {
+			$this->set('avatar', $this->User->getUploadFileNames('avatar'));
+			if(!empty($user['User']['id'])) {
+				$this->Session->setFlash(__('Has been successfully updated.'));
+			}
+		}
+		
+		
+		$this->set('id', $this->id.'-'.$userId);	// top idをuser_id単位に設定
+		$this->set('name', 'User.avatar');
+		
+		$this->render('/Elements/avatar');
+		return;
 	}
 
 /**

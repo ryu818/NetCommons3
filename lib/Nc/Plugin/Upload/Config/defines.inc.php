@@ -7,16 +7,6 @@
  * @since         v 3.0.0.0
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
-//-----------画像解像度--------------------------------------------------------
-// TODO:Model Uploadで使用しているため、本来、共通のdefineに移動すべきだが、
-// そもそも、Uploadモデルの作りが悪い気がするので、現状、そのまま、ここに記述。
-define('UPLOAD_RESOLUTION_IMAGE_LARGE_WIDTH', 800);// 大-幅
-define('UPLOAD_RESOLUTION_IMAGE_LARGE_HEIGHT', 600);// 大-高さ
-define('UPLOAD_RESOLUTION_IMAGE_MIDDLE_WIDTH', 640);// 中-幅
-define('UPLOAD_RESOLUTION_IMAGE_MIDDLE_HEIGHT', 480);// 中-高さ
-define('UPLOAD_RESOLUTION_IMAGE_SMALL_WIDTH', 480);// 小-幅
-define('UPLOAD_RESOLUTION_IMAGE_SMALL_HEIGHT', 360);// 小-高さ
-define('UPLOAD_RESOLUTION_IMAGE_ICON_SIZE', 48);// アイコン
 
 //-----------ライブラリー検索（ユーザ検索の種別）--------------------------------
 define('UPLOAD_SEARCH_CONDITION_USER_MYSELF', 1);// 自分自身

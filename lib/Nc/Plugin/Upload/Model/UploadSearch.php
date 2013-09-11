@@ -16,7 +16,7 @@ class UploadSearch extends AppModel {
 	public $useTable = 'uploads';
 	public $alias = 'UploadSearch';
 
-	public $actsAs = array('TimeZone', 'File');
+	public $actsAs = array('TimeZone', 'File', 'Page');
 
 /**
  * 検索条件初期値
@@ -126,7 +126,7 @@ class UploadSearch extends AppModel {
  * @since   v 3.0.0.0
  */
 	public function search($data, $isAdmin, $limit = UPLOAD_SEARCH_DEFAULT_LIMIT) {
-		$conditions = array();
+		$conditions = array('UploadSearch.is_delete_from_library' => _ON);
 		$order = array();
 
 		// 所有者
@@ -240,20 +240,20 @@ class UploadSearch extends AppModel {
 			return;
 		}
 
-		$upload[$alias]['real_url'] = Router::url('/', true).'nc-downloads/'.$upload[$alias]['id'];
+		$upload[$alias]['real_url'] = Router::url('/', true).'nc-downloads/'.$upload[$alias]['id'].'.'.$upload[$alias]['extension'];
 		$upload[$alias]['file_size'] = CakeNumber::toReadableSize($upload[$alias]['file_size']);
 		$upload[$alias]['created'] = $this->date($upload[$alias]['created'], __('(Y-m-d h:i)'));
 		$upload[$alias]['orientation'] = 'landscape';
 		$upload[$alias]['basename'] = $this->basename($upload[$alias]['file_name'], '.'.$upload[$alias]['extension']);
 
 		if (preg_match('/^image\/(gif|jpe?g|png)/', $upload[$alias]['mimetype'], $matches)) {
-			$filePath = NC_UPLOADS_DIR.$upload[$alias]['plugin'].'/'.$upload[$alias]['file_path'].$upload[$alias]['physical_file_name'];
+			$filePath = NC_UPLOADS_DIR.$upload[$alias]['plugin'].'/'.$upload[$alias]['file_path'].$upload[$alias]['id'].'.'.$upload[$alias]['extension'];
 			list($width, $height) = @getimagesize($filePath);
 			$upload[$alias]['width'] = $width;
 			$upload[$alias]['height'] = $height;
 			$upload[$alias]['file_type'] = 'image';
 			$upload[$alias]['orientation'] = $height > $width ? 'portrait' : 'landscape';
-			$upload[$alias]['url'] = $upload[$alias]['real_url'].'/library';
+			$upload[$alias]['url'] = Router::url('/', true).'nc-downloads/'.$upload[$alias]['id'].'_library'.'.'.$upload[$alias]['extension'];
 		} elseif (preg_match('/^audio\//', $upload[$alias]['mimetype'])) {
 			$upload[$alias]['file_type'] = 'audio';
 			$upload[$alias]['url'] = Router::url('/', true).'upload/img/audio.png';
@@ -264,5 +264,61 @@ class UploadSearch extends AppModel {
 			$upload[$alias]['file_type'] = 'other';
 			$upload[$alias]['url'] = Router::url('/', true).'upload/img/other.png';
 		}
+	}
+
+/**
+ * 使用中ファイル一覧取得
+ * @param  mixed integer $uploadId|array $uploadIds
+ * @return  array
+ * @since   v 3.0.0.0
+ */
+	public function findIsUseUploads($uploadIds) {
+		$Module = ClassRegistry::init('Module');
+		
+		$conditions = array(
+			$this->alias.'.id' => $uploadIds,
+			$this->alias.'.is_use' => _ON
+		);
+		$params = array(
+			'fields' => array('`'.$this->alias.'`.*,`UploadLink`.*,`Content`.`title`,`Page`.*'),
+			'conditions' => $conditions,
+			'joins' => array(
+				array(
+					'type' => 'LEFT',
+					'table' => 'upload_links',
+					'alias' => 'UploadLink',
+					'conditions' => '`'.$this->alias.'`.`id`=`UploadLink`.`upload_id`'
+				),
+				array(
+					'type' => 'LEFT',
+					'table' => 'contents',
+					'alias' => 'Content',
+					'conditions' => '`Content`.`id`=`UploadLink`.`content_id`'
+				),
+				array(
+					'type' => 'LEFT',
+					'table' => 'pages',
+					'alias' => 'Page',
+					'conditions' => '`Page`.`id`=`Content`.`room_id`'
+				),
+			),
+		);
+		$files = array();
+		$results = $this->find('all', $params);
+		if(count($results) > 0) {
+			for($i =0; $i < count($results); $i++) {
+				$results[$i]['Upload'] = $results[$i]['UploadSearch'];
+				unset($results[$i]['UploadSearch']);
+				
+				$results[$i]['Upload']['module_name'] = $Module->loadModuleName($results[$i]['Upload']['plugin']);
+				
+				if(!empty($results[$i]['Page']['id'])) {
+					$results[$i] = $this->setPageName($results[$i]);
+				}
+				$uploadId = $results[$i]['Upload']['id'];
+				$files[$uploadId][] = $results[$i];
+			}
+		}
+		return $files;
 	}
 }

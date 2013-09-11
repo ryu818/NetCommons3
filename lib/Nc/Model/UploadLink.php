@@ -10,10 +10,6 @@
  */
 class UploadLink extends AppModel
 {
-	public $name = 'UploadLink';
-
-	public $belongsTo = array('Upload');
-
 /**
  * バリデート処理
  * @param   void
@@ -139,8 +135,8 @@ class UploadLink extends AppModel
 /**
  * ファイル項目の登録更新に伴うアップロード情報の更新
  *
- * @param int $newValue 更新後のアップロードID
- * @param int $preValue 更新前のアップロードID
+ * @param integer $newValue 更新後のアップロードID
+ * @param integer $preValue 更新前のアップロードID
  * @param array $options (
  * 					plugin 					UploadLink.plugin
  * 					contentId				UploadLink.content_id
@@ -209,7 +205,7 @@ class UploadLink extends AppModel
 /**
  * WYSIWYG記事の登録更新に伴うアップロード情報の更新
  *
- * @param string $text(ひとつの記事で複数のWYSIWYGがある場合、連結して引数に渡す)
+ * @param string $text
  * @param array $options (
  * 					plugin 					UploadLink.plugin
  * 					contentId				UploadLink.content_id
@@ -226,43 +222,46 @@ class UploadLink extends AppModel
 		$Upload = ClassRegistry::init('Upload');
 
 		$default = array(
-			'plugin'=>'',
-			'contentId'=>0,
-			'uniqueId'=>0,
-			'accessHierarchy'=>0,
-			'downloadPassword'=>'',
-			'checkComponentAction'=>'Download',
+			'plugin' => 'Common',
+			'contentId' => 0,
+			'modelName' => 'Revision',
+			'fieldName' => 'content',
+			'uniqueId' => 0,
+			'accessHierarchy' => 0,
+			'downloadPassword' => '',
+			'checkComponentAction' => 'Download',
 		);
 		$options = array_merge($default, $options);
 
 		$dbUploadIdArr = $this->find('list', array(
-			'recursive' => 0,
-			'fields' => array('UploadLink.upload_id'),
+			'recursive' => -1,
+			'fields' => array($this->alias.'.upload_id'),
 			'conditions' => array(
-				'content_id'=>$options['contentId'],
-				'unique_id'=>$options['uniqueId'],
-				'model_name'=>'Revision',
-				'field_name'=>'content',
+				'plugin' => $options['plugin'],
+				'content_id' => $options['contentId'],
+				'model_name' => $options['modelName'],
+				'field_name' => $options['fieldName'],
+				'unique_id' => $options['uniqueId'],
 			)
 		));
 		$useUploadIdArr = $this->getExtractedUploadId($text);
-
 		$newUploadIdArr = array_diff($useUploadIdArr, $dbUploadIdArr);
 		if (!empty($newUploadIdArr)) {
+			// 新しく追加したファイル
 			foreach ($newUploadIdArr as $uploadId) {
 				$this->create();
-				$data = array(
+				$data = array($this->alias => array(
 					'upload_id' => $uploadId,
 					'plugin' => $options['plugin'],
 					'content_id' => $options['contentId'],
 					'unique_id' => $options['uniqueId'],
-					'model_name' => 'Revision',
-					'field_name' => 'content',
-					'access_hierarchy' => isset($options['accessHierarchy']) ? $options['accessHierarchy'] : 0,
+					'model_name' => $options['modelName'],
+					'field_name' => $options['fieldName'],
+					'access_hierarchy' => $options['accessHierarchy'],
 					'is_use' => _ON,
-					'download_password' => isset($options['downloadPassword']) ? $options['downloadPassword'] : '',
-					'check_component_action' => isset($options['checkComponentAction']) ? $options['checkComponentAction'] : 'Download',
-				);
+					'download_password' => $options['downloadPassword'],
+					'check_component_action' => $options['checkComponentAction'],
+				));
 				if(!$this->save($data)) {
 					return false;
 				}
@@ -276,25 +275,32 @@ class UploadLink extends AppModel
 
 		if (!empty($dbUploadIdArr)) {
 			$conditions = array(
-				'UploadLink.content_id' => $options['contentId'],
-				'UploadLink.unique_id' => $options['uniqueId'],
-				'UploadLink.model_name' => 'Revision',
-				'UploadLink.field_name' => 'content',
+				$this->alias.'.plugin' => $options['plugin'],
+				$this->alias.'.content_id' => $options['contentId'],
+				$this->alias.'.unique_id' => $options['uniqueId'],
+				$this->alias.'.model_name' => $options['modelName'],
+				$this->alias.'.field_name' => $options['fieldName'],
 			);
 			foreach ($dbUploadIdArr as $uploadId) {
-				$conditions['UploadLink.upload_id'] = $uploadId;
+				$conditions[$this->alias.'.upload_id'] = $uploadId;
 				if (isset($useUploadIdArr[$uploadId])) {
 					// 使用中
 					$fields = array(
-						"Upload.is_use" => _ON,
-						"UploadLink.is_use" => _ON
+						$this->alias.".is_use" => _ON
 					);
 					if(!$this->updateAll($fields, $conditions)) {
 						return false;
 					}
+					$uploadFields = array(
+						"Upload.is_use" => _ON
+					);
+					$uploadConditions['Upload.id'] = $uploadId;
+					if(!$Upload->updateAll($uploadFields, $uploadConditions)) {
+						return false;
+					}
 				} else {
 					// 未使用
-					$fields = array('UploadLink.is_use' => _OFF);
+					$fields = array($this->alias.'.is_use' => _OFF);
 					if(!$this->updateAll($fields, $conditions)) {
 						return false;
 					}
@@ -326,7 +332,6 @@ class UploadLink extends AppModel
 		}
 
 		$parts = explode($searchKey, $text);
-
 		$matchUploadIdArr = array();
 		for ($i = 1; $i <= $count; $i++) {
 			if(!preg_match("/^([0-9]+)/", $parts[$i], $matches)) {
@@ -338,17 +343,18 @@ class UploadLink extends AppModel
 			$id = $matches[1];
 			$matchUploadIdArr[$id] = $id;
 		}
-
-		return $matchUploadIdArr;
+		// 存在しているものだけ返す
+		$Upload = ClassRegistry::init('Upload');
+		return $Upload->find('list', array('fields' => array('Upload.id'), 'conditions' => array($Upload->primaryKey => $matchUploadIdArr)));
 	}
 
 /**
  * ファイルを未使用に更新
  *
- * @param int $uploadId
+ * @param integer $uploadId
  * @return boolean true/false
  */
-	public function updateUploadToUnuse($uploadId=0) {
+	public function updateUploadToUnuse($uploadId = 0) {
 		if (empty($uploadId)) {
 			return true;
 		}
@@ -356,8 +362,8 @@ class UploadLink extends AppModel
 		$Upload = ClassRegistry::init('Upload');
 
 		$conditions = array('conditions'=>array(
-			'UploadLink.upload_id' => $uploadId,
-			'UploadLink.is_use' => _ON,
+			$this->alias.'.upload_id' => $uploadId,
+			$this->alias.'.is_use' => _ON,
 		));
 		$UploadLinkCount = $this->find('count', $conditions);
 		if($UploadLinkCount > 0) {

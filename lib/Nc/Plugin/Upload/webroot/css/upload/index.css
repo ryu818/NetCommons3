@@ -58,6 +58,7 @@ ul.upload-library-list {
 	border-radius: 2px;
 	overflow: auto;
 	height:460px;
+	margin: 0 5px 10px 0;
 }
 ul.upload-library-list li.upload-attachment {
 	list-style-type: none;
@@ -429,4 +430,19 @@ fieldset.upload-library-search input.upload-search-text {
 
 .upload-selection-list .upload-filename, .upload-selection-list .upload-check {
 	display:none;
+}
+
+/* Grid確認メッセージ表示 */
+.upload-delete-confirm-description {
+	width: 600px;
+}
+.upload-delete-confirm-grid ul li {
+	margin:0;
+	padding:0;
+	list-style-image:none;
+	list-style-position:outside;
+	list-style-type:none;
+}
+.upload-delete-confirm-grid ul li span {
+	margin-right:10px;
 }

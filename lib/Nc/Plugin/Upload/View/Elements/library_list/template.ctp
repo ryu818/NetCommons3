@@ -27,7 +27,6 @@ if($name == 'item' || $name == 'more') {
 		$file_type = isset($upload['Upload']['file_type']) ? h($upload['Upload']['file_type']) : 'image';
 		$orientation = isset($upload['Upload']['orientation']) ? h($upload['Upload']['orientation']) : null;
 		$file_name = isset($upload['Upload']['file_name']) ? h($upload['Upload']['file_name']) : '${file_name}';
-		//$basename = isset($upload['Upload']['basename']) ? h($upload['Upload']['basename']) : null;
 		//$extension = isset($upload['Upload']['extension']) ? h($upload['Upload']['extension']) : null;
 		$description = isset($upload['Upload']['description']) ? h($upload['Upload']['description']) : null;
 		$file_size = isset($upload['Upload']['file_size']) ? h($upload['Upload']['file_size']) : null;
@@ -55,7 +54,6 @@ if($name == 'item' || $name == 'more') {
 		'file_type' => $file_type,
 		'orientation' => $orientation,
 		'file_name' => $file_name,
-		//'basename' => $basename,
 		//'extension' => $extension,
 		'alt' => '${alt}',
 		'description' => $description,

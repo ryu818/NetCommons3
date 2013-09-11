@@ -10,7 +10,13 @@
  */
 class Announcement extends AppModel
 {
-	public $actsAs = array('Common', 'TimeZone');
+	public $actsAs = array(
+		'Common',
+		'TimeZone',
+		'Upload' => array(
+			'revision_group_id'
+		),
+	);
 
 	public $belongsTo = array(
 		'Revision'      => array(

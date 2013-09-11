@@ -138,6 +138,7 @@ class CheckAuthComponent extends Component {
 			$camel_plugin_name = Inflector::camelize($plugin_name);
 			$module = $controller->Module->findByDirName($camel_plugin_name);
 			$controller->nc_module = $module;
+			Configure::write(NC_SYSTEM_KEY.'.plugin', $camel_plugin_name);
 			Configure::write(NC_SYSTEM_KEY.'.Modules.'.$camel_plugin_name, $module);
 		}
 
@@ -156,7 +157,7 @@ class CheckAuthComponent extends Component {
 			}
 		} else {
 			// 管理系モジュール
-			if($controller_name != 'controls' && !$this->checkAdmin($module['Module']['id'])) {
+			if($controller_name != 'controls' && isset($module['Module']) && !$this->checkAdmin($module['Module']['id'])) {
 				return;
 			}
 			$autoLoginUrl = array('plugin'=>'', 'controller' => 'controls', 'action' => 'index');
@@ -381,9 +382,6 @@ class CheckAuthComponent extends Component {
 
 				//$content['Block']['id'] = 0;
 				$controller->nc_block = $content;
-
-				Configure::write(NC_SYSTEM_KEY.'.content_id', $controller->content_id);
-
 			} else {
 				if($block_id > 0) {
 					$block =  $controller->Block->findAuthById($block_id, $userId);
@@ -494,6 +492,9 @@ class CheckAuthComponent extends Component {
 				}
 				//$controller->page_id = $page['Page']['id'];
 			}
+
+			Configure::write(NC_SYSTEM_KEY.'.content_id', $controller->content_id);
+
 			// TODO:ログインに遷移する場合、以下を記述
 			//$controller->Auth->deny();
 		}
@@ -719,6 +720,11 @@ class CheckAuthComponent extends Component {
 				$controller->content_id = intval($block['Content']['master_id']);
 			}
 		}
+		
+		$pluginName = $controller->request->params['plugin'];
+		Configure::write(NC_SYSTEM_KEY.'.plugin', Inflector::camelize($pluginName));
+		
+		Configure::write(NC_SYSTEM_KEY.'.content_id', $controller->content_id);
 
 		if(isset($page)) {
 			$controller->nc_page = $page;

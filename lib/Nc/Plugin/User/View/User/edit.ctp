@@ -76,6 +76,8 @@
 		);
 		echo $this->Form->hiddenVars('PageUserLink');
 		echo $this->Form->end();
+
+		echo $this->Html->script(array('plugins/jquery.cj-object-scaler'));
 	?>
 	<script>
 	$(function(){

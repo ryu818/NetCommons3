@@ -2,15 +2,6 @@
 /**
  * Upload behavior
  *
- * @copyright     Copyright 2012, NetCommons Project
- * @package       app.Model.Behavior
- * @author        Noriko Arai,Ryuji Masukawa
- * @since         v 3.0.0.0
- * @license       http://www.netcommons.org/license.txt  NetCommons License
- */
-/**
- * Upload behavior
- *
  * Enables users to easily add file uploading and necessary validation rules
  *
  * PHP versions 4 and 5
@@ -27,55 +18,62 @@
  * @license       MIT License (http://www.opensource.org/licenses/mit-license.php)
  */
 App::uses('Folder', 'Utility');
+App::uses('UploadException', 'Upload.Lib/Error/Exception');
+App::uses('HttpSocket', 'Network/Http');
 class UploadBehavior extends ModelBehavior {
 
 	public $defaults = array(
-		'rootDir'			=> null,
-		'pathMethod'		=> 'flat',
-		'path'				=> '{ROOT}{DS}',
-		'fields'			=> array('dir' => 'dir', 'type' => 'type', 'size' => 'size'),
-		'mimetypes'			=> array(),
-		'extensions'		=> array(),
-		'maxSize'			=> 2097152,
-		'minSize'			=> 8,
-		'maxHeight'			=> 0,
-		'minHeight'			=> 0,
-		'maxWidth'			=> 0,
-		'minWidth'			=> 0,
-		'thumbnails'		=> true,
-		'thumbnailMethod'	=> 'imagick',
-		'thumbnailName'		=> null,
-		'thumbnailPath'		=> null,
-		'thumbnailPrefixStyle'=> false,
-		'thumbnailQuality'	=> 75,
-		'thumbnailSizes'	=> array(),
-		'thumbnailType'		=> false,
-		'deleteOnUpdate'	=> true,
-		'mediaThumbnailType'=> 'png',
-		'saveDir'			=> true,
-		'deleteFolderOnDelete' => true,
-		'mode' 				=> NC_UPLOAD_FOLDER_MODE,
-// Add Start R.Ohga
-		'renameFlag'		=> true,		//ファイル名を[[アップロードID].[拡張子]]形式に変換するかどうか
-		'filePath'			=> '',			//Upload.file_path登録用
-		'modelName'			=> '',			//UploadLink.model_name登録用
-		'fieldName'			=> '',			//UploadLink.field_name登録用
-		'accessHierarchy'	=> 0,			//UploadLink.access_hierarchy登録用
-		'downloadPassword'	=> '',			//UploadLink.download_password登録用
-		'checkComponentAction'=> 'Download',//UploadLink.check_component_action登録用
-// Add End R.Ohga
+		'rootDir' => null,
+// Edit Start Ryuji.M
+		'pathMethod' => 'flat',					// useUploadModel=falseの場合は、flatのままだと、uploadモデルのファイル名と同名のファイルがつきかねないので、他を用いること。
+		//'pathMethod' => 'primaryKey',
+		'path' => '{ROOT}',
+		//'path' => '{ROOT}webroot{DS}files{DS}{model}{DS}{field}{DS}',
+		'fields' => array('dir' => 'file_path', 'type' => 'file_type', 'size' => 'file_size'),
+		// 'fields' => array('dir' => 'dir', 'type' => 'type', 'size' => 'size'),
+// Edit End Ryuji.M
+		
+		'mimetypes' => array(),
+		'extensions' => array(),
+		'maxSize' => 2097152,
+		'minSize' => 8,
+		'maxHeight' => 0,
+		'minHeight' => 0,
+		'maxWidth' => 0,
+		'minWidth' => 0,
+		'thumbnails' => true,
+		'thumbnailMethod' => 'imagick',
+		'thumbnailName' => null,
+		'thumbnailPath' => null,
+// Edit Start Ryuji.M
+		//'thumbnailPrefixStyle' => true,
+		'thumbnailPrefixStyle' => false,		// この初期値を変更してしまうとダウンロードできなくなるため変更不可
+// Edit End Ryuji.M
+		'thumbnailQuality' => 75,
+		'thumbnailSizes' => array(),
+		'thumbnailType' => false,
+		'deleteOnUpdate' => false,
+		'mediaThumbnailType' => 'png',
+		'saveDir' => true,
+		'deleteFolderOnDelete' => false,
+// Edit Start Ryuji.M
+		'mode' => NC_UPLOAD_FOLDER_MODE,
+		//'mode' => 0777,
+		'fileType' => 'file',
+		'useUploadModel'	=> true,		// Uploadモデルを使用するかどうか（ファイル名を[[アップロードID].[拡張子]]形式に変換するかどうか）
+		'useUploadLinkModel'=> true,		// UploadLinkモデルを使用するかどうか
+		'plugin' => null,
+		'contentId' => 0,
+		'uniqueIdName' => null,
+		'modelName' => null,
+		'fieldName' => null,
+		'accessHierarchy'	=> 0,			// UploadLink.access_hierarchy登録用
+		'downloadPassword'	=> '',			// UploadLink.download_password登録用
+		'checkComponentAction'=> 'Download',// UploadLink.check_component_action登録用
+		'isDeleteFromLibrary' => true,		// ライブラリー一覧から削除させるかどうか。
+		'isWysiwyg' => null,				// WYSIWYGからの登録かどうかの判断用 nullの場合、カラムがtextならばtrue、それ以外はfalseとする。
+// Edit End Ryuji.M
 	);
-
-// Add Start R.Ohga
-// ビヘイビア全体を通して使用するオプションを保持
-	protected $_behavierOptions = array(
-		'fileType' => 'file',	//バリデータ判断用
-// 		'userId' => 0,			//Upload.user_id登録用 // 初期値をログインユーザーのIDとするためここでは設定しない
-		'plugin' => '',			//Upload.plugin, UploadLink.plugin登録用
-		'contentId' => 0,		//UploadLink.content_id登録用
-		'isWysiwyg' => false,	//WYSIWYGからの登録かどうかの判断用
-	);
-// Add End R.Ohga
 
 	protected $_imageMimetypes = array(
 		'image/bmp',
@@ -101,6 +99,21 @@ class UploadBehavior extends ModelBehavior {
 	private $__foldersToRemove = array();
 
 	protected $_removingOnly = array();
+	
+// Add Start Ryuji.M
+
+/**
+ * アップロードファイルリスト
+ * 	$uploadFileNames[$field] = newFileName
+ *
+ * @var array
+ */
+	public $uploadFileNames = array();
+
+	protected $uploadUserId = null;
+	
+	private $__extensionType = null;
+// Add End Ryuji.M
 
 /**
  * Runtime configuration for this behavior
@@ -118,6 +131,10 @@ class UploadBehavior extends ModelBehavior {
  * @access public
  */
 	public function setup(Model $model, $config = array()) {
+// Add Start Ryuji.M
+		$user = Configure::read(NC_SYSTEM_KEY.'.user');
+		$this->setUploadUserId($model, $user['id']);
+// Add End Ryuji.M
 		if (isset($this->settings[$model->alias])) return;
 		$this->settings[$model->alias] = array();
 
@@ -140,48 +157,57 @@ class UploadBehavior extends ModelBehavior {
 			$field = $options;
 			$options = array();
 		}
-
+// Edit Start Ryuji.M
 		$this->defaults['rootDir'] = NC_UPLOADS_DIR;
+		// fieldがrevision_group_idならば、強制的にisWysiwyg=trueとする。
+		$this->defaults['isWysiwyg'] = ($field == 'revision_group_id') ? true : false;
+		if ($this->defaults['isWysiwyg']) {
+			// wysiwygのデフォルト値を設定
+			$this->defaults['useUploadModel'] = false;
+			$this->defaults['modelName'] = 'Revision';
+			$this->defaults['fieldName'] = 'content';
+			$this->defaults['uniqueIdName'] = 'revision_group_id';
+		}
+		
+		//$this->defaults['rootDir'] = ROOT . DS . APP_DIR . DS;
+// Edit End Ryuji.M
 		if (!isset($this->settings[$model->alias][$field])) {
 			$options = array_merge($this->defaults, (array) $options);
 
+// Edit Start Ryuji.M
+			$options['thumbnailMethod'] = $this->_getEnableThumnailMethod($model, $options['thumbnailMethod']);
+			$this->_setFileTypeSetting($model, $field, $options);
+			$plugin = isset($options['plugin']) ? $options['plugin'] : Configure::read(NC_SYSTEM_KEY.'.plugin');
+			if(empty($this->settings[$model->alias][$field]['plugin']) && isset($plugin)) {
+				$options['plugin'] = $plugin;
+			}
+			$contentId = !empty($options['contentId']) ? $options['contentId'] : Configure::read(NC_SYSTEM_KEY.'.content_id');
+			if(empty($this->settings[$model->alias][$field]['contentId']) && isset($contentId)) {
+				$options['contentId'] = $contentId;
+			}
 			// HACK: Remove me in next major version
-			if (!empty($options['thumbsizes'])) {
-				$options['thumbnailSizes'] = $options['thumbsizes'];
-			}
+// 			if (!empty($options['thumbsizes'])) {
+// 				$options['thumbnailSizes'] = $options['thumbsizes'];
+// 			}
 
-			if (!empty($options['prefixStyle'])) {
-				$options['thumbnailPrefixStyle'] = $options['prefixStyle'];
-			}
+// 			if (!empty($options['prefixStyle'])) {
+// 				$options['thumbnailPrefixStyle'] = $options['prefixStyle'];
+// 			}
 			// ENDHACK
-
-// Add Start R.Ohga
-
-			if (empty($options['modelName'])) {
-				$options['modelName'] = $model->name;
-			}
-			if (empty($options['fieldName'])) {
-				$options['fieldName'] = $field;
-			}
-
-// Add End R.Ohga
+// Edit End Ryuji.M
 
 			$options['fields'] += $this->defaults['fields'];
 			if ($options['rootDir'] === null) {
 				$options['rootDir'] = $this->defaults['rootDir'];
 			}
-
+// Add Start Ryuji.M
+			$tempPath = $options['path'];
+// Add End Ryuji.M
 			if ($options['thumbnailName'] === null) {
 				if ($options['thumbnailPrefixStyle']) {
-// Edit Start R.Ohga
-					$options['thumbnailName'] = '{size}-{filename}';
-//					$options['thumbnailName'] = '{size}_{filename}';
-// Edit End R.Ohga
+					$options['thumbnailName'] = '{size}_{filename}';
 				} else {
-// Edit Start R.Ohga
-					$options['thumbnailName'] = '{filename}-{size}';
-//					$options['thumbnailName'] = '{filename}_{size}';
-// Edit End R.Ohga
+					$options['thumbnailName'] = '{filename}_{size}';
 				}
 			}
 
@@ -189,61 +215,54 @@ class UploadBehavior extends ModelBehavior {
 				$options['thumbnailPath'] = Folder::slashTerm($this->_path($model, $field, array(
 					'isThumbnail' => true,
 					'path' => $options['path'],
-					'rootDir' => $options['rootDir']
+					'rootDir' => $options['rootDir'].$options['plugin']. DS,
+// Edit Start Ryuji.M
+					//'plugin' => $options['plugin'],
+					'contentId' => $options['contentId'],
+// Edit End Ryuji.M
 				)));
 			} else {
 				$options['thumbnailPath'] = Folder::slashTerm($this->_path($model, $field, array(
 					'isThumbnail' => true,
 					'path' => $options['thumbnailPath'],
-					'rootDir' => $options['rootDir']
+					'rootDir' => $options['rootDir'].$options['plugin']. DS,
+// Edit Start Ryuji.M
+					//'plugin' => $options['plugin'],
+					'contentId' => $options['contentId'],
+// Edit End Ryuji.M
 				)));
 			}
 
 			$options['path'] = Folder::slashTerm($this->_path($model, $field, array(
 				'isThumbnail' => false,
 				'path' => $options['path'],
-				'rootDir' => $options['rootDir']
+				'rootDir' => $options['rootDir'].$options['plugin']. DS,
+// Edit Start Ryuji.M
+				//'plugin' => $options['plugin'],
+				'contentId' => $options['contentId'],
+// Edit End Ryuji.M
 			)));
-
-// Edit Start R.Ohga
-			$options['thumbnailMethod'] = $this->_getEnableThumnailMethod($model, $options['thumbnailMethod']);
-// 			if (!in_array($options['thumbnailMethod'], $this->_resizeMethods)) {
-// 				$options['thumbnailMethod'] = 'imagick';
-// 			}
-// Edit End R.Ohga
-
+// Edit Start Ryuji.M
+			$options['appendPath'] = Folder::slashTerm($this->_path($model, $field, array(
+				'isThumbnail' => false,
+				'path' => $tempPath,
+				'rootDir' => '',
+				//'plugin' => $options['plugin'],
+				'contentId' => $options['contentId'],
+			)));
+			if (!in_array($options['thumbnailMethod'], $this->_resizeMethods)) {
+				$options['thumbnailMethod'] = 'imagick';
+			}
+			$options['thumbnailSizes']['library'] = NC_UPLOAD_LIBRARY_THUMBNAIL_WIDTH_RESIZE_MODE;	// 削除時では、beforeSavが呼ばれないため、ここで初期値設定
+// Edit End Ryuji.M
 			if (!in_array($options['pathMethod'], $this->_pathMethods)) {
-// Edit Start R.Ohga
-				$options['pathMethod'] = 'flat';
-//				$options['pathMethod'] = 'primaryKey';
-// Edit End R.Ohga
+				$options['pathMethod'] = 'primaryKey';
 			}
 			$options['pathMethod'] = '_getPath' . Inflector::camelize($options['pathMethod']);
 			$options['thumbnailMethod'] = '_resize' . Inflector::camelize($options['thumbnailMethod']);
 			$this->settings[$model->alias][$field] = $options;
 		}
 	}
-
-// Add Start R.Ohga
-/**
- * 利用可能な画像縮小メソッド取得
- *
- * @param AppModel $model Model instance
- * @param string $thumbnailMethod
- * @return string $thumbnailMethod
- */
-	public function _getEnableThumnailMethod(Model $model, $thumbnailMethod) {
-		if ($thumbnailMethod == 'php' && extension_loaded('gd')) {
-			return 'php';
-		}
-		if (extension_loaded('imagick')) {
-			return 'imagick';
-		} elseif (extension_loaded('gd')) {
-			return 'php';
-		}
-		return '';
-	}
-// Add End R.Ohga
 
 /**
  * Convenience method for configuring UploadBehavior settings
@@ -256,9 +275,10 @@ class UploadBehavior extends ModelBehavior {
  * @return void
  */
 	public function uploadSettings(Model $model, $field, $one, $two = null) {
-		if (empty($this->settings[$model->alias][$field])) {
-			$this->_setupField($model, $field, array());
-		}
+// Edit Start Ryuji.M
+		//if (empty($this->settings[$model->alias][$field])) {
+		//	$this->_setupField($model, $field, array());
+		//}
 
 		$data = array();
 
@@ -271,72 +291,19 @@ class UploadBehavior extends ModelBehavior {
 		} else {
 			$data = array($one => $two);
 		}
-		$this->settings[$model->alias][$field] = $data + $this->settings[$model->alias][$field];
-	}
 
-// Add Start R.Ohga
-/**
- * 各カラムに使用するオプションを設定
- * 	新しい関数が増え紛らわしくなるためにuploadSettings()の別名を定義
- *
- * @param AppModel $model Model instance
- * @param string $field Name of field being modified
- * @param mixed $one A string or an array of data.
- * @param mixed $two Value in case $one is a string (which then works as the key).
- *   Unused if $one is an associative array, otherwise serves as the values to $one's keys.
- * @return void
- */
-	public function setColumnOptions(Model $model, $field, $one, $two = null) {
-		$this->uploadSettings($model, $field, $one, $two = null);
+		if(!isset($data['path'])) {
+			$data['path'] = $this->defaults['path'];
+		}
+		if (!isset($data['thumbnailPath'])) {
+			$data['thumbnailPath'] = $this->defaults['thumbnailPath'];
+		}
+		$data = $data + $this->settings[$model->alias][$field];
+		unset($this->settings[$model->alias][$field]);
+		$this->_setupField($model, $field, $data);
+		// $this->settings[$model->alias][$field] = $data + $this->settings[$model->alias][$field];
+// Edit End Ryuji.M
 	}
-
-/**
- * ビヘイビア全体を通して使用するオプションを設定
- *
- * @param AppModel $model Model instance
- * @param array $options
- * @return void
- */
-	public function setBehavierOptions(Model $model, $options) {
-		if (!is_array($options)) {
-			return;
-		}
-
-		$options = array_merge($this->_behavierOptions, $options);
-		if (!isset($options['userId'])) {
-			$user = Configure::read(NC_SYSTEM_KEY.'.user');
-			$options['userId'] = $user['id'];
-		}
-		$this->_behavierOptions = $options;
-	}
-
-/**
- * ファイル名称が重複している場合にファイル名称に数字を追加
- *
- * @param AppModel $model Model instance
- * @param string $field
- * @param string $fileName
- * @return strng $fileName
- */
-	public function _rename(Model $model, $field, $fileName) {
-		$path = $this->settings[$model->alias][$field]['path'];
-		$plugin = $this->_behavierOptions['plugin'];
-		$srcFile = $path . $plugin . DS . $fileName;
-		if (!file_exists($srcFile)) {
-			return $fileName;
-		}
-		$pathinfo = $this->_pathinfo($srcFile);
-		$i = 0;
-		while (true) {
-			$i++;
-			$fileName = $pathinfo['filename'].'-'.$i.'.'.$pathinfo['extension'];
-			$srcFile = $path . $plugin . DS . $fileName;
-			if (!file_exists($srcFile)) {
-				return $fileName;
-			}
-		}
-	}
-// Add End R.Ohga
 
 /**
  * Before save method. Called before all saves
@@ -347,13 +314,6 @@ class UploadBehavior extends ModelBehavior {
  * @return boolean
  */
 	public function beforeSave(Model $model) {
-// Add Start R.Ohga
-// Uploadへの登録の場合は以下の処理を行わない
-		if ($model->alias == 'Upload') {
-			return true;
-		}
-// Add End R.Ohga
-
 		$this->_removingOnly = array();
 		foreach ($this->settings[$model->alias] as $field => $options) {
 			if (!isset($model->data[$model->alias][$field])) continue;
@@ -361,7 +321,24 @@ class UploadBehavior extends ModelBehavior {
 
 			$this->runtime[$model->alias][$field] = $model->data[$model->alias][$field];
 
-			$beforeUploadId = 0;
+// Add Start Ryuji.M
+			// ライブラリーのサムネイル追加処理(設定しないでも追加する)
+			$tmp = isset($this->runtime[$model->alias][$field]['tmp_name']) ? $this->runtime[$model->alias][$field]['tmp_name'] : null;
+			if(isset($tmp)) {
+				list($width, $height) = getimagesize($tmp);
+				if ($width > $height) {
+					$libraryGeometry = NC_UPLOAD_LIBRARY_THUMBNAIL_HEIGHT_RESIZE_MODE;
+				} else {
+					$libraryGeometry = NC_UPLOAD_LIBRARY_THUMBNAIL_WIDTH_RESIZE_MODE;
+				}
+			} else {
+				$libraryGeometry = NC_UPLOAD_LIBRARY_THUMBNAIL_WIDTH_RESIZE_MODE;
+			}
+			$this->settings[$model->alias][$field]['thumbnailSizes'] = $options['thumbnailSizes'] = array_merge((array) $this->settings[$model->alias][$field]['thumbnailSizes'], 
+					array('library' => $libraryGeometry));
+			
+// Add End Ryuji.M
+
 			$removing = !empty($model->data[$model->alias][$field]['remove']);
 			if ($removing || ($this->settings[$model->alias][$field]['deleteOnUpdate']
 			&& isset($model->data[$model->alias][$field]['name'])
@@ -387,20 +364,11 @@ class UploadBehavior extends ModelBehavior {
 					$this->_removingOnly[$field] = true;
 					continue;
 				} else {
-// Edit Start R.Ohga
-// もともとのアップロードIDを取得
 					$model->data[$model->alias][$field] = array(
-						$field => $data[$model->alias][$field],
+						$field => null,
 						$options['fields']['type'] => null,
 						$options['fields']['size'] => null,
 					);
-					$beforeUploadId = $data[$model->alias][$field];
-// 					$model->data[$model->alias][$field] = array(
-// 						$field => null,
-// 						$options['fields']['type'] => null,
-// 						$options['fields']['size'] => null,
-// 					);
-// Edit End R.Ohga
 				}
 			} elseif (!isset($model->data[$model->alias][$field]['name'])
 			|| !strlen($model->data[$model->alias][$field]['name'])) {
@@ -409,281 +377,179 @@ class UploadBehavior extends ModelBehavior {
 				continue;
 			}
 
-// Edit Start R.Ohga
-			// 当該カラムのファイル情報をUploadテーブルに登録
-			$uploadField = $this->runtime[$model->alias][$field];
-			$upload = $this->saveUpload($model, $field, $uploadField, true, $beforeUploadId);
-			if ($upload === false) {
-				return false;
+// Edit Start Ryuji.M
+			if(!is_array($this->runtime[$model->alias][$field])) {
+				$newFileName = $this->runtime[$model->alias][$field]['Id'];
+				// uploadに存在するかどうかのチェック
+				$Upload = ClassRegistry::init('Upload');
+				$upload = $Upload->findById(substr($newFileName, 0, strpos($newFileName, '.')));
+				if(!isset($upload['Upload'])) {
+					$model->invalidate($field, __('File not found.'));
+					return false;
+				}
+			} else if ($this->settings[$model->alias][$field]['useUploadModel']) {
+				// 当該カラムのファイル情報をUploadテーブルに登録
+				$beforeUploadId = null;
+				$beforeFileName = isset($data[$model->alias][$field]) ? $data[$model->alias][$field] : null;
+				if(isset($beforeFileName)) {
+					$beforeUploadId = substr($beforeFileName, 0, strpos($beforeFileName, '.'));
+				}
+				$newFileName = $this->saveUpload($model, $field, $this->runtime[$model->alias][$field], $this->settings[$model->alias][$field], $beforeUploadId);
+				if ($newFileName === false) {
+					return false;
+				}
 			}
 
-			// 登録したUpload.idを当該カラムに設定
 			$model->data[$model->alias] = array_merge($model->data[$model->alias], array(
-				$field => $upload['Upload']['id'],
+				//$field => $this->runtime[$model->alias][$field]['name'],
+				$field => isset($newFileName) ? $newFileName : $this->runtime[$model->alias][$field]['name'],
 				$options['fields']['type'] => $this->runtime[$model->alias][$field]['type'],
 				$options['fields']['size'] => $this->runtime[$model->alias][$field]['size']
 			));
-// 			$model->data[$model->alias] = array_merge($model->data[$model->alias], array(
-// 				$field => $this->runtime[$model->alias][$field]['name'],
-// 				$options['fields']['type'] => $this->runtime[$model->alias][$field]['type'],
-// 				$options['fields']['size'] => $this->runtime[$model->alias][$field]['size']
-// 			));
-// Edit End R.Ohga
+			$this->uploadFileNames[$field] = $model->data[$model->alias][$field];
+// Edit End Ryuji.M
 		}
 		return true;
 	}
 
-// Edit Start R.Ohga
-// 物理ファイル名の更新・UploadLinkテーブルへの追加・ファイルパスの変更をするように修正
-// 	public function afterSave(Model $model, $created) {
-// 		$temp = array($model->alias => array());
-// 		foreach ($this->settings[$model->alias] as $field => $options) {
-// 			if (!in_array($field, array_keys($model->data[$model->alias]))) continue;
-// 			if (empty($this->runtime[$model->alias][$field])) continue;
-// 			if (isset($this->_removingOnly[$field])) continue;
-
-// 			$tempPath = $this->_getPath($model, $field);
-
-// 			$path = $this->settings[$model->alias][$field]['path'];
-// 			$thumbnailPath = $this->settings[$model->alias][$field]['thumbnailPath'];
-
-// 			if (!empty($tempPath)) {
-// 				$path .= $tempPath . DS;
-// 				$thumbnailPath .= $tempPath . DS;
-// 			}
-// 			$tmp = $this->runtime[$model->alias][$field]['tmp_name'];
-// 			$filePath = $path . $model->data[$model->alias][$field];
-// 			if (!$this->handleUploadedFile($model->alias, $field, $tmp, $filePath)) {
-// 				CakeLog::error(sprintf('Model %s, Field %s: Unable to move the uploaded file to %s', $model->alias, $field, $filePath));
-// 				$model->invalidate($field, sprintf('Unable to move the uploaded file to %s', $filePath));
-// 				$db = $model->getDataSource();
-// 				$db->rollback();
-// 				throw new UploadException('Unable to upload file');
-// 			}
-
-// 			$this->_createThumbnails($model, $field, $path, $thumbnailPath);
-// 			if ($model->hasField($options['fields']['dir'])) {
-// 				if ($created && $options['pathMethod'] == '_getPathFlat') {
-// 				} else if ($options['saveDir']) {
-// 					$temp[$model->alias][$options['fields']['dir']] = "'{$tempPath}'";
-// 				}
-// 			}
-// 		}
-
-// 		if (!empty($temp[$model->alias])) {
-// 			$model->updateAll($temp[$model->alias], array(
-// 					$model->alias.'.'.$model->primaryKey => $model->id
-// 			));
-// 		}
-
-// 		if (empty($this->__filesToRemove[$model->alias])) return true;
-// 		foreach ($this->__filesToRemove[$model->alias] as $file) {
-// 			$result[] = $this->unlink($file);
-// 		}
-// 		return $result;
-// 	}
+	/**
+	 * Transform Model.field value like as PHP upload array (name, tmp_name)
+	 * for UploadBehavior plugin processing.
+	 */
+	function beforeValidate(Model $model) {
+		foreach ($this->settings[$model->alias] as $field => $options) {
+// Add Start Ryuji.M
+			// Model[$field][file]があれば、そちらをfileエレメントとしてバリデート(プレビュー後に登録を実装するため)
+			if(isset($model->data[$model->alias][$field], $model->data[$model->alias][$field]['file']) && is_array($model->data[$model->alias][$field]['file'])) {
+				$model->data[$model->alias][$field] = $model->data[$model->alias][$field]['file'];
+			}
+// Add End Ryuji.M
+			if (!empty($model->data[$model->alias][$field])
+				AND $this->_isURI($model->data[$model->alias][$field])) {
+				$uri = $model->data[$model->alias][$field];
+				if (!$this->_grab($model, $field, $uri)) {
+					$model->invalidate($field, __d('upload', 'File was not downloaded.'));
+					return false;
+				}
+			}
+		}
+		return true;
+	}
 
 	public function afterSave(Model $model, $created) {
-		$Upload = ClassRegistry::init('Upload');
-		$UploadLink = ClassRegistry::init('UploadLink');
-
 		$temp = array($model->alias => array());
+// Edit Start Ryuji.M
+// 削除して登録することでdeleteOnUpdateがtrueの場合にアップロードした画像が削除されないように修正。
+		$result = true;
+		if (!empty($this->__filesToRemove[$model->alias])) {
+			$result = array();
+			foreach ($this->__filesToRemove[$model->alias] as $file) {
+				$result[] = $this->unlink($file);
+			}
+		}
+// Edit End Ryuji.M
 		foreach ($this->settings[$model->alias] as $field => $options) {
-			if (empty($this->runtime[$model->alias][$field]['tmp_name'])) continue;
+// Edit Start Ryuji.M
+			/////if (!in_array($field, array_keys($model->data[$model->alias]))) continue;
+			/////if (empty($this->runtime[$model->alias][$field])) continue;
 			if (isset($this->_removingOnly[$field])) continue;
+			
+			// モデルUserならば、id情報でUpload.user_id更新
+			if ($this->settings[$model->alias][$field]['useUploadModel'] && !empty($model->id) && $model->alias == 'User' && $created) {
+				$Upload = ClassRegistry::init('Upload');
+				$data = array(
+					'Upload.user_id' => "'".$model->id. "'",
+				);
+				$haystack = $model->data[$model->alias][$field];
+				$conditions = array('Upload.id' => substr($haystack, 0, strpos($haystack, '.')));
+				if(!$Upload->updateAll($data, $conditions)) {
+					return false;
+				}
+			}
+	
+			if ($this->settings[$model->alias][$field]['useUploadLinkModel'] && !empty($model->id)) {
+				if (!$this->saveUploadLink($model, $field)) {
+					return false;
+				}
+			}
+			if (!in_array($field, array_keys($model->data[$model->alias]))) continue;
+			if (empty($this->runtime[$model->alias][$field])) continue;
+// Edit End Ryuji.M
 
 			$tempPath = $this->_getPath($model, $field);
 
 			$path = $this->settings[$model->alias][$field]['path'];
 			$thumbnailPath = $this->settings[$model->alias][$field]['thumbnailPath'];
 
-			if (!empty($this->_behavierOptions['plugin'])) {
-				$plugin = $this->_behavierOptions['plugin'];
-				$path .= $plugin . DS;
-				$thumbnailPath .= $plugin . DS;
-			}
-
 			if (!empty($tempPath)) {
 				$path .= $tempPath . DS;
 				$thumbnailPath .= $tempPath . DS;
 			}
-
+// Add Start Ryuji.M
+// pathの最後にDSを付与
+			if (!empty($tempPath)) {
+				$tempPath = !empty($this->settings[$model->alias][$field]['appendPath']) ? $this->settings[$model->alias][$field]['appendPath'] . $tempPath .DS : $tempPath. DS;
+			} else if(!empty($this->settings[$model->alias][$field]['appendPath'])) {
+				$tempPath = $this->settings[$model->alias][$field]['appendPath'];
+			}
+			if($tempPath == DS) {
+				$tempPath = '';
+			}
+// Add End Ryuji.M
 			$tmp = $this->runtime[$model->alias][$field]['tmp_name'];
-			$name = $this->runtime[$model->alias][$field]['name'];
-			$pathInfo = $this->_pathinfo($path.$name);
-			if ($model->alias == 'Upload') {
-				$uploadId = $model->id;
-			} else {
-				$uploadId = $model->data[$model->alias][$field];
-			}
-
-			if ($this->settings[$model->alias][$field]['renameFlag']) {
-				$physicalFileName = $uploadId . '.' . $pathInfo['extension'];
-			} elseif ($this->settings[$model->alias][$field]['pathMethod'] == '_getPathFlat') {
-				$physicalFileName = $this->_rename($model, $field, $pathInfo['basename']);
-			} else {
-				$physicalFileName = $pathInfo['basename'];
-			}
-
-			$fields = array(
-				'Upload.physical_file_name' => "'".$physicalFileName."'"
-			);
-			if(!$Upload->updateAll($fields, array('Upload.id' => $uploadId))) {
+			$filePath = $path . $model->data[$model->alias][$field];
+			if (!$this->handleUploadedFile($model->alias, $field, $tmp, $filePath)) {
+				$model->invalidate($field, __('Unable to move the uploaded file to %s', $filePath));
 				return false;
+				//CakeLog::error(sprintf('Model %s, Field %s: Unable to move the uploaded file to %s', $model->alias, $field, $filePath));
+				//$model->invalidate($field, sprintf('Unable to move the uploaded file to %s', $filePath));
+				//$db = $model->getDataSource();
+				//$db->rollback();
+				//throw new UploadException('Unable to upload file');
 			}
 
-			// UploadLinkテーブル更新
-			$fields = array(
-				'UploadLink.unique_id' => $model->id,
-			);
-			if(!$UploadLink->updateAll($fields, array('UploadLink.upload_id' => $uploadId))) {
-				return false;
-			}
-
-			$physicalFilePath = $path . $physicalFileName;
-			if (!$this->handleUploadedFile($model->alias, $field, $tmp, $physicalFilePath)) {
-				CakeLog::error(sprintf('Model %s, Field %s: Unable to move the uploaded file to %s', $model->alias, $field, $physicalFilePath));
-				$model->invalidate($field, sprintf('Unable to move the uploaded file to %s', $physicalFilePath));
-				$db = $model->getDataSource();
-				$db->rollback();
-				return false;
-			}
-
-			if ($this->settings[$model->alias][$field]['thumbnails']) {
-				// リサイズ・サムネイル画像生成処理
-				$maxWidth = $this->settings[$model->alias][$field]['maxWidth'];
-				$maxHeight = $this->settings[$model->alias][$field]['maxHeight'];
-
-				list($width, $height) = getimagesize($physicalFilePath);
-				if ($width > $height) {
-					$libraryGeometry = NC_UPLOAD_LIBRARY_GEOMETRY_FIT_HEIGHT;
-				} else {
-					$libraryGeometry = NC_UPLOAD_LIBRARY_GEOMETRY_FIT_WIDTH;
+			$this->_createThumbnails($model, $field, $path, $thumbnailPath);
+			if ($model->hasField($options['fields']['dir'])) {
+				if ($created && $options['pathMethod'] == '_getPathFlat') {
+				} else if ($options['saveDir']) {
+					$temp[$model->alias][$options['fields']['dir']] = "'{$tempPath}'";
 				}
-
-				$thumbnailSizes = array('library' => $libraryGeometry);
-				if ($maxWidth != 0 || $maxHeight != 0) {
-					$thumbnailSizes[] = '['.$maxWidth.'x'.$maxHeight.']';//リサイズ
+			}
+			
+// Add Start Ryuji.M
+			if ($this->settings[$model->alias][$field]['useUploadModel'] &&
+				(!empty($tempPath) || (isset($this->settings[$model->alias][$field]['thumbnailSizes']['original']) && $this->runtime[$model->alias][$field]['size'] != filesize($filePath)))) {
+				// Upload update
+				if(empty($Upload)) {
+					$Upload = ClassRegistry::init('Upload');
 				}
-				$this->settings[$model->alias][$field]['thumbnailSizes'] = array_merge(
-					$this->settings[$model->alias][$field]['thumbnailSizes'], $thumbnailSizes
+				$data = array(
+					'Upload.file_path' => "'".$tempPath. "'",
+					'Upload.file_size' => "'".filesize($filePath). "'",
 				);
-
-				$this->_createThumbnails($model, $field, $physicalFilePath, $thumbnailPath);
-				if ($model->hasField($options['fields']['dir'])) {
-					if ($created && $options['pathMethod'] == '_getPathFlat') {
-					} else if ($options['saveDir']) {
-						$temp[$model->alias][$options['fields']['dir']] = "'{$tempPath}'";
-					}
+				$haystack = $model->data[$model->alias][$field];
+				$conditions = array('Upload.id' => substr($haystack, 0, strpos($haystack, '.')));
+				if(!$Upload->updateAll($data, $conditions)) {
+					return false;
 				}
 			}
+// Add End Ryuji.M
 		}
 
-		if (!empty($temp[$model->alias])) {
+		if (!empty($temp[$model->alias]) && $model->id) {
 			$model->updateAll($temp[$model->alias], array(
 				$model->alias.'.'.$model->primaryKey => $model->id
 			));
 		}
 
 		if (empty($this->__filesToRemove[$model->alias])) return true;
-		foreach ($this->__filesToRemove[$model->alias] as $file) {
-			$result[] = $this->unlink($file);
-		}
+// Edit End Ryuji.M 上部へ移動
+// 		foreach ($this->__filesToRemove[$model->alias] as $file) {
+// 			$result[] = $this->unlink($file);
+// 		}
+// Edit End Ryuji.M
 		return $result;
 	}
-// Edit End R.Ohga
-
-// Add Start R.Ohga
-/**
- * アップロード関連のテーブルへの登録更新
- *
- * @param AppModel $model Model instance
- * @param string $field
- * @param array $uploadFile
- * @param int $beforeUploadId もともと使用されていたアップロードID
- * @return mixed success:登録内容 error:false
- */
-	public function saveUpload(Model $model, $field, $uploadFile, $doSaveUploadLink, $beforeUploadId=0) {
-
-		if ($model->alias == 'Upload') {
-			$Upload = $model;
-		} else {
-			$Upload = ClassRegistry::init('Upload');
-		}
-
-		// Upload登録
-		$pathinfo = $this->_pathinfo($uploadFile['name']);
-		$filePath = '';
-		if (!empty($this->settings[$model->alias][$field]['filePath'])) {
-			$filePath .= $this->settings[$model->alias][$field]['filePath'].DS;
-		}
-
-		// validate設定
-		$Upload->validate = $Upload->setValidate($this->_behavierOptions['fileType']);
-		$this->runtime[$model->alias][$field] = $uploadFile;
-
-		if (empty($beforeUploadId)) {
-			// 追加
-			$data = array(
-				'Upload' => array(
-					'user_id' => $this->_behavierOptions['userId'],
-					'file_name' => $uploadFile['name'],
-					'file_size' => $uploadFile['size'],
-					'file_path' => $filePath,
-					'mimetype' => $uploadFile['type'],
-					'extension' => $pathinfo['extension'],
-					'plugin' => $this->_behavierOptions['plugin'],
-					'is_wysiwyg' => ($this->_behavierOptions['isWysiwyg'] ? _ON : _OFF),
-				)
-			);
-			$uploadResult = $Upload->save($data);
-		} else {
-			// 更新
-			$data = array(
-				'Upload.user_id' => $this->_behavierOptions['userId'],
-				'Upload.file_name' => "'".$uploadFile['name']."'",
-				'Upload.file_size' => $uploadFile['size'],
-				'Upload.file_path' => "'".$filePath."'",
-				'Upload.mimetype' => "'".$uploadFile['type']."'",
-				'Upload.extension' => "'".$pathinfo['extension']."'",
-				'Upload.plugin' => $this->_behavierOptions['plugin'],
-			);
-			$conditions = array('Upload.id' => $beforeUploadId);
-			if(!$Upload->updateAll($data, $conditions)) {
-				return false;
-			}
-			$model->data[$model->alias][$field] = $uploadFile;
-			return array('Upload'=>$Upload->findById($beforeUploadId));
-		}
-
-		if(!is_array($uploadResult)) {
-			return array('Upload'=>array(
-				'file_name' => $uploadFile['name'],
-				'error' => $Upload->validationErrors
-			));
-		}
-
-		if ($doSaveUploadLink) {
-			$options = $this->settings[$model->alias][$field];
-
-			$data = array(
-				'upload_id'=>$Upload->id,
-				'plugin'=>$this->_behavierOptions['plugin'],
-				'content_id'=>$this->_behavierOptions['contentId'],
-				'model_name'=>$options['modelName'],
-				'field_name'=>$options['fieldName'],
-				'access_hierarchy'=>$options['accessHierarchy'],
-				'is_use'=>_ON,
-				'download_password'=>$options['downloadPassword'],
-				'check_component_action'=>$options['checkComponentAction'],
-			);
-			$Upload->UploadLink->save($data);
-		}
-
-		return $Upload->findById($Upload->id);
-	}
-
-// Add End R.Ohga
 
 	public function handleUploadedFile($modelAlias, $field, $tmp, $filePath) {
 		if (is_uploaded_file($tmp)) {
@@ -732,6 +598,11 @@ class UploadBehavior extends ModelBehavior {
 		));
 
 		foreach ($this->settings[$model->alias] as $field => $options) {
+// Add End Ryuji.M
+			if($model->useTable == 'uploads') {
+				$data[$model->alias][$field] = $model->id . '.' . $data[$model->alias]['extension'];
+			}
+// Add End Ryuji.M
 			$this->_prepareFilesForDeletion($model, $field, $data, $options);
 		}
 		return true;
@@ -751,6 +622,7 @@ class UploadBehavior extends ModelBehavior {
 				return true;
 			}
 		}
+
 		return $result;
 	}
 
@@ -857,7 +729,7 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && (!isset($check[$field]['error']) || $check[$field]['error'] === UPLOAD_ERR_NO_FILE)) {
 			return true;
 		}
 
@@ -880,7 +752,7 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && (!isset($check[$field]['error']) || $check[$field]['error'] === UPLOAD_ERR_NO_FILE)) {
 			return true;
 		}
 
@@ -903,7 +775,7 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && (!isset($check[$field]['error']) || $check[$field]['error'] === UPLOAD_ERR_NO_FILE)) {
 			return true;
 		}
 
@@ -927,30 +799,57 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && (!isset($check[$field]['error']) || $check[$field]['error'] === UPLOAD_ERR_NO_FILE)) {
 			return true;
 		}
 
-		// Non-file uploads also mean the mimetype is invalid
+// Edit Start Ryuji.M
+		$ret = true;
 		if (!isset($check[$field]['type']) || !strlen($check[$field]['type'])) {
-			return false;
-		}
-
-		// Sometimes the user passes in a string instead of an array
-		if (is_string($mimetypes)) {
-			$mimetypes = array($mimetypes);
-		}
-
-		foreach ($mimetypes as $key => $value) {
-			if (!is_int($key)) {
-				$mimetypes = $this->settings[$model->alias][$field]['mimetypes'];
-				break;
+			$ret = false;
+		} else {
+			// Sometimes the user passes in a string instead of an array
+			if (is_string($mimetypes)) {
+				$mimetypes = array($mimetypes);
 			}
+			
+			foreach ($mimetypes as $key => $value) {
+				if (!is_int($key)) {
+					$mimetypes = $this->settings[$model->alias][$field]['mimetypes'];
+					break;
+				}
+			}
+			if (empty($mimetypes)) $mimetypes = $this->settings[$model->alias][$field]['mimetypes'];
+			
+			return in_array($check[$field]['type'], $mimetypes);
 		}
+		if(!$ret) {
+			return __('Invalid MimeType.');
+		}
+		return $ret;
+		
+// 		// Non-file uploads also mean the mimetype is invalid
+// 		if (!isset($check[$field]['type']) || !strlen($check[$field]['type'])) {
+// 			return false;
+// 		}
 
-		if (empty($mimetypes)) $mimetypes = $this->settings[$model->alias][$field]['mimetypes'];
+// 		// Sometimes the user passes in a string instead of an array
+// 		if (is_string($mimetypes)) {
+// 			$mimetypes = array($mimetypes);
+// 		}
 
-		return in_array($check[$field]['type'], $mimetypes);
+// 		foreach ($mimetypes as $key => $value) {
+// 			if (!is_int($key)) {
+// 				$mimetypes = $this->settings[$model->alias][$field]['mimetypes'];
+// 				break;
+// 			}
+// 		}
+
+// 		if (empty($mimetypes)) $mimetypes = $this->settings[$model->alias][$field]['mimetypes'];
+
+// 		return in_array($check[$field]['type'], $mimetypes);
+// Edit End Ryuji.M
+		
 	}
 
 /**
@@ -971,7 +870,7 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && (!isset($check[$field]['error']) || $check[$field]['error'] === UPLOAD_ERR_NO_FILE)) {
 			return true;
 		}
 
@@ -995,7 +894,7 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && (!isset($check[$field]['error']) || $check[$field]['error'] === UPLOAD_ERR_NO_FILE)) {
 			return true;
 		}
 
@@ -1019,18 +918,29 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && (!isset($check[$field]['error']) || $check[$field]['error'] === UPLOAD_ERR_NO_FILE)) {
 			return true;
 		}
-
-		// Non-file uploads also mean the size is too small
-		if (!isset($check[$field]['size']) || !strlen($check[$field]['size'])) {
-			return false;
-		}
-
+// Edit Start Ryuji.M
+		$ret = true;
 		if (!$size) $size = $this->settings[$model->alias][$field]['maxSize'];
-
-		return $check[$field]['size'] <= $size;
+		if (!isset($check[$field]['size']) || !strlen($check[$field]['size'])) {
+			$ret = false;
+		} else {
+			$ret = $check[$field]['size'] <= $size;
+		}
+		if(!$ret) {
+			App::uses('CakeNumber', 'Utility');
+			return __('File size too large. Max %s.', CakeNumber::toReadableSize($size));
+		}
+		return $ret;
+		
+		//if (!isset($check[$field]['size']) || !strlen($check[$field]['size'])) {
+		//	return false;
+		//}
+		//if (!$size) $size = $this->settings[$model->alias][$field]['maxSize'];
+		//return $check[$field]['size'] <= $size;
+// Edit End Ryuji.M
 	}
 
 /**
@@ -1050,18 +960,36 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && (!isset($check[$field]['error']) || $check[$field]['error'] === UPLOAD_ERR_NO_FILE)) {
 			return true;
 		}
 
 		// Non-file uploads also mean the size is too small
-		if (!isset($check[$field]['size']) || !strlen($check[$field]['size'])) {
-			return false;
-		}
-
+// Edit Start Ryuji.M
+		$ret = true;
 		if (!$size) $size = $this->settings[$model->alias][$field]['minSize'];
+		if (!isset($check[$field]['size']) || !strlen($check[$field]['size'])) {
+			$ret = false;
+		} else {
+			$ret = $check[$field]['size'] >= $size;
+		}
+		if(!$ret) {
+			App::uses('CakeNumber', 'Utility');
+			return __('File size too large. Min %s.', CakeNumber::toReadableSize($size));
+		}
+		return $ret;
+		
+//		if (!isset($check[$field]['size']) || !strlen($check[$field]['size'])) {
+// 			return false;
+// 		}
 
-		return $check[$field]['size'] >= $size;
+// 		if (!$size) $size = $this->settings[$model->alias][$field]['minSize'];
+// 		return $check[$field]['size'] >= $size;
+// Edit End Ryuji.M
+		
+
+
+
 	}
 
 /**
@@ -1081,33 +1009,79 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && (!isset($check[$field]['error']) || $check[$field]['error'] === UPLOAD_ERR_NO_FILE)) {
 			return true;
 		}
-
+// Edit Start Ryuji.M
 		// Non-file uploads also mean the extension is invalid
+		$ret = true;
 		if (!isset($check[$field]['name']) || !strlen($check[$field]['name'])) {
-			return false;
-		}
-
-		// Sometimes the user passes in a string instead of an array
-		if (is_string($extensions)) {
-			$extensions = array($extensions);
-		}
-
-		// Sometimes a user does not specify any extensions in the validation rule
-		foreach ($extensions as $key => $value) {
-			if (!is_int($key)) {
-				$extensions = $this->settings[$model->alias][$field]['extensions'];
-				break;
+			$ret = false;
+		} else {
+			// Sometimes the user passes in a string instead of an array
+			if(is_null($extensions)) {
+				$extensions = array();
 			}
+			else if (is_string($extensions)) {
+				$extensions = array($extensions);
+			}
+			// Sometimes a user does not specify any extensions in the validation rule
+			foreach ($extensions as $key => $value) {
+				if (!is_int($key)) {
+					$extensions = $this->settings[$model->alias][$field]['extensions'];
+					break;
+				}
+			}
+			if (empty($extensions)) $extensions = $this->settings[$model->alias][$field]['extensions'];
+			$pathInfo = $this->_pathinfo($check[$field]['name']);
+// tar.gz対応
+			if(preg_match('/\.gz$/', $pathInfo['extension'])) {
+				$pathInfo['extension'] = 'gz';
+			}
+			
+			$extensions = array_map('strtolower', $extensions);
+			$ret = in_array(strtolower($pathInfo['extension']), $extensions);
 		}
+		if(!$ret) {
+			switch($this->__extensionType) {
+				case 'imagick':
+					$mes = __('Only BMP,GIF,JPEG,PNG files are allowed as image files.');
+					break;
+				case 'php':
+					$mes = __('Only GIF,JPEG,PNG files are allowed as image files.');
+					break;
+				case 'compression':
+					$mes = __('Only ZIP,TAR,TGZ,GZ files are allowed as files.');
+					break;
+				default:
+					$mes = __('Invalid extension.');
+			}
+			return $mes;
+		}
+		return $ret;
+// 		if (!isset($check[$field]['name']) || !strlen($check[$field]['name'])) {
+// 			return false;
+// 		}
 
-		if (empty($extensions)) $extensions = $this->settings[$model->alias][$field]['extensions'];
-		$pathInfo = $this->_pathinfo($check[$field]['name']);
+// 		// Sometimes the user passes in a string instead of an array
+// 		if (is_string($extensions)) {
+// 			$extensions = array($extensions);
+// 		}
 
-		$extensions = array_map('strtolower', $extensions);
-		return in_array(strtolower($pathInfo['extension']), $extensions);
+// 		// Sometimes a user does not specify any extensions in the validation rule
+// 		foreach ($extensions as $key => $value) {
+// 			if (!is_int($key)) {
+// 				$extensions = $this->settings[$model->alias][$field]['extensions'];
+// 				break;
+// 			}
+// 		}
+
+// 		if (empty($extensions)) $extensions = $this->settings[$model->alias][$field]['extensions'];
+// 		$pathInfo = $this->_pathinfo($check[$field]['name']);
+// 		$extensions = array_map('strtolower', $extensions);
+// 		return in_array(strtolower($pathInfo['extension']), $extensions);
+// Edit End Ryuji.M
+		
 	}
 
 /**
@@ -1127,19 +1101,32 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && (!isset($check[$field]['error']) || $check[$field]['error'] === UPLOAD_ERR_NO_FILE)) {
 			return true;
 		}
-
+// Edit Start Ryuji.M
 		// Non-file uploads also mean the height is too big
-		if (!isset($check[$field]['tmp_name']) || !strlen($check[$field]['tmp_name'])) {
-			return false;
-		}
-
+		$ret = true;
 		if (!$height) $height = $this->settings[$model->alias][$field]['minHeight'];
+		if (!isset($check[$field]['tmp_name']) || !strlen($check[$field]['tmp_name'])) {
+			$ret = false;
+		} else {
+			list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
+			$ret = $height > 0 && $imgHeight >= $height;
+		}
+		if(!$ret) {
+			return __('File height must be larger than %u.', $height);
+		}
+		return $ret;
+// 		if (!isset($check[$field]['tmp_name']) || !strlen($check[$field]['tmp_name'])) {
+// 			return false;
+// 		}
 
-		list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
-		return $height > 0 && $imgHeight >= $height;
+// 		if (!$height) $height = $this->settings[$model->alias][$field]['minHeight'];
+
+// 		list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
+// 		return $height > 0 && $imgHeight >= $height;
+// Edit End Ryuji.M
 	}
 
 /**
@@ -1159,19 +1146,34 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && (!isset($check[$field]['error']) || $check[$field]['error'] === UPLOAD_ERR_NO_FILE)) {
 			return true;
 		}
-
+// Edit Start Ryuji.M
 		// Non-file uploads also mean the height is too big
-		if (!isset($check[$field]['tmp_name']) || !strlen($check[$field]['tmp_name'])) {
-			return false;
-		}
-
+		$ret = true;
 		if (!$height) $height = $this->settings[$model->alias][$field]['maxHeight'];
+		if (!isset($check[$field]['tmp_name']) || !strlen($check[$field]['tmp_name'])) {
+			$ret = false;
+		} else {
+			list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
+			$ret = $height > 0 && $imgHeight <= $height;
+		}
+		if(!$ret) {
+			return __('File height must be smaller than %u.', $height);
+		}
+		return $ret;
+// 		// Non-file uploads also mean the height is too big
+// 		if (!isset($check[$field]['tmp_name']) || !strlen($check[$field]['tmp_name'])) {
+// 			return false;
+// 		}
 
-		list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
-		return $height > 0 && $imgHeight <= $height;
+// 		if (!$height) $height = $this->settings[$model->alias][$field]['maxHeight'];
+
+// 		list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
+// 		return $height > 0 && $imgHeight <= $height;
+// Edit End Ryuji.M
+		
 	}
 
 /**
@@ -1191,19 +1193,32 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && (!isset($check[$field]['error']) || $check[$field]['error'] === UPLOAD_ERR_NO_FILE)) {
 			return true;
 		}
-
+// Edit Start Ryuji.M
 		// Non-file uploads also mean the height is too big
-		if (!isset($check[$field]['tmp_name']) || !strlen($check[$field]['tmp_name'])) {
-			return false;
-		}
-
+		$ret = true;
 		if (!$width) $width = $this->settings[$model->alias][$field]['minWidth'];
+		if (!isset($check[$field]['tmp_name']) || !strlen($check[$field]['tmp_name'])) {
+			$ret = false;
+		} else {
+			list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
+			$ret = $width > 0 && $imgWidth >= $width;
+		}
+		if(!$ret) {
+			return __('File width must be larger than %u.', $width);
+		}
+		return $ret;
+// 		if (!isset($check[$field]['tmp_name']) || !strlen($check[$field]['tmp_name'])) {
+// 			return false;
+// 		}
 
-		list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
-		return $width > 0 && $imgWidth >= $width;
+// 		if (!$width) $width = $this->settings[$model->alias][$field]['minWidth'];
+
+// 		list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
+// 		return $width > 0 && $imgWidth >= $width;
+// Edit End Ryuji.M
 	}
 
 /**
@@ -1223,26 +1238,36 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		// Allow circumvention of this rule if uploads is not required
-		if (!$requireUpload && $check[$field]['error'] === UPLOAD_ERR_NO_FILE) {
+		if (!$requireUpload && (!isset($check[$field]['error']) || $check[$field]['error'] === UPLOAD_ERR_NO_FILE)) {
 			return true;
 		}
-
+// Edit Start Ryuji.M
 		// Non-file uploads also mean the height is too big
-		if (!isset($check[$field]['tmp_name']) || !strlen($check[$field]['tmp_name'])) {
-			return false;
-		}
-
+		$ret = true;
 		if (!$width) $width = $this->settings[$model->alias][$field]['maxWidth'];
+		if (!isset($check[$field]['tmp_name']) || !strlen($check[$field]['tmp_name'])) {
+			$ret = false;
+		} else {
+			list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
+			$ret = $width > 0 && $imgWidth <= $width;
+		}
+		if(!$ret) {
+			return __('File height must be smaller than %u.', $width);
+		}
+		return $ret;
+// 		if (!isset($check[$field]['tmp_name']) || !strlen($check[$field]['tmp_name'])) {
+// 			return false;
+// 		}
 
-		list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
-		return $width > 0 && $imgWidth <= $width;
+// 		if (!$width) $width = $this->settings[$model->alias][$field]['maxWidth'];
+
+// 		list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
+// 		return $width > 0 && $imgWidth <= $width;
+// Edit End Ryuji.M
 	}
 
 	public function _resizeImagick(Model $model, $field, $path, $size, $geometry, $thumbnailPath) {
-// Edit Start R.Ohga
-		$srcFile  = $path;
-// 		$srcFile  = $path . $model->data[$model->alias][$field];
-// Edit End R.Ohga
+		$srcFile  = $path . $model->data[$model->alias][$field];
 		$pathInfo = $this->_pathinfo($srcFile);
 		$thumbnailType = $imageFormat = $this->settings[$model->alias][$field]['thumbnailType'];
 
@@ -1262,18 +1287,20 @@ class UploadBehavior extends ModelBehavior {
 			// resize with banding
 			list($destW, $destH) = explode('x', substr($geometry, 1, strlen($geometry)-2));
 // Edit Start R.Ohga
-// 余白ができてしまうため修正
-			if ($width > $height) {
-				$destH = 0;
-			} else {
-				$destW = 0;
-			}
-// Edit Start R.Ohga
 // 小さい画像を拡大してしまうため修正
 			if ($destH > $height) {$destH = $height;}
 			if ($destW > $width) {$destW = $width;}
 // Edit End R.Ohga
-			$image->resizeImage($destW, $destH, imagick::FILTER_MITCHELL, 1);
+// Edit Start R.Ohga
+// 余白ができてしまうため修正
+			$tempDestH = $destH;
+			$tempDestW = $destW;
+			if ($width > $height) {
+				$tempDestH = 0;
+			} else {
+				$tempDestW = 0;
+			}
+			$image->resizeImage($tempDestW, $tempDestH, imagick::FILTER_MITCHELL, 1);
 // 			$image->thumbnailImage($destW, $destH, true);
 // 			$imageGeometry = $image->getImageGeometry();
 // 			$x = ($destW - $imageGeometry['width']) / 2;
@@ -1317,11 +1344,15 @@ class UploadBehavior extends ModelBehavior {
 			if ($destH > $height) {$destH = $height;}
 			if ($destW > $width) {$destW = $width;}
 // Edit End R.Ohga
-
 			$imagickVersion = phpversion('imagick');
 			$image->thumbnailImage($destW, $destH, !($imagickVersion[0] == 3));
 		}
-
+// Edit Start Ryuji.M
+		if($size == 'original' && ((empty($destH) && empty($destH)) || ($destH == $height && $destW == $width))) {
+			// 大きさの変更なし
+			return true;
+		}
+// Edit End Ryuji.M
 		if ($isMedia) {
 			$thumbnailType = $imageFormat = $this->settings[$model->alias][$field]['mediaThumbnailType'];
 		}
@@ -1365,8 +1396,8 @@ class UploadBehavior extends ModelBehavior {
 // Edit Start R.Ohga
 // $sizeが空の場合はファイル名に$sizeを使用しないように修正
 		$thumbnailName = $this->settings[$model->alias][$field]['thumbnailName'];
-		if (empty($size)) {
-			$thumbnailName = preg_replace('/-?\{size\}-?/', '',$thumbnailName);
+		if ($size == 'original') {
+			$thumbnailName = preg_replace('/[_-]?\{size\}[_-]?/', '',$thumbnailName);
 		}
 		$fileName = str_replace(
 			array('{size}', '{filename}', '{primaryKey}'),
@@ -1394,10 +1425,7 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	public function _resizePhp(Model $model, $field, $path, $size, $geometry, $thumbnailPath) {
-// Edit Start R.Ohga
-		$srcFile  = $path;
-// 		$srcFile  = $path . $model->data[$model->alias][$field];
-// Edit End R.Ohga
+		$srcFile  = $path . $model->data[$model->alias][$field];
 		$pathInfo = $this->_pathinfo($srcFile);
 		$thumbnailType = $this->settings[$model->alias][$field]['thumbnailType'];
 
@@ -1410,10 +1438,10 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 // Edit Start R.Ohga
-// $sizeが空の場合はファイル名に$sizeを使用しないように修正
+// $sizeが「original」の場合はファイル名に$sizeを使用しないように修正(元ファイルの自動リサイズ)
 		$thumbnailName = $this->settings[$model->alias][$field]['thumbnailName'];
-		if (empty($size)) {
-			$thumbnailName = preg_replace('/-?\{size\}-?/', '',$thumbnailName);
+		if ($size == 'original') {
+			$thumbnailName = preg_replace('/[_-]?\{size\}[_-]?/', '',$thumbnailName);
 		}
 		$fileName = str_replace(
 			array('{size}', '{filename}', '{primaryKey}'),
@@ -1541,6 +1569,13 @@ class UploadBehavior extends ModelBehavior {
 				$resizeW = $destW;
 				$resizeH = $destH;
 			}
+// Edit Start Ryuji.M
+
+			if($size == 'original' && $destH == $height && $destW == $width) {
+				// 大きさの変更なし
+				return true;
+			}
+// Edit End Ryuji.M
 
 // Edit Start R.Ohga
 // 余白ができてしまうため修正
@@ -1578,27 +1613,13 @@ class UploadBehavior extends ModelBehavior {
 	}
 
 	public function _getPathFlat(Model $model, $field, $path) {
-// Add Start R.Ohga
-// プラグイン名をファイルパスに追加
-		$plugin = '';
-		if (!empty($this->_behavierOptions['plugin'])) {
-			$plugin = $this->_behavierOptions['plugin'] . DS;
-		}
-// Add End R.Ohga
-		$destDir = $path . $plugin;
+		$destDir = $path;
 		$this->_mkPath($model, $field, $destDir);
 		return '';
 	}
 
 	public function _getPathPrimaryKey(Model $model, $field, $path) {
-// Add Start R.Ohga
-// プラグイン名をファイルパスに追加
-		$plugin = '';
-		if (!empty($this->_behavierOptions['plugin'])) {
-			$plugin = $this->_behavierOptions['plugin'] . DS;
-		}
-// Add End R.Ohga
-		$destDir = $path . $plugin . $model->id . DS;
+		$destDir = $path . $model->id . DIRECTORY_SEPARATOR;
 		$this->_mkPath($model, $field, $destDir);
 		return $model->id;
 	}
@@ -1608,22 +1629,12 @@ class UploadBehavior extends ModelBehavior {
 		$decrement = 0;
 		$string = crc32($field . microtime());
 
-// Add Start R.Ohga
-// プラグイン名をファイルパスに追加
-		$plugin = '';
-		if (!empty($this->_behavierOptions['plugin'])) {
-			$plugin = $this->_behavierOptions['plugin'] . DS;
-		}
-// Add End R.Ohga
 		for ($i = 0; $i < 3; $i++) {
 			$decrement = $decrement - 2;
-			$endPath .= sprintf("%02d" . DS, substr('000000' . $string, $decrement, 2));
+			$endPath .= sprintf("%02d" . DIRECTORY_SEPARATOR, substr('000000' . $string, $decrement, 2));
 		}
 
-// Add Start R.Ohga
-		$destDir = $path . $plugin . $endPath;
-// 		$destDir = $path . $endPath;
-// Add End R.Ohga
+		$destDir = $path . $endPath;
 		$this->_mkPath($model, $field, $destDir);
 
 		return substr($endPath, 0, -1);
@@ -1634,22 +1645,12 @@ class UploadBehavior extends ModelBehavior {
 		$decrement = 0;
 		$string = crc32($field . microtime() . $model->id);
 
-// Add Start R.Ohga
-// プラグイン名をファイルパスに追加
-		$plugin = '';
-		if (!empty($this->_behavierOptions['plugin'])) {
-			$plugin = $this->_behavierOptions['plugin'] . DS;
-		}
-// Add End R.Ohga
 		for ($i = 0; $i < 3; $i++) {
 			$decrement = $decrement - 2;
-			$endPath .= sprintf("%02d" . DS, substr('000000' . $string, $decrement, 2));
+			$endPath .= sprintf("%02d" . DIRECTORY_SEPARATOR, substr('000000' . $string, $decrement, 2));
 		}
 
-// Add Start R.Ohga
-		$destDir = $path . $plugin . $endPath;
-// 		$destDir = $path . $endPath;
-// Add End R.Ohga
+		$destDir = $path . $endPath;
 		$this->_mkPath($model, $field, $destDir);
 
 		return substr($endPath, 0, -1);
@@ -1706,7 +1707,7 @@ class UploadBehavior extends ModelBehavior {
 	public function _path(Model $model, $fieldName, $options = array()) {
 		$defaults = array(
 			'isThumbnail' => true,
-			'path' => '{ROOT}{DS}',
+			'path' => '{ROOT}webroot{DS}files{DS}{model}{DS}{field}{DS}',
 			'rootDir' => $this->defaults['rootDir'],
 		);
 
@@ -1733,13 +1734,28 @@ class UploadBehavior extends ModelBehavior {
 			'//'		=> DIRECTORY_SEPARATOR,
 			'/'			=> DIRECTORY_SEPARATOR,
 			'\\'		=> DIRECTORY_SEPARATOR,
+// Add Start Ryuji.M
+			//'{plugin}'	=> $options['plugin'],
+			'{contentId}'	=> $options['contentId'],
+// Add End Ryuji.M
 		);
-
-		$newPath = Folder::slashTerm(str_replace(
+// Edit Start Ryuji.M
+		$newPath = str_replace(
 			array_keys($replacements),
 			array_values($replacements),
 			$options['path']
-		));
+		);
+		if($newPath != '') {
+			$newPath = Folder::slashTerm($newPath);
+		} else {
+			$newPath = DS;
+		}
+		//$newPath = Folder::slashTerm(str_replace(
+		//	array_keys($replacements),
+		//	array_values($replacements),
+		//	$options['path']
+		//));
+// Edit End Ryuji.M
 
 		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 			if (!preg_match('/^([a-zA-Z]:\\\|\\\\)/', $newPath)) {
@@ -1761,7 +1777,6 @@ class UploadBehavior extends ModelBehavior {
 				break;
 			}
 		}
-
 		return $newPath;
 	}
 
@@ -1801,7 +1816,10 @@ class UploadBehavior extends ModelBehavior {
 				}
 
 				if (!$valid) {
-					$model->invalidate($field, 'resizeFail');
+// Edit Start Ryuji.M
+					$model->invalidate($field, 'Failed to resize file.');
+					//$model->invalidate($field, 'resizeFail');
+// Edit End Ryuji.M
 				}
 			}
 		}
@@ -1839,95 +1857,22 @@ class UploadBehavior extends ModelBehavior {
 		return 'application/octet-stream';
 	}
 
-// Edit Start R.Ohga
-// 削除したアップロードファイルに関連するファイルが削除されるように修正（サムネイル等）
-// 	public function _prepareFilesForDeletion(Model $model, $field, $data, $options) {
-// 		if (!strlen($data[$model->alias][$field])) return $this->__filesToRemove;
-
-// 		$dir = $data[$model->alias][$options['fields']['dir']];
-// 		$filePathDir = $this->settings[$model->alias][$field]['path'] . $dir . DS;
-// 		$filePath = $filePathDir.$data[$model->alias][$field];
-// 		$pathInfo = $this->_pathinfo($filePath);
-
-// 		if (!isset($this->__filesToRemove[$model->alias])) {
-// 			$this->__filesToRemove[$model->alias] = array();
-// 		}
-
-// 		$this->__filesToRemove[$model->alias][] = $filePath;
-// 		$this->__foldersToRemove[$model->alias][] = $dir;
-
-// 		$createThumbnails = $options['thumbnails'];
-// 		$hasThumbnails = !empty($options['thumbnailSizes']);
-
-// 		if (!$createThumbnails || !$hasThumbnails) {
-// 			return $this->__filesToRemove;
-// 		}
-
-// 		$DS = DIRECTORY_SEPARATOR;
-// 		$mimeType = $this->_getMimeType($filePath);
-// 		$isMedia = $this->_isMedia($model, $mimeType);
-// 		$isImagickResize = $options['thumbnailMethod'] == 'imagick';
-// 		$thumbnailType = $options['thumbnailType'];
-
-// 		if ($isImagickResize) {
-// 			if ($isMedia) {
-// 				$thumbnailType = $options['mediaThumbnailType'];
-// 			}
-
-// 			if (!$thumbnailType || !is_string($thumbnailType)) {
-// 				try {
-// 					$srcFile = $filePath;
-// 					$image    = new imagick();
-// 					if ($isMedia) {
-// 						$image->setResolution(300, 300);
-// 						$srcFile = $srcFile.'[0]';
-// 					}
-
-// 					$image->readImage($srcFile);
-// 					$thumbnailType = $image->getImageFormat();
-// 				} catch (Exception $e) {
-// 					$thumbnailType = 'png';
-// 				}
-// 			}
-// 		} else {
-// 			if (!$thumbnailType || !is_string($thumbnailType)) {
-// 				$thumbnailType = $pathInfo['extension'];
-// 			}
-
-// 			if (!$thumbnailType) {
-// 				$thumbnailType = 'png';
-// 			}
-// 		}
-
-// 		foreach ($options['thumbnailSizes'] as $size => $geometry) {
-// 			$fileName = str_replace(
-// 				array('{size}', '{filename}', '{primaryKey}', '{time}', '{microtime}'),
-// 				array($size, $pathInfo['filename'], $model->id, time(), microtime()),
-// 				$options['thumbnailName']
-// 			);
-
-// 			$thumbnailPath = $options['thumbnailPath'];
-// 			$thumbnailPath = $this->_pathThumbnail($model, $field, compact(
-// 				'geometry', 'size', 'thumbnailPath'
-// 			));
-
-// 			$thumbnailFilePath = "{$thumbnailPath}{$dir}{$DS}{$fileName}.{$thumbnailType}";
-// 			$this->__filesToRemove[$model->alias][] = $thumbnailFilePath;
-// 		}
-// 		return $this->__filesToRemove;
-// 	}
 	public function _prepareFilesForDeletion(Model $model, $field, $data, $options) {
-		$Upload = ClassRegistry::init('Upload');
-		if ($model->alias == 'Upload') {
-			$uploadData = $Upload->findById($model->id);
-		} else {
-			$uploadId = $data[$model->alias][$field];
-			$uploadData = $Upload->findById($uploadId);
-		}
+		if (!strlen($data[$model->alias][$field])) return $this->__filesToRemove;
 
-		$dir = $uploadData['Upload']['file_path'];
-		$filePathDir = $this->settings[$model->alias][$field]['path'] . $dir;
-		$filePath = $filePathDir.$uploadData['Upload']['physical_file_name'];
+		if (!empty($options['fields']['dir']) && isset($data[$model->alias][$options['fields']['dir']])) {
+			$dir = $data[$model->alias][$options['fields']['dir']];
+		} else {
+			if (in_array($options['pathMethod'], array('_getPathFlat', '_getPathPrimaryKey'))) {
+				$model->id = $data[$model->alias][$model->primaryKey];
+				$dir = call_user_func(array($this, '_getPath'), $model, $field);
+			} else {
+				CakeLog::error(sprintf('Cannot get directory to %s.%s: %s pathMethod is not supported.', $model->alias, $field, $options['pathMethod']));
+			}
+		}
+		$filePathDir = $this->settings[$model->alias][$field]['path'] . (empty($dir) ? '' : $dir. DS);
+		$filePath = $filePathDir.$data[$model->alias][$field];
+
 		$pathInfo = $this->_pathinfo($filePath);
 
 		if (!isset($this->__filesToRemove[$model->alias])) {
@@ -1935,20 +1880,117 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		$this->__filesToRemove[$model->alias][] = $filePath;
-		if ($this->settings[$model->alias][$field]['pathMethod'] == '_getPathRandom'
-				|| $this->settings[$model->alias][$field]['pathMethod'] == '_getPathRandomCombined') {
-			$filePathArr = explode('/', $dir);
-			$dir = $filePathArr[0] . DS . $filePathArr[1] . DS;
+		$this->__foldersToRemove[$model->alias][] = $dir;
+
+		$createThumbnails = $options['thumbnails'];
+		$hasThumbnails = !empty($options['thumbnailSizes']);
+
+		if (!$createThumbnails || !$hasThumbnails) {
+			return $this->__filesToRemove;
+		}
+		
+// Add Start Ryuji.M
+		if ($this->settings[$model->alias][$field]['useUploadModel']) {
+			// Uploadテーブル削除
+			$Upload = ClassRegistry::init('Upload');
+			$fileName = $data[$model->alias][$field];
+			if(!empty($fileName)) {
+				$uploadId = substr($fileName, 0, strpos($fileName, '.'));
+				if(!$Upload->delete($uploadId)){
+					return false;
+				}
+			}
+		}
+		if ($this->settings[$model->alias][$field]['useUploadLinkModel']) {
+			// UploadLink削除
+			$UploadLink = ClassRegistry::init('UploadLink');
+			if(isset($options['uniqueIdName'])) {
+				if(isset($model->data[$model->alias][$options['uniqueIdName']])) {
+					$uniqueId = $model->data[$model->alias][$options['uniqueIdName']];
+				} else if(isset($model->data[$options['modelName']][$options['uniqueIdName']])) {
+					$uniqueId = $model->data[$options['modelName']][$options['uniqueIdName']];
+				} else {
+					$uniqueId = $data[$model->alias][$options['uniqueIdName']];
+				}
+			} else {
+				$uniqueId = $model->id;
+			}
+			$modelName = isset($options['modelName']) ? $options['modelName'] : $model->alias;
+			$fieldName = isset($options['fieldName']) ? $options['fieldName'] : $field;
+			
+			
+			$delConditions = array(
+				'unique_id'=> $uniqueId,
+				'model_name'=> $modelName,
+				'field_name'=> $fieldName
+			);
+			if(!$UploadLink->deleteAll($delConditions, true, true)){
+				return false;
+			}
+		}
+		if($options['isWysiwyg']) {
+			return $this->__filesToRemove;
+		}
+// Add End Ryuji.M
+
+		$DS = empty($dir) ? '' : DIRECTORY_SEPARATOR;
+		$mimeType = $this->_getMimeType($filePath);
+		$isMedia = $this->_isMedia($model, $mimeType);
+		$isImagickResize = $options['thumbnailMethod'] == 'imagick';
+		$thumbnailType = $options['thumbnailType'];
+
+		if ($isImagickResize) {
+			if ($isMedia) {
+				$thumbnailType = $options['mediaThumbnailType'];
+			}
+
+			if (!$thumbnailType || !is_string($thumbnailType)) {
+				try {
+					$srcFile = $filePath;
+					$image    = new imagick();
+					if ($isMedia) {
+						$image->setResolution(300, 300);
+						$srcFile = $srcFile.'[0]';
+					}
+
+					$image->readImage($srcFile);
+					$thumbnailType = $image->getImageFormat();
+				} catch (Exception $e) {
+					$thumbnailType = 'png';
+				}
+			}
+		} else {
+			if (!$thumbnailType || !is_string($thumbnailType)) {
+				$thumbnailType = $pathInfo['extension'];
+			}
+
+			if (!$thumbnailType) {
+				$thumbnailType = 'png';
+			}
 		}
 
-		$dirArray = glob($filePathDir.$uploadData['Upload']['id'].'-*.'.$uploadData['Upload']['extension']);
-		foreach ($dirArray as $moreImagePath) {
-			$this->__filesToRemove[$model->alias][] = $moreImagePath;
-		}
+		foreach ($options['thumbnailSizes'] as $size => $geometry) {
+// Add Start Ryuji.M
+			if($size == 'original') {
+				continue;
+			}
+// Add End Ryuji.M
+			$fileName = str_replace(
+				array('{size}', '{filename}', '{primaryKey}', '{time}', '{microtime}'),
+				array($size, $pathInfo['filename'], $model->id, time(), microtime()),
+				$options['thumbnailName']
+			);
 
+			$thumbnailPath = $options['thumbnailPath'];
+			$thumbnailPath = $this->_pathThumbnail($model, $field, compact(
+				'geometry', 'size', 'thumbnailPath'
+			));
+
+			$thumbnailFilePath = "{$thumbnailPath}{$dir}{$DS}{$fileName}.{$thumbnailType}";
+			$this->__filesToRemove[$model->alias][] = $thumbnailFilePath;
+		}
 		return $this->__filesToRemove;
 	}
-// Edit End R.Ohga
 
 	public function _getField($check) {
 		$field_keys = array_keys($check);
@@ -1966,102 +2008,362 @@ class UploadBehavior extends ModelBehavior {
 		if (empty($pathInfo['filename'])) {
 			$pathInfo['filename'] = basename($pathInfo['basename'], '.' . $pathInfo['extension']);
 		}
+// Add Start Ryuji.M
+// tar.gz対応
+		if($pathInfo['extension'] == 'gz') {
+			$fileNameArr = explode('.', $pathInfo['filename']);
+			foreach($fileNameArr as $key => $fileName) {
+				if($key == 0) {
+					$pathInfo['filename'] = $fileName;
+				} else if($key == count($fileNameArr) - 1) {
+					$pathInfo['extension'] = $fileName . '.' . $pathInfo['extension'];
+				} else {
+					$pathInfo['filename'] .= '.' . $fileName;
+				}
+			}
+		}
+// Add End Ryuji.M
 		return $pathInfo;
 	}
 
-// Add Start R.Ohga
+// Add Start Ryuji.M
 /**
- * バリデート情報設定
+ * アップロードテーブルのuser_idセット
  *
- * @param array $fileType ファイルタイプ
+ * @param AppModel $model Model instance
+ * @param integer $userId
  * @return void
  */
-	public function setValidate($fileType) {
-		$validate = array();
-		if ($fileType == 'image') {
-			$allowExtension = array('gif', 'jpeg', 'png', 'jpg');
-			$filiSize = NC_UPLOAD_MAX_SIZE_IMAGE;
+	public function setUploadUserId(Model $model, $userId) {
+		$this->uploadUserId = $userId;
+	}
+
+/**
+ * ファイルアップロード処理(Upload, UploadLinkテーブルのみ登録用)
+ * @param AppModel $model Model instance
+ * @param array $data
+ * @return boolean
+ */
+	public function uploadFile(Model $model, $data = null) {
+		$model->set($data);
+	
+		if(empty($data[$model->alias][$model->primaryKey])) {
+			foreach ($this->settings[$model->alias] as $field => $options) {
+				if(!$model->validates(array('fieldList' => array($field)))) {
+					return false;
+				}
+			}
+			$this->beforeSave($model);
+			$this->afterSave($model, true);
+			
+			if(count($model->validationErrors) > 0) {
+				return false;
+			}
 		} else {
-			$Config = ClassRegistry::init('Config');
-			$conditions = array(
-				'Config.name' => 'allow_extension'
-			);
-			$params = array(
-				'fields' => array(
-					'Config.name',
-					'Config.value'
-				),
-				'conditions' => $conditions,
-			);
-			$allowExtension = $Config->find('all', $params);
-			$allowExtension = explode(',', $allowExtension['allow_extension']);
-			$filiSize = NC_UPLOAD_MAX_SIZE_ATTACHMENT;
+			$model->save();
 		}
+		return true;
+	}
+/**
+ * ファイル削除処理(Upload, UploadLinkテーブルのみ削除用)
+ * @param AppModel $model Model instance
+ * @param integer $id
+ * @param boolean $cascade
+ * @return boolean
+ */
+	public function deleteFile(Model $model, $id, $cascade = true) {
+		$model->id = $id;
+		$this->beforeDelete($model, $cascade);
+		$this->afterDelete($model);
+		return true;
+	}
 
-		$validate['file_name']['extension'] = array(
-			'rule' => array('extension', $allowExtension),
-			'message' => __('Invalid extension.')
+/**
+ * アップロードテーブルへの登録更新
+ *
+ * @param AppModel $model Model instance
+ * @param string $field
+ * @param array $uploadFile
+ * @param array $options
+ * @param integer $beforeUploadId
+ * @return mixed success:uploadId.(extension) error:false
+ */
+	public function saveUpload(Model $model, $field, $uploadFile, $options, $beforeUploadId = null) {
+	
+		$Upload = ClassRegistry::init('Upload');
+		// Upload登録
+		$pathinfo = $this->_pathinfo($uploadFile['name']);
+
+		$data = array(
+			'Upload' => array(
+				'id' => $beforeUploadId,
+				'user_id' => $this->uploadUserId,
+				'file_name' => $uploadFile['name'],
+				'file_size' => $uploadFile['size'],
+				'file_path' => '',
+				'mimetype' => $uploadFile['type'],
+				'extension' => $pathinfo['extension'],
+				'plugin' => $options['plugin'],
+				'upload_model_name' => $model->name,
+				'is_delete_from_library' => ($options['isDeleteFromLibrary'] ? _ON : _OFF),
+				'is_wysiwyg' => ($options['isWysiwyg'] ? _ON : _OFF),
+			)
 		);
-		$validate['file_size']['filesize'] = array(
-			'rule' => array('comparison', '<=', $filiSize),
-			'message' => __('File size too large. Max %u byte.', $filiSize)
-		);
-		return $validate;
+		if (!empty($model->id)) {
+			$data['Upload']['is_use'] = _ON;
+		}
+		
+		// PHPエラーチェック処理
+		if(!$this->_checkPHPError($model, $field, $uploadFile)) {
+			return false;
+		}
+
+		if(!$Upload->save($data)) {
+			if ($model->alias != 'Upload') {
+				foreach($Upload->validationErrors as $uploadField => $errors) {
+					foreach($errors as $error) {
+						$model->invalidate($field, $error);
+					}
+				}
+			}
+			return false;
+		}
+
+		return $Upload->id. '.'. $pathinfo['extension'];
+	}
+	
+/**
+ * アップロードリンクテーブルへの登録更新
+ *
+ * @param AppModel $model Model instance
+ * @param string $field
+ * @param array $options
+ * @return 
+ */
+	public function saveUploadLink(Model $model, $field, $options = null) {
+		if(!is_array($options)) {
+			$options = $this->settings[$model->alias][$field];
+		} else {
+			$options = array_merge($this->settings[$model->alias][$field], $options);
+		}
+		
+		//if (!isset($model->data[$model->alias][$field])) {
+		if (isset($model->data[$model->alias][$field]) && !is_string($model->data[$model->alias][$field])) {
+			// データなし
+			return true;
+		}
+		$UploadLink = ClassRegistry::init('UploadLink');
+		$isWysiwyg = false;
+		if($options['isWysiwyg'] === null) {
+			// fieldがrevision_group_idならば、強制的にisWysiwyg=trueとする。
+			$isWysiwyg = ($field == 'revision_group_id') ? true : false;
+			// $options['isWysiwyg'] = ($model->getColumnType($field) == 'text') ? true : false;
+		} else {
+			$isWysiwyg = $options['isWysiwyg'];
+		}
+		if(isset($options['uniqueIdName'])) {
+			if(isset($model->data[$model->alias][$options['uniqueIdName']])) {
+				$uniqueId = $model->data[$model->alias][$options['uniqueIdName']];
+			} else if(isset($model->data[$options['modelName']][$options['uniqueIdName']])) {
+				$uniqueId = $model->data[$options['modelName']][$options['uniqueIdName']];
+			} else {
+				$uniqueId = intval($options['uniqueIdName']);
+			}
+		} else {
+			$uniqueId = $model->id;
+		}
+		$modelName = isset($options['modelName']) ? $options['modelName'] : $model->alias;
+		$fieldName = isset($options['fieldName']) ? $options['fieldName'] : $field;
+		
+		if($isWysiwyg) {
+			$text = isset($options['wysiwygText']) ? $options['wysiwygText'] : $model->data[$modelName][$fieldName];
+			$options = array(
+				'plugin' => $options['plugin'],
+				'contentId' => $options['contentId'],
+				'uniqueId' => $uniqueId,
+				'modelName' => $modelName,
+				'fieldName' => $fieldName,
+			);
+			return $UploadLink->updateUploadInfoForWysiwyg($text, $options);
+		} else {
+			$fileName = $model->data[$model->alias][$field];
+			$uploadId = substr($fileName, 0, strpos($fileName, '.'));
+			if(intval($uploadId) <= 0) {
+				return true;
+			}
+			
+			$uploadLink = $UploadLink->find('first', array(
+				'recursive' => -1,
+				'fields' => array('UploadLink.id', 'UploadLink.is_use'),
+				'conditions' => array(
+					'plugin' => $options['plugin'],
+					//'content_id'=>$options['contentId'],	// TODO:必要かも
+					'unique_id' => $uniqueId,
+					'model_name' => $modelName,
+					'field_name' => $fieldName,
+				)
+			));
+			
+			if(is_string($options['checkComponentAction'])) {
+				$checkComponentAction = $options['checkComponentAction'];
+			} else {
+				$checkComponentAction = implode(',', $options['checkComponentAction']);
+			}
+
+			$data = array('UploadLink' => array(
+				'upload_id' => $uploadId,
+				'plugin' => $options['plugin'],
+				'content_id' => $options['contentId'],
+				'model_name' => $modelName,
+				'field_name' => $fieldName,
+				'access_hierarchy' =>$options['accessHierarchy'],
+				'is_use' => _ON,
+				'unique_id' => $uniqueId,
+				'download_password' => $options['downloadPassword'],
+				'check_component_action' => $checkComponentAction,
+			));
+			if(isset($uploadLink['UploadLink'])) {
+				$data['UploadLink']['id'] = $uploadLink['UploadLink']['id'];
+			}
+			if($UploadLink->save($data)) {
+				if ((!isset($uploadLink['UploadLink']) || !$uploadLink['UploadLink']['is_use'])  &&
+					$this->settings[$model->alias][$field]['useUploadModel']) {
+					$Upload = ClassRegistry::init('Upload');
+					
+					$data = array(
+						'Upload.is_use' => _ON,
+					);
+					$haystack = $model->data[$model->alias][$field];
+					$conditions = array('Upload.id' => $uploadId);
+					if(!$Upload->updateAll($data, $conditions)) {
+						return false;
+					}
+				}
+			}
+			return true;
+		}
 	}
 
 /**
- * 権限テーブルの容量制限チェック
- *
- * @param array $check
- * @return boolean
+ * PHPエラーチェック処理
+ * 	UPLOAD_ERR_OK			:0; エラーはなく、ファイルアップロードは成功しています。
+ * 	UPLOAD_ERR_INI_SIZE		:1; アップロードされたファイルは、php.ini の upload_max_filesize ディレクティブの値を超えています。
+ * 	UPLOAD_ERR_FORM_SIZE	:2; アップロードされたファイルは、HTML フォームで指定された MAX_FILE_SIZE を超えています。
+ * 	UPLOAD_ERR_PARTIAL		:3; アップロードされたファイルは一部のみしかアップロードされていません。
+ * 	UPLOAD_ERR_NO_FILE		:4; ファイルはアップロードされませんでした。
+ * 	UPLOAD_ERR_NO_TMP_DIR	:6; テンポラリフォルダがありません。
+ * 	UPLOAD_ERR_CANT_WRITE	:7; ディスクへの書き込みに失敗しました。
+ * 	UPLOAD_ERR_EXTENSION	:8; PHP の拡張モジュールがファイルのアップロードを中止しました。
+ * @param AppModel $model Model instance
+ * @param string $field
+ * @param array $uploadFile
+ * @return  boolean
  * @since   v 3.0.0.0
  */
-	protected function _checkFilesizeLimit($check) {
-		$Authority = ClassRegistry::init('Authority');
-		$user = Configure::read(NC_SYSTEM_KEY.'.user');
-		$userId = isset($userId) ? $user['id'] : 0;
-		$filesizeSum = $this->findFilesizeSumByUserId($userId);
-
-		$authority = $Authority->findById($user['authority_id']);
-		$check = array_shift($check);
-		if ($filesizeSum + $check > $authority['Authority']['max_size']) {
+	protected function _checkPHPError(Model $model, $field, $uploadFile) {
+		$check = array($field, $uploadFile);
+		if(!$this->isUnderPhpSizeLimit($model, $check)) {
+			$model->invalidate($field, __('The uploaded file is too big! It exceeds the upload_max_filesize defined in php.ini.'));
+			return false;
+		} else if(!$this->isUnderFormSizeLimit($model, $check)) {
+			$model->invalidate($field, __('The uploaded file is too big! It exceeds the MAX_FILE_SIZE defined in HTML form.'));
+			return false;
+		} else if(!$this->isCompletedUpload($model, $check)) {
+			$model->invalidate($field, __('Only partially uploaded.'));
+			return false;
+		} else if(!$this->isFileUpload($model, $check)) {
+			$model->invalidate($field, __('No file was uploaded.'));
+			return false;
+		} else if(!$this->tempDirExists($model, $check)) {
+			$model->invalidate($field, __('There is no temporary folder.'));
+			return false;
+		} else if(!$this->isSuccessfulWrite($model, $check)) {
+			$model->invalidate($field, __('Failed to write to disk.'));
+			return false;
+		} else if(!$this->noPhpExtensionErrors($model, $check)) {
+			$model->invalidate($field, __('PHP Extension is aborted file uploads.'));
 			return false;
 		}
+		
 		return true;
+	}
+	
+/**
+ * FileTypeでのextensions,maxSizeセット処理
+ * @param AppModel $model Model instance
+ * @param string $field Name of field being modified
+ * @param array $options
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	protected function _setFileTypeSetting(Model $model, $field, &$options) {
+		if(empty($this->settings[$model->alias][$field]['extensions']) || isset($this->__extensionType)) {
+			if ($options['fileType'] == 'image') {
+				if($options['thumbnailMethod'] == 'imagick') {
+					$this->__extensionType = 'imagick';
+					$options['extensions'] = explode(',', NC_UPLOAD_IMAGEFILE_EXTENSION);
+				} else {
+					$this->__extensionType = 'php';
+					$options['extensions'] = explode(',', NC_UPLOAD_IMAGEFILE_PHP_EXTENSION);
+				}
+			} else if($options['fileType'] == 'compression') {
+				$this->__extensionType = 'compression';
+				$options['extensions'] = explode(',', NC_UPLOAD_COMPRESSIONFILE_EXTENSION);
+			} else if($options['fileType'] == 'file') {
+				$Config = ClassRegistry::init('Config');
+				$conditions = array(
+					'Config.name' => 'allow_extension'
+				);
+				$params = array(
+					'fields' => array(
+							'Config.name',
+							'Config.value'
+					),
+					'conditions' => $conditions,
+				);
+				$allowExtension = $Config->find('all', $params);
+				$options['extensions'] = explode(',', $allowExtension['allow_extension']);
+				$this->__extensionType = 'file';
+			} else {
+				$options['extensions'] = explode(',', $options['fileType']);
+			}
+		}
+		if(!isset($this->settings[$model->alias][$field]['fileType']) || 
+			$this->settings[$model->alias][$field]['fileType'] != $options['fileType']) {
+			$options['maxSize'] = ($options['fileType'] == 'image') ? NC_UPLOAD_MAX_SIZE_IMAGE : NC_UPLOAD_MAX_SIZE_ATTACHMENT;
+		}
 	}
 
 /**
- * 不正文字使用チェック
- *
- * @param int $check
- * @param string $regex
- * @return boolean
+ * アップロードファイル名取得
+ * @param AppModel $model Model instance
+ * @param string $field Name of field being modified
+ * @return  string 
  * @since   v 3.0.0.0
  */
-	protected function _invalidCharacter($check, $regex) {
-		$check = array_shift($check);
-		if (!is_string($regex) || preg_match($regex, $check)) {
-			return false;
-		}
-		return true;
+	public function getUploadFileNames(Model $model, $field) {
+		return $this->uploadFileNames[$field];
 	}
 
+// Add End Ryuji.M
+// Add Start R.Ohga
 /**
- * 拡張子以外の入力チェック
+ * 利用可能な画像縮小メソッド取得
  *
- * @param array $check
- * @return boolean
- * @since   v 3.0.0.0
+ * @param AppModel $model Model instance
+ * @param string $thumbnailMethod
+ * @return string $thumbnailMethod
  */
-	protected function _notEmptyExceptExtension($check) {
-		$check = array_shift($check);
-		preg_match('/(.*)\.(.*)$/', $check, $match);
-
-		if (empty($match[1])) {
-			return false;
+	public function _getEnableThumnailMethod(Model $model, $thumbnailMethod) {
+		if ($thumbnailMethod == 'php' && extension_loaded('gd')) {
+			return 'php';
 		}
-		return true;
+		if (extension_loaded('imagick')) {
+			return 'imagick';
+		} elseif (extension_loaded('gd')) {
+			return 'php';
+		}
+		return '';
 	}
 // Add End R.Ohga
-
 }

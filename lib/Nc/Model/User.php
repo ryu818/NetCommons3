@@ -23,7 +23,21 @@ class User extends AppModel
  *
  * @var array
  */
-	public $actsAs = array('TimeZone', 'Auth' => array('joins' => false, 'afterFind' => false));
+	public $actsAs = array(
+		'TimeZone', 
+		'Auth' => array('joins' => false, 'afterFind' => false),
+		'Upload' => array(
+			'avatar' => array(
+				'fileType' => 'image',
+				'thumbnailSizes' => array(
+					'original' => NC_UPLOAD_AVATAR_RESIZE_MODE,
+                    'thumbnail' => NC_UPLOAD_AVATAR_THUMBNAIL_RESIZE_MODE
+                ),
+				'checkComponentAction'=>'User.UserDownload',
+				'deleteOnUpdate' => true,
+			),
+		),
+	);
 
 	public $validate = array();
 
@@ -156,6 +170,21 @@ class User extends AppModel
 					'rule' => array('invalidPermalink'),
 					'last' => true,
 					'message' => __('It contains an invalid string.')
+				);
+			}
+			
+			if($item['Item']['tag_name'] == "avatar") {
+				$required = false;
+				if($item['Item']['required'] == _ON) {
+					$required = true;
+				}
+				$this->validate[$item['Item']['tag_name']]['isValidExtension'] = array(
+					'rule' => array('isValidExtension', null, $required),
+					'last' => true
+				);
+				$this->validate[$item['Item']['tag_name']]['isBelowMaxSize'] = array(
+					'rule' => array('isBelowMaxSize', null, $required),
+					'last' => true
 				);
 			}
 		}
@@ -1171,6 +1200,7 @@ class User extends AppModel
 		$UserItemLink = ClassRegistry::init('UserItemLink');
 		$Passport = ClassRegistry::init('Passport');
 		$PageUserLink = ClassRegistry::init('PageUserLink');
+		$Upload = ClassRegistry::init('Upload');
 		if(isset($userId[0]['User'])) {
 			$deleteUsers = $userId;
 		} else if(isset($userId['User'])) {
@@ -1199,14 +1229,30 @@ class User extends AppModel
 		$userItemLinkConditions = array(
 			"UserItemLink.user_id" => $deleteUserIds
 		);
-		$conditions = array(
-			"User.id" => $deleteUserIds
-		);
 
 		if(!$PageUserLink->deleteAll($pageUserLinkConditions) || !$Passport->deleteAll($passportConditions) ||
-			!$UserItemLink->deleteAll($userItemLinkConditions) || !$this->deleteAll($conditions)) {
+			!$UserItemLink->deleteAll($userItemLinkConditions)) {
 			return false;
 		}
+		
+		foreach($deleteUserIds as $deleteUserId) {
+			// Callbackを呼ぶため、個々でdelete
+			if(!$this->delete($deleteUserId)) {
+				return false;
+			}
+		}
+		
+		// 退会ユーザーは、user_idを0で更新
+		$fields = array(
+			$Upload->alias.'.user_id' => 0,
+		);
+		$conditions = array(
+			$Upload->alias.".user_id" => $deleteUserIds
+		);
+		if(!$Upload->updateAll($fields, $conditions)) {
+			return false;
+		}
+		
 		return true;
 	}
 }

@@ -37,7 +37,7 @@ class AnnouncementPostsController extends AnnouncementAppController {
  *
  * @var array
  */
-	public $uses = array('Revision', 'UploadLink');
+	public $uses = array('Revision');
 
 /**
  * Helper name
@@ -182,16 +182,6 @@ class AnnouncementPostsController extends AnnouncementAppController {
 					// 自動保存時後処理
 					$this->RevisionList->afterAutoRegist($this->Announcement->id);
 					return;
-				}
-
-				// アップロード更新
-				$options = array(
-					'plugin' => Inflector::camelize($this->plugin),
-					'contentId' => $this->content_id,
-					'uniqueId' => $announcement['Announcement']['revision_group_id'],
-				);
-				if(!$this->UploadLink->updateUploadInfoForWysiwyg($announcement['Revision']['content'], $options)) {
-					throw new InternalErrorException(__('Failed to update the database, (%s).', 'upload_links'));
 				}
 
 				// 新着・検索

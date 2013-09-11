@@ -19,7 +19,7 @@ class UploadController extends UploadAppController
  *
  * @var array
  */
-	public $uses = array('Upload', 'Upload.UploadSearch');
+	public $uses = array('Upload', 'Upload.UploadSearch', 'Upload.UploadLibrary');
 
 /**
  * Component name
@@ -39,6 +39,9 @@ class UploadController extends UploadAppController
 		parent::beforeFilter();
 		if ($this->action == 'index') {
 			$this->Security->csrfUseOnce = false;	// 複数ファイルアップロードする際、Tokenが同一のため
+		} elseif ($this->action == 'delete') {
+			$this->Security->validatePost = false;
+			//$this->Security->csrfUseOnce = false;
 		} elseif ($this->action == 'library') {
 			$this->Security->unlockedFields = array('UploadSearch.file_type', 'UploadSearch.page');
 			if ($this->request->is('post') && isset($this->request->data['UploadSearch'])) {
@@ -55,24 +58,22 @@ class UploadController extends UploadAppController
  * @since   v 3.0.0.0
  */
 	public function index($plugin = null) {
-		$this->_initialize($plugin);
-		if($this->request->is('post') && isset($this->request->data['Upload']['file'])) {
+		$popupType = $this->_initialize($plugin);
+		$resolusion = isset($this->request->data['UploadLibrary']['resolusion']) ? $this->request->data['UploadLibrary']['resolusion'] : 'normal';
+		if($this->request->is('post') && isset($this->request->data['UploadLibrary']['file_name'])) {
 			// ファイルアップロード
-			$user = Configure::read(NC_SYSTEM_KEY.'.user');
-			$userId = null;
-			if (!isset($userId)) {
-				$userId = $user['id'];
+			$thumbnailSizes = $this->Upload->getUploadMaxSizeByResolusion($resolusion);
+			$this->UploadLibrary->uploadSettings('file_name', array(
+				'fileType' => $popupType,
+				'plugin' => Inflector::camelize($plugin),
+				'thumbnailSizes' => array('original' => $thumbnailSizes),
+			));
+			if($this->UploadLibrary->uploadFile($this->request->data)) {
+				$fileName = $this->User->getUploadFileNames('file_name');
+				$upload = $this->UploadLibrary->findById(substr($fileName, 0, strpos($fileName, '.')));
+				$this->UploadSearch->convertUpload($upload, 'UploadLibrary');
+				$this->set('upload', $upload);
 			}
-			$options = array(
-				'fileType'=>$this->request->query['popup_type'],
-				'userId'=>$userId,
-				'plugin'=>Inflector::camelize($plugin),
-				'resolusion'=>isset($this->request->data['Upload']['resolusion']) ? $this->request->data['Upload']['resolusion'] : ''
-			);
-			$upload = $this->Upload->uploadFile($this->request->data['Upload']['file'], $options);
-			$this->UploadSearch->convertUpload($upload, 'Upload');
-
-			$this->set('upload', $upload);
 			$this->render('Elements/preview');
 			return;
 		}
@@ -113,8 +114,6 @@ class UploadController extends UploadAppController
 		$this->set('is_admin', $isAdmin);
 		$this->set('page', !empty($data['UploadSearch']['page']) ? intval($data['UploadSearch']['page']) : 1);
 		$this->set('has_more', $searchResult[0]);
-
-		// TODO:削除未実装
 
 		if(!$isSearch && !isset($this->request->named['more'])) {
 			$this->set('search_results', $searchResult[1]);
@@ -194,24 +193,10 @@ class UploadController extends UploadAppController
  */
 	public function edit($uploadId) {
 		$this->_initialize(null, $uploadId);
-
-		$loginUser = $this->Auth->user();
-		$userId = $loginUser['id'];
-		$isAdmin = ($this->Authority->getUserAuthorityId($loginUser['hierarchy']) == NC_AUTH_ADMIN_ID) ? true : false;
-		$isEdit = false;
-
-		$upload = $this->Upload->findById(intval($uploadId));
-		if(!isset($upload['Upload'])) {
-			$this->response->statusCode('404');
-			$this->flash(__d('upload', 'The file does not exist. It might be deleted.'), '');
-			return;
-
-		}
-		if($upload['Upload']['user_id'] != $userId && !$isAdmin) {
-			$this->response->statusCode('403');
-			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
+		if(!$this->_isEditValidate(intval($uploadId))) {
 			return;
 		}
+
 
 		$success = false;
 		if($this->request->is('post') && isset($this->request->data['Upload'])) {
@@ -229,6 +214,133 @@ class UploadController extends UploadAppController
 		$this->UploadSearch->convertUpload($upload, 'Upload');
 		$this->set('upload', $upload);
 		$this->set('success', $success);
+	}
+
+/**
+ * ファイル削除処理
+ * @param   integer $uploadId
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function delete($uploadId) {
+		
+		$uploadIdArr = explode(',', $uploadId);
+		if(!isset($uploadIdArr[0])) {
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
+		}
+		$this->_initialize(null, $uploadIdArr[0]);
+		$deleteUploads = array();
+		foreach($uploadIdArr as $key => $bufUploadId) {
+			if(empty($bufUploadId)) {
+				unset($uploadIdArr[$key]);
+				continue;
+			}
+			$deleteUploads[$bufUploadId] = $this->_isEditValidate($bufUploadId);
+			if(!$deleteUploads[$bufUploadId]) {
+				return;
+			}
+			if(!$deleteUploads[$bufUploadId]['Upload']['is_delete_from_library']) {
+				throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
+			}
+		}
+		
+		
+		$confirmed = isset($this->data['confirmed']) ? $this->data['confirmed'] : _OFF;
+		
+		$uploads = $this->UploadSearch->findIsUseUploads($uploadIdArr);
+		$this->set('token', $this->params['_Token']['key']);
+		if (count($uploads) > 0 && $confirmed != _ON) {
+			// 確認ダイアログ表示
+			$this->set('uploads', $uploads);
+			$this->set('uploadId', $uploadId);
+			$this->render('delete_confirm');
+			return;
+		} else {
+			// 削除処理
+			$deleteClasses = array();
+			foreach($deleteUploads as $bufUploadId => $bufUpload) {
+				$delUpload['UploadLibrary']['id'] = $bufUploadId;
+				$delUpload['UploadLibrary']['file_name'] = $bufUpload['Upload']['file_name'];
+				$pluginName = $bufUpload['Upload']['plugin'];
+				$uploadModelName = $bufUpload['Upload']['upload_model_name'];
+
+				// Upload.upload_model_nameからdeleteFileを呼ぶ。そうしなければサムネイル毎、削除してくれないものが発生するため。
+				// モデルからさがし、なければ、プラグインモデルからさがす。
+				if($uploadModelName != 'UploadLibrary' && !isset($deleteClasses[$uploadModelName])) {
+					$deleteClass = ClassRegistry::init($uploadModelName);
+					if(!isset($deleteClass->actsAs['Upload'])) {
+						$deleteClass = ClassRegistry::init($pluginName.'.'.$uploadModelName);
+						if(!isset($deleteClass->actsAs['Upload'])) {
+							$uploadModelName = 'UploadLibrary';
+						}
+					}
+					if($uploadModelName != 'UploadLibrary') {
+						$deleteClasses[$uploadModelName] = $deleteClass;
+					}
+				}
+				
+				$this->UploadLibrary->uploadSettings('file_name', array(
+					'plugin' => Inflector::camelize($bufUpload['Upload']['plugin']),
+				));
+				
+				if($uploadModelName == 'UploadLibrary') {
+					$this->UploadLibrary->uploadSettings('file_name', array(
+						'thumbnailSizes' => array(),
+					));
+				} else {
+					$fields = $deleteClasses[$uploadModelName]->actsAs['Upload'];
+					$thumbnailSizes = array();
+					foreach($fields as $value) {
+						if(isset($value['thumbnailSizes'])) {
+							$thumbnailSizes = array_merge($thumbnailSizes, $value['thumbnailSizes']);
+						}
+					}
+					$this->UploadLibrary->uploadSettings('file_name', array(
+						'thumbnailSizes' => $thumbnailSizes,
+					));
+				}
+				if(!$this->UploadLibrary->deleteFile($bufUploadId)) {
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'uploads'));
+				}
+			}
+		}
+		
+
+		$this->viewClass = 'Json';
+		if (Configure::read('debug') != 0) {
+			// SQLデバッグを表示させる。
+			$this->autoRender = false;
+			echo $this->render('Elements/sql_dump');
+			$this->autoRender = true;
+		}
+
+		$this->set('_serialize', array('token'));
+		
+	}
+
+/**
+ * ファイル編集・削除バリデート
+ * @param   integer $uploadId
+ * @return  boolean false| array $upload
+ * @since   v 3.0.0.0
+ */
+	protected function _isEditValidate($uploadId) {
+		$loginUser = $this->Auth->user();
+		$userId = $loginUser['id'];
+		$isAdmin = ($this->Authority->getUserAuthorityId($loginUser['hierarchy']) == NC_AUTH_ADMIN_ID) ? true : false;
+		
+		$upload = $this->Upload->findById(intval($uploadId));
+		if(!isset($upload['Upload'])) {
+			$this->response->statusCode('404');
+			$this->flash(__d('upload', 'The file does not exist. It might be deleted.'), '');
+			return false;
+		}
+		if(!isset($upload['Upload']['user_id']) || ($upload['Upload']['user_id'] != $userId && !$isAdmin)) {
+			$this->response->statusCode('403');
+			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
+			return false;
+		}
+		return $upload;
 	}
 
 /**
@@ -299,7 +411,7 @@ class UploadController extends UploadAppController
  */
 	protected function _setProgressbar($loginUser) {
 		App::uses('CakeNumber', 'Utility');
-		$fileSize = $this->Upload->findFilesizeSumByUserId($loginUser['id']);
+		$fileSize = $this->Upload->findFileSizeSumByUserId($loginUser['id']);
 		$authority = $this->Authority->findById($loginUser['authority_id']);
 		$fileSizeRate = round($fileSize / $authority['Authority']['max_size'], 2) * 100;
 		$this->set('file_max_size', CakeNumber::toReadableSize($authority['Authority']['max_size']));

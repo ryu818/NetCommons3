@@ -27,11 +27,11 @@
  *
  * @param event e
  * @param element el
- * @param array params：上記属性情報をパラメータによりセットする場合、使用
+ * @param array params：下記属性情報をパラメータによりセットする場合、使用
  * @param array options：ajax時のoptions マージされる
  * @return  void
  *
- * [属性値]
+ * [属性値]| array params
  * data-pjax:data-pjax属性の値を targetとして置換する。その際、リクエストしたURLに変更される。
  * data-ajax:data-ajax属性ならば、targetと入れ替える。
  *		data-pjax, data-ajaxはいずれかを設定すること。'this'を設定すると、el自身がtargetとなる。
@@ -58,7 +58,7 @@
  *		"position" : "mouse"指定があればマウス位置にダイアログ表示
  *      data-width:ajaxのレスポンスのtopノードにdata-widthがあれば、その広さでダイアログを表示する。
  *      data-height:ajaxのレスポンスのtopノードにdata-heightがあれば、その高さでダイアログを表示する。
- * data-ajax-callback: ajax success時 callback関数　thisは設定したemenent自身
+ * data-ajax-callback: ajax success時 callback関数　thisは設定したelement自身
  *
  * [カスタムイベント] ajax:
  * ajax:beforeSend - Ajaxリクエスト前に呼ばれる。falseを返せば処理を中断する。
@@ -72,11 +72,11 @@
  *       e.preventDefault();
  *     });
  */
-		ajax : function(e, el, params, options, _confirm, _force_url) {
+		ajax: function(e, el, params, options, _confirm, _force_url) {
 			var data_pjax, top, url, data = {}, input_type, type, params, is_form, ret, data_url, data_serialize, data_data, data_force, data_type, callback;
 			var dialog, default_options, dialogTarget;
 			var target_pjax, confirm, confirm_again, is_pjax;
-			var $el = $(el), buf_options = options;
+			var $el = $(el), buf_options = options, $form, contentType = 'application/x-www-form-urlencoded', processData = true;
 			var matchArray = function(dataHash, name, value, ret) {
 				ret = (ret == undefined) ? 0 : ret;
 				if(name.match(/\[\]$/)) {
@@ -141,6 +141,8 @@
 			if(confirm){
 				var ok = __('Ok') ,cancel = __('Cancel');
 				var default_dialog_params = {
+					show: 'blind',
+					hide: 'blind',
 					resizable: false,
 					modal: true,
 					position: [e.pageX - $(window).scrollLeft(), e.pageY - $(window).scrollTop()]
@@ -174,6 +176,7 @@
 						});
 						data = dataHash;
 					}
+					$form = $el;
 					is_form = true;
 				} else {
 					input_type = 'GET';
@@ -201,7 +204,7 @@
 			type = (type == 'GET' || type == 'get' || type == 'POST' || type == 'post') ? type.toLowerCase() : input_type.toLowerCase();
 			if(data_serialize == true && type == 'post' && $.isEmptyObject(data)) {
 				if(!is_form) {
-					var $form = $el.parents('form');
+					$form = $el.parents('form');
 					if($form.get(0)) {
 						// Postでデータが空でparentにFormタグがあれば、シリアライズしてセット
 						// Token等を含める
@@ -211,6 +214,7 @@
 							dataHash = matchArray(dataHash, this['name'], this['value']);
 						});
 						data = dataHash;
+						is_form = true;
 					}
 				}
 			}
@@ -244,10 +248,18 @@
 				}
 				data = $.extend({}, data, data_data);
 			}
+			if(is_form && $form.attr('enctype') == 'multipart/form-data') {
+				// file添付
+				contentType = false;
+				processData = false;
+				data = new FormData($form[0]);
+			}
 			default_options = {
 				type: type,
 				url: url,
 				data: data,
+				contentType: contentType,
+				processData: processData,
 				success: function(res, status, xhr){
 					if (res === false) {
 						return false;
@@ -265,9 +277,9 @@
 					//	res = res.get(0).body.innerHTML;
 					//}
 					if(callback) {
-						eval('fun = function(e){'+callback+'}');
+						eval('fun = function(e, res){'+callback+'}');
 						callbackFunc = $.proxy(fun, el);
-						if(!callbackFunc(e)) {
+						if(!callbackFunc(e, res)) {
 							return false;
 						}
 					}
@@ -967,15 +979,77 @@
 			});
 
 		},
-		alert: function(str) {
+
+/**
+ * Alertメッセージ表示
+ * @param   string str
+ * @param   object event jquery.dialogによるalertメッセージにする場合、指定
+ * @param   function callback OK押下時の処理
+ * @param   object dialog_params
+ * @return  void
+ */
+		alert: function(str, e, callback, dialog_params) {
 			str = this._message(str);
 			if(str == "") return;
-			alert(str);
+			
+			if(typeof e == "undefined") {
+				alert(str);
+			} else {
+				if(typeof dialog_params == "undefined") {
+					dialog_params = new Object();
+				}
+				var ok = __('Ok');
+				var default_dialog_params = {
+					show: 'blind',
+					hide: 'blind',
+					resizable: false,
+					modal: true,
+					position: [e.pageX - $(window).scrollLeft(), e.pageY - $(window).scrollTop()]
+				}, _buttons = {};
+				_buttons[ok] = function(){
+					$( this ).dialog( 'close' );
+					callback(e);
+				};
+				dialog_params = $.extend({buttons: _buttons}, default_dialog_params, dialog_params);
+				$('<div id="nc-common-dialog"></div>').html(str).dialog(dialog_params);
+			}
 		},
-		confirm: function(str) {
+
+/**
+ * 確認メッセージ表示
+ * @param   string str
+ * @param   object event jquery.dialogによる確認メッセージにする場合、指定
+ * @param   function callback OK押下時の処理 jquery.dialogによる確認メッセージにする場合、指定
+ * @param   object dialog_params
+ * @return  mixed boolean|void
+ */
+		confirm: function(str, e, callback, dialog_params) {
 			str = this._message(str);
 			if(str == "") return;
-			return confirm(str);
+			if(typeof callback == "undefined" && typeof e == "undefined") {
+				return confirm(str);
+			} else {
+				if(typeof dialog_params == "undefined") {
+					dialog_params = new Object();
+				}
+				var ok = __('Ok') ,cancel = __('Cancel');
+				var default_dialog_params = {
+					show: 'blind',
+					hide: 'blind',
+					resizable: false,
+					modal: true,
+					position: [e.pageX - $(window).scrollLeft(), e.pageY - $(window).scrollTop()]
+				}, _buttons = {};
+				_buttons[ok] = function(){
+					$( this ).dialog( 'close' );
+					callback(e);
+				};
+				_buttons[cancel] = function(){
+					$( this ).dialog( 'close' );
+				};
+				dialog_params = $.extend({buttons: _buttons}, default_dialog_params, dialog_params);
+				$('<div id="nc-common-dialog"></div>').html(str).dialog(dialog_params);
+			}
 		},
 		_message: function(str) {
 			if(typeof str != 'string') return "";
