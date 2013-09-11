@@ -2176,7 +2176,10 @@ class UploadBehavior extends ModelBehavior {
 		$fieldName = isset($options['fieldName']) ? $options['fieldName'] : $field;
 		
 		if($isWysiwyg) {
-			$text = isset($options['wysiwygText']) ? $options['wysiwygText'] : $model->data[$modelName][$fieldName];
+			$text = isset($options['wysiwygText']) ? $options['wysiwygText'] : (isset($model->data[$modelName][$fieldName]) ? $model->data[$modelName][$fieldName] : null);
+			if(!isset($text)) {
+				return true;
+			}
 			$options = array(
 				'plugin' => $options['plugin'],
 				'contentId' => $options['contentId'],
@@ -2186,7 +2189,10 @@ class UploadBehavior extends ModelBehavior {
 			);
 			return $UploadLink->updateUploadInfoForWysiwyg($text, $options);
 		} else {
-			$fileName = $model->data[$model->alias][$field];
+			$fileName = isset($model->data[$model->alias][$field]) ? $model->data[$model->alias][$field] : null;
+			if(!isset($fileName)) {
+				return true;
+			}
 			$uploadId = substr($fileName, 0, strpos($fileName, '.'));
 			if(intval($uploadId) <= 0) {
 				return true;
