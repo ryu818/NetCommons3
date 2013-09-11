@@ -188,6 +188,7 @@ class BlogComment extends AppModel
 					"alias" => "Content",
 					"conditions" => "`BlogComment`.`content_id`=`Content`.`id`"
 				),
+				// TODO:以下のJOIN必要ないかも。fieldsで取得しているわけではないため。
 				array(
 					"type" => "LEFT",
 					"table" => "page_user_links",
@@ -198,8 +199,8 @@ class BlogComment extends AppModel
 				array(
 					"type" => "LEFT",
 					"table" => "authorities",
-					"alias" => "PageAuthority",
-					"conditions" => "`PageAuthority`.`id`=`PageUserLink`.`authority_id`"
+					"alias" => "ContentAuthority",
+					"conditions" => "`ContentAuthority`.`id`=`PageUserLink`.`authority_id`"
 				)
 			),
 			'order' => array('BlogComment.created' => 'DESC')

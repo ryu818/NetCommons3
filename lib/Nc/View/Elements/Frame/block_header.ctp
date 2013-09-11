@@ -35,7 +35,7 @@ if($ncType != '') {
 	$edit_class_name = "nc-block-header-setting-icon";
 }
 $tooltip_title = '';
-if($block_hierarchy >= NC_AUTH_MIN_CHIEF) {
+if($page_hierarchy >= NC_AUTH_MIN_CHIEF) {
 	$tooltip_title = $this->TimeZone->getPublishedLabel($block['Block']['display_from_date'], $block['Block']['display_to_date']);
 	if($tooltip_title != '') {
 		$tooltip_title = ' title="' . $tooltip_title . '"';
@@ -103,7 +103,7 @@ if($block_hierarchy >= NC_AUTH_MIN_CHIEF) {
 								array('title' => __('Copy'), 'id' => 'nc-block-header-copy'.$id, 'class' => 'link hover-highlight','data-ajax' => '', 'data-ajax-type' => 'post'));
 							?>
 		</li>
-		<?php if($block_hierarchy >= NC_AUTH_MIN_CHIEF): ?>
+		<?php if($page_hierarchy >= NC_AUTH_MIN_CHIEF): ?>
 		<li>
 			<?php
 				echo $this->Html->link(__('Block style'), array('plugin' => 'block', 'controller' => 'styles', 'action' => 'index', 'block_id' => $block['Block']['id']),
@@ -111,7 +111,7 @@ if($block_hierarchy >= NC_AUTH_MIN_CHIEF) {
 			?>
 		</li>
 		<?php endif; ?>
-		<?php if($block_hierarchy >= NC_AUTH_MIN_CHIEF && $block['Module']['style_controller_action'] != '' && !isset($ncIsError)): ?>
+		<?php if($page_hierarchy >= NC_AUTH_MIN_CHIEF && $block['Module']['style_controller_action'] != '' && !isset($ncIsError)): ?>
 		<li>
 			<?php
 				$params = $this->Common->explodeControllerAction($block['Module']['style_controller_action']);

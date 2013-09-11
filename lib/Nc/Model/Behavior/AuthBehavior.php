@@ -11,65 +11,6 @@
  */
 
 class AuthBehavior extends ModelBehavior {
-/**
- * Defaults
- *
- * @var array
- */
-	protected $_defaults = array(
-		'content_id' => 'content_id', // Content.idとJoinするカラム名
-		'afterFind' => true,	// 自動的にafterFindを実行して記事に対するhierarchy(優先順序)を取得するかどうか。
-		// joinするテーブル一覧(belongsTo)
-		'joins' => array(
-			'Content'      => array(
-				'type' => 'INNER',
-				'fields' => array('title', 'shortcut_type', 'room_id')
-			),
-			'PageUserLink' => array(
-				'foreignKey'    => '',
-				'fields' => false,
-				'conditions' => array(
-					'BlogPost.created_user_id = PageUserLink.user_id',
-					'Content.room_id = PageUserLink.room_id'
-				)
-			),
-			'PageAuthority'    => array(
-				'foreignKey'    => '',
-				'className' => 'Authority',
-				'fields' => array('hierarchy'),
-				'conditions' => array(
-					'PageUserLink.authority_id = PageAuthority.id',
-				)
-			),
-			// これ以下はAuthBehaviorで再取得されるため必須ではない。
-			// SQL文の数を少なくするため記述しているが、表示速度によっては、JOINをやめる。
-			'Page' => array(
-				'foreignKey'    => '',
-				'fields' => array('space_type', 'root_id'),
-				'conditions' => array(
-					'Content.room_id = Page.id'
-				)
-			),
-			'Community' => array(
-				'foreignKey'    => '',
-				'type' => 'LEFT',
-				'fields' => array('publication_range_flag'),
-				'conditions' => "`Page`.`root_id`=`Community`.`room_id`"
-			),
-			'User' => array(
-				'foreignKey'    => '',
-				'type' => 'LEFT',
-				'fields' => array('authority_id'),
-				'conditions' => "`BlogPost`.`created_user_id`=`User`.`id`"
-			),
-			'Authority' => array(
-				'foreignKey'    => '',
-				'type' => 'LEFT',
-				'fields' => array('hierarchy','display_participants_editing'),
-				'conditions' => "`User`.`authority_id`=`Authority`.`id`"
-			),
-		),
-	);
 
 /**
  * Initiate Auth Behavior
@@ -79,11 +20,65 @@ class AuthBehavior extends ModelBehavior {
  * @return void
  */
 	public function setup(Model $Model, $config = array()) {
+		$_defaults = array(
+			'content_id' => 'content_id', // Content.idとJoinするカラム名
+			'afterFind' => true,	// 自動的にafterFindを実行して記事に対するhierarchy(優先順序)を取得するかどうか。
+			// joinするテーブル一覧(belongsTo)
+			'joins' => array(
+				'Content'      => array(
+					'type' => 'INNER',
+					'fields' => array('title', 'shortcut_type', 'room_id')
+				),
+				'PageUserLink' => array(
+					'foreignKey'    => '',
+					'fields' => false,
+					'conditions' => array(
+						$Model->alias.'.created_user_id = PageUserLink.user_id',
+						'Content.room_id = PageUserLink.room_id'
+					)
+				),
+				'ContentAuthority'    => array(
+					'foreignKey'    => '',
+					'className' => 'Authority',
+					'fields' => array('hierarchy'),
+					'conditions' => array(
+						'PageUserLink.authority_id = ContentAuthority.id',
+					)
+				),
+				// これ以下はAuthBehaviorで再取得されるため必須ではない。
+				// SQL文の数を少なくするため記述しているが、表示速度によっては、JOINをやめる。
+				'Page' => array(
+					'foreignKey'    => '',
+					'fields' => array('space_type', 'root_id'),
+					'conditions' => array(
+						'Content.room_id = Page.id'
+					)
+				),
+				'Community' => array(
+					'foreignKey'    => '',
+					'type' => 'LEFT',
+					'fields' => array('publication_range_flag'),
+					'conditions' => "`Page`.`root_id`=`Community`.`room_id`"
+				),
+				'User' => array(
+					'foreignKey'    => '',
+					'type' => 'LEFT',
+					'fields' => array('authority_id'),
+					'conditions' => "`".$Model->alias."`.`created_user_id`=`User`.`id`"
+				),
+				'Authority' => array(
+					'foreignKey'    => '',
+					'type' => 'LEFT',
+					'fields' => array('hierarchy','display_participants_editing'),
+					'conditions' => "`User`.`authority_id`=`Authority`.`id`"
+				),
+			),
+		);
 		if (isset($config[0])) {
 			$config['content_id'] = $config[0];
 			unset($config[0]);
 		}
-		$settings = array_merge($this->_defaults, $config);
+		$settings = array_merge($_defaults, $config);
 
 		$this->settings[$Model->alias] = $settings;
 		if($settings['joins'] === false) {
@@ -146,46 +141,27 @@ class AuthBehavior extends ModelBehavior {
  * @since  v 3.0.0.0
  */
 	public function setDefaultAuthority($Model, $val, $shortcutFlag = null, $modelName = 'Page') {
-		if(isset($val['PageAuthority']['hierarchy'])) {
+		if(isset($val['ContentAuthority']['hierarchy'])) {
 			return $val;
 		}
-		// Content取得
-		/*if(!isset($val['Content']['shortcut_type']) && !isset($shortcutFlag) && isset($val[$Model->alias]['content_id'])) {
-			$Content = ClassRegistry::init('Content');
-			$params = array(
-				'fields' => array(
-					'Content.title',
-					'Content.room_id',
-					'Content.shortcut_type',
-				),
-				'conditions' => array('id' => $val[$Model->alias]['content_id']),
-				'recursive' => -1,
-			);
-			$currentContent = $Content->find('first', $params);
-			if(isset($val['Content'])) {
-				$val['Content'] = array_merge($currentContent['Content'], $val['Content']);
-			} else {
-				$val['Content'] = $currentContent['Content'];
-			}
-		} else */
 		if(isset($shortcutFlag)) {
 			$val['Content']['shortcut_type'] = $shortcutFlag;
 		}
 
 		if(isset($val['Content']) && $val['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_SHOW_ONLY) {
 			// ゲスト固定
-			$val['PageAuthority']['id'] = NC_AUTH_GUEST_ID;
-			$val['PageAuthority']['hierarchy'] = NC_AUTH_GUEST;
+			$val['ContentAuthority']['id'] = NC_AUTH_GUEST_ID;
+			$val['ContentAuthority']['hierarchy'] = NC_AUTH_GUEST;
 			return $val;
 		}
 
-		if(isset($val['BlockAuthority']['id']) && isset($val['BlockAuthority']['hierarchy'])) {
-			$val['PageAuthority']['id'] = $val['BlockAuthority']['id'];
-			$val['PageAuthority']['hierarchy'] = $val['BlockAuthority']['hierarchy'];
+		if(isset($val['PageAuthority']['id']) && isset($val['PageAuthority']['hierarchy'])) {
+			$val['ContentAuthority']['id'] = $val['PageAuthority']['id'];
+			$val['ContentAuthority']['hierarchy'] = $val['PageAuthority']['hierarchy'];
 		} else {
 			$ret = $this->getDefaultAuthority($Model, $val, $modelName);
-			$val['PageAuthority']['id'] = $ret['id'];
-			$val['PageAuthority']['hierarchy'] = $ret['hierarchy'];
+			$val['ContentAuthority']['id'] = $ret['id'];
+			$val['ContentAuthority']['hierarchy'] = $ret['hierarchy'];
 		}
 
 		return $val;

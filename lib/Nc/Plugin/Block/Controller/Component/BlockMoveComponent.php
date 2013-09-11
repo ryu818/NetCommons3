@@ -72,7 +72,7 @@ class BlockMoveComponent extends Component {
 				// error
 				return __d('block','Because an origin of contents is deleted, You can\'t be operated.');
 			}
-			if($masterContent['PageAuthority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
+			if($masterContent['ContentAuthority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
 				return __d('block','Because there is not the room editing authority of the origin of contents, You can\'t be operated.');
 			}
 		}

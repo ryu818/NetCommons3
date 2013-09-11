@@ -3,7 +3,7 @@
 	$permalink = $blog_post['BlogPost']['permalink'];
 	$dates = $this->TimeZone->dateValues($blog_post['BlogPost']['post_date']);
 	$isEdit = $this->CheckAuth->isEdit($hierarchy, $blog['Blog']['post_hierarchy'], $blog_post['BlogPost']['created_user_id'],
-		$blog_post['PageAuthority']['hierarchy']);
+		$blog_post['ContentAuthority']['hierarchy']);
 
 	$user = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 	// 投票済みの場合は取得できる

@@ -271,7 +271,7 @@ class Block extends AppModel
 		}
 
 		if($checkAuth && isset($val['Content']['display_flag']) &&
-			(($val['Content']['display_flag'] != NC_DISPLAY_FLAG_ON || $val['Block']['display_flag'] == NC_DISPLAY_FLAG_OFF) && $val['PageAuthority']['hierarchy'] < NC_AUTH_MIN_CHIEF)) {
+			(($val['Content']['display_flag'] != NC_DISPLAY_FLAG_ON || $val['Block']['display_flag'] == NC_DISPLAY_FLAG_OFF) && $val['ContentAuthority']['hierarchy'] < NC_AUTH_MIN_CHIEF)) {
 			// 非公開
 			return;
 		}
@@ -311,17 +311,17 @@ class Block extends AppModel
 
 		$val = $this->setDefaultAuthority($val);
 
-		$val['Block']['hierarchy'] = $val['PageAuthority']['hierarchy'];
-		$val['Block']['block_hierarchy'] = $val['BlockAuthority']['hierarchy'];
+		$val['Block']['hierarchy'] = $val['ContentAuthority']['hierarchy'];
+		$val['Block']['page_hierarchy'] = $val['PageAuthority']['hierarchy'];
 
 		//if(!isset($val['Content']['id'])) {
 		//	// TODO:必要かどうか検討すること 後に削除
 		//	$val['Block']['hierarchy'] = null;
 		//}
 		unset($val['Page']);
-		unset($val['PageAuthority']);
+		unset($val['ContentAuthority']);
 		unset($val['BlockPage']);
-		unset($val['BlockAuthority']);
+		unset($val['PageAuthority']);
 		//unset($val['Content']);
 		//unset($val['Module']);
 
@@ -468,7 +468,7 @@ class Block extends AppModel
 			'BlockPage.thread_num','BlockPage.room_id','BlockPage.root_id','BlockPage.space_type',
 			'Content.id','Content.module_id','Content.title','Content.shortcut_type','Content.master_id','Content.room_id','Content.display_flag','Content.is_approved','Content.url',
 			'Module.id','Module.controller_action','Module.edit_controller_action','Module.style_controller_action','Module.dir_name','Module.content_has_one',
-			'PageAuthority.id','PageAuthority.hierarchy','BlockAuthority.id','BlockAuthority.hierarchy',
+			'ContentAuthority.id','ContentAuthority.hierarchy','PageAuthority.id','PageAuthority.hierarchy',
 
 		);
 	}
@@ -494,8 +494,8 @@ class Block extends AppModel
 			),
 			array("type" => "LEFT",
 				"table" => "authorities",
-				"alias" => "PageAuthority",
-				"conditions" => "`PageAuthority`.`id`=`PageUserLink`.`authority_id`"
+				"alias" => "ContentAuthority",
+				"conditions" => "`ContentAuthority`.`id`=`PageUserLink`.`authority_id`"
 			),
 			array("type" => "LEFT",
 				"table" => "pages",
@@ -515,8 +515,8 @@ class Block extends AppModel
 			),
 			array("type" => "LEFT",
 				"table" => "authorities",
-				"alias" => "BlockAuthority",
-				"conditions" => "`BlockAuthority`.`id`=`BlockPageUserLink`.`authority_id`"
+				"alias" => "PageAuthority",
+				"conditions" => "`PageAuthority`.`id`=`BlockPageUserLink`.`authority_id`"
 			),
 			array("type" => "LEFT",
 				"table" => "modules",

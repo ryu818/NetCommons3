@@ -132,8 +132,8 @@ class Content extends AppModel
  */
 	public function afterFindDefault($val) {
 		if(isset($val['Content']['id'])) {
-			if(!isset($val['PageAuthority']['hierarchy'])) {
-				$val['PageAuthority']['hierarchy'] = $this->getDefaultHierarchy($val);
+			if(!isset($val['ContentAuthority']['hierarchy'])) {
+				$val['ContentAuthority']['hierarchy'] = $this->getDefaultHierarchy($val);
 			}
 		}
 		return $val;
@@ -150,7 +150,7 @@ class Content extends AppModel
 			'Content.*',
 			'Page.id','Page.page_name','Page.thread_num','Page.room_id','Page.root_id','Page.space_type',
 			'Module.id','Module.controller_action','Module.edit_controller_action','Module.style_controller_action','Module.dir_name','Module.content_has_one',
-			'PageAuthority.id','PageAuthority.hierarchy'
+			'ContentAuthority.id','ContentAuthority.hierarchy'
 		);
 	}
 
@@ -170,8 +170,8 @@ class Content extends AppModel
 			),
 			array("type" => "LEFT",
 				"table" => "authorities",
-				"alias" => "PageAuthority",
-				"conditions" => "`PageAuthority`.`id`=`PageUserLink`.`authority_id`"
+				"alias" => "ContentAuthority",
+				"conditions" => "`ContentAuthority`.`id`=`PageUserLink`.`authority_id`"
 			),
 			array("type" => "LEFT",
 				"table" => "pages",

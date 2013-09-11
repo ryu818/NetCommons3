@@ -323,7 +323,7 @@ class BlogPost extends AppModel
 					'BlogPost.is_approved' => _ON
 				),
 
-				'PageAuthority.hierarchy '.$separator => $hierarchy,
+				'ContentAuthority.hierarchy '.$separator => $hierarchy,
 				'BlogPost.created_user_id' => $user_id,
 			)
 		);

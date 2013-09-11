@@ -21,7 +21,7 @@ if($this->request->params['block_type'] == 'active-contents') {
 	return;
 }
 if($content == '') {
-	if($block_hierarchy < NC_AUTH_MIN_CHIEF) {
+	if($page_hierarchy < NC_AUTH_MIN_CHIEF) {
 		// コンテンツが空で、主担以下の権限ならば、非表示にする。
 		return;
 	}
@@ -79,13 +79,13 @@ if($block['Block']['display_flag'] == NC_DISPLAY_FLAG_OFF || (isset($block['Cont
 	$class_name .= ' to-nonpublic';
 }
 $hasOperationAuth = false;
-if ($ncMode == NC_BLOCK_MODE && $block_hierarchy >= NC_AUTH_MIN_CHIEF) {
+if ($ncMode == NC_BLOCK_MODE && $page_hierarchy >= NC_AUTH_MIN_CHIEF) {
 	$hasOperationAuth = true;
 }
 ?>
 <div id="<?php echo($id); ?>" class="<?php echo($class_name); ?>"<?php echo($block['Block']['margin_style']); ?> data-block='<?php echo($block['Block']['id']); ?>' data-page='<?php echo($block['Block']['page_id']); ?>' data-action='<?php echo($block['Block']['controller_action']); ?>' data-ajax-url='<?php echo(h($current_url)); ?>'<?php echo($attr); ?>>
 	<div class="<?php if(isset($parent_class_name)): ?><?php echo($parent_class_name.' '); ?><?php endif; ?><?php echo($block['Block']['theme_name']); ?><?php if($hasOperationAuth): ?> nc-frame<?php endif; ?> table"<?php echo($block['Block']['style']); ?>>
-		<?php if($block_hierarchy >= NC_AUTH_MIN_CHIEF && !isset($ncIsError)): ?>
+		<?php if($page_hierarchy >= NC_AUTH_MIN_CHIEF && !isset($ncIsError)): ?>
 			<?php if($block['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_SHOW_ONLY): ?>
 				<div class="nc-block-header-shortcut nc-block-header-shortcut-show"><div></div></div>
 			<?php elseif($block['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_SHOW_AUTH): ?>

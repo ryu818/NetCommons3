@@ -41,9 +41,9 @@ class AnnouncementController extends AnnouncementAppController {
 		$userId = $this->Auth->user('id');
 		$isEdit = false;
 		if(!empty($userId)) {
-			// お知らせのみ、管理者が記述したお知らせ、一般会員が編集を許す
+			// お知らせのみ、一般会員が管理者が記述したお知らせを編集可能とする。
 			//$postUserId = isset($announcement['Announcement']['created_user_id']) ? $announcement['Announcement']['created_user_id'] : null;
-			//$postHierarchy = isset($announcement['PageAuthority']['hierarchy']) ? $announcement['PageAuthority']['hierarchy'] : null;
+			//$postHierarchy = isset($announcement['ContentAuthority']['hierarchy']) ? $announcement['ContentAuthority']['hierarchy'] : null;
 			$announcementEdit = $this->AnnouncementEdit->findByContentId($this->content_id, array(
 				'AnnouncementEdit.post_hierarchy'));
 			if(empty($announcementEdit)) {

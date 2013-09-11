@@ -54,8 +54,8 @@ class ContentList extends AppModel {
 			),
 			array("type" => "INNER",
 				"table" => "authorities",
-				"alias" => "PageAuthority",
-				"conditions" => "`PageAuthority`.`id`=`PagesUsersLink`.`authority_id`"
+				"alias" => "ContentAuthority",
+				"conditions" => "`ContentAuthority`.`id`=`PagesUsersLink`.`authority_id`"
 			),
 			array("type" => "INNER",
 				"table" => "modules",
@@ -103,7 +103,7 @@ class ContentList extends AppModel {
 				'PagesUsersLink.authority_id',
 				'Page.id, Page.page_name, Page.thread_num, Page.space_type',
 				'Page.display_sequence',
-				'PageAuthority.hierarchy',
+				'ContentAuthority.hierarchy',
 				'ActiveContent.id',
 				'Module.dir_name','Module.controller_action',
 				'Block.id',

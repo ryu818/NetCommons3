@@ -254,7 +254,7 @@ class CheckAuthComponent extends Component {
 			//$ret = $this->checkAuth($controller->hierarchy, NC_AUTH_CHIEF);
 		//}
 		//$controller->nc_show_edit = $ret;
-		$checkHierarchy = ($controller->ncType == 'style' || (isset($controller->blockHierarchy) && $plugin_name == 'block')) ? $controller->blockHierarchy : $controller->hierarchy;
+		$checkHierarchy = ($controller->ncType == 'style' || (isset($controller->pageHierarchy) && $plugin_name == 'block')) ? $controller->pageHierarchy : $controller->hierarchy;
 		if(!$this->checkAuth($checkHierarchy)) {
 			if($userId == 0) {
 				$this->Session->setFlash(__('Forbidden permission to access the page.'), 'default', array(), 'auth');
@@ -468,10 +468,10 @@ class CheckAuthComponent extends Component {
 
 				// PageとBlockのhierarchyの低いほうをセット
 				$page_hierarchy = (isset($page) && !is_null($page['PageAuthority']['hierarchy'])) ? intval($page['PageAuthority']['hierarchy']) : NC_AUTH_OTHER;
-				$block_hierarchy = (isset($block) && !is_null($block['Block']['hierarchy'])) ? intval($block['Block']['hierarchy']) : $page_hierarchy;
-				$controller->hierarchy = min($block_hierarchy, $page_hierarchy);
-				if(isset($block) && !is_null($block['Block']['block_hierarchy'])) {
-					$controller->blockHierarchy = intval($block['Block']['block_hierarchy']);
+				$content_hierarchy = (isset($block) && !is_null($block['Block']['hierarchy'])) ? intval($block['Block']['hierarchy']) : $page_hierarchy;
+				$controller->hierarchy = min($content_hierarchy, $page_hierarchy);
+				if(isset($block) && !is_null($block['Block']['page_hierarchy'])) {
+					$controller->pageHierarchy = intval($block['Block']['page_hierarchy']);
 				}
 
 				if(isset($block) && !is_null($block['Content']['master_id'])) {
@@ -713,8 +713,8 @@ class CheckAuthComponent extends Component {
 			if(!is_null($block['Block']['hierarchy'])) {
 				$controller->hierarchy = intval($block['Block']['hierarchy']);
 			}
-			if(!is_null($block['Block']['block_hierarchy'])) {
-				$controller->blockHierarchy = intval($block['Block']['block_hierarchy']);
+			if(!is_null($block['Block']['page_hierarchy'])) {
+				$controller->pageHierarchy = intval($block['Block']['page_hierarchy']);
 			}
 			if(!is_null($block['Content']['master_id'])) {
 				$controller->content_id = intval($block['Content']['master_id']);

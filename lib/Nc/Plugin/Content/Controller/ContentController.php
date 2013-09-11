@@ -189,7 +189,7 @@ class ContentController extends ContentAppController {
 			$this->flash(__('Content not found.'), '');
 			return;
 		}
-		if(!$this->CheckAuth->checkAuth($content['PageAuthority']['hierarchy'], NC_AUTH_CHIEF)) {
+		if(!$this->CheckAuth->checkAuth($content['ContentAuthority']['hierarchy'], NC_AUTH_CHIEF)) {
 			$this->response->statusCode('403');
 			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 			return;
@@ -217,7 +217,7 @@ class ContentController extends ContentAppController {
 			$this->flash(__('Content not found.'), '');
 			return;
 		}
-		if(!$this->CheckAuth->checkAuth($content['PageAuthority']['hierarchy'], NC_AUTH_CHIEF)) {
+		if(!$this->CheckAuth->checkAuth($content['ContentAuthority']['hierarchy'], NC_AUTH_CHIEF)) {
 			$this->response->statusCode('403');
 			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 			return;
@@ -253,7 +253,7 @@ class ContentController extends ContentAppController {
 			$this->flash(__('Content not found.'), '');
 			return;
 		}
-		if(!$this->CheckAuth->checkAuth($content['PageAuthority']['hierarchy'], NC_AUTH_CHIEF)) {
+		if(!$this->CheckAuth->checkAuth($content['ContentAuthority']['hierarchy'], NC_AUTH_CHIEF)) {
 			$this->response->statusCode('403');
 			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 			return;
@@ -292,7 +292,7 @@ class ContentController extends ContentAppController {
 			$this->flash(__('Content not found.'), '');
 			return;
 		}
-		if(!$this->CheckAuth->checkAuth($content['PageAuthority']['hierarchy'], NC_AUTH_CHIEF)) {
+		if(!$this->CheckAuth->checkAuth($content['ContentAuthority']['hierarchy'], NC_AUTH_CHIEF)) {
 			$this->response->statusCode('403');
 			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 			return;
