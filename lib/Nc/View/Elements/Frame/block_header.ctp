@@ -1,38 +1,38 @@
 <?php
 if(isset($ncIsError) && $ncIsError) {
-	$add_class_name = 'nc-cancel-toolbox';
+	$addClassName = 'nc-cancel-toolbox';
 
 } else if($hierarchy < NC_AUTH_MIN_CHIEF) {
-	$add_class_name = 'nc-shortcut-toolbox';
+	$addClassName = 'nc-shortcut-toolbox';
 }
 if($page['Page']['room_id'] != $block['Content']['room_id'] || $block['Content']['shortcut_type'] != NC_SHORTCUT_TYPE_OFF ||
 	(isset($block['Content']['display_flag']) && $block['Content']['display_flag'] == NC_DISPLAY_FLAG_DISABLE)) {
-	$all_delete = _OFF;	// ショートカット
+	$allDelete = _OFF;	// ショートカット
 } else {
 	/* TODO:後にコメント部分を削除 削除アクションがあるかどうか：削除アクションがなくてもContentテーブルを削除するだけで完全に削除を許す。 */
 	/*App::uses($block['Module']['dir_name'].'OperationComponent', 'Plugin/'.$block['Module']['dir_name'].'/Controller/Component');
 	$operation_class_name = $block['Module']['dir_name'].'OperationComponent';
 	if(class_exists($operation_class_name) && method_exists($operation_class_name, 'delete')) {
 		// ブロック削除アクション
-		$all_delete = _ON;
+		$allDelete = _ON;
 	} else {
-		$all_delete = _OFF;
+		$allDelete = _OFF;
 	}
 	*/
-	$all_delete = _ON;
+	$allDelete = _ON;
 	// ブロック追加し、削除するときにContentが存在しなければ「完全に削除する。」非表示
 	if(!isset($block['Content'])) {
-		$all_delete = _OFF;
+		$allDelete = _OFF;
 	}
 }
 if($ncType != '') {
 	$title =  __('Quit');
-	$controller_action = $block['Module']['controller_action'];
-	$edit_class_name = "nc-block-header-setting-end-icon";
+	$controllerAction = $block['Module']['controller_action'];
+	$editClassName = "nc-block-header-setting-end-icon";
 } else {
 	$title = __('Edit');
-	$controller_action = $block['Module']['edit_controller_action'];
-	$edit_class_name = "nc-block-header-setting-icon";
+	$controllerAction = $block['Module']['edit_controller_action'];
+	$editClassName = "nc-block-header-setting-icon";
 }
 $tooltip_title = '';
 if($page_hierarchy >= NC_AUTH_MIN_CHIEF) {
@@ -51,12 +51,12 @@ if($page_hierarchy >= NC_AUTH_MIN_CHIEF) {
 			<?php echo(h($block['Block']['title'])); ?>
 			<?php echo($this->element('Frame/block_published_lbl')); ?>
 		</span>
-		<ul class="nc-block-toolbox<?php if(isset($add_class_name)){ echo(' '. $add_class_name); }?>">
-			<?php if(!isset($add_class_name) || $add_class_name != 'nc-cancel-toolbox'): ?>
-			<?php if($hierarchy >= NC_AUTH_MIN_CHIEF): ?>
-			<li class="<?php echo($edit_class_name); ?>">
+		<ul class="nc-block-toolbox<?php if(isset($addClassName)){ echo(' '. $addClassName); }?>">
+			<?php if(!isset($addClassName) || $addClassName != 'nc-cancel-toolbox'): ?>
+			<?php if($hierarchy >= NC_AUTH_MIN_CHIEF && $controllerAction != ''): ?>
+			<li class="<?php echo($editClassName); ?>">
 				<?php
-				$controller_arr = explode('/', $controller_action, 3);
+				$controller_arr = explode('/', $controllerAction, 3);
 				$plugin = $controller = $controller_arr[0];
 				if(isset($controller_arr[2])) {
 					$controller = $controller_arr[1];
@@ -65,7 +65,7 @@ if($page_hierarchy >= NC_AUTH_MIN_CHIEF) {
 					$controller = $controller_arr[1];
 					$action = null;
 				}
-				$params = $this->Common->explodeControllerAction($controller_action);
+				$params = $this->Common->explodeControllerAction($controllerAction);
 				$params['block_id'] = $block_id;
 				$params['#'] = $id;
 				echo $this->Html->link('', $params,
@@ -83,7 +83,7 @@ if($page_hierarchy >= NC_AUTH_MIN_CHIEF) {
 			</li>
 			<?php endif; ?>
 			<li class="nc-block-header-close-icon">
-				<a href="#" onclick="$.PagesBlock.deleteBlockConfirm(event, this, <?php echo($block['Block']['id']); ?>, <?php echo($all_delete); ?>,'<?php $title = (!empty($block['Block']['title'])) ? h($block['Block']['title']) : __('Block'); $confirm = __('Deleting %s. <br />Are you sure to proceed?', $title); echo($confirm);?>'); return false;" title="<?php echo(__('Delete'));?>" class="nc-block-toolbox-link nc-tooltip">
+				<a href="#" onclick="$.PagesBlock.deleteBlockConfirm(event, this, <?php echo($block['Block']['id']); ?>, <?php echo($allDelete); ?>,'<?php $title = (!empty($block['Block']['title'])) ? h($block['Block']['title']) : __('Block'); $confirm = __('Deleting %s. <br />Are you sure to proceed?', $title); echo($confirm);?>'); return false;" title="<?php echo(__('Delete'));?>" class="nc-block-toolbox-link nc-tooltip">
 				</a>
 			</li>
 		</ul>

@@ -113,18 +113,11 @@ span.nc-block-header-page-name {
 }
 
 ul.nc-block-toolbox {
-	width:97px;
-	height:29px;
-	padding:2px 0;
+	height:32px;
+	padding:2px;
 	position:absolute;
-	right:0;
-	top:4px;
+	right: 2px;
 }
-
-.nc-block ul.nc-block-toolbox {
-	background:url("../../img/pages/block/block_toolbox.gif") no-repeat scroll left top transparent !important;
-}
-
 ul.nc-block-toolbox li {
 	float:left;
 	margin:0;
@@ -178,9 +171,6 @@ li.nc-block-header-list-icon a.nc-block-toolbox-link:hover {
 }
 .nc-group span.nc-block-header-page-name {
 	background:url("../../img/pages/block/bg_group_act.gif") repeat scroll left top #ffffff;
-}
-.nc-group ul.nc-block-toolbox {
-	background: transparent url(../../img/pages/block/group_toolbox.gif) no-repeat scroll left top;
 }
 
 .nc-content-group-setting {
