@@ -7784,9 +7784,6 @@ jQuery.extend({
 	ncShowLog: function( data, url ) {
 		var re_html = new RegExp("^[\s\r\n]*<!DOCTYPE html", 'i');
 		if(typeof data === "string" && data.match(re_html)) {
-			if($.support.pjax) {
-				window.history.pushState(null, "", url);
-			}
 			document.open();
 			document.write(data);
 			document.close();
