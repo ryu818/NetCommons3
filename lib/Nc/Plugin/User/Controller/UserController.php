@@ -353,11 +353,11 @@ class UserController extends UserAppController {
 			if($this->User->validates(array('items' => $items), $fieldList) && $ret) {
 				$isAdd = empty($user['User']['id']) ? true : false;
 				
-				if(empty($user['User']['avatar'])) {
+				if(!empty($user['User']['id']) && empty($user['User']['avatar'])) {
 					// Uploadデータ削除
 					$user['User']['avatar']['remove'] = _ON;
 				}
-				
+
 				if(!$this->User->save($user, false, $fieldList)) {
 					throw new InternalErrorException(__('Failed to update the database, (%s).', 'users'));
 				}
