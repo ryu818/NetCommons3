@@ -11,14 +11,13 @@
 	$(function(){
 	//$(document).ready(function(){
 		$(".nc-add-block").select2({
-			placeholderOption: 'first'
+			placeholderOption: 'first',
 		}).change( function(e){
 			var module_id = $(this).val();
-			if(module_id != 0) {
+			if(module_id > 0) {
 				$.PagesBlock.addBlock($(this), module_id);
-				$('option:first', $(this)).prop('selected', true);
+				$(this).select2("val", "");
 			}
-			$(this).trigger('change');
 		} );
 		$.PagesBlock.showOperationBlock($(".nc-copy-block"));
 	});
