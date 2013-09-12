@@ -28,20 +28,20 @@ class ModuleController extends AppPluginController {
 			// 登録処理
 			$db = ConnectionManager::getDataSource($this->ModuleAdmin->useDbConfig);
 			$tables = $db->listSources();
-			$dir_name = isset($this->request->data['dir_name']) ? $this->request->data['dir_name'] : '';
+			$dirName = isset($this->request->data['dir_name']) ? $this->request->data['dir_name'] : '';
 			$type = isset($this->request->data['type']) ? $this->request->data['type'] : '';
 			switch($type) {
 				case 'install':
-					$result = $this->ModuleAdmin->installModule($dir_name);
+					$result = $this->ModuleAdmin->installModule($dirName);
 					break;
 				case 'update':
-					$result = $this->ModuleAdmin->updateModule($tables, $dir_name);
+					$result = $this->ModuleAdmin->updateModule($tables, $dirName);
 					break;
 				case 'update-all':
 					$result = $this->ModuleAdmin->updateAllModule($tables);
 					break;
 				case 'uninstall':
-					$result = $this->ModuleAdmin->uninstallModule($dir_name);
+					$result = $this->ModuleAdmin->uninstallModule($dirName);
 					break;
 				case 'chgsequence':
 					break;
@@ -53,20 +53,20 @@ class ModuleController extends AppPluginController {
 			$this->set('success_mes', $success_mes);
 			$this->set('error_mes', $error_mes);
 		}
-		$general_modules = $this->ModuleAdmin->findList();
-		if($general_modules === false) {
+		$generalModules = $this->ModuleAdmin->findList();
+		if($generalModules === false) {
 			throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'modules'));
 		}
-		$system_modules = $this->ModuleAdmin->findSystemList();
-		if($system_modules === false) {
+		$systemModules = $this->ModuleAdmin->findSystemList();
+		if($systemModules === false) {
 			throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'modules'));
 		}
-		$not_install_modules = $this->ModuleAdmin->findInstallList($general_modules, $system_modules);
+		$notInstallModules = $this->ModuleAdmin->findInstallableList($generalModules, $systemModules);
 
 		$this->set('version', $this->Config->getVersion());
-		$this->set('general_modules', $general_modules);
-		$this->set('system_modules', $system_modules);
-		$this->set('not_install_modules', $not_install_modules);
+		$this->set('general_modules', $generalModules);
+		$this->set('system_modules', $systemModules);
+		$this->set('not_install_modules', $notInstallModules);
 		$this->set('active_tab', 0);	// TODO:固定
 	}
 }

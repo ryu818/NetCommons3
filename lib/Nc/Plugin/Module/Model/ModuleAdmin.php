@@ -89,7 +89,7 @@ class ModuleAdmin extends AppModel {
  * @return  array $not_install_modules
  * @since   v 3.0.0.0
  */
-	public function findInstallList($general_modules, $system_modules) {
+	public function findInstallableList($general_modules, $system_modules) {
 		$locale = Configure::read(NC_SYSTEM_KEY.'.locale');
 
 		$installed = array();
@@ -119,6 +119,7 @@ class ModuleAdmin extends AppModel {
 					$not_install_modules[$plugin_name][$this->alias] = $install_inc_ini;
 					$not_install_modules[$plugin_name][$this->alias]['module_name'] = __('Untitled').'['.$plugin_name.']';
 
+					$modinfo_ini = null;
 					if(@file_exists($full_path . DS . 'Locale'. DS . $locale. '/'. NC_MODINFO_FILENAME)) {
 						$modinfo_ini = parse_ini_file($full_path . DS . 'Locale'. DS . $locale. DS. NC_MODINFO_FILENAME);
 					}
