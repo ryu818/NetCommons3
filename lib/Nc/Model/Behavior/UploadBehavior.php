@@ -324,7 +324,7 @@ class UploadBehavior extends ModelBehavior {
 // Add Start Ryuji.M
 			// ライブラリーのサムネイル追加処理(設定しないでも追加する)
 			$tmp = isset($this->runtime[$model->alias][$field]['tmp_name']) ? $this->runtime[$model->alias][$field]['tmp_name'] : null;
-			if(isset($tmp)) {
+			if(!empty($tmp) && $this->settings[$model->alias][$field]['fileType'] == 'image') {
 				list($width, $height) = getimagesize($tmp);
 				if ($width > $height) {
 					$libraryGeometry = NC_UPLOAD_LIBRARY_THUMBNAIL_HEIGHT_RESIZE_MODE;
@@ -336,7 +336,6 @@ class UploadBehavior extends ModelBehavior {
 			}
 			$this->settings[$model->alias][$field]['thumbnailSizes'] = $options['thumbnailSizes'] = array_merge((array) $this->settings[$model->alias][$field]['thumbnailSizes'], 
 					array('library' => $libraryGeometry));
-			
 // Add End Ryuji.M
 
 			$removing = !empty($model->data[$model->alias][$field]['remove']);
@@ -2053,9 +2052,10 @@ class UploadBehavior extends ModelBehavior {
 					return false;
 				}
 			}
-			$this->beforeSave($model);
-			$this->afterSave($model, true);
-			
+			if ($this->beforeSave($model)) {
+				$this->afterSave($model, true);
+			}
+
 			if(count($model->validationErrors) > 0) {
 				return false;
 			}
@@ -2073,8 +2073,9 @@ class UploadBehavior extends ModelBehavior {
  */
 	public function deleteFile(Model $model, $id, $cascade = true) {
 		$model->id = $id;
-		$this->beforeDelete($model, $cascade);
-		$this->afterDelete($model);
+		if ($this->beforeDelete($model, $cascade)) {
+			$this->afterDelete($model);
+		}
 		return true;
 	}
 

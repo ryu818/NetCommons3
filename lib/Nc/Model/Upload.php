@@ -159,12 +159,10 @@ class Upload extends AppModel
  * @since   v 3.0.0.0
  */
 	public function getUploadMaxSizeByResolusion($resolusion) {
-		$maxWidth = 0;
-		$maxHeight = 0;
-
 		switch ($resolusion) {
 			case 'asis':
-				break;
+				// 縮小しないため空文字を返す
+				return '';
 			case 'large':
 				$maxWidth = NC_UPLOAD_RESOLUTION_IMAGE_LARGE_WIDTH;
 				$maxHeight = NC_UPLOAD_RESOLUTION_IMAGE_LARGE_HEIGHT;

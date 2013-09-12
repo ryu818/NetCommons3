@@ -397,6 +397,7 @@ fieldset.upload-library-search input.upload-search-text {
 	box-shadow: 1px 1px 8px 0 rgba(0, 0, 0, 0.1) inset;
 	background-color: #f5f5f5;
 	border:1px solid #dedede;
+	height:50px;
 }
 .upload-selection-list .upload-attachment {
 	/*width:100%;*/

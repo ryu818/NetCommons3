@@ -28,9 +28,11 @@ echo $this->Form->create('Upload', array('data-ajax' => '#'.$id, 'data-ajax-meth
 			<li>
 				<?php echo $upload['Upload']['file_size']; ?>
 			</li>
+			<?php if($upload['Upload']['file_type'] == 'image'): ?>
 			<li class="upload-fileinfo-image">
 				<?php echo $upload['Upload']['width'].__d('upload', '&nbsp;×&nbsp;').$upload['Upload']['height']; ?>
 			</li>
+			<?php endif; ?>
 		</ul>
 	</div>
 </fieldset>

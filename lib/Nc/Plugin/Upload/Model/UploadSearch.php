@@ -174,7 +174,8 @@ class UploadSearch extends AppModel {
 		}
 		// 文字列検索
 		if (!empty($data['UploadSearch']['text'])) {
-			if ($isAdmin && isset($data['UploadSearch']['search_type']) && $data['UploadSearch']['search_type'] == UPLOAD_SEARCH_CONDITION_FROM_CREATOR) {
+			if ($isAdmin && isset($data['UploadSearch']['search_type'])
+					&& $data['UploadSearch']['search_type'] == UPLOAD_SEARCH_CONDITION_FROM_CREATOR) {
 				$conditions['UploadSearch.created_user_name LIKE'] = '%'.$data['UploadSearch']['text'].'%';
 			} else {
 				$conditions['OR'] = array(
@@ -187,7 +188,8 @@ class UploadSearch extends AppModel {
 
 		// 並び替え
 		if (!empty($data['UploadSearch']['order'])) {
-			if($data['UploadSearch']['order'] != 'created' && $data['UploadSearch']['order'] != 'file_name' && $data['UploadSearch']['order'] != 'file_size') {
+			if($data['UploadSearch']['order'] != 'created' && $data['UploadSearch']['order'] != 'file_name'
+					&& $data['UploadSearch']['order'] != 'file_size') {
 				$data['UploadSearch']['order'] = 'created';
 			}
 			if($data['UploadSearch']['order_direction'] != 'ASC' && $data['UploadSearch']['order_direction'] != 'DESC') {
@@ -242,7 +244,7 @@ class UploadSearch extends AppModel {
 
 		$upload[$alias]['real_url'] = Router::url('/', true).'nc-downloads/'.$upload[$alias]['id'].'.'.$upload[$alias]['extension'];
 		$upload[$alias]['file_size'] = CakeNumber::toReadableSize($upload[$alias]['file_size']);
-		$upload[$alias]['created'] = $this->date($upload[$alias]['created'], __('(Y-m-d h:i)'));
+		$upload[$alias]['created'] = $this->date($upload[$alias]['created'], __('(Y-m-d H:i)'));
 		$upload[$alias]['orientation'] = 'landscape';
 		$upload[$alias]['basename'] = $this->basename($upload[$alias]['file_name'], '.'.$upload[$alias]['extension']);
 

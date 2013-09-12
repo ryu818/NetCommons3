@@ -62,12 +62,16 @@ class UploadController extends UploadAppController
 		$resolusion = isset($this->request->data['UploadLibrary']['resolusion']) ? $this->request->data['UploadLibrary']['resolusion'] : 'normal';
 		if($this->request->is('post') && isset($this->request->data['UploadLibrary']['file_name'])) {
 			// ファイルアップロード
-			$thumbnailSizes = $this->Upload->getUploadMaxSizeByResolusion($resolusion);
-			$this->UploadLibrary->uploadSettings('file_name', array(
+			$uploadSettings = array(
 				'fileType' => $popupType,
 				'plugin' => Inflector::camelize($plugin),
-				'thumbnailSizes' => array('original' => $thumbnailSizes),
-			));
+			);
+			$thumbnailSizes = $this->Upload->getUploadMaxSizeByResolusion($resolusion);
+			if (!empty($thumbnailSizes)) {
+				$uploadSettings['thumbnailSizes'] = array('original' => $thumbnailSizes);
+			}
+			$this->UploadLibrary->uploadSettings('file_name', $uploadSettings);
+
 			if($this->UploadLibrary->uploadFile($this->request->data)) {
 				$fileName = $this->User->getUploadFileNames('file_name');
 				$upload = $this->UploadLibrary->findById(substr($fileName, 0, strpos($fileName, '.')));
@@ -101,7 +105,7 @@ class UploadController extends UploadAppController
 			$isSearch = true;
 			$data = array_merge($data, $this->request->data);
 		}
-		$data['UploadSearch']['user_type'] = $this->_getUserType($data['UploadSearch']['user_type'], $isAdmin);
+		$data['UploadSearch']['user_type'] = $this->_getUserType($data['UploadSearch'], $isAdmin);
 		$data['UploadSearch']['file_type'] = $this->_getFileType($data['UploadSearch']['file_type'], $popupType);
 
 		//$searchConditions = array();
@@ -197,7 +201,7 @@ class UploadController extends UploadAppController
 			return;
 		}
 
-
+		$upload = $prevUpload = $this->Upload->findById($uploadId);
 		$success = false;
 		if($this->request->is('post') && isset($this->request->data['Upload'])) {
 			// 登録処理
@@ -208,10 +212,21 @@ class UploadController extends UploadAppController
 			if ($this->Upload->save($upload)) {
 				$this->Session->setFlash(__('Has been successfully updated.'));
 				$success = true;
+			} else {
+				// Saveエラー
+				$upload['Upload']['file_name'] = $prevUpload['Upload']['file_name'];
+				if (isset($this->Upload->validationErrors['file_name'])) {
+					$this->Upload->validationErrors['basename'] = $this->Upload->validationErrors['file_name'];
+					unset($this->Upload->validationErrors['file_name']);
+				}
 			}
 		}
 		$this->set('ref_url', isset($this->request->named['ref_url']) ? intval($this->request->named['ref_url']) : false);
 		$this->UploadSearch->convertUpload($upload, 'Upload');
+		// エラーがある場合はbasenameに入力した文字列を再セット
+		if (!empty($this->Upload->validationErrors)) {
+			$upload['Upload']['basename'] = $basename;
+		}
 		$this->set('upload', $upload);
 		$this->set('success', $success);
 	}
@@ -379,8 +394,9 @@ class UploadController extends UploadAppController
  * @since   v 3.0.0.0
  */
 	protected function _afterAction() {
-		if((isset($this->request->named['is_tab']) && $this->request->named['is_tab'] == _ON) || isset($this->request->data['Upload']['file'])
-		|| $this->request->is('post')) {
+		if((isset($this->request->named['is_tab']) && $this->request->named['is_tab'] == _ON)
+			|| isset($this->request->data['Upload']['file'])
+			|| $this->request->is('post')) {
 			$this->render('Elements/'.$this->action);
 		} else {
 			$this->render('index');
@@ -440,16 +456,18 @@ class UploadController extends UploadAppController
 
 /**
  * user_type取得
- * @param   integer $userType
+ * @param   array $uploadSearch
  * @param   boolean $isAdmin
  * @return  integer
  * @since   v 3.0.0.0
  */
-	protected function _getUserType($userType, $isAdmin) {
-		if(!$isAdmin || !in_array($userType, array(UPLOAD_SEARCH_CONDITION_USER_MYSELF, UPLOAD_SEARCH_CONDITION_USER_ALL, UPLOAD_SEARCH_CONDITION_USER_WITHDRAW))) {
+	protected function _getUserType($uploadSearch, $isAdmin) {
+		if(!$isAdmin
+			|| !isset($uploadSearch['user_type'])
+			|| !in_array($uploadSearch['user_type'], array(UPLOAD_SEARCH_CONDITION_USER_MYSELF, UPLOAD_SEARCH_CONDITION_USER_ALL, UPLOAD_SEARCH_CONDITION_USER_WITHDRAW))) {
 			return UPLOAD_SEARCH_CONDITION_USER_MYSELF;
 		}
-		return $userType;
+		return $uploadSearch['user_type'];
 	}
 
 /**
