@@ -959,6 +959,7 @@
 														el = $('<div>').attr('id', id).html(res);
 													}
 
+													options.height = 'auto';
 													options.position = [pos.left, pos.top + li.outerHeight() - $(window).scrollTop()];
 													el.dialog(options);
 												});
