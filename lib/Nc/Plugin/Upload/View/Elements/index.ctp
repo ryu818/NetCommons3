@@ -12,8 +12,15 @@ echo $this->Form->create('UploadLibrary', array('class' => 'upload-files', 'type
 ?>
 <div class="upload-dragndrop-area">
 	<div class="upload-dragndrop-text">
-		<?php  echo __d('upload', 'Please drag-and-drop or select a file to upload.'); ?>
 	</div>
+<script>
+if ($.support.xhrFormDataFileUpload) {
+	var text = "<?php echo __d('upload', 'Please drag-and-drop or select a file to upload.'); ?>";
+} else {
+	var text = "<?php echo __d('upload', 'Please select a file to upload.'); ?>";
+}
+$('div.upload-dragndrop-text:first', $('#Form' + '<?php echo $id;?>')).text(text);
+</script>
 <?php
 if ($this->request->query['popup_type'] == 'image') {
 	echo $this->Form->input('UploadLibrary.resolusion', array(
@@ -30,15 +37,19 @@ if ($this->request->query['popup_type'] == 'image') {
 		'div' => false,
 	));
 }
+?>
+<span class="common-btn-min upload-btn">
+	<span><?php echo(__('Select file'));?></span>
+<?php 
 echo $this->Form->input('UploadLibrary.file_name', array(
 	'type' => 'file',
-	//'id' => 'nc-upload-inputfile-'.$id,
-	'class' => 'nc-upload-inputfile',
+	'class' => 'nc-upload-inputfile upload-btn-inputfile',
 	'label' => false,
 	'div' => false,
 	'multiple' => true,
 ));
 ?>
+</span>
 </div>
 <?php
 	echo $this->Form->end();

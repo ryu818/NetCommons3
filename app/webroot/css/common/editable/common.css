@@ -210,6 +210,22 @@ a.hover-highlight:active {
 	padding: 0 0 0 28px;
 }
 
+.upload-btn {
+	position:relative;
+	display:inline-block;
+	overflow:hidden;
+	vertical-align:middle;
+	white-space:nowrap;
+}
+.upload-btn-inputfile {
+	position:absolute;
+	top:0;
+	right:0;
+	opacity:0;
+	filter:alpha(opacity=0);
+	font-size:30px;
+	cursor:pointer;
+}
 
 /* 言語切替 */
 .language-outer {

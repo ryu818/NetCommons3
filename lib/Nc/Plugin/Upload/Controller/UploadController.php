@@ -108,11 +108,6 @@ class UploadController extends UploadAppController
 		$data['UploadSearch']['user_type'] = $this->_getUserType($data['UploadSearch'], $isAdmin);
 		$data['UploadSearch']['file_type'] = $this->_getFileType($data['UploadSearch']['file_type'], $popupType);
 
-		//$searchConditions = array();
-		//if ($data['UploadSearch']['user_type'] == UPLOAD_SEARCH_CONDITION_USER_MYSELF) {
-			$searchConditions = array('UploadSearch.user_id'=> $userId);
-		//}
-
 		$searchResult = $this->UploadSearch->search($data, $isAdmin);
 
 		$this->set('is_admin', $isAdmin);
@@ -122,12 +117,24 @@ class UploadController extends UploadAppController
 		if(!$isSearch && !isset($this->request->named['more'])) {
 			$this->set('search_results', $searchResult[1]);
 			$this->set('upload_search', $data);
-			$this->set('upload_search_plugin_options', $this->UploadSearch->findPluginOptions($searchConditions));
-			$this->set('upload_search_created_options', $this->UploadSearch->findCreatedOptions($searchConditions));
+
+			$uploadSearchPluginOptions = array();
+			$uploadSearchCreatedOptions = array();
+
+			$searchConditions = array('UploadSearch.user_id'=> $userId);
+			$uploadSearchPluginOptions['myself'] = $this->UploadSearch->findPluginOptions($searchConditions);
+			$uploadSearchCreatedOptions['myself'] = $this->UploadSearch->findCreatedOptions($searchConditions);
 			if($isAdmin) {
-				// すべての会員からの日付セレクトボックスを予め取得
-				$this->set('upload_search_created_all_options', $this->UploadSearch->findCreatedOptions(array()));
+				// 管理者の場合、すべてと退会ユーザーの絞り込みのための選択肢をあらかじめ取得
+				$uploadSearchPluginOptions['all'] = $this->UploadSearch->findPluginOptions(array());
+				$uploadSearchCreatedOptions['all'] = $this->UploadSearch->findCreatedOptions(array());
+
+				$searchConditions = array('UploadSearch.user_id'=> '0');
+				$uploadSearchPluginOptions['withdraw'] = $this->UploadSearch->findPluginOptions($searchConditions);
+				$uploadSearchCreatedOptions['withdraw'] = $this->UploadSearch->findCreatedOptions($searchConditions);
 			}
+			$this->set('upload_search_plugin_options', $uploadSearchPluginOptions);
+			$this->set('upload_search_created_options', $uploadSearchCreatedOptions);
 		} else {
 			// 検索 More Data Json
 			$results = array();

@@ -138,15 +138,21 @@ class UploadSearch extends AppModel {
 		}
 
 		// モジュール
+		if ($isAdmin && $data['UploadSearch']['user_type'] == UPLOAD_SEARCH_CONDITION_USER_ALL) {
+			$data['UploadSearch']['plugin'] = $data['UploadSearch']['plugin-all'];
+		} elseif ($isAdmin && $data['UploadSearch']['user_type'] == UPLOAD_SEARCH_CONDITION_USER_WITHDRAW) {
+			$data['UploadSearch']['plugin'] = $data['UploadSearch']['plugin-withdraw'];
+		}
 		if (!empty($data['UploadSearch']['plugin'])) {
 			$conditions['UploadSearch.plugin'] = $data['UploadSearch']['plugin'];
 		}
-
+		
 		// 日付指定
-		if ($isAdmin && $data['UploadSearch']['user_type'] != UPLOAD_SEARCH_CONDITION_USER_MYSELF) {
+		if ($isAdmin && $data['UploadSearch']['user_type'] == UPLOAD_SEARCH_CONDITION_USER_ALL) {
 			$data['UploadSearch']['created'] = $data['UploadSearch']['created-all'];
+		} elseif ($isAdmin && $data['UploadSearch']['user_type'] == UPLOAD_SEARCH_CONDITION_USER_WITHDRAW) {
+			$data['UploadSearch']['created'] = $data['UploadSearch']['created-withdraw'];
 		}
-
 		if (!empty($data['UploadSearch']['created'])) {
 			$createdArr = explode('-', $data['UploadSearch']['created']);
 			$conditions['UploadSearch.year'] = $createdArr[0];
@@ -248,7 +254,7 @@ class UploadSearch extends AppModel {
 		$upload[$alias]['orientation'] = 'landscape';
 		$upload[$alias]['basename'] = $this->basename($upload[$alias]['file_name'], '.'.$upload[$alias]['extension']);
 
-		if (preg_match('/^image\/(gif|jpe?g|png)/', $upload[$alias]['mimetype'], $matches)) {
+		if (preg_match('/^image\/(gif|p?jpe?g|(x-)?png)/', $upload[$alias]['mimetype'], $matches)) {
 			$filePath = NC_UPLOADS_DIR.$upload[$alias]['plugin'].'/'.$upload[$alias]['file_path'].$upload[$alias]['id'].'.'.$upload[$alias]['extension'];
 			list($width, $height) = @getimagesize($filePath);
 			$upload[$alias]['width'] = $width;

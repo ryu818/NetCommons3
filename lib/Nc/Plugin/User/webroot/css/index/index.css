@@ -42,6 +42,9 @@ ul.user-edit-row li dl dd {
 .user-avatar-btn {
 	margin-left:17px;
 }
+.user-upload-btn {
+	height:20px;
+}
 
 .user-edit-close {
 	float: left;

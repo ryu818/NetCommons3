@@ -81,6 +81,10 @@ class UploadBehavior extends ModelBehavior {
 		'image/jpeg',
 		'image/pjpeg',
 		'image/png',
+// Add Start R.Ohga
+// IE6-8では.pngの画像をアップロードするとimage/x-pngとなるため
+		'image/x-png',
+// Add End R.Ohga
 		'image/vnd.microsoft.icon',
 		'image/x-icon',
 	);

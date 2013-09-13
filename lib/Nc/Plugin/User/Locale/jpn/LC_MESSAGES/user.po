@@ -40,8 +40,6 @@ msgstr 	"会員を削除すると、会員のデータも同時に削除され�
 msgid  	"Input the user data, and press [%s] button.<br />Required items are marked by <span class='require'>*</span>."
 msgstr 	"会員の基本項目を入力して[%s]ボタンを押してください。<br /><span class='require'>*</span>印の項目は必須入力項目"
 
-msgid  	"Select file"
-msgstr 	"ファイルを選択"
 msgid  	"Select Groups to join"
 msgstr 	"参加ルーム選択"
 msgid  	"Select room(s) in which you want make this member join, and press [%1$s]. <br />Select room(s) displayed from [%2$s], and press [%3$s].<br />The rooms marked by [*] are rooms in %4$s."

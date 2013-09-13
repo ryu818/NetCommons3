@@ -7,6 +7,8 @@ msgstr 	"URLから参照"
 
 msgid  	"Please drag-and-drop or select a file to upload."
 msgstr 	"アップロードするファイルをドロップするか選択してください。"
+msgid  	"Please select a file to upload."
+msgstr 	"アップロードするファイルを選択してください。"
 
 msgid  	"Normal size"
 msgstr 	"標準"

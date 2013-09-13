@@ -40,7 +40,7 @@
 					'label' => false,
 					'div' => false,
 					'value' => $upload_search['UploadSearch']['user_type'],
-					'onchange' => "$.Upload.changeSearchUserType(this, '".$id."', ".UPLOAD_SEARCH_CONDITION_USER_MYSELF."); $(this.form).submit();",
+					'onchange' => "$.Upload.changeSearchUserType(this, '".$id."', ".UPLOAD_SEARCH_CONDITION_USER_ALL."); $(this.form).submit();",
 				));
 			?>
 		</li>
@@ -49,7 +49,33 @@
 			<?php
 				echo $this->Form->input('plugin', array(
 					'type' => 'select',
-					'options' => $upload_search_plugin_options,
+					'options' => $upload_search_plugin_options['myself'],
+					'class' => 'upload-search-module-id',
+					'label' => false,
+					'div' => false,
+					'value' => $upload_search['UploadSearch']['plugin'],
+					'onchange' => '$(this.form).submit();',
+				));
+			?>
+		</li>
+		<li id="upload-plugin-all<?php echo $id; ?>"<?php if ($upload_search['UploadSearch']['user_type'] != UPLOAD_SEARCH_CONDITION_USER_ALL): ?> style="display:none;"<?php endif; ?>>
+			<?php
+				echo $this->Form->input('plugin-all', array(
+					'type' => 'select',
+					'options' => isset($upload_search_plugin_options['all']) ? $upload_search_plugin_options['all'] : array(),
+					'class' => 'upload-search-module-id',
+					'label' => false,
+					'div' => false,
+					'value' => $upload_search['UploadSearch']['plugin'],
+					'onchange' => '$(this.form).submit();',
+				));
+			?>
+		</li>
+		<li <?php if ($upload_search['UploadSearch']['user_type'] != UPLOAD_SEARCH_CONDITION_USER_WITHDRAW): ?> style="display:none;"<?php endif; ?>>
+			<?php
+				echo $this->Form->input('plugin-withdraw', array(
+					'type' => 'select',
+					'options' => isset($upload_search_plugin_options['withdraw']) ? $upload_search_plugin_options['withdraw'] : array(),
 					'class' => 'upload-search-module-id',
 					'label' => false,
 					'div' => false,
@@ -62,7 +88,7 @@
 			<?php
 				echo $this->Form->input('created', array(
 					'type' => 'select',
-					'options' => $upload_search_created_options,
+					'options' => $upload_search_created_options['myself'],
 					'class' => 'upload-search-created',
 					'label' => false,
 					'div' => false,
@@ -71,11 +97,24 @@
 				));
 			?>
 		</li>
-		<li id="upload-created-all<?php echo $id; ?>"<?php if ($upload_search['UploadSearch']['user_type'] == UPLOAD_SEARCH_CONDITION_USER_MYSELF): ?> style="display:none;"<?php endif; ?>>
+		<li id="upload-created-all<?php echo $id; ?>"<?php if ($upload_search['UploadSearch']['user_type'] != UPLOAD_SEARCH_CONDITION_USER_ALL): ?> style="display:none;"<?php endif; ?>>
 			<?php
 				echo $this->Form->input('created-all', array(
 					'type' => 'select',
-					'options' => $upload_search_created_all_options,
+					'options' => isset($upload_search_created_options['all']) ? $upload_search_created_options['all'] : array(),
+					'class' => 'upload-search-created',
+					'label' => false,
+					'div' => false,
+					'value' => $upload_search['UploadSearch']['created'],
+					'onchange' => '$(this.form).submit();',
+				));
+			?>
+		</li>
+		<li <?php if ($upload_search['UploadSearch']['user_type'] != UPLOAD_SEARCH_CONDITION_USER_WITHDRAW): ?> style="display:none;"<?php endif; ?>>
+			<?php
+				echo $this->Form->input('created-withdraw', array(
+					'type' => 'select',
+					'options' => isset($upload_search_created_options['withdraw']) ? $upload_search_created_options['withdraw'] : array(),
 					'class' => 'upload-search-created',
 					'label' => false,
 					'div' => false,

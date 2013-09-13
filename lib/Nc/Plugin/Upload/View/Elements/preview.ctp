@@ -33,7 +33,9 @@
 			</a>
 			<script>
 				$(function(){
-					$.Upload.data[<?php echo $upload['UploadLibrary']['id']; ?>] = <?php echo json_encode($upload['UploadLibrary']); ?>;
+					if ($.Upload) {
+						$.Upload.data[<?php echo $upload['UploadLibrary']['id']; ?>] = <?php echo json_encode($upload['UploadLibrary']); ?>;
+					}
 				});
 			</script>
 		</li>

@@ -645,6 +645,9 @@ msgstr 	"ホーム"
 msgid  	"Browsing history"
 msgstr 	"閲覧履歴"
 
+msgid  	"Select file"
+msgstr 	"ファイルを選択"
+
 # アップロード関連
 msgid  	"Has been successfully uploaded."
 msgstr 	"アップロードに成功しました。"
