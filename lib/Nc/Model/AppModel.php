@@ -35,7 +35,9 @@ class AppModel extends Model {
  * Saves model data (based on white-list, if supplied) to the database. By
  * default, validation occurs before save.
  *
+ * <pre>
  * created_user_id, modified_user_id, created_user_name, modified_user_nameを自動でセット
+ * </pre>
  *
  * @param array $data Data to save.
  * @param boolean|array $validate Either a boolean, or an array.
@@ -94,7 +96,9 @@ class AppModel extends Model {
  * Saves the value of a single field to the database, based on the current
  * model ID.
  *
+ * <pre>
  * modified_user_id, modified_user_nameを自動でセット
+ * </pre>
  *
  * @param string $name Name of the table field
  * @param mixed $value Value of the field
@@ -118,6 +122,48 @@ class AppModel extends Model {
 		$options['fieldList'][] = 'modified_user_id';
 		$options['fieldList'][] = 'modified_user_name';
 		return $this->save(array($this->alias => array($this->primaryKey => $id, $name => $value)), $options);
+	}
+	
+/**
+ * Updates multiple model records based on a set of conditions.
+ * 
+ * <pre>
+ * modified, modified_user_id, modified_user_nameを自動でセット
+ * </pre>
+ *
+ * @param array $fields Set of fields and values, indexed by fields.
+ *    Fields are treated as SQL snippets, to insert literal values manually escape your data.
+ * @param mixed $conditions Conditions to match, true for all records
+ * @return boolean True on success, false on failure
+ * @link http://book.cakephp.org/2.0/en/models/saving-your-data.html#model-updateall-array-fields-array-conditions
+ */
+	public function updateAll($fields, $conditions = true) {
+		$user = Configure::read(NC_SYSTEM_KEY.'.user');
+
+		$id = isset($user['id']) ? $user['id'] : _OFF;
+		$usename = isset($user['handle']) ? $user['handle'] : '';
+		
+		if ($this->hasField('modified') && !isset($fields[$this->alias.'.modified'])) {
+			$db = $this->getDataSource();
+			$default = array('formatter' => 'date');
+			$colType = array_merge($default, $db->columns[$this->getColumnType('modified')]);
+			
+			if (!array_key_exists('format', $colType)) {
+				$time = strtotime('now');
+			} else {
+				$time = call_user_func($colType['formatter'], $colType['format']);
+			}
+			
+			$fields[$this->alias.'.modified'] = "'". $time. "'";
+		}
+		if ($this->hasField('modified_user_id') && !isset($fields[$this->alias.'.modified_user_id'])) {
+			$fields[$this->alias.'.modified_user_id'] = "'". $id. "'";
+		}
+
+		if ($this->hasField('modified_user_name') && !isset($fields[$this->alias.'.modified_user_name'])) {
+			$fields[$this->alias.'.modified_user_name'] = "'". $usename. "'";
+		}
+		return parent::updateAll($fields, $conditions);
 	}
 
 }
