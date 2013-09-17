@@ -113,7 +113,7 @@ class NcDownloadsController extends AppController {
  */
 	public function checkComponent($uploadLink, $fileOwnerId, $downloadPassword) {
 		if(!empty($uploadLink['check_component_action'])) {
-			$checkComponentActionArr = implode(',', $uploadLink['check_component_action']);
+			$checkComponentActionArr = explode(',', $uploadLink['check_component_action']);
 		} else {
 			$checkComponentActionArr = array();
 		}
@@ -121,7 +121,8 @@ class NcDownloadsController extends AppController {
 		foreach ($checkComponentActionArr as $checkComponentAction) {
 
 			// 同一の条件の場合はチェックしない
-			$hash = md5($checkComponentAction.$uploadLink['content_id'].$uploadLink['unique_id'].$uploadLink['access_hierarchy'].$uploadLink['download_password']);
+			$hash = md5($checkComponentAction.'_'.$uploadLink['content_id'].'_'.$uploadLink['unique_id'].'_'.$uploadLink['model_name'].'_'.$uploadLink['field_name'].
+				'_'.$uploadLink['access_hierarchy'].'_'.$uploadLink['download_password']);
 			if (isset($this->_checkedActions[$hash])) {
 				if ($this->_checkedActions[$hash] === true) {
 					continue;
