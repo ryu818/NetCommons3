@@ -25,7 +25,7 @@ class SystemController extends SystemAppController {
  *
  * @var array
  */
-	public $components = array('Security', 'System.SystemCommon');
+	public $components = array('Security', 'System.SystemCommon', 'CheckAuth' => array('allowAuth' => NC_AUTH_GUEST));
 
 /**
  * 表示後処理
