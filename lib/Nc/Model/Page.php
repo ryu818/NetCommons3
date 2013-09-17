@@ -406,7 +406,11 @@ class Page extends AppModel
  * @return  array    $pages
  * @since   v 3.0.0.0
  */
-	public function findAuthById($pageIdArr, $userId, $spaceType = null) {
+	public function findAuthById($pageIdArr, $userId = null, $spaceType = null) {
+		if(empty($userId)) {
+			$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
+			$userId = isset($loginUser['id']) ? $loginUser['id'] : null;
+		}
 		$conditions = array('Page.id' => $pageIdArr);
 
 		$params = array(
@@ -620,6 +624,10 @@ class Page extends AppModel
  */
 	function findBreadcrumb($page, $userId = null) {
 		$results = array();
+		if(empty($userId)) {
+			$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
+			$userId = isset($loginUser['id']) ? $loginUser['id'] : null;
+		}
 
 		if(!isset($page['PageAuthority']['hierarchy'])) {
 			$page['PageAuthority']['hierarchy'] = $this->getDefaultHierarchy($page);
