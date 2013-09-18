@@ -19,6 +19,7 @@ class UploadLibrary extends AppModel {
 	public $actsAs = array(
 		'Upload' => array(
 			'file_name' => array(
+				'isWysiwyg'=>true
 			),
 		),
 	);
