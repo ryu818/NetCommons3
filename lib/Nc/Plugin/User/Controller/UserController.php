@@ -426,6 +426,9 @@ class UserController extends UserAppController {
 			}
 			$userItemLinks = $bufUserItemLinks;
 		}
+		if (isset($user['User']['avatar']['remove'])) {
+			$user['User']['avatar'] = null;
+		}
 
 		$userId = isset($userId) ? intval($userId) : 0;
 		$this->set('id', $this->id.'-'.$userId);	// top idをuser_id単位に設定
