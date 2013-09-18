@@ -609,8 +609,8 @@
 											};
 							var options = {
 								id  : self.id + "-inserttable",
-								css : [$._base_url+'css/plugins/nc_wysiwyg/inserttable.css'+'?'+$._v],
-								js : [$._base_url+'js/plugins/nc_wysiwyg/inserttable.js'+'?'+$._v],
+								css : [$._base_url+'css/plugins/nc_wysiwyg/inserttable.css'+'?'+$._nc.v],
+								js : [$._base_url+'js/plugins/nc_wysiwyg/inserttable.js'+'?'+$._nc.v],
 								jsname : ['$.fn.nc_inserttable'],
 								callback : callback
 							};
@@ -637,8 +637,8 @@
 									var selPos = self.getSelectTablePos();
 									options = $.extend({
 										id  : self.id + "-inserttable-rarrow",
-										css : [$._base_url+'css/plugins/nc_wysiwyg/tablemenu.css'+'?'+$._v],
-										js : [$._base_url+'js/plugins/nc_wysiwyg/tablemenu.js'+'?'+$._v],
+										css : [$._base_url+'css/plugins/nc_wysiwyg/tablemenu.css'+'?'+$._nc.v],
+										js : [$._base_url+'js/plugins/nc_wysiwyg/tablemenu.js'+'?'+$._nc.v],
 										jsname : ['$.fn.nc_tablemenu'],
 										className : "nc-wysiwyg-tablemenu",
 										callback : function() {
@@ -685,8 +685,8 @@
 															};
 											var options = {
 												id  : self.id + "-smiley",
-												css : [$._base_url+'css/plugins/nc_wysiwyg/smiley.css'+'?'+$._v],
-												js  : [$._base_url+'js/plugins/nc_wysiwyg/smiley.js'+'?'+$._v],
+												css : [$._base_url+'css/plugins/nc_wysiwyg/smiley.css'+'?'+$._nc.v],
+												js  : [$._base_url+'js/plugins/nc_wysiwyg/smiley.js'+'?'+$._nc.v],
 												jsname  : ['$.fn.nc_smiley'],
 												callback : callback
 											};
@@ -746,8 +746,8 @@
 																};
 												var options = {
 													id  : self.id + "-inserttex",
-													css : [$._base_url+'css/plugins/nc_wysiwyg/mimetex.css'+'?'+$._v],
-													js  : [$._base_url+'js/plugins/nc_wysiwyg/mimetex.js'+'?'+$._v],
+													css : [$._base_url+'css/plugins/nc_wysiwyg/mimetex.css'+'?'+$._nc.v],
+													js  : [$._base_url+'js/plugins/nc_wysiwyg/mimetex.js'+'?'+$._nc.v],
 													jsname  : ['$.fn.nc_mimetex'],
 													callback : callback
 												};
@@ -771,8 +771,8 @@
 											var self = this;
 											var options = {
 												id       : self.id + "-createlink",
-												css      : [$._base_url+'css/plugins/nc_wysiwyg/insertlink.css'+'?'+$._v],
-												js       : [$._base_url+'js/plugins/nc_wysiwyg/insertlink.js'+'?'+$._v],
+												css      : [$._base_url+'css/plugins/nc_wysiwyg/insertlink.css'+'?'+$._nc.v],
+												js       : [$._base_url+'js/plugins/nc_wysiwyg/insertlink.js'+'?'+$._nc.v],
 												jsname    : ['$.fn.nc_insertlink'],
 												callback : function(){
 													var n = this.currentNode ? this.currentNode : this.getSelectNode();
@@ -883,8 +883,8 @@
 															};
 											var options = {
 												id  : self.id + "-insertvideo",
-												css : [$._base_url+'css/plugins/nc_wysiwyg/insertvideo.css'+'?'+$._v],
-												js  : [$._base_url+'js/plugins/nc_wysiwyg/insertvideo.js'+'?'+$._v],
+												css : [$._base_url+'css/plugins/nc_wysiwyg/insertvideo.css'+'?'+$._nc.v],
+												js  : [$._base_url+'js/plugins/nc_wysiwyg/insertvideo.js'+'?'+$._nc.v],
 												jsname  : ['$.fn.nc_insertvideo'],
 												callback : callback
 											};

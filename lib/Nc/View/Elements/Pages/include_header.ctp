@@ -11,6 +11,7 @@
 	$nc_user = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 	$ncMode = intval($this->Session->read(NC_SYSTEM_KEY.'.'.'mode'));
 	$locale = Configure::read(NC_SYSTEM_KEY.'.locale');
+	$version = Security::hash(NC_VERSION, null, true);
 
 // TODO:test
 if (!empty($page_style['file'])) {
@@ -58,6 +59,7 @@ if(isset($pages) && isset($page_id_arr)) {
 } else if(isset($page)) {
 	echo '	$._nc.show_count['.$page['Page']['id'].'] = '.$page['Page']['show_count'].';'."\n";
 }
+echo '	$._nc.v = \''.$version.'\';'."\n";
 ?>
 $.Common.pjaxPrevUrl = location.href;
 })(jQuery);</script>
