@@ -129,7 +129,8 @@ foreach ($revisions as $revision) {
 						'legend' => false,
 						'name' => 'revision_id',
 					);
-					if($key == 0 && $revision_id != $revision['Revision']['id'] && $current_revision_id != $revision['Revision']['id']) {
+					if($key == 0 && $revision_id != $revision['Revision']['id']
+							&& $current_revision_id != $revision['Revision']['id']) {
 						$settings['class'] = 'display-none';
 					}
 					echo $this->Form->input('revision_id', $settings);
@@ -146,7 +147,9 @@ foreach ($revisions as $revision) {
 						'legend' => false,
 						'name' => 'current_revision_id',
 					);
-					if($key != 0 && $revision_id != $revision['Revision']['id'] && $current_revision_id != $revision['Revision']['id']) {
+					if($key != 0
+						&& ($revision_id > $revision['Revision']['id']
+							|| $current_revision_id < $revision['Revision']['id'])) {
 						$settings['class'] = 'display-none';
 					}
 					echo $this->Form->input('current_revision_id', $settings);

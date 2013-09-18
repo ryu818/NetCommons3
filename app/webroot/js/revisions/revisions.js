@@ -13,39 +13,30 @@
 		var radios = $('input:radio', table);
 		/* ラジオボタン操作 */
 		radios.click(function(e) {
- 			radios.each(function(){
- 				var row = $(this).parents('tr:first');
- 				var cell = $(this).parents('th:first');
- 				var rowIndex = row[0].rowIndex;
- 				var orherRadio = null;
- 				var isOld = false, isDisplay = true;
+			var oldCheckRow = $('input[name=revision_id]:checked:first', '#nc-revisions'+id).parents('tr:first');
+			var oldCheckRowIndex = oldCheckRow[0].rowIndex;
+			var newCheckRow = $('input[name=current_revision_id]:checked:first', '#nc-revisions'+id).parents('tr:first');
+			var newCheckRowIndex = newCheckRow[0].rowIndex;
 
- 				if($(this).is('[name=revision_id]')) {
+			radios.each(function(){
+				var row = $(this).parents('tr:first');
+				var rowIndex = row[0].rowIndex;
+				var isOld = false, isDisplay = true;
+
+				if($(this).is('[name=revision_id]')) {
 					isOld = true;
 				}
- 				if(isOld) {
- 					orherRadio = $('input:radio:first', cell.next());
- 				} else {
- 					orherRadio = $('input:radio:first', cell.prev());
- 				}
+				if (isOld && newCheckRowIndex > rowIndex
+						|| !isOld && oldCheckRowIndex < rowIndex) {
+					isDisplay = false;
+				}
 
- 				if(!orherRadio.is(':checked') && !$(this).is(':checked')) {
-					if(rowIndex == 1) {
-						if(isOld) {
-							isDisplay = false;
-						}
-					} else {
-						if(!isOld) {
-							isDisplay = false;
-						}
-					}
- 				}
- 				if(isDisplay) {
- 					$(this).removeClass('display-none');
- 				} else {
- 					$(this).addClass('display-none');
- 				}
- 			});
+				if(isDisplay) {
+					$(this).show();
+				} else {
+					$(this).hide();
+				}
+			});
 		});
 
 	};
