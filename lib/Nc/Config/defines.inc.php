@@ -44,6 +44,7 @@ define('NC_DOCTYPE_STR', '/^[\s\r\n]*<!DOCTYPE html/i');
 
 //-----------------権限(Authority.authority_id)-------------------------------------------
 define('NC_AUTH_OTHER_ID', 0);
+define('NC_AUTH_CLERK_ID', 6);
 define('NC_AUTH_GUEST_ID', 5);
 define('NC_AUTH_GENERAL_ID', 4);
 define('NC_AUTH_MODERATE_ID', 3);

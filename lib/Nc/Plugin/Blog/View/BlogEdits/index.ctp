@@ -157,7 +157,7 @@ $this->extend('/Frame/block');
 								<div class="hr">
 								<?php
 									echo $this->Form->label('Blog.mail_hierarchy', __('Notify whom? :'));
-									echo $this->Form->authoritySlider('Blog.mail_hierarchy', array('value' => $blog['Blog']['mail_hierarchy'], 'display_guest' => true));
+									echo $this->Form->authoritySlider('Blog.mail_hierarchy', array('value' => $blog['Blog']['mail_hierarchy'], 'min_authority_id' => NC_AUTH_GUEST_ID));
 									$settings = array(
 										'type' => 'text',
 										'value' => $blog['Blog']['mail_subject'],
@@ -214,7 +214,7 @@ $this->extend('/Frame/block');
 								<div class="hr">
 									<?php
 										echo $this->Form->label('Blog.comment_hierarchy', __d('blog', 'Authority to post comments:'));
-										echo $this->Form->authoritySlider('Blog.comment_hierarchy', array('value' => $blog['Blog']['comment_hierarchy'], 'display_guest' => true));
+										echo $this->Form->authoritySlider('Blog.comment_hierarchy', array('value' => $blog['Blog']['comment_hierarchy'], 'min_authority_id' => NC_AUTH_GUEST_ID));
 									?>
 									<div class="note">
 										<?php echo __d('blog', 'If set to guest, users can comment without logged in.'); ?>

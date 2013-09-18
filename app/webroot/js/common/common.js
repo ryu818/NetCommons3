@@ -253,6 +253,9 @@
 				contentType = false;
 				processData = false;
 				data = new FormData($form[0]);
+				
+				// ie
+				$form.attr('encoding', 'multipart/form-data');
 			}
 			default_options = {
 				type: type,
@@ -1119,13 +1122,24 @@
 			}
 			$.ajax(ajax_options);
 		},
-		/* 権限[主担　モデレータ　一般]スライダー */
-		sliderAuthority: function(id, disable, display_guest) {
-			display_guest = (typeof display_guest == "undefined") ? false : display_guest;
-			var _hierarchy = function(authority_id) {
+
+/**
+ * 権限[(管理者)　主担　モデレーター　一般　(ゲスト)]スライダー
+ * @param   string  id
+ * @param   array options
+ * @param   integer minAuthorityId 最小表示権限ID　ゲストまでならば5 default: 一般 4
+ * @param   integer maxAuthorityId 最大表示権限ID　管理者までならば1 default: 主担 2
+ * @return  void
+ */
+		sliderAuthority: function(id, options, minAuthorityId, maxAuthorityId) {
+			minAuthorityId = (typeof minAuthorityId == "undefined") ? 4 : minAuthorityId;
+			maxAuthorityId = (typeof maxAuthorityId == "undefined") ? 2 : maxAuthorityId;
+			var _hierarchy = function(authorityId) {
 				var  h = 0;
-				switch (authority_id)
+				switch (authorityId)
 				{
+					case 0 : h = '501'; break;
+					case 1 : h = '401'; break;
 					case 2 : h = '301'; break;
 					case 3 : h = '201'; break;
 					case 4 : h = '101'; break;
@@ -1133,16 +1147,18 @@
 				}
 				return h;
 			};
-			var _authority_id = function(h) {
-				var authority_id = 2;
+			var _authorityId = function(h) {
+				var authorityId = 2;
 				switch (h)
 				{
-					case '301' : authority_id = 2; break;
-					case '201' : authority_id = 3; break;
-					case '101' : authority_id = 4; break;
-					case '1' : authority_id = 5; break;
+					case '501' : authorityId = 0; break;
+					case '401' : authorityId = 1; break;
+					case '301' : authorityId = 2; break;
+					case '201' : authorityId = 3; break;
+					case '101' : authorityId = 4; break;
+					case '1' : authorityId = 5; break;
 				}
-				return authority_id;
+				return authorityId;
 			};
 			var input = $('#' + id);
 			if(!input.get(0)) return false;
@@ -1151,21 +1167,20 @@
 			if(!input.get(0) || input.get(0).tagName.toLowerCase() != 'input') {
 				return false;
 			}
-
-			slider.slider({
-				'min'    : 2,
-				'max'    : (display_guest) ? 5 : 4,
-				'value'  : _authority_id($(input).val()),
+			
+			options = $.extend({
+				'min'    : maxAuthorityId,
+				'max'    : minAuthorityId,
+				'value'  : _authorityId($(input).val()),
 				'animate': 'fast',
 				'range'  : 'min',
 				'change': function( event, ui ) {
-					var authority_id = $(this).slider( "option", "value" );
-					$(input).val(_hierarchy(authority_id));
+					var authorityId = $(this).slider( "option", "value" );
+					$(input).val(_hierarchy(authorityId));
 				}
-			});
-			if(disable) {
-				slider.slider( "disable" );
-			}
+			}, options);
+
+			slider.slider(options);
 		},
 
 

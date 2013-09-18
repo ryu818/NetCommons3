@@ -751,7 +751,7 @@ a.nc-widget-area-title-arrow {
     zoom: 1;
 }
 
-/* 権限スライドバー [主担 - モデレータ - 一般] */
+/* 権限スライドバー [主担 - モデレーター - 一般] */
 .authority-slider {
 	width:150px;
 	margin: 0 10px 30px 10px;
@@ -778,9 +778,6 @@ a.nc-widget-area-title-arrow {
 	left: 0;
 	position: absolute;
 	top: -1.3em;
-}
-.authority-slider-display-guest {
-	width:300px !important;
 }
 
 /* 履歴情報 */

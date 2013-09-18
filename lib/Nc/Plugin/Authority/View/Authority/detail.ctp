@@ -74,7 +74,7 @@
 					<?php
 						$columnName = 'allow_myportal_viewing_hierarchy';
 						echo $this->Form->label('Authority.'.$columnName, __d('authority', 'Reading authority'));
-						echo $this->Form->authoritySlider('Authority.'.$columnName, array('value' => $authority['Authority'][$columnName], 'display_guest' => true));
+						echo $this->Form->authoritySlider('Authority.'.$columnName, array('value' => $authority['Authority'][$columnName], 'min_authority_id' => NC_AUTH_GUEST_ID));
 					?>
 					</div>
 				</dd>
@@ -403,7 +403,7 @@
 			<?php echo __d('authority', 'Allow to use the User Manager?');?>
 		</legend>
 		<?php
-			if($authority['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
+			if($authority['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF || $authority['Authority']['id'] == NC_AUTH_CLERK_ID) {
 				$disabled = true;
 			} else {
 				$disabled = false;

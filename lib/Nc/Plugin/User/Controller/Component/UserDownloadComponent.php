@@ -53,8 +53,8 @@ class UserDownloadComponent extends Component {
 		$fileOwner = $User->findById($fileOwnerId);
 		$avatar = $Item->findByTagName('avatar');
 
-		$publicFlags = $ItemAuthorityLink->findPublicFlagForLoginUser($fileOwner);
-		if ($publicFlags[$avatar['Item']['id']] == NC_POLICY_PUBLIC_NONE) {
+		$publicFlags = $ItemAuthorityLink->findIsPublicForLoginUser($fileOwner);
+		if (!$publicFlags[$avatar['Item']['id']]) {
 			return false;
 		}
 

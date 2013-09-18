@@ -77,6 +77,13 @@ class Item extends AppModel
 					'message' => __('The input must be a boolean.')
 				)
 			),
+			'allow_self_edit' => array(
+				'boolean'  => array(
+					'rule' => array('boolean'),
+					'allowEmpty' => true,
+					'message' => __('The input must be a boolean.')
+				)
+			),
 			'required' => array(
 				'boolean'  => array(
 					'rule' => array('boolean'),
@@ -218,6 +225,7 @@ class Item extends AppModel
 				'type' => 'text',
 				'tag_name' => '',
 				'is_system' => _OFF,
+				'allow_self_edit' => _ON,
 				'required' => _OFF,
 				'allow_duplicate' => _ON,
 				'minlength' => '',

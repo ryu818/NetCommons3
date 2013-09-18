@@ -140,7 +140,6 @@ class UserController extends UserAppController {
 		$sortorder = ($this->request->data['sortorder'] == "asc" || $this->request->data['sortorder'] == "desc") ? $this->request->data['sortorder'] : "desc";
 
 		$loginUser = $this->Auth->user();
-		$userAuthorityId = $this->Authority->getUserAuthorityId($loginUser['hierarchy']);
 		$this->set('loginHierarchy', $loginUser['hierarchy']);
 
 		$activeLang = $this->_setLanguage();
@@ -148,7 +147,7 @@ class UserController extends UserAppController {
 		$fields = array(
 			'User.*, UserItemLinkUsername.content, Authority.default_authority_name, AuthorityLang.authority_name, Authority.hierarchy, Authority.system_flag'
 		);
-		list($conditions, $joins) = $this->User->getRefineSearch($this->request, $userAuthorityId, $this->hierarchy);
+		list($conditions, $joins) = $this->User->getRefineSearch($this->request, $this->hierarchy);
 		$joins[] = 	array("table" => "authorities",
 			"alias" => "Authority",
 			"conditions" => "`User`.`authority_id`=`Authority`.`id`"
@@ -199,33 +198,30 @@ class UserController extends UserAppController {
 				'recursive' => -1
 			);
 			$users = $this->User->find('all', $params);
-
-			if(isset($itemsAuthoritiesLinks)) {
+			if($this->hierarchy < NC_AUTH_MIN_CHIEF) {
+				$itemsAuthoritiesLinks = $this->ItemAuthorityLink->findList();
 				$chk_arr = array(
-					'handle',
-					'username',
-					'authority_id',
-					'active_flag',
-					'created',
-					'last_login'
+					NC_ITEM_ID_HANDLE => 'handle',
+					NC_ITEM_ID_USERNAME => 'username',
+					NC_ITEM_ID_AUTHORITY_ID => 'authority_id',
+					NC_ITEM_ID_IS_ACTIVE => 'active_flag',
+					NC_ITEM_ID_CREATED =>'created',
+					NC_ITEM_ID_LAST_LOGIN => 'last_login'
 				);
 
 				foreach($users as $key => $user) {
 					if($user['User']['id'] == $loginUser['id']) {
-						$kind = 'self';
-					} else {
-						$chkBaseAuthorityId = $this->Authority->getUserAuthorityId($user['Authority']['hierarchy']);
-						if($chkBaseAuthorityId <= $userAuthorityId) {
-							$kind = 'higher';
-						} else {
-							$kind = 'lower';
-						}
+						continue;
 					}
+					
+					$chkBaseAuthorityId = $this->Authority->getUserAuthorityId($user['Authority']['hierarchy']);
 
-					foreach($chk_arr as $chk) {
-						if($itemsAuthoritiesLinks[$kind][$show_items[$chk]] == NC_POLICY_PUBLIC_NONE) {
-							if($chk == 'authority_id') {
-								$users[$key]['Authority']['authority_name'] = '';
+					foreach($chk_arr as $itemId => $chk) {
+						if($itemsAuthoritiesLinks[$chkBaseAuthorityId][$itemId]['show_lower_hierarchy'] > $loginUser['hierarchy']) {
+							if($itemId == NC_ITEM_ID_USERNAME) {
+								$users[$key]['UserItemLinkUsername']['content'] = '';
+							} else if($itemId == NC_ITEM_ID_AUTHORITY_ID) {
+								$users[$key]['AuthorityLang']['authority_name'] = '';
 							} else {
 								$users[$key]['User'][$chk] = '';
 							}
@@ -254,14 +250,13 @@ class UserController extends UserAppController {
 
 		$items = $this->Item->findList();
 		$this->set('items', $items);
+		// 会員管理の管理者ならば、個人情報管理をみない。
+		if($this->hierarchy < NC_AUTH_MIN_CHIEF) {
+			$this->set('item_publics', $this->ItemAuthorityLink->findIsPublicForLoginUser());
+		}
 		$this->set('authorities', $this->Authority->findSelectList());
 		$this->set('languages', $this->Language->findSelectList());
-		$userAuthorityId = $this->Authority->getUserAuthorityId($loginUser['hierarchy']);
-		$params = array(
-			'conditions' => array('user_authority_id' => $userAuthorityId)
-		);
-		$rets = $this->ItemAuthorityLink->findList('all' , $params);
-		$this->set('itemAuthorityLinks', $rets[$userAuthorityId]);
+
 		// 参加コミュニティー
 		if($this->hierarchy >= NC_AUTH_MIN_CHIEF) {
 			// 会員管理のhierarchyが主担以上ならば、参加してないルームもセットし、すべてのルーム一覧を取得
@@ -362,6 +357,9 @@ class UserController extends UserAppController {
 					throw new InternalErrorException(__('Failed to update the database, (%s).', 'users'));
 				}
 				$user['User']['id'] = $this->User->id;
+				if (isset($user['User']['avatar']['remove'])) {
+					$user['User']['avatar'] = null;
+				}
 
 				// UserItemLink Save
 				if(isset($this->request->data['UserItemLink'])) {
@@ -425,9 +423,6 @@ class UserController extends UserAppController {
 				$bufUserItemLinks[$userItemLink['UserItemLink']['item_id']] = $userItemLink;
 			}
 			$userItemLinks = $bufUserItemLinks;
-		}
-		if (isset($user['User']['avatar']['remove'])) {
-			$user['User']['avatar'] = null;
 		}
 
 		$userId = isset($userId) ? intval($userId) : 0;

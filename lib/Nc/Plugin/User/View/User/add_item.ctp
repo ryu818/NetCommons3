@@ -46,6 +46,17 @@ echo $this->Form->create('Item', array('data-pjax' => '#'.$id));
 					?>
 					<div class="hr">
 					<?php
+						echo $this->Form->input('Item.allow_self_edit',array(
+							'type' => 'checkbox',
+							'value' => _ON,
+							'checked' => !empty($item['Item']['allow_self_edit']) ? true : false,
+							'label' => __d('user', 'Enable individual edit.'),
+						));
+					?>
+					<div class="note">
+					<?php echo __d('user', 'Administrator and clerk editable.'); ?>
+					</div>
+					<?php
 						echo $this->Form->input('Item.required',array(
 							'type' => 'checkbox',
 							'value' => _ON,

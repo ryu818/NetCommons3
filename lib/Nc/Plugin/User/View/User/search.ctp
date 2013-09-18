@@ -42,9 +42,8 @@
 					$rowNum = 1;
 				}
 
-				if(isset($itemAuthorityLinks['self'][$item['Item']['id']]) && ($itemAuthorityLinks['self'][$item['Item']['id']] == NC_POLICY_PUBLIC_NONE
-					|| ($itemAuthorityLinks['higher'][$item['Item']['id']] == NC_POLICY_PUBLIC_NONE && $itemAuthorityLinks['lower'][$item['Item']['id']] == NC_POLICY_PUBLIC_NONE))) {
-					// 自分自身が非公開 OR 自分以上、自分より小さい権限が非公開：個人情報管理
+				if(isset($item_publics[$item['Item']['id']]) && $item_publics[$item['Item']['id']] === false){
+					// 全部の権限でログイン会員の閲覧権限がないならば、ラベルを消す。自分自身以外検索結果に表示されないため。
 					$rets[$key] = '';
 					continue;
 				}

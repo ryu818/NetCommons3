@@ -393,6 +393,9 @@ msgstr 	"メールの送信に失敗しました。"
 msgid  	"*"
 msgstr 	"*"
 
+msgid  	" - "
+msgstr 	"・"
+
 msgid  	"Drag &amp; drop to move."
 msgstr 	"ドラッグ＆ドロップで移動できます。"
 
@@ -596,10 +599,12 @@ msgstr 	"参加会員"
 
 msgid  	"Administrator"
 msgstr 	"管理者"
+msgid  	"Clerk"
+msgstr 	"事務局"
 msgid  	"Room Manager"
 msgstr 	"主担"
 msgid  	"Moderator"
-msgstr 	"モデレータ"
+msgstr 	"モデレーター"
 msgid  	"Common User"
 msgstr 	"一般"
 msgid  	"Guest"

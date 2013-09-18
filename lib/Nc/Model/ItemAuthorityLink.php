@@ -11,10 +11,10 @@
 class ItemAuthorityLink extends AppModel
 {
 /**
- * data[user_authority_id][higher|self|lower][item_id] = $public_flagとして取得
+ * data[user_authority_id][item_id][edit_lower_hierarchy|show_lower_hierarchy] = hierarchyとして取得
  * @param   string $type
  * @param   array  $params
- * @return  array data[user_authority_id][higher|self|lower][item_id] = $public_flag
+ * @return  array data[user_authority_id][item_id][edit_lower_hierarchy|show_lower_hierarchy] = hierarchy
  * @since   v 3.0.0.0
  */
 	public function findList($type = 'all', $params = array()) {
@@ -24,18 +24,19 @@ class ItemAuthorityLink extends AppModel
 	protected function _afterFindList($results) {
 		$ret = array();
 
-		$single_flag = false;
+		$singleFlag = false;
 		if(isset($results['ItemAuthorityLink'])) {
-			$single_flag = true;
+			$singleFlag = true;
 			$results[] = $results;
 		}
 
 		foreach ($results as $key => $result) {
-			$ret[$result['ItemAuthorityLink']['user_authority_id']]['higher'][$result['ItemAuthorityLink']['item_id']] = $result['ItemAuthorityLink']['higher_public_flag'];
-			$ret[$result['ItemAuthorityLink']['user_authority_id']]['self'][$result['ItemAuthorityLink']['item_id']] = $result['ItemAuthorityLink']['self_public_flag'];
-			$ret[$result['ItemAuthorityLink']['user_authority_id']]['lower'][$result['ItemAuthorityLink']['item_id']] = $result['ItemAuthorityLink']['lower_public_flag'];
+			$userAuthorityId = $result['ItemAuthorityLink']['user_authority_id'];
+			$itemId = $result['ItemAuthorityLink']['item_id'];
+			$ret[$userAuthorityId][$itemId]['edit_lower_hierarchy'] = $result['ItemAuthorityLink']['edit_lower_hierarchy'];
+			$ret[$userAuthorityId][$itemId]['show_lower_hierarchy'] = $result['ItemAuthorityLink']['show_lower_hierarchy'];
 		}
-		if($single_flag) {
+		if($singleFlag) {
 			return $ret[0];
 		}
 		return $ret;
@@ -44,30 +45,55 @@ class ItemAuthorityLink extends AppModel
 /**
  * ログインユーザーが閲覧する際の公開フラグを取得
  * @param   array $owner 情報の所有者の会員情報
- * @return  array data[item_id] = $public_flag
+ * 	$ownerが空ならば、全部の権限で閲覧権限がないならばfalse,1つでも閲覧権限があればtrue
+ * @return  array data[item_id] = boolean
+ * 
  * @since   v 3.0.0.0
  */
-	public function findPublicFlagForLoginUser($owner) {
+	public function findIsPublicForLoginUser($owner = null) {
+		$Authority = ClassRegistry::init('Authority');
+		
 		$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
 		$loginUserId = isset($loginUser['id']) ? $loginUser['id'] : _OFF;
-
-		$params = array(
-			'conditions'=>array(
-				'ItemAuthorityLink.user_authority_id'=>$owner['Authority']['id']
-			)
-		);
-		$itemAuthorityLinks = $this->findList('all', $params);
-
-		if ($loginUserId === _OFF) {
-			$publicFlagKey = 'lower';
-		} elseif ($loginUserId == $owner['User']['id']) {
-			$publicFlagKey = 'self';
-		} elseif ($loginUser['hierarchy'] >= $owner['Authority']['hierarchy']) {
-			$publicFlagKey = 'higher';
+		if($loginUserId === _OFF) {
+			$loginHierarchy = NC_AUTH_GUEST;
 		} else {
-			$publicFlagKey = 'lower';
+			$loginHierarchy = $loginUser['hierarchy'];
 		}
 
-		return $itemAuthorityLinks[$owner['Authority']['id']][$publicFlagKey];
+		if(isset($owner)) {
+			$userAuthorityId = $Authority->getUserAuthorityId($owner['Authority']['hierarchy']);
+			$params = array(
+				'conditions'=>array(
+					'ItemAuthorityLink.user_authority_id' => $userAuthorityId
+				)
+			);
+			$itemAuthorityLinks = $this->findList('all', $params);
+			
+			$rets = array();
+			foreach($itemAuthorityLinks[$userAuthorityId] as $itemId => $itemAuthorityLink) {
+				if($loginHierarchy >= $itemAuthorityLink['show_lower_hierarchy']) {
+					$rets[$itemId] = true;
+				} else {
+					$rets[$itemId] = false;
+				}
+			}
+		} else {
+			$bufItemAuthorityLinks = $this->findList();
+			$rets = array();
+			foreach($bufItemAuthorityLinks as $userAuthorityId => $itemAuthorityLinks) {
+				foreach($itemAuthorityLinks as $itemId => $itemAuthorityLink) {
+					if(isset($rets[$itemId]) && $rets[$itemId]) {
+						continue;
+					}
+					if($loginHierarchy >= $itemAuthorityLink['show_lower_hierarchy']) {
+						$rets[$itemId] = true;
+					} else {
+						$rets[$itemId] = false;
+					}
+				}
+			}
+		}
+		return $rets;
 	}
 }

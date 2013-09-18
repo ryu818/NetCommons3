@@ -817,9 +817,8 @@ class PageMenusController extends PageAppController {
 		$sortorder = (!empty($this->request->data['sortorder']) && ($this->request->data['sortorder'] == "asc" || $this->request->data['sortorder'] == "desc")) ? $this->request->data['sortorder'] : "asc";
 
 		// 会員絞り込み
-		$userAuthorityId = $this->Authority->getUserAuthorityId($user['hierarchy']);
 		$adminUserHierarchy = $this->ModuleSystemLink->findHierarchyByPluginName('User', $user['authority_id']);
-		list($conditions, $joins) = $this->User->getRefineSearch($this->request, $userAuthorityId, $adminUserHierarchy);
+		list($conditions, $joins) = $this->User->getRefineSearch($this->request, $adminUserHierarchy);
 
 		$participantType = $this->Authority->getParticipantType($user['authority_id'], $page);
 		$defaultAuthorityId = $this->Page->getDefaultAuthorityId($page);

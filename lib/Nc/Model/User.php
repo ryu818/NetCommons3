@@ -797,30 +797,19 @@ class User extends AppModel
  *
  * <pre>
  * ・会員管理が編集可能ならば、すべてから検索可能
- * ・自分自身が非公開のものは検索させない。
- * ・検索項目が入力してある項目で
- * 		自分以上の権限が、非公開であれば、自分の権限以下で検索(自分自身は関係なし)
- * 		自分より低い権限が、非公開であれば、自分の権限以上で検索
- *
- * ・会員管理が編集可能ならば、public_flagはみない。
- *   そうでないならば、
- * 		自分以上の権限が、編集可であれば、public_flagはみない。(自分自身は関係なし)
- * 		自分より低い権限が、編集可であれば、public_flagはみない。
- *   それ以外、public_flagをみる。
+ * ・個人情報管理で閲覧可能なものを検索対象にする。
  *  </pre>
  * @param   Object Request $request
- * @param   integer $userAuthorityId
  * @param   integer $adminHierarchy
  * @param   array   $itemAuthorityLinks
  * @return  array (array conditions, array joins)
  * @since   v 3.0.0.0
  */
-	public function getRefineSearch($request, $userAuthorityId = null, $adminHierarchy = null, $itemAuthorityLinks = null) {
+	public function getRefineSearch($request, $adminHierarchy = null, $itemAuthorityLinks = null) {
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
 		$Authority = ClassRegistry::init('Authority');
-
-		list($baseMinHierarchy, $baseMaxHierarchy) = $Authority->getHierarchyByUserAuthorityId($userAuthorityId);
+		$loginHierarchy = $loginUser['hierarchy'];
 
 		$conditions = array();
 		$joins = array();
@@ -828,13 +817,15 @@ class User extends AppModel
 		$joinsCount = 0;
 		if(isset($request->data['User']) || isset($request->data['UserItemLink'])) {
 			if($adminHierarchy < NC_AUTH_MIN_CHIEF && !isset($itemAuthorityLinks)) {
-				// 会員管理が編集不可能(会員管理が編集可能ならば、すべてから検索可能, 会員管理が編集可能ならば、public_flagはみない。)
+				// 会員管理が編集不可能(会員管理が編集可能ならば、すべてから検索可能)
 				$ItemAuthorityLink = ClassRegistry::init('ItemAuthorityLink');
-				$params = array(
-					'conditions' => array('user_authority_id' => $userAuthorityId)
-				);
-				$rets = $ItemAuthorityLink->findList('all' , $params);
-				$itemAuthorityLinks = $rets[$userAuthorityId];
+				$itemAuthorityLinks = $ItemAuthorityLink->findList();
+
+				$authorities = $Authority->find('list', array('fields' => array('id', 'hierarchy')));
+				$bufAuthorities = array();
+				foreach($authorities as $key => $hierarchy) {
+					$bufAuthorities[$Authority->getUserAuthorityId($hierarchy)][] = $key;
+				}
 			}
 
 			$Item = ClassRegistry::init('Item');
@@ -979,11 +970,6 @@ class User extends AppModel
 						continue;
 					}
 					$itemId = $itemsTags[$dataKey];
-					if(isset($itemAuthorityLinks['self'][$itemId]) &&
-						$itemAuthorityLinks['self'][$itemId] == NC_POLICY_PUBLIC_NONE) {
-						// 自分自身が非公開のものは検索させない。
-						continue;
-					}
 					if(!isset($items[$itemId]) || $items[$itemId] == '' || $value == '') {
 						continue;
 					}
@@ -1011,61 +997,23 @@ class User extends AppModel
 							$conditions['User.'.$key.' LIKE'] = '%'.$value.'%';
 						}
 					}
-
-					if(isset($itemAuthorityLinks['higher'][$itemId]) &&
-					$itemAuthorityLinks['higher'][$itemId] == NC_POLICY_PUBLIC_NONE) {
-						// 自分以上の権限が、非公開であれば、自分の権限以下で検索(自分自身は関係なし)
-						$conditions['OR']['Authority.hierarchy <'] = $baseMinHierarchy;
+					if(isset($itemAuthorityLinks) && count($itemAuthorityLinks) > 0) {
+						$showUserAuthorityIds = array();
+						foreach($itemAuthorityLinks as $userAuthorityId => $itemAuthorityLink) {
+							$showLowerHierarchy = $itemAuthorityLink[$itemId]['show_lower_hierarchy'];
+							if($loginHierarchy >= $showLowerHierarchy) {
+								// 閲覧可
+								$showUserAuthorityIds[] = $userAuthorityId;
+							}
+						}
+						foreach($showUserAuthorityIds as $showUserAuthorityId) {
+							if(isset($conditions['OR']['Authority.id'])) {
+								$conditions['OR']['Authority.id'] = array_merge($conditions['OR']['Authority.id'], $bufAuthorities[$showUserAuthorityId]);
+							} else {
+								$conditions['OR']['Authority.id'] = $bufAuthorities[$showUserAuthorityId];
+							}
+						}
 						$conditions['OR']['User.id'] = $loginUser['id'];
-					}
-
-					if(isset($itemAuthorityLinks['lower'][$itemId]) &&
-					$itemAuthorityLinks['lower'][$itemId] == NC_POLICY_PUBLIC_NONE) {
-						// 自分より低い権限が、非公開であれば、自分の権限以上で検索
-						$conditions['Authority.hierarchy >='] = $baseMinHierarchy;
-
-					}
-
-					$higher = false;
-					if(isset($itemAuthorityLinks['higher'][$itemId]) &&
-					$itemAuthorityLinks['higher'][$itemId] != NC_POLICY_PUBLIC_EDIT &&
-					$itemsAllowPublicFlags[$itemId]) {
-						// 自分以上の権限が、編集可であれば、public_flagはみない。(自分自身は関係なし)
-						$higher = true;
-					}
-					$lower = false;
-					if(isset($itemAuthorityLinks['lower'][$itemId]) &&
-					$itemAuthorityLinks['lower'][$itemId] != NC_POLICY_PUBLIC_EDIT &&
-					$itemsAllowPublicFlags[$itemId]) {
-						// 自分より低い権限が、編集可であれば、public_flagはみない。
-						$lower = true;
-					}
-
-					if($higher || $lower) {
-						$alias = "UserItemLink_".$itemId;
-						$joins[$joinsCount] = array(
-							"type" => "INNER",
-							"table" => "user_item_links",
-							"alias" => $alias,
-							"conditions" => array(
-								$alias.".user_id = User.id",
-								$alias.".item_id" => $itemId,
-								'OR' => array(
-									$alias.".public_flag" => _ON,
-									'User.id' => $loginUser['id']
-								)
-							)
-						);
-
-						if($higher && !$lower) {
-							$joins[$joinsCount]["conditions"]["OR"]['Authority.hierarchy <'] = $baseMinHierarchy;
-						}
-
-						if(!$higher && $lower) {
-							$joins[$joinsCount]["conditions"]["OR"]['Authority.hierarchy >='] = $baseMinHierarchy;
-						}
-
-						$joinsCount++;
 					}
 				}
 			}
@@ -1073,27 +1021,27 @@ class User extends AppModel
 			if(isset($request->data['UserItemLink'])) {
 				foreach($request->data['UserItemLink'] as $itemId => $valueArr) {
 					$value = $valueArr['content'];
-					if(isset($itemAuthorityLinks['self'][$itemId]) &&
-						$itemAuthorityLinks['self'][$itemId] == NC_POLICY_PUBLIC_NONE) {
-						// 自分自身が非公開のものは検索させない。
-						continue;
-					}
-					if(!isset($items[$itemId]) || $items[$itemId] != '' || $value == '') {
+					if(!isset($items[$itemId]) || ($items[$itemId] != '' && $items[$itemId] != 'username') || $value == '') {
 						continue;
 					}
 
-					if(isset($itemAuthorityLinks['higher'][$itemId]) &&
-						$itemAuthorityLinks['higher'][$itemId] == NC_POLICY_PUBLIC_NONE) {
-						// 自分以上の権限が、非公開であれば、自分の権限以下で検索(自分自身は関係なし)
-						$conditions['OR']['Authority.hierarchy <'] = $baseMinHierarchy;
+					if(isset($itemAuthorityLinks) && count($itemAuthorityLinks) > 0) {
+						$showUserAuthorityIds = array();
+						foreach($itemAuthorityLinks as $userAuthorityId => $itemAuthorityLink) {
+							$showLowerHierarchy = $itemAuthorityLink[$itemId]['show_lower_hierarchy'];
+							if($loginHierarchy >= $showLowerHierarchy) {
+								// 閲覧可
+								$showUserAuthorityIds[] = $userAuthorityId;
+							}
+						}
+						foreach($showUserAuthorityIds as $showUserAuthorityId) {
+							if(isset($conditions['OR']['Authority.id'])) {
+								$conditions['OR']['Authority.id'] = array_merge($conditions['OR']['Authority.id'], $bufAuthorities[$showUserAuthorityId]);
+							} else {
+								$conditions['OR']['Authority.id'] = $bufAuthorities[$showUserAuthorityId];
+							}
+						}
 						$conditions['OR']['User.id'] = $loginUser['id'];
-					}
-
-					if(isset($itemAuthorityLinks['lower'][$itemId]) &&
-						$itemAuthorityLinks['lower'][$itemId] == NC_POLICY_PUBLIC_NONE) {
-						// 自分より低い権限が、非公開であれば、自分の権限以上で検索
-						$conditions['Authority.hierarchy >='] = $baseMinHierarchy;
-
 					}
 
 					if(is_array($value) || $value != '') {
@@ -1135,35 +1083,6 @@ class User extends AppModel
 								)
 							);
 						}
-
-						$higher = false;
-						if(isset($itemAuthorityLinks['higher'][$itemId]) &&
-						$itemAuthorityLinks['higher'][$itemId] != NC_POLICY_PUBLIC_EDIT &&
-						$itemsAllowPublicFlags[$itemId]) {
-							// 自分以上の権限が、編集可であれば、public_flagはみない。(自分自身は関係なし)
-							$higher = true;
-						}
-						$lower = false;
-						if(isset($itemAuthorityLinks['lower'][$itemId]) &&
-							$itemAuthorityLinks['lower'][$itemId] != NC_POLICY_PUBLIC_EDIT &&
-							$itemsAllowPublicFlags[$itemId]) {
-							// 自分より低い権限が、編集可であれば、public_flagはみない。
-							$lower = true;
-						}
-
-						if($higher || $lower) {
-							$joins[$joinsCount]["conditions"]["OR"][$alias.".public_flag"] = _ON;
-							$joins[$joinsCount]["conditions"]["OR"]['User.id'] = $loginUser['id'];
-
-							if($higher && !$lower) {
-								$joins[$joinsCount]["conditions"]["OR"]['Authority.hierarchy <'] = $baseMinHierarchy;
-							}
-
-							if(!$higher && $lower) {
-								$joins[$joinsCount]["conditions"]["OR"]['Authority.hierarchy >='] = $baseMinHierarchy;
-							}
-						}
-						$joinsCount++;
 					}
 				}
 			}

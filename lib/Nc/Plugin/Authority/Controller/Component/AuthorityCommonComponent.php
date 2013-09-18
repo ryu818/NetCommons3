@@ -269,8 +269,13 @@ class AuthorityCommonComponent extends Component {
 				}
 				break;
 			case NC_AUTH_CHIEF_ID:
-				$defDefaultName = AUTHORITY_SYSTEM_MODULES_CHIEF_DEFAULT;
-				$defEnabledName = AUTHORITY_SYSTEM_MODULES_CHIEF_ENABLED;
+				if($id == NC_AUTH_CLERK_ID) {
+					$defDefaultName = AUTHORITY_SYSTEM_MODULES_CLERK_DEFAULT;
+					$defEnabledName = AUTHORITY_SYSTEM_MODULES_CLERK_ENABLED;
+				} else {
+					$defDefaultName = AUTHORITY_SYSTEM_MODULES_CHIEF_DEFAULT;
+					$defEnabledName = AUTHORITY_SYSTEM_MODULES_CHIEF_ENABLED;
+				}
 				break;
 			case NC_AUTH_MODERATE_ID:
 				$defDefaultName = AUTHORITY_SYSTEM_MODULES_MODERATE_DEFAULT;

@@ -88,7 +88,7 @@
 											if($community_params['community']['Community']['participate_flag'] == NC_PARTICIPATE_FLAG_ONLY_USER) {
 												$disable = true;
 											}
-											echo $this->Form->authoritySlider('Community.invite_hierarchy', array('id' => "pages-menu-community-invite-authority-".$page['Page']['id'].'-' ,'disable' => $disable, 'value' => $community_params['community']['Community']['invite_hierarchy']));
+											echo $this->Form->authoritySlider('Community.invite_hierarchy', array('id' => "pages-menu-community-invite-authority-".$page['Page']['id'].'-' , 'value' => $community_params['community']['Community']['invite_hierarchy']),  array('disabled' => true));
 										?>
 									</div>
 								</div>
