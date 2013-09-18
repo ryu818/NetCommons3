@@ -54,6 +54,15 @@ ul.authority-edit-desc li.authority-highlight {
 }
 
 /* 詳細設定 */
+.authority-detail ul.authority-note-lists li dl dt {
+	width: 40%;
+	padding: 2px 0 2px 2px;
+	font-weight:bold;
+}
+.authority-detail ul.authority-note-lists li dl dd {
+	width: 55%;
+	padding: 2px;
+}
 .authority-detail ul li dl dt {
 	width: 250px;
 	padding: 5px;

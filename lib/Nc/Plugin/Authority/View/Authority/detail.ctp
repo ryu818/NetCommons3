@@ -118,9 +118,9 @@
 						$options = array(
 							NC_ALLOW_CREATING_COMMUNITY_OFF => __d('authority', 'Community can not create.'),
 							NC_ALLOW_CREATING_COMMUNITY_ONLY_USER => __d('authority', 'Allow to create normal community.'),
-							NC_ALLOW_CREATING_COMMUNITY_ALL_USER => __d('authority', 'Allow to create partial public community(Login members of all the viewable).'),
-							NC_ALLOW_CREATING_COMMUNITY_ALL => __d('authority', 'Allow to create public community(users of all the viewable).'),
-							NC_ALLOW_CREATING_COMMUNITY_ADMIN => __d('authority', 'Allow to create public community, display order change of community of all, delete is possible.'),
+							NC_ALLOW_CREATING_COMMUNITY_ALL_USER => __d('authority', 'Allow to create partial public community.'),
+							NC_ALLOW_CREATING_COMMUNITY_ALL => __d('authority', 'Allow to create public community.'),
+							NC_ALLOW_CREATING_COMMUNITY_ADMIN => __d('authority', 'Allow to create all communities, display order change, or delete.'),
 						);
 						$settings = array(
 							'type' => 'select',
@@ -134,8 +134,41 @@
 						echo $this->Form->input('Authority.'.$columnName, $settings);
 					?>
 					<div class="note">
+						<ul class="lists authority-note-lists">
+							<li>
+								<dl>
+									<dt>
+										<?php echo __d('authority', 'Normal community'); ?>
+									</dt>
+									<dd>
+										:<?php echo __d('authority', 'Users of all the viewable.'); ?>
+									</dd>
+								</dl>
+							</li>
+							<li>
+								<dl>
+									<dt>
+										<?php echo __d('authority', 'Partial public community'); ?>
+									</dt>
+									<dd>
+										:<?php echo __d('authority', 'Login members of all the viewable.'); ?>
+									</dd>
+								</dl>
+							</li>
+							<li>
+								<dl>
+									<dt>
+										<?php echo __d('authority', 'Public community'); ?>
+									</dt>
+									<dd>
+										:<?php echo __d('authority', 'Only as the participant the viewable.'); ?>
+									</dd>
+								</dl>
+							</li>
+						</ul>
 						<?php echo __d('authority', 'The default authority of the public community can be set from system management.'); ?>
 					</div>
+				
 					<?php
 						$columnName = 'allow_new_participant';
 						$settings = array(
