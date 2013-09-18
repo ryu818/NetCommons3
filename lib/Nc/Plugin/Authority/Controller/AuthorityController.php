@@ -102,10 +102,10 @@ class AuthorityController extends AuthorityAppController {
 				$this->flash(__('Unauthorized request.<br />Please reload the page.'), '');
 				return;
 			}
-			if(isset($authority['AuthorityLang']['authority_name'])) {
-				$authority['Authority']['default_authority_name'] = $authority['AuthorityLang']['authority_name'];
+			if(isset($authority['AuthorityLang']['name'])) {
+				$authority['Authority']['default_name'] = $authority['AuthorityLang']['name'];
 			} else {
-				$authority['Authority']['default_authority_name'] = $authority['Authority']['default_authority_name'];
+				$authority['Authority']['default_name'] = $authority['Authority']['default_name'];
 			}
 		} else {
 			$authority = $this->Authority->findDefault();
@@ -122,9 +122,9 @@ class AuthorityController extends AuthorityAppController {
 				}
 
 			}
-			$authority['Authority']['default_authority_name'] = $this->request->data['Authority']['default_authority_name'];
+			$authority['Authority']['default_name'] = $this->request->data['Authority']['default_name'];
 			$this->Authority->set($authority);
-			if($this->Authority->validates(array('fieldList' => array('default_authority_name', 'hierarchy')))) {
+			if($this->Authority->validates(array('fieldList' => array('default_name', 'hierarchy')))) {
 				// TODO:同じControllerにsubmitし、権限名称のエラーチェックを行う。
 				// その際、redirectしてしまうとPOSTの値を保持できないため、set_levelをrenderすることで実装。
 				// requestActionでも同様の処理は可能。
@@ -252,10 +252,10 @@ class AuthorityController extends AuthorityAppController {
 			if(!$created) {
 				$preAuthority = $this->Authority->findById($authorityId);
 			}
-			// 新規追加か、langがenならば、default_authority_nameを更新。
-			$authorityName = $authority['Authority']['default_authority_name'];
+			// 新規追加か、langがenならば、default_nameを更新。
+			$authorityName = $authority['Authority']['default_name'];
 			if(!empty($authority['Authority']['id']) && $lang != 'en') {
-				$authority['Authority']['default_authority_name'] = $preAuthority['Authority']['default_authority_name'];
+				$authority['Authority']['default_name'] = $preAuthority['Authority']['default_name'];
 			}
 			unset($authority['Authority']['base_authority_id']);
 
@@ -278,7 +278,7 @@ class AuthorityController extends AuthorityAppController {
 			$authorityLang = $this->AuthorityLang->find('first', $params);
 			$authorityLang['AuthorityLang']['authority_id'] = $authorityId;
 			$authorityLang['AuthorityLang']['lang'] = $lang;
-			$authorityLang['AuthorityLang']['authority_name'] = $authorityName;
+			$authorityLang['AuthorityLang']['name'] = $authorityName;
 
 			if(!$this->AuthorityLang->save($authorityLang)) {
 				throw new InternalErrorException(__('Failed to register the database, (%s).', 'authority_langs'));

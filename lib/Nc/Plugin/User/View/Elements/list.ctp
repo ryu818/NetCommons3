@@ -35,12 +35,12 @@
 <script>
 $(function(){
 	$('#user-init-tab').User('<?php echo($id);?>',[
-		'<?php echo __d('user_items', $items[NC_ITEM_ID_HANDLE]);?>'
-		,'<?php echo __d('user_items', $items[NC_ITEM_ID_USERNAME]);?>'
-		,'<?php echo __d('user_items', $items[NC_ITEM_ID_AUTHORITY_ID]);?>'
-		,'<?php echo __d('user_items', $items[NC_ITEM_ID_IS_ACTIVE]);?>'
-		,'<?php echo __d('user_items', $items[NC_ITEM_ID_CREATED]);?>'
-		,'<?php echo __d('user_items', $items[NC_ITEM_ID_LAST_LOGIN]);?>'
+		'<?php echo $this->Js->escape($items[NC_ITEM_ID_HANDLE]);?>'
+		,'<?php echo $this->Js->escape($items[NC_ITEM_ID_USERNAME]);?>'
+		,'<?php echo $this->Js->escape($items[NC_ITEM_ID_AUTHORITY_ID]);?>'
+		,'<?php echo $this->Js->escape($items[NC_ITEM_ID_IS_ACTIVE]);?>'
+		,'<?php echo $this->Js->escape($items[NC_ITEM_ID_CREATED]);?>'
+		,'<?php echo $this->Js->escape($items[NC_ITEM_ID_LAST_LOGIN]);?>'
 		<?php if ($hierarchy >= NC_AUTH_MIN_CHIEF): ?>
 		,'<?php echo __('Manage');?>'
 		,'<input type="button" onclick="$.Common.allChecked(this, $(\'input:checkbox\',\'#user-list\')); return false;" value="<?php echo __('Select All'); ?>" data-switch-value="<?php echo __('Release All'); ?>" />'

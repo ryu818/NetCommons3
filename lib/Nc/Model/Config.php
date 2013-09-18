@@ -101,8 +101,17 @@ class Config extends AppModel
 	public function afterFindOptions($results) {
 		foreach($results as $key => $result) {
 			if(isset($result['options']) && isset($result['domain'])) {
-				$domain = ($result['name'] == 'default_TZ') ? 'user_items' : $result['domain'];
-				$results[$key]['options'] = $this->convertOptions($result['options'], $domain);
+				if($result['name'] == 'default_TZ') {
+					$Item = ClassRegistry::init('Item');
+					$item = $Item->findList('first', array('Item.id' => NC_ITEM_ID_TIMEZONE_OFFSET));
+					if(!isset($item['ItemLang']['options'])) {
+						$item['ItemLang']['options'] = $item['Item']['default_options'];
+					}
+					$results[$key]['options'] = !empty($item['ItemLang']['options']) ? unserialize($item['ItemLang']['options']) : array();
+				} else {
+					$domain = $result['domain'];
+					$results[$key]['options'] = $this->convertOptions($result['options'], $domain);
+				}
 			}
 			if(isset($result['attribute'])) {
 				$results[$key]['attribute'] = $this->convertAttribute($result['attribute']);

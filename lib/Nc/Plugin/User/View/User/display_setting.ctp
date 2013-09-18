@@ -68,11 +68,10 @@
 									<?php endif; ?>
 									<h4>
 										<?php
-											if($item['ItemLang']['lang'] == '') {
-												echo(__d('user_items',$item['ItemLang']['name']));
-											} else {
-												echo($item['ItemLang']['name']);
+											if(!isset($item['ItemLang']['name'])) {
+												$item['ItemLang']['name'] = $item['Item']['default_name'];
 											}
+											echo($item['ItemLang']['name']);
 										 ?>
 									</h4>
 									<a class="nc-widget-area-title-arrow"><span class="nc-arrow"></span></a>

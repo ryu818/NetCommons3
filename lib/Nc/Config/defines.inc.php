@@ -248,7 +248,7 @@ define('NC_ITEM_ID_USERNAME',			3);
 define('NC_ITEM_ID_HANDLE',				4);
 define('NC_ITEM_ID_EMAIL',				5);
 define('NC_ITEM_ID_MOBILE_EMAIL',		6);
-define('NC_ITEM_ID_TIMEZONE_OFFSET	',	7);
+define('NC_ITEM_ID_TIMEZONE_OFFSET',	7);
 define('NC_ITEM_ID_LANG',				8);
 define('NC_ITEM_ID_AUTHORITY_ID',		9);
 define('NC_ITEM_ID_IS_ACTIVE',			10);

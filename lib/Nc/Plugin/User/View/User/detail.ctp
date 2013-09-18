@@ -22,12 +22,12 @@
 
 		$ret['rows'][$key]['cell'][] = $label.h($user['User']['handle']).$labelEnd;
 		$ret['rows'][$key]['cell'][] = $label.h($user['UserItemLinkUsername']['content']).$labelEnd;
-		if(isset($user['AuthorityLang']['authority_name'])) {
-			$authority_name = h($user['AuthorityLang']['authority_name']);
+		if(isset($user['AuthorityLang']['name'])) {
+			$name = h($user['AuthorityLang']['name']);
 		} else {
-			$authority_name = h($user['Authority']['default_authority_name']);
+			$name = h($user['Authority']['default_name']);
 		}
-		$ret['rows'][$key]['cell'][] = $label.$authority_name.$labelEnd;
+		$ret['rows'][$key]['cell'][] = $label.$name.$labelEnd;
 		if($user['User']['is_active'] === '') {
 			$isActive = '';
 		} else if($user['User']['is_active']) {

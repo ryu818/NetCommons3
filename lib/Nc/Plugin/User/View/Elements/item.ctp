@@ -32,8 +32,8 @@ if($item['Item']['allow_email_reception_flag']) {
 		$emailReceptionFlag = _ON;
 	}
 }
-if($item['ItemLang']['lang'] == '') {
-	$item['ItemLang']['name'] = __d('user_items', $item['ItemLang']['name']);
+if(!isset($item['ItemLang']['name'])) {
+	$item['ItemLang']['name'] = $item['Item']['default_name'];
 }
 $attribute = array();
 if(!empty($item['Item']['attribute'])) {
@@ -53,15 +53,15 @@ if($item['Item']['type'] == 'checkbox' || $item['Item']['type'] == 'radio' || $i
 	} else if($item['Item']['tag_name'] == 'authority_id') {
 		$options = $authorities;
 	} else {
+		if(!isset($item['ItemLang']['options'])) {
+			$item['ItemLang']['options'] = $item['Item']['default_options'];
+		}
 		$options = !empty($item['ItemLang']['options']) ? unserialize($item['ItemLang']['options']) : array();
 	}
 
-	if($item['ItemLang']['lang'] == '') {
+	if($item['Item']['tag_name'] != 'authority_id') {
 		foreach($options as $key => $option) {
-			if($item['Item']['tag_name'] == 'authority_id') {
-				continue;
-			}
-			$options[$key] = ($item['Item']['tag_name'] == 'lang') ? __($option) : __d('user_items', $option);
+			$options[$key] = ($item['Item']['tag_name'] == 'lang') ? __($option) : $option;
 		}
 	}
 
@@ -221,7 +221,7 @@ if(!$isEdit && ($item['Item']['type'] == 'file' || $item['Item']['tag_name'] == 
 				}
 			} else if($item['Item']['type'] == 'file') {
 				echo '<div class="user-avatar-outer">'
-						.$this->element('avatar', array('name'=>$name,'avatar'=>$value))
+						.$this->element('avatar', array('name'=>$name,'avatar'=>$value, 'item' => $item))
 					.'</div>';
 				echo $this->Form->hidden($name , array(
 					'value' => $value
@@ -299,8 +299,8 @@ if(!$isEdit && ($item['Item']['type'] == 'file' || $item['Item']['tag_name'] == 
 			}
 			if($isEdit) {
 				if($item['ItemLang']['description'] != '' && $item['ItemLang']['description'] != null) {
-					if($item['ItemLang']['lang'] == '') {
-						$description = __d('user_items', $item['ItemLang']['description']);
+					if(!isset($item['ItemLang']['description'])) {
+						$description = $item['Item']['default_description'];
 					} else {
 						$description = $item['ItemLang']['description'];
 					}

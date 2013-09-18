@@ -92,8 +92,8 @@ class UserItemLink extends AppModel
 			}
 		}
 
-		if($item['ItemLang']['lang'] == '') {
-			$name = __d('user_items', $item['ItemLang']['name']);
+		if(!isset($item['ItemLang']['name'])) {
+			$name = $item['Item']['default_name'];
 		} else {
 			$name = $item['ItemLang']['name'];
 		}

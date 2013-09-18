@@ -87,8 +87,8 @@
 								<dl>
 									<dt>
 										<?php
-											if($item['ItemLang']['lang'] == '') {
-												$item['ItemLang']['name'] = __d('user_items', $item['ItemLang']['name']);
+											if(!isset($item['ItemLang']['name'])) {
+												$item['ItemLang']['name'] = $item['Item']['default_name'];
 											}
 											if($item['Item']['tag_name'] != '' && $item['Item']['tag_name'] != 'username') {
 												$name = 'User.'.$item['Item']['tag_name'];

@@ -17,7 +17,7 @@ class Authority extends AppModel
 
 		//エラーメッセージ取得
 		$this->validate = array(
-			'default_authority_name' => array(
+			'default_name' => array(
 				'notEmpty'  => array(
 					'rule' => array('notEmpty'),
 					'last' => true,
@@ -290,8 +290,8 @@ class Authority extends AppModel
 
 		$conditions = array(
 			'or' => array(
-				'Authority.default_authority_name' => $data['default_authority_name'],
-				'AuthorityLang.authority_name' => $data['default_authority_name'],
+				'Authority.default_name' => $data['default_name'],
+				'AuthorityLang.name' => $data['default_name'],
 			),
 		);
 		if(!empty($this->data['Authority']['id']))
@@ -299,8 +299,8 @@ class Authority extends AppModel
 		$params = array(
 			'fields' => array(
 				'Authority.id',
-				'Authority.default_authority_name',
-				'AuthorityLang.authority_name'
+				'Authority.default_name',
+				'AuthorityLang.name'
 			),
 			'conditions' => $conditions,
 			'joins' => array(
@@ -322,11 +322,11 @@ class Authority extends AppModel
 		}
 
 		foreach($authorities as $authority) {
-			if(isset($authority['AuthorityLang']['authority_name'])) {
-				if($authority['AuthorityLang']['authority_name'] == $data['default_authority_name']) {
+			if(isset($authority['AuthorityLang']['name'])) {
+				if($authority['AuthorityLang']['name'] == $data['default_name']) {
 					return false;
 				}
-			} else if($authority['Authority']['default_authority_name'] == $data['default_authority_name']) {
+			} else if($authority['Authority']['default_name'] == $data['default_name']) {
 				return false;
 			}
 		}
@@ -346,7 +346,7 @@ class Authority extends AppModel
 			return array(
 				'Authority' => array(
 					'id' => 0,
-					'default_authority_name' => '',
+					'default_name' => '',
 					'system_flag' => _OFF,
 					'hierarchy' => $hierarchyArr[0],
 			));
@@ -390,7 +390,7 @@ class Authority extends AppModel
 		$ret = array(
 			'Authority' => array(
 				'id' => 0,
-				'default_authority_name' => '',
+				'default_name' => '',
 				'system_flag' => _OFF,
 				'hierarchy' => $hierarchy,
 				'allow_creating_community' => $allowCreatingCommunityArr[$index],
@@ -430,7 +430,7 @@ class Authority extends AppModel
  * @since  v 3.0.0.0
  */
 	public function findList($type = 'first', $query = array()) {
-		$query['fields'] = 'Authority.*, AuthorityLang.authority_name';
+		$query['fields'] = 'Authority.*, AuthorityLang.name';
 		$query['joins'] = $this->getJoinsArray();
 		$query['order'] = array(
 			'Authority.hierarchy' => "DESC",
@@ -458,8 +458,8 @@ class Authority extends AppModel
 		$params = array(
 			'fields' => array(
 				'Authority.id',
-				'Authority.default_authority_name',
-				'AuthorityLang.authority_name',
+				'Authority.default_name',
+				'AuthorityLang.name',
 				'Authority.hierarchy'
 			),
 			'conditions' => $conditions,
@@ -480,10 +480,10 @@ class Authority extends AppModel
 
 		foreach ($results as $key => $val) {
 			$hierarchy = $val['Authority']['hierarchy'];
-			if(isset($val['AuthorityLang']['authority_name'])) {
-				$val['Authority']['authority_name'] = $val['AuthorityLang']['authority_name'];
+			if(isset($val['AuthorityLang']['name'])) {
+				$val['Authority']['name'] = $val['AuthorityLang']['name'];
 			} else {
-				$val['Authority']['authority_name'] = $val['Authority']['default_authority_name'];
+				$val['Authority']['name'] = $val['Authority']['default_name'];
 			}
 			if($hierarchy >= NC_AUTH_MIN_ADMIN) {
 				continue;
@@ -504,7 +504,7 @@ class Authority extends AppModel
 		$rets[NC_AUTH_GENERAL] = $select_general_arr;
 		$rets[NC_AUTH_GUEST] = $select_guest_arr;
 		$rets[NC_AUTH_OTHER][NC_AUTH_OTHER_ID]['id'] = NC_AUTH_OTHER_ID;
-		$rets[NC_AUTH_OTHER][NC_AUTH_OTHER_ID]['authority_name'] = __('Non members');
+		$rets[NC_AUTH_OTHER][NC_AUTH_OTHER_ID]['name'] = __('Non members');
 		$rets[NC_AUTH_OTHER][NC_AUTH_OTHER_ID]['hierarchy'] = NC_AUTH_OTHER;
 		return $rets;
 	}
@@ -550,16 +550,16 @@ class Authority extends AppModel
  */
 	public function findSelectList() {
 		$results = $this->find('all', array(
-			'fields' => array('Authority.id', 'Authority.default_authority_name', 'AuthorityLang.authority_name'),
+			'fields' => array('Authority.id', 'Authority.default_name', 'AuthorityLang.name'),
 			'joins' => $this->getJoinsArray(),
 			'order' => array('Authority.hierarchy' => 'DESC', 'Authority.id' => 'DESC'),
 		));
 		$ret = array();
 		foreach($results as $result) {
-			if(isset($result['AuthorityLang']['authority_name'])) {
-				$authorityName = $result['AuthorityLang']['authority_name'];
+			if(isset($result['AuthorityLang']['name'])) {
+				$authorityName = $result['AuthorityLang']['name'];
 			} else {
-				$authorityName = $result['Authority']['default_authority_name'];
+				$authorityName = $result['Authority']['default_name'];
 			}
 			$ret[$result['Authority']['id']] = $authorityName;
 		}

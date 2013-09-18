@@ -24,7 +24,7 @@
 		} else {
 			$title = __d('authority', 'Edit authority');
 		}
-		$title .= ' ['.$authority['Authority']['default_authority_name'].']';
+		$title .= ' ['.$authority['Authority']['default_name'].']';
 		$backUrl = array('action' => 'detail', $authorityId);
 		$backAttr = array('data-ajax' => '#authority-list', 'data-ajax-type' => 'post', 'data-ajax-serialize' => true);
 	?>

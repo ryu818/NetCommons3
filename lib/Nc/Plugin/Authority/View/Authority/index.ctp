@@ -42,10 +42,10 @@
 			<tr>
 				<td>
 					<?php
-					if(isset($authority['AuthorityLang']['authority_name'])) {
-						$authorityName = $authority['AuthorityLang']['authority_name'];
+					if(isset($authority['AuthorityLang']['name'])) {
+						$authorityName = $authority['AuthorityLang']['name'];
 					} else {
-						$authorityName = $authority['Authority']['default_authority_name'];
+						$authorityName = $authority['Authority']['default_name'];
 					}
 					echo h($authorityName);
 					?>

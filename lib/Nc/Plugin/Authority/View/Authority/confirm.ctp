@@ -29,7 +29,7 @@
 		} else {
 			$backAction = 'detail';
 		}
-		$title .= ' ['.$authority['Authority']['default_authority_name'].']';
+		$title .= ' ['.$authority['Authority']['default_name'].']';
 		$backUrl = array('action' => $backAction, $authorityId);
 		$backAttr = array('data-ajax' => '#authority-list', 'data-ajax-type' => 'post', 'data-ajax-serialize' => true);
 	?>
@@ -75,7 +75,7 @@
 				</dt>
 				<dd>
 					<?php
-						echo h($this->request->data['Authority']['default_authority_name']);
+						echo h($this->request->data['Authority']['default_name']);
 					?>
 				</dd>
 			</dl>

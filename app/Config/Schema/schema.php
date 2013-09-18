@@ -54,7 +54,7 @@ class AppSchema extends CakeSchema {
 
 	public $authorities = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
-		'default_authority_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 64, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'default_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 64, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'system_flag' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'hierarchy' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'allow_creating_community' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3),
@@ -96,7 +96,7 @@ class AppSchema extends CakeSchema {
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'authority_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'key' => 'index'),
 		'lang' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 10, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'authority_name' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'name' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'created_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
 		'created_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
@@ -366,6 +366,9 @@ class AppSchema extends CakeSchema {
 
 	public $items = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
+		'default_name' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'default_description' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'default_options' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'type' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 20, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'tag_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'is_system' => array('type' => 'boolean', 'null' => false, 'default' => '0'),

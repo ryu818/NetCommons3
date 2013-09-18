@@ -1,8 +1,8 @@
 <?php
-if(empty($auth[$authority_id]['authority_name'])) {
-	$authorityName = $auth[$def_authority_id]['authority_name'];
+if(empty($auth[$authority_id]['name'])) {
+	$authorityName = $auth[$def_authority_id]['name'];
 } else {
-	$authorityName = $auth[$authority_id]['authority_name'];
+	$authorityName = $auth[$authority_id]['name'];
 }
 
 if(!empty($auth[$authority_id])) {
@@ -30,7 +30,7 @@ if(count($auth) == 1 || $selauth == false) {
 			} else {
 				$selected = "";
 			}
-			$selectAfterHtml .= "<option value=\"".$data['id']."\"".$selected.">".h($data['authority_name'])."</option>";
+			$selectAfterHtml .= "<option value=\"".$data['id']."\"".$selected.">".h($data['name'])."</option>";
 		}
 	$selectAfterHtml .= "</select>";
 }

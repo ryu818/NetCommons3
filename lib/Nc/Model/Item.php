@@ -25,6 +25,21 @@ class Item extends AppModel
 		 * エラーメッセージ設定
 		 */
 		$this->validate = array(
+			'default_name' => array(
+				'notEmpty'  => array(
+					'rule' => array('notEmpty'),
+					'last' => true,
+					'required' => true,
+					'allowEmpty' => false,
+					'message' => __('Please be sure to input.')
+				),
+				'maxLength'  => array(
+					'rule' => array('maxLength', 30),
+					'message' => __('The input must be up to %s characters.', 30)
+				),
+			),
+			// default_description
+			// default_options
 			'type' => array(
 				'inList' => array(
 					'rule' => array('inList', array(
@@ -222,6 +237,9 @@ class Item extends AppModel
 		$ret = array(
 			'Item' => array(
 				'id' => 0,
+				'default_name' => '',
+				'default_description' => '',
+				'default_options' => '',
 				'type' => 'text',
 				'tag_name' => '',
 				'is_system' => _OFF,
@@ -271,7 +289,7 @@ class Item extends AppModel
 		if(count($fields) == 0) {
 			$fields = array(
 				'Item.*',
-				'ItemLang.name', 'ItemLang.description', 'ItemLang.options', 'ItemLang.lang'
+				'ItemLang.name', 'ItemLang.description', 'ItemLang.options'
 			);
 		}
 
@@ -283,7 +301,7 @@ class Item extends AppModel
 					"alias" => "ItemLang",
 					"conditions" => array(
 						"`ItemLang`.`item_id`=`Item`.`id`",
-						"`ItemLang`.`lang`" => array("", $lang)
+						"`ItemLang`.`lang`" => $lang
 					)
 				),
 			),

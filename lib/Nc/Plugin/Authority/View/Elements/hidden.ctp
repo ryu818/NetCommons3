@@ -6,7 +6,7 @@ $fieldsList = array(
 
 );
 if($this->action != 'edit' || (isset($action) && $action == 'set_level')) {
-	$fieldsList[] = 'default_authority_name';
+	$fieldsList[] = 'default_name';
 }
 $detailColumns = array(
 	'allow_creating_community',

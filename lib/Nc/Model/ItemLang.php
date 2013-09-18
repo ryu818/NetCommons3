@@ -10,4 +10,5 @@
  */
 class ItemLang extends AppModel
 {
+	// TODO: バリデート処理未作成
 }

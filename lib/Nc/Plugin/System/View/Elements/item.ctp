@@ -148,8 +148,11 @@
 						if ($useItem['Item']['autoregist_use'] == 'hide') {
 							$hideClass .= ' system-autoregist-item-hide none';
 						}
+						if(!isset($useItem['ItemLang']['name'])) {
+							$useItem['ItemLang']['name'] = $useItem['Item']['default_name'];
+						}
 						echo '<li class="system-autoregist-use-items'.$hideClass.'"><dl>'
-								.'<dt><span>'.__d('user_items', $useItem['ItemLang']['name']).'</span></dt>'
+								.'<dt><span>'.h($useItem['ItemLang']['name']).'</span></dt>'
 								.'<dd>'
 									.'<span>'.$this->Form->input('Item.'.$useItem['Item']['id'].'.autoregist_use', $autoregist_use_settings).'</span>'
 									.'<span>'.$this->Form->input('Item.'.$useItem['Item']['id'].'.autoregist_sendmail', $autoregist_sendmail_settings).'</span>'

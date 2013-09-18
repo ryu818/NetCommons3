@@ -17,7 +17,7 @@ class AuthorityLang extends AppModel
 
 		//エラーメッセージ取得
 		$this->validate = array(
-			'authority_name' => array(
+			'name' => array(
 				'notEmpty'  => array(
 					'rule' => array('notEmpty'),
 					'last' => true,

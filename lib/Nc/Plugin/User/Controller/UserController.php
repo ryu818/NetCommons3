@@ -145,7 +145,7 @@ class UserController extends UserAppController {
 		$activeLang = $this->_setLanguage();
 
 		$fields = array(
-			'User.*, UserItemLinkUsername.content, Authority.default_authority_name, AuthorityLang.authority_name, Authority.hierarchy, Authority.system_flag'
+			'User.*, UserItemLinkUsername.content, Authority.default_name, AuthorityLang.name, Authority.hierarchy, Authority.system_flag'
 		);
 		list($conditions, $joins) = $this->User->getRefineSearch($this->request, $this->hierarchy);
 		$joins[] = 	array("table" => "authorities",
@@ -221,7 +221,7 @@ class UserController extends UserAppController {
 							if($itemId == NC_ITEM_ID_USERNAME) {
 								$users[$key]['UserItemLinkUsername']['content'] = '';
 							} else if($itemId == NC_ITEM_ID_AUTHORITY_ID) {
-								$users[$key]['AuthorityLang']['authority_name'] = '';
+								$users[$key]['AuthorityLang']['name'] = '';
 							} else {
 								$users[$key]['User'][$chk] = '';
 							}
@@ -457,7 +457,7 @@ class UserController extends UserAppController {
 		
 		$this->set('id', $this->id.'-'.$userId);	// top idをuser_id単位に設定
 		$this->set('name', 'User.avatar');
-		
+		$this->set('item', $this->Item->findList('first', array('Item.id' => NC_ITEM_ID_AVATAR)));
 		$this->render('/Elements/avatar');
 		return;
 	}

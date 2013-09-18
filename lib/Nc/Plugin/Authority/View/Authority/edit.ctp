@@ -37,7 +37,7 @@
 			<dl>
 				<dt>
 					<?php
-						echo $this->Form->label('Authority.default_authority_name', __d('authority', 'Authority name'));
+						echo $this->Form->label('Authority.default_name', __d('authority', 'Authority name'));
 					?>
 					<span class="require"><?php echo __('*'); ?></span>
 				</dt>
@@ -45,7 +45,7 @@
 					<?php
 						$settings = array(
 							'type' => 'text',
-							'value' => $authority['Authority']['default_authority_name'],
+							'value' => $authority['Authority']['default_name'],
 							'label' => false,
 							'div' => false,
 							'maxlength' => NC_VALIDATOR_TITLE_LEN,
@@ -55,7 +55,7 @@
 								'selector' => true
 							))
 						);
-						echo $this->Form->input('Authority.default_authority_name', $settings);
+						echo $this->Form->input('Authority.default_name', $settings);
 					?>
 				</dd>
 			</dl>

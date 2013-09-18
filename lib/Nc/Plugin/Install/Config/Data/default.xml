@@ -42,7 +42,7 @@
     <!-- テーブル authorities -->
     <table name="authorities">
         <column name="id">1</column>
-        <column name="default_authority_name">Administrator</column>
+        <column name="default_name">Administrator</column>
         <column name="system_flag">1</column>
         <column name="hierarchy">500</column>
         <column name="allow_creating_community">4</column>
@@ -77,7 +77,7 @@
     </table>
     <table name="authorities">
         <column name="id">2</column>
-        <column name="default_authority_name">Room Manager</column>
+        <column name="default_name">Room Manager</column>
         <column name="system_flag">1</column>
         <column name="hierarchy">350</column>
         <column name="allow_creating_community">2</column>
@@ -112,7 +112,7 @@
     </table>
     <table name="authorities">
         <column name="id">3</column>
-        <column name="default_authority_name">Moderator</column>
+        <column name="default_name">Moderator</column>
         <column name="system_flag">1</column>
         <column name="hierarchy">250</column>
         <column name="allow_creating_community">1</column>
@@ -147,7 +147,7 @@
     </table>
     <table name="authorities">
         <column name="id">4</column>
-        <column name="default_authority_name">Common User</column>
+        <column name="default_name">Common User</column>
         <column name="system_flag">1</column>
         <column name="hierarchy">150</column>
         <column name="allow_creating_community">1</column>
@@ -182,7 +182,7 @@
     </table>
     <table name="authorities">
         <column name="id">5</column>
-        <column name="default_authority_name">Guest</column>
+        <column name="default_name">Guest</column>
         <column name="system_flag">1</column>
         <column name="hierarchy">1</column>
         <column name="allow_creating_community">0</column>
@@ -217,7 +217,7 @@
     </table>
     <table name="authorities">
         <column name="id">6</column>
-        <column name="default_authority_name">Clerk</column>
+        <column name="default_name">Clerk</column>
         <column name="system_flag">1</column>
         <column name="hierarchy">400</column>
         <column name="allow_creating_community">2</column>
@@ -255,7 +255,7 @@
         <column name="id">1</column>
         <column name="authority_id">1</column>
         <column name="lang">ja</column>
-        <column name="authority_name">管理者</column>
+        <column name="name">管理者</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -267,7 +267,7 @@
         <column name="id">2</column>
         <column name="authority_id">2</column>
         <column name="lang">ja</column>
-        <column name="authority_name">主担</column>
+        <column name="name">主担</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -279,7 +279,7 @@
         <column name="id">3</column>
         <column name="authority_id">3</column>
         <column name="lang">ja</column>
-        <column name="authority_name">モデレーター</column>
+        <column name="name">モデレーター</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -291,7 +291,7 @@
         <column name="id">4</column>
         <column name="authority_id">4</column>
         <column name="lang">ja</column>
-        <column name="authority_name">一般</column>
+        <column name="name">一般</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -303,7 +303,7 @@
         <column name="id">5</column>
         <column name="authority_id">5</column>
         <column name="lang">ja</column>
-        <column name="authority_name">ゲスト</column>
+        <column name="name">ゲスト</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -315,7 +315,7 @@
         <column name="id">6</column>
         <column name="authority_id">6</column>
         <column name="lang">ja</column>
-        <column name="authority_name">事務局</column>
+        <column name="name">事務局</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -3856,6 +3856,9 @@ e-mail：{X-EMAIL}
     <!-- テーブル items -->
     <table name="items">
         <column name="id">1</column>
+        <column name="default_name">ID</column>
+        <column name="default_description">Please choose at least 4 characters string. No space or special character is allowed.</column>
+        <column name="default_options"></column>
         <column name="type">text</column>
         <column name="tag_name">login_id</column>
         <column name="is_system">1</column>
@@ -3886,6 +3889,9 @@ e-mail：{X-EMAIL}
     </table>
     <table name="items">
         <column name="id">2</column>
+        <column name="default_name">Password</column>
+        <column name="default_description">Please choose at least 4 characters string. No space or special character is allowed.</column>
+        <column name="default_options"></column>
         <column name="type">password</column>
         <column name="tag_name">password</column>
         <column name="is_system">1</column>
@@ -3916,6 +3922,9 @@ e-mail：{X-EMAIL}
     </table>
     <table name="items">
         <column name="id">3</column>
+        <column name="default_name">Name</column>
+        <column name="default_description"></column>
+        <column name="default_options"></column>
         <column name="type">text</column>
         <column name="tag_name">username</column>
         <column name="is_system">1</column>
@@ -3946,6 +3955,9 @@ e-mail：{X-EMAIL}
     </table>
     <table name="items">
         <column name="id">4</column>
+        <column name="default_name">Handle</column>
+        <column name="default_description"></column>
+        <column name="default_options"></column>
         <column name="type">text</column>
         <column name="tag_name">handle</column>
         <column name="is_system">1</column>
@@ -3976,6 +3988,9 @@ e-mail：{X-EMAIL}
     </table>
     <table name="items">
         <column name="id">5</column>
+        <column name="default_name">E-mail</column>
+        <column name="default_description"></column>
+        <column name="default_options"></column>
         <column name="type">email</column>
         <column name="tag_name">email</column>
         <column name="is_system">1</column>
@@ -4006,6 +4021,9 @@ e-mail：{X-EMAIL}
     </table>
     <table name="items">
         <column name="id">6</column>
+        <column name="default_name">Mobile mail</column>
+        <column name="default_description"></column>
+        <column name="default_options"></column>
         <column name="type">mobile_email</column>
         <column name="tag_name">mobile_email</column>
         <column name="is_system">1</column>
@@ -4036,6 +4054,9 @@ e-mail：{X-EMAIL}
     </table>
     <table name="items">
         <column name="id">7</column>
+        <column name="default_name">TimeZone</column>
+        <column name="default_description"></column>
+        <column name="default_options">a:30:{i:-12;s:31:&quot;(GMT-12:00) Eniwetok, Kwajalein&quot;;i:-11;s:32:&quot;(GMT-11:00) Midway Island, Samoa&quot;;i:-10;s:18:&quot;(GMT-10:00) Hawaii&quot;;i:-9;s:17:&quot;(GMT-9:00) Alaska&quot;;i:-8;s:37:&quot;(GMT-8:00) Pacific Time (US &amp; Canada)&quot;;i:-7;s:38:&quot;(GMT-7:00) Mountain Time (US &amp; Canada)&quot;;i:-6;s:50:&quot;(GMT-6:00) Central Time (US &amp; Canada), Mexico City&quot;;i:-5;s:58:&quot;(GMT-5:00) Eastern Time (US &amp; Canada), Bogota, Lima, Quito&quot;;i:-4;s:50:&quot;(GMT-4:00) Atlantic Time (Canada), Caracas, La Paz&quot;;s:4:&quot;-3.5&quot;;s:23:&quot;(GMT-3:30) Newfoundland&quot;;i:-3;s:45:&quot;(GMT-3:00) Brasilia, Buenos Aires, Georgetown&quot;;i:-2;s:23:&quot;(GMT-2:00) Mid-Atlantic&quot;;i:-1;s:37:&quot;(GMT-1:00) Azores, Cape Verde Islands&quot;;i:0;s:71:&quot;(GMT) Greenwich Mean Time, London, Dublin, Lisbon, Casablanca, Monrovia&quot;;i:1;s:71:&quot;(GMT+1:00) Amsterdam, Berlin, Rome, Copenhagen, Brussels, Madrid, Paris&quot;;i:2;s:69:&quot;(GMT+2:00) Athens, Istanbul, Minsk, Helsinki, Jerusalem, South Africa&quot;;i:3;s:58:&quot;(GMT+3:00) Baghdad, Kuwait, Riyadh, Moscow, St. Petersburg&quot;;s:3:&quot;3.5&quot;;s:17:&quot;(GMT+3:30) Tehran&quot;;i:4;s:43:&quot;(GMT+4:00) Abu Dhabi, Muscat, Baku, Tbilisi&quot;;s:3:&quot;4.5&quot;;s:16:&quot;(GMT+4:30) Kabul&quot;;i:5;s:53:&quot;(GMT+5:00) Ekaterinburg, Islamabad, Karachi, Tashkent&quot;;s:3:&quot;5.5&quot;;s:46:&quot;(GMT+5:30) Bombay, Calcutta, Madras, New Delhi&quot;;i:6;s:33:&quot;(GMT+6:00) Almaty, Dhaka, Colombo&quot;;i:7;s:34:&quot;(GMT+7:00) Bangkok, Hanoi, Jakarta&quot;;i:8;s:63:&quot;(GMT+8:00) Beijing, Perth, Singapore, Hong Kong, Urumqi, Taipei&quot;;i:9;s:48:&quot;(GMT+9:00) Tokyo, Seoul, Osaka, Sapporo, Yakutsk&quot;;s:3:&quot;9.5&quot;;s:27:&quot;(GMT+9:30) Adelaide, Darwin&quot;;i:10;s:67:&quot;(GMT+10:00) Brisbane, Canberra, Melbourne, Sydney, Guam,Vlasdiostok&quot;;i:11;s:51:&quot;(GMT+11:00) Magadan, Solomon Islands, New Caledonia&quot;;i:12;s:66:&quot;(GMT+12:00) Auckland, Wellington, Fiji, Kamchatka, Marshall Island&quot;;}</column>
         <column name="type">select</column>
         <column name="tag_name">timezone_offset</column>
         <column name="is_system">1</column>
@@ -4066,6 +4087,9 @@ e-mail：{X-EMAIL}
     </table>
     <table name="items">
         <column name="id">8</column>
+        <column name="default_name">Language</column>
+        <column name="default_description"></column>
+        <column name="default_options"></column>
         <column name="type">select</column>
         <column name="tag_name">lang</column>
         <column name="is_system">1</column>
@@ -4096,6 +4120,9 @@ e-mail：{X-EMAIL}
     </table>
     <table name="items">
         <column name="id">9</column>
+        <column name="default_name">Authority</column>
+        <column name="default_description"></column>
+        <column name="default_options"></column>
         <column name="type">select</column>
         <column name="tag_name">authority_id</column>
         <column name="is_system">1</column>
@@ -4126,6 +4153,9 @@ e-mail：{X-EMAIL}
     </table>
     <table name="items">
         <column name="id">10</column>
+        <column name="default_name">Status</column>
+        <column name="default_description"></column>
+        <column name="default_options">a:2:{i:1;s:6:&quot;Active&quot;;i:0;s:9:&quot;Nonactive&quot;;}</column>
         <column name="type">select</column>
         <column name="tag_name">is_active</column>
         <column name="is_system">1</column>
@@ -4156,6 +4186,9 @@ e-mail：{X-EMAIL}
     </table>
     <table name="items">
         <column name="id">11</column>
+        <column name="default_name">Link Identifier</column>
+        <column name="default_description"></column>
+        <column name="default_options"></column>
         <column name="type">text</column>
         <column name="tag_name">permalink</column>
         <column name="is_system">1</column>
@@ -4186,6 +4219,9 @@ e-mail：{X-EMAIL}
     </table>
     <table name="items">
         <column name="id">12</column>
+        <column name="default_name">Avatar</column>
+        <column name="default_description"></column>
+        <column name="default_options"></column>
         <column name="type">file</column>
         <column name="tag_name">avatar</column>
         <column name="is_system">1</column>
@@ -4216,6 +4252,9 @@ e-mail：{X-EMAIL}
     </table>
     <table name="items">
         <column name="id">13</column>
+        <column name="default_name">Created</column>
+        <column name="default_description"></column>
+        <column name="default_options"></column>
         <column name="type">label</column>
         <column name="tag_name">created</column>
         <column name="is_system">1</column>
@@ -4246,6 +4285,9 @@ e-mail：{X-EMAIL}
     </table>
     <table name="items">
         <column name="id">14</column>
+        <column name="default_name">Creator</column>
+        <column name="default_description"></column>
+        <column name="default_options"></column>
         <column name="type">label</column>
         <column name="tag_name">created_user_name</column>
         <column name="is_system">1</column>
@@ -4276,6 +4318,9 @@ e-mail：{X-EMAIL}
     </table>
     <table name="items">
         <column name="id">15</column>
+        <column name="default_name">Modified</column>
+        <column name="default_description"></column>
+        <column name="default_options"></column>
         <column name="type">label</column>
         <column name="tag_name">modified</column>
         <column name="is_system">1</column>
@@ -4306,6 +4351,9 @@ e-mail：{X-EMAIL}
     </table>
     <table name="items">
         <column name="id">16</column>
+        <column name="default_name">Modifier</column>
+        <column name="default_description"></column>
+        <column name="default_options"></column>
         <column name="type">label</column>
         <column name="tag_name">modified_user_name</column>
         <column name="is_system">1</column>
@@ -4336,6 +4384,9 @@ e-mail：{X-EMAIL}
     </table>
     <table name="items">
         <column name="id">17</column>
+        <column name="default_name">Password has been changed</column>
+        <column name="default_description"></column>
+        <column name="default_options"></column>
         <column name="type">label</column>
         <column name="tag_name">password_regist</column>
         <column name="is_system">1</column>
@@ -4366,6 +4417,9 @@ e-mail：{X-EMAIL}
     </table>
     <table name="items">
         <column name="id">18</column>
+        <column name="default_name">Last login</column>
+        <column name="default_description"></column>
+        <column name="default_options"></column>
         <column name="type">label</column>
         <column name="tag_name">last_login</column>
         <column name="is_system">1</column>
@@ -4396,6 +4450,9 @@ e-mail：{X-EMAIL}
     </table>
     <table name="items">
         <column name="id">19</column>
+        <column name="default_name">Previous login</column>
+        <column name="default_description"></column>
+        <column name="default_options"></column>
         <column name="type">label</column>
         <column name="tag_name">previous_login</column>
         <column name="is_system">1</column>
@@ -4426,6 +4483,9 @@ e-mail：{X-EMAIL}
     </table>
     <table name="items">
         <column name="id">20</column>
+        <column name="default_name">Sex</column>
+        <column name="default_description"></column>
+        <column name="default_options">a:3:{i:0;s:4:&quot;Male&quot;;i:1;s:6:&quot;Female&quot;;i:2;s:10:&quot;No setting&quot;;}</column>
         <column name="type">radio</column>
         <column name="tag_name"></column>
         <column name="is_system">0</column>
@@ -4456,6 +4516,9 @@ e-mail：{X-EMAIL}
     </table>
     <table name="items">
         <column name="id">21</column>
+        <column name="default_name">Profile</column>
+        <column name="default_description"></column>
+        <column name="default_options"></column>
         <column name="type">textarea</column>
         <column name="tag_name"></column>
         <column name="is_system">0</column>
@@ -5851,12 +5914,12 @@ e-mail：{X-EMAIL}
 	    <column name="modified_user_name"></column>
 	</table>
     <!-- テーブル item_langs -->
-    <table name="item_langs">
+    	<table name="item_langs">
         <column name="id">1</column>
         <column name="item_id">1</column>
-        <column name="lang"></column>
-        <column name="name">ID</column>
-        <column name="description">Please choose at least 4 characters string. No space or special character is allowed.</column>
+        <column name="lang">ja</column>
+        <column name="name">ログインID</column>
+        <column name="description">4文字以上の英数字または記号を入力。</column>
         <column name="options"></column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
@@ -5868,9 +5931,9 @@ e-mail：{X-EMAIL}
     <table name="item_langs">
         <column name="id">2</column>
         <column name="item_id">2</column>
-        <column name="lang"></column>
-        <column name="name">Password</column>
-        <column name="description">Please choose at least 4 characters string. No space or special character is allowed.</column>
+        <column name="lang">ja</column>
+        <column name="name">パスワード</column>
+        <column name="description">4文字以上の英数字または記号を入力。</column>
         <column name="options"></column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
@@ -5882,8 +5945,8 @@ e-mail：{X-EMAIL}
     <table name="item_langs">
         <column name="id">3</column>
         <column name="item_id">3</column>
-        <column name="lang"></column>
-        <column name="name">Name</column>
+        <column name="lang">ja</column>
+        <column name="name">氏名</column>
         <column name="description"></column>
         <column name="options"></column>
         <column name="created">NULL</column>
@@ -5896,8 +5959,8 @@ e-mail：{X-EMAIL}
     <table name="item_langs">
         <column name="id">4</column>
         <column name="item_id">4</column>
-        <column name="lang"></column>
-        <column name="name">Handle</column>
+        <column name="lang">ja</column>
+        <column name="name">ハンドル</column>
         <column name="description"></column>
         <column name="options"></column>
         <column name="created">NULL</column>
@@ -5910,8 +5973,8 @@ e-mail：{X-EMAIL}
     <table name="item_langs">
         <column name="id">5</column>
         <column name="item_id">5</column>
-        <column name="lang"></column>
-        <column name="name">E-mail</column>
+        <column name="lang">ja</column>
+        <column name="name">eメール</column>
         <column name="description"></column>
         <column name="options"></column>
         <column name="created">NULL</column>
@@ -5924,8 +5987,8 @@ e-mail：{X-EMAIL}
     <table name="item_langs">
         <column name="id">6</column>
         <column name="item_id">6</column>
-        <column name="lang"></column>
-        <column name="name">Mobile mail</column>
+        <column name="lang">ja</column>
+        <column name="name">携帯メール</column>
         <column name="description"></column>
         <column name="options"></column>
         <column name="created">NULL</column>
@@ -5938,10 +6001,10 @@ e-mail：{X-EMAIL}
     <table name="item_langs">
         <column name="id">7</column>
         <column name="item_id">7</column>
-        <column name="lang"></column>
-        <column name="name">TimeZone</column>
+        <column name="lang">ja</column>
+        <column name="name">タイムゾーン</column>
         <column name="description"></column>
-        <column name="options">a:30:{i:-12;s:31:&quot;(GMT-12:00) Eniwetok, Kwajalein&quot;;i:-11;s:32:&quot;(GMT-11:00) Midway Island, Samoa&quot;;i:-10;s:18:&quot;(GMT-10:00) Hawaii&quot;;i:-9;s:17:&quot;(GMT-9:00) Alaska&quot;;i:-8;s:37:&quot;(GMT-8:00) Pacific Time (US &amp; Canada)&quot;;i:-7;s:38:&quot;(GMT-7:00) Mountain Time (US &amp; Canada)&quot;;i:-6;s:50:&quot;(GMT-6:00) Central Time (US &amp; Canada), Mexico City&quot;;i:-5;s:58:&quot;(GMT-5:00) Eastern Time (US &amp; Canada), Bogota, Lima, Quito&quot;;i:-4;s:50:&quot;(GMT-4:00) Atlantic Time (Canada), Caracas, La Paz&quot;;s:4:&quot;-3.5&quot;;s:23:&quot;(GMT-3:30) Newfoundland&quot;;i:-3;s:45:&quot;(GMT-3:00) Brasilia, Buenos Aires, Georgetown&quot;;i:-2;s:23:&quot;(GMT-2:00) Mid-Atlantic&quot;;i:-1;s:37:&quot;(GMT-1:00) Azores, Cape Verde Islands&quot;;i:0;s:71:&quot;(GMT) Greenwich Mean Time, London, Dublin, Lisbon, Casablanca, Monrovia&quot;;i:1;s:71:&quot;(GMT+1:00) Amsterdam, Berlin, Rome, Copenhagen, Brussels, Madrid, Paris&quot;;i:2;s:69:&quot;(GMT+2:00) Athens, Istanbul, Minsk, Helsinki, Jerusalem, South Africa&quot;;i:3;s:58:&quot;(GMT+3:00) Baghdad, Kuwait, Riyadh, Moscow, St. Petersburg&quot;;s:3:&quot;3.5&quot;;s:17:&quot;(GMT+3:30) Tehran&quot;;i:4;s:43:&quot;(GMT+4:00) Abu Dhabi, Muscat, Baku, Tbilisi&quot;;s:3:&quot;4.5&quot;;s:16:&quot;(GMT+4:30) Kabul&quot;;i:5;s:53:&quot;(GMT+5:00) Ekaterinburg, Islamabad, Karachi, Tashkent&quot;;s:3:&quot;5.5&quot;;s:46:&quot;(GMT+5:30) Bombay, Calcutta, Madras, New Delhi&quot;;i:6;s:33:&quot;(GMT+6:00) Almaty, Dhaka, Colombo&quot;;i:7;s:34:&quot;(GMT+7:00) Bangkok, Hanoi, Jakarta&quot;;i:8;s:63:&quot;(GMT+8:00) Beijing, Perth, Singapore, Hong Kong, Urumqi, Taipei&quot;;i:9;s:48:&quot;(GMT+9:00) Tokyo, Seoul, Osaka, Sapporo, Yakutsk&quot;;s:3:&quot;9.5&quot;;s:27:&quot;(GMT+9:30) Adelaide, Darwin&quot;;i:10;s:67:&quot;(GMT+10:00) Brisbane, Canberra, Melbourne, Sydney, Guam,Vlasdiostok&quot;;i:11;s:51:&quot;(GMT+11:00) Magadan, Solomon Islands, New Caledonia&quot;;i:12;s:66:&quot;(GMT+12:00) Auckland, Wellington, Fiji, Kamchatka, Marshall Island&quot;;}</column>
+        <column name="options">a:30:{i:-12;s:51:&quot;(GMT-12:00) エニウェトク、クエジェリン&quot;;i:-11;s:45:&quot;(GMT-11:00) ミッドウェー島、サモア&quot;;i:-10;s:21:&quot;(GMT-10:00) ハワイ&quot;;i:-9;s:23:&quot;(GMT-9:00) アラスカ&quot;;i:-8;s:77:&quot;(GMT-8:00) 太平洋標準時（米国およびカナダ）、ティファナ&quot;;i:-7;s:56:&quot;(GMT-7:00) 山地標準時（米国およびカナダ）&quot;;i:-6;s:80:&quot;(GMT-6:00) 中部標準時（米国およびカナダ）、メキシコシティ&quot;;i:-5;s:86:&quot;(GMT-5:00) 東部標準時（米国およびカナダ）、ボゴタ、リマ、キト&quot;;i:-4;s:71:&quot;(GMT-4:00) 大西洋標準時（カナダ）、カラカス、ラパス&quot;;s:4:&quot;-3.5&quot;;s:41:&quot;(GMT-3:30) ニューファンドランド&quot;;i:-3;s:77:&quot;(GMT-3:00) ブラジリア、ブエノスアイレス、ジョージタウン&quot;;i:-2;s:26:&quot;(GMT-2:00) 中央大西洋&quot;;i:-1;s:56:&quot;(GMT-1:00) アゾレス諸島、カーボベルデ諸島&quot;;i:0;s:93:&quot;(GMT) グリニッジ標準時、ダブリン、ロンドン、リスボン、エジンバラ&quot;;i:1;s:104:&quot;(GMT+1:00) ブリュッセル、コペンハーゲン、マドリッド、パリ、アムステルダム&quot;;i:2;s:92:&quot;(GMT+2:00) アテネ、イスタンブール、エルサレム、カイロ、ヘルシンキ&quot;;i:3;s:86:&quot;(GMT+3:00) バグダッド、ナイロビ、クウェート、リヤド、モスクワ&quot;;s:3:&quot;3.5&quot;;s:23:&quot;(GMT+3:30) テヘラン&quot;;i:4;s:65:&quot;(GMT+4:00) アブダビ、マスカット、バク、トビリシ&quot;;s:3:&quot;4.5&quot;;s:23:&quot;(GMT+4:30) カブール&quot;;i:5;s:89:&quot;(GMT+5:00) イスラマバード、カラチ、タシケント、エカテリンバーグ&quot;;s:3:&quot;5.5&quot;;s:80:&quot;(GMT+5:30) カルカッタ、チェンナイ、ムンバイ、ニューデリー&quot;;i:6;s:77:&quot;(GMT+6:00) ダッカ、アルマティ、スリ・ジャヤワルダナプラ&quot;;i:7;s:53:&quot;(GMT+7:00) バンコク、ハノイ、ジャカルタ&quot;;i:8;s:92:&quot;(GMT+8:00) シンガポール、パース、台北、北京、重慶、香港、ウルムチ&quot;;i:9;s:65:&quot;(GMT+9:00) 東京、大阪、札幌、ソウル、ヤクーツク&quot;;s:3:&quot;9.5&quot;;s:44:&quot;(GMT+9:30) アデレード、ダーウィン&quot;;i:10;s:96:&quot;(GMT+10:00) ウラジオストク、キャンベラ、メルボルン、シドニー、グアム&quot;;i:11;s:72:&quot;(GMT+11:00) マガダン、ソロモン諸島、ニューカレドニア&quot;;i:12;s:87:&quot;(GMT+12:00) オークランド、ウェリントン、フィジー、カムチャッカ&quot;;}</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -5952,8 +6015,8 @@ e-mail：{X-EMAIL}
     <table name="item_langs">
         <column name="id">8</column>
         <column name="item_id">8</column>
-        <column name="lang"></column>
-        <column name="name">Language</column>
+        <column name="lang">ja</column>
+        <column name="name">言語</column>
         <column name="description"></column>
         <column name="options"></column>
         <column name="created">NULL</column>
@@ -5966,8 +6029,8 @@ e-mail：{X-EMAIL}
     <table name="item_langs">
         <column name="id">9</column>
         <column name="item_id">9</column>
-        <column name="lang"></column>
-        <column name="name">Authority</column>
+        <column name="lang">ja</column>
+        <column name="name">権限</column>
         <column name="description"></column>
         <column name="options"></column>
         <column name="created">NULL</column>
@@ -5980,10 +6043,10 @@ e-mail：{X-EMAIL}
     <table name="item_langs">
         <column name="id">10</column>
         <column name="item_id">10</column>
-        <column name="lang"></column>
-        <column name="name">Status</column>
+        <column name="lang">ja</column>
+        <column name="name">状態</column>
         <column name="description"></column>
-        <column name="options">a:2:{i:1;s:6:&quot;Active&quot;;i:0;s:9:&quot;Nonactive&quot;;}</column>
+        <column name="options">a:2:{i:0;s:12:&quot;利用可能&quot;;i:1;s:12:&quot;利用不可&quot;;}</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -5994,8 +6057,8 @@ e-mail：{X-EMAIL}
     <table name="item_langs">
         <column name="id">11</column>
         <column name="item_id">11</column>
-        <column name="lang"></column>
-        <column name="name">Link Identifier</column>
+        <column name="lang">ja</column>
+        <column name="name">リンク識別子</column>
         <column name="description"></column>
         <column name="options"></column>
         <column name="created">NULL</column>
@@ -6008,8 +6071,8 @@ e-mail：{X-EMAIL}
     <table name="item_langs">
         <column name="id">12</column>
         <column name="item_id">12</column>
-        <column name="lang"></column>
-        <column name="name">Avatar</column>
+        <column name="lang">ja</column>
+        <column name="name">アバター</column>
         <column name="description"></column>
         <column name="options"></column>
         <column name="created">NULL</column>
@@ -6022,8 +6085,8 @@ e-mail：{X-EMAIL}
     <table name="item_langs">
         <column name="id">13</column>
         <column name="item_id">13</column>
-        <column name="lang"></column>
-        <column name="name">Created</column>
+        <column name="lang">ja</column>
+        <column name="name">作成日時</column>
         <column name="description"></column>
         <column name="options"></column>
         <column name="created">NULL</column>
@@ -6036,8 +6099,8 @@ e-mail：{X-EMAIL}
     <table name="item_langs">
         <column name="id">14</column>
         <column name="item_id">14</column>
-        <column name="lang"></column>
-        <column name="name">Creator</column>
+        <column name="lang">ja</column>
+        <column name="name">作成者</column>
         <column name="description"></column>
         <column name="options"></column>
         <column name="created">NULL</column>
@@ -6050,8 +6113,8 @@ e-mail：{X-EMAIL}
     <table name="item_langs">
         <column name="id">15</column>
         <column name="item_id">15</column>
-        <column name="lang"></column>
-        <column name="name">Modified</column>
+        <column name="lang">ja</column>
+        <column name="name">更新日時</column>
         <column name="description"></column>
         <column name="options"></column>
         <column name="created">NULL</column>
@@ -6064,8 +6127,8 @@ e-mail：{X-EMAIL}
     <table name="item_langs">
         <column name="id">16</column>
         <column name="item_id">16</column>
-        <column name="lang"></column>
-        <column name="name">Modifier</column>
+        <column name="lang">ja</column>
+        <column name="name">更新者</column>
         <column name="description"></column>
         <column name="options"></column>
         <column name="created">NULL</column>
@@ -6078,8 +6141,8 @@ e-mail：{X-EMAIL}
     <table name="item_langs">
         <column name="id">17</column>
         <column name="item_id">17</column>
-        <column name="lang"></column>
-        <column name="name">Password has been changed</column>
+        <column name="lang">ja</column>
+        <column name="name">パスワード変更日時</column>
         <column name="description"></column>
         <column name="options"></column>
         <column name="created">NULL</column>
@@ -6092,8 +6155,8 @@ e-mail：{X-EMAIL}
     <table name="item_langs">
         <column name="id">18</column>
         <column name="item_id">18</column>
-        <column name="lang"></column>
-        <column name="name">Last login</column>
+        <column name="lang">ja</column>
+        <column name="name">最終ログイン日時</column>
         <column name="description"></column>
         <column name="options"></column>
         <column name="created">NULL</column>
@@ -6106,8 +6169,8 @@ e-mail：{X-EMAIL}
     <table name="item_langs">
         <column name="id">19</column>
         <column name="item_id">19</column>
-        <column name="lang"></column>
-        <column name="name">Previous login</column>
+        <column name="lang">ja</column>
+        <column name="name">前回ログイン日時</column>
         <column name="description"></column>
         <column name="options"></column>
         <column name="created">NULL</column>
@@ -6120,10 +6183,10 @@ e-mail：{X-EMAIL}
     <table name="item_langs">
         <column name="id">20</column>
         <column name="item_id">20</column>
-        <column name="lang"></column>
-        <column name="name">Sex</column>
+        <column name="lang">ja</column>
+        <column name="name">性別</column>
         <column name="description"></column>
-        <column name="options">a:3:{i:0;s:4:&quot;Male&quot;;i:1;s:6:&quot;Female&quot;;i:2;s:10:&quot;No setting&quot;;}</column>
+        <column name="options">a:3:{i:0;s:3:&quot;男&quot;;i:1;s:3:&quot;女&quot;;i:2;s:15:&quot;指定しない&quot;;}</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
@@ -6134,8 +6197,8 @@ e-mail：{X-EMAIL}
     <table name="item_langs">
         <column name="id">21</column>
         <column name="item_id">21</column>
-        <column name="lang"></column>
-        <column name="name">Profile</column>
+        <column name="lang">ja</column>
+        <column name="name">プロフィール</column>
         <column name="description"></column>
         <column name="options"></column>
         <column name="created">NULL</column>
