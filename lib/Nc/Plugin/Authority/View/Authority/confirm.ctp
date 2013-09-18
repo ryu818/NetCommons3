@@ -178,13 +178,13 @@
 								$value = __d('authority', 'Allow to create normal community.');
 								break;
 							case NC_ALLOW_CREATING_COMMUNITY_ALL_USER:
-								$value = __d('authority', 'Allow to create partial public community(Login members of all the viewable).');
+								$value = __d('authority', 'Allow to create partial public community.');
 								break;
 							case NC_ALLOW_CREATING_COMMUNITY_ALL:
-								$value = __d('authority', 'Allow to create public community(users of all the viewable).');
+								$value = __d('authority', 'Allow to create public community.');
 								break;
 							default:
-								$value = __d('authority', 'Allow to create public community, display order change of community of all, delete is possible.');
+								$value = __d('authority', 'Allow to create all communities, display order change, or delete.');
 								break;
 						}
 						echo $value;
