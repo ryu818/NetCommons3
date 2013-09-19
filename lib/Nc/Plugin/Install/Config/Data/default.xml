@@ -6046,7 +6046,7 @@ e-mail：{X-EMAIL}
         <column name="lang">ja</column>
         <column name="name">状態</column>
         <column name="description"></column>
-        <column name="options">a:2:{i:0;s:12:&quot;利用可能&quot;;i:1;s:12:&quot;利用不可&quot;;}</column>
+        <column name="options">a:2:{i:1;s:12:&quot;利用可能&quot;;i:0;s:12:&quot;利用不可&quot;;}</column>
         <column name="created">NULL</column>
         <column name="created_user_id">0</column>
         <column name="created_user_name"></column>
