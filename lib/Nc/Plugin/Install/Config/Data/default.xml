@@ -2108,7 +2108,7 @@
         <column name="name">display_header_menu</column>
         <column name="type">select</column>
         <column name="title">Display header menu</column>
-        <column name="value">1</column>
+        <column name="value">2</column>
         <column name="description"></column>
         <column name="options">a:3:{s:21:&quot;NC_HEADER_MENU_ALWAYS&quot;;s:16:&quot;Always displayed&quot;;s:24:&quot;NC_HEADER_MENU_MOUSEOVER&quot;;s:19:&quot;Mouseover displayed&quot;;s:19:&quot;NC_HEADER_MENU_NONE&quot;;s:26:&quot;Non-display before sign in&quot;;}</column>
         <column name="domain">system</column>
