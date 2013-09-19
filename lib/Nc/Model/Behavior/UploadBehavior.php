@@ -357,13 +357,22 @@ class UploadBehavior extends ModelBehavior {
 				}
 
 				if ($removing) {
-					$model->data[$model->alias] = array(
+// Edit Start Ryuji.M
+// field以外のカラムにデータが入っていても、fieldのみのupdateになってしまうため
+// その他のデータとマージするように修正。
+					$model->data[$model->alias] = array_merge($model->data[$model->alias], array(
 						$field => null,
 						$options['fields']['type'] => null,
 						$options['fields']['size'] => null,
 						$options['fields']['dir'] => null,
-					);
-
+					));
+// 					$model->data[$model->alias] = array(
+// 						$field => null,
+// 						$options['fields']['type'] => null,
+// 						$options['fields']['size'] => null,
+// 						$options['fields']['dir'] => null,
+// 					);
+// Edit End Ryuji.M
 					$this->_removingOnly[$field] = true;
 					continue;
 				} else {

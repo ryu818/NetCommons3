@@ -357,7 +357,7 @@ class UserController extends UserAppController {
 					throw new InternalErrorException(__('Failed to update the database, (%s).', 'users'));
 				}
 				$user['User']['id'] = $this->User->id;
-				if (isset($user['User']['avatar']['remove'])) {
+				if (is_array($user['User']['avatar'])) {
 					$user['User']['avatar'] = null;
 				}
 
