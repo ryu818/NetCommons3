@@ -733,48 +733,58 @@ class CheckAuthComponent extends Component {
 	}
 
 /**
- * 編集権限があるかどうか
- * @param   integer $roomHierarchy ログイン会員のroomにおけるhierarchy
- * @param   integer $editPostHierarchy 編集画面における記事投稿権限hierarchy
- * @param   integer $postUserId 記事投稿者user_id
- * @param   integer $postHierarchy 記事投稿者hierarchy
+ * コンテンツへの編集権限があるかどうか
+ * @param   integer $myselfContentHierarchy ログイン会員のroomにおけるhierarchy
+ * @param   integer $postHierarchy 編集画面における記事投稿権限hierarchy
+ * @param   integer $ownerUserId コンテンツ所有者のuser_id
+ * @param   integer $ownerContentHierarchy コンテンツ所有者のhierarchy
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	public function isEdit($roomHierarchy, $editPostHierarchy = null, $postUserId = null, $postHierarchy = null) {
+	public function isEdit($myselfContentHierarchy, $postHierarchy = null, $ownerUserId = null, $ownerContentHierarchy = null) {
 		// Helperに同じメソッドが存在する。
 		$isEdit = true;
-		if(isset($editPostHierarchy)) {
-			if($roomHierarchy < $editPostHierarchy) {
-				return false;
-			}
+		if(isset($postHierarchy) && $myselfContentHierarchy < $postHierarchy) {
+			return false;
 		}
-		if(!empty($postUserId)) {
+		if(!empty($ownerUserId)) {
 			$user = $this->Session->read(NC_AUTH_KEY.'.'.'User');
-			if(isset($user) && $user['id'] == $postUserId) {
+			if(isset($user) && $user['id'] == $ownerUserId) {
 				return true;
 			}
 		}
-		if(isset($postHierarchy)) {
-			$postHierarchy = intval($postHierarchy);
-			if($postHierarchy <= NC_AUTH_GUEST) {
-				if($roomHierarchy >= NC_AUTH_MIN_CHIEF) {
-					$isEdit = true;
-				} else {
-					$isEdit = false;
-				}
-			} else if($roomHierarchy >= NC_AUTH_MIN_MODERATE) {
-				if($roomHierarchy >= $postHierarchy) {
-					$isEdit = true;
-				} else {
-					$isEdit = false;
-				}
-			} else {
-				if($roomHierarchy > $postHierarchy) {
-					$isEdit = true;
-				} else {
-					$isEdit = false;
-				}
+		if(isset($ownerContentHierarchy)) {
+			$isEdit = $this->isEditForUser($ownerContentHierarchy, $myselfContentHierarchy);
+		}
+		return $isEdit;
+	}
+/**
+ * 会員への編集権限があるかどうか
+ * @param   integer $ownerHierarchy 参照相手のhierarchy
+ * @param   integer $myselfHierarchy 参照する会員のhierarchy
+ * @return  boolean
+ * @since   v 3.0.0.0
+ */
+	public function isEditForUser($ownerHierarchy, $myselfHierarchy = null) {
+		$isEdit = false;
+		$ownerHierarchy = intval($ownerHierarchy);
+		if (!isset($myselfHierarchy)) {
+			$user = $this->Session->read(NC_AUTH_KEY.'.'.'User');
+			if(isset($user)) {
+				$myselfHierarchy = $user['hierarchy'];
+			}
+		}
+		if($ownerHierarchy <= NC_AUTH_GUEST) {
+			if($myselfHierarchy >= NC_AUTH_MIN_CHIEF) {
+				$isEdit = true;
+			}
+		} else if($myselfHierarchy >= NC_AUTH_MIN_MODERATE) {
+			if($myselfHierarchy >= $ownerHierarchy) {
+				$isEdit = true;
+			}
+		} else {
+			if($myselfHierarchy > $ownerHierarchy) {
+				$isEdit = true;
 			}
 		}
 		return $isEdit;
