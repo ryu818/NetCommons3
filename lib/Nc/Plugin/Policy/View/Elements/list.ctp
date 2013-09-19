@@ -100,15 +100,8 @@
 									</dt>
 									<dd>
 										<?php
-											$NotAllowedEditFunction = '';
-											$NotAllowedShowFunction = 'if(ui.value == 0) {return false;} ';
-											if($user_authority_id != NC_AUTH_ADMIN_ID) {
-												// 管理者以外は編集不可にできない。
-												$NotAllowedEditFunction .= $NotAllowedShowFunction;
-												$otherLabel = "<span class='disable-lbl'>".__d('policy', 'Not allowed to edit')."</span>";
-											} else {
-												$otherLabel = __d('policy', 'Not allowed to edit');
-											}
+											$NotAllowedFunction = 'if(ui.value == 0) {return false;} ';
+											$otherLabel = "<span class='disable-lbl'>".__d('policy', 'Not allowed to edit')."</span>";
 											$otherShowLabel = "<span class='disable-lbl'>".__d('policy', 'Not allowed to view')."</span>";
 											if($item['Item']['tag_name'] == 'authority_id') {
 												$minAuthorityId = NC_AUTH_ADMIN_ID;
@@ -134,7 +127,7 @@
 												$sliderOptions['disabled'] = true;
 												$addClass .= ' disable-lbl';
 											}
-											$sliderOptions['slide'] = 'function( event, ui ) {' .$NotAllowedEditFunction. sprintf($LinkageFunction, $showId, '>') .'}';
+											$sliderOptions['slide'] = 'function( event, ui ) {' .$NotAllowedFunction. sprintf($LinkageFunction, $showId, '>') .'}';
 											$adminLabel = __('Administrator').__(' - ').__('Clerk');
 											
 											echo '<div class="policy-edit-subtitle">'.__d('policy', 'Range that allows editing').':</div>';
@@ -146,7 +139,7 @@
 											) . '</div>';
 											$addClass = '';
 											$sliderOptions = array();
-											$sliderOptions['slide'] = 'function( event, ui ) {' .$NotAllowedShowFunction. sprintf($LinkageFunction, $editId, '<') .'}';
+											$sliderOptions['slide'] = 'function( event, ui ) {' .$NotAllowedFunction. sprintf($LinkageFunction, $editId, '<') .'}';
 											if($item['Item']['tag_name'] == 'handle') {
 												$sliderOptions['disabled'] = true;
 												$addClass .= ' disable-lbl';
