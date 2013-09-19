@@ -59,6 +59,21 @@ class NcAssetDispatcher extends AssetDispatcher {
 // Add End Ryuji.M
 		}
 		$plugin = Inflector::camelize($parts[0]);
+// Add Stert Ryuji.M webrootのパスをRouting
+		if($plugin =='Js' || $plugin =='Css' || $plugin =='Img') {
+			// TODO: imgもNc/webroot下に移動し、読み込むようにしてあるが、
+			// Dispatcherを経由するため効率が非常に悪い。
+			// app/webroot下にファイルがなければ、コピーするような処理をすれば
+			// 高速になるが、同じファイルが２つ存在してしまう。
+			$paths = App::path('webroot');
+			foreach ($paths as $path) {
+				$path = $path . $url;
+				if (file_exists($path)) {
+					return $path;
+				}
+			}
+		}
+// Add End Ryuji.M
 		if ($plugin && CakePlugin::loaded($plugin)) {
 			unset($parts[0]);
 			$fileFragment = urldecode(implode(DS, $parts));

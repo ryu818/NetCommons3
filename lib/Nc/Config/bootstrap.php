@@ -69,9 +69,10 @@ App::build(array(
 	'Vendor'                    => array(APP . 'Vendor' . DS, NC . 'Vendor' . DS),
 	'Plugin'                    => array(APP . 'Plugin' . DS, NC . 'Plugin' . DS),
 ));
-// ブロック用テーマ
+// ブロック用テーマ - webroot
 App::build(array(
 	'Frame'                    => array(APP . 'Frame' . DS, NC . 'Frame' . DS),
+	'webroot'                    => array(APP . 'webroot' . DS, NC . 'webroot' . DS),
 ), App::RESET);
 
 CakePlugin::loadAll(array(array('routes' => true)));	// Loads all plugins at once		// array(array('routes' => true))     'Blog' => array('routes' => true)

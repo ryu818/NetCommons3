@@ -605,12 +605,16 @@ class NcHtmlHelperInstance extends AppHelper {
 					}
 				}
 			} else {
-				$path = Configure::read('App.www_root') . $file;
-				if (file_exists($path)) {
-					$webPath = $asset[0];
-					//$webPath = "{$this->_htmlHelper->request->webroot}" . $asset[0];
-					$setPath = true;
-					$realPath = $path;
+				$paths = App::path('webroot');
+				foreach ($paths as $path) {
+					$path = $path . $file;
+					if (file_exists($path)) {
+						$webPath = $asset[0];
+						//$webPath = "{$this->_htmlHelper->request->webroot}" . $asset[0];
+						$setPath = true;
+						$realPath = $path;
+						break;
+					}
 				}
 			}
 		}
