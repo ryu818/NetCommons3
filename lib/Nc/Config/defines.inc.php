@@ -159,7 +159,7 @@ define('NC_FOOTER_PAGE_ID', 8);
 define('NC_PERMALINK_CONTENT', '(%| |#|<|>|\+|\\\\|\"|\'|&|\?|\.$|=|\/|~|:|;|,|\$|@|^\.|\||\]|\[|\!|\(|\)|\*)');
 define('NC_PERMALINK_PROHIBITION', "/".NC_PERMALINK_CONTENT."/i");
 define('NC_PERMALINK_PROHIBITION_REPLACE', "-");
-define('NC_PERMALINK_DIR_CONTENT', "^(users\/|controls\/|active-controls\/|active-contents\/|blocks\/|active-blocks\/|img\/|css\/|js\/|frame\/|theme\/|nc-downloads\/)$");
+define('NC_PERMALINK_DIR_CONTENT', "\/(users|controls|active-controls|active-contents|blocks|active-blocks|img|css|js|frame|theme|nc-downloads)\/$");
 define('NC_PERMALINK_PROHIBITION_DIR_PATTERN', "/".NC_PERMALINK_DIR_CONTENT."/i");
 
 define('NC_SPACE_PUBLIC_PREFIX', '');

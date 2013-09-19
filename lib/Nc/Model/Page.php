@@ -282,7 +282,7 @@ class Page extends AppModel
 			return false;
 		}
 		$chk_permalink = $this->getPermalink($permalink, $space_type);
-		if(preg_match(NC_PERMALINK_PROHIBITION_DIR_PATTERN, $chk_permalink)) {
+		if(preg_match(NC_PERMALINK_PROHIBITION_DIR_PATTERN, '/'.$chk_permalink)) {
 			return __('Unavailable string is used by the system.');
 		}
 		return true;
