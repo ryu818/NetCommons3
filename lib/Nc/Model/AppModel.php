@@ -153,9 +153,7 @@ class AppModel extends Model {
 			} else {
 				$time = call_user_func($colType['formatter'], $colType['format']);
 			}
-			error_log(print_r($colType, true)."\n\n", 3, LOGS."/error.log");
-			error_log(print_r($time, true)."\n\n", 3, LOGS."/error.log");
-			
+
 			$fields[$this->alias.'.modified'] = "'". $time. "'";
 		}
 		if ($this->hasField('modified_user_id') && !isset($fields[$this->alias.'.modified_user_id'])) {
