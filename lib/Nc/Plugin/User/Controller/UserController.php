@@ -290,10 +290,12 @@ class UserController extends UserAppController {
 		$user['User'] = array();
 		$userItemLinks = array();
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
+
 		if(!empty($userId)) {
 			// 編集
 			$user = $this->User->findById(intval($userId));
-			if(!isset($user['User']) || ($loginUserId != $userId && $this->hierarchy < $user['Authority']['hierarchy'])) {
+			if(!isset($user['User'])
+				|| ($loginUserId != $userId && !$this->CheckAuth->isEditForUser($user['Authority']['hierarchy']))) {
 				$this->response->statusCode('403');
 				$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 				return;
@@ -453,8 +455,7 @@ class UserController extends UserAppController {
 				$this->Session->setFlash(__('Has been successfully updated.'));
 			}
 		}
-		
-		
+
 		$this->set('id', $this->id.'-'.$userId);	// top idをuser_id単位に設定
 		$this->set('name', 'User.avatar');
 		$this->set('item', $this->Item->findList('first', array('Item.id' => NC_ITEM_ID_AVATAR)));

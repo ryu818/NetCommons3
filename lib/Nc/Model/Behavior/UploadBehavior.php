@@ -465,9 +465,10 @@ class UploadBehavior extends ModelBehavior {
 			/////if (!in_array($field, array_keys($model->data[$model->alias]))) continue;
 			/////if (empty($this->runtime[$model->alias][$field])) continue;
 			if (isset($this->_removingOnly[$field])) continue;
-			
+
 			// モデルUserならば、id情報でUpload.user_id更新
-			if ($this->settings[$model->alias][$field]['useUploadModel'] && !empty($model->id) && $model->alias == 'User' && $created) {
+			if ($this->settings[$model->alias][$field]['useUploadModel']
+					&& !empty($model->id) && $model->alias == 'User' && $created) {
 				$Upload = ClassRegistry::init('Upload');
 				$data = array(
 					'Upload.user_id' => "'".$model->id. "'",
@@ -478,7 +479,7 @@ class UploadBehavior extends ModelBehavior {
 					return false;
 				}
 			}
-	
+
 			if ($this->settings[$model->alias][$field]['useUploadLinkModel'] && !empty($model->id)) {
 				if (!$this->saveUploadLink($model, $field)) {
 					return false;
@@ -2107,6 +2108,11 @@ class UploadBehavior extends ModelBehavior {
 		$Upload = ClassRegistry::init('Upload');
 		// Upload登録
 		$pathinfo = $this->_pathinfo($uploadFile['name']);
+
+		// モデルUserならば、id情報でUpload.user_id更新
+		if (!empty($model->id) && $model->alias == 'User' && $model->id != $this->uploadUserId) {
+			$this->uploadUserId = $model->id;
+		}
 
 		$data = array(
 			'Upload' => array(
