@@ -51,20 +51,20 @@
 
 		$adminStr = '';
 		if ($hierarchy >= NC_AUTH_MIN_CHIEF) {
-			$editTitle = __d('user', 'Edit member info[%s]', $user['User']['handle']);
 			if ($this->CheckAuth->isEditForUser($user['Authority']['hierarchy'])) {
+				$editTitle = __d('user', 'Edit member info[%s]', $user['User']['handle']);
 				$adminStr .= $this->Html->link(__('Edit'), $editLink.'/'.$user['User']['id'], array(
 					'title' => $editTitle,
 					'onclick' =>'$.User.memberEdit(event,this); return false;',
 					'data-user-id' => $user['User']['id'],
-				))."&nbsp;|&nbsp;";
+				));
+				$adminStr .= '&nbsp;|&nbsp;'.$this->Html->link(__d('user', 'Select Groups to join'), $groupLink.'/'.$user['User']['id'], array(
+					'title' => __d('user', 'Select Groups to join'),
+					'data-tab-title' => $editTitle,
+					'onclick' =>'$.User.memberEdit(event,this); return false;',
+					'data-user-id' => $user['User']['id'],
+				));
 			}
-			$adminStr .= $this->Html->link(__d('user', 'Select Groups to join'), $groupLink.'/'.$user['User']['id'], array(
-				'title' => __d('user', 'Select Groups to join'),
-				'data-tab-title' => $editTitle,
-				'onclick' =>'$.User.memberEdit(event,this); return false;',
-				'data-user-id' => $user['User']['id'],
-			));
 			if($user['Authority']['hierarchy'] <= $loginUser['hierarchy'] && $user['User']['id'] != NC_SYSTEM_USER_ID) {
 				$deleteTitle = __d('user', 'Delete member [%s]', $user['User']['handle']);
 				$adminStr .= "&nbsp;|&nbsp;".$this->Html->link(__('Delete'), $deleteLink, array(

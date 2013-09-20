@@ -475,7 +475,8 @@ class UserController extends UserAppController {
 			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 		$user = $this->User->findById(intval($userId));
-		if(!isset($user['User']) || ($loginUserId != $userId && $this->hierarchy < $user['Authority']['hierarchy'])) {
+		if(!isset($user['User'])
+			|| ($loginUserId != $userId && !$this->CheckAuth->isEditForUser($user['Authority']['hierarchy']))) {
 			$this->response->statusCode('403');
 			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 			return;
@@ -560,7 +561,8 @@ class UserController extends UserAppController {
 			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 		$user = $this->User->findById($userId);
-		if(!isset($user['User']) || ($loginUserId != $userId && $this->hierarchy < $user['Authority']['hierarchy'])) {
+		if(!isset($user['User'])
+			|| ($loginUserId != $userId && !$this->CheckAuth->isEditForUser($user['Authority']['hierarchy']))) {
 			$this->response->statusCode('403');
 			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 			return;
