@@ -140,10 +140,15 @@ class AuthorityCommonComponent extends Component {
  * @return  Model Authority
  * @since   v 3.0.0.0
  */
-	public function getDisabled($baseAuthorityId = NC_AUTH_GENERAL_ID) {
+	public function getDisabled($id = NC_AUTH_GENERAL_ID, $baseAuthorityId = NC_AUTH_GENERAL_ID) {
 
-		$index = $baseAuthorityId - 1;
-
+		if($id == AUTHORITY_SYSTEM_ADMIN_ID) {
+			$index = 0;
+		} else if($id == NC_AUTH_CLERK_ID) {
+			$index = NC_AUTH_CLERK_ID;
+		} else {
+			$index = $baseAuthorityId;
+		}
 		$disabledCreatingCommunityArr = explode('|', AUTHORITY_ALLOW_CREATING_COMMUNITY_DISABLED);
 		$disabledNewParticipantArr = explode('|', AUTHORITY_ALLOW_NEW_PARTICIPANT_DISABLED);
 		$disabledMyportalUseFlagArr = explode('|', AUTHORITY_MYPORTAL_USE_FLAG_DISABLED);

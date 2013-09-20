@@ -166,7 +166,7 @@ class AuthorityController extends AuthorityAppController {
 		// 言語切替
 		$this->AuthorityCommon->setLanguage();
 		$authority = $this->AuthorityCommon->setInit($authorityId);
-		$this->set('authorityDisabled', $this->AuthorityCommon->getDisabled($authority['Authority']['base_authority_id']));
+		$this->set('authorityDisabled', $this->AuthorityCommon->getDisabled($authority['Authority']['id'], $authority['Authority']['base_authority_id']));
 
 		$this->_setDetail($authorityId, $authority);
 	}
