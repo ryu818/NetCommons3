@@ -877,11 +877,11 @@ class Router {
 				if (!empty($params['plugin']) && $params['plugin'] !== $params['controller']) {
 					$output .= Inflector::underscore($params['plugin']) . '/';
 				}
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 // プライベートのルームのプラグインにパーマリンクなしで遷移した先のリダイレクトが正常にリダイレクトされないため
 				$output .= $url;
 				//$output .= Inflector::underscore($params['controller']) . '/' . $url;
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 			}
 		}
 		$protocol = preg_match('#^[a-z][a-z0-9+-.]*\://#i', $output);

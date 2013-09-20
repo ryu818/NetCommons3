@@ -922,16 +922,16 @@ class DboSource extends DataSource {
 	public function logQuery($sql, $params = array()) {
 		$this->_queriesCnt++;
 		$this->_queriesTime += $this->took;
-// Edit Source 2012/10/03 Ryuji.M
 		$this->_queriesLog[] = array(
 			'query'		=> $sql,
 			'params'	=> $params,
 			'affected'	=> $this->affected,
 			'numRows'	=> $this->numRows,
 			'took'		=> $this->took,
+// Add for NetCommons Extentions By Ryuji.M --START
 			'global_count' => Configure::read(NC_SYSTEM_KEY.'.global_count')
+// Add for NetCommons Extentions By Ryuji.M --E N D
 		);
-// Edit Source End
 		if (count($this->_queriesLog) > $this->_queriesLogMax) {
 			array_pop($this->_queriesLog);
 		}

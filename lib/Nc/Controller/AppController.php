@@ -310,7 +310,7 @@ class AppController extends Controller {
 		extract($this->_parseBeforeRedirect($response, $url, $status, $exit), EXTR_OVERWRITE);
 
 		if ($url !== null) {
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 			if($this->request->header('X-PJAX')) {
 				if (!$status) {
 					// IEの場合、statusコードが30Xで返すとjquery.getResponseHeaderが取得できなくなるため。
@@ -344,7 +344,7 @@ class AppController extends Controller {
 				$this->response->header('Location', Router::url($url, true));
 			}
 			// $this->response->header('Location', Router::url($url, true));
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 		}
 
 		if (is_string($status)) {
@@ -359,11 +359,11 @@ class AppController extends Controller {
 		}
 
 		if ($exit) {
-// Add Start Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --START
 			if ($this->request->header('X-PJAX') && Configure::read('debug') != 0) {
 				$this->render(false, 'redirect');
 			}
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 			$this->response->send();
 			$this->_stop();
 		}

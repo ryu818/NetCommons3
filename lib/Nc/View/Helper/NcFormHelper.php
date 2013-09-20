@@ -39,7 +39,7 @@ class NcFormHelper extends FormHelper {
 	 * @link http://book.cakephp.org/2.0/en/core-libraries/helpers/form.html#options-for-create
 	 */
 	public function create($model = null, $options = array()) {
-// Add Start Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --START
 // id属性、name属性付け替え
 		if (!isset($options['id']) && isset($this->_View->viewVars['id'])) {
 			$options['id'] = $this->domId('Form');
@@ -47,7 +47,7 @@ class NcFormHelper extends FormHelper {
 		if (!isset($options['name']) && isset($options['id'])) {
 			$options['name'] = $options['id'];
 		}
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 
 		$created = $id = false;
 		$append = '';
@@ -73,9 +73,9 @@ class NcFormHelper extends FormHelper {
 
 		if ($model !== false && $key) {
 			$recordExists = (
-			isset($this->request->data[$model]) &&
-			!empty($this->request->data[$model][$key]) &&
-			!is_array($this->request->data[$model][$key])
+				isset($this->request->data[$model]) &&
+				!empty($this->request->data[$model][$key]) &&
+				!is_array($this->request->data[$model][$key])
 			);
 
 			if ($recordExists) {
@@ -104,7 +104,7 @@ class NcFormHelper extends FormHelper {
 			$options['action'] = $this->request->here(false);
 		} elseif (empty($options['url']) || is_array($options['url'])) {
 			if (empty($options['url']['controller'])) {
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 // model名とプラグイン名がいっしょならば、controller名を複数形にしない
 				$plugin = null;
 				if ($this->plugin) {
@@ -124,16 +124,16 @@ class NcFormHelper extends FormHelper {
 				//} elseif (!empty($this->request->params['controller'])) {
 				//	$options['url']['controller'] = Inflector::underscore($this->request->params['controller']);
 				//}
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 			}
-// Add Start Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --START
 // #個所付与
 			if($this->plugin && !isset($options['url']['#']) && isset($this->_View->viewVars['id'])) {
 				$options['url']['#'] = $this->_View->viewVars['id'];
 			} else if(isset($options['url']['#']) && $options['url']['#'] == '') {
 				unset($options['url']['#']);
 			}
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 			if (empty($options['action'])) {
 				$options['action'] = $this->request->params['action'];
 			}
@@ -216,13 +216,13 @@ class NcFormHelper extends FormHelper {
  * ・オプションを追加。
  *
  * ### Options:
- *  Add Start Ryuji.M
+ *  Add for NetCommons Extentions By Ryuji.M --START
  * - `popup`      bool   default false ポップアップ表示するかどうか。位置の指定は現状できない。
  * - `selector`   string default null targetのjquery.selector targetがtext,textareaならば、変更されたら削除。targetがselectならば、change,その他のinputタグならば、click時に削除。
  * 							trueと指定すれば、それ自身
  * - `close`      bool   default true trueならば×ボタンを付与。
  *
- *  Add End
+ *  Add for NetCommons Extentions By Ryuji.M --E N D
  * - `escape`  bool  Whether or not to html escape the contents of the error.
  * - `wrap`  mixed  Whether or not the error message should be wrapped in a div. If a
  *   string, will be used as the HTML tag to use.
@@ -367,10 +367,10 @@ class NcFormHelper extends FormHelper {
 			if ($rule->skip()) {
 				continue;
 			}
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 			//return !$rule->allowEmpty;
 			return ($rule->rule[0] == 'notEmpty' || $rule->allowEmpty === false);
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 		}
 		return false;
 	}

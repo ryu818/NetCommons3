@@ -70,7 +70,6 @@ class Object {
 		if (empty($url)) {
 			return false;
 		}
-		App::uses('Dispatcher', 'Routing');
 		if (($index = array_search('return', $extra)) !== false) {
 			$extra['return'] = 0;
 			$extra['autoRender'] = 1;
@@ -87,11 +86,11 @@ class Object {
 		$data = isset($extra['data']) ? $extra['data'] : null;
 		unset($extra['data']);
 
-// Add Start Ryuji.M
-		// requestActionの第一引数を配列にした状態ではcontroller->request->queryの値をセットできないため修正。
+// Add for NetCommons Extentions By Ryuji.M --START
+// requestActionの第一引数を配列にした状態ではcontroller->request->queryの値をセットできないため修正。
 		$query = isset($extra['query']) ? $extra['query'] : null;
 		unset($extra['query']);
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 
 		if (is_string($url) && strpos($url, FULL_BASE_URL) === 0) {
 			$url = Router::normalize(str_replace(FULL_BASE_URL, '', $url));
@@ -107,12 +106,12 @@ class Object {
 			$request->data = $data;
 		}
 
-// Add Start Ryuji.M
-		// requestActionの第一引数を配列にした状態ではcontroller->request->queryの値をセットできないため修正。
+// Add for NetCommons Extentions By Ryuji.M --START
+// requestActionの第一引数を配列にした状態ではcontroller->request->queryの値をセットできないため修正。
 		if (isset($query)) {
 			$request->query = $query;
 		}
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 
 		$dispatcher = new Dispatcher();
 		$result = $dispatcher->dispatch($request, new CakeResponse(), $extra);

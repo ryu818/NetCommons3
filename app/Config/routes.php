@@ -26,21 +26,29 @@
  * its action called 'display', and we pass a param to select the view file
  * to use (in this case, /app/View/Pages/home.ctp)...
  */
+// Modify for NetCommons Extentions By Ryuji.M --START
 //	Router::connect('/', array('controller' => 'pages', 'action' => 'display', 'home'));
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 /**
  * ...and connect the rest of 'Pages' controller's urls.
  */
+// Modify for NetCommons Extentions By Ryuji.M --START
 //	Router::connect('/pages/*', array('controller' => 'pages', 'action' => 'display'));
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 
 /**
  * Load all plugin routes. See the CakePlugin documentation on
  * how to customize the loading of plugin routes.
  */
+// Modify for NetCommons Extentions By Ryuji.M --START
 //	CakePlugin::routes();
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 
 /**
  * Load the CakePHP default routes. Only remove this if you do not want to use
  * the built-in default routes.
  */
+// Modify for NetCommons Extentions By Ryuji.M --START
 //	require CAKE . 'Config' . DS . 'routes.php';
 require NC . 'Config' . DS . 'routes.php';
+// Modify for NetCommons Extentions By Ryuji.M --E N D

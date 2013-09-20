@@ -24,14 +24,14 @@ class UploadBehavior extends ModelBehavior {
 
 	public $defaults = array(
 		'rootDir' => null,
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 		'pathMethod' => 'flat',					// useUploadModel=falseの場合は、flatのままだと、uploadモデルのファイル名と同名のファイルがつきかねないので、他を用いること。
 		//'pathMethod' => 'primaryKey',
 		'path' => '{ROOT}',
 		//'path' => '{ROOT}webroot{DS}files{DS}{model}{DS}{field}{DS}',
 		'fields' => array('dir' => 'file_path', 'type' => 'file_type', 'size' => 'file_size'),
 		// 'fields' => array('dir' => 'dir', 'type' => 'type', 'size' => 'size'),
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 		
 		'mimetypes' => array(),
 		'extensions' => array(),
@@ -45,10 +45,10 @@ class UploadBehavior extends ModelBehavior {
 		'thumbnailMethod' => 'imagick',
 		'thumbnailName' => null,
 		'thumbnailPath' => null,
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 		//'thumbnailPrefixStyle' => true,
 		'thumbnailPrefixStyle' => false,		// この初期値を変更してしまうとダウンロードできなくなるため変更不可
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 		'thumbnailQuality' => 75,
 		'thumbnailSizes' => array(),
 		'thumbnailType' => false,
@@ -56,7 +56,7 @@ class UploadBehavior extends ModelBehavior {
 		'mediaThumbnailType' => 'png',
 		'saveDir' => true,
 		'deleteFolderOnDelete' => false,
-// Edit Start Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --START
 		'mode' => NC_UPLOAD_FOLDER_MODE,
 		//'mode' => 0777,
 		'fileType' => 'file',
@@ -72,7 +72,7 @@ class UploadBehavior extends ModelBehavior {
 		'checkComponentAction'=> 'Download',// UploadLink.check_component_action登録用
 		'isDeleteFromLibrary' => true,		// ライブラリー一覧から削除させるかどうか。
 		'isWysiwyg' => null,				// WYSIWYGからの登録かどうかの判断用 nullの場合、カラムがtextならばtrue、それ以外はfalseとする。
-// Edit End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 	);
 
 	protected $_imageMimetypes = array(
@@ -81,10 +81,10 @@ class UploadBehavior extends ModelBehavior {
 		'image/jpeg',
 		'image/pjpeg',
 		'image/png',
-// Add Start R.Ohga
+// Add for NetCommons Extentions By R.Ohga --START
 // IE6-8では.pngの画像をアップロードするとimage/x-pngとなるため
 		'image/x-png',
-// Add End R.Ohga
+// Add for NetCommons Extentions By R.Ohga --E N D
 		'image/vnd.microsoft.icon',
 		'image/x-icon',
 	);
@@ -104,7 +104,7 @@ class UploadBehavior extends ModelBehavior {
 
 	protected $_removingOnly = array();
 	
-// Add Start Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --START
 
 /**
  * アップロードファイルリスト
@@ -117,7 +117,7 @@ class UploadBehavior extends ModelBehavior {
 	protected $uploadUserId = null;
 	
 	private $__extensionType = null;
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 
 /**
  * Runtime configuration for this behavior
@@ -135,10 +135,10 @@ class UploadBehavior extends ModelBehavior {
  * @access public
  */
 	public function setup(Model $model, $config = array()) {
-// Add Start Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --START
 		$user = Configure::read(NC_SYSTEM_KEY.'.user');
 		$this->setUploadUserId($model, $user['id']);
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 		if (isset($this->settings[$model->alias])) return;
 		$this->settings[$model->alias] = array();
 
@@ -161,7 +161,7 @@ class UploadBehavior extends ModelBehavior {
 			$field = $options;
 			$options = array();
 		}
-// Edit Start Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --START
 		$this->defaults['rootDir'] = NC_UPLOADS_DIR;
 		// fieldがrevision_group_idならば、強制的にisWysiwyg=trueとする。
 		$this->defaults['isWysiwyg'] = ($field == 'revision_group_id') ? true : false;
@@ -174,11 +174,11 @@ class UploadBehavior extends ModelBehavior {
 		}
 		
 		//$this->defaults['rootDir'] = ROOT . DS . APP_DIR . DS;
-// Edit End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 		if (!isset($this->settings[$model->alias][$field])) {
 			$options = array_merge($this->defaults, (array) $options);
 
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 			$options['thumbnailMethod'] = $this->_getEnableThumnailMethod($model, $options['thumbnailMethod']);
 			$this->_setFileTypeSetting($model, $field, $options);
 			$plugin = isset($options['plugin']) ? $options['plugin'] : Configure::read(NC_SYSTEM_KEY.'.plugin');
@@ -198,15 +198,15 @@ class UploadBehavior extends ModelBehavior {
 // 				$options['thumbnailPrefixStyle'] = $options['prefixStyle'];
 // 			}
 			// ENDHACK
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 
 			$options['fields'] += $this->defaults['fields'];
 			if ($options['rootDir'] === null) {
 				$options['rootDir'] = $this->defaults['rootDir'];
 			}
-// Add Start Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --START
 			$tempPath = $options['path'];
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 			if ($options['thumbnailName'] === null) {
 				if ($options['thumbnailPrefixStyle']) {
 					$options['thumbnailName'] = '{size}_{filename}';
@@ -220,20 +220,20 @@ class UploadBehavior extends ModelBehavior {
 					'isThumbnail' => true,
 					'path' => $options['path'],
 					'rootDir' => $options['rootDir'].$options['plugin']. DS,
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 					//'plugin' => $options['plugin'],
 					'contentId' => $options['contentId'],
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 				)));
 			} else {
 				$options['thumbnailPath'] = Folder::slashTerm($this->_path($model, $field, array(
 					'isThumbnail' => true,
 					'path' => $options['thumbnailPath'],
 					'rootDir' => $options['rootDir'].$options['plugin']. DS,
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 					//'plugin' => $options['plugin'],
 					'contentId' => $options['contentId'],
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 				)));
 			}
 
@@ -241,12 +241,12 @@ class UploadBehavior extends ModelBehavior {
 				'isThumbnail' => false,
 				'path' => $options['path'],
 				'rootDir' => $options['rootDir'].$options['plugin']. DS,
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 				//'plugin' => $options['plugin'],
 				'contentId' => $options['contentId'],
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 			)));
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 			$options['appendPath'] = Folder::slashTerm($this->_path($model, $field, array(
 				'isThumbnail' => false,
 				'path' => $tempPath,
@@ -258,7 +258,7 @@ class UploadBehavior extends ModelBehavior {
 				$options['thumbnailMethod'] = 'imagick';
 			}
 			$options['thumbnailSizes']['library'] = NC_UPLOAD_LIBRARY_THUMBNAIL_WIDTH_RESIZE_MODE;	// 削除時では、beforeSavが呼ばれないため、ここで初期値設定
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 			if (!in_array($options['pathMethod'], $this->_pathMethods)) {
 				$options['pathMethod'] = 'primaryKey';
 			}
@@ -279,7 +279,7 @@ class UploadBehavior extends ModelBehavior {
  * @return void
  */
 	public function uploadSettings(Model $model, $field, $one, $two = null) {
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 		//if (empty($this->settings[$model->alias][$field])) {
 		//	$this->_setupField($model, $field, array());
 		//}
@@ -306,7 +306,7 @@ class UploadBehavior extends ModelBehavior {
 		unset($this->settings[$model->alias][$field]);
 		$this->_setupField($model, $field, $data);
 		// $this->settings[$model->alias][$field] = $data + $this->settings[$model->alias][$field];
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 	}
 
 /**
@@ -325,7 +325,7 @@ class UploadBehavior extends ModelBehavior {
 
 			$this->runtime[$model->alias][$field] = $model->data[$model->alias][$field];
 
-// Add Start Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --START
 			// ライブラリーのサムネイル追加処理(設定しないでも追加する)
 			$tmp = isset($this->runtime[$model->alias][$field]['tmp_name']) ? $this->runtime[$model->alias][$field]['tmp_name'] : null;
 			if(!empty($tmp) && $this->settings[$model->alias][$field]['fileType'] == 'image') {
@@ -340,7 +340,7 @@ class UploadBehavior extends ModelBehavior {
 			}
 			$this->settings[$model->alias][$field]['thumbnailSizes'] = $options['thumbnailSizes'] = array_merge((array) $this->settings[$model->alias][$field]['thumbnailSizes'], 
 					array('library' => $libraryGeometry));
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 
 			$removing = !empty($model->data[$model->alias][$field]['remove']);
 			if ($removing || ($this->settings[$model->alias][$field]['deleteOnUpdate']
@@ -357,7 +357,7 @@ class UploadBehavior extends ModelBehavior {
 				}
 
 				if ($removing) {
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 // field以外のカラムにデータが入っていても、fieldのみのupdateになってしまうため
 // その他のデータとマージするように修正。
 					$model->data[$model->alias] = array_merge($model->data[$model->alias], array(
@@ -372,7 +372,7 @@ class UploadBehavior extends ModelBehavior {
 // 						$options['fields']['size'] => null,
 // 						$options['fields']['dir'] => null,
 // 					);
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 					$this->_removingOnly[$field] = true;
 					continue;
 				} else {
@@ -389,7 +389,7 @@ class UploadBehavior extends ModelBehavior {
 				continue;
 			}
 
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 			if(!is_array($this->runtime[$model->alias][$field])) {
 				$newFileName = $this->runtime[$model->alias][$field]['Id'];
 				// uploadに存在するかどうかのチェック
@@ -419,7 +419,7 @@ class UploadBehavior extends ModelBehavior {
 				$options['fields']['size'] => $this->runtime[$model->alias][$field]['size']
 			));
 			$this->uploadFileNames[$field] = $model->data[$model->alias][$field];
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 		}
 		return true;
 	}
@@ -430,12 +430,12 @@ class UploadBehavior extends ModelBehavior {
 	 */
 	function beforeValidate(Model $model) {
 		foreach ($this->settings[$model->alias] as $field => $options) {
-// Add Start Ryuji.M
-			// Model[$field][file]があれば、そちらをfileエレメントとしてバリデート(プレビュー後に登録を実装するため)
+// Add for NetCommons Extentions By Ryuji.M --START
+// Model[$field][file]があれば、そちらをfileエレメントとしてバリデート(プレビュー後に登録を実装するため)
 			if(isset($model->data[$model->alias][$field], $model->data[$model->alias][$field]['file']) && is_array($model->data[$model->alias][$field]['file'])) {
 				$model->data[$model->alias][$field] = $model->data[$model->alias][$field]['file'];
 			}
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 			if (!empty($model->data[$model->alias][$field])
 				AND $this->_isURI($model->data[$model->alias][$field])) {
 				$uri = $model->data[$model->alias][$field];
@@ -450,7 +450,7 @@ class UploadBehavior extends ModelBehavior {
 
 	public function afterSave(Model $model, $created) {
 		$temp = array($model->alias => array());
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 // 削除して登録することでdeleteOnUpdateがtrueの場合にアップロードした画像が削除されないように修正。
 		$result = true;
 		if (!empty($this->__filesToRemove[$model->alias])) {
@@ -459,9 +459,9 @@ class UploadBehavior extends ModelBehavior {
 				$result[] = $this->unlink($file);
 			}
 		}
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 		foreach ($this->settings[$model->alias] as $field => $options) {
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 			/////if (!in_array($field, array_keys($model->data[$model->alias]))) continue;
 			/////if (empty($this->runtime[$model->alias][$field])) continue;
 			if (isset($this->_removingOnly[$field])) continue;
@@ -487,7 +487,7 @@ class UploadBehavior extends ModelBehavior {
 			}
 			if (!in_array($field, array_keys($model->data[$model->alias]))) continue;
 			if (empty($this->runtime[$model->alias][$field])) continue;
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 
 			$tempPath = $this->_getPath($model, $field);
 
@@ -498,7 +498,7 @@ class UploadBehavior extends ModelBehavior {
 				$path .= $tempPath . DS;
 				$thumbnailPath .= $tempPath . DS;
 			}
-// Add Start Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --START
 // pathの最後にDSを付与
 			if (!empty($tempPath)) {
 				$tempPath = !empty($this->settings[$model->alias][$field]['appendPath']) ? $this->settings[$model->alias][$field]['appendPath'] . $tempPath .DS : $tempPath. DS;
@@ -508,7 +508,7 @@ class UploadBehavior extends ModelBehavior {
 			if($tempPath == DS) {
 				$tempPath = '';
 			}
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 			$tmp = $this->runtime[$model->alias][$field]['tmp_name'];
 			$filePath = $path . $model->data[$model->alias][$field];
 			if (!$this->handleUploadedFile($model->alias, $field, $tmp, $filePath)) {
@@ -529,7 +529,7 @@ class UploadBehavior extends ModelBehavior {
 				}
 			}
 			
-// Add Start Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --START
 			if ($this->settings[$model->alias][$field]['useUploadModel'] &&
 				(!empty($tempPath) || (isset($this->settings[$model->alias][$field]['thumbnailSizes']['original']) && $this->runtime[$model->alias][$field]['size'] != filesize($filePath)))) {
 				// Upload update
@@ -546,7 +546,7 @@ class UploadBehavior extends ModelBehavior {
 					return false;
 				}
 			}
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 		}
 
 		if (!empty($temp[$model->alias]) && $model->id) {
@@ -556,11 +556,12 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		if (empty($this->__filesToRemove[$model->alias])) return true;
-// Edit End Ryuji.M 上部へ移動
+// Modify for NetCommons Extentions By Ryuji.M --START
+// 上部へ移動
 // 		foreach ($this->__filesToRemove[$model->alias] as $file) {
 // 			$result[] = $this->unlink($file);
 // 		}
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 		return $result;
 	}
 
@@ -611,11 +612,11 @@ class UploadBehavior extends ModelBehavior {
 		));
 
 		foreach ($this->settings[$model->alias] as $field => $options) {
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --START
 			if($model->useTable == 'uploads') {
 				$data[$model->alias][$field] = $model->id . '.' . $data[$model->alias]['extension'];
 			}
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 			$this->_prepareFilesForDeletion($model, $field, $data, $options);
 		}
 		return true;
@@ -816,7 +817,7 @@ class UploadBehavior extends ModelBehavior {
 			return true;
 		}
 
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 		$ret = true;
 		if (!isset($check[$field]['type']) || !strlen($check[$field]['type'])) {
 			$ret = false;
@@ -861,8 +862,7 @@ class UploadBehavior extends ModelBehavior {
 // 		if (empty($mimetypes)) $mimetypes = $this->settings[$model->alias][$field]['mimetypes'];
 
 // 		return in_array($check[$field]['type'], $mimetypes);
-// Edit End Ryuji.M
-		
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 	}
 
 /**
@@ -934,7 +934,7 @@ class UploadBehavior extends ModelBehavior {
 		if (!$requireUpload && (!isset($check[$field]['error']) || $check[$field]['error'] === UPLOAD_ERR_NO_FILE)) {
 			return true;
 		}
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 		$ret = true;
 		if (!$size) $size = $this->settings[$model->alias][$field]['maxSize'];
 		if (!isset($check[$field]['size']) || !strlen($check[$field]['size'])) {
@@ -953,7 +953,7 @@ class UploadBehavior extends ModelBehavior {
 		//}
 		//if (!$size) $size = $this->settings[$model->alias][$field]['maxSize'];
 		//return $check[$field]['size'] <= $size;
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 	}
 
 /**
@@ -978,7 +978,7 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		// Non-file uploads also mean the size is too small
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 		$ret = true;
 		if (!$size) $size = $this->settings[$model->alias][$field]['minSize'];
 		if (!isset($check[$field]['size']) || !strlen($check[$field]['size'])) {
@@ -998,11 +998,7 @@ class UploadBehavior extends ModelBehavior {
 
 // 		if (!$size) $size = $this->settings[$model->alias][$field]['minSize'];
 // 		return $check[$field]['size'] >= $size;
-// Edit End Ryuji.M
-		
-
-
-
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 	}
 
 /**
@@ -1025,7 +1021,7 @@ class UploadBehavior extends ModelBehavior {
 		if (!$requireUpload && (!isset($check[$field]['error']) || $check[$field]['error'] === UPLOAD_ERR_NO_FILE)) {
 			return true;
 		}
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 		// Non-file uploads also mean the extension is invalid
 		$ret = true;
 		if (!isset($check[$field]['name']) || !strlen($check[$field]['name'])) {
@@ -1093,8 +1089,7 @@ class UploadBehavior extends ModelBehavior {
 // 		$pathInfo = $this->_pathinfo($check[$field]['name']);
 // 		$extensions = array_map('strtolower', $extensions);
 // 		return in_array(strtolower($pathInfo['extension']), $extensions);
-// Edit End Ryuji.M
-		
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 	}
 
 /**
@@ -1117,7 +1112,7 @@ class UploadBehavior extends ModelBehavior {
 		if (!$requireUpload && (!isset($check[$field]['error']) || $check[$field]['error'] === UPLOAD_ERR_NO_FILE)) {
 			return true;
 		}
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 		// Non-file uploads also mean the height is too big
 		$ret = true;
 		if (!$height) $height = $this->settings[$model->alias][$field]['minHeight'];
@@ -1139,7 +1134,7 @@ class UploadBehavior extends ModelBehavior {
 
 // 		list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
 // 		return $height > 0 && $imgHeight >= $height;
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 	}
 
 /**
@@ -1162,7 +1157,7 @@ class UploadBehavior extends ModelBehavior {
 		if (!$requireUpload && (!isset($check[$field]['error']) || $check[$field]['error'] === UPLOAD_ERR_NO_FILE)) {
 			return true;
 		}
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 		// Non-file uploads also mean the height is too big
 		$ret = true;
 		if (!$height) $height = $this->settings[$model->alias][$field]['maxHeight'];
@@ -1185,8 +1180,7 @@ class UploadBehavior extends ModelBehavior {
 
 // 		list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
 // 		return $height > 0 && $imgHeight <= $height;
-// Edit End Ryuji.M
-		
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 	}
 
 /**
@@ -1209,7 +1203,7 @@ class UploadBehavior extends ModelBehavior {
 		if (!$requireUpload && (!isset($check[$field]['error']) || $check[$field]['error'] === UPLOAD_ERR_NO_FILE)) {
 			return true;
 		}
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 		// Non-file uploads also mean the height is too big
 		$ret = true;
 		if (!$width) $width = $this->settings[$model->alias][$field]['minWidth'];
@@ -1231,7 +1225,7 @@ class UploadBehavior extends ModelBehavior {
 
 // 		list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
 // 		return $width > 0 && $imgWidth >= $width;
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 	}
 
 /**
@@ -1254,7 +1248,7 @@ class UploadBehavior extends ModelBehavior {
 		if (!$requireUpload && (!isset($check[$field]['error']) || $check[$field]['error'] === UPLOAD_ERR_NO_FILE)) {
 			return true;
 		}
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 		// Non-file uploads also mean the height is too big
 		$ret = true;
 		if (!$width) $width = $this->settings[$model->alias][$field]['maxWidth'];
@@ -1276,7 +1270,7 @@ class UploadBehavior extends ModelBehavior {
 
 // 		list($imgWidth, $imgHeight) = getimagesize($check[$field]['tmp_name']);
 // 		return $width > 0 && $imgWidth <= $width;
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 	}
 
 	public function _resizeImagick(Model $model, $field, $path, $size, $geometry, $thumbnailPath) {
@@ -1299,12 +1293,12 @@ class UploadBehavior extends ModelBehavior {
 		if (preg_match('/^\\[[\\d]+x[\\d]+\\]$/', $geometry)) {
 			// resize with banding
 			list($destW, $destH) = explode('x', substr($geometry, 1, strlen($geometry)-2));
-// Edit Start R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --START
 // 小さい画像を拡大してしまうため修正
 			if ($destH > $height) {$destH = $height;}
 			if ($destW > $width) {$destW = $width;}
-// Edit End R.Ohga
-// Edit Start R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --E N D
+// Modify for NetCommons Extentions By R.Ohga --START
 // 余白ができてしまうため修正
 			$tempDestH = $destH;
 			$tempDestW = $destW;
@@ -1320,52 +1314,52 @@ class UploadBehavior extends ModelBehavior {
 // 			$y = ($destH - $imageGeometry['height']) / 2;
 // 			$image->setGravity(Imagick::GRAVITY_CENTER);
 // 			$image->extentImage($destW, $destH, $x, $y);
-// Edit End R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --E N D
 		} elseif (preg_match('/^[\\d]+x[\\d]+$/', $geometry)) {
 			// cropped resize (best fit)
 			list($destW, $destH) = explode('x', $geometry);
-// Edit Start R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --START
 			if ($destH > $height) {$destH = $height;}
 			if ($destW > $width) {$destW = $width;}
-// Edit End R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --E N D
 			$image->cropThumbnailImage($destW, $destH);
 		} elseif (preg_match('/^[\\d]+w$/', $geometry)) {
 			// calculate heigh according to aspect ratio
-// Edit Start R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --START
 			$destW = (int)$geometry-1;
 			if ($destW < $width) {
 				$image->thumbnailImage($destW, 0);
 			}
 // 			$image->thumbnailImage((int)$geometry-1, 0);
-// Edit End R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --E N D
 		} elseif (preg_match('/^[\\d]+h$/', $geometry)) {
 			// calculate width according to aspect ratio
-// Edit Start R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --START
 			$destH = (int)$geometry-1;
 			if ($destH < $height) {
 				$image->thumbnailImage(0, $destH);
 			}
 // 			$image->thumbnailImage(0, (int)$geometry-1);
-// Edit End R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --E N D
 		} elseif (preg_match('/^[\\d]+l$/', $geometry)) {
 			// calculate shortest side according to aspect ratio
 			$destW = 0;
 			$destH = 0;
 			$destW = ($width > $height) ? (int)$geometry-1 : 0;
 			$destH = ($width > $height) ? 0 : (int)$geometry-1;
-// Edit Start R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --START
 			if ($destH > $height) {$destH = $height;}
 			if ($destW > $width) {$destW = $width;}
-// Edit End R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --E N D
 			$imagickVersion = phpversion('imagick');
 			$image->thumbnailImage($destW, $destH, !($imagickVersion[0] == 3));
 		}
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 		if($size == 'original' && ((empty($destH) && empty($destH)) || ($destH == $height && $destW == $width))) {
 			// 大きさの変更なし
 			return true;
 		}
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 		if ($isMedia) {
 			$thumbnailType = $imageFormat = $this->settings[$model->alias][$field]['mediaThumbnailType'];
 		}
@@ -1406,7 +1400,7 @@ class UploadBehavior extends ModelBehavior {
 			}
 		}
 
-// Edit Start R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --START
 // $sizeが空の場合はファイル名に$sizeを使用しないように修正
 		$thumbnailName = $this->settings[$model->alias][$field]['thumbnailName'];
 		if ($size == 'original') {
@@ -1422,7 +1416,7 @@ class UploadBehavior extends ModelBehavior {
 // 				array($size, $pathInfo['filename'], $model->id),
 // 				$this->settings[$model->alias][$field]['thumbnailName']
 // 		);
-// Edit End R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --E N D
 
 		$destFile = "{$thumbnailPath}{$fileName}.{$thumbnailType}";
 
@@ -1450,7 +1444,7 @@ class UploadBehavior extends ModelBehavior {
 			$thumbnailType = 'png';
 		}
 
-// Edit Start R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --START
 // $sizeが「original」の場合はファイル名に$sizeを使用しないように修正(元ファイルの自動リサイズ)
 		$thumbnailName = $this->settings[$model->alias][$field]['thumbnailName'];
 		if ($size == 'original') {
@@ -1466,7 +1460,7 @@ class UploadBehavior extends ModelBehavior {
 // 				array($size, $pathInfo['filename'], $model->id),
 // 				$this->settings[$model->alias][$field]['thumbnailName']
 // 		);
-// Edit End R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --E N D
 
 		$destFile = "{$thumbnailPath}{$fileName}.{$thumbnailType}";
 
@@ -1518,42 +1512,42 @@ class UploadBehavior extends ModelBehavior {
 			if (preg_match('/^\\[[\\d]+x[\\d]+\\]$/', $geometry)) {
 				// resize with banding
 				list($destW, $destH) = explode('x', substr($geometry, 1, strlen($geometry)-2));
-// Edit Start R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --START
 // 小さい画像を拡大してしまうため修正
 				if ($destH > $srcH) {$destH = $srcH;}
 				if ($destW > $srcW) {$destW = $srcW;}
-// Edit End R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --E N D
 				$resizeMode = 'band';
 			} elseif (preg_match('/^[\\d]+x[\\d]+$/', $geometry)) {
 				// cropped resize (best fit)
 				list($destW, $destH) = explode('x', $geometry);
-// Edit Start R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --START
 				if ($destH > $srcH) {$destH = $srcH;}
 				if ($destW > $srcW) {$destW = $srcW;}
-// Edit End R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --E N D
 				$resizeMode = 'best';
 			} elseif (preg_match('/^[\\d]+w$/', $geometry)) {
 				// calculate heigh according to aspect ratio
 				$destW = (int)$geometry-1;
-// Edit Start R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --START
 				if ($destW > $srcW) {$destW = $srcW;}
-// Edit End R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --E N D
 				$resizeMode = false;
 			} elseif (preg_match('/^[\\d]+h$/', $geometry)) {
 				// calculate width according to aspect ratio
 				$destH = (int)$geometry-1;
-// Edit Start R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --START
 				if ($destH > $srcH) {$destH = $srcH;}
-// Edit End R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --E N D
 				$resizeMode = false;
 			} elseif (preg_match('/^[\\d]+l$/', $geometry)) {
 				// calculate shortest side according to aspect ratio
 				if ($srcW > $srcH) $destW = (int)$geometry-1;
 				else $destH = (int)$geometry-1;
-// Edit Start R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --START
 				if ($destH > $srcH) {$destH = $srcH;}
 				if ($destW > $srcW) {$destW = $srcW;}
-// Edit End R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --E N D
 				$resizeMode = false;
 			}
 			if (!isset($destW)) $destW = ($destH/$srcH) * $srcW;
@@ -1582,26 +1576,26 @@ class UploadBehavior extends ModelBehavior {
 				$resizeW = $destW;
 				$resizeH = $destH;
 			}
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 
 			if($size == 'original' && $destH == $height && $destW == $width) {
 				// 大きさの変更なし
 				return true;
 			}
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 
-// Edit Start R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --START
 // 余白ができてしまうため修正
 			$img = imagecreatetruecolor($resizeW, $resizeH);
 // 			$img = imagecreatetruecolor($destW, $destH);
-// Edit End R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --E N D
 			imagealphablending($img, false);
 			imagesavealpha($img, true);
 			imagefill($img, 0, 0, imagecolorallocate($img, 255, 255, 255));
-// Edit Start R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --START
 			imagecopyresampled($img, $src, 0, 0, 0, 0, $resizeW, $resizeH, $srcW, $srcH);
 // 			imagecopyresampled($img, $src, ($destW-$resizeW)/2, ($destH-$resizeH)/2, 0, 0, $resizeW, $resizeH, $srcW, $srcH);
-// Edit End R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --E N D
 
 			if ($supportsThumbnailQuality) {
 				$outputHandler($img, $destFile, $adjustedThumbnailQuality);
@@ -1747,12 +1741,12 @@ class UploadBehavior extends ModelBehavior {
 			'//'		=> DIRECTORY_SEPARATOR,
 			'/'			=> DIRECTORY_SEPARATOR,
 			'\\'		=> DIRECTORY_SEPARATOR,
-// Add Start Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --START
 			//'{plugin}'	=> $options['plugin'],
 			'{contentId}'	=> $options['contentId'],
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 		);
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 		$newPath = str_replace(
 			array_keys($replacements),
 			array_values($replacements),
@@ -1768,7 +1762,7 @@ class UploadBehavior extends ModelBehavior {
 		//	array_values($replacements),
 		//	$options['path']
 		//));
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 
 		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
 			if (!preg_match('/^([a-zA-Z]:\\\|\\\\)/', $newPath)) {
@@ -1829,10 +1823,10 @@ class UploadBehavior extends ModelBehavior {
 				}
 
 				if (!$valid) {
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 					$model->invalidate($field, 'Failed to resize file.');
 					//$model->invalidate($field, 'resizeFail');
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 				}
 			}
 		}
@@ -1902,7 +1896,7 @@ class UploadBehavior extends ModelBehavior {
 			return $this->__filesToRemove;
 		}
 		
-// Add Start Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --START
 		if ($this->settings[$model->alias][$field]['useUploadModel']) {
 			// Uploadテーブル削除
 			$Upload = ClassRegistry::init('Upload');
@@ -1944,7 +1938,7 @@ class UploadBehavior extends ModelBehavior {
 		if($options['isWysiwyg']) {
 			return $this->__filesToRemove;
 		}
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 
 		$DS = empty($dir) ? '' : DIRECTORY_SEPARATOR;
 		$mimeType = $this->_getMimeType($filePath);
@@ -1983,11 +1977,11 @@ class UploadBehavior extends ModelBehavior {
 		}
 
 		foreach ($options['thumbnailSizes'] as $size => $geometry) {
-// Add Start Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --START
 			if($size == 'original') {
 				continue;
 			}
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 			$fileName = str_replace(
 				array('{size}', '{filename}', '{primaryKey}', '{time}', '{microtime}'),
 				array($size, $pathInfo['filename'], $model->id, time(), microtime()),
@@ -2021,7 +2015,7 @@ class UploadBehavior extends ModelBehavior {
 		if (empty($pathInfo['filename'])) {
 			$pathInfo['filename'] = basename($pathInfo['basename'], '.' . $pathInfo['extension']);
 		}
-// Add Start Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --START
 // tar.gz対応
 		if($pathInfo['extension'] == 'gz') {
 			$fileNameArr = explode('.', $pathInfo['filename']);
@@ -2035,11 +2029,11 @@ class UploadBehavior extends ModelBehavior {
 				}
 			}
 		}
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 		return $pathInfo;
 	}
 
-// Add Start Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --START
 /**
  * アップロードテーブルのuser_idセット
  *
@@ -2371,8 +2365,8 @@ class UploadBehavior extends ModelBehavior {
 		return $this->uploadFileNames[$field];
 	}
 
-// Add End Ryuji.M
-// Add Start R.Ohga
+// Add for NetCommons Extentions By Ryuji.M --E N D
+// Add for NetCommons Extentions By R.Ohga --START
 /**
  * 利用可能な画像縮小メソッド取得
  *
@@ -2391,5 +2385,5 @@ class UploadBehavior extends ModelBehavior {
 		}
 		return '';
 	}
-// Add End R.Ohga
+// Add for NetCommons Extentions By R.Ohga --E N D
 }

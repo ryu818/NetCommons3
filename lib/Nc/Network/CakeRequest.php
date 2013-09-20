@@ -588,17 +588,17 @@ class CakeRequest implements ArrayAccess {
  */
 	public function here($base = true) {
 		$url = $this->here;
-// Add Start Ryuji.M
-		// Viewでecho $this->Form->create();指定を行った場合にPage表示中ならば、block_typeをblocksにするため
-		// /lib/Cake/Network/CakeRequestを継承して作成したかったが、できなかったためコピーして修正。
+// Add for NetCommons Extentions By Ryuji.M --START
+// Viewでecho $this->Form->create();指定を行った場合にPage表示中ならば、block_typeをblocksにするため
+// /lib/Cake/Network/CakeRequestを継承して作成したかったが、できなかったためコピーして修正。
 		$block_type = Configure::read(NC_SYSTEM_KEY.'.block_type');
 		if(isset($block_type) && $block_type == 'blocks') {
 			$url = preg_replace('/(.*)\/active-blocks\/([0-9]*)/i', '$1/blocks/$2', $url);
 		}
 
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 		if (!empty($this->query)) {
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 // 先頭「_」がつかないqueryのみ追加
 			$query = array();
 			foreach($this->query as $k => $v) {
@@ -608,9 +608,9 @@ class CakeRequest implements ArrayAccess {
 			}
 			$url .= '?' . http_build_query($query, null, '&');
 			// $url .= '?' . http_build_query($this->query, null, '&');
-// Edit End Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 		}
-// Add Start Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --START
 // #をdefault付与。
 		if(isset($this->params['plugin'])) {
 			$id = Configure::read(NC_SYSTEM_KEY.'.id');
@@ -618,7 +618,7 @@ class CakeRequest implements ArrayAccess {
 				$url .= '#' . $id;
 			}
 		}
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 		if (!$base) {
 			$url = preg_replace('/^' . preg_quote($this->base, '/') . '/', '', $url, 1);
 		}

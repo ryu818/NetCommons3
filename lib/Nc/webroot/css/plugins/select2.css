@@ -362,11 +362,11 @@ Version: 3.4.1 Timestamp: Thu Jun 27 18:02:10 PDT 2013
     -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
-// Add Start Ryuji.M
+/* Add for NetCommons Extentions By Ryuji.M --START */
 .select2-results li{
 	margin: 0;
 }
-// Add End Ryuji.M
+/* Add for NetCommons Extentions By Ryuji.M --E N D */
 
 .select2-results ul.select2-result-sub {
     margin: 0;

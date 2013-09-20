@@ -107,8 +107,9 @@ CakeLog::config('error', array(
 	'file' => 'error',
 ));
 
-
+// Add for NetCommons Extentions By Ryuji.M --START
 /**
  * NC用
  */
 require CORE_PATH . 'Nc' . DS .'Config'.DS.'bootstrap.php';
+// Add for NetCommons Extentions By Ryuji.M --E N D

@@ -18,10 +18,10 @@ class AppExceptionRenderer extends ExceptionRenderer {
 			$controller = new Controller($request, $response);
 			$controller->viewPath = 'Errors';
 		}
-// Add Start Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --START
 // 例外がおこったら、layoutをdefaultに設定
 		$controller->layout = 'default';
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 		return $controller;
 	}
 }

@@ -18,15 +18,14 @@
 * html .ui-tooltip {
 	background-image: none;
 }
-/* Delete Start Ryuji */
+/* Modify for NetCommons Extentions By Ryuji.M --START */
 /* body .ui-tooltip { border-width: 2px; } */
-/* Delete Start Ryuji */
-/* Add Start Ryuji.M */
+/* Modify for NetCommons Extentions By Ryuji.M --E N D */
+/* Add for NetCommons Extentions By Ryuji.M --START */
 .ui-tooltip .ui-tooltip-title {
 	background-color:#eeeeee;
 	padding:4px 8px;
 	margin: 0 0 8px 0;
 	border-radius:2px;
 }
-
-/* Add End Ryuji.M */
+/* Add for NetCommons Extentions By Ryuji.M --E N D */

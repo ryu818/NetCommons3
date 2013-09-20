@@ -20,13 +20,14 @@
  * @since         CakePHP(tm) v 0.2.9
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
+// Add for NetCommons Extentions By Ryuji.M --START
 /**
- * By Ryuji.M
  * beforeFilterにてComponentsの権限チェックを実行し、その後、startupProcessで
  * エラーならば、ブロック内部のコンテンツにエラーメッセージのみ表示し、コントローラを
  * 呼ばないように設定する
  * => startupProcess のreturnをみて、actionを実行するかどうかを決定するように修正。
  */
+// Add for NetCommons Extentions By Ryuji.M --E N D
 
 App::uses('Router', 'Routing');
 App::uses('CakeRequest', 'Network');
@@ -68,7 +69,7 @@ class Dispatcher implements CakeEventListener {
 
 /**
  * Returns the CakeEventManager instance or creates one if none was
- * creted. Attaches the default listeners and filters
+ * created. Attaches the default listeners and filters
  *
  * @return CakeEventManager
  */
@@ -188,7 +189,8 @@ class Dispatcher implements CakeEventListener {
  */
 	protected function _invoke(Controller $controller, CakeRequest $request, CakeResponse $response) {
 		$controller->constructClasses();
-		/* Edit Start Ryuji.M  startupProcess のreturnを見て、actionを実行するかどうかを決定する*/
+// Modify for NetCommons Extentions By Ryuji.M --START
+// startupProcess のreturnを見て、actionを実行するかどうかを決定する
 		// $controller->startupProcess();
 		$ret = $controller->startupProcess();
 
@@ -199,7 +201,7 @@ class Dispatcher implements CakeEventListener {
 		} else {
 			$result = '';
 		}
-		/* Edit End  Ryuji.M */
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 		if ($result instanceof CakeResponse) {
 			$render = false;
 			$response = $result;

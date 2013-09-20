@@ -47,7 +47,8 @@ if (!defined('ROOT')) {
 if (!defined('APP_DIR')) {
 	define('APP_DIR', basename(dirname(dirname(__FILE__))));
 }
-// versionチェック Add Start Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --START
+// versionチェック
 if (version_compare(phpversion(), "5.2.8", "<")) {
 	echo 'Your PHP version is too old, please upgrade to a newer version. Your version is '.phpversion().', this application requires 5.2.8.';
 	exit;
@@ -56,6 +57,7 @@ if (version_compare(phpversion(), "5.2.8", "<")) {
 	echo '[app/tmp/cache] is NOT writable.';
 	exit;
 }
+// Add for NetCommons Extentions By Ryuji.M --E N D
 
 /**
  * The absolute path to the "cake" directory, WITHOUT a trailing DS.

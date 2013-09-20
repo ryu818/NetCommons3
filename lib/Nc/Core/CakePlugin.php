@@ -198,7 +198,7 @@ class CakePlugin {
 		if ($config['routes'] === false) {
 			return false;
 		}
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --START
 // routes.phpファイルがなければincludeしないように修正。
 // loadAllですべてのpluginをroutes=>trueとしているため
 		$path = self::path($plugin) . 'Config' . DS . 'routes.php';
@@ -213,7 +213,7 @@ class CakePlugin {
 		//	self::path($plugin) . 'Config' . DS . 'routes.php',
 		//	$config['ignoreMissing']
 		//);
-// Edit Start Ryuji.M
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 	}
 
 /**

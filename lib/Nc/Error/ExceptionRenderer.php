@@ -209,27 +209,27 @@ class ExceptionRenderer {
 	public function error400($error) {
 		$message = $error->getMessage();
 		if (!Configure::read('debug') && $error instanceof CakeException) {
-// Edit Start R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --START
 			$message = __('Page not found.');
 // 			$message = __d('cake', 'Not Found');
-// Edit End R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --E N D
 		}
 		$url = $this->controller->request->here();
 		$this->controller->response->statusCode($error->getCode());
 		$this->controller->set(array(
-// Edit Start R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --START
 // エスケープしないように修正
 			'name' => $message,
 // 			'name' => h($message),
-// Edit End R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --E N D
 			'url' => h($url),
 			'error' => $error,
 			'_serialize' => array('name', 'url')
 		));
-// Add Start R.Ohga
+// Add for NetCommons Extentions By R.Ohga --START
 // 画面全体を切り替えるように修正
 		$this->controller->layout = 'default';
-// Add End R.Ohga
+// Add for NetCommons Extentions By R.Ohga --E N D
 		$this->_outputMessage('error400');
 	}
 
@@ -242,28 +242,28 @@ class ExceptionRenderer {
 	public function error500($error) {
 		$message = $error->getMessage();
 		if (!Configure::read('debug')) {
-// Edit Start R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --START
 			$message = __('The server encountered an internal error and was unable to complete your request.');
 // 			$message = __d('cake', 'An Internal Error Has Occurred.');
-// Edit End R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --E N D
 		}
 		$url = $this->controller->request->here();
 		$code = ($error->getCode() > 500 && $error->getCode() < 506) ? $error->getCode() : 500;
 		$this->controller->response->statusCode($code);
 		$this->controller->set(array(
-// Edit Start R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --START
 // エスケープしないように修正
 			'name' => $message,
 // 			'name' => h($message),
-// Edit End R.Ohga
+// Modify for NetCommons Extentions By R.Ohga --E N D
 			'message' => h($url),
 			'error' => $error,
 			'_serialize' => array('name', 'message')
 		));
-// Add Start R.Ohga
+// Add for NetCommons Extentions By R.Ohga --START
 // 画面全体を切り替えるように修正
 		$this->controller->layout = 'default';
-// Add End R.Ohga
+// Add for NetCommons Extentions By R.Ohga --E N D
 		$this->_outputMessage('error500');
 	}
 

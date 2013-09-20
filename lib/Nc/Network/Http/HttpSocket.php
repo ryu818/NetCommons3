@@ -107,10 +107,10 @@ class HttpSocket extends CakeSocket {
 			'redirect' => false,
 			'cookies' => array(),
 		),
-// Add Start R.Ohga
+// Add for NetCommons Extentions By R.Ohga --START
 // システム管理のプロキシサーバーの設定を確認するフラグ
 		'nc_proxy' => true
-// Add End R.Ohga
+// Add for NetCommons Extentions By R.Ohga --E N D
 	);
 
 /**
@@ -607,7 +607,7 @@ class HttpSocket extends CakeSocket {
  */
 	protected function _setProxy() {
 		if (empty($this->_proxy) || !isset($this->_proxy['host'], $this->_proxy['port'])) {
-// Add Start R.Ohga
+// Add for NetCommons Extentions By R.Ohga --START
 // システム管理のプロキシサーバーの設定を使用する
 			$systemConfig = Configure::read(NC_CONFIG_KEY);
 			if ($this->config['nc_proxy'] && $systemConfig['proxy_mode'] == _ON) {
@@ -622,7 +622,7 @@ class HttpSocket extends CakeSocket {
 				return;
 			}
 // 			return;
-// Add End R.Ohga
+// Add for NetCommons Extentions By R.Ohga --E N D
 		}
 		$this->config['host'] = $this->_proxy['host'];
 		$this->config['port'] = $this->_proxy['port'];

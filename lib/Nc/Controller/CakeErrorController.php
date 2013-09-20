@@ -65,7 +65,7 @@ class CakeErrorController extends AppController {
 		if ($this->Components->enabled('Security')) {
 			$this->Components->disable('Security');
 		}
-// Add Start Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --START
 		if ($this->Components->enabled('Init')) {
 			$this->Components->disable('Init');
 		}
@@ -75,7 +75,7 @@ class CakeErrorController extends AppController {
 		if ($this->Components->enabled('CheckAuth')) {
 			$this->Components->disable('CheckAuth');
 		}
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 		$this->_set(array('cacheAction' => false, 'viewPath' => 'Errors'));
 	}
 

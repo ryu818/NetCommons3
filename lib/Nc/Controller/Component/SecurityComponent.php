@@ -231,13 +231,13 @@ class SecurityComponent extends Component {
 			!isset($controller->request->params['requested']) ||
 			$controller->request->params['requested'] != 1
 		);
-// Add Start Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --START
 // IEのみ：モジュールのPOSTでtokenチェックを行うが、pageコントローラ経由でtokenチェックを行うため、ページ内に違うブロックが
 // はってあった場合、ちがうブロックでtokenエラーが発生するためSecurityコンポーネントでtokenチェックするかどうかのflagを追加。
 		if($isPost && isset($controller->request->params['chktoken']) && !$controller->request->params['chktoken']) {
 			$isNotRequestAction = false;
 		}
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 		if ($this->_action == $this->blackHoleCallback) {
 			return $this->blackhole($controller, 'auth');
 		}

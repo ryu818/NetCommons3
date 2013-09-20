@@ -39,7 +39,8 @@ class NcAssetDispatcher extends AssetDispatcher {
 			$fileFragment = urldecode(implode(DS, $parts));
 			$path = App::themePath($themeName) . 'webroot' . DS;
 			return $path . $fileFragment;
-// Add Stert Ryuji.M ブロックテーマのwebrootのパスをRouting
+// Add for NetCommons Extentions By Ryuji.M --START
+// ブロックテーマのwebrootのパスをRouting
 		} else if($parts[0] === 'frame') {
 			$frameName = $parts[1];
 			unset($parts[0], $parts[1]);
@@ -56,10 +57,11 @@ class NcAssetDispatcher extends AssetDispatcher {
 			if (file_exists($framePath . $fileFragment)) {
 				return $framePath . $fileFragment;
 			}
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 		}
 		$plugin = Inflector::camelize($parts[0]);
-// Add Stert Ryuji.M webrootのパスをRouting
+// Add for NetCommons Extentions By Ryuji.M --START
+// webrootのパスをRouting
 		if($plugin =='Js' || $plugin =='Css' || $plugin =='Img') {
 			// TODO: imgもNc/webroot下に移動し、読み込むようにしてあるが、
 			// Dispatcherを経由するため効率が非常に悪い。
@@ -73,7 +75,7 @@ class NcAssetDispatcher extends AssetDispatcher {
 				}
 			}
 		}
-// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 		if ($plugin && CakePlugin::loaded($plugin)) {
 			unset($parts[0]);
 			$fileFragment = urldecode(implode(DS, $parts));

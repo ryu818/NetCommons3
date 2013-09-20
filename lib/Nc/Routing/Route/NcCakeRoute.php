@@ -74,7 +74,7 @@ class NcCakeRoute extends CakeRoute {
 		}
 		$route['pass'] = $route['named'] = array();
 
-		// Add Start Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --START
 		//$route = parent::parse($url);
 		//if (!$route) {
 		//	return false;
@@ -139,7 +139,7 @@ class NcCakeRoute extends CakeRoute {
 				$route[$controller_name] = $buf_controller;
 			}
 		}
-		// Add End Ryuji.M
+// Add for NetCommons Extentions By Ryuji.M --E N D
 
 		// Assign defaults, set passed args to pass
 		foreach ($this->defaults as $key => $value) {

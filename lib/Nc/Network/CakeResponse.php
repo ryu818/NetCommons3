@@ -1280,7 +1280,7 @@ class CakeResponse {
 				$this->header('Content-Length', $fileSize);
 			}
 		} else {
-// Add Start R.Ohga
+// Add for NetCommons Extentions By R.Ohga --START
 // 右クリック⇒[名前を付けて画像を保存]を選択したときのデフォルトのファイル名を設定
 			if (is_null($options['name'])) {
 				$name = $file->name;
@@ -1289,7 +1289,7 @@ class CakeResponse {
 			}
 			// IEでキャッシュをとらない場合にファイル名が$nameのになってしまう
 			$this->header('Content-Disposition', 'inline; filename="' . $name . '"');
-// Add End R.Ohga
+// Add for NetCommons Extentions By R.Ohga --E N D
 			$this->header('Content-Length', $fileSize);
 		}
 		$this->_clearBuffer();
