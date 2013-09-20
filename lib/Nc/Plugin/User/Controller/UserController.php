@@ -303,7 +303,8 @@ class UserController extends UserAppController {
 		}
 
 		// アバターアップロード
-		if ($this->request->is('post') && !isset($this->request->data['User']['login_id'])) {
+		if ($this->request->is('post')
+			&& isset($this->request->data['User']) && !isset($this->request->data['User']['login_id'])) {
 			$this->_uploadAvatar($user);
 			return;
 		}
