@@ -99,4 +99,7 @@ Configure::write('Session', array(
 //		'session.gc_divisor' => 100
 	)
 ));
+// DBに標準時で登録するため
+date_default_timezone_set('UTC');
+
 unset($path, $baseDir, $bufPath);
