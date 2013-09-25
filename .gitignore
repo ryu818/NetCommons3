@@ -3,6 +3,7 @@
 #-----------------------------------
 
 /app/tmp
+/app/webroot/theme
 /plugins
 /uploads
 /vendors
