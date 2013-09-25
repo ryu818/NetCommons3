@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "641c453e47c413b9a6d0ad374578099e",
+    "hash": "d920ec9d6ef12b1ca9a6c9e06f6e51d8",
     "packages": [
         {
             "name": "pear-pear.cakephp.org/CakePHP",
