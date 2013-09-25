@@ -1,0 +1,42 @@
+#-----------------------------------
+#- NetCommons3用 無視ファイル設定
+#-----------------------------------
+
+/app/tmp
+/plugins
+/uploads
+/vendors
+/composer.phar
+
+# install.inc.php はサーバにコミットされているので、
+# この無視ファイルでは無視できない。（以下のファイル）
+# app/Config/install.inc.php
+# そのため、以下のGit のShell コマンドで無視設定する。
+# git update-index --assume-unchanged app\Config\install.inc.php
+# Git Shell プロンプトを起動し、develop ブランチへ移動、無視ファイル指定のコマンドを実行する。
+# C:\Github\NetCommons3 > git init .
+# C:\Github\NetCommons3 > git checkout -b develop
+# C:\Github\NetCommons3 [develop +0 ~1 -0]> git update-index --assume-unchanged app\Config\install.inc.php
+
+# Eclipse開発用無視ファイル設定
+/.settings
+/.buildpath
+/.project
+/.git
+
+# MacOSXシステムファイル無視設定
+.DS_Store
+__MACOSX
+thumbs.db
+._*
+.Spotlight-V100
+.Trashes
+
+# Windowsシステムファイル無視設定
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Vagrant無視設定
+/.vagrant
