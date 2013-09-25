@@ -240,7 +240,7 @@ class CakePlugin {
  * @return void
  */
 	public static function unload($plugin = null) {
-		if (is_null($plugin)) {
+		if ($plugin === null) {
 			self::$_plugins = array();
 		} else {
 			unset(self::$_plugins[$plugin]);

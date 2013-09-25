@@ -226,7 +226,7 @@ class SecurityComponent extends Component {
 		$this->_secureRequired($controller);
 		$this->_authRequired($controller);
 
-		$isPost = ($this->request->is('post') || $this->request->is('put'));
+		$isPost = $this->request->is(array('post', 'put'));
 		$isNotRequestAction = (
 			!isset($controller->request->params['requested']) ||
 			$controller->request->params['requested'] != 1
@@ -239,7 +239,7 @@ class SecurityComponent extends Component {
 		}
 // Add for NetCommons Extentions By Ryuji.M --E N D
 		if ($this->_action == $this->blackHoleCallback) {
-			return $this->blackhole($controller, 'auth');
+			return $this->blackHole($controller, 'auth');
 		}
 
 		if (!in_array($this->_action, (array)$this->unlockedActions) && $isPost && $isNotRequestAction) {

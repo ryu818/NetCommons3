@@ -172,7 +172,6 @@ class NcFormHelper extends FormHelper {
 				));
 			default:
 				$htmlAttributes['method'] = 'post';
-				break;
 		}
 		$this->requestType = strtolower($options['type']);
 

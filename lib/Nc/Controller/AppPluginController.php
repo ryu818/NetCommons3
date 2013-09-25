@@ -26,7 +26,7 @@ class AppPluginController extends AppController
  */
 	public $ncType = '';
 
-	public $viewClass = 'Plugin';
+	public $viewClass = 'NcPlugin';
 
 	public $uses = array();
 /**

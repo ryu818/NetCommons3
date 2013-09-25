@@ -1,6 +1,6 @@
 <?php
 /**
- * PluginsViewクラス
+ * NcPluginViewクラス
  *
  * <pre>
  * ・ブロックスタイル用にelementメソッドを拡張
@@ -15,7 +15,7 @@
 
 App::uses('View', 'View');
 
-class PluginView extends View {
+class NcPluginView extends View {
 /**
  * Renders a piece of PHP with provided parameters and returns HTML, XML, or any other string.
  *
@@ -42,70 +42,40 @@ class PluginView extends View {
  *   `Plugin.element_name` instead.
  */
 	public function element($name, $data = array(), $options = array()) {
-		$file = $plugin = $key = null;
-		$callbacks = false;
+		$file = $plugin = null;
 
 		if (isset($options['plugin'])) {
 			$name = Inflector::camelize($options['plugin']) . '.' . $name;
 		}
 
-		if (isset($options['callbacks'])) {
-			$callbacks = $options['callbacks'];
+		if (!isset($options['callbacks'])) {
+			$options['callbacks'] = false;
 		}
 
 		if (isset($options['cache'])) {
-			$underscored = null;
-			if ($plugin) {
-				$underscored = Inflector::underscore($plugin);
-			}
-			$keys = array_merge(array($underscored, $name), array_keys($options), array_keys($data));
-			$caching = array(
-				'config' => $this->elementCache,
-				'key' => implode('_', $keys)
-			);
-			if (is_array($options['cache'])) {
-				$defaults = array(
-					'config' => $this->elementCache,
-					'key' => $caching['key']
-				);
-				$caching = array_merge($defaults, $options['cache']);
-			}
-			$key = 'element_' . $caching['key'];
-			$contents = Cache::read($key, $caching['config']);
+			$contents = $this->_elementCache($name, $data, $options);
 			if ($contents !== false) {
 				return $contents;
 			}
 		}
 
+// Modify for NetCommons Extentions By Ryuji.M --START
+// 		$file = $this->_getElementFilename($name);
 		if (isset($options['frame'])) {
 			$file = $this->_getFrameFileName($name, $options['frame']);
 		} else {
 			$file = $this->_getElementFileName($name);
 		}
+// Modify for NetCommons Extentions By Ryuji.M --START
 		if ($file) {
-			if (!$this->_helpersLoaded) {
-				$this->loadHelpers();
-			}
-			if ($callbacks) {
-				$this->getEventManager()->dispatch(new CakeEvent('View.beforeRender', $this, array($file)));
-			}
-
-			$this->_currentType = self::TYPE_ELEMENT;
-			$element = $this->_render($file, array_merge($this->viewVars, $data));
-
-			if ($callbacks) {
-				$this->getEventManager()->dispatch(new CakeEvent('View.afterRender', $this, array($file, $element)));
-			}
-			if (isset($options['cache'])) {
-				Cache::write($key, $element, $caching['config']);
-			}
-			return $element;
+			return $this->_renderElement($file, $data, $options);
 		}
-		if (!isset($options['frame'])) {
-			$file = 'Elements' . DS . $name . $this->ext;
-		}
-		if (Configure::read('debug') > 0) {
-			return __d('cake_dev', 'Element Not Found: %s', $file);
+
+		if (empty($options['ignoreMissing'])) {
+			list ($plugin, $name) = pluginSplit($name, true);
+			$name = str_replace('/', DS, $name);
+			$file = $plugin . 'Elements' . DS . $name . $this->ext;
+			trigger_error(__d('cake_dev', 'Element Not Found: %s', $file), E_USER_NOTICE);
 		}
 	}
 

@@ -17,8 +17,10 @@
  * @since         CakePHP(tm) v 1.2.0.4433
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
+
 set_time_limit(0);
 ini_set('display_errors', 1);
+
 /**
  * Use the DS to separate the directories in other defines
  */

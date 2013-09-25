@@ -44,7 +44,7 @@ class NcAssetDispatcher extends AssetDispatcher {
 		} else if($parts[0] === 'frame') {
 			$frameName = $parts[1];
 			unset($parts[0], $parts[1]);
-			$fileFragment = urldecode(implode(DS, $parts));
+			$fileFragment = implode(DS, $parts);
 			$frameDir = Inflector::camelize($frameName) . DS .'webroot' . DS;
 			$paths = App::path('Frame');
 			$framePath = null;
@@ -78,7 +78,7 @@ class NcAssetDispatcher extends AssetDispatcher {
 // Add for NetCommons Extentions By Ryuji.M --E N D
 		if ($plugin && CakePlugin::loaded($plugin)) {
 			unset($parts[0]);
-			$fileFragment = urldecode(implode(DS, $parts));
+			$fileFragment = implode(DS, $parts);
 			$pluginWebroot = CakePlugin::path($plugin) . 'webroot' . DS;
 			return $pluginWebroot . $fileFragment;
 		}
