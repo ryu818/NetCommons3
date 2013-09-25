@@ -36,7 +36,12 @@ define('WWW_ROOT', ROOT . DS . APP_DIR . DS . WEBROOT_DIR . DS);
  * Full path to the directory containing "cake". Do not add trailing directory separator
  */
 if (!defined('CAKE_CORE_INCLUDE_PATH')) {
-	define('CAKE_CORE_INCLUDE_PATH', ROOT . DS . 'lib');
+// Modify for NetCommons Extentions By R.Ohga --START
+// composerを利用するため、vendors下のCakePHPをincludeするように修正
+// ※CakePHPのバージョンアップの際に、パスが変わっていないことを確認すること
+	define('CAKE_CORE_INCLUDE_PATH', ROOT . DS . 'vendors' . DS . 'pear-pear.cakephp.org' . DS . 'CakePHP');
+// 	define('CAKE_CORE_INCLUDE_PATH', ROOT . DS . 'lib');
+// Modify for NetCommons Extentions By R.Ohga --E N D
 }
 
 require APP_DIR . DS . WEBROOT_DIR . DS . 'index.php';

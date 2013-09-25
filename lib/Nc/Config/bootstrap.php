@@ -2,7 +2,6 @@
 /**
  * NC用
  */
-define('NC', CORE_PATH . 'Nc' . DS);
 
 require 'defines.inc.php';
 
@@ -25,6 +24,11 @@ require 'defines.inc.php';
 Configure::write('Dispatcher.filters', array(
 	'NcAssetDispatcher',
 	'CacheDispatcher'
+));
+Configure::write('Exception', array(
+	'handler' => 'ErrorHandler::handleException',
+	'renderer' => 'NcExceptionRenderer',
+	'log' => true
 ));
 
 if (file_exists(APP . 'Config' .DS . NC_INSTALL_INC_FILE)) {
@@ -101,5 +105,13 @@ Configure::write('Session', array(
 ));
 // DBに標準時で登録するため
 date_default_timezone_set('UTC');
+
+// composerのautoloadを読み込み
+require ROOT . DS . 'vendors' . DS . 'autoload.php';
+
+// CakePHPのオートローダーをいったん削除し、composerより先に評価されるように先頭に追加する
+// https://github.com/composer/composer/commit/c80cb76b9b5082ecc3e5b53b1050f76bb27b127b を参照
+spl_autoload_unregister(array('App', 'load'));
+spl_autoload_register(array('App', 'load'), true, true);
 
 unset($path, $baseDir, $bufPath);

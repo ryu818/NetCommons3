@@ -1,0 +1,16 @@
+{
+    "name": "NetCommons3",
+    "version": "3.0.0",
+    "repositories": [
+        {
+            "type": "pear",
+            "url": "http://pear.cakephp.org"
+        }
+    ],
+    "require": {
+        "pear-cakephp/cakephp": "2.4.1"
+    },
+    "config": {
+        "vendor-dir": "vendors/"
+    }
+}

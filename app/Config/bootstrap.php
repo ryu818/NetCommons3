@@ -111,5 +111,6 @@ CakeLog::config('error', array(
 /**
  * NC用
  */
-require CORE_PATH . 'Nc' . DS .'Config'.DS.'bootstrap.php';
+define('NC', ROOT . DS . 'lib' . DS . 'Nc' . DS);
+require NC .'Config'.DS.'bootstrap.php';
 // Add for NetCommons Extentions By Ryuji.M --E N D
