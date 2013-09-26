@@ -61,17 +61,29 @@ $this->assign('title', __d('install', 'Setting Check'));
 				}
 
 				//mimetex
-				$mimetex_path = VENDORS . 'mimetex' . '/';
-				if (substr(PHP_OS, 0, 3) == 'WIN') {
-					$mimetex = "mimetex.exe";
-				} else {
-					$mimetex = "mimetex.cgi";
+				$paths = App::path('Vendor');
+				$isAvailable = false;
+				foreach ($paths as $path) {
+					$mimetexPath = $path . 'mimetex/';
+			
+					if (substr(PHP_OS, 0, 3) == 'WIN') {
+						$mimetexFile = 'mimetex.exe';
+					} else {
+						$mimetexFile = 'mimetex.cgi';
+					}
+					$mimetex = $mimetexPath . $mimetexFile;
+		
+					if (file_exists($mimetex)
+						&& function_exists('is_executable') && is_executable($mimetex)) {
+						$isAvailable = true;
+						break;
+					}
 				}
-				if (is_executable($mimetex_path. $mimetex)) {
-					echo '<p class="success message">' . __d('install', '[%s] is executable.', 'vendors/'.$mimetex) . '</p>';
+				if ($isAvailable) {
+					echo '<p class="success message">' . __d('install', '[%s] is executable.', str_replace(ROOT, '', $mimetex)) . '</p>';
 				} else {
 					$check = false;
-					echo '<p class="error message">' . __d('install', '[%s] is NOT executable.', 'vendors/'.$mimetex) . '</p>';
+					echo '<p class="error message">' . __d('install', '[%s] is NOT executable.', '/lib/Nc/Vendors/mimetex/'.$mimetexFile) . '</p>';
 				}
 
 				// mbstring

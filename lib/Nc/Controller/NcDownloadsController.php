@@ -172,12 +172,24 @@ class NcDownloadsController extends AppController {
 		$tex = $this->request->query['tex'];
 		$size = $this->request->query['size'];
 
-		$mimetexPath = VENDORS . 'mimetex/';
+		$paths = App::path('Vendor');
+		$isAvailable = false;
+		foreach ($paths as $path) {
+			$mimetexPath = $path . 'mimetex/';
+	
+			if (substr(PHP_OS, 0, 3) == 'WIN') {
+				$mimetex = $mimetexPath . 'mimetex.exe';
+			} else {
+				$mimetex = $mimetexPath . 'mimetex.cgi';
+			}
 
-		if (substr(PHP_OS, 0, 3) == 'WIN') {
-			$mimetex = $mimetexPath . 'mimetex.exe';
-		} else {
-			$mimetex = $mimetexPath . 'mimetex.cgi';
+			if (file_exists($mimetex) && function_exists('is_executable') && is_executable($mimetex)) {
+				$isAvailable = true;
+				break;
+			}
+		}
+		if (!$isAvailable) {
+			return;
 		}
 
 		switch ($size) {
@@ -191,12 +203,6 @@ class NcDownloadsController extends AppController {
 				break;
 			default:
 				$size = '\\Large';
-		}
-
-		if (function_exists('is_executable') && !is_executable($mimetex)) {
-			return;
-		} elseif (!file_exists($mimetex)) {
-			return;
 		}
 
 		$this->response->header('Cache-Control', 'no-store, no-cache, must-revalidate');
