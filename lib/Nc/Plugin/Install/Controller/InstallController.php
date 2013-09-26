@@ -459,47 +459,31 @@ class InstallController extends Controller {
 			}
 		}
 
-		App::import('Vendor', 'XML_Unserializer', array('file' => 'pear/XML/Unserializer.php'));
-		//App::uses('pear/XML/Unserializer', 'Vendor');
-		$options = array(
-			XML_UNSERIALIZER_OPTION_ATTRIBUTES_PARSE => 'parseAttributes',
-			//XML_UNSERIALIZER_OPTION_COMPLEXTYPE => 'array',
-			XML_UNSERIALIZER_OPTION_ENCODING_SOURCE => "UTF-8"
-		);
-		$unserializer = new XML_Unserializer($options);
-
-		$xml = App::pluginPath('Install') . DS . 'Config' . DS . 'Data' . DS . 'default.xml';	// TODO:default固定
-
-		$result = $unserializer->unserialize($xml, true);
-		//
-		if (empty($result) || @PEAR::isError($result)) {
-			$this->set("failure_datas", true);
+		$xmlFile = App::pluginPath('Install') . DS . 'Config' . DS . 'Data' . DS . 'default.xml';	// TODO:default固定
+		$xmlArray = Xml::toArray(Xml::build(file_get_contents($xmlFile)));
+		if (empty($xmlArray)) {
+			$this->set('failure_datas', true);
 			return;
 		}
-		$parseXML = $unserializer->getUnserializedData();
+
+		$tableDatas = $xmlArray['database']['table'];
 
 		$columnNameArr = array();
-		foreach ($parseXML as $database => $database_datas) {
-			foreach ($database_datas as $table => $table_datas) {
-				if($table_datas['name'] == 'modules') {
-					$table_data = $table_datas['column'];
-					foreach ($table_data as $buf_data) {
-						$column_name = $buf_data['name'];
+		foreach ($tableDatas as $tableData) {
+			if ($tableData['@name'] != 'modules') {
+				continue;
+			}
 
-						if($column_name == 'dir_name') {
-							if(isset($buf_data['_content'])) {
-								if($buf_data['_content'] === 'NULL') {
-									continue;
-								} else {
-									$data = $buf_data['_content'];
-								}
-							} else {
-								$data = '';
-							}
-							$columnNameArr[$data] = true;
-						}
-					}
+			$columnDatas = $tableData['column'];
+			foreach ($columnDatas as $columnData) {
+				if($columnData['@name'] != 'dir_name') {
+					continue;
 				}
+
+				if(!isset($columnData['@']) || $columnData['@'] === 'NULL') {
+					continue;
+				}
+				$columnNameArr[$columnData['@']] = true;
 			}
 		}
 
@@ -545,52 +529,46 @@ class InstallController extends Controller {
 		$this->set("not_tables", $not_tables);
 
 		$err_mes = array();
-		foreach ($parseXML as $database => $database_datas) {
-			foreach ($database_datas as $table => $table_datas) {
-				$table_name = $db->name($config['prefix'].$table_datas['name']);
-				$table_data = $table_datas['column'];
-				if(!isset($table_data[0])) {
-					$buf_table_data = array($table_data);
-				} else {
-					$buf_table_data = $table_data;
-				}
+		foreach ($tableDatas as $tableData) {
+			$tableName = $db->name($config['prefix'].$tableData['@name']);
+			$columnDatas = $tableData['column'];
+			if(!isset($columnDatas[0])) {
+				$columnDatas = array($columnDatas);
+			}
 
-				$columns = array();
-				$datas = array();
-				foreach ($buf_table_data as $buf_data) {
-					$column_name = $buf_data['name'];
-					if(isset($buf_data['_content'])) {
-						if($buf_data['_content'] === 'NULL') {
-							continue;
-						} else {
-							$data = $buf_data['_content'];
-						}
-					} else {
-						$data = '';
+			$columns = array();
+			$datas = array();
+			foreach ($columnDatas as $columnData) {
+				$columnName = $columnData['@name'];
+
+				$data = '';
+				if(isset($columnData['@'])) {
+					if($columnData['@'] === 'NULL') {
+						continue;
 					}
-
-					$columnType = null;
-
-					//if (is_object($model)) {
-					//	$columnType = $model->getColumnType($column_name);
-					//}
-					$columns[] = $db->name($column_name);
-					$datas[] = $db->value(str_replace('{NC_WEBROOT}',$this->webroot,$data), $columnType);
+					$data = $columnData['@'];
 				}
-				$query = array(
-					'table' => $table_name,
-					'fields' => implode(', ', $columns) ,
-					'datas' => implode(', ', $datas)
-				);
-				extract($query);
 
+				$columnType = null;
+// 				if (is_object($model)) {
+// 					$columnType = $model->getColumnType($column_name);
+// 				}
+				$columns[] = $db->name($columnName);
+				$datas[] = $db->value(str_replace('{NC_WEBROOT}', $this->webroot, $data), $columnType);
+			}
 
-				$sql = "INSERT INTO {$table} ({$fields}) VALUES ({$datas})";
-				if(!$db->execute($sql)) {
-					$this->set("failure_datas", true);
-					$this->set("failure_sql", $sql);
-					return;
-				}
+			$query = array(
+				'table' => $tableName,
+				'fields' => implode(', ', $columns),
+				'datas' => implode(', ', $datas)
+			);
+			extract($query);
+
+			$sql = "INSERT INTO {$table} ({$fields}) VALUES ({$datas})";
+			if(!$db->execute($sql)) {
+				$this->set('failure_datas', true);
+				$this->set('failure_sql', $sql);
+				return;
 			}
 		}
 
