@@ -11,6 +11,6 @@
         "pear-cakephp/cakephp": "2.4.1"
     },
     "config": {
-        "vendor-dir": "vendors/"
+        "vendor-dir": "lib/Nc/Vendor/"
     }
 }

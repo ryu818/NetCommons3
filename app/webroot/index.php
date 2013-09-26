@@ -59,6 +59,12 @@ if (version_compare(phpversion(), "5.2.8", "<")) {
 }
 // Add for NetCommons Extentions By Ryuji.M --E N D
 
+// Add for NetCommons Extentions By R.Ohga --START
+if (!defined('VENDORS')) {
+	define('VENDORS', ROOT . DS . 'lib' . DS . 'Nc' . DS . 'Vendor' . DS);
+}
+// Add for NetCommons Extentions By R.Ohga --E N D
+
 /**
  * The absolute path to the "cake" directory, WITHOUT a trailing DS.
  *
@@ -75,7 +81,7 @@ if (version_compare(phpversion(), "5.2.8", "<")) {
  */
 //define('CAKE_CORE_INCLUDE_PATH', ROOT . DS . 'lib');
 // Add for NetCommons Extentions By R.Ohga --START
-define('CAKE_CORE_INCLUDE_PATH', ROOT . DS . 'vendors' . DS . 'pear-pear.cakephp.org' . DS . 'CakePHP');
+define('CAKE_CORE_INCLUDE_PATH', VENDORS  . 'pear-pear.cakephp.org' . DS . 'CakePHP');
 // composerを利用するため、vendors下のCakePHPをincludeするように修正
 // ※CakePHPのバージョンアップの際に、パスが変わっていないことを確認すること
 // Add for NetCommons Extentions By R.Ohga --E N D

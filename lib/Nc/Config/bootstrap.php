@@ -107,7 +107,7 @@ Configure::write('Session', array(
 date_default_timezone_set('UTC');
 
 // composerのautoloadを読み込み
-require ROOT . DS . 'vendors' . DS . 'autoload.php';
+require VENDORS . 'autoload.php';
 
 // CakePHPのオートローダーをいったん削除し、composerより先に評価されるように先頭に追加する
 // https://github.com/composer/composer/commit/c80cb76b9b5082ecc3e5b53b1050f76bb27b127b を参照

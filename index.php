@@ -29,6 +29,7 @@ define('DS', DIRECTORY_SEPARATOR);
 define('ROOT', dirname(__FILE__));
 define('WEBROOT_DIR', 'webroot');
 define('WWW_ROOT', ROOT . DS . APP_DIR . DS . WEBROOT_DIR . DS);
+define('VENDORS', ROOT . DS . 'lib' . DS . 'Nc' . DS . 'Vendor' . DS);
 
 /**
  * This only needs to be changed if the "cake" directory is located
@@ -39,7 +40,7 @@ if (!defined('CAKE_CORE_INCLUDE_PATH')) {
 // Modify for NetCommons Extentions By R.Ohga --START
 // composerを利用するため、vendors下のCakePHPをincludeするように修正
 // ※CakePHPのバージョンアップの際に、パスが変わっていないことを確認すること
-	define('CAKE_CORE_INCLUDE_PATH', ROOT . DS . 'vendors' . DS . 'pear-pear.cakephp.org' . DS . 'CakePHP');
+	define('CAKE_CORE_INCLUDE_PATH', VENDORS  . 'pear-pear.cakephp.org' . DS . 'CakePHP');
 // 	define('CAKE_CORE_INCLUDE_PATH', ROOT . DS . 'lib');
 // Modify for NetCommons Extentions By R.Ohga --E N D
 }
