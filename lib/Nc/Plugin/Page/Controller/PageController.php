@@ -1,7 +1,7 @@
 <?php
 /**
  * PageControllerクラス
- *
+ * TODO:Tokenチェックもおこなっていない。
  * <pre>
  * ページメニュー表示用コントローラ
  * </pre>
@@ -67,6 +67,8 @@ class PageController extends PageAppController {
  */
 	public function beforeFilter()
 	{
+		include_once dirname(dirname(__FILE__)).'/Config/defines.inc.php';
+		
 		$active_lang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.lang');
 		if(isset($active_lang)) {
 			Configure::write(NC_CONFIG_KEY.'.'.'language', $active_lang);
@@ -108,24 +110,22 @@ class PageController extends PageAppController {
 		$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', $this->action);
 		$this->Session->delete(NC_SYSTEM_KEY.'.page_menu.PageUserLink');
 
-		include_once dirname(dirname(__FILE__)).'/Config/defines.inc.php';
-
-		$center_page = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');
+		$centerPage = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');
 		$loginUser = $this->Auth->user();
 		$userId = $loginUser['id'];
 
-		$is_edit = isset($this->request->query['is_edit']) ? intval($this->request->query['is_edit']) : _OFF;
-		$is_detail = isset($this->request->query['is_detail']) ? intval($this->request->query['is_detail']) : _OFF;
-		$active_tab = isset($this->request->query['active_tab']) ? intval($this->request->query['active_tab']) : null;
+		$isEdit = isset($this->request->query['is_edit']) ? intval($this->request->query['is_edit']) : _OFF;
+		$isDetail = isset($this->request->query['is_detail']) ? intval($this->request->query['is_detail']) : _OFF;
+		$activeTab = isset($this->request->query['active_tab']) ? intval($this->request->query['active_tab']) : null;
 		$limit = !empty($this->request->named['limit']) ? intval($this->request->named['limit']) : PAGES_COMMUNITY_LIMIT;
 		$views = !empty($this->request->named['views']) ? intval($this->request->named['views']) : PAGES_COMMUNITY_VIEWS;
-		$page_id = isset($this->request->query['page_id']) ? intval($this->request->query['page_id']) : (isset($center_page) ? $center_page['Page']['id'] : null);
+		$pageId = isset($this->request->query['page_id']) ? intval($this->request->query['page_id']) : (isset($centerPage) ? $centerPage['Page']['id'] : null);
 
 		// 言語切替
 		$languages = $this->Language->findSelectList();
 		if(isset($active_lang) && isset($languages[$active_lang])) {
-			$pre_lang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.pre_lang');
-			if(!isset($pre_lang)) {
+			$preLang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.pre_lang');
+			if(!isset($preLang)) {
 				$this->Session->write(NC_SYSTEM_KEY.'.page_menu.pre_lang', $this->Session->read(NC_CONFIG_KEY.'.language'));
 			}
 			$this->Session->write(NC_SYSTEM_KEY.'.page_menu.lang', $active_lang);
@@ -138,23 +138,23 @@ class PageController extends PageAppController {
 		$this->paginate['limit'] = $limit;
 
 		if(isset($this->request->named['page']) || isset($this->request->named['limit'])) {
-			$active_tab = 1;
-		} else if(!isset($active_tab)) {
-			$active_tab = ($this->nc_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) ? 1 : 0;
+			$activeTab = 1;
+		} else if(!isset($activeTab)) {
+			$activeTab = ($this->nc_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) ? 1 : 0;
 		}
 
-		$element_params = array(
-			'is_edit' => $is_edit,
+		$elementParams = array(
+			'is_edit' => $isEdit,
 			'community_params' => array()
 		);
 
-		$sel_active_tab = 0;
-		if($center_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
-			$sel_active_tab = 1;
+		$selActiveTab = 0;
+		if($centerPage['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
+			$selActiveTab = 1;
 		}
 
 		$params = null;
-		if($is_edit) {
+		if($isEdit) {
 			$params = array(
 				'conditions' => array(
 					'Page.lang' => array('', $lang)
@@ -163,88 +163,88 @@ class PageController extends PageAppController {
 		}
 		// activeなページがコミュニティーならば、コミュニティー一覧の何ページ目かにあるかを設定
 		if(!isset($this->request->named['page'])) {
-			if(isset($page_id)) {
-				$page = $this->Page->findById($page_id);
-				$community_page = $this->Page->findById($page['Page']['root_id']);
-			} else if($center_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
-				$community_page = $this->Page->findById($center_page['Page']['root_id']);
+			if(isset($pageId)) {
+				$page = $this->Page->findById($pageId);
+				$communityPage = $this->Page->findById($page['Page']['root_id']);
+			} else if($centerPage['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
+				$communityPage = $this->Page->findById($centerPage['Page']['root_id']);
 			}
 
-			if(isset($community_page) && $community_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
-				$this->paginate['page'] = ceil(intval($community_page['Page']['display_sequence'])/$this->paginate['limit']);
-				$sel_active_tab = 1;
+			if(isset($communityPage) && $communityPage['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
+				$this->paginate['page'] = ceil(intval($communityPage['Page']['display_sequence'])/$this->paginate['limit']);
+				$selActiveTab = 1;
 			} else {
-				$sel_active_tab = 0;
+				$selActiveTab = 0;
 			}
 		}
 		if(isset($this->request->query['page_id'])) {
 			// コピー、ペーストでコミュニティへペーストした場合、コミュニティタブへ
-			$active_tab = $sel_active_tab;
+			$activeTab = $selActiveTab;
 		}
 
 		// 管理系の権限を取得
 		if($userId) {
-			$admin_hierarchy = $this->ModuleSystemLink->findHierarchyByPluginName($this->request->params['plugin'], $loginUser['authority_id']);
+			$adminHierarchy = $this->ModuleSystemLink->findHierarchyByPluginName($this->request->params['plugin'], $loginUser['authority_id']);
 		} else {
-			$admin_hierarchy = NC_AUTH_OTHER;
+			$adminHierarchy = NC_AUTH_OTHER;
 		}
-		$element_params['admin_hierarchy'] = $admin_hierarchy;
+		$elementParams['admin_hierarchy'] = $adminHierarchy;
 
-		$parent_page = $this->Page->findAuthById($center_page['Page']['parent_id'], $userId);
-		if(!isset($parent_page['Page'])) {
+		$parentPage = $this->Page->findAuthById($centerPage['Page']['parent_id'], $userId);
+		if(!isset($parentPage['Page'])) {
 			$this->response->statusCode('404');
 			$this->flash(__('Page not found.'), '');
 			return;
 		}
-		if($is_edit) {
+		if($isEdit) {
 			// active pageでページ追加をactiveにするかどうか。
-			$is_add = false;
-			$is_add_community = false;
+			$isAdd = false;
+			$isAddCommunity = false;
 
-			if($center_page['Page']['thread_num'] <= 1) {
-				if($center_page['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
-					$is_add = true;
+			if($centerPage['Page']['thread_num'] <= 1) {
+				if($centerPage['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
+					$isAdd = true;
 				}
-			} else if($parent_page['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
-				$is_add = true;
+			} else if($parentPage['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
+				$isAdd = true;
 			}
-			if($admin_hierarchy >= NC_AUTH_MIN_MODERATE) {
-				$is_add_community = true;
+			if($adminHierarchy >= NC_AUTH_MIN_MODERATE) {
+				$isAddCommunity = true;
 			}
-			if(($center_page['Page']['space_type'] != NC_SPACE_TYPE_GROUP && $active_tab == 1) ||
-					($center_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP && $active_tab == 0)) {
-				$is_add = false;
+			if(($centerPage['Page']['space_type'] != NC_SPACE_TYPE_GROUP && $activeTab == 1) ||
+					($centerPage['Page']['space_type'] == NC_SPACE_TYPE_GROUP && $activeTab == 0)) {
+				$isAdd = false;
 			}
-			$element_params['is_add'] = $is_add;
-			$element_params['is_add_community'] = $is_add_community;
+			$elementParams['is_add'] = $isAdd;
+			$elementParams['is_add_community'] = $isAddCommunity;
 		}
 
-		if($is_detail) {
-			$buf_thread_num = $center_page['Page']['thread_num'];
-			if($center_page['Page']['thread_num'] == 2 && $center_page['Page']['display_sequence'] == 1) {
+		if($isDetail) {
+			$bufThreadNum = $centerPage['Page']['thread_num'];
+			if($centerPage['Page']['thread_num'] == 2 && $centerPage['Page']['display_sequence'] == 1) {
 				// Topページ
-				$parent_page = $this->Page->findAuthById($parent_page['Page']['parent_id'], $userId);	// 再取得
-				if(!isset($parent_page['Page'])) {
+				$parentPage = $this->Page->findAuthById($parentPage['Page']['parent_id'], $userId);	// 再取得
+				if(!isset($parentPage['Page'])) {
 					$this->response->statusCode('404');
 					$this->flash(__('Page not found.'), '');
 					return;
 				}
-				$page_id = $center_page['Page']['parent_id'];
-				$buf_thread_num --;
+				$pageId = $centerPage['Page']['parent_id'];
+				$bufThreadNum --;
 			}
 
-			if($buf_thread_num == 1 && $center_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
+			if($bufThreadNum == 1 && $centerPage['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
 				// コミュニティーならば
-				$ret = $this->Community->getCommunityData($center_page['Page']['room_id']);
+				$ret = $this->Community->getCommunityData($centerPage['Page']['room_id']);
 				if($ret === false) {
 					throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'communities'));
 				}
-				list($community, $community_lang, $community_tag) = $ret;
+				list($community, $communityLang, $communityTag) = $ret;
 
-				$element_params['community_params']['community'] = $community;
-				$element_params['community_params']['community_lang'] = $community_lang;
-				$element_params['community_params']['community_tag'] = $community_tag;
-				$element_params['community_params']['photo_samples'] = $this->PageMenu->getCommunityPhoto();
+				$elementParams['community_params']['community'] = $community;
+				$elementParams['community_params']['community_lang'] = $communityLang;
+				$elementParams['community_params']['community_tag'] = $communityTag;
+				$elementParams['community_params']['photo_samples'] = $this->PageMenu->getCommunityPhoto();
 			}
 		}
 
@@ -256,20 +256,20 @@ class PageController extends PageAppController {
 		$options = array(
 			'isShowAllCommunity' => false,
 			'isMyPortalCurrent' => true,
-			'ativePageId' => $page_id,
+			'ativePageId' => $pageId,
 		);
 		$pages = $this->Page->findViewable('menu', $userId, $addParams, $options);
 
 		// コミュニティー数
 		//$this->paginate['extra'] = array('user_id' => $userId);
 		$this->paginate['user_id'] = $userId;
-		if($is_edit && $admin_hierarchy >= NC_AUTH_MIN_ADMIN) {
+		if($isEdit && $adminHierarchy >= NC_AUTH_MIN_ADMIN) {
 			$this->paginate['is_all'] = true;
 		} else {
 			$this->paginate['is_all'] = false;
 		}
 		$pagesTopGroup = $this->paginate('Page');
-		$pages_group = array();
+		$pagesGroup = array();
 		if(count($pagesTopGroup) > 0) {
 			$addParams = array(
 				'conditions' => array(
@@ -280,33 +280,33 @@ class PageController extends PageAppController {
 			$options = array(
 				'isShowAllCommunity' => true,
 				'isMyPortalCurrent' => false,
-				'ativePageId' => $page_id,
+				'ativePageId' => $pageId,
 			);
-			$pages_group = $this->Page->findViewable('menu', ($this->paginate['is_all']) ? 'all' : $userId, $addParams, $options);
+			$pagesGroup = $this->Page->findViewable('menu', ($this->paginate['is_all']) ? 'all' : $userId, $addParams, $options);
 		}
-		$copy_page_id = $this->Session->read('Pages.'.'copy_page_id');
-		if(isset($copy_page_id)) {
-			$copy_page = $this->Page->findAuthById($copy_page_id, $userId);
-			$element_params['copy_page_id'] = $copy_page_id;
-			$element_params['copy_page'] = $copy_page;
+		$copyPageId = $this->Session->read('Pages.'.'copy_page_id');
+		if(isset($copyPageId)) {
+			$copyPage = $this->Page->findAuthById($copyPageId, $userId);
+			$elementParams['copy_page_id'] = $copyPageId;
+			$elementParams['copy_page'] = $copyPage;
 		} else {
-			$element_params['copy_page_id'] = 0;
+			$elementParams['copy_page_id'] = 0;
 		}
 
-		$element_params['languages'] = $languages;
-		$element_params['pages'] = $pages;
-		$element_params['pages_group'] = $pages_group;
-		$element_params['page_id'] = $page_id;
-		$element_params['is_detail'] = $is_detail;
-		$element_params['parent_page'] = $parent_page;
-		////$element_params['pages_group_total_count'] = $pages_group_total_count;
-		$element_params['active_tab'] = $active_tab;
-		$element_params['sel_active_tab'] = $sel_active_tab;
-		$element_params['views'] = $views;
-		$element_params['limit'] = $limit;
-		$element_params['limit_select_values'] = explode('|', PAGES_COMMUNITY_LIMIT_SELECT);
+		$elementParams['languages'] = $languages;
+		$elementParams['pages'] = $pages;
+		$elementParams['pages_group'] = $pagesGroup;
+		$elementParams['page_id'] = $pageId;
+		$elementParams['is_detail'] = $isDetail;
+		$elementParams['parent_page'] = $parentPage;
+		////$elementParams['pages_group_total_count'] = $pagesGroupTotalCount;
+		$elementParams['active_tab'] = $activeTab;
+		$elementParams['sel_active_tab'] = $selActiveTab;
+		$elementParams['views'] = $views;
+		$elementParams['limit'] = $limit;
+		$elementParams['limit_select_values'] = explode('|', PAGES_COMMUNITY_LIMIT_SELECT);
 
-		$this->set('element_params', $element_params);
+		$this->set('element_params', $elementParams);
 	}
 
 /**
@@ -332,42 +332,139 @@ class PageController extends PageAppController {
 	}
 
 /**
- * ページスタイル表示・登録
+ * ページスタイル表示・登録(フォント設定)
  * @param   void
  * @return  void
  * @since   v 3.0.0.0
  */
 	public function style() {
+		// 言語切替
+		$languages = $this->Language->findSelectList();
+		
 		$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', $this->action);
-		// ページ情報を取得
-		$page = $this->Page->findById($this->page_id);
-		// TODO ノードを基にスタイル情報を取得
-		$page_style = $this->PageStyle->findByStylePageId($this->page_id);
-
-		if ($this->request->is('post')) {
-			$content = (isset($this->request->data['css'])) ? $this->request->data['css'] : '' ;
-			// 既存のCSSファイルを削除
-			if (!empty($page_style['PageStyle']['file'])) {
-				$this->PageStyle->deleteCssFile($page_style['PageStyle']['file']);
-			}
-			// webroot/theme/page_styles/下にCSSファイルを生成
-			$file = $this->PageStyle->createCssFile($content);
-			$data = array(
-					'id' => (isset($page_style['PageStyle']['id'])) ? $page_style['PageStyle']['id'] : null,
-					'style_page_id' => $this->page_id,
-					'file' => $file
-			);
-			$this->PageStyle->save($data);
-			// スタイル情報を再取得
-			// TODO 他に良い方法がないか検討
-			$page_style = $this->PageStyle->findByStylePageId($this->page_id);
+		
+		$centerPage = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');
+		if($centerPage['PageAuthority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
+			$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', 'index');
+			$this->response->statusCode('403');
+			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
+			return;
 		}
+		$pageStyles = $this->PageStyle->findScope($centerPage);
+		if ($this->request->is('post') && $this->request->data['type'] == 'reset' && isset($pageStyles[NC_PAGE_TYPE_FONT_ID]['PageStyle'])) {
+			// リセット処理
+			if(!$this->PageStyle->delete($pageStyles[NC_PAGE_TYPE_FONT_ID]['PageStyle']['id'])) {
+				throw new InternalErrorException(__('Failed to delete the database, (%s).', 'page_styles'));
+			}
+			array_shift($pageStyles[NC_PAGE_TYPE_FONT_ID]);
+			$this->Session->setFlash(__('Has been successfully updated.'));
+		} else if ($this->request->is('post') && $this->request->data['type'] == 'submit' &&
+				isset($this->request->data['PageStyle']['style'])) {
 
-		$file_content = file_get_contents($this->PageStyle->getPath().$page_style['PageStyle']['file']);
-		$this->set('file_content', $file_content);
-		$this->set('page', $page['Page']);
-		$this->set('page_style', $page_style['PageStyle']);
-		$this->render('index');
+			// 削除処理
+			$savePageStyle = $this->request->data;
+			$savePageStyle['PageStyle']['type'] = NC_PAGE_TYPE_FONT_ID;
+			if($savePageStyle['PageStyle']['lang'] == 'all') {
+				$savePageStyle['PageStyle']['lang'] = '';
+			}
+
+			if($savePageStyle['PageStyle']['scope'] == NC_PAGE_SCOPE_SITE) {
+				$savePageStyle['PageStyle']['space_type'] = _OFF;
+			} else {
+				$savePageStyle['PageStyle']['space_type'] = $centerPage['Page']['space_type'];
+			}
+			if(in_array($savePageStyle['PageStyle']['scope'], array(NC_PAGE_SCOPE_SITE, NC_PAGE_SCOPE_SPACE)) ) {
+				$savePageStyle['PageStyle']['page_id'] = _OFF;
+			} else {
+				$savePageStyle['PageStyle']['page_id'] = $centerPage['Page']['id'];
+			}
+			$this->PageStyle->set($savePageStyle);
+			if($this->PageStyle->validates()) {
+				
+				$id = null;
+				if(isset($pageStyles[NC_PAGE_TYPE_FONT_ID])) {
+					// 現在、設定中のものより優先順位が高いものが既に登録してあったら、削除。
+					foreach($pageStyles[NC_PAGE_TYPE_FONT_ID] as $pageStyle) {
+						if($pageStyle['scope'] == $savePageStyle['PageStyle']['scope'] &&
+							$pageStyle['space_type'] == $savePageStyle['PageStyle']['space_type'] &&
+							$pageStyle['lang'] == $savePageStyle['PageStyle']['lang'] &&
+							$pageStyle['page_id'] == $savePageStyle['PageStyle']['page_id']) {
+							/////(empty($centerPage['Page']['page_style_id']) || $pageStyle['id'] == $centerPage['Page']['page_style_id'])) {
+							$id = $pageStyle['id'];
+						} else if($pageStyle['scope'] > $savePageStyle['PageStyle']['scope']) {
+							if(!$this->PageStyle->delete($pageStyle['id'])) {
+								throw new InternalErrorException(__('Failed to delete the database, (%s).', 'page_styles'));
+							}
+						}
+					}
+				}
+				
+				// 登録処理
+				$this->autoLayout = false;
+				$this->autoRender = false;
+				$savePageStyle['PageStyle']['id'] = $id;
+				
+				$this->set('data', $savePageStyle['PageStyle']['style']);
+				$content = $this->render('/Elements/style/regist_template');
+				
+				$savePageStyle['PageStyle']['content'] = $content->body();
+				if(!$this->PageStyle->save($savePageStyle)) {
+					throw new InternalErrorException(__('Failed to register the database, (%s).', 'page_styles'));
+				}
+				$this->autoLayout = true;
+				$this->autoRender = true;
+				$pageStyles[NC_PAGE_TYPE_FONT_ID] = $savePageStyle;
+				if(empty($id)) {
+					$this->Session->setFlash(__('Has been successfully registered.'));
+				} else {
+					$this->Session->setFlash(__('Has been successfully updated.'));
+				}
+			}
+		}
+		
+		$this->set('page', $centerPage);
+		$this->set('page_styles', $pageStyles);
+		if ($this->request->is('post')) {
+			$this->set('languages', $languages);
+			$this->render('/Elements/style/font');
+		} else {
+			$elementParams['languages'] = $languages;
+			$this->set('element_params', $elementParams);
+			$this->render('index');
+		}
+	}
+	
+
+/**
+ * ページスタイル表示・登録(背景)
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function background() {
+		$this->render('/Elements/style/background');
+	}
+
+
+/**
+ * ページスタイル表示・登録(表示位置)
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function display_position() {
+		$this->render('/Elements/style/display_position');
+	}
+	
+
+/**
+ * ページスタイル表示・登録(カスタム設定)
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function custom() {
+		$this->render('/Elements/style/custom');
 	}
 
 /**

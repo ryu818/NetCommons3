@@ -84,7 +84,16 @@ $.Common.pjaxPrevUrl = location.href;
 		$common_css[] = 'pages/block/';
 	}
 	echo $this->Html->css($common_css, null, array('inline' => true));
+	
 	$this->Html->css(array('Default.page', 'Default.gray/page'), null, array('frame' => true));	//TODO:test 固定
 	echo $this->fetch('css');
+
+	// PageStyle
+	if(!empty($nc_page_styles)) {
+		$base = $this->Html->url('/', true);
+		foreach($nc_page_styles as $nc_page_style) {
+			echo $this->Html->css($base.$nc_page_style['PageStyle']['file'], null, array('inline' => true));
+		}
+	}
 
 ?>

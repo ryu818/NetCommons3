@@ -40,7 +40,6 @@
 }
 
 .blog-entry-title {
-    font-size: 116%;
     font-weight: bold;
     display: inline;
     white-space: nowrap;
@@ -54,7 +53,6 @@
 }
 
 .blog-entry-content {
-    line-height: 1.7;
     padding: 20px 0;
 }
 

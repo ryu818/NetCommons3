@@ -1,4 +1,14 @@
-<?php /* ページメニュー */ ?>
+<?php
+/**
+ * ページメニュー
+ *
+ * @copyright     Copyright 2012, NetCommons Project
+ * @package       Plugin.Page.View
+ * @author        Noriko Arai,Ryuji Masukawa
+ * @since         v 3.0.0.0
+ * @license       http://www.netcommons.org/license.txt  NetCommons License
+ */
+?>
 <?php
 $lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 if(isset($is_edit) && $is_edit == _ON){

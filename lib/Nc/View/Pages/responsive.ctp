@@ -29,59 +29,14 @@
 		// footercolumn
 		$footercolumn_str = $this->element('Pages/column', array('blocks' => isset($blocks[$page_id_arr[4]]) ? $blocks[$page_id_arr[4]] : null, 'page' => $pages[$page_id_arr[4]], 'parent_id' => 0, 'attr' => 'data-column-top="1"'));
 	}
-	$page_style = Configure::read(NC_SYSTEM_KEY.'.'.'Page_Style');
-
-	$style = '';
-	$header_style = '';
-	$footer_style = '';
-	if(!empty($page_style['PageStyle']['left_margin'])) {
-		$style .= 'margin-left:'.intval($page_style['PageStyle']['left_margin']).'px;';
-	}
-	if(!empty($page_style['PageStyle']['right_margin'])) {
-		$style .= 'margin-right:'.intval($page_style['PageStyle']['right_margin']).'px;';
-	}
-	if(!empty($page_style['PageStyle']['top_margin'])) {
-		$style .= 'margin-top:'.intval($page_style['PageStyle']['top_margin']).'px;';
-	}
-	if(!empty($page_style['PageStyle']['bottom_margin'])) {
-		$style .= 'margin-bottom:'.intval($page_style['PageStyle']['bottom_margin']).'px;';
-	}
-	if(!empty($page_style['PageStyle']['min_width_size'])) {
-		switch($page_style['PageStyle']['min_width_size']) {
-			case -1:
-				$style .= 'width:100%;';
-				break;
-			case 0:
-				break;
-			default:
-				$style .= 'width:'.intval($page_style['PageStyle']['min_width_size']).'px;';
-		}
-	}
-	if(!empty($page_style['PageStyle']['min_height_size'])) {
-		switch($page_style['PageStyle']['min_height_size']) {
-			case -1:
-				$style .= 'height:100%;';
-				$header_style .= 'height:10%;';
-				$footer_style .= 'height:10%;';
-				break;
-			case 0:
-				break;
-			default:
-				$style .= 'height:'.intval($page_style['PageStyle']['min_height_size']).'px;';
-				$header_style .= 'height:10%;';
-				$footer_style .= 'height:10%;';
-		}
-	}
-	//$page_style['PageStyle']['align'] = "center";
-	//$style .= "margin:0 auto;"
 ?>
-<?php if(!empty($nc_user['id']) || Configure::read(NC_CONFIG_KEY.'.'.'display_header_menu') != NC_HEADER_MENU_NONE) {
-	echo($this->element('Dialogs/hmenu', array('hierarchy' => isset($pages[$page_id_arr[0]]['PageAuthority']['hierarchy']) ? $pages[$page_id_arr[0]]['PageAuthority']['hierarchy'] : NC_AUTH_OTHER)));
-}?>
 <div id="container">
+	<?php if(!empty($nc_user['id']) || Configure::read(NC_CONFIG_KEY.'.'.'display_header_menu') != NC_HEADER_MENU_NONE) {
+		echo($this->element('Dialogs/hmenu', array('hierarchy' => isset($pages[$page_id_arr[0]]['PageAuthority']['hierarchy']) ? $pages[$page_id_arr[0]]['PageAuthority']['hierarchy'] : NC_AUTH_OTHER)));
+	}?>
 	<div id="main-container"<?php if($style != ''): ?> style="<?php echo($style); ?>"<?php endif; ?>>
 		<?php if(isset($headercolumn_str)): ?>
-		<header id="headercolumn" class="nc-columns table-row"<?php if($header_style != ''): ?> style="<?php echo($header_style); ?>"<?php endif; ?>>
+		<header id="headercolumn" class="nc-columns table-row">
 				<?php echo($headercolumn_str); ?>
 		</header>
 		<?php endif; ?>
@@ -97,7 +52,7 @@
 			<?php endif; ?>
 		</div>
 		<?php if(isset($footercolumn_str)): ?>
-		<footer id="footercolumn" class="nc-columns table-row"<?php if($footer_style != ''): ?> style="<?php echo($footer_style); ?>"<?php endif; ?>>
+		<footer id="footercolumn" class="nc-columns table-row">
 				<?php echo($footercolumn_str); ?>
 		</footer>
 		<?php endif; ?>

@@ -85,12 +85,6 @@ define('NC_MYPORTAL_USE_NOT', 0);			// 使用しない
 define('NC_MYPORTAL_USE_ALL', 1);			// すべて公開
 define('NC_MYPORTAL_MEMBERS', 2);			// ログイン会員のみ公開(allow_myportal_viewing_hierarchyの権限以上で閲覧可能とする[主担、モデレータ、一般、ゲスト])
 
-//-----------------item_authority_links.XXXX_public_flag------------------------------------
-
-define('NC_POLICY_PUBLIC_EDIT', 2);		// 編集可
-define('NC_POLICY_PUBLIC_SHOW', 1);		// 表示可
-define('NC_POLICY_PUBLIC_NONE', 0);		// 非公開
-
 //-----------------display_flag-------------------------------------------
 
 define('NC_DISPLAY_FLAG_OFF', 0);		// 非公開
@@ -166,20 +160,17 @@ define('NC_SPACE_PUBLIC_PREFIX', '');
 define('NC_SPACE_MYPORTAL_PREFIX', 'myportal');
 define('NC_SPACE_PRIVATE_PREFIX', 'private');
 define('NC_SPACE_GROUP_PREFIX', 'community');
-//-----------------page_styles(page_infs)-------------------------------------------
-define('NC_PAGE_STYLE_PUBLIC_ID',       1);
-define('NC_PAGE_STYLE_MYPORTAL_ID',     2);
-define('NC_PAGE_STYLE_PRIVATE_ID',      3);
-define('NC_PAGE_STYLE_GROUP_ID',        4);
-define('NC_PAGE_STYLE_COMMON_ID',       5);
+//-----------------page_styles, page_infs, page_columns-------------------------------------------
+define('NC_PAGE_SCOPE_SITE', 1);	// サイト全体
+define('NC_PAGE_SCOPE_SPACE', 2);	// スペースタイプ全体
+define('NC_PAGE_SCOPE_ROOM', 3);	// ルーム
+define('NC_PAGE_SCOPE_NODE', 4);	// ノード
+define('NC_PAGE_SCOPE_CURRENT', 5);	// カレントページのみ
 
-//-----------------page_columns-------------------------------------------
-
-define('NC_PAGE_COLUMN_PUBLIC_ID',       1);
-define('NC_PAGE_COLUMN_MYPORTAL_ID',     2);
-define('NC_PAGE_COLUMN_PRIVATE_ID',      3);
-define('NC_PAGE_COLUMN_GROUP_ID',        4);
-//define('NC_PAGE_COLUMN_COMMON_ID',       5);
+define('NC_PAGE_TYPE_FONT_ID', 1);			// フォント設定
+define('NC_PAGE_TYPE_BACKGROUND_ID', 2);	// 背景
+define('NC_PAGE_TYPE_DISPLAY_ID', 3);		// 表示位置
+define('NC_PAGE_TYPE_CUSTOM_ID', 4);		// カスタム設定
 
 //-----------------configs-------------------------------------------
 define('NC_SYSTEM_CATID',      0);

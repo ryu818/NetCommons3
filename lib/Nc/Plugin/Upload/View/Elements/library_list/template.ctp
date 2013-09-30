@@ -75,6 +75,6 @@ if($name == 'item' || $name == 'more') {
 	}
 }
 ?>
-<script id="<?php echo $id; ?><?php echo '-'.$idName ?>-template" type="text/html">
+<script id="<?php echo $id; ?><?php echo '-'.$idName; ?>-template" type="text/html">
 	<?php echo($this->element('library_list/'.$name, array('data' => $data, 'page' => '${page}'))); ?>
 </script>

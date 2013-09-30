@@ -558,7 +558,6 @@ class PageMenuComponent extends Component {
 		$page_name = __d('page', "New community");
 		list($page_name, $permalink) = $this->_getPageName($page_name, $all_community_cnt + 1);
 
-		// TODO:page_inf_id, page_style_id, page_column_idは0固定
 		$ins_page = array('Page' =>array(
 			'root_id' => 0,
 			'parent_id' => NC_TOP_GROUP_ID,
@@ -568,9 +567,10 @@ class PageMenuComponent extends Component {
 			'permalink' => $permalink,
 			'position_flag' => _ON,
 			'lang' => '',
-			'page_inf_id' => 0,
-			'page_style_id' => 0,
-			'page_column_id' => 0,
+			'is_page_meta_node' => _OFF,
+			'is_page_style_node' => _OFF,
+			'is_page_theme_node' => _OFF,
+			'is_page_column_node' => _OFF,
 			'space_type' => NC_SPACE_TYPE_GROUP,
 			'show_count' => 0,
 			'display_flag' => _ON,
@@ -579,7 +579,6 @@ class PageMenuComponent extends Component {
 			'display_reverse_permalink' => null,
 			'lock_authority_id' => 0
 		));
-
 		return $ins_page;
 	}
 

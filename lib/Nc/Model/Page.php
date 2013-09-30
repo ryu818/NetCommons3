@@ -358,9 +358,10 @@ class Page extends AppModel
 		$data['Page']['display_sequence'] = 0;
 		$data['Page']['position_flag'] = _ON;
 		$data['Page']['lang'] = '';
-		$data['Page']['page_inf_id'] = NC_PAGE_STYLE_COMMON_ID;
-		$data['Page']['page_style_id'] = NC_PAGE_STYLE_COMMON_ID;
-		//$data['Page']['page_column_id'] = NC_PAGE_COLUMN_COMMON_ID;
+		$data['Page']['is_page_meta_node'] = _OFF;
+		$data['Page']['is_page_style_node'] = _OFF;
+		$data['Page']['is_page_theme_node'] = _OFF;
+		$data['Page']['is_page_column_node'] = _OFF;
 		$data['Page']['space_type'] = $spaceType;
 		$data['Page']['show_count'] = 0;
 		$data['Page']['display_flag'] = NC_DISPLAY_FLAG_ON;
@@ -370,23 +371,15 @@ class Page extends AppModel
 		$data['Page']['lock_authority_id'] = NC_AUTH_OTHER_ID;
 
 		if($spaceType == NC_SPACE_TYPE_PUBLIC) {
-			//$data['Page']['page_style_id'] = NC_PAGE_STYLE_PUBLIC_ID;
-			$data['Page']['page_column_id'] = NC_PAGE_COLUMN_PUBLIC_ID;
 			$data['Page']['parent_id'] = NC_TOP_PUBLIC_ID;
 			$data['Page']['page_name'] = "Public room";
 		} else if($spaceType == NC_SPACE_TYPE_MYPORTAL) {
-			//$data['Page']['page_style_id'] = NC_PAGE_STYLE_MYPORTAL_ID;
-			$data['Page']['page_column_id'] = NC_PAGE_COLUMN_MYPORTAL_ID;
 			$data['Page']['parent_id'] = NC_TOP_MYPORTAL_ID;
 			$data['Page']['page_name'] = "Myportal";
 		} else if($spaceType == NC_SPACE_TYPE_PRIVATE) {
-			//$data['Page']['page_style_id'] = NC_PAGE_STYLE_PRIVATE_ID;
-			$data['Page']['page_column_id'] = NC_PAGE_COLUMN_PRIVATE_ID;
 			$data['Page']['parent_id'] = NC_TOP_PRIVATE_ID;
 			$data['Page']['page_name'] = "Private room";
 		} else {
-			//$data['Page']['page_style_id'] = NC_PAGE_STYLE_GROUP_ID;
-			$data['Page']['page_column_id'] = NC_PAGE_COLUMN_GROUP_ID;
 			$data['Page']['parent_id'] = NC_TOP_GROUP_ID;
 			$data['Page']['page_name'] = "Community";
 		}

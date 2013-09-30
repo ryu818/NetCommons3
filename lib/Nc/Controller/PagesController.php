@@ -83,10 +83,6 @@ class PagesController extends AppController {
 		// パンくずリスト
 		$pages_list = $this->Page->findBreadcrumb($pages[$this->page_id_arr[0]], $user_id);
 
-		// ページスタイル情報を取得
-		// TODO: ノードを基に取得
-
-		//$page_style = $this->PageStyle->findByStylePageId($center_page['Page']['id']);
 		$add_modules = array();
 		if($mode == NC_BLOCK_MODE) {
 			// 追加モジュールリスト取得
@@ -117,10 +113,12 @@ class PagesController extends AppController {
 		$this->set("blocks", $blocks);
 		$this->set("pages", $pages);
 		$this->set("page_id_arr", $this->page_id_arr);
-		//$this->set('page_style', $page_style['PageStyle']);
 		$this->set("add_modules", $add_modules);
 		$this->set("copy_content", $copy_content );
 		$this->set('pages_list', $pages_list);
+		if(!empty($this->nc_page_styles)) {
+			$this->set('nc_page_styles', $this->nc_page_styles);
+		}
 		//$this->render('responsive');
 	}
 

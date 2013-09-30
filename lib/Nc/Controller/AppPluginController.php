@@ -127,6 +127,9 @@ class AppPluginController extends AppController
 				$this->set('page_hierarchy', null);
 			}
 		}
+		if(!empty($this->nc_page_styles) && !isset($this->viewVars['nc_page_styles'])) {
+			$this->set('nc_page_styles', $this->nc_page_styles);
+		}
 		$this->set('ncType', $this->ncType);
 		$this->set('content_id', $this->content_id);
 	}
