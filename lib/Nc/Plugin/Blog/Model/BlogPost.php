@@ -224,7 +224,7 @@ class BlogPost extends AppModel
 			while(1) {
 				if(!$this->isUniqueWith(array(), array('permalink' => $permalink, 'content_id'))) {
 					$count++;
-					$permalink = $buf_permalink. '-' . $count;
+					$permalink = $bufPermalink. '-' . $count;
 				} else {
 					break;
 				}
