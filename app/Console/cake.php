@@ -21,12 +21,28 @@
 $ds = DIRECTORY_SEPARATOR;
 $dispatcher = 'Cake' . $ds . 'Console' . $ds . 'ShellDispatcher.php';
 
+// Add for NetCommons Extentions By Ryuji.M --START
+// composerを利用するため、vendors下のCakePHPを使用するように修正
+define('ROOT', dirname(dirname(dirname(__FILE__))));
+define('APP', ROOT.$ds.'app'.$ds);
+define('VENDORS', ROOT . $ds . 'lib' . $ds . 'Nc' . $ds . 'Vendor' . $ds);
+// Add for NetCommons Extentions By Ryuji.M --E N D
+
 if (function_exists('ini_set')) {
-	$root = dirname(dirname(dirname(__FILE__)));
+// Modify for NetCommons Extentions By Ryuji.M --START
+// composerを利用するため、vendors下のCakePHPを使用するように修正
+	$root = VENDORS . 'pear-pear.cakephp.org' . $ds . 'CakePHP';
+	//$root = dirname(dirname(dirname(__FILE__)));
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 
 	// the following line differs from its sibling
 	// /lib/Cake/Console/Templates/skel/Console/cake.php
-	ini_set('include_path', $root . $ds . 'lib' . PATH_SEPARATOR . ini_get('include_path'));
+// Modify for NetCommons Extentions By Ryuji.M --START
+// composerを利用するため、vendors下のCakePHPを使用するように修正
+	ini_set('include_path', $root . PATH_SEPARATOR . ini_get('include_path'));
+	//ini_set('include_path', $root . $ds . 'lib' . PATH_SEPARATOR . ini_get('include_path'));
+// Modify for NetCommons Extentions By Ryuji.M --E N D
+
 }
 
 if (!include($dispatcher)) {
