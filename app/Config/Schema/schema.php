@@ -480,11 +480,11 @@ class AppSchema extends CakeSchema {
 
 	public $page_columns = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
-		'page_column_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'index'),
+		'scope' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3),
+		'type' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3),
 		'lang' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 10, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'page_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
-		'display_flag' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
-		'order' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 2),
+		'space_type' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 2),
+		'page_id' => array('type' => 'integer', 'null' => true, 'default' => '0'),
 		'header_page_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'left_page_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'right_page_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
@@ -496,19 +496,18 @@ class AppSchema extends CakeSchema {
 		'modified_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
 		'modified_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'indexes' => array(
-			'PRIMARY' => array('column' => 'id', 'unique' => 1),
-			'page_column_id' => array('column' => array('page_column_id', 'lang'), 'unique' => 0)
+			'PRIMARY' => array('column' => 'id', 'unique' => 1)
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
 
 	public $page_metas = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
-		'page_inf_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'index'),
+		'scope' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3),
+		'type' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3),
 		'lang' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 10, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'page_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
-		'display_flag' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
-		'order' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 2),
+		'space_type' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 2),
+		'page_id' => array('type' => 'integer', 'null' => true, 'default' => '0'),
 		'title' => array('type' => 'string', 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'meta_keywords' => array('type' => 'text', 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'meta_description' => array('type' => 'text', 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
@@ -519,27 +518,25 @@ class AppSchema extends CakeSchema {
 		'modified_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
 		'modified_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'indexes' => array(
-			'PRIMARY' => array('column' => 'id', 'unique' => 1),
-			'page_inf_id' => array('column' => array('page_inf_id', 'lang'), 'unique' => 0)
+			'PRIMARY' => array('column' => 'id', 'unique' => 1)
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
 
 	public $page_styles = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
-		'style_page_id' => array('type' => 'integer', 'null' => false, 'default' => null),
-		'order' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 2),
-		'lang' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 10),
-		'display_flag' => array('type' => 'boolean', 'null' => false, 'default' => null),
-		'color' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 40, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'bgcolor' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 40, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'scope' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3),
+		'type' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3),
+		'lang' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 10, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'space_type' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 2),
+		'page_id' => array('type' => 'integer', 'null' => true, 'default' => '0'),
 		'file' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 48, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'created' => array('type' => 'datetime', 'null' => false, 'default' => null),
+		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'created_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
-		'created_user_name' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 50),
-		'modified' => array('type' => 'datetime', 'null' => false, 'default' => null),
+		'created_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'modified' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'modified_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
-		'modified_user_name' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 50),
+		'modified_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'indexes' => array(
 			'PRIMARY' => array('column' => 'id', 'unique' => 1)
 		),
@@ -565,11 +562,11 @@ class AppSchema extends CakeSchema {
 
 	public $page_themes = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
-		'page_style_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'index'),
+		'scope' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3),
+		'type' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3),
 		'lang' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 10, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'page_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
-		'display_flag' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
-		'order' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 2),
+		'space_type' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 2),
+		'page_id' => array('type' => 'integer', 'null' => true, 'default' => '0'),
 		'theme_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'temp_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'center_theme' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
@@ -577,13 +574,6 @@ class AppSchema extends CakeSchema {
 		'left_theme' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'right_theme' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'footer_theme' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'align' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 10, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'left_margin' => array('type' => 'integer', 'null' => false, 'default' => null),
-		'right_margin' => array('type' => 'integer', 'null' => false, 'default' => null),
-		'top_margin' => array('type' => 'integer', 'null' => false, 'default' => null),
-		'bottom_margin' => array('type' => 'integer', 'null' => false, 'default' => null),
-		'min_width_size' => array('type' => 'integer', 'null' => false, 'default' => '0'),
-		'min_height_size' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'created_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
 		'created_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
@@ -591,8 +581,7 @@ class AppSchema extends CakeSchema {
 		'modified_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
 		'modified_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'indexes' => array(
-			'PRIMARY' => array('column' => 'id', 'unique' => 1),
-			'page_style_id' => array('column' => array('page_style_id', 'lang'), 'unique' => 0)
+			'PRIMARY' => array('column' => 'id', 'unique' => 1)
 		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
@@ -625,9 +614,10 @@ class AppSchema extends CakeSchema {
 		'permalink' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'position_flag' => array('type' => 'boolean', 'null' => false, 'default' => '1'),
 		'lang' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 10, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
-		'page_inf_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
-		'page_style_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
-		'page_column_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'is_page_meta_node' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
+		'is_page_style_node' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
+		'is_page_theme_node' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
+		'is_page_column_node' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'room_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'space_type' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 2),
 		'show_count' => array('type' => 'integer', 'null' => false, 'default' => '0'),

@@ -1,22 +1,32 @@
-<?php /* ページスタイル */ ?>
 <?php
-if ($this->request->is('post')) {
-	echo '<link href="theme/page_styles/'.$page_style['file'].'" rel="stylesheet "type="text/css">';
-}
+/**
+ * ページスタイル
+ *
+ * @copyright     Copyright 2012, NetCommons Project
+ * @package       Plugin.Page.View
+ * @author        Noriko Arai,Ryuji Masukawa
+ * @since         v 3.0.0.0
+ * @license       http://www.netcommons.org/license.txt  NetCommons License
+ */
 ?>
-<div class="nc-pages-setting-title nc-panel-color" data-pages-header="true">
-	<?php echo(__d('page', 'Page style')); ?>
-</div>
+
 <div class="nc-pages-setting-content">
-	<?php echo($this->Form->input(__d('page', 'Font color:'), array('id' => 'page_style_color', 'type' => 'text', 'value' => '', 'data-pagestyle-name' => 'color', 'data-pagestyle-selector' => 'body'))); ?>
-	<?php echo($this->Form->input(__d('page', 'Background color:'), array('id' => 'page_style_bgcolor', 'type' => 'text', 'value' => '', 'data-pagestyle-name' => 'background-color', 'data-pagestyle-selector' => 'body'))); ?>
-	<form name="pages_style_form" method="post" action="<?php echo $this->Html->url(array('plugin' => 'page','action' => 'style')); ?>" data-ajax="#nc-pages-setting-dialog">
-		<?php echo($this->element('style/textarea', isset($file_content) ? array('file_content'=>$file_content) : array())); ?>
-		<div class="btn-bottom">
-			<input id="pages-style-button" type="submit" class="common-btn" name="ok" value="<?php echo( __('Ok')); ?>" />
+	<?php
+		echo $this->Html->css(array('plugins/colpick.css', 'Page.style/style.css'));
+		echo $this->Html->script(array('plugins/colpick.js', 'Page.style/style.js'));
+	?>
+	<div id="pages-menu-style-init-tab">
+		<ul id="pages-menu-style-tab-ul">
+			<li><a href="#pages-menu-style-tab-font"><?php echo __d('page', 'Font setting');?></a></li>
+			<li><a href="<?php echo $this->Html->url(array('action' => 'background'));?>"><?php echo __d('page', 'Background');?></a></li>
+			<li><a href="<?php echo $this->Html->url(array('action' => 'display_position'));?>"><?php echo __d('page', 'Display position');?></a></li>
+			<li><a href="<?php echo $this->Html->url(array('action' => 'custom'));?>"><?php echo __d('page', 'Custom setting');?></a></li>
+		</ul>
+		<div id="pages-menu-style-tab-font">
+		<?php
+			echo $this->element('style/font', array('category' => 'font', 'languages' => $languages, 'page_styles' => $page_styles, 'page' => $page));
+			echo($this->element('style/template', array('category' => 'font')));
+		?>
 		</div>
-	</form>
+	</div>
 </div>
-<?php
-	echo $this->Html->script(array('Page.style/style.js'));
-?>

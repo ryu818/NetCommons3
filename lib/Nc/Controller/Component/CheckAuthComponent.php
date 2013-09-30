@@ -456,6 +456,9 @@ class CheckAuthComponent extends Component {
 					return false;
 				}
 
+				// PageStyle
+				$controller->nc_page_styles = $controller->PageStyle->findScope($center_page);
+				
 				$controller->nc_page = isset($active_page) ? $active_page : $page;	// blockから取得できるPage優先
 				$controller->nc_current_page = $page;								// pageから取得できるPage
 				if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_DISABLE

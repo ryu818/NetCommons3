@@ -1,1 +1,0 @@
-<?php echo($this->form->textarea('textarea', array('id' => 'page_setting_textarea', 'value' => $file_content, 'class' => 'display-none'))); ?>

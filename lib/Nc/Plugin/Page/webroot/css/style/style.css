@@ -1,0 +1,27 @@
+ul.pages-menu-style-scopes {
+	margin: 10px;
+}
+ul.pages-menu-style-scopes li dl dt {
+	padding: 5px 2px;
+}
+ul.pages-menu-style-scopes li dl dd {
+	padding: 2px;
+}
+
+#pages-menu-style-font-accordion .ui-accordion-content {
+	padding: 3px;
+}
+
+ul.pages-menu-style-details {
+	margin: 10px;
+}
+ul.pages-menu-style-details li dl dt {
+	padding: 5px 2px;
+}
+ul.pages-menu-style-details li dl dd {
+	padding: 2px;
+}
+
+.pages-menu-style-colorpicker {
+	width: 70px;
+}

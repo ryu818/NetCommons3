@@ -58,7 +58,7 @@ if(!empty($announcement['Announcement']['id'])) {
 			</div>
 		</div>
 	<?php endif; ?>
-	<?php echo ($announcement['Revision']['content']);?>
+	<article><?php echo ($announcement['Revision']['content']);?></article>
 	<?php if($is_edit): ?>
 		<?php
 			echo $this->Html->script('Announcement.announcement/index');

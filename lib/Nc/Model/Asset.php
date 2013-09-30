@@ -87,6 +87,25 @@ class Asset extends AppModel
 		}
 	}
 
+/**
+ * 圧縮されたコンテンツをincludeするかどうかのポストフィックス取得
+ *
+ * @param  void
+ * @return string '' or '.gz'
+ */
+	public function getPostFix() {
+		$doGzipCompression = false;
+		if (NC_ASSET_GZIP) {
+			$doGzipCompression = Configure::read(NC_CONFIG_KEY.'.'.'script_compress_gzip');
+		}
+		if($doGzipCompression && extension_loaded('zlib') && !empty($_SERVER['HTTP_ACCEPT_ENCODING']) && preg_match('/gzip/i', $_SERVER['HTTP_ACCEPT_ENCODING'])) {
+			$postfix = '.gz';
+		} else {
+			$postfix = '';
+		}
+		return $postfix;
+	}
+
 	// plugin名称毎にマージして取得
 	// 同じscript,cssをAjaxにより何度も読み込ませないようにするため
 	protected function _afterFind($results, $options) {
@@ -97,15 +116,7 @@ class Asset extends AppModel
 		$create_arr = array();
 		$options_arr = array();
 
-		$doGzipCompression = false;
-		if (NC_ASSET_GZIP) {
-			$doGzipCompression = Configure::read(NC_CONFIG_KEY.'.'.'script_compress_gzip');
-		}
-		if($doGzipCompression && extension_loaded('zlib') && !empty($_SERVER['HTTP_ACCEPT_ENCODING']) && preg_match('/gzip/i', $_SERVER['HTTP_ACCEPT_ENCODING'])) {
-			$postfix = '.gz';
-		} else {
-			$postfix = '';
-		}
+		$postfix = $this->getPostFix;
 		$root_path = $this->_getPath();
 
 		foreach ($results as $key => $val) {
