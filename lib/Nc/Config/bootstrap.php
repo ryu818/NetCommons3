@@ -106,6 +106,11 @@ Configure::write('Session', array(
 // DBに標準時で登録するため
 date_default_timezone_set('UTC');
 
+// composerを利用する変更の影響で、EmailConfigクラスをautoloadする際に、
+// EmailConfigクラスが定義されているemail.phpのファイル名がクラス名と異なるためロードに失敗する。
+// そのため、email.phpをEmailConfig.phpにリネームし、bootstrapでEmailConfigを読み込む
+App::uses('EmailConfig', 'Config');
+
 // composerのautoloadを読み込み
 require VENDORS . 'autoload.php';
 
@@ -113,5 +118,6 @@ require VENDORS . 'autoload.php';
 // https://github.com/composer/composer/commit/c80cb76b9b5082ecc3e5b53b1050f76bb27b127b を参照
 spl_autoload_unregister(array('App', 'load'));
 spl_autoload_register(array('App', 'load'), true, true);
+
 
 unset($path, $baseDir, $bufPath);
