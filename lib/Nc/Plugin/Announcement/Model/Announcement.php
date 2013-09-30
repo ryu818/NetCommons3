@@ -30,6 +30,10 @@ class Announcement extends AppModel
 				'Revision.revision_name !=' => 'auto-draft',
 				'Revision.is_approved_pointer' => _ON
 			),
+		),
+		'Content'      => array(
+			'type' => 'INNER',
+			'fields' => array('Content.title')
 		)
 	);
 
