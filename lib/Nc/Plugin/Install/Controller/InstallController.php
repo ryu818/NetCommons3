@@ -571,6 +571,9 @@ class InstallController extends Controller {
 				return;
 			}
 		}
+		// バックグランド登録処理
+		$Background = ClassRegistry::init('Background');
+		$Background->updateAllInit();
 
 		// install.inc.php書き込み
 		copy(APP . 'Config' . DS . 'install.inc.php.default', APP . 'Config' . DS . NC_INSTALL_INC_FILE);

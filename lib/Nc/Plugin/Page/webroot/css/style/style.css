@@ -8,7 +8,7 @@ ul.pages-menu-style-scopes li dl dd {
 	padding: 2px;
 }
 
-#pages-menu-style-font-accordion .ui-accordion-content {
+#pages-menu-style-accordion .ui-accordion-content,#pages-menu-background-accordion .ui-accordion-content {
 	padding: 3px;
 }
 
@@ -24,4 +24,76 @@ ul.pages-menu-style-details li dl dd {
 
 .pages-menu-style-colorpicker {
 	width: 70px;
+}
+
+/* 背景絞り込み */
+.pages-menu-backgrounds-filter {
+	text-align:right;
+	padding:2px;
+}
+.pages-menu-backgrounds-filter div {
+	text-align:left;
+	margin:0 2px;
+}
+
+.pages-menu-picker {
+	height:180px;
+}
+
+.pages-menu-backgrounds {
+	width:350px;
+	height:330px;
+	overflow:auto;
+}
+
+ul.pages-menu-backgrounds li {
+	padding:5px;
+	float:left;
+	clear:none;
+	border: 1px solid #cdcdcd;
+    border-radius: 4px 4px 4px 4px;
+    margin: 4px;
+    padding: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.pages-menu-backgrounds li .pages-menu-background {
+	width: 64px;
+	height: 64px;
+	background-repeat: repeat;
+	display:block;
+	border: 1px solid #efefef;
+}
+
+#pages-menu-background-accordion {
+	width:380px;
+}
+
+/* カラー選択 */
+.pages-menu-background-color ul {
+	list-style: none outside none;
+	width:170px;
+	height:145px;
+	overflow:auto;
+}
+.pages-menu-background-color ul li {
+	list-style: none outside none;
+	padding:5px;
+	float:left;
+	clear:none;
+	border: 1px solid #cdcdcd;
+    border-radius: 4px 4px 4px 4px;
+    margin: 4px;
+    padding: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.pages-menu-background-color ul li a {
+	width: 21px;
+	height: 21px;
+	background-repeat: repeat;
+	display:block;
+	border: 1px solid #efefef;
+}
+
+.pages-menu-background-highlight {
+	background-color: #589fe0;
 }

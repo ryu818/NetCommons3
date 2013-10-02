@@ -305,3 +305,7 @@ define('NC_ASSET_GZIP', 1);					// gzip圧縮の有効化
 define("NC_REVISION_RETENTION_NUMBER", 20);					// 履歴の保存最大個数を超えた場合、古いものから削除
 define("NC_REVISION_SHOW_LIMIT", 5);						// WYSIWYG編集画面のリビジョンの表示件数
 //define("NC_REVISION_AUTO_DRAFT_GC_LIFETIME", 2592000);		// 自動保存のデータ保持期間（デフォルト：30日）
+
+//-----------------背景ファイル関連-------------------------------------------
+define("NC_PAGES_BACKGROUND_COLOR_STYLE", 'Black,Gray,Brown,White,Blue,Red,Green,Yellow,Other');		// 色
+define("NC_PAGES_BACKGROUND_CATEGORY_STYLE", 'Stripe,Dot,Square,Checkered,Tile,Wall,Picture,Other');	// カテゴリー

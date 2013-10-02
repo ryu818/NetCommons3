@@ -1,0 +1,21 @@
+msgid  	"No pattern"
+msgstr 	"パターンなし"
+
+msgid  	"Tilt"
+msgstr 	"斜め縞"
+
+msgid  	"Vertical"
+msgstr 	"縦縞"
+
+msgid  	"Horizontal"
+msgstr 	"横縞"
+
+msgid  	"Leather"
+msgstr 	"レザー"
+
+msgid  	"Paper"
+msgstr 	"紙"
+
+msgid  	"Wood"
+msgstr 	"木"
+

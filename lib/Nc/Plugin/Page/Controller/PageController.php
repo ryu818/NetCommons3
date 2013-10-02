@@ -23,7 +23,7 @@ class PageController extends PageAppController {
  * Model name
  * @var array
  */
-	public $uses = array('Community', 'CommunityLang', 'CommunityTag');
+	public $uses = array('Community', 'CommunityLang', 'CommunityTag', 'Background');
 
 /**
  * Heilper name
@@ -330,19 +330,16 @@ class PageController extends PageAppController {
 		$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', $this->action);
 		$this->render('index');
 	}
-
 /**
- * ページスタイル表示・登録(フォント設定)
+ * Style initialize処理
  * @param   void
- * @return  void
+ * @param   string $id
+ * @return  Model Page $centerPage
  * @since   v 3.0.0.0
  */
-	public function style() {
+	protected function _initializeStyle() {
 		// 言語切替
 		$languages = $this->Language->findSelectList();
-		
-		$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', $this->action);
-		
 		$centerPage = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');
 		if($centerPage['PageAuthority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
 			$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', 'index');
@@ -350,21 +347,57 @@ class PageController extends PageAppController {
 			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 			return;
 		}
+		$this->set('page', $centerPage);
+		if($this->action == 'style' && !$this->request->is('post')) {
+			$elementParams['languages'] = $languages;
+			$this->set('element_params', $elementParams);
+		} else {
+			$this->set('languages', $languages);
+		}
+		return $centerPage;
+	}
+/**
+ * ページスタイル表示・登録(フォント設定)
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function style() {
+		$centerPage = $this->_initializeStyle();
 		$pageStyles = $this->PageStyle->findScope($centerPage);
-		if ($this->request->is('post') && $this->request->data['type'] == 'reset' && isset($pageStyles[NC_PAGE_TYPE_FONT_ID]['PageStyle'])) {
+		$pageStyles = $this->_savePageStyle($pageStyles);
+
+		$this->set('page_styles', $pageStyles);
+		$this->set('id', 'pages-menu-style');
+		if ($this->request->is('post')) {
+			$this->render('/Elements/style/font');
+		} else {
+			$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', $this->action);
+			$this->render('index');
+		}
+	}
+	
+/**
+ * ページスタイル 登録処理
+ * @param   string $type
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	protected function _savePageStyle($pageStyles, $type = NC_PAGE_TYPE_FONT_ID) {
+		if ($this->request->is('post') && $this->request->data['type'] == 'reset' && isset($pageStyles[$type]['PageStyle'])) {
 			// リセット処理
-			if(!$this->PageStyle->delete($pageStyles[NC_PAGE_TYPE_FONT_ID]['PageStyle']['id'])) {
+			if(!$this->PageStyle->delete($pageStyles[$type]['PageStyle']['id'])) {
 				throw new InternalErrorException(__('Failed to delete the database, (%s).', 'page_styles'));
 			}
-			array_shift($pageStyles[NC_PAGE_TYPE_FONT_ID]);
+			array_shift($pageStyles[$type]);
 			$this->Session->setFlash(__('Has been successfully updated.'));
 		} else if ($this->request->is('post') && $this->request->data['type'] == 'submit' &&
 				isset($this->request->data['PageStyle']['style'])) {
 
 			// 削除処理
 			$savePageStyle = $this->request->data;
-			$savePageStyle['PageStyle']['type'] = NC_PAGE_TYPE_FONT_ID;
-			if($savePageStyle['PageStyle']['lang'] == 'all') {
+			$savePageStyle['PageStyle']['type'] = $type;
+			if($savePageStyle['PageStyle']['lang'] == 'All') {
 				$savePageStyle['PageStyle']['lang'] = '';
 			}
 
@@ -382,9 +415,9 @@ class PageController extends PageAppController {
 			if($this->PageStyle->validates()) {
 				
 				$id = null;
-				if(isset($pageStyles[NC_PAGE_TYPE_FONT_ID])) {
+				if(isset($pageStyles[$type])) {
 					// 現在、設定中のものより優先順位が高いものが既に登録してあったら、削除。
-					foreach($pageStyles[NC_PAGE_TYPE_FONT_ID] as $pageStyle) {
+					foreach($pageStyles[$type] as $pageStyle) {
 						if($pageStyle['scope'] == $savePageStyle['PageStyle']['scope'] &&
 							$pageStyle['space_type'] == $savePageStyle['PageStyle']['space_type'] &&
 							$pageStyle['lang'] == $savePageStyle['PageStyle']['lang'] &&
@@ -404,6 +437,10 @@ class PageController extends PageAppController {
 				$this->autoRender = false;
 				$savePageStyle['PageStyle']['id'] = $id;
 				
+				if(isset($savePageStyle['PageStyle']['style']['body']['background-image'])) {
+					$savePageStyle['PageStyle']['style']['body']['background-image'] = preg_replace('#^'.preg_quote(Router::url('/', true), '#').'#i', '../../', $savePageStyle['PageStyle']['style']['body']['background-image']);
+				}
+				
 				$this->set('data', $savePageStyle['PageStyle']['style']);
 				$content = $this->render('/Elements/style/regist_template');
 				
@@ -413,7 +450,7 @@ class PageController extends PageAppController {
 				}
 				$this->autoLayout = true;
 				$this->autoRender = true;
-				$pageStyles[NC_PAGE_TYPE_FONT_ID] = $savePageStyle;
+				$pageStyles[$type] = $savePageStyle;
 				if(empty($id)) {
 					$this->Session->setFlash(__('Has been successfully registered.'));
 				} else {
@@ -421,19 +458,8 @@ class PageController extends PageAppController {
 				}
 			}
 		}
-		
-		$this->set('page', $centerPage);
-		$this->set('page_styles', $pageStyles);
-		if ($this->request->is('post')) {
-			$this->set('languages', $languages);
-			$this->render('/Elements/style/font');
-		} else {
-			$elementParams['languages'] = $languages;
-			$this->set('element_params', $elementParams);
-			$this->render('index');
-		}
+		return $pageStyles;
 	}
-	
 
 /**
  * ページスタイル表示・登録(背景)
@@ -442,9 +468,79 @@ class PageController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function background() {
-		$this->render('/Elements/style/background');
-	}
+		$centerPage = $this->_initializeStyle();
+		$pageStyles = $this->PageStyle->findScope($centerPage);
+		$pageStyles = $this->_savePageStyle($pageStyles);
+		
+		$conditions = array();
+		$category = (!isset($this->request->data['Background']['category']) || $this->request->data['Background']['category'] == 'all') ? null : $this->request->data['Background']['category'];
+		$color = (!isset($this->request->data['Background']['color']) || $this->request->data['Background']['color'] == 'all') ? null : $this->request->data['Background']['color'];
+		$limit = !isset($this->request->data['Background']['limit']) ? PAGES_BACKGROUND_LIMIT : intval($this->request->data['Background']['limit']);
+		$patternPage = !isset($this->request->data['Background']['patterns_page']) ? 1 : intval($this->request->data['Background']['patterns_page']);
+		$imagePage = !isset($this->request->data['Background']['images_page']) ? 1 : intval($this->request->data['Background']['images_page']);
+		if ($this->request->is('post') && in_array($this->request->data['type'], array('search', 'patterns_search', 'images_search'))) {
+			// 絞り込み
+			if(isset($category)) {
+				$conditions['Background.category'] = $category;
+			}
+			if(isset($color)) {
+				$conditions['Background.color'] = $color;
+			}
+			if(isset($this->request->data['PageStyle']['scope'])) {
+				$pageStyles[NC_PAGE_TYPE_BACKGROUND_ID]['PageStyle']['scope'] = $this->request->data['PageStyle']['scope'];
+			}
+			if(isset($this->request->data['PageStyle']['lang'])) {
+				$pageStyles[NC_PAGE_TYPE_BACKGROUND_ID]['PageStyle']['lang'] = $this->request->data['PageStyle']['lang'];
+			}
+		}
+		$conditions['type'] = 'pattern';
+		$patterns = $this->Background->findList('all', array('conditions' => $conditions, 'offset' => $limit *($patternPage-1), 'limit' => $limit+1));
+		$this->set('patterns', $patterns);
+		$conditions['type'] = 'image';
+		$images = $this->Background->findList('all', array('conditions' => $conditions, 'offset' => $limit *($imagePage-1), 'limit' => $limit+1));
+		$this->set('images', $images);
 
+		$this->set('page_styles', $pageStyles);
+		$this->set('id', 'pages-menu-background');
+		$this->set('category', $category);
+		$this->set('color', $color);
+
+		$this->set('has_pattern', ($limit < count($patterns)) ? true : false);
+		$this->set('has_image',($limit < count($images)) ? true : false);
+		$this->set('pattern_page', $patternPage);
+		$this->set('image_page', $imagePage);
+		$this->set('limit', $limit);
+		
+		if ($this->request->is('post') && in_array($this->request->data['type'], array('search', 'patterns_search', 'images_search'))) {
+			$this->render('/Elements/style/search_background');
+		} else {
+			$this->render('/Elements/style/background');
+		}
+	}
+/**
+ * ページスタイル - 色選択
+ * @param   integer $groupId
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function color($groupId) {
+		
+		$params = array(
+			'conditions' => array('group_id' => intval($groupId)),
+		);
+		if(!empty($this->request->named['category'])) {
+			$params['conditions']['category'] = $this->request->named['category'];
+		}
+		if(!empty($this->request->named['color'])) {
+			$params['conditions']['color'] = $this->request->named['color'];
+		}
+		$backgrounds = $this->Background->find('all', $params);
+		if (count($backgrounds) == 0) {
+			throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'backgrounds'));
+		}
+		$this->set('backgrounds', $backgrounds);
+		$this->render('/Elements/style/color');
+	}
 
 /**
  * ページスタイル表示・登録(表示位置)
@@ -455,7 +551,6 @@ class PageController extends PageAppController {
 	public function display_position() {
 		$this->render('/Elements/style/display_position');
 	}
-	
 
 /**
  * ページスタイル表示・登録(カスタム設定)

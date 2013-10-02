@@ -38,7 +38,7 @@
 					}
 					$options[NC_PAGE_SCOPE_CURRENT] = __d('page', 'Only the current page');
 					$settings = array(
-						'id' => 'pages-menu-style-scope',
+						'id' => $id.'-scope',
 						'type' => 'select',
 						'options' => $options,
 						'value' => isset($page_style['PageStyle']['scope']) ? $page_style['PageStyle']['scope'] : NC_PAGE_SCOPE_SITE,
@@ -61,13 +61,13 @@
 			<dd>
 				<?php
 					$options = array(
-						'all' => __('All'),
+						'All' => __('All'),
 					);
 					foreach($languages as $key => $value) {
 						$options[$key] = __($value);
 					}
 					$settings = array(
-						'id' => 'pages-menu-style-lang',
+						'id' => $id.'-lang',
 						'type' => 'select',
 						'options' => $options,
 						'value' => isset($page_style['PageStyle']['lang']) ? $page_style['PageStyle']['lang'] : '',

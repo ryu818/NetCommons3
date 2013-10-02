@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * ページDefine
+ *
+ * @copyright     Copyright 2012, NetCommons Project
+ * @package       Plugin.Page.Config
+ * @author        Noriko Arai,Ryuji Masukawa
+ * @since         v 3.0.0.0
+ * @license       http://www.netcommons.org/license.txt  NetCommons License
+ */
 define("PAGES_COMMUNITY_LIMIT", 10);	// 1ページに表示するページ数	TODO:Configでデフォルトの表示件数を設定できるほうがよい。
 define("PAGES_COMMUNITY_VIEWS", 5);		// ページ送り：リストを5ページ分まで表示
 define("PAGES_COMMUNITY_LIMIT_SELECT", "10|20|30|40|50|100");
@@ -23,8 +31,15 @@ define("PAGES_STYLE_LINE_HEIGHT", '100%,110%,120%,130%,140%,150%,160%,170%,180%,
 // 線のスタイル
 define("PAGES_STYLE_BORDER_STYLE", 'solid,dotted,dashed');
 
-
 // 線のスタイル
 
 define("PROPERTY_ELEMENTS_WHITE_LIST", 'body,#container,article,h1,a,hr,#main-container');
-define("PROPERTY_KEYS_WHITE_LIST", 'font-family,color,font-size,line-height,border-top-color,border-top-style,border-radius,border-style,border-color');
+define("PROPERTY_KEYS_WHITE_LIST", 'font-family,color,font-size,line-height,border-top-color,border-top-style,border-radius,border-style,border-color,background-color,background-image,background-attachment,background-position-x,background-position-y,background-repeat');
+
+define("PAGES_STYLE_BACKGROUND_ATTACHMENT", 'fixed,scroll');
+define("PAGES_STYLE_BACKGROUND_REPEAT", 'repeat,repeat-x,repeat-y,no-repeat');
+define("PAGES_STYLE_BACKGROUND_POSITION_X", 'left,right');
+define("PAGES_STYLE_BACKGROUND_POSITION_Y", 'top,bottom');
+
+// 背景
+define("PAGES_BACKGROUND_LIMIT", 28);

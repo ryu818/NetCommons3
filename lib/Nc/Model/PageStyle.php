@@ -112,6 +112,11 @@ class PageStyle extends AppModel
 		$borderStyles = explode(',', PAGES_STYLE_BORDER_STYLE);
 		$fonts = explode(',', PAGES_STYLE_FONT);
 		
+		$backgroundAttachments = explode(',', PAGES_STYLE_BACKGROUND_ATTACHMENT);
+		$backgroundRepeat = explode(',', PAGES_STYLE_BACKGROUND_REPEAT);
+		$backgroundPositionX = explode(',', PAGES_STYLE_BACKGROUND_POSITION_X);
+		$backgroundPositionY = explode(',', PAGES_STYLE_BACKGROUND_POSITION_Y);
+		
 		foreach($this->data[$this->alias]['style'] as $propertyElement => $property) {
 			if(!in_array($propertyElement, $propertyElements)) {
 				return false;
@@ -126,6 +131,7 @@ class PageStyle extends AppModel
 					case 'color':
 					case 'border-color':
 					case 'border-top-color':
+					case 'background-color':
 						if(!preg_match("/^#[a-fA-F0-9]{6}$/", $value)) {
 							return false;
 						}
@@ -144,6 +150,32 @@ class PageStyle extends AppModel
 						break;
 					case 'border-radius':
 						if(!preg_match("/^[0-9]+px$/i", $value)) {
+							return false;
+						}
+						break;
+					case 'background-image':
+						//if($value != 'none' && !preg_match("/^url\(\"[^\)]+\"\)$/i", $value)) {
+						if($value != 'none' && !preg_match("/^[^']?$/i", $value)) {
+							return false;
+						}
+						break;
+					case 'background-attachment':
+						if(!in_array($value, $backgroundAttachments)) {
+							return false;
+						}
+						break;
+					case 'background-position-x':
+						if(!in_array($value, $backgroundPositionX)) {
+							return false;
+						}
+						break;
+					case 'background-position-y':
+						if(!in_array($value, $backgroundPositionY)) {
+							return false;
+						}
+						break;
+					case 'background-repeat':
+						if(!in_array($value, $backgroundRepeat)) {
 							return false;
 						}
 						break;

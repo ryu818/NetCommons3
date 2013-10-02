@@ -352,10 +352,9 @@ img.icon {
 	border-radius:2px;
 	width:9px;
 	height:15px;
-	padding:0 2px;
+	padding:0 3px;
 	border:1px solid #c9c9c9;
 	display:block;
-	margin:4px 2px;
 	background-color:#fff;
 }
 .nc-arrow-header-link {

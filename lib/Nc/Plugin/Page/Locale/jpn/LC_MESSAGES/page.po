@@ -252,3 +252,62 @@ msgstr 	"設定を変更します。よろしいですか？"
 
 msgid  	"You cancel applied setting now.? Are you sure to proceed?"
 msgstr 	"現在、適用されている設定をキャンセルします。よろしいですか？"
+
+
+## 背景-タイトル
+msgid  	"Background color"
+msgstr 	"背景色"
+msgid  	"Background patterns"
+msgstr 	"背景パターン"
+msgid  	"Background images"
+msgstr 	"背景画像"
+
+msgid  	"Select type"
+msgstr 	"種別選択"
+
+msgid  	"More"
+msgstr 	"もっと見る"
+
+## 背景-絞り込みセレクトボックス
+msgid  	"Filter"
+msgstr 	"絞り込み"
+msgid  	"Color"
+msgstr 	"色"
+msgid  	"Category"
+msgstr 	"カテゴリー"
+
+## 背景-キーワード
+msgid  	"Stripe"
+msgstr 	"縞模様"
+msgid  	"Dot"
+msgstr 	"ドット"
+msgid  	"Square"
+msgstr 	"四角"
+msgid  	"Checkered"
+msgstr 	"チェック柄"
+msgid  	"Tile"
+msgstr 	"タイル"
+msgid  	"Wall"
+msgstr 	"壁"
+msgid  	"Picture"
+msgstr 	"絵柄"
+
+## 背景-色
+msgid  	"Gray"
+msgstr 	"灰色"
+msgid  	"Black"
+msgstr 	"黒"
+msgid  	"Brown"
+msgstr 	"茶色"
+msgid  	"White"
+msgstr 	"白"
+msgid  	"Blue"
+msgstr 	"青"
+msgid  	"Red"
+msgstr 	"赤"
+msgid  	"Green"
+msgstr 	"緑"
+msgid  	"Yellow"
+msgstr 	"黄色"
+msgid  	"Other"
+msgstr 	"その他"

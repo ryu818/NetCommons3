@@ -51,7 +51,7 @@ echo $this->Form->create('PageStyle', array(
 echo $this->Form->error('PageStyle.type');
 echo $this->element('scope', array('languages' => $languages, 'page_style' => isset($page_styles[NC_PAGE_TYPE_FONT_ID]) ? $page_styles[NC_PAGE_TYPE_FONT_ID] : null, 'page' => $page));
 ?>
-<div id="pages-menu-style-font-accordion">
+<div id="<?php echo $id;?>-accordion">
 <?php foreach ($items as $itemKey => $item): ?>
 	<div><a href="#"><?php echo(h($item['title'])); ?></a></div>
 	<div>

@@ -20,6 +20,8 @@
 				<?php if(!$value): ?>
 				<?php elseif($name == 'font-family'): ?>
 				<?php echo $name;?>:'<?php echo $value;?>', 'Lucida Grande','Hiragino Kaku Gothic ProN', sans-serif;*font-size:small;
+				<?php elseif($name == 'background-image'): ?>
+				<?php echo $name;?>:url('<?php echo $value;?>');
 				<?php else: ?>
 				<?php echo $name;?>:<?php echo $value;?>;
 				<?php endif; ?>
