@@ -616,28 +616,40 @@ class Block extends AppModel
 				$plugin = $module['Module']['dir_name'];
 				App::uses($plugin.'OperationComponent', 'Plugin/'.$plugin.'/Controller/Component');
 				$class_name = $plugin.'OperationComponent';
-				if (class_exists($class_name)) {
+				if(class_exists($class_name) && method_exists($class_name,'delete_block')) {
 					$class = new $class_name(new ComponentCollection());
 					$class->startup();
-					if (method_exists($class_name,'delete_block')) {
-						// ブロック削除アクション
-						if (!$class->delete_block($block, $content, $page)) {
-							return false;
-						}
+					// ブロック削除アクション
+					if (!$class->delete_block($block, $content, $page)) {
+						return false;
 					}
-
-					if (isset($content['Content']) && $content['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_OFF
-						&& $allDelete == _ON && $page['Page']['room_id'] == $content['Content']['room_id']) {
-						if(!$Content->deleteContent($content, $allDelete, $parentRoomId)) {
-							return false;
+				} else {
+					// 自動でBlockIDをキーに削除処理を行う。
+					$CakeSchema = ClassRegistry::init('CakeSchema');
+					$options = array('name' => $plugin, 'plugin' => $plugin);
+					$schema = $CakeSchema->load($options);
+					if($schema) {
+						foreach($schema->tables as $table => $fields) {
+							if(isset($fields['block_id'])) {
+								$model = ClassRegistry::init($schema->name. '.'. Inflector::classify($table));
+								$conditions = array(
+									$model->alias.".block_id" => $block_id
+								);
+								if(!$model->deleteAll($conditions)) {
+									return false;
+								}
+							}
 						}
 					}
 				}
 				if (isset($content['Content'])) {
-					if($content['Content']['display_flag'] == NC_DISPLAY_FLAG_DISABLE
-						|| $content['Content']['shortcut_type'] != NC_SHORTCUT_TYPE_OFF
-						|| ($allDelete == _ON && $page['Page']['room_id'] == $content['Content']['room_id'])) {
-
+					if ($content['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_OFF
+						&& $allDelete == _ON && $page['Page']['room_id'] == $content['Content']['room_id']) {
+						if(!$Content->deleteContent($content, $allDelete, $parentRoomId)) {
+							return false;
+						}
+					} else if($content['Content']['display_flag'] == NC_DISPLAY_FLAG_DISABLE
+						|| $content['Content']['shortcut_type'] != NC_SHORTCUT_TYPE_OFF) {
 						// ショートカットではない場合
 						// コンテンツがなくてもエラーとしない(コンテンツ一覧からコンテンツを削除後にブロック削除を行うとエラーとなるため)
 						$Content->delete($block['Block']['content_id']);

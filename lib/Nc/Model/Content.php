@@ -246,6 +246,35 @@ class Content extends AppModel
 				if(!$ret) {
 					return false;
 				}
+			} else {
+				// 自動でContentIDをキーに削除処理を行う。
+				$CakeSchema = ClassRegistry::init('CakeSchema');
+				$options = array('name' => $plugin, 'plugin' => $plugin);
+				$schema = $CakeSchema->load($options);
+				if($schema) {
+					foreach($schema->tables as $table => $fields) {
+						if(isset($fields['content_id'])) {
+							$model = ClassRegistry::init($schema->name. '.'. Inflector::classify($table));
+							$conditions = array(
+								$model->alias.".content_id" => $master_id
+							);
+							if(!$model->deleteAll($conditions)) {
+								return false;
+							}
+						}
+					}
+				}
+				// 新着・リビジョン削除
+				$tables = array('Revision', 'Archive');
+				foreach($tables as $table) {
+					$model = ClassRegistry::init($table);
+					$conditions = array(
+						$table.".content_id" => $master_id
+					);
+					if(!$model->deleteAll($conditions)) {
+						return false;
+					}
+				}
 			}
 			$this->delete($id);
 			$conditions = array(

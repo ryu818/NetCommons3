@@ -57,18 +57,9 @@ class AnnouncementOperationComponent extends Component {
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	public function delete($content) {
-		if(isset($content['Content'])) {
-			$tables = array('Revision', 'Archive','Announcement', 'AnnouncementEdit');
-			foreach($tables as $table) {
-				$condition = array($table.'.content_id' => $content['Content']['master_id']);
-				if(!$this->{$table}->deleteAll($condition)) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
+// 	public function delete($content) {
+// 		return true;
+// 	}
 
 /**
  * ショートカット実行時に呼ばれる関数

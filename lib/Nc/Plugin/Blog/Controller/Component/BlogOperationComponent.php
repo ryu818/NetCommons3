@@ -56,13 +56,9 @@ class BlogOperationComponent extends Component {
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	public function delete_block($block, $content, $to_page) {
-		$condition = array('block_id' => $block['Block']['id']);
-		if(!$this->BlogStyle->deleteAll($condition)) {
-			return false;
-		}
-		return true;
-	}
+// 	public function delete_block($block, $content, $to_page) {
+// 		return true;
+// 	}
 
 /**
  * コンテンツ削除時に呼ばれる関数
@@ -71,18 +67,9 @@ class BlogOperationComponent extends Component {
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	public function delete($content) {
-		if(isset($content['Content'])) {
-			$tables = array('Revision', 'Archive', 'Blog', 'BlogComment', 'BlogPost', 'BlogTerm', 'BlogTermLink');
-			foreach($tables as $table) {
-				$condition = array($table.'.content_id' => $content['Content']['master_id']);
-				if(!$this->{$table}->deleteAll($condition)) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
+// 	public function delete($content) {
+// 		return true;
+// 	}
 
 /**
  * ショートカット実行時に呼ばれる関数
