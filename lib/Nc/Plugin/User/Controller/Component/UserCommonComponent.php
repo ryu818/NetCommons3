@@ -20,10 +20,8 @@ class UserCommonComponent extends Component {
  * @since   v 3.0.0.0
  */
 	public function isUniqueChief($pageUserLinks) {
-		App::uses('Authority', 'Model');
-		App::uses('PageUserLink', 'Model');
-		$Authority = new Authority();
-		$PageUserLink = new PageUserLink();
+		$Authority = ClassRegistry::init('Authority');
+		$PageUserLink = ClassRegistry::init('PageUserLink');
 
 		$rets = array();
 		$params = array(
