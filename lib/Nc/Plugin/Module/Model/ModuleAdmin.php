@@ -32,8 +32,9 @@ class ModuleAdmin extends AppModel {
 	public function __construct() {
 		parent::__construct();
 		App::uses('File', 'Core');
-		App::uses('CakeSchema', 'Model');
-		$this->Schema = new CakeSchema(compact('name', 'path', 'file', 'connection', 'plugin'));
+		
+		$CakeSchema = ClassRegistry::init('CakeSchema');
+		$this->Schema = $CakeSchema->load();
 	}
 
 /**

@@ -281,13 +281,6 @@ class InstallController extends Controller {
  */
 	protected function _connect($config) {
 		$connection = false;
-		/*App::uses('ConnectionManager', 'Model');
-			@ConnectionManager::create('install', $config);
-		$db = ConnectionManager::getDataSource('install');
-		if (!$db->isConnected()) {
-		$this->Session->setFlash(__d('install', 'Could not connect to database.<br />Please check the database server and its configuration.'), 'default', array('class' => 'header-error'));
-		return false;
-		}*/
 		$datasource = $config['datasource'];
 		switch($datasource) {
 			case 'Database/Mysql':
@@ -421,7 +414,7 @@ class InstallController extends Controller {
 		$exists_database = true;
 		$config = $this->_check();
 
-		App::uses('ConnectionManager', 'Model');
+		ClassRegistry::init('ConnectionManager');
 		try {
 			ConnectionManager::create('install', $config);
 			$db = ConnectionManager::getDataSource('install');
@@ -440,15 +433,13 @@ class InstallController extends Controller {
 		/*
 		 * テーブル作成
 		*/
-		//@App::import('Core', 'File');
-		//@App::import('Model', 'CakeSchema', false);
 		App::uses('File', 'Utility');
-		App::uses('CakeSchema', 'Model');
 
 		$tables = array();
 		$not_tables = array();
-		$schema = new CakeSchema(array('name'=>'app'));
-		$schema = $schema->load();
+		$CakeSchema = ClassRegistry::init('CakeSchema');
+		$options = array(array('name'=>'app'));
+		$schema = $CakeSchema->load($options);
 
 		foreach($schema->tables as $table => $fields) {
 			$create = $db->createSchema($schema, $table);
@@ -490,14 +481,14 @@ class InstallController extends Controller {
 		/*
 		 * Plugin テーブル作成
 		 */
+		$CakeSchema = ClassRegistry::init('CakeSchema');
 		$paths = App::path('Plugin');
 		$pluginArr = array();
 		foreach($paths as $path) {
 			$dir = new Folder($path);
 			list($dirs, $files) = $dir->read();
 			foreach($dirs as $dir) {
-				$schemaPlugin = new CakeSchema(array('name' => $dir, 'plugin' => $dir));
-				$schemaPlugin = $schemaPlugin->load();
+				$schemaPlugin = $CakeSchema->load(array('name' => $dir, 'plugin' => $dir));
 				if($schemaPlugin === false) {
 					continue;
 				}
@@ -607,7 +598,7 @@ class InstallController extends Controller {
  */
 	public function admin_setting() {
 		App::uses('Sanitize', 'Utility');
-		App::uses('AppModel', 'Model');
+		//App::uses('AppModel', 'Model');
 		$User = ClassRegistry::init('User');
 		$user['User'] = empty($this->request->data['User']) ? null : $this->request->data['User'];
 
