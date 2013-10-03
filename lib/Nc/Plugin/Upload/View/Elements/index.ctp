@@ -38,7 +38,7 @@ if ($this->request->query['popup_type'] == 'image') {
 	));
 }
 ?>
-<span class="common-btn-min upload-btn">
+<div class="common-btn-min upload-btn">
 	<span><?php echo(__('Select file'));?></span>
 <?php 
 echo $this->Form->input('UploadLibrary.file_name', array(
@@ -49,7 +49,7 @@ echo $this->Form->input('UploadLibrary.file_name', array(
 	'multiple' => true,
 ));
 ?>
-</span>
+</div>
 </div>
 <?php
 	echo $this->Form->end();
