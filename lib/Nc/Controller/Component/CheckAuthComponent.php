@@ -712,6 +712,7 @@ class CheckAuthComponent extends Component {
 			$controller->block_id = intval($block['Block']['id']);
 			$controller->module_id = intval($block['Block']['module_id']);
 			Configure::write(NC_SYSTEM_KEY.'.block_id', intval($block['Block']['id']));
+			Configure::write(NC_SYSTEM_KEY.'.id', $controller->id);	// $this->request->hereで使用するため
 
 			if(!is_null($block['Block']['hierarchy'])) {
 				$controller->hierarchy = intval($block['Block']['hierarchy']);
