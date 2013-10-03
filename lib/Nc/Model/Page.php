@@ -360,6 +360,7 @@ class Page extends AppModel
 		$data['Page']['lang'] = '';
 		$data['Page']['is_page_meta_node'] = _OFF;
 		$data['Page']['is_page_style_node'] = _OFF;
+		$data['Page']['is_page_layout_node'] = _OFF;
 		$data['Page']['is_page_theme_node'] = _OFF;
 		$data['Page']['is_page_column_node'] = _OFF;
 		$data['Page']['space_type'] = $spaceType;

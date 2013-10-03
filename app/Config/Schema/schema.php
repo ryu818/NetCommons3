@@ -633,6 +633,7 @@ class AppSchema extends CakeSchema {
 		'lang' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 10, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'is_page_meta_node' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'is_page_style_node' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
+		'is_page_layout_node' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'is_page_theme_node' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'is_page_column_node' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
 		'room_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),

@@ -7016,6 +7016,7 @@ e-mail：{X-EMAIL}
             <column name="lang"></column>
             <column name="is_page_meta_node">0</column>
             <column name="is_page_style_node">0</column>
+            <column name="is_page_layout_node">0</column>
             <column name="is_page_theme_node">0</column>
             <column name="is_page_column_node">0</column>
             <column name="room_id">0</column>
@@ -7047,6 +7048,7 @@ e-mail：{X-EMAIL}
             <column name="lang"></column>
             <column name="is_page_meta_node">0</column>
             <column name="is_page_style_node">0</column>
+            <column name="is_page_layout_node">0</column>
             <column name="is_page_theme_node">0</column>
             <column name="is_page_column_node">0</column>
             <column name="room_id">0</column>
@@ -7078,6 +7080,7 @@ e-mail：{X-EMAIL}
             <column name="lang"></column>
             <column name="is_page_meta_node">0</column>
             <column name="is_page_style_node">0</column>
+            <column name="is_page_layout_node">0</column>
             <column name="is_page_theme_node">0</column>
             <column name="is_page_column_node">0</column>
             <column name="room_id">0</column>
@@ -7109,6 +7112,7 @@ e-mail：{X-EMAIL}
             <column name="lang"></column>
             <column name="is_page_meta_node">0</column>
             <column name="is_page_style_node">0</column>
+            <column name="is_page_layout_node">0</column>
             <column name="is_page_theme_node">0</column>
             <column name="is_page_column_node">0</column>
             <column name="room_id">0</column>
@@ -7140,6 +7144,7 @@ e-mail：{X-EMAIL}
             <column name="lang"></column>
             <column name="is_page_meta_node">0</column>
             <column name="is_page_style_node">0</column>
+            <column name="is_page_layout_node">0</column>
             <column name="is_page_theme_node">0</column>
             <column name="is_page_column_node">0</column>
             <column name="room_id">9</column>
@@ -7171,6 +7176,7 @@ e-mail：{X-EMAIL}
             <column name="lang"></column>
             <column name="is_page_meta_node">0</column>
             <column name="is_page_style_node">0</column>
+            <column name="is_page_layout_node">0</column>
             <column name="is_page_theme_node">0</column>
             <column name="is_page_column_node">0</column>
             <column name="room_id">9</column>
@@ -7202,6 +7208,7 @@ e-mail：{X-EMAIL}
             <column name="lang"></column>
             <column name="is_page_meta_node">0</column>
             <column name="is_page_style_node">0</column>
+            <column name="is_page_layout_node">0</column>
             <column name="is_page_theme_node">0</column>
             <column name="is_page_column_node">0</column>
             <column name="room_id">9</column>
@@ -7233,6 +7240,7 @@ e-mail：{X-EMAIL}
             <column name="lang"></column>
             <column name="is_page_meta_node">0</column>
             <column name="is_page_style_node">0</column>
+            <column name="is_page_layout_node">0</column>
             <column name="is_page_theme_node">0</column>
             <column name="is_page_column_node">0</column>
             <column name="room_id">9</column>
@@ -7264,6 +7272,7 @@ e-mail：{X-EMAIL}
             <column name="lang"></column>
             <column name="is_page_meta_node">0</column>
             <column name="is_page_style_node">0</column>
+            <column name="is_page_layout_node">0</column>
             <column name="is_page_theme_node">0</column>
             <column name="is_page_column_node">0</column>
             <column name="room_id">9</column>
@@ -7295,6 +7304,7 @@ e-mail：{X-EMAIL}
             <column name="lang"></column>
             <column name="is_page_meta_node">0</column>
             <column name="is_page_style_node">0</column>
+            <column name="is_page_layout_node">0</column>
             <column name="is_page_theme_node">0</column>
             <column name="is_page_column_node">0</column>
             <column name="room_id">10</column>
@@ -7326,6 +7336,7 @@ e-mail：{X-EMAIL}
             <column name="lang"></column>
             <column name="is_page_meta_node">0</column>
             <column name="is_page_style_node">0</column>
+            <column name="is_page_layout_node">0</column>
             <column name="is_page_theme_node">0</column>
             <column name="is_page_column_node">0</column>
             <column name="room_id">11</column>
@@ -7357,6 +7368,7 @@ e-mail：{X-EMAIL}
             <column name="lang">ja</column>
             <column name="is_page_meta_node">0</column>
             <column name="is_page_style_node">0</column>
+            <column name="is_page_layout_node">0</column>
             <column name="is_page_theme_node">0</column>
             <column name="is_page_column_node">0</column>
             <column name="room_id">9</column>
@@ -7388,6 +7400,7 @@ e-mail：{X-EMAIL}
             <column name="lang">ja</column>
             <column name="is_page_meta_node">0</column>
             <column name="is_page_style_node">0</column>
+            <column name="is_page_layout_node">0</column>
             <column name="is_page_theme_node">0</column>
             <column name="is_page_column_node">0</column>
             <column name="room_id">10</column>
@@ -7419,6 +7432,7 @@ e-mail：{X-EMAIL}
             <column name="lang"></column>
             <column name="is_page_meta_node">0</column>
             <column name="is_page_style_node">0</column>
+            <column name="is_page_layout_node">0</column>
             <column name="is_page_theme_node">0</column>
             <column name="is_page_column_node">0</column>
             <column name="room_id">11</column>

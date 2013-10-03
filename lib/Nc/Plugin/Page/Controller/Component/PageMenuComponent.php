@@ -569,6 +569,7 @@ class PageMenuComponent extends Component {
 			'lang' => '',
 			'is_page_meta_node' => _OFF,
 			'is_page_style_node' => _OFF,
+			'is_page_layout_node' => _OFF,
 			'is_page_theme_node' => _OFF,
 			'is_page_column_node' => _OFF,
 			'space_type' => NC_SPACE_TYPE_GROUP,
