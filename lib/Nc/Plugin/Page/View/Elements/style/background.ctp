@@ -21,7 +21,7 @@ echo $this->Form->create('Background', array(
 	'data-confirm-reset' => __d('page', 'You cancel applied setting now.? Are you sure to proceed?'),
 ));
 echo $this->Form->error('PageStyle.type');
-echo $this->element('scope', array('languages' => $languages, 'page_style' => isset($page_styles[NC_PAGE_TYPE_BACKGROUND_ID]) ? $page_styles[NC_PAGE_TYPE_BACKGROUND_ID] : null, 'page' => $page));
+echo $this->element('scope', array('languages' => $languages, 'model_name' => 'PageStyle', 'page_style' => $page_style, 'page' => $page));
 echo $this->element('style/filter');
 ?>
 <div id="<?php echo $id;?>-accordion">
@@ -56,7 +56,6 @@ echo $this->element('style/filter');
 <?php
 	echo $this->Form->hidden('PageStyle.style.body.background-image' , array('id' => $id. '-image-hidden', 'value' => ''));
 	echo $this->Form->hidden('PageStyle.style.body.background-color' , array('id' => $id. '-color-hidden', 'value' => ''));
-	echo $this->Form->hidden('type' , array('id' => $id. '-type', 'name' => 'type', 'value' => 'submit'));
 	echo $this->Html->div('submit',
 		$this->Form->button(__('Ok'), array('name' => 'regist', 'class' => 'common-btn', 'type' => 'submit', 'onclick' => "$.PageStyle.setConfirm('".$id."', 'submit');")).
 		$this->Form->button(__('Reset'), array('name' => 'reset', 'class' => 'common-btn', 'type' => 'submit', 'onclick' => "$.PageStyle.setConfirm('".$id."', 'reset');"))

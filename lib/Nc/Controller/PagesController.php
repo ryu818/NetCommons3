@@ -87,6 +87,9 @@ class PagesController extends AppController {
 		if($mode == NC_BLOCK_MODE) {
 			// 追加モジュールリスト取得
 			foreach($this->page_id_arr as $page_id) {
+				if(empty($page_id)) {
+					continue;
+				}
 				$room_id = $pages[$page_id]['Page']['room_id'];
 				$space_type = $pages[$page_id]['Page']['space_type'];
 				if($page_id == 0 || isset($add_module_list[$room_id])) {
@@ -109,7 +112,6 @@ class PagesController extends AppController {
 
 		// ページタイトル取得
 		$this->set("title", $this->_getPageTitle($pages_list));
-
 		$this->set("blocks", $blocks);
 		$this->set("pages", $pages);
 		$this->set("page_id_arr", $this->page_id_arr);
@@ -119,6 +121,7 @@ class PagesController extends AppController {
 		if(!empty($this->nc_page_styles)) {
 			$this->set('nc_page_styles', $this->nc_page_styles);
 		}
+		
 		//$this->render('responsive');
 	}
 

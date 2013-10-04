@@ -457,7 +457,12 @@ class CheckAuthComponent extends Component {
 				}
 
 				// PageStyle
-				$controller->nc_page_styles = $controller->PageStyle->findScope($center_page);
+				$rets = $controller->Page->findNodeFlag($center_page);
+				//$controller->nc_page_metas = $controller->PageMeta->findScope('first', $center_page, $rets['is_page_meta_node']);
+				$controller->nc_page_styles = $controller->PageStyle->findScopeStyle('first', $center_page, $rets['is_page_style_node']);
+				$pageLayouts = $controller->PageLayout->findScope('first', $center_page, $rets['is_page_layout_node']);
+				//$controller->nc_page_themes = $controller->PageTheme->findScope('first', $center_page, $rets['is_page_theme_node']);
+				//$controller->nc_page_columns = $controller->PageColumn->findScope('first', $center_page, $rets['is_page_column_node']);
 				
 				$controller->nc_page = isset($active_page) ? $active_page : $page;	// blockから取得できるPage優先
 				$controller->nc_current_page = $page;								// pageから取得できるPage
@@ -490,6 +495,20 @@ class CheckAuthComponent extends Component {
 				if($controller_name == 'pages') {
 					// test
 					$page_id_arr = array($page['Page']['id'], 5, 6, 7, 8);
+					if(isset($pageLayouts['PageLayout'])) {
+						if(!$pageLayouts['PageLayout']['is_display_header']) {
+							$page_id_arr[1] = _OFF;
+						}
+						if(!$pageLayouts['PageLayout']['is_display_left']) {
+							$page_id_arr[2] = _OFF;
+						}
+						if(!$pageLayouts['PageLayout']['is_display_right']) {
+							$page_id_arr[3] = _OFF;
+						}
+						if(!$pageLayouts['PageLayout']['is_display_footer']) {
+							$page_id_arr[4] = _OFF;
+						}
+					}
 					// ページ内のカラムページのリストをセット
 					$controller->page_id_arr = $page_id_arr;
 				}

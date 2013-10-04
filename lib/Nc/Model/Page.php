@@ -1606,4 +1606,54 @@ class Page extends AppModel
 		}
 		return true;
 	}
+	
+/**
+ * is_page_XXX_nodeが指定されているNodeのリストを取得
+ *
+ * @param Model Page  $page
+ * @param array $rets
+ * @return array
+ * @since   v 3.0.0.0
+ */
+	public function findNodeFlag($page, $rets = null) {
+		if(empty($rets)) {
+			$rets = array(
+				'is_page_meta_node' => _OFF,
+				'is_page_style_node' => _OFF,
+				'is_page_layout_node' => _OFF,
+				'is_page_theme_node' => _OFF,
+				'is_page_column_node' => _OFF,
+			);
+		}
+		$params = array(
+			'fields' => array('Page.id', 'Page.parent_id', 'Page.is_page_meta_node', 'Page.is_page_style_node', 'Page.is_page_layout_node', 'Page.is_page_theme_node', 'Page.is_page_column_node'),
+			'conditions' => array(
+				//'Page.space_type' => $page['Page']['space_type'],
+				'Page.root_id' => $page['Page']['root_id'],
+				'Page.thread_num <' => $page['Page']['thread_num'],
+				'Page.lang' => array('', $page['Page']['lang'])
+			),
+			'order' => array('Page.thread_num' => 'desc')
+		);
+		$parentIds = array($page['Page']['parent_id']);
+		$pages = $this->find('all', $params);
+		
+		foreach($rets as $key => $ret) {
+			if($page['Page'][$key]) {
+				$rets[$key] = $page['Page']['id'];
+			} else {
+				$parentIds = array($page['Page']['parent_id']);
+				foreach($pages as $bufPage) {
+					if(in_array($bufPage['Page']['id'], $parentIds)) {
+						$parentIds[] = $bufPage['Page']['parent_id'];
+						if($bufPage['Page'][$key]) {
+							$rets[$key] = $bufPage['Page']['id'];
+							break;
+						}
+					}
+				}
+			}
+		}
+		return $rets;
+	}
 }

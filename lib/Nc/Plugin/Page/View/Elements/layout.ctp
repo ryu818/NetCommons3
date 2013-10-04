@@ -13,4 +13,9 @@
 	<?php echo(__d('page', 'Page layout')); ?>
 </div>
 <div class="nc-pages-setting-content">
+	<?php
+		echo $this->Html->css(array('plugins/colpick.css', 'Page.style/style.css'));
+		echo $this->Html->script(array('plugins/colpick.js', 'Page.style/style.js'));
+		echo $this->element('layout/layout');
+	?>
 </div>

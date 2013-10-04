@@ -10,8 +10,18 @@
  */
 class PageStyle extends AppModel
 {
-	public $actsAs = array('File');
+/**
+ * Behavior
+ *
+ * @var array
+ */
+	public $actsAs = array('File', 'PageStyle');
 
+/**
+ * CSS拡張子
+ *
+ * @var array
+ */
 	private $css_extension = '.css';
 
 /**
@@ -22,21 +32,10 @@ class PageStyle extends AppModel
  */
 	public function __construct() {
 		parent::__construct();
+		
+		$defaultValidate = $this->constructDefault();
 
-		$this->validate = array(
-			'scope' => array(
-				'inList' => array(
-					'rule' => array('inList', array(
-						NC_PAGE_SCOPE_SITE,
-						NC_PAGE_SCOPE_SPACE,
-						NC_PAGE_SCOPE_ROOM,
-						NC_PAGE_SCOPE_NODE,
-						NC_PAGE_SCOPE_CURRENT,
-					), false),
-					'allowEmpty' => false,
-					'message' => __('It contains an invalid string.')
-				),
-			),
+		$this->validate = array_merge($defaultValidate, array(
 			'type' => array(
 				'inList' => array(
 					'rule' => array('inList', array(
@@ -54,26 +53,6 @@ class PageStyle extends AppModel
 					'message' => __('It contains an invalid string.')
 				),
 			),
-			// lang
-			'space_type' => array(
-				'inList' => array(
-					'rule' => array('inList', array(
-						_OFF,
-						NC_SPACE_TYPE_PUBLIC,
-						NC_SPACE_TYPE_MYPORTAL,
-						NC_SPACE_TYPE_PRIVATE,
-						NC_SPACE_TYPE_GROUP,
-					), false),
-					'allowEmpty' => true,
-					'message' => __('It contains an invalid string.')
-				),
-			),
-			'page_id' => array(
-				'numeric' => array(
-					'rule' => array('numeric'),
-					'message' => __('The input must be a number.')
-				),
-			),
 			'file' => array(
 				'notEmpty'  => array(
 					'rule' => array('notEmpty'),
@@ -84,7 +63,7 @@ class PageStyle extends AppModel
 					'message' => __('The input must be up to %s characters.', 48)
 				),
 			),
-		);
+		));
 	}
 
 /**
@@ -187,78 +166,24 @@ class PageStyle extends AppModel
 
 /**
  * 適用範囲内ページスタイルデータ取得
+ * @param   string $type
  * @param   Model page $page
  * @return  array $pageStyle[pageStyle.type] = Model PageStyle
  * @since   v 3.0.0.0
  */
-	public function findScope( $page ) {
-		$Page = ClassRegistry::init('Page');
+	public function findScopeStyle( $type = 'all', $page ) {
 		$Asset = ClassRegistry::init('Asset');
-		$path = 'theme' . DS . 'page_styles' . DS;
-		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		$postfix = $Asset->getPostFix();
-		$nodeId = null;
-		if($page['Page']['is_page_style_node']) {
-			$nodeId = $page['Page']['id'];
-		} else {
-			$params = array(
-				'conditions' => array(
-					//'Page.space_type' => $page['Page']['space_type'],
-					'Page.root_id' => $page['Page']['root_id'],
-					'Page.thread_num <' => $page['Page']['thread_num'],
-					'Page.lang' => $page['Page']['lang']
-				),
-				'order' => array('Page.thread_num' => 'desc')
-			);
-			$parentIds = array($page['Page']['parent_id']);
-			$pages = $Page->find('all', $params);
-			foreach($pages as $bufPage) {
-				if(in_array($bufPage['Page']['id'], $parentIds)) {
-					$parentIds[] = $bufPage['Page']['parent_id'];
-					if($bufPage['Page']['is_page_style_node']) {
-						$nodeId = $bufPage['Page']['id'];
-						break;
-					}
-				}
-			}
-		}
-		
-		$conditions = array(
-			'or' => array(
-				array(
-					$this->alias.'.scope' => NC_PAGE_SCOPE_SITE
-				),
-				array(
-					$this->alias.'.scope' => NC_PAGE_SCOPE_SPACE,
-					$this->alias.'.space_type' => array(0, $page['Page']['space_type']),
-				),
-				array(
-					$this->alias.'.scope' => NC_PAGE_SCOPE_ROOM,
-					$this->alias.'.page_id' => $page['Page']['room_id'],
-				),
-				array(
-					$this->alias.'.scope' => NC_PAGE_SCOPE_NODE,
-					$this->alias.'.page_id' => $nodeId,
-				),
-				array(
-					$this->alias.'.scope' => NC_PAGE_SCOPE_CURRENT,
-					$this->alias.'.page_id' => $page['Page']['id'],
-				),
-			),
-			$this->alias.'.lang' => array('', $lang),
-		);
-		$params = array(
-			//'fields' => array($this->alias.'.*'),
-			'conditions' => $conditions,
-			'order' => array($this->alias.'.scope' => 'DESC', $this->alias.'.lang' => 'DESC'),		// , 'Page.thread_num' => 'DESC'
-		);
-		$pageStyles = $this->find('all', $params);
+		$path = 'theme' . DS . 'page_styles' . DS;
+		$pageStyles = $this->findScope('all', $page);
 		// type毎の優先順位が高いもののみ取得
 		$ret = array();
 		foreach($pageStyles as $pageStyle) {
-			if(!isset($ret[$pageStyle[$this->alias]['type']])) {
+			if($type == 'first' && !isset($ret[$pageStyle[$this->alias]['type']])) {
 				$pageStyle[$this->alias]['file'] = $path . $pageStyle[$this->alias]['file'] . $postfix;
 				$ret[$pageStyle[$this->alias]['type']] = $pageStyle;
+			} else if($type == 'all'){
+				$ret[$pageStyle[$this->alias]['type']][] = $pageStyle;
 			}
 		}
 		return $ret;
@@ -267,7 +192,6 @@ class PageStyle extends AppModel
 /**
  * 登録前処理
  * 		ファイル作成。fileデータ作成
- * TODO:Behaviorに移動予定
  * @param   array $options
  * @return  boolean
  * @since   v 3.0.0.0
@@ -285,50 +209,6 @@ class PageStyle extends AppModel
 			unset($this->data[$this->alias]['content']);
 		}
 		return true;
-	}
-
-
-/**
- * 登録後処理
- * 		scope: NC_PAGE_SCOPE_NODE かつ、page_idが入っていればPage.is_page_style_nodeを更新
- *  TODO:Behaviorに移動予定
- * @param   boolean $created
- * @return  void
- * @since   v 3.0.0.0
- */
-	public function afterSave($created) {
-		if ($created && !empty($this->data[$this->alias]['page_id'])) {
-			if($this->data[$this->alias]['scope'] == NC_PAGE_SCOPE_NODE) {
-				$Page = ClassRegistry::init('Page');
-				$fields = array($Page->alias.'.is_page_style_node'=> _ON);
-				$conditions = array(
-					$Page->alias.".id" => $this->data[$this->alias]['page_id'],
-				);
-				$Page->updateAll($fields, $conditions);
-			}
-		}
-	}
-/**
- * 削除前処理：ファイル削除
- * page_idが入っていればPage.is_page_style_nodeを更新
- *  TODO:Behaviorに移動予定
- * @return  void
- * @since   v 3.0.0.0
- */
-	public function beforeDelete($cascade = true) {
-		$pageStyle = $this->findById($this->id);
-		if(isset($pageStyle[$this->alias])) {
-			$this->deleteCssFile($pageStyle[$this->alias]['file']);
-			// page_idが入っていればPage.page_style_idを更新
-			if(!empty($pageStyle[$this->alias]['page_id']) && $pageStyle[$this->alias]['scope'] == NC_PAGE_SCOPE_NODE) {
-				$Page = ClassRegistry::init('Page');
-				$fields = array($Page->alias.'.is_page_style_node'=> _OFF);
-				$conditions = array(
-					$Page->alias.".id" => $pageStyle[$this->alias]['page_id'],
-				);
-				$Page->updateAll($fields, $conditions);
-			}
-		}
 	}
 
 /**

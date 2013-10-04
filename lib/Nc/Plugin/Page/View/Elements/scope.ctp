@@ -3,7 +3,7 @@
 		<dl>
 			<dt>
 				<?php
-					echo $this->Form->label('PageStyle.scope', __d('page', 'Scope'));
+					echo $this->Form->label($model_name.'.scope', __d('page', 'Scope'));
 				?>
 			</dt>
 			<dd>
@@ -41,12 +41,12 @@
 						'id' => $id.'-scope',
 						'type' => 'select',
 						'options' => $options,
-						'value' => isset($page_style['PageStyle']['scope']) ? $page_style['PageStyle']['scope'] : NC_PAGE_SCOPE_SITE,
+						'value' => isset($page_style[$model_name]['scope']) ? $page_style[$model_name]['scope'] : NC_PAGE_SCOPE_SITE,
 						'label' => false,
 						'div' => false,
 						'style' => 'width: 200px;',
 					);
-					echo $this->Form->input('PageStyle.scope', $settings);
+					echo $this->Form->input($model_name.'.scope', $settings);
 				?>
 			</dd>
 		</dl>
@@ -55,7 +55,7 @@
 		<dl>
 			<dt>
 				<?php
-					echo $this->Form->label('PageStyle.lang', __d('page', 'Application Language'));
+					echo $this->Form->label($model_name.'.lang', __d('page', 'Application Language'));
 				?>
 			</dt>
 			<dd>
@@ -70,14 +70,19 @@
 						'id' => $id.'-lang',
 						'type' => 'select',
 						'options' => $options,
-						'value' => isset($page_style['PageStyle']['lang']) ? $page_style['PageStyle']['lang'] : '',
+						'value' => isset($page_style[$model_name]['lang']) ? $page_style[$model_name]['lang'] : '',
 						'label' => false,
 						'div' => false,
 						'style' => 'width: 150px;',
 					);
-					echo $this->Form->input('PageStyle.lang', $settings);
+					echo $this->Form->input($model_name.'.lang', $settings);
 				?>
 			</dd>
 		</dl>
 	</li>
 </ul>
+<?php 
+	echo $this->Form->hidden('type' , array('id' => $id. '-type', 'name' => 'type', 'value' => 'submit'));
+	echo $this->Form->hidden('isRedirect' , array('id' => $id. '-redirect', 'name' => 'isRedirect', 'value' => ''));
+?>
+	

@@ -42,7 +42,7 @@ ul.pages-menu-style-details li dl dd {
 
 .pages-menu-backgrounds {
 	width:350px;
-	height:330px;
+	height:350px;
 	overflow:auto;
 }
 
@@ -56,12 +56,15 @@ ul.pages-menu-backgrounds li {
     padding: 3px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
-.pages-menu-backgrounds li .pages-menu-background {
+.pages-menu-backgrounds li .pages-menu-background, .pages-menu-backgrounds li .pages-menu-layout {
 	width: 64px;
 	height: 64px;
 	background-repeat: repeat;
 	display:block;
 	border: 1px solid #efefef;
+}
+.pages-menu-layout {
+	background-color:#f9f9f9;
 }
 
 #pages-menu-background-accordion {

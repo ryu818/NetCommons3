@@ -30,7 +30,7 @@ class PageController extends PageAppController {
  * @var array
  */
 	public $helpers = array(
-		'Paginator'
+		'Paginator', 'Page.PageLayout'
 	);
 
 /**
@@ -364,10 +364,11 @@ class PageController extends PageAppController {
  */
 	public function style() {
 		$centerPage = $this->_initializeStyle();
-		$pageStyles = $this->PageStyle->findScope($centerPage);
-		$pageStyles = $this->_savePageStyle($pageStyles);
+		$pageStyles = $this->PageStyle->findScopeStyle('all', $centerPage);
+		
+		$pageStyles[NC_PAGE_TYPE_FONT_ID] = $this->_saveScope($this->PageStyle, isset($pageStyles[NC_PAGE_TYPE_FONT_ID]) ? $pageStyles[NC_PAGE_TYPE_FONT_ID] : null, $centerPage, NC_PAGE_TYPE_FONT_ID);
 
-		$this->set('page_styles', $pageStyles);
+		$this->set('page_style', isset($pageStyles[NC_PAGE_TYPE_FONT_ID][0]) ? $pageStyles[NC_PAGE_TYPE_FONT_ID][0] : null);
 		$this->set('id', 'pages-menu-style');
 		if ($this->request->is('post')) {
 			$this->render('/Elements/style/font');
@@ -379,82 +380,51 @@ class PageController extends PageAppController {
 	
 /**
  * ページスタイル 登録処理
+ * @param   Model   $Model
+ * @param   array $pageStyles
+ * @param   array $centerPage
  * @param   string $type
  * @return  void
  * @since   v 3.0.0.0
  */
-	protected function _savePageStyle($pageStyles, $type = NC_PAGE_TYPE_FONT_ID) {
-		if ($this->request->is('post') && $this->request->data['type'] == 'reset' && isset($pageStyles[$type]['PageStyle'])) {
-			// リセット処理
-			if(!$this->PageStyle->delete($pageStyles[$type]['PageStyle']['id'])) {
-				throw new InternalErrorException(__('Failed to delete the database, (%s).', 'page_styles'));
-			}
-			array_shift($pageStyles[$type]);
-			$this->Session->setFlash(__('Has been successfully updated.'));
-		} else if ($this->request->is('post') && $this->request->data['type'] == 'submit' &&
-				isset($this->request->data['PageStyle']['style'])) {
-
-			// 削除処理
-			$savePageStyle = $this->request->data;
-			$savePageStyle['PageStyle']['type'] = $type;
-			if($savePageStyle['PageStyle']['lang'] == 'All') {
-				$savePageStyle['PageStyle']['lang'] = '';
-			}
-
-			if($savePageStyle['PageStyle']['scope'] == NC_PAGE_SCOPE_SITE) {
-				$savePageStyle['PageStyle']['space_type'] = _OFF;
-			} else {
-				$savePageStyle['PageStyle']['space_type'] = $centerPage['Page']['space_type'];
-			}
-			if(in_array($savePageStyle['PageStyle']['scope'], array(NC_PAGE_SCOPE_SITE, NC_PAGE_SCOPE_SPACE)) ) {
-				$savePageStyle['PageStyle']['page_id'] = _OFF;
-			} else {
-				$savePageStyle['PageStyle']['page_id'] = $centerPage['Page']['id'];
-			}
-			$this->PageStyle->set($savePageStyle);
-			if($this->PageStyle->validates()) {
-				
-				$id = null;
-				if(isset($pageStyles[$type])) {
-					// 現在、設定中のものより優先順位が高いものが既に登録してあったら、削除。
-					foreach($pageStyles[$type] as $pageStyle) {
-						if($pageStyle['scope'] == $savePageStyle['PageStyle']['scope'] &&
-							$pageStyle['space_type'] == $savePageStyle['PageStyle']['space_type'] &&
-							$pageStyle['lang'] == $savePageStyle['PageStyle']['lang'] &&
-							$pageStyle['page_id'] == $savePageStyle['PageStyle']['page_id']) {
-							/////(empty($centerPage['Page']['page_style_id']) || $pageStyle['id'] == $centerPage['Page']['page_style_id'])) {
-							$id = $pageStyle['id'];
-						} else if($pageStyle['scope'] > $savePageStyle['PageStyle']['scope']) {
-							if(!$this->PageStyle->delete($pageStyle['id'])) {
-								throw new InternalErrorException(__('Failed to delete the database, (%s).', 'page_styles'));
-							}
-						}
-					}
-				}
-				
-				// 登録処理
+	protected function _saveScope(Model $Model, $pageStyles, $centerPage, $type = _OFF) {
+		if ($this->request->is('post')) {
+			if($Model->name == 'PageStyle' && isset($this->request->data[$Model->alias]['style'])) {
 				$this->autoLayout = false;
 				$this->autoRender = false;
-				$savePageStyle['PageStyle']['id'] = $id;
-				
-				if(isset($savePageStyle['PageStyle']['style']['body']['background-image'])) {
-					$savePageStyle['PageStyle']['style']['body']['background-image'] = preg_replace('#^'.preg_quote(Router::url('/', true), '#').'#i', '../../', $savePageStyle['PageStyle']['style']['body']['background-image']);
+						
+					
+				if(isset($this->request->data[$Model->alias]['style']['body']['background-image'])) {
+					$this->request->data[$Model->alias]['style']['body']['background-image'] = preg_replace('#^'.preg_quote(Router::url('/', true), '#').'#i', '../../', $this->request->data[$Model->alias]['style']['body']['background-image']);
 				}
 				
-				$this->set('data', $savePageStyle['PageStyle']['style']);
+				$this->set('data', $this->request->data[$Model->alias]['style']);
 				$content = $this->render('/Elements/style/regist_template');
 				
-				$savePageStyle['PageStyle']['content'] = $content->body();
-				if(!$this->PageStyle->save($savePageStyle)) {
-					throw new InternalErrorException(__('Failed to register the database, (%s).', 'page_styles'));
-				}
+				$this->request->data[$Model->alias]['content'] = $content->body();
+				
 				$this->autoLayout = true;
 				$this->autoRender = true;
-				$pageStyles[$type] = $savePageStyle;
-				if(empty($id)) {
+			} elseif($Model->name == 'PageLayout' && isset($this->request->data[$Model->alias]['layouts'])) {
+				$layouts = explode('_', $this->request->data[$Model->alias]['layouts']);
+				$this->request->data[$Model->alias]['is_display_header'] = intval($layouts[0]);
+				$this->request->data[$Model->alias]['is_display_left'] = intval($layouts[1]);
+				$this->request->data[$Model->alias]['is_display_right'] = intval($layouts[2]);
+				$this->request->data[$Model->alias]['is_display_footer'] = intval($layouts[3]);
+				unset($this->request->data[$Model->alias]['layouts']);
+			}
+			
+			$pageStyles = $Model->saveScope($pageStyles, $centerPage, $this->request->data, $type);
+			if($pageStyles !== false) {
+				if(empty($pageStyles[0][$Model->alias]['id'])) {
 					$this->Session->setFlash(__('Has been successfully registered.'));
 				} else {
 					$this->Session->setFlash(__('Has been successfully updated.'));
+				}
+				if(!empty($this->request->data['isRedirect'])) {
+					// Redirectするリクエストなのでexitして、Session->setFlashをRedirect後の画面に表示する。
+					// debug情報も出力していない。
+					$this->_stop();
 				}
 			}
 		}
@@ -469,8 +439,8 @@ class PageController extends PageAppController {
  */
 	public function background() {
 		$centerPage = $this->_initializeStyle();
-		$pageStyles = $this->PageStyle->findScope($centerPage);
-		$pageStyles = $this->_savePageStyle($pageStyles);
+		$pageStyles = $this->PageStyle->findScopeStyle('all', $centerPage);
+		$pageStyles[NC_PAGE_TYPE_BACKGROUND_ID] = $this->_saveScope($this->PageStyle, isset($pageStyles[NC_PAGE_TYPE_BACKGROUND_ID]) ? $pageStyles[NC_PAGE_TYPE_BACKGROUND_ID] : null, $centerPage, NC_PAGE_TYPE_BACKGROUND_ID);
 		
 		$conditions = array();
 		$category = (!isset($this->request->data['Background']['category']) || $this->request->data['Background']['category'] == 'all') ? null : $this->request->data['Background']['category'];
@@ -500,7 +470,7 @@ class PageController extends PageAppController {
 		$images = $this->Background->findList('all', array('conditions' => $conditions, 'offset' => $limit *($imagePage-1), 'limit' => $limit+1));
 		$this->set('images', $images);
 
-		$this->set('page_styles', $pageStyles);
+		$this->set('page_style', isset($pageStyles[NC_PAGE_TYPE_BACKGROUND_ID][0]) ? $pageStyles[NC_PAGE_TYPE_BACKGROUND_ID][0] : null);
 		$this->set('id', 'pages-menu-background');
 		$this->set('category', $category);
 		$this->set('color', $color);
@@ -580,8 +550,25 @@ class PageController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function layout() {
-		$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', $this->action);
-		$this->render('index');
+		App::uses('Folder', 'Utility');
+		App::uses('File', 'Utility');
+
+		$filePath = App::pluginPath('Page') . 'webroot'. DS . 'img'. DS . 'layouts';
+		$layoutDir = new Folder($filePath);
+		$layoutFiles = $layoutDir->find('.*\.(jpg|gif|png)');
+		$centerPage = $this->_initializeStyle();
+		$pageLayouts = $this->PageLayout->findScope('all', $centerPage);
+		$pageLayouts = $this->_saveScope($this->PageLayout, $pageLayouts, $centerPage);
+
+		$this->set('page_layout', isset($pageLayouts[0]) ? $pageLayouts[0] : null);
+		$this->set('id', 'pages-menu-layout');
+		$this->set('layoutFiles', $layoutFiles);
+		if ($this->request->is('post')) {
+			$this->render('/Elements/layout/layout');
+		} else {
+			$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', $this->action);
+			$this->render('index');
+		}
 	}
 
 /**

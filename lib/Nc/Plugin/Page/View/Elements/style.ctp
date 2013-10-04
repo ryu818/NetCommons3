@@ -24,7 +24,7 @@
 		</ul>
 		<div id="pages-menu-style-tab-font">
 		<?php
-			echo $this->element('style/font', array('category' => 'font', 'languages' => $languages, 'page_styles' => $page_styles, 'page' => $page));
+			echo $this->element('style/font', array('category' => 'font', 'languages' => $languages, 'page_style' => $page_style, 'page' => $page));
 			echo($this->element('style/template', array('category' => 'font')));
 		?>
 		</div>
