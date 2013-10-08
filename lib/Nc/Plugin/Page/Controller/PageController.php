@@ -330,6 +330,7 @@ class PageController extends PageAppController {
 		$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', $this->action);
 		$this->render('index');
 	}
+
 /**
  * Style initialize処理
  * @param   void
@@ -356,6 +357,7 @@ class PageController extends PageAppController {
 		}
 		return $centerPage;
 	}
+
 /**
  * ページスタイル表示・登録(フォント設定)
  * @param   void
@@ -367,7 +369,6 @@ class PageController extends PageAppController {
 		$pageStyles = $this->PageStyle->findScopeStyle('all', $centerPage);
 		
 		$pageStyles[NC_PAGE_TYPE_FONT_ID] = $this->_saveScope($this->PageStyle, isset($pageStyles[NC_PAGE_TYPE_FONT_ID]) ? $pageStyles[NC_PAGE_TYPE_FONT_ID] : null, $centerPage, NC_PAGE_TYPE_FONT_ID);
-
 		$this->set('page_style', isset($pageStyles[NC_PAGE_TYPE_FONT_ID][0]) ? $pageStyles[NC_PAGE_TYPE_FONT_ID][0] : null);
 		$this->set('id', 'pages-menu-style');
 		if ($this->request->is('post')) {
@@ -389,6 +390,22 @@ class PageController extends PageAppController {
  */
 	protected function _saveScope(Model $Model, $pageStyles, $centerPage, $type = _OFF) {
 		if ($this->request->is('post')) {
+			if($Model->name == 'PageStyle') {
+				if(isset($this->request->data[$Model->alias]['width']) && $this->request->data[$Model->alias]['width'] == 'by hand') {
+					$this->request->data[$Model->alias]['width'] = $this->request->data[$Model->alias]['width-custom'];
+				}
+				if(isset($this->request->data[$Model->alias]['height']) && $this->request->data[$Model->alias]['height'] == 'by hand') {
+					$this->request->data[$Model->alias]['height'] = $this->request->data[$Model->alias]['height-custom'];
+				}
+			} else
+				if($Model->name == 'PageLayout' && isset($this->request->data[$Model->alias]['layouts'])) {
+				$layouts = explode('_', $this->request->data[$Model->alias]['layouts']);
+				$this->request->data[$Model->alias]['is_display_header'] = intval($layouts[0]);
+				$this->request->data[$Model->alias]['is_display_left'] = intval($layouts[1]);
+				$this->request->data[$Model->alias]['is_display_right'] = intval($layouts[2]);
+				$this->request->data[$Model->alias]['is_display_footer'] = intval($layouts[3]);
+				unset($this->request->data[$Model->alias]['layouts']);
+			}
 			if($Model->name == 'PageStyle' && isset($this->request->data[$Model->alias]['style'])) {
 				$this->autoLayout = false;
 				$this->autoRender = false;
@@ -396,6 +413,40 @@ class PageController extends PageAppController {
 					
 				if(isset($this->request->data[$Model->alias]['style']['body']['background-image'])) {
 					$this->request->data[$Model->alias]['style']['body']['background-image'] = preg_replace('#^'.preg_quote(Router::url('/', true), '#').'#i', '../../', $this->request->data[$Model->alias]['style']['body']['background-image']);
+				}
+				if(isset($this->request->data[$Model->alias]['style']['#main-container']['margin-top'])) {
+					$this->request->data[$Model->alias]['style']['#main-container']['margin-top'] = $this->request->data[$Model->alias]['style']['#main-container']['margin-top'] . 'px';
+				}
+				if(isset($this->request->data[$Model->alias]['style']['#main-container']['margin-right'])) {
+					$this->request->data[$Model->alias]['style']['#main-container']['margin-right'] = $this->request->data[$Model->alias]['style']['#main-container']['margin-right'] . 'px';
+				}
+				if(isset($this->request->data[$Model->alias]['style']['#main-container']['margin-bottom'])) {
+					$this->request->data[$Model->alias]['style']['#main-container']['margin-bottom'] = $this->request->data[$Model->alias]['style']['#main-container']['margin-bottom'] . 'px';
+				}
+				if(isset($this->request->data[$Model->alias]['style']['#main-container']['margin-left'])) {
+					$this->request->data[$Model->alias]['style']['#main-container']['margin-left'] = $this->request->data[$Model->alias]['style']['#main-container']['margin-left'] . 'px';
+				}
+				if(isset($this->request->data[$Model->alias]['align'])) {
+					if($this->request->data[$Model->alias]['align'] == 'center') {
+						$this->request->data[$Model->alias]['style']['#main-container']['margin-left'] = 'auto';
+						$this->request->data[$Model->alias]['style']['#main-container']['margin-right'] = 'auto';
+					} else if($this->request->data[$Model->alias]['align'] == 'right') {
+						$this->request->data[$Model->alias]['style']['#main-container']['float'] = 'right';
+					}
+				}
+				if(isset($this->request->data[$Model->alias]['width'])) {
+					if($this->request->data[$Model->alias]['width'] != 'auto' && $this->request->data[$Model->alias]['width'] != '100%') {
+						$this->request->data[$Model->alias]['style']['#main-container']['width'] = $this->request->data[$Model->alias]['width'] . 'px';
+					} else {
+						$this->request->data[$Model->alias]['style']['#main-container']['width'] = $this->request->data[$Model->alias]['width'];
+					}
+				}
+				if(isset($this->request->data[$Model->alias]['height'])) {
+					if($this->request->data[$Model->alias]['height'] != 'auto' && $this->request->data[$Model->alias]['height'] != '100%') {
+						$this->request->data[$Model->alias]['style']['#main-container']['height'] = $this->request->data[$Model->alias]['height'] . 'px';
+					} else {
+						$this->request->data[$Model->alias]['style']['#main-container']['height'] = $this->request->data[$Model->alias]['height'] ;
+					}
 				}
 				
 				$this->set('data', $this->request->data[$Model->alias]['style']);
@@ -405,17 +456,11 @@ class PageController extends PageAppController {
 				
 				$this->autoLayout = true;
 				$this->autoRender = true;
-			} elseif($Model->name == 'PageLayout' && isset($this->request->data[$Model->alias]['layouts'])) {
-				$layouts = explode('_', $this->request->data[$Model->alias]['layouts']);
-				$this->request->data[$Model->alias]['is_display_header'] = intval($layouts[0]);
-				$this->request->data[$Model->alias]['is_display_left'] = intval($layouts[1]);
-				$this->request->data[$Model->alias]['is_display_right'] = intval($layouts[2]);
-				$this->request->data[$Model->alias]['is_display_footer'] = intval($layouts[3]);
-				unset($this->request->data[$Model->alias]['layouts']);
 			}
 			
+			
 			$pageStyles = $Model->saveScope($pageStyles, $centerPage, $this->request->data, $type);
-			if($pageStyles !== false) {
+			if($pageStyles !== false && count($Model->validationErrors) == 0) {
 				if(empty($pageStyles[0][$Model->alias]['id'])) {
 					$this->Session->setFlash(__('Has been successfully registered.'));
 				} else {
@@ -519,6 +564,13 @@ class PageController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function display_position() {
+		$centerPage = $this->_initializeStyle();
+		$pageStyles = $this->PageStyle->findScopeStyle('all', $centerPage);
+		
+		$pageStyles[NC_PAGE_TYPE_DISPLAY_ID] = $this->_saveScope($this->PageStyle, isset($pageStyles[NC_PAGE_TYPE_DISPLAY_ID]) ? $pageStyles[NC_PAGE_TYPE_DISPLAY_ID] : null, $centerPage, NC_PAGE_TYPE_DISPLAY_ID);
+		$this->set('page_style', isset($pageStyles[NC_PAGE_TYPE_DISPLAY_ID][0]) ? $pageStyles[NC_PAGE_TYPE_DISPLAY_ID][0] : null);
+		$this->set('id', 'pages-menu-display-position');
+		
 		$this->render('/Elements/style/display_position');
 	}
 

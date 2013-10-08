@@ -141,15 +141,14 @@ class PageStyleBehavior extends ModelBehavior {
 			} else {
 				$savePageStyle[$Model->alias]['page_id'] = $centerPage['Page']['id'];
 			}
-
 			$Model->set($savePageStyle);
 			if($Model->validates()) {
-				
 				$id = null;
 				if(count($pageStyles) > 0) {
 					// 現在、設定中のものより優先順位が高いものが既に登録してあったら、削除。
 					foreach($pageStyles as $pageStyle) {
 						if($pageStyle[$Model->alias]['scope'] == $savePageStyle[$Model->alias]['scope'] &&
+							$pageStyle[$Model->alias]['type'] == $savePageStyle[$Model->alias]['type'] &&
 							$pageStyle[$Model->alias]['space_type'] == $savePageStyle[$Model->alias]['space_type'] &&
 							$pageStyle[$Model->alias]['lang'] == $savePageStyle[$Model->alias]['lang'] &&
 							$pageStyle[$Model->alias]['page_id'] == $savePageStyle[$Model->alias]['page_id']) {
@@ -167,10 +166,8 @@ class PageStyleBehavior extends ModelBehavior {
 				if(!$Model->save($savePageStyle)) {
 					return false;
 				}
-				$pageStyles[0] = $savePageStyle;
-			} else {
-				return false;
 			}
+			$pageStyles[0] = $savePageStyle;
 		}
 		return $pageStyles;
 	}

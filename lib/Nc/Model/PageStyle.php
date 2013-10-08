@@ -53,6 +53,32 @@ class PageStyle extends AppModel
 					'message' => __('It contains an invalid string.')
 				),
 			),
+			'align' => array(
+				'inList' => array(
+					'rule' => array('inList', array(
+						'',
+						'left',
+						'center',
+						'right',
+					), false),
+					'allowEmpty' => false,
+					'message' => __('It contains an invalid string.')
+				),
+			),
+			'width' => array(
+				'invalidSize'  => array(
+					'rule' => array('_invalidSize'),
+					'last' => true,
+					'message' => __('It contains an invalid string.')
+				),
+			),
+			'height' => array(
+				'invalidSize'  => array(
+					'rule' => array('_invalidSize'),
+					'last' => true,
+					'message' => __('It contains an invalid string.')
+				),
+			),
 			'file' => array(
 				'notEmpty'  => array(
 					'rule' => array('notEmpty'),
@@ -79,9 +105,6 @@ class PageStyle extends AppModel
 		$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
 		$loginUserId = isset($loginUser['id']) ? $loginUser['id'] : _OFF;
 		$isAdmin = ($Authority->getUserAuthorityId($loginUser['hierarchy']) == NC_AUTH_ADMIN_ID) ? true : false;
-		if($isAdmin) {
-			return true;
-		}
 		
 		if(!is_array($this->data[$this->alias]['style'])) {
 			return false;
@@ -97,10 +120,13 @@ class PageStyle extends AppModel
 		$backgroundPositionY = explode(',', PAGES_STYLE_BACKGROUND_POSITION_Y);
 		
 		foreach($this->data[$this->alias]['style'] as $propertyElement => $property) {
-			if(!in_array($propertyElement, $propertyElements)) {
+			if(!$isAdmin && !in_array($propertyElement, $propertyElements)) {
 				return false;
 			}
 			foreach($property as $key => $value) {
+				if(!$isAdmin && !in_array($key, $propertyKeys)) {
+					return false;
+				}
 				switch ($key) {
 					case 'font-family':
 						if(!in_array($value, $fonts)) {
@@ -127,10 +153,24 @@ class PageStyle extends AppModel
 							return false;
 						}
 						break;
+					case 'margin-right':
+					case 'margin-left':
+						if(!preg_match("/^[0-9]+px$/i", $value) && $value != 'auto') {
+							return false;
+						}
+						break;
+					case 'margin-top':
+					case 'margin-bottom':
 					case 'border-radius':
 						if(!preg_match("/^[0-9]+px$/i", $value)) {
 							return false;
 						}
+						break;
+					case 'width':
+					case 'height':
+						//if(!preg_match("/^[0-9]+px$/i", $value) && !preg_match("/^[0-9]+%$/i", $value) && $value != 'auto') {
+						//	return false;
+						//}
 						break;
 					case 'background-image':
 						//if($value != 'none' && !preg_match("/^url\(\"[^\)]+\"\)$/i", $value)) {
@@ -158,10 +198,30 @@ class PageStyle extends AppModel
 							return false;
 						}
 						break;
+					case 'float':
+						if($value != 'left' && $value != 'right' && $value != 'none') {
+							return false;
+						}
+						break;
 				}
 			}
 		}
 		return true;
+	}
+
+/**
+ * width,heightチェック
+ *
+ * @param  array     $check
+ * @return boolean
+ * @since   v 3.0.0.0
+ */
+	public function _invalidSize($check) {
+		$check = array_shift($check);
+		if($check == '100%' || $check == 'auto') {
+			return true;
+		}
+		return Validation::numeric($check);
 	}
 
 /**

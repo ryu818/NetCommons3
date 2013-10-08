@@ -433,6 +433,7 @@ class InstallController extends Controller {
 		/*
 		 * テーブル作成
 		*/
+		App::uses('Folder', 'Utility');
 		App::uses('File', 'Utility');
 
 		$tables = array();
@@ -450,7 +451,8 @@ class InstallController extends Controller {
 			}
 		}
 
-		$xmlFile = App::pluginPath('Install') . DS . 'Config' . DS . 'Data' . DS . 'default.xml';	// TODO:default固定
+		$xmlFilePath = App::pluginPath('Install') . DS . 'Config' . DS . 'Data' . DS . 'default' . DS;	// TODO:default固定
+		$xmlFile = $xmlFilePath . 'data.xml';
 		$xmlArray = Xml::toArray(Xml::build(file_get_contents($xmlFile)));
 		if (empty($xmlArray)) {
 			$this->set('failure_datas', true);
@@ -477,6 +479,10 @@ class InstallController extends Controller {
 				$columnNameArr[$columnData['@']] = true;
 			}
 		}
+		
+		// page_styleコピー
+		$pageStyleFolder = new Folder($xmlFilePath . 'theme' .DS .  'page_styles');
+		$pageStyleFolder->copy(WWW_ROOT . 'theme' .DS .  'page_styles');
 
 		/*
 		 * Plugin テーブル作成

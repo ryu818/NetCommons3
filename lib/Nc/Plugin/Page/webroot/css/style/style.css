@@ -63,6 +63,21 @@ ul.pages-menu-backgrounds li {
 	display:block;
 	border: 1px solid #efefef;
 }
+
+.pages-menu-style-size {
+	width: 70px;
+	margin: 0 0 0 5px;
+}
+
+.pages-menu-style-px {
+	padding: 5px;
+}
+
+.pages-menu-style-margin {
+	padding: 2px;
+}
+
+/* レイアウト */
 .pages-menu-layout {
 	background-color:#f9f9f9;
 }

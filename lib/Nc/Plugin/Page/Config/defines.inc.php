@@ -34,7 +34,7 @@ define("PAGES_STYLE_BORDER_STYLE", 'solid,dotted,dashed');
 // 線のスタイル
 
 define("PROPERTY_ELEMENTS_WHITE_LIST", 'body,#container,article,h1,a,hr,#main-container');
-define("PROPERTY_KEYS_WHITE_LIST", 'font-family,color,font-size,line-height,border-top-color,border-top-style,border-radius,border-style,border-color,background-color,background-image,background-attachment,background-position-x,background-position-y,background-repeat');
+define("PROPERTY_KEYS_WHITE_LIST", 'font-family,color,font-size,line-height,border-top-color,border-top-style,border-radius,border-style,border-color,background-color,background-image,background-attachment,background-position-x,background-position-y,background-repeat,margin-top,margin-right,margin-bottom,margin-left,width,height,float');
 
 define("PAGES_STYLE_BACKGROUND_ATTACHMENT", 'fixed,scroll');
 define("PAGES_STYLE_BACKGROUND_REPEAT", 'repeat,repeat-x,repeat-y,no-repeat');
@@ -43,3 +43,10 @@ define("PAGES_STYLE_BACKGROUND_POSITION_Y", 'top,bottom');
 
 // 背景
 define("PAGES_BACKGROUND_LIMIT", 28);
+
+// 行揃え
+define("PAGES_STYLE_ALIGN", 'left:Left align,center:Center align,right:Right align');
+
+// 最小の広さ、高さ
+define("PAGES_STYLE_WIDTH_SIZE", 'auto:Auto,100%:100%,by hand:By hand');
+define("PAGES_STYLE_HEIGHT_SIZE", 'auto:Auto,by hand:By hand');

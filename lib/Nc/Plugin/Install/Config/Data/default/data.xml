@@ -7490,6 +7490,24 @@ e-mail：{X-EMAIL}
             <column name="modified_user_name"></column>
         </table>
         <!-- テーブル page_styles -->
+        <table name="page_styles">
+            <column name="id">1</column>
+            <column name="scope">1</column>
+            <column name="type">3</column>
+            <column name="lang"></column>
+            <column name="space_type">0</column>
+            <column name="page_id">0</column>
+            <column name="align">center</column>
+            <column name="width">auto</column>
+            <column name="height">auto</column>
+            <column name="file">application-d486f6d6c6b5c4d5c33352e1bf4e5c0d.css</column>
+            <column name="created">NULL</column>
+            <column name="created_user_id">NULL</column>
+            <column name="created_user_name"></column>
+            <column name="modified">NULL</column>
+            <column name="modified_user_id">NULL</column>
+            <column name="modified_user_name"></column>
+        </table>
         <!-- テーブル page_sum_views -->
         <!-- テーブル page_themes -->
         <table name="page_themes">

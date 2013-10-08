@@ -518,6 +518,29 @@ class AppSchema extends CakeSchema {
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
 	);
 
+	public $page_layouts = array(
+		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
+		'scope' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3),
+		'type' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3),
+		'lang' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 10, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'space_type' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 2),
+		'page_id' => array('type' => 'integer', 'null' => true, 'default' => '0'),
+		'is_display_header' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
+		'is_display_left' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
+		'is_display_right' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
+		'is_display_footer' => array('type' => 'boolean', 'null' => false, 'default' => '0'),
+		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
+		'created_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
+		'created_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'modified' => array('type' => 'datetime', 'null' => true, 'default' => null),
+		'modified_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
+		'modified_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'indexes' => array(
+			'PRIMARY' => array('column' => 'id', 'unique' => 1)
+		),
+		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
+	);
+
 	public $page_metas = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'scope' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3),
@@ -547,6 +570,9 @@ class AppSchema extends CakeSchema {
 		'lang' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 10, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'space_type' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 2),
 		'page_id' => array('type' => 'integer', 'null' => true, 'default' => '0'),
+		'align' => array('type' => 'string', 'null' => false, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'width' => array('type' => 'string', 'null' => false, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'height' => array('type' => 'string', 'null' => false, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'file' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 48, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'created_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),

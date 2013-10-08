@@ -163,7 +163,7 @@ echo $this->element('scope', array('languages' => $languages, 'model_name' => 'P
 						<?php
 							$settings = array(
 								'type' => 'text',
-								'value' => '',
+								'value' => isset($page_style['PageStyle']['style'][$itemKey][$key]) ? $page_style['PageStyle']['style'][$itemKey][$key] : '',
 								'label' => false,
 								'div' => false,
 								'class' => 'pages-menu-style-colorpicker',
@@ -214,7 +214,7 @@ echo $this->element('scope', array('languages' => $languages, 'model_name' => 'P
 </div>
 <script>
 	$(function(){
-		$.PageStyle.initFont('<?php echo $id; ?>');
+		$.PageStyle.initFont('<?php echo $id; ?>', <?php if($this->request->is('post')): ?>true<?php else: ?>false<?php endif;?>);
 	});
 </script>
 <?php
