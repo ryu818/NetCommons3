@@ -479,7 +479,7 @@ class InstallController extends Controller {
 				$columnNameArr[$columnData['@']] = true;
 			}
 		}
-		
+
 		// page_styleコピー
 		$pageStyleFolder = new Folder($xmlFilePath . 'theme' .DS .  'page_styles');
 		$pageStyleFolder->copy(WWW_ROOT . 'theme' .DS .  'page_styles');
@@ -504,7 +504,7 @@ class InstallController extends Controller {
 				if(in_array($dir, $pluginArr)) {
 					continue;
 				}
-			
+
 				foreach($schemaPlugin->tables as $table => $fields) {
 					if(in_array($table, $tables)) {
 						// 既にcreate済
@@ -520,7 +520,7 @@ class InstallController extends Controller {
 				$pluginArr[] = $dir;
 			}
 		}
-		
+
 
 		$this->set("tables", $tables);
 		$this->set("not_tables", $not_tables);
@@ -568,9 +568,6 @@ class InstallController extends Controller {
 				return;
 			}
 		}
-		// バックグランド登録処理
-		$Background = ClassRegistry::init('Background');
-		$Background->updateAllInit();
 
 		// install.inc.php書き込み
 		copy(APP . 'Config' . DS . 'install.inc.php.default', APP . 'Config' . DS . NC_INSTALL_INC_FILE);
@@ -662,6 +659,10 @@ class InstallController extends Controller {
 		$fields = array('ConfigLang.value' => "'" . Sanitize::escape($config['site_name']) . "'");
 		$conditions = array('ConfigLang.config_name' => 'sitename');
 		$retConfigLang = $ConfigLang->updateAll($fields, $conditions);
+
+		// バックグランド登録処理
+		$Background = ClassRegistry::init('Background');
+		$Background->updateAllInit();
 
 		$this->set('user', $user);
 	}
