@@ -32,7 +32,7 @@ class PageStyle extends AppModel
  */
 	public function __construct() {
 		parent::__construct();
-		
+
 		$defaultValidate = $this->constructDefault();
 
 		$this->validate = array_merge($defaultValidate, array(
@@ -42,7 +42,7 @@ class PageStyle extends AppModel
 						NC_PAGE_TYPE_FONT_ID,
 						NC_PAGE_TYPE_BACKGROUND_ID,
 						NC_PAGE_TYPE_DISPLAY_ID,
-						NC_PAGE_TYPE_CUSTOM_ID,
+						NC_PAGE_TYPE_EDIT_CSS_ID,
 					), false),
 					'allowEmpty' => false,
 					'message' => __('It contains an invalid string.')
@@ -105,20 +105,20 @@ class PageStyle extends AppModel
 		$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
 		$loginUserId = isset($loginUser['id']) ? $loginUser['id'] : _OFF;
 		$isAdmin = ($Authority->getUserAuthorityId($loginUser['hierarchy']) == NC_AUTH_ADMIN_ID) ? true : false;
-		
-		if(!is_array($this->data[$this->alias]['style'])) {
-			return false;
+
+		if(!isset($this->data[$this->alias]['style']) || !is_array($this->data[$this->alias]['style'])) {
+			return true;
 		}
 		$propertyElements = explode(',', PROPERTY_ELEMENTS_WHITE_LIST);
 		$propertyKeys = explode(',', PROPERTY_KEYS_WHITE_LIST);
 		$borderStyles = explode(',', PAGES_STYLE_BORDER_STYLE);
 		$fonts = explode(',', PAGES_STYLE_FONT);
-		
+
 		$backgroundAttachments = explode(',', PAGES_STYLE_BACKGROUND_ATTACHMENT);
 		$backgroundRepeat = explode(',', PAGES_STYLE_BACKGROUND_REPEAT);
 		$backgroundPositionX = explode(',', PAGES_STYLE_BACKGROUND_POSITION_X);
 		$backgroundPositionY = explode(',', PAGES_STYLE_BACKGROUND_POSITION_Y);
-		
+
 		foreach($this->data[$this->alias]['style'] as $propertyElement => $property) {
 			if(!$isAdmin && !in_array($propertyElement, $propertyElements)) {
 				return false;
@@ -174,7 +174,8 @@ class PageStyle extends AppModel
 						break;
 					case 'background-image':
 						//if($value != 'none' && !preg_match("/^url\(\"[^\)]+\"\)$/i", $value)) {
-						if($value != 'none' && !preg_match("/^[^']?$/i", $value)) {
+
+						if($value != 'none' && !preg_match("/^[a-zA-Z0-9-_\/~@.]+$/i", $value)) {
 							return false;
 						}
 						break;

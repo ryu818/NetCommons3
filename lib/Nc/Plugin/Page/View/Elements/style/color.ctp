@@ -13,7 +13,7 @@
 	<ul>
 	<?php foreach ($backgrounds as $background): ?>
 	<li>
-		<?php 
+		<?php
 			$src = $this->Html->url('/', true).'img/backgrounds/'.$background['Background']['type'].'s/'.$background['Background']['file_path'];
 		?>
 		<?php
@@ -23,7 +23,7 @@
 				'data-background-id' => $background['Background']['id'],
 				'data-background-group-id' => $background['Background']['group_id'],
 				'style' => "background-image: url('".$src."');",
-				'onclick' => '$.PageStyle.clickBackgroundSub(this); return false;',
+				'onclick' => '$.PageStyle.clickBackgroundSub(this, \''.$type.'\'); return false;',
 			));
 		?>
 	</li>

@@ -58,12 +58,12 @@ echo $this->element('scope', array('languages' => $languages, 'model_name' => 'P
 		<fieldset class="form">
 			<ul class="lists pages-menu-style-details">
 			<?php foreach ($item as $key => $value): ?>
-				<?php 
-					// bodyのfont-sizeはYUI Font を使用しているため使用できない。代わりに#containerを使用
-					if($itemKey == 'body' && $key == 'font-size'){$itemKey = '#container';} else if($itemKey == '#container'){$itemKey = 'body';}
+				<?php
+					// bodyのfont-sizeはYUI Font を使用しているため使用できない。代わりに#parent-containerを使用
+					if($itemKey == 'body' && $key == 'font-size'){$itemKey = '#parent-container';} else if($itemKey == '#parent-container'){$itemKey = 'body';}
 				 ?>
-				
-				
+
+
 				<?php if($key == 'title'){continue;} ?>
 				<li><dl>
 				<?php if ($key == 'font-family'): ?>
@@ -80,7 +80,7 @@ echo $this->element('scope', array('languages' => $languages, 'model_name' => 'P
 							foreach($fonts as $font) {
 								$options[$font] = __d('page', $font);
 							}
-	
+
 							$settings = array(
 								'type' => 'select',
 								'options' => $options,
@@ -101,9 +101,9 @@ echo $this->element('scope', array('languages' => $languages, 'model_name' => 'P
 					</dt>
 					<dd>
 						<?php
-						
+
 							$options = array();
-							if($itemKey == '#container') {
+							if($itemKey == '#parent-container') {
 								$fontSizes = explode(',', PAGES_STYLE__BODY_FONT_SIZE);
 								foreach($fontSizes as $fontSize) {
 									$fontSizeArr = explode(':', $fontSize);
@@ -140,7 +140,7 @@ echo $this->element('scope', array('languages' => $languages, 'model_name' => 'P
 							foreach($lineHeights as $lineHeight) {
 								$options[$lineHeight] = __d('page', $lineHeight);
 							}
-	
+
 							$settings = array(
 								'type' => 'select',
 								'options' => $options,
@@ -206,7 +206,7 @@ echo $this->element('scope', array('languages' => $languages, 'model_name' => 'P
 			<?php endforeach; ?>
 			</ul>
 		</fieldset>
-		
+
 	</div>
 <?php endforeach; ?>
 <?php /* 設定するタグがあるかもしれないため非表示で設定 */; ?>

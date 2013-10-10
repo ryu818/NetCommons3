@@ -1,5 +1,5 @@
-msgid  	"No pattern"
-msgstr 	"パターンなし"
+msgid  	"None"
+msgstr 	"なし"
 
 msgid  	"Tilt"
 msgstr 	"斜め縞"

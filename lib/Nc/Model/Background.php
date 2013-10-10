@@ -16,28 +16,28 @@ class Background extends AppModel
  * @var string
  */
 	private $_backgroundsDirName = 'backgrounds';
-	
+
 /**
  * 背景パターン保存ディレクトリ
  *
  * @var string
  */
-	private $_patternsDirName = 'patterns';	
-	
+	private $_patternsDirName = 'patterns';
+
 /**
  * 背景画像保存ディレクトリ
  *
  * @var string
  */
 	private $_imagesDirName = 'images';
-	
+
 /**
  * 背景パターンType
  *
  * @var string
  */
-	private $_patternType = 'pattern';	
-	
+	private $_patternType = 'pattern';
+
 /**
  * 背景画像Type
  *
@@ -68,7 +68,7 @@ class Background extends AppModel
  * @var integer
  */
 	private $_groupID = 1;
-	
+
 /**
  * 適用範囲内ページスタイルデータ取得
  * @param   Model page $page
@@ -85,7 +85,7 @@ class Background extends AppModel
 
 		return $this->find($type, $params);
 	}
-	
+
 /**
  * 背景一括アップデート処理
  *
@@ -101,20 +101,32 @@ class Background extends AppModel
 		$params = array_merge($this->_default, array(
 			'group_id' => $groupID++,
 			'type' => $this->_patternType,
-			'name' => 'No pattern',
+			'name' => 'None',
 		));
+
+		$this->create();
 		if(!$this->save($params)) {
 			return false;
 		}
-		
+
+		$params = array_merge($this->_default, array(
+			'group_id' => $groupID++,
+			'type' => $this->_imageType,
+			'name' => 'None',
+		));
+		$this->create();
+		if(!$this->save($params)) {
+			return false;
+		}
+
 		$backgroundPath = 'img'. DS . $this->_backgroundsDirName;
 		$paths = App::path('webroot');
 		$pathArray = array(
 			$this->_patternType => $this->_patternsDirName,
 			$this->_imageType => $this->_imagesDirName
 		);
-		
-	
+
+
 		foreach ($paths as $path) {
 			$path = $path . $backgroundPath;
 			foreach($pathArray as $type => $subPath) {
@@ -133,13 +145,14 @@ class Background extends AppModel
 							$params['name'] = Inflector::camelize(str_replace('_', ' ', $backgroundDir));
 							$subDir = new Folder($readPath . DS . $backgroundDir);
 							$subFiles = $subDir->find('.*\.(jpg|gif|png)');
-							
+
 							foreach($subFiles as $subFile) {
-								$subFileArr = explode('_', $subFile);
-								
+								$subFileArr = explode('.', $subFile);
+								$subFileArr = explode('_', $subFileArr[0]);
+
 								$fullPath = $readPath . DS . $backgroundDir . DS . $subFile;
 								list($width, $height) = getimagesize($fullPath);
-								
+
 								$params['group_id'] = $groupID;
 								if(count($subFileArr) > 1) {
 									$params['category'] = $this->_getCategory($subFileArr[0]);
@@ -169,12 +182,12 @@ class Background extends AppModel
 						foreach($files[1] as $subFile) {
 							$bugName = preg_replace('/\..+$/', '', $subFile);
 							$subFileArr = explode('_', $bugName);
-							
+
 							$fullPath = $readPath . DS . DS . $subFile;
 							list($width, $height) = getimagesize($fullPath);
 							$params['group_id'] = $groupID++;
-							
-							
+
+
 							if(count($subFileArr) > 2) {
 								$params['color'] = $this->_getColor($subFileArr[count($subFileArr) - 1]);
 								unset($subFileArr[count($subFileArr) - 1]);

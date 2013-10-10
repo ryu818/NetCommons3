@@ -12,6 +12,7 @@
 <script id="pages-style-css-template" type="text/html">
 	<style id="${id}" type="text/css">
 	<!--
+{{if data }}
 	{{each(title, csses) data}}
 	{{if data[title]}}
 		{{if title == 'a' }}
@@ -30,6 +31,9 @@
 		}
 	{{/if}}
 	{{/each}}
+{{else}}
+	${content} ;
+{{/if}}
 	-->
 	</style>
 </script>

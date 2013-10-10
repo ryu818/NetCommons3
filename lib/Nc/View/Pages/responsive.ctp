@@ -30,11 +30,10 @@
 		$footercolumn_str = $this->element('Pages/column', array('blocks' => isset($blocks[$page_id_arr[4]]) ? $blocks[$page_id_arr[4]] : null, 'page' => $pages[$page_id_arr[4]], 'parent_id' => 0, 'attr' => 'data-column-top="1"'));
 	}
 ?>
-<div id="container">
 	<?php if(!empty($nc_user['id']) || Configure::read(NC_CONFIG_KEY.'.'.'display_header_menu') != NC_HEADER_MENU_NONE) {
 		echo($this->element('Dialogs/hmenu', array('hierarchy' => isset($pages[$page_id_arr[0]]['PageAuthority']['hierarchy']) ? $pages[$page_id_arr[0]]['PageAuthority']['hierarchy'] : NC_AUTH_OTHER)));
 	}?>
-	<div id="main-container"<?php if($style != ''): ?> style="<?php echo($style); ?>"<?php endif; ?>>
+	<div id="container"<?php if($style != ''): ?> style="<?php echo($style); ?>"<?php endif; ?>>
 		<?php if(isset($headercolumn_str)): ?>
 		<header id="headercolumn" class="nc-columns table-row">
 				<?php echo($headercolumn_str); ?>
@@ -57,13 +56,12 @@
 		</footer>
 		<?php endif; ?>
 	</div>
-</div>
 <?php
 echo $this->Html->script('plugins/jquery.masonry.js');
 ?>
 <script>
 $(function(){
-	$('#main-container').masonry({
+	$('#container').masonry({
       	itemSelector: $('[data-column-top]').children(),	// グループ化したものは一塊として表示　ブロックすべての場合は「[data-block]」
 		columnWidth: 1,
 		isAnimated: true,
@@ -88,7 +86,7 @@ $(function(){
 			var h = $block.outerHeight(true);
 			if($._blocks_size[id]['width'] != w || $._blocks_size[id]['height'] != h) {
 				// サイズ変更あり
-				var centercolumn = $('#main-container');
+				var centercolumn = $('#container');
 				centercolumn.masonry( 'reload' );
 
 				$._blocks_size[id]['width'] = w;

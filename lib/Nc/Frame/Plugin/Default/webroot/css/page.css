@@ -1,24 +1,19 @@
 #leftcolumn {
-	background-color:#ffffff;
 }
 
 #centercolumn {
-	background-color:#ffffff;
 }
 
 #rightcolumn {
-	background-color:#ffffff;
 }
 
 #headercolumn {
-	background-color:#ffffff;
 }
 
 #footercolumn {
-	background-color:#ffffff;
 }
 
-#main-container {
+#container {
 	background-color:#ffffff;
 	border-radius:6px;
 	box-shadow: 0 1px 2px rgba(72, 76, 80, 0.25), 0 1px 1px rgba(255, 255, 255, 0.5) inset;

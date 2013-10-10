@@ -11,8 +11,9 @@
 ?>
 <?php
 $items = array(
-	'patterns'=> $patterns,
 	'images'=> $images,
+	'patterns'=> $patterns,
+	'original'=> '',
 	'color'=> '',
 );
 echo $this->Form->create('Background', array(
@@ -28,7 +29,9 @@ echo $this->element('style/filter');
 <?php foreach ($items as $itemKey => $backgrounds): ?>
 	<div><a href="#">
 		<?php if($itemKey == 'patterns'): ?>
-		<?php echo __d('page', 'Background patterns'); ?>
+		<?php echo __d('page', 'Background overlay'); ?>
+		<?php elseif($itemKey == 'original'): ?>
+		<?php echo __d('page', 'Original background'); ?>
 		<?php elseif($itemKey == 'color'): ?>
 		<?php echo __d('page', 'Background color'); ?>
 		<?php else: ?>
@@ -38,6 +41,13 @@ echo $this->element('style/filter');
 	<div id="<?php echo $id;?>-<?php echo $itemKey;?>">
 		<?php if($itemKey == 'color'): ?>
 		<div id="<?php echo $id;?>-picker" class="pages-menu-picker"></div>
+		<?php elseif($itemKey == 'original'): ?>
+		<div class="pages-menu-original-background">
+			<div></div>
+		</div>
+		<?php
+		echo $this->Form->button(__('Select file'), array('name' => 'regist', 'class' => 'common-btn pages-menu-background-original-btn', 'type' => 'button', 'onclick' => ""))
+		?>
 		<?php else: ?>
 		<fieldset class="form">
 			<ul class="lists pages-menu-style-details pages-menu-backgrounds clearfix">
@@ -54,7 +64,8 @@ echo $this->element('style/filter');
 	});
 </script>
 <?php
-	echo $this->Form->hidden('PageStyle.style.body.background-image' , array('id' => $id. '-image-hidden', 'value' => ''));
+	echo $this->Form->hidden('PageStyle.style.body.background-image' , array('id' => $id. '-images-hidden', 'value' => ''));
+	echo $this->Form->hidden('PageStyle.style.#parent-container.background-image' , array('id' => $id. '-patterns-hidden', 'value' => ''));
 	echo $this->Form->hidden('PageStyle.style.body.background-color' , array('id' => $id. '-color-hidden', 'value' => ''));
 	echo $this->Html->div('submit',
 		$this->Form->button(__('Ok'), array('name' => 'regist', 'class' => 'common-btn', 'type' => 'submit', 'onclick' => "$.PageStyle.setConfirm('".$id."', 'submit');")).

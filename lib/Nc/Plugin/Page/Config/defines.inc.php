@@ -33,7 +33,7 @@ define("PAGES_STYLE_BORDER_STYLE", 'solid,dotted,dashed');
 
 // 線のスタイル
 
-define("PROPERTY_ELEMENTS_WHITE_LIST", 'body,#container,article,h1,a,hr,#main-container');
+define("PROPERTY_ELEMENTS_WHITE_LIST", 'body,#parent-container,article,h1,a,hr,#container');
 define("PROPERTY_KEYS_WHITE_LIST", 'font-family,color,font-size,line-height,border-top-color,border-top-style,border-radius,border-style,border-color,background-color,background-image,background-attachment,background-position-x,background-position-y,background-repeat,margin-top,margin-right,margin-bottom,margin-left,width,height,float');
 
 define("PAGES_STYLE_BACKGROUND_ATTACHMENT", 'fixed,scroll');

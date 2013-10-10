@@ -24,6 +24,7 @@
 <?php echo($this->element('Pages/include_header')); ?>
 </head>
 <body>
+<div id="parent-container">
 	<?php echo $this->fetch('content'); ?>
 	<?php
 	if(!$this->request->query('_iframe_upload')) {
@@ -32,5 +33,6 @@
 	?>
 	<?php echo $this->element('flash_mes'); ?>
 	<?php echo $this->element('sql_dump'); ?>
+</div>
 </body>
 </html>

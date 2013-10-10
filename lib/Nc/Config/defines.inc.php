@@ -170,7 +170,7 @@ define('NC_PAGE_SCOPE_CURRENT', 5);	// カレントページのみ
 define('NC_PAGE_TYPE_FONT_ID', 1);			// フォント設定
 define('NC_PAGE_TYPE_BACKGROUND_ID', 2);	// 背景
 define('NC_PAGE_TYPE_DISPLAY_ID', 3);		// 表示位置
-define('NC_PAGE_TYPE_CUSTOM_ID', 4);		// カスタム設定
+define('NC_PAGE_TYPE_EDIT_CSS_ID', 4);		// カスタム設定
 
 //-----------------configs-------------------------------------------
 define('NC_SYSTEM_CATID',      0);

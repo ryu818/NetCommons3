@@ -18,11 +18,6 @@ echo $this->Form->create('PageStyle', array(
 echo $this->Form->error('PageStyle.type');
 echo $this->element('scope', array('languages' => $languages, 'model_name' => 'PageStyle', 'page_style' => $page_style, 'page' => $page));
 
-// 水平線
-$displayPositionItems = array(
-	'border-top-color' => __d('page', 'Border color'),
-	'border-top-style' => __d('page', 'Border style')
-);
 ?>
 <fieldset class="form">
 	<ul class="lists pages-menu-style-details">
@@ -85,7 +80,7 @@ $displayPositionItems = array(
 						'style' => 'width: 100px;',
 					);
 					echo $this->Form->input($name, $settings);
-					
+
 					$settings = array(
 						'type' => 'text',
 						'value' => ($value == 'by hand') ? $page_style['PageStyle']['width'] : '',
@@ -124,7 +119,7 @@ $displayPositionItems = array(
 					} else {
 						$value = 'by hand';
 					}
-					
+
 					$settings = array(
 						'type' => 'select',
 						'options' => $options,
@@ -134,7 +129,7 @@ $displayPositionItems = array(
 						'style' => 'width: 100px;',
 					);
 					echo $this->Form->input($name, $settings);
-					
+
 					$settings = array(
 						'type' => 'text',
 						'value' => ($value == 'by hand') ? $page_style['PageStyle']['height'] : '',
@@ -155,15 +150,15 @@ $displayPositionItems = array(
 		<li><dl>
 			<dt>
 				<?php
-					$name = 'PageStyle.style.#main-container.margin';
+					$name = 'PageStyle.style.#container.margin';
 					echo $this->Form->label($name.'-top', __d('page', 'Margin'));
 				?>
 			</dt>
 			<dd>
 				<div class="pages-menu-style-margin">
 				<?php
-					if(isset($page_style['PageStyle']['style']['#main-container']['margin-top']) && $page_style['PageStyle']['style']['#main-container']['margin-top'] != 'auto') {
-						$value = preg_replace('/px$/', '', $page_style['PageStyle']['style']['#main-container']['margin-top']);
+					if(isset($page_style['PageStyle']['style']['#container']['margin-top']) && $page_style['PageStyle']['style']['#container']['margin-top'] != 'auto') {
+						$value = preg_replace('/px$/', '', $page_style['PageStyle']['style']['#container']['margin-top']);
 					} else {
 						$value = '0';
 					}
@@ -184,8 +179,8 @@ $displayPositionItems = array(
 				?>
 				</div><div class="pages-menu-style-margin">
 				<?php
-					if(isset($page_style['PageStyle']['style']['#main-container']['margin-right']) && $page_style['PageStyle']['style']['#main-container']['margin-right'] != 'auto') {
-						$value = preg_replace('/px$/', '', $page_style['PageStyle']['style']['#main-container']['margin-right']);
+					if(isset($page_style['PageStyle']['style']['#container']['margin-right']) && $page_style['PageStyle']['style']['#container']['margin-right'] != 'auto') {
+						$value = preg_replace('/px$/', '', $page_style['PageStyle']['style']['#container']['margin-right']);
 					} else {
 						$value = '0';
 					}
@@ -206,8 +201,8 @@ $displayPositionItems = array(
 				?>
 				</div><div class="pages-menu-style-margin">
 				<?php
-					if(isset($page_style['PageStyle']['style']['#main-container']['margin-bottom']) && $page_style['PageStyle']['style']['#main-container']['margin-bottom'] != 'auto') {
-						$value = preg_replace('/px$/', '', $page_style['PageStyle']['style']['#main-container']['margin-bottom']);
+					if(isset($page_style['PageStyle']['style']['#container']['margin-bottom']) && $page_style['PageStyle']['style']['#container']['margin-bottom'] != 'auto') {
+						$value = preg_replace('/px$/', '', $page_style['PageStyle']['style']['#container']['margin-bottom']);
 					} else {
 						$value = '0';
 					}
@@ -228,8 +223,8 @@ $displayPositionItems = array(
 				?>
 				</div><div class="pages-menu-style-margin">
 				<?php
-					if(isset($page_style['PageStyle']['style']['#main-container']['margin-left']) && $page_style['PageStyle']['style']['#main-container']['margin-left'] != 'auto') {
-						$value = preg_replace('/px$/', '', $page_style['PageStyle']['style']['#main-container']['margin-left']);
+					if(isset($page_style['PageStyle']['style']['#container']['margin-left']) && $page_style['PageStyle']['style']['#container']['margin-left'] != 'auto') {
+						$value = preg_replace('/px$/', '', $page_style['PageStyle']['style']['#container']['margin-left']);
 					} else {
 						$value = '0';
 					}

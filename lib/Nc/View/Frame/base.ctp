@@ -9,5 +9,5 @@
 	</section>
 </div>
 <?php
-echo $this->Html->css('common/editable/frame/base');
+echo $this->Html->css('common/main/frame/base');
 ?>

@@ -46,7 +46,7 @@ ul.pages-menu-style-details li dl dd {
 	overflow:auto;
 }
 
-ul.pages-menu-backgrounds li {
+ul.pages-menu-backgrounds li, .pages-menu-original-background {
 	padding:5px;
 	float:left;
 	clear:none;
@@ -59,6 +59,22 @@ ul.pages-menu-backgrounds li {
 .pages-menu-backgrounds li .pages-menu-background, .pages-menu-backgrounds li .pages-menu-layout {
 	width: 64px;
 	height: 64px;
+	background-repeat: repeat;
+	display:block;
+	border: 1px solid #efefef;
+}
+
+#pages-menu-background-original {
+	padding: 10px !important;
+}
+
+.pages-menu-background-original-btn {
+	margin:5px;
+}
+
+.pages-menu-original-background div {
+	width: 128px;
+	height: 128px;
 	background-repeat: repeat;
 	display:block;
 	border: 1px solid #efefef;
@@ -114,4 +130,9 @@ ul.pages-menu-backgrounds li {
 
 .pages-menu-background-highlight {
 	background-color: #589fe0;
+}
+
+#pages-menu-edit-css-textarea {
+	width:330px;
+	height:500px;
 }

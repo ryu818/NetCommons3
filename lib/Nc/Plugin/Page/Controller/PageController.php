@@ -68,7 +68,7 @@ class PageController extends PageAppController {
 	public function beforeFilter()
 	{
 		include_once dirname(dirname(__FILE__)).'/Config/defines.inc.php';
-		
+
 		$active_lang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.lang');
 		if(isset($active_lang)) {
 			Configure::write(NC_CONFIG_KEY.'.'.'language', $active_lang);
@@ -367,7 +367,7 @@ class PageController extends PageAppController {
 	public function style() {
 		$centerPage = $this->_initializeStyle();
 		$pageStyles = $this->PageStyle->findScopeStyle('all', $centerPage);
-		
+
 		$pageStyles[NC_PAGE_TYPE_FONT_ID] = $this->_saveScope($this->PageStyle, isset($pageStyles[NC_PAGE_TYPE_FONT_ID]) ? $pageStyles[NC_PAGE_TYPE_FONT_ID] : null, $centerPage, NC_PAGE_TYPE_FONT_ID);
 		$this->set('page_style', isset($pageStyles[NC_PAGE_TYPE_FONT_ID][0]) ? $pageStyles[NC_PAGE_TYPE_FONT_ID][0] : null);
 		$this->set('id', 'pages-menu-style');
@@ -378,7 +378,7 @@ class PageController extends PageAppController {
 			$this->render('index');
 		}
 	}
-	
+
 /**
  * ページスタイル 登録処理
  * @param   Model   $Model
@@ -390,6 +390,9 @@ class PageController extends PageAppController {
  */
 	protected function _saveScope(Model $Model, $pageStyles, $centerPage, $type = _OFF) {
 		if ($this->request->is('post')) {
+			$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
+			$isAdmin = ($this->Authority->getUserAuthorityId($loginUser['hierarchy']) == NC_AUTH_ADMIN_ID) ? true : false;
+
 			if($Model->name == 'PageStyle') {
 				if(isset($this->request->data[$Model->alias]['width']) && $this->request->data[$Model->alias]['width'] == 'by hand') {
 					$this->request->data[$Model->alias]['width'] = $this->request->data[$Model->alias]['width-custom'];
@@ -406,59 +409,64 @@ class PageController extends PageAppController {
 				$this->request->data[$Model->alias]['is_display_footer'] = intval($layouts[3]);
 				unset($this->request->data[$Model->alias]['layouts']);
 			}
-			if($Model->name == 'PageStyle' && isset($this->request->data[$Model->alias]['style'])) {
+			unset($this->request->data[$Model->alias]['content']);
+			if($isAdmin && $Model->name == 'PageStyle' && isset($this->request->data[$Model->alias]['css'])) {
+				$this->request->data[$Model->alias]['content'] = $this->request->data[$Model->alias]['css'];
+			} else if($Model->name == 'PageStyle' && isset($this->request->data[$Model->alias]['style'])) {
 				$this->autoLayout = false;
 				$this->autoRender = false;
-						
-					
+
 				if(isset($this->request->data[$Model->alias]['style']['body']['background-image'])) {
 					$this->request->data[$Model->alias]['style']['body']['background-image'] = preg_replace('#^'.preg_quote(Router::url('/', true), '#').'#i', '../../', $this->request->data[$Model->alias]['style']['body']['background-image']);
 				}
-				if(isset($this->request->data[$Model->alias]['style']['#main-container']['margin-top'])) {
-					$this->request->data[$Model->alias]['style']['#main-container']['margin-top'] = $this->request->data[$Model->alias]['style']['#main-container']['margin-top'] . 'px';
+				if(isset($this->request->data[$Model->alias]['style']['#parent-container']['background-image'])) {
+					$this->request->data[$Model->alias]['style']['#parent-container']['background-image'] = preg_replace('#^'.preg_quote(Router::url('/', true), '#').'#i', '../../', $this->request->data[$Model->alias]['style']['#parent-container']['background-image']);
 				}
-				if(isset($this->request->data[$Model->alias]['style']['#main-container']['margin-right'])) {
-					$this->request->data[$Model->alias]['style']['#main-container']['margin-right'] = $this->request->data[$Model->alias]['style']['#main-container']['margin-right'] . 'px';
+				if(isset($this->request->data[$Model->alias]['style']['#container']['margin-top'])) {
+					$this->request->data[$Model->alias]['style']['#container']['margin-top'] = $this->request->data[$Model->alias]['style']['#container']['margin-top'] . 'px';
 				}
-				if(isset($this->request->data[$Model->alias]['style']['#main-container']['margin-bottom'])) {
-					$this->request->data[$Model->alias]['style']['#main-container']['margin-bottom'] = $this->request->data[$Model->alias]['style']['#main-container']['margin-bottom'] . 'px';
+				if(isset($this->request->data[$Model->alias]['style']['#container']['margin-right'])) {
+					$this->request->data[$Model->alias]['style']['#container']['margin-right'] = $this->request->data[$Model->alias]['style']['#container']['margin-right'] . 'px';
 				}
-				if(isset($this->request->data[$Model->alias]['style']['#main-container']['margin-left'])) {
-					$this->request->data[$Model->alias]['style']['#main-container']['margin-left'] = $this->request->data[$Model->alias]['style']['#main-container']['margin-left'] . 'px';
+				if(isset($this->request->data[$Model->alias]['style']['#container']['margin-bottom'])) {
+					$this->request->data[$Model->alias]['style']['#container']['margin-bottom'] = $this->request->data[$Model->alias]['style']['#container']['margin-bottom'] . 'px';
+				}
+				if(isset($this->request->data[$Model->alias]['style']['#container']['margin-left'])) {
+					$this->request->data[$Model->alias]['style']['#container']['margin-left'] = $this->request->data[$Model->alias]['style']['#container']['margin-left'] . 'px';
 				}
 				if(isset($this->request->data[$Model->alias]['align'])) {
 					if($this->request->data[$Model->alias]['align'] == 'center') {
-						$this->request->data[$Model->alias]['style']['#main-container']['margin-left'] = 'auto';
-						$this->request->data[$Model->alias]['style']['#main-container']['margin-right'] = 'auto';
+						$this->request->data[$Model->alias]['style']['#container']['margin-left'] = 'auto';
+						$this->request->data[$Model->alias]['style']['#container']['margin-right'] = 'auto';
 					} else if($this->request->data[$Model->alias]['align'] == 'right') {
-						$this->request->data[$Model->alias]['style']['#main-container']['float'] = 'right';
+						$this->request->data[$Model->alias]['style']['#container']['float'] = 'right';
 					}
 				}
 				if(isset($this->request->data[$Model->alias]['width'])) {
 					if($this->request->data[$Model->alias]['width'] != 'auto' && $this->request->data[$Model->alias]['width'] != '100%') {
-						$this->request->data[$Model->alias]['style']['#main-container']['width'] = $this->request->data[$Model->alias]['width'] . 'px';
+						$this->request->data[$Model->alias]['style']['#container']['width'] = $this->request->data[$Model->alias]['width'] . 'px';
 					} else {
-						$this->request->data[$Model->alias]['style']['#main-container']['width'] = $this->request->data[$Model->alias]['width'];
+						$this->request->data[$Model->alias]['style']['#container']['width'] = $this->request->data[$Model->alias]['width'];
 					}
 				}
 				if(isset($this->request->data[$Model->alias]['height'])) {
 					if($this->request->data[$Model->alias]['height'] != 'auto' && $this->request->data[$Model->alias]['height'] != '100%') {
-						$this->request->data[$Model->alias]['style']['#main-container']['height'] = $this->request->data[$Model->alias]['height'] . 'px';
+						$this->request->data[$Model->alias]['style']['#container']['height'] = $this->request->data[$Model->alias]['height'] . 'px';
 					} else {
-						$this->request->data[$Model->alias]['style']['#main-container']['height'] = $this->request->data[$Model->alias]['height'] ;
+						$this->request->data[$Model->alias]['style']['#container']['height'] = $this->request->data[$Model->alias]['height'] ;
 					}
 				}
-				
+
 				$this->set('data', $this->request->data[$Model->alias]['style']);
 				$content = $this->render('/Elements/style/regist_template');
-				
+
 				$this->request->data[$Model->alias]['content'] = $content->body();
-				
+
 				$this->autoLayout = true;
 				$this->autoRender = true;
 			}
-			
-			
+
+
 			$pageStyles = $Model->saveScope($pageStyles, $centerPage, $this->request->data, $type);
 			if($pageStyles !== false && count($Model->validationErrors) == 0) {
 				if(empty($pageStyles[0][$Model->alias]['id'])) {
@@ -485,14 +493,20 @@ class PageController extends PageAppController {
 	public function background() {
 		$centerPage = $this->_initializeStyle();
 		$pageStyles = $this->PageStyle->findScopeStyle('all', $centerPage);
-		$pageStyles[NC_PAGE_TYPE_BACKGROUND_ID] = $this->_saveScope($this->PageStyle, isset($pageStyles[NC_PAGE_TYPE_BACKGROUND_ID]) ? $pageStyles[NC_PAGE_TYPE_BACKGROUND_ID] : null, $centerPage, NC_PAGE_TYPE_BACKGROUND_ID);
-		
+		if($this->request->is('post') && !in_array($this->request->data['type'], array('search', 'patterns_search', 'images_search'))) {
+			$pageStyles[NC_PAGE_TYPE_BACKGROUND_ID] = $this->_saveScope($this->PageStyle, isset($pageStyles[NC_PAGE_TYPE_BACKGROUND_ID]) ? $pageStyles[NC_PAGE_TYPE_BACKGROUND_ID] : null, $centerPage, NC_PAGE_TYPE_BACKGROUND_ID);
+		}
 		$conditions = array();
 		$category = (!isset($this->request->data['Background']['category']) || $this->request->data['Background']['category'] == 'all') ? null : $this->request->data['Background']['category'];
 		$color = (!isset($this->request->data['Background']['color']) || $this->request->data['Background']['color'] == 'all') ? null : $this->request->data['Background']['color'];
 		$limit = !isset($this->request->data['Background']['limit']) ? PAGES_BACKGROUND_LIMIT : intval($this->request->data['Background']['limit']);
-		$patternPage = !isset($this->request->data['Background']['patterns_page']) ? 1 : intval($this->request->data['Background']['patterns_page']);
-		$imagePage = !isset($this->request->data['Background']['images_page']) ? 1 : intval($this->request->data['Background']['images_page']);
+		if(isset($this->request->data['type']) && $this->request->data['type'] == 'submit') {
+			$patternPage = 1;
+			$imagePage = 1;
+		} else {
+			$patternPage = !isset($this->request->data['Background']['patterns_page']) ? 1 : intval($this->request->data['Background']['patterns_page']);
+			$imagePage = !isset($this->request->data['Background']['images_page']) ? 1 : intval($this->request->data['Background']['images_page']);
+		}
 		if ($this->request->is('post') && in_array($this->request->data['type'], array('search', 'patterns_search', 'images_search'))) {
 			// 絞り込み
 			if(isset($category)) {
@@ -525,7 +539,7 @@ class PageController extends PageAppController {
 		$this->set('pattern_page', $patternPage);
 		$this->set('image_page', $imagePage);
 		$this->set('limit', $limit);
-		
+
 		if ($this->request->is('post') && in_array($this->request->data['type'], array('search', 'patterns_search', 'images_search'))) {
 			$this->render('/Elements/style/search_background');
 		} else {
@@ -534,12 +548,13 @@ class PageController extends PageAppController {
 	}
 /**
  * ページスタイル - 色選択
+ * @param   string  $type patterns or images
  * @param   integer $groupId
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function color($groupId) {
-		
+	public function color($type, $groupId) {
+
 		$params = array(
 			'conditions' => array('group_id' => intval($groupId)),
 		);
@@ -553,6 +568,10 @@ class PageController extends PageAppController {
 		if (count($backgrounds) == 0) {
 			throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'backgrounds'));
 		}
+		if($type != 'patterns' && $type != 'images') {
+			$type = 'images';
+		}
+		$this->set('type', $type);
 		$this->set('backgrounds', $backgrounds);
 		$this->render('/Elements/style/color');
 	}
@@ -566,22 +585,48 @@ class PageController extends PageAppController {
 	public function display_position() {
 		$centerPage = $this->_initializeStyle();
 		$pageStyles = $this->PageStyle->findScopeStyle('all', $centerPage);
-		
+
 		$pageStyles[NC_PAGE_TYPE_DISPLAY_ID] = $this->_saveScope($this->PageStyle, isset($pageStyles[NC_PAGE_TYPE_DISPLAY_ID]) ? $pageStyles[NC_PAGE_TYPE_DISPLAY_ID] : null, $centerPage, NC_PAGE_TYPE_DISPLAY_ID);
 		$this->set('page_style', isset($pageStyles[NC_PAGE_TYPE_DISPLAY_ID][0]) ? $pageStyles[NC_PAGE_TYPE_DISPLAY_ID][0] : null);
 		$this->set('id', 'pages-menu-display-position');
-		
+
 		$this->render('/Elements/style/display_position');
 	}
 
 /**
- * ページスタイル表示・登録(カスタム設定)
+ * ページスタイル表示・登録(CSS編集)
  * @param   void
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function custom() {
-		$this->render('/Elements/style/custom');
+	public function edit_css() {
+		App::uses('File', 'Utility');
+		$centerPage = $this->_initializeStyle();
+		$pageStyles = $this->PageStyle->findScopeStyle('all', $centerPage);
+		$pageStyles[NC_PAGE_TYPE_EDIT_CSS_ID] = $this->_saveScope($this->PageStyle, isset($pageStyles[NC_PAGE_TYPE_EDIT_CSS_ID]) ? $pageStyles[NC_PAGE_TYPE_EDIT_CSS_ID] : null, $centerPage, NC_PAGE_TYPE_EDIT_CSS_ID);
+		$pageStyle = isset($pageStyles[NC_PAGE_TYPE_EDIT_CSS_ID][0]) ? $pageStyles[NC_PAGE_TYPE_EDIT_CSS_ID][0] : null;
+
+		if(!isset($pageStyle['PageStyle']['content'])) {
+			$paths = App::path('webroot');
+			foreach ($paths as $path) {
+				$pathCommon = $path . 'css' . DS . 'common' . DS . 'editable' . DS .'common.css';
+				if(file_exists($pathCommon)) {
+					$file = new File($pathCommon);
+					$pageStyle['PageStyle']['content'] = $file->read();
+					$file->close();
+					break;
+				}
+			}
+		}
+
+		if(!$this->request->is('post') && isset($pageStyle['PageStyle']['file'])) {
+			$file = new File( $this->PageStyle->getPath() . DS . $pageStyle['PageStyle']['file']);
+			$pageStyle['PageStyle']['content'] = $file->read();
+			$file->close();
+		}
+		$this->set('page_style', $pageStyle);
+		$this->set('id', 'pages-menu-edit-css');
+		$this->render('/Elements/style/edit_css');
 	}
 
 /**

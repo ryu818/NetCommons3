@@ -20,7 +20,7 @@
 			<li><a href="#pages-menu-style-tab-font"><?php echo __d('page', 'Font setting');?></a></li>
 			<li><a href="<?php echo $this->Html->url(array('action' => 'background'));?>"><?php echo __d('page', 'Background');?></a></li>
 			<li><a href="<?php echo $this->Html->url(array('action' => 'display_position'));?>"><?php echo __d('page', 'Display position');?></a></li>
-			<li><a href="<?php echo $this->Html->url(array('action' => 'custom'));?>"><?php echo __d('page', 'Custom setting');?></a></li>
+			<li><a href="<?php echo $this->Html->url(array('action' => 'edit_css'));?>"><?php echo __d('page', 'Edit CSS');?></a></li>
 		</ul>
 		<div id="pages-menu-style-tab-font">
 		<?php

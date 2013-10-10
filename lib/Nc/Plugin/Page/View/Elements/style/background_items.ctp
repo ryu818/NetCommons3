@@ -14,9 +14,6 @@
 	<li>
 		<?php if (preg_match('/\//', $background['Background']['file_path'])): ?>
 		<div class="nc-arrow-outer-pos">
-			<a onclick="return false;" class="float-right nc-arrow-outer" title="<?php echo __d('page', 'Select type');?>" href="#">
-				<span class="nc-arrow"></span>
-			</a>
 			<?php
 				$colorTitle = __d('page', 'Select type'). '&nbsp;['.__d('background', $background['Background']['name']).']';
 				$colorId = '#pages-menu-select-color-'. $background['Background']['group_id'];
@@ -28,7 +25,7 @@
 					$colorId .= '-'. $color;
 					$colorTitle .= '&nbsp;['.__d('page', $color).']';
 				}
-				echo $this->Html->link('<span class="nc-arrow"></span>', array('action' => 'color', $background['Background']['group_id'], 'category' => $category, 'color' => $color), array(
+				echo $this->Html->link('<span class="nc-arrow"></span>', array('action' => 'color', $type, $background['Background']['group_id'], 'category' => $category, 'color' => $color), array(
 					'title' => $colorTitle,
 					'class' => 'float-right nc-arrow-outer',
 					'data-ajax-dialog' => true,
@@ -40,7 +37,7 @@
 			?>
 		</div>
 		<?php endif; ?>
-		<?php 
+		<?php
 			if($background['Background']['file_path'] == '') {
 				$src = '';
 			} else {
@@ -54,12 +51,12 @@
 				'class' => 'pages-menu-background',
 				'data-background-id' => $background['Background']['id'],
 				'style' => "background-image: url('".$src."');",
-				'onclick' => '$.PageStyle.clickBackground(this); return false;',
+				'onclick' => '$.PageStyle.clickBackground(this, \''.$type.'\'); return false;',
 			));
 		?>
 	</li>
 <?php endforeach; ?>
-<?php 
+<?php
 if($type == 'patterns') {
 	$hasMore = $has_pattern;
 	$page = $pattern_page;

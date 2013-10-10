@@ -35,11 +35,10 @@
 		echo('<div id="nc-block-show-size" class="display-none"></div>');
 	}
 ?>
-<div id="container">
 	<?php if(!empty($nc_user['id']) || Configure::read(NC_CONFIG_KEY.'.'.'display_header_menu') != NC_HEADER_MENU_NONE) {
 		echo($this->element('Dialogs/hmenu', array('hierarchy' => isset($pages[$page_id_arr[0]]['PageAuthority']['hierarchy']) ? $pages[$page_id_arr[0]]['PageAuthority']['hierarchy'] : NC_AUTH_OTHER)));
 	}?>
-	<div id="main-container" class="table">
+	<div id="container" class="table">
 	<?php if(isset($headercolumn_str)): ?>
 	<?php if($ncMode == NC_BLOCK_MODE && isset($pages[$page_id_arr[1]]) && $pages[$page_id_arr[1]]['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF): ?>
 	<div class="table-row" data-add-columns='headercolumn'>
@@ -97,4 +96,3 @@
 	</footer>
 	<?php endif; ?>
 	</div>
-</div>
