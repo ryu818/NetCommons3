@@ -65,14 +65,14 @@ $this->assign('title', __d('install', 'Setting Check'));
 				$isAvailable = false;
 				foreach ($paths as $path) {
 					$mimetexPath = $path . 'mimetex/';
-			
+
 					if (substr(PHP_OS, 0, 3) == 'WIN') {
 						$mimetexFile = 'mimetex.exe';
 					} else {
 						$mimetexFile = 'mimetex.cgi';
 					}
 					$mimetex = $mimetexPath . $mimetexFile;
-		
+
 					if (file_exists($mimetex)
 						&& function_exists('is_executable') && is_executable($mimetex)) {
 						$isAvailable = true;
@@ -83,7 +83,7 @@ $this->assign('title', __d('install', 'Setting Check'));
 					echo '<p class="success message">' . __d('install', '[%s] is executable.', str_replace(ROOT, '', $mimetex)) . '</p>';
 				} else {
 					$check = false;
-					echo '<p class="error message">' . __d('install', '[%s] is NOT executable.', '/lib/Nc/Vendors/mimetex/'.$mimetexFile) . '</p>';
+					echo '<p class="error message">' . __d('install', '[%s] is NOT executable.', '/lib/Nc/Vendor/mimetex/'.$mimetexFile) . '</p>';
 				}
 
 				// mbstring
