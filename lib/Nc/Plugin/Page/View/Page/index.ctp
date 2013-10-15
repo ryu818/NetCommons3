@@ -25,10 +25,11 @@
 		echo $this->Html->link('', array('plugin' => 'page', 'controller' => 'page', 'action' => 'layout'),
 		array('title' => __d('page', 'Page layout'), 'class' => 'nc-page-layouts-icon' . $postfix . ' nc-tooltip',
 			'data-tooltip-desc' => __d('page', 'I can switch the display and non-display of up, down, left, or right column.'), 'data-ajax' => '#nc-pages-setting-dialog'));
+		$postfix = ($this->action == 'uploads') ? '-on' : '';
 		echo $this->Html->link('', '#',
 		array('title' => __d('page', 'File upload'), 'class' => 'nc-page-uploads-icon' . $postfix . ' nc-tooltip',
 			'data-tooltip-desc' => __d('page', 'I can display the file upload list, add, edit or delete.'),
-			'onclick' => '$.Common.showUploadDialog(\'nc-pages-setting-dialog-upload\', {\'el\' : this});'));
+			'onclick' => '$.Common.showUploadDialog(\'nc-pages-setting-dialog-upload\', {\'el\' : this}); return false;'));
 		?>
 	</div>
 	<div class="table-cell nc-panel-color">
