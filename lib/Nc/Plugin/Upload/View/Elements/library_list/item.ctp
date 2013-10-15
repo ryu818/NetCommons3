@@ -12,7 +12,7 @@
 <li id="<?php echo $id; ?>-item-<?php echo $data['id']; ?>" class="upload-attachment">
 	<a onclick="return $.Upload.clickItem(event, this);" href="#" class="upload-preview upload-type-<?php echo $data['file_type']; ?> upload-<?php echo $data['orientation']; ?>" data-upload-id="<?php echo $data['id']; ?>">
 		<div class="upload-thumbnail">
-			<div class="upload-centered">
+			<div class="nc-thumbnail-centered">
 				<img src="<?php echo $data['url']; ?>" alt="" />
 			</div>
 		</div>

@@ -40,7 +40,7 @@ if ($this->request->query['popup_type'] == 'image') {
 ?>
 <div class="common-btn upload-btn">
 	<span><?php echo(__('Select file'));?></span>
-<?php 
+<?php
 echo $this->Form->input('UploadLibrary.file_name', array(
 	'type' => 'file',
 	'class' => 'nc-upload-inputfile upload-btn-inputfile',
@@ -60,8 +60,9 @@ if ($this->request->query['popup_type'] == 'image') {
 } else {
 	$onclick = '$.Upload.addUploadForFile(\'index\');';
 }
+$btnName = ($is_wysiwyg) ? __d('upload', 'Insert into Post') : __('Ok');
 echo $this->Html->div('btn-bottom',
-	$this->Form->button(__d('upload', 'Insert into Post'), array(
+	$this->Form->button($btnName, array(
 		'name' => 'ok',
 		'class' => 'common-btn',
 		'type' => 'button',

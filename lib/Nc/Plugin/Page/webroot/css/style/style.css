@@ -12,6 +12,49 @@ ul.pages-menu-style-scopes li dl dd {
 	padding: 3px;
 }
 
+ul.pages-menu-background-original-ul li dl dt,ul.pages-menu-background-original-ul li dl dd {
+	padding: 2px 5px;
+}
+ul.pages-menu-background-original-ul li dl dt {
+	width: 130px;
+}
+
+.pages-menu-background-original-type a {
+	width: 64px;
+	height: 64px;
+	display:block;
+}
+.pages-menu-background-original-no-repeat {
+	background: #fff url('../../page/img/style/background/normal_image.png') no-repeat left top;
+}
+.pages-menu-background-original-full {
+	background: #fff url('../../page/img/style/background/full_image.png') no-repeat left top;
+}
+.pages-menu-background-original-repeat {
+	background: #fff url('../../page/img/style/background/repeat_image.png') no-repeat left top;
+}
+.pages-menu-background-original-repeat-x {
+	background: #fff url('../../page/img/style/background/repeat_x_image.png') no-repeat left top;
+}
+.pages-menu-background-original-repeat-y {
+	background: #fff url('../../page/img/style/background/repeat_y_image.png') no-repeat left top;
+}
+.pages-menu-background-highlight .pages-menu-background-original-no-repeat {
+	background: #fff url('../../page/img/style/background/normal_image_select.png') no-repeat left top;
+}
+.pages-menu-background-highlight .pages-menu-background-original-full {
+	background: #fff url('../../page/img/style/background/full_image_select.png') no-repeat left top;
+}
+.pages-menu-background-highlight .pages-menu-background-original-repeat {
+	background: #fff url('../../page/img/style/background/repeat_image_select.png') no-repeat left top;
+}
+.pages-menu-background-highlight .pages-menu-background-original-repeat-x {
+	background: #fff url('../../page/img/style/background/repeat_x_image_select.png') no-repeat left top;
+}
+.pages-menu-background-highlight .pages-menu-background-original-repeat-y {
+	background: #fff url('../../page/img/style/background/repeat_y_image_select.png') no-repeat left top;
+}
+
 ul.pages-menu-style-details {
 	margin: 10px;
 }
@@ -46,7 +89,7 @@ ul.pages-menu-style-details li dl dd {
 	overflow:auto;
 }
 
-ul.pages-menu-backgrounds li, .pages-menu-original-background {
+ul.pages-menu-backgrounds li, #pages-menu-background-original-outer, ul.pages-menu-background-original-type li {
 	padding:5px;
 	float:left;
 	clear:none;
@@ -55,6 +98,9 @@ ul.pages-menu-backgrounds li, .pages-menu-original-background {
     margin: 4px;
     padding: 3px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+ul.pages-menu-background-original-type li {
+	height:64px;
 }
 .pages-menu-backgrounds li .pages-menu-background, .pages-menu-backgrounds li .pages-menu-layout {
 	width: 64px;
@@ -72,9 +118,9 @@ ul.pages-menu-backgrounds li, .pages-menu-original-background {
 	margin:5px;
 }
 
-.pages-menu-original-background div {
-	width: 128px;
-	height: 128px;
+#pages-menu-background-original-outer a.pages-menu-background-original-inner {
+	width: 120px;
+	height: 120px;
 	background-repeat: repeat;
 	display:block;
 	border: 1px solid #efefef;

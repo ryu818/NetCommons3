@@ -110,24 +110,6 @@ a.upload-preview {
 	font-size: 80%;
 	font-weight: bold;
 }
-.upload-attachment .upload-thumbnail .upload-centered {
-	width: 100%;
-	height: 100%;
-	-webkit-transform: translate( 50%, 50% );
-	-moz-transform:    translate( 50%, 50% );
-	-ms-transform:     translate( 50%, 50% );
-	-o-transform:      translate( 50%, 50% );
-	transform:         translate( 50%, 50% );
-}
-
-.upload-attachment .upload-thumbnail .upload-centered img {
-	-webkit-transform: translate( -50%, -50% );
-	-moz-transform:    translate( -50%, -50% );
-	-ms-transform:     translate( -50%, -50% );
-	-o-transform:      translate( -50%, -50% );
-	transform:         translate( -50%, -50% );
-}
-
 .upload-attachment .upload-filename {
 	text-align: left;
 	position: absolute;
@@ -411,7 +393,7 @@ fieldset.upload-library-search input.upload-search-text {
 	box-shadow: none;
 }
 
-.upload-selection-list .upload-centered {
+.upload-selection-list .nc-thumbnail-centered {
 	width:45px !important;
 	height:45px !important;
 }

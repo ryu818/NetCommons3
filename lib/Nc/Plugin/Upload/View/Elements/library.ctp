@@ -41,7 +41,8 @@
 		} else {
 			$onclick = '$.Upload.addUploadForFile(\'library\');';
 		}
-		echo $this->Form->button(__d('upload', 'Insert into Post'), array(
+		$btnName = ($is_wysiwyg) ? __d('upload', 'Insert into Post') : __('Ok');
+		echo $this->Form->button($btnName, array(
 			'name' => 'ok',
 			'class' => 'common-btn',
 			'type' => 'button',

@@ -33,7 +33,7 @@ switch($this->action) {
 ?>
 <script>
 $(function(){
-	$.Upload.init('<?php echo ($id);?>', '<?php echo ($dialog_id);?>', $.Common.tempSetting.upload, <?php echo ($activeTab);?>,
+	$.Upload.init('<?php echo ($id);?>', '<?php echo ($dialog_id);?>', <?php if($multiple):?>true<?php else:?>false<?php endif;?>,$.Common.tempSetting.upload, <?php echo ($activeTab);?>,
 		<?php echo UPLOAD_FILEINFO_OPTIONS; ?>
 	);
 });
@@ -43,7 +43,7 @@ $(function(){
 	<ul>
 		<li><a href="<?php echo $indexUrl; ?>"><?php echo(__d('upload', 'Upload'));?></a></li>
 		<li data-width="max"><a href="<?php echo $libraryUrl; ?>"><?php echo(__d('upload', 'Add from library'));?></a></li>
-		<?php if($popup_type == 'image'): ?>
+		<?php if($popup_type == 'image' && $is_wysiwyg): ?>
 		<li><a href="<?php echo $refUrl; ?>"><?php echo(__d('upload', 'Refer url'));?></a></li>
 		<?php endif; ?>
 	</ul>

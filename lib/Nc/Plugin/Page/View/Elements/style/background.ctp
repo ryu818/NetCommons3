@@ -12,8 +12,8 @@
 <?php
 $items = array(
 	'images'=> $images,
-	'patterns'=> $patterns,
 	'original'=> '',
+	'patterns'=> $patterns,
 	'color'=> '',
 );
 echo $this->Form->create('Background', array(
@@ -42,11 +42,117 @@ echo $this->element('style/filter');
 		<?php if($itemKey == 'color'): ?>
 		<div id="<?php echo $id;?>-picker" class="pages-menu-picker"></div>
 		<?php elseif($itemKey == 'original'): ?>
-		<div class="pages-menu-original-background">
-			<div></div>
+		<?php /* オリジナル背景 */ ?>
+		<div id="pages-menu-background-original-outer">
+			<?php
+				if(!empty($page_style['PageStyle']['original_background_image'])) {
+					$imageUrl = $this->Html->url('/', true).'nc-downloads/'.$page_style['PageStyle']['original_background_image'];
+				} else {
+					$imageUrl = '#';
+				}
+			?>
+			<a class="pages-menu-background-original-inner nc-thumbnail" href="<?php echo $imageUrl; ?>">
+				<div class="nc-thumbnail-centered">
+					<?php
+						if(!empty($page_style['PageStyle']['original_background_image'])) {
+							echo '<img src="'.$imageUrl.'" />';
+						}
+					?>
+				</div>
+			</a>
 		</div>
 		<?php
-		echo $this->Form->button(__('Select file'), array('name' => 'regist', 'class' => 'common-btn pages-menu-background-original-btn', 'type' => 'button', 'onclick' => ""))
+			echo $this->Form->button(__('Select file'), array(
+				'name' => 'select_file',
+				'type' => 'button',
+				'class' => 'common-btn pages-menu-background-original-btn',
+				'onclick' => "$.Common.showUploadDialog('dialog-".$id."', {'el' : this, 'action' : 'library', 'callback' : function(id, url, libraryUrl){\$.PageStyle.selectBackgroundFile(id, url, libraryUrl);}});"
+			));
+		?>
+		<fieldset class="form">
+			<ul class="lists pages-menu-background-original-ul">
+				<li>
+					<dl>
+						<dt>
+							<?php
+								$name = 'PageStyle.original_background_position';
+								echo $this->Form->label($name, __d('page', 'Position of the image'));
+							?>
+						</dt>
+						<dd>
+							<?php
+								$options = array();
+								$backgroundPositons = explode(',', PAGES_STYLE_BACKGROUND_POSITION);
+								foreach($backgroundPositons as $backgroundPositon) {
+									$backgroundPositonArr = explode(':', $backgroundPositon);
+									$options[$backgroundPositonArr[0]] = __d('page', $backgroundPositonArr[1]);
+								}
+								$settings = array(
+									'id' => 'pages-menu-background-original-position',
+									'type' => 'select',
+									'options' => $options,
+									'value' => empty($page_style['PageStyle']['original_background_position']) ? PAGES_STYLE_BACKGROUND_POSITION_DEFAULT : $page_style['PageStyle']['original_background_position'],
+									'label' => false,
+									'div' => false,
+									'style' => 'width: 120px;',
+								);
+								echo $this->Form->input($name, $settings);
+							?>
+						</dd>
+					</dl>
+				</li>
+				<li>
+					<dl>
+						<dt>
+							<?php
+								$name = 'PageStyle.original_background_attachment';
+								echo $this->Form->label($name, __d('page', 'Fixed background image'));
+							?>
+						</dt>
+						<dd>
+							<?php
+								$settings = array(
+									'type' => 'radio',
+									'options' => array('fixed' => __('Yes'), 'scroll' => __('No')),
+									'value' => empty($page_style['PageStyle']['original_background_attachment']) ? PAGES_STYLE_BACKGROUND_ATTACHMENT_DEFAULT : $page_style['PageStyle']['original_background_attachment'],
+									'div' => false,
+									'legend' => false,
+								);
+								echo $this->Form->input($name, $settings);
+							?>
+						</dd>
+					</dl>
+				</li>
+			</ul>
+		</fieldset>
+		<ul class="lists pages-menu-background-original-type clear">
+			<?php
+				$imageTypes = array(
+					"no-repeat" => "Normal",
+					"full" => "Full screen",
+					"repeat" => "Tile display",
+					"repeat-x" => "X repeat",
+					"repeat-y" => "Y repeat"
+				);
+				$repeatValue = empty($page_style['PageStyle']['original_background_repeat']) ? PAGES_STYLE_BACKGROUND_REPEAT_DEFAULT : $page_style['PageStyle']['original_background_repeat'];
+			?>
+			<?php foreach ($imageTypes as $imageName => $imageValue): ?>
+			<?php
+				$imageValue = __d('page', $imageValue);
+				$class = "";
+				if($imageName == $repeatValue) {
+					$class = ' class="pages-menu-background-highlight"';
+				}
+			?>
+			<li<?php echo($class); ?>>
+				<a data-background-repeat="<?php echo($imageName); ?>" class="nc-tooltip pages-menu-background-original-<?php echo($imageName); ?>" href="#" alt="<?php echo($imageValue); ?>" title="<?php echo($imageValue); ?>">
+				</a>
+			</li>
+			<?php endforeach; ?>
+		</ul>
+		<?php
+		echo $this->Form->hidden('PageStyle.original_background_image' , array('id' => 'pages-menu-background-original-image-hidden', 'value' => $page_style['PageStyle']['original_background_image']));
+		echo $this->Form->hidden('PageStyle.original_background_repeat' , array('id' => 'pages-menu-background-original-repeat-hidden', 'value' => $repeatValue));
 		?>
 		<?php else: ?>
 		<fieldset class="form">

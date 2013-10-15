@@ -419,6 +419,17 @@ class PageController extends PageAppController {
 				if(isset($this->request->data[$Model->alias]['style']['body']['background-image'])) {
 					$this->request->data[$Model->alias]['style']['body']['background-image'] = preg_replace('#^'.preg_quote(Router::url('/', true), '#').'#i', '../../', $this->request->data[$Model->alias]['style']['body']['background-image']);
 				}
+
+				if(isset($this->request->data[$Model->alias]['original_background_position'])) {
+					$this->request->data[$Model->alias]['style']['body']['background-position'] = $this->request->data[$Model->alias]['original_background_position'];
+				}
+				if(isset($this->request->data[$Model->alias]['original_background_attachment'])) {
+					$this->request->data[$Model->alias]['style']['body']['background-attachment'] = $this->request->data[$Model->alias]['original_background_attachment'];
+				}
+				if(isset($this->request->data[$Model->alias]['original_background_repeat'])) {
+					$this->request->data[$Model->alias]['style']['body']['background-repeat'] = $this->request->data[$Model->alias]['original_background_repeat'];
+				}
+
 				if(isset($this->request->data[$Model->alias]['style']['#parent-container']['background-image'])) {
 					$this->request->data[$Model->alias]['style']['#parent-container']['background-image'] = preg_replace('#^'.preg_quote(Router::url('/', true), '#').'#i', '../../', $this->request->data[$Model->alias]['style']['#parent-container']['background-image']);
 				}
@@ -499,7 +510,7 @@ class PageController extends PageAppController {
 		$conditions = array();
 		$category = (!isset($this->request->data['Background']['category']) || $this->request->data['Background']['category'] == 'all') ? null : $this->request->data['Background']['category'];
 		$color = (!isset($this->request->data['Background']['color']) || $this->request->data['Background']['color'] == 'all') ? null : $this->request->data['Background']['color'];
-		$limit = !isset($this->request->data['Background']['limit']) ? PAGES_BACKGROUND_LIMIT : intval($this->request->data['Background']['limit']);
+		$limit = !isset($this->request->data['Background']['limit']) ? PAGES_STYLE_BACKGROUND_LIMIT : intval($this->request->data['Background']['limit']);
 		if(isset($this->request->data['type']) && $this->request->data['type'] == 'submit') {
 			$patternPage = 1;
 			$imagePage = 1;

@@ -48,7 +48,7 @@
 			echo $this->Html->link('', empty($src) ? '#' : $src, array(
 				'id' => 'pages-menu-background-group-'.$background['Background']['group_id'],
 				'title' => __d('background', $background['Background']['name']),
-				'class' => 'pages-menu-background',
+				'class' => 'pages-menu-background nc-tooltip',
 				'data-background-id' => $background['Background']['id'],
 				'style' => "background-image: url('".$src."');",
 				'onclick' => '$.PageStyle.clickBackground(this, \''.$type.'\'); return false;',

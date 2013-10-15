@@ -79,6 +79,56 @@ class PageStyle extends AppModel
 					'message' => __('It contains an invalid string.')
 				),
 			),
+			'original_background_image' => array(
+				'invalidUploadImage'  => array(
+					'rule' => array('_invalidUploadImage'),
+					'last' => true,
+					'message' => __('It contains an invalid string.')
+				),
+			),
+			'original_background_repeat' => array(
+					'inList' => array(
+							'rule' => array('inList', array(
+									'',
+									'no-repeat',
+									'repeat',
+									'repeat-x',
+									'repeat-y',
+									'full',
+							), false),
+							'allowEmpty' => false,
+							'message' => __('It contains an invalid string.')
+					),
+			),
+			'original_background_position' => array(
+					'inList' => array(
+							'rule' => array('inList', array(
+									'',
+									'left top',
+									'center top',
+									'right top',
+									'left center',
+									'center center',
+									'right center',
+									'left bottom',
+									'center bottom',
+									'right bottom',
+							), false),
+							'allowEmpty' => false,
+							'message' => __('It contains an invalid string.')
+					),
+			),
+			'original_background_attachment' => array(
+					'inList' => array(
+							'rule' => array('inList', array(
+									'',
+									'fixed',
+									'scroll',
+							), false),
+							'allowEmpty' => false,
+							'message' => __('It contains an invalid string.')
+					),
+			),
 			'file' => array(
 				'notEmpty'  => array(
 					'rule' => array('notEmpty'),
@@ -109,15 +159,15 @@ class PageStyle extends AppModel
 		if(!isset($this->data[$this->alias]['style']) || !is_array($this->data[$this->alias]['style'])) {
 			return true;
 		}
-		$propertyElements = explode(',', PROPERTY_ELEMENTS_WHITE_LIST);
-		$propertyKeys = explode(',', PROPERTY_KEYS_WHITE_LIST);
+		$propertyElements = explode(',', PAGES_STYLE_PROPERTY_ELEMENTS_WHITE_LIST);
+		$propertyKeys = explode(',', PAGES_STYLE_PROPERTY_KEYS_WHITE_LIST);
 		$borderStyles = explode(',', PAGES_STYLE_BORDER_STYLE);
 		$fonts = explode(',', PAGES_STYLE_FONT);
 
 		$backgroundAttachments = explode(',', PAGES_STYLE_BACKGROUND_ATTACHMENT);
 		$backgroundRepeat = explode(',', PAGES_STYLE_BACKGROUND_REPEAT);
-		$backgroundPositionX = explode(',', PAGES_STYLE_BACKGROUND_POSITION_X);
-		$backgroundPositionY = explode(',', PAGES_STYLE_BACKGROUND_POSITION_Y);
+		$backgroundPosition = explode(',', PAGES_STYLE_BACKGROUND_POSITION_DATA);
+		$backgroundSize = explode(',', PAGES_STYLE_BACKGROUND_SIZE);
 
 		foreach($this->data[$this->alias]['style'] as $propertyElement => $property) {
 			if(!$isAdmin && !in_array($propertyElement, $propertyElements)) {
@@ -184,13 +234,8 @@ class PageStyle extends AppModel
 							return false;
 						}
 						break;
-					case 'background-position-x':
-						if(!in_array($value, $backgroundPositionX)) {
-							return false;
-						}
-						break;
-					case 'background-position-y':
-						if(!in_array($value, $backgroundPositionY)) {
+					case 'background-position':
+						if(!in_array($value, $backgroundPosition)) {
 							return false;
 						}
 						break;
@@ -199,11 +244,17 @@ class PageStyle extends AppModel
 							return false;
 						}
 						break;
+					case 'background-size':
+						if(!in_array($value, $backgroundSize)) {
+							return false;
+						}
+						break;
 					case 'float':
 						if($value != 'left' && $value != 'right' && $value != 'none') {
 							return false;
 						}
 						break;
+
 				}
 			}
 		}
@@ -223,6 +274,43 @@ class PageStyle extends AppModel
 			return true;
 		}
 		return Validation::numeric($check);
+	}
+
+/**
+ * original_background_imageチェック
+ * 新規選択時に自分自身のアップロード画像か、管理者のアップロード画像ならばOK
+ *
+ * @param  array     $check
+ * @return boolean
+ * @since   v 3.0.0.0
+ */
+	public function _invalidUploadImage($check) {
+		$Authority = ClassRegistry::init('Authority');
+		$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
+		$loginUserId = isset($loginUser['id']) ? $loginUser['id'] : _OFF;
+		$isAdmin = ($Authority->getUserAuthorityId($loginUser['hierarchy']) == NC_AUTH_ADMIN_ID) ? true : false;
+
+		$created = true;
+
+		if($isAdmin) {
+			return true;
+		}
+		$check = array_shift($check);
+		if(!empty($this->data[$this->alias]['id'])) {
+			$pageStyle = $this->findById($this->data[$this->alias]['id']);
+			if($pageStyle[$this->alias]['original_background_image'] == $check) {
+				$created = false;
+			}
+		}
+		if($created) {
+			$checkArr = explode('.', $check);
+			$Upload = ClassRegistry::init('Upload');
+			$upload = $Upload->findById($checkArr[0]);
+			if ($upload[$Upload->alias]['created_user_id'] != $loginUserId || $upload[$Upload->alias]['extension'] != $checkArr[1]) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 /**
@@ -272,6 +360,70 @@ class PageStyle extends AppModel
 		return true;
 	}
 
+/**
+ * 更新後処理
+ * 		 uploadLink更新処理
+ * @param   boolean $created
+ * @return  boolean
+ * @since   v 3.0.0.0
+ */
+	public function afterSave($created) {
+		if(!empty($this->data[$this->alias]['original_background_image'])) {
+			$UploadLink = ClassRegistry::init('UploadLink');
+			$uploadArr = explode('.', $this->data[$this->alias]['original_background_image']);
+			$uploadId = intval($uploadArr[0]);
+			$doSave = true;
+			$conditions = array(
+				'unique_id'=>$this->id,
+				'model_name'=>'PageStyle',
+				'field_name'=>'id',
+			);
+			$uploadLink = $UploadLink->find('first', array(
+				'conditions' => $conditions
+			));
+			if(isset($uploadLink[$UploadLink->alias])) {
+				if($uploadLink[$UploadLink->alias]['upload_id'] == $uploadId) {
+					$doSave = false;
+				}
+				$uploadLink[$UploadLink->alias]['upload_id'] = $uploadId;
+			} else {
+				$uploadLink[$UploadLink->alias] = array(
+					'upload_id' => $uploadId,
+					'plugin'=>'Page',
+					'content_id'=>0,
+					'unique_id'=>$this->id,
+					'model_name'=>'PageStyle',
+					'field_name'=>'id',
+					'access_hierarchy'=>0,
+					'download_password'=>'',
+					'check_component_action'=>'Page.PageDownload',
+					'is_use' => _ON,
+				);
+			}
+			if($doSave) {
+				$UploadLink->create();
+				$UploadLink->save($uploadLink);
+			}
+		}
+		return parent::afterSave($created);
+	}
+
+/**
+ * 削除後処理：ファイル削除
+ * uploadLinkを削除
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function afterDelete() {
+		$UploadLink = ClassRegistry::init('UploadLink');
+		$conditions = array(
+			'unique_id'=>$this->id,
+			'model_name'=>'PageStyle',
+			'field_name'=>'id',
+		);
+		$UploadLink->deleteAll($conditions);
+		return parent::afterDelete();
+	}
 /**
  * ページスタイル用CSSファイル生成
  * @param   string    $key

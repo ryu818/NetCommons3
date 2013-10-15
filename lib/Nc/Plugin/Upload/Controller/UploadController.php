@@ -58,10 +58,14 @@ class UploadController extends UploadAppController
  * @since   v 3.0.0.0
  */
 	public function index($plugin = null) {
-		$popupType = $this->_initialize($plugin);
+		$popupType = $this->_initialize();
+		$this->set('plugin', $plugin);
 		$resolusion = isset($this->request->data['UploadLibrary']['resolusion']) ? $this->request->data['UploadLibrary']['resolusion'] : 'normal';
 		if($this->request->is('post') && isset($this->request->data['UploadLibrary']['file_name'])) {
 			// ファイルアップロード
+			if(empty($plugin)) {
+				$plugin = 'Upload';
+			}
 			$uploadSettings = array(
 				'fileType' => $popupType,
 				'plugin' => Inflector::camelize($plugin),
@@ -91,7 +95,8 @@ class UploadController extends UploadAppController
  * @since   v 3.0.0.0
  */
 	public function library($plugin = null) {
-		$popupType = $this->_initialize($plugin);
+		$popupType = $this->_initialize();
+		$this->set('plugin', $plugin);
 
 		$loginUser = $this->Auth->user();
 		$userId = $loginUser['id'];
@@ -108,6 +113,9 @@ class UploadController extends UploadAppController
 		$data['UploadSearch']['user_type'] = $this->_getUserType($data['UploadSearch'], $isAdmin);
 		$data['UploadSearch']['file_type'] = $this->_getFileType($data['UploadSearch']['file_type'], $popupType);
 
+		if (!$this->request->is('post') && empty($data['UploadSearch']['plugin'])) {
+			$data['UploadSearch']['plugin'] = Inflector::camelize($plugin);
+		}
 		$searchResult = $this->UploadSearch->search($data, $isAdmin);
 
 		$this->set('is_admin', $isAdmin);
@@ -167,12 +175,13 @@ class UploadController extends UploadAppController
  * @since   v 3.0.0.0
  */
 	public function ref_url($plugin = null) {
-		$this->_initialize($plugin);
+		$this->_initialize();
 		$loginUser = $this->Auth->user();
 		$userId = $loginUser['id'];
 		$isAdmin = ($this->Authority->getUserAuthorityId($loginUser['hierarchy']) == NC_AUTH_ADMIN_ID) ? true : false;
 		$isSelfUploadFile = false;
 		$isEdit = false;
+		$this->set('plugin', $plugin);
 
 		$src = isset($this->request->query['src']) ? $this->request->query['src'] : null;
 		if(isset($src)) {
@@ -203,7 +212,7 @@ class UploadController extends UploadAppController
  * @since   v 3.0.0.0
  */
 	public function edit($uploadId) {
-		$this->_initialize(null, $uploadId);
+		$this->_initialize($uploadId);
 		if(!$this->_isEditValidate(intval($uploadId))) {
 			return;
 		}
@@ -245,12 +254,12 @@ class UploadController extends UploadAppController
  * @since   v 3.0.0.0
  */
 	public function delete($uploadId) {
-		
+
 		$uploadIdArr = explode(',', $uploadId);
 		if(!isset($uploadIdArr[0])) {
 			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
-		$this->_initialize(null, $uploadIdArr[0]);
+		$this->_initialize($uploadIdArr[0]);
 		$deleteUploads = array();
 		foreach($uploadIdArr as $key => $bufUploadId) {
 			if(empty($bufUploadId)) {
@@ -265,10 +274,10 @@ class UploadController extends UploadAppController
 				throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 			}
 		}
-		
-		
+
+
 		$confirmed = isset($this->data['confirmed']) ? $this->data['confirmed'] : _OFF;
-		
+
 		$uploads = $this->UploadSearch->findIsUseUploads($uploadIdArr);
 		$this->set('token', $this->params['_Token']['key']);
 		if (count($uploads) > 0 && $confirmed != _ON) {
@@ -300,11 +309,11 @@ class UploadController extends UploadAppController
 						$deleteClasses[$uploadModelName] = $deleteClass;
 					}
 				}
-				
+
 				$this->UploadLibrary->uploadSettings('file_name', array(
 					'plugin' => Inflector::camelize($bufUpload['Upload']['plugin']),
 				));
-				
+
 				if($uploadModelName == 'UploadLibrary') {
 					$this->UploadLibrary->uploadSettings('file_name', array(
 						'thumbnailSizes' => array(),
@@ -326,7 +335,7 @@ class UploadController extends UploadAppController
 				}
 			}
 		}
-		
+
 
 		$this->viewClass = 'Json';
 		if (Configure::read('debug') != 0) {
@@ -337,7 +346,7 @@ class UploadController extends UploadAppController
 		}
 
 		$this->set('_serialize', array('token'));
-		
+
 	}
 
 /**
@@ -350,7 +359,7 @@ class UploadController extends UploadAppController
 		$loginUser = $this->Auth->user();
 		$userId = $loginUser['id'];
 		$isAdmin = ($this->Authority->getUserAuthorityId($loginUser['hierarchy']) == NC_AUTH_ADMIN_ID) ? true : false;
-		
+
 		$upload = $this->Upload->findById(intval($uploadId));
 		if(!isset($upload['Upload'])) {
 			$this->response->statusCode('404');
@@ -368,15 +377,14 @@ class UploadController extends UploadAppController
 /**
  * Action initialize処理
  * 	・topID再セット
- *  ・plugin名セット
- * @param   string $plugin
  * @param   string $id
  * @return  string $popupType
  * @since   v 3.0.0.0
  */
-	protected function _initialize($plugin = null, $id = null) {
-
+	protected function _initialize($id = null) {
 		$popupType = isset($this->request->query['popup_type']) ? $this->_getPopupType($this->request->query['popup_type']) : 'file';
+		$isWysiwyg = isset($this->request->query['is_wysiwyg']) ? $this->request->query['is_wysiwyg'] : true;
+		$multiple = isset($this->request->query['multiple']) ? $this->request->query['multiple'] : true;
 
 		//$this->set('id', 'upload-'.h($this->request->query['id']));
 		if(isset($id)) {
@@ -386,11 +394,13 @@ class UploadController extends UploadAppController
 			}
 			$this->set('id', 'upload-'.$this->action.'-'.$id.$ref_url);
 		} else {
-			$this->set('dialog_id', h($this->request->query['id']));
-			$this->set('id', 'upload-'.$this->action.'-'.h($this->request->query['id']));
+			$id = h($this->request->query['id']);
+			$this->set('dialog_id', $id);
+			$this->set('id', 'upload-'.$this->action.'-'.$id);
 		}
-		$this->set('plugin', $plugin);
 		$this->set('popup_type', $popupType);
+		$this->set('is_wysiwyg', $isWysiwyg);
+		$this->set('multiple', $multiple);
 		return $popupType;
 	}
 
@@ -480,12 +490,11 @@ class UploadController extends UploadAppController
 /**
  * popup_type取得
  * @param   string $popupType
- * @return  file or image or library
+ * @return  file or image
  * @since   v 3.0.0.0
  */
 	protected function _getPopupType($popupType) {
-		// TODO:$popupType = 'library'未実装 WYSIWYG以外からライブラリー一覧を表示させるため
-		if($popupType != 'library' &&  $popupType != 'image' && $popupType != 'file') {
+		if($popupType != 'image' && $popupType != 'file') {
 			return 'file';
 		}
 		return $popupType;

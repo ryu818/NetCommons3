@@ -7500,6 +7500,10 @@ e-mail：{X-EMAIL}
             <column name="align">center</column>
             <column name="width">auto</column>
             <column name="height">auto</column>
+            <column name="original_background_image"></column>
+            <column name="original_background_repeat"></column>
+            <column name="original_background_position"></column>
+            <column name="original_background_attachment"></column>
             <column name="file">application-d486f6d6c6b5c4d5c33352e1bf4e5c0d.css</column>
             <column name="created">NULL</column>
             <column name="created_user_id">NULL</column>

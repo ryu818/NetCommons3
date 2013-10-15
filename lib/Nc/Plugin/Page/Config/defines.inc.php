@@ -33,16 +33,21 @@ define("PAGES_STYLE_BORDER_STYLE", 'solid,dotted,dashed');
 
 // 線のスタイル
 
-define("PROPERTY_ELEMENTS_WHITE_LIST", 'body,#parent-container,article,h1,a,hr,#container');
-define("PROPERTY_KEYS_WHITE_LIST", 'font-family,color,font-size,line-height,border-top-color,border-top-style,border-radius,border-style,border-color,background-color,background-image,background-attachment,background-position-x,background-position-y,background-repeat,margin-top,margin-right,margin-bottom,margin-left,width,height,float');
-
-define("PAGES_STYLE_BACKGROUND_ATTACHMENT", 'fixed,scroll');
-define("PAGES_STYLE_BACKGROUND_REPEAT", 'repeat,repeat-x,repeat-y,no-repeat');
-define("PAGES_STYLE_BACKGROUND_POSITION_X", 'left,right');
-define("PAGES_STYLE_BACKGROUND_POSITION_Y", 'top,bottom');
+define("PAGES_STYLE_PROPERTY_ELEMENTS_WHITE_LIST", 'body,#parent-container,article,h1,a,hr,#container');
+define("PAGES_STYLE_PROPERTY_KEYS_WHITE_LIST", 'font-family,color,font-size,line-height,border-top-color,border-top-style,border-radius,border-style,border-color,background-color,background-image,background-attachment,background-position,background-repeat,background-size,margin-top,margin-right,margin-bottom,margin-left,width,height,float');
 
 // 背景
-define("PAGES_BACKGROUND_LIMIT", 28);
+define("PAGES_STYLE_BACKGROUND_ATTACHMENT", 'fixed,scroll');
+define("PAGES_STYLE_BACKGROUND_ATTACHMENT_DEFAULT", 'scroll');
+define("PAGES_STYLE_BACKGROUND_REPEAT", 'repeat,repeat-x,repeat-y,no-repeat');
+define("PAGES_STYLE_BACKGROUND_REPEAT_DEFAULT", 'no-repeat');
+define("PAGES_STYLE_BACKGROUND_POSITION_DATA", 'left top,center top,right top,left center,center center,right center,left bottom,center bottom,right bottom');
+define("PAGES_STYLE_BACKGROUND_SIZE", 'auto,contain,cover');
+
+define("PAGES_STYLE_BACKGROUND_LIMIT", 28);
+
+define("PAGES_STYLE_BACKGROUND_POSITION", 'left top:Left Top,center top:Center Top,right top:Right Top,left center:Left Center,center center:Center Center,right center:Right Center,left bottom:Left Bottom,center bottom:Center Bottom,right bottom:Right Bottom');
+define("PAGES_STYLE_BACKGROUND_POSITION_DEFAULT", 'left top');
 
 // 行揃え
 define("PAGES_STYLE_ALIGN", 'left:Left align,center:Center align,right:Right align');
