@@ -61,13 +61,18 @@ if ($this->request->query['popup_type'] == 'image') {
 	$onclick = '$.Upload.addUploadForFile(\'index\');';
 }
 $btnName = ($is_wysiwyg) ? __d('upload', 'Insert into Post') : __('Ok');
-echo $this->Html->div('btn-bottom',
-	$this->Form->button($btnName, array(
+$registBtn = '';
+if($is_callback || $is_wysiwyg) {
+	$registBtn = $this->Form->button($btnName, array(
 		'name' => 'ok',
 		'class' => 'common-btn',
 		'type' => 'button',
 		'onclick' => $onclick.'return false;'
-	)).
+	));
+}
+
+echo $this->Html->div('btn-bottom',
+	$registBtn.
 	$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
 		'onclick' => '$.Upload.closeDialog(event); return false;'))
 );

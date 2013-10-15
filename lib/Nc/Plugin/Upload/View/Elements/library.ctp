@@ -42,12 +42,16 @@
 			$onclick = '$.Upload.addUploadForFile(\'library\');';
 		}
 		$btnName = ($is_wysiwyg) ? __d('upload', 'Insert into Post') : __('Ok');
-		echo $this->Form->button($btnName, array(
-			'name' => 'ok',
-			'class' => 'common-btn',
-			'type' => 'button',
-			'onclick' => $onclick
-		));
+		$registBtn = '';
+		if($is_callback || $is_wysiwyg) {
+			$registBtn = $this->Form->button($btnName, array(
+				'name' => 'ok',
+				'class' => 'common-btn',
+				'type' => 'button',
+				'onclick' => $onclick
+			));
+		}
+		echo $registBtn;
 		echo $this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
 			'onclick' => '$.Upload.closeDialog(event); return false;'));
 		?>

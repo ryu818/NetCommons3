@@ -76,6 +76,9 @@
 .nc-page-layouts-icon:hover, .nc-page-layouts-icon-on {
 	background: url(../../page/img/page_layouts_on.png) no-repeat center center;
 }
+.nc-page-uploads-icon:hover, .nc-page-uploads-icon-on {
+	background: url(../../page/img/page_uploads_on.png) no-repeat center center;
+}
 .nc-pages-menu-icon {
 	background: url(../../page/img/pages_menu.png) no-repeat center center;
 }
@@ -93,4 +96,7 @@
 }
 .nc-page-layouts-icon {
 	background: url(../../page/img/page_layouts.png) no-repeat center center;
+}
+.nc-page-uploads-icon {
+	background: url(../../page/img/page_uploads.png) no-repeat center center;
 }

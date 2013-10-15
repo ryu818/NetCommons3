@@ -385,6 +385,7 @@ class UploadController extends UploadAppController
 		$popupType = isset($this->request->query['popup_type']) ? $this->_getPopupType($this->request->query['popup_type']) : 'file';
 		$isWysiwyg = isset($this->request->query['is_wysiwyg']) ? $this->request->query['is_wysiwyg'] : true;
 		$multiple = isset($this->request->query['multiple']) ? $this->request->query['multiple'] : true;
+		$isCallback = isset($this->request->query['is_callback']) ? $this->request->query['is_callback'] : false;
 
 		//$this->set('id', 'upload-'.h($this->request->query['id']));
 		if(isset($id)) {
@@ -400,6 +401,7 @@ class UploadController extends UploadAppController
 		}
 		$this->set('popup_type', $popupType);
 		$this->set('is_wysiwyg', $isWysiwyg);
+		$this->set('is_callback', $isCallback);
 		$this->set('multiple', $multiple);
 		return $popupType;
 	}

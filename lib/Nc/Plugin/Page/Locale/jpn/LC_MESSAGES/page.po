@@ -23,6 +23,11 @@ msgstr 	"ページレイアウト"
 msgid  	"I can switch the display and non-display of up, down, left, or right column."
 msgstr 	"上下左右カラムの表示・非表示の切替ができます。"
 
+msgid  	"File upload"
+msgstr 	"ファイルアップロード"
+msgid  	"I can display the file upload list, add, edit or delete."
+msgstr 	"アップロードファイル一覧を表示し、追加、編集・削除ができます。"
+
 ## ページメニュー
 msgid  	"Switching on page editor"
 msgstr 	"ページ編集切替"
