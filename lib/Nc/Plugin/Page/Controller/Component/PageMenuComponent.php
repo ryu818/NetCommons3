@@ -153,8 +153,8 @@ class PageMenuComponent extends Component {
 				if(!isset($parentPage['Page']) || $parentPage['Page']['display_flag'] != NC_DISPLAY_FLAG_ON) {
 					throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 				}
-				if($page['Page']['thread_num'] <= 1 && $page['Page']['space_type'] != NC_SPACE_TYPE_GROUP) {
-					//コミュニティー以外のTop Nodeの編集は許さない
+				if($page['Page']['thread_num'] == 2 && $page['Page']['display_sequence'] == 1) {
+					//Top Nodeの公開・非公開の設定は許さない。
 					throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 				}
 				break;
