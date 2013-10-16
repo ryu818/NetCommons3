@@ -24,7 +24,7 @@ class User extends AppModel
  * @var array
  */
 	public $actsAs = array(
-		'TimeZone', 
+		'TimeZone',
 		'Auth' => array('joins' => false, 'afterFind' => false),
 		'Upload' => array(
 			'avatar' => array(
@@ -172,7 +172,7 @@ class User extends AppModel
 					'message' => __('It contains an invalid string.')
 				);
 			}
-			
+
 			if($item['Item']['tag_name'] == "avatar") {
 				$required = false;
 				if($item['Item']['required'] == _ON) {
@@ -583,7 +583,7 @@ class User extends AppModel
  * ContentIdからメール送信先email一覧取得
  *
  * @param integer					$contentId
- * @param integer					$moreThanHierarchy(モデレータ以上、主担以上等)
+ * @param integer					$moreThanHierarchy(モデレーター以上、主担以上等)
  *
  * 									$pageId指定ありの場合、ルーム権限
  * 									$pageId指定なしの場合、会員権限
@@ -664,7 +664,7 @@ class User extends AppModel
  * </pre>
  *
  * @param integer					$pageId
- * @param integer					$moreThanHierarchy(モデレータ以上、主担以上等)
+ * @param integer					$moreThanHierarchy(モデレーター以上、主担以上等)
  *
  * 									$pageId指定ありの場合、ルーム権限
  * 									$pageId指定なしの場合、会員権限
@@ -1153,14 +1153,14 @@ class User extends AppModel
 			!$UserItemLink->deleteAll($userItemLinkConditions)) {
 			return false;
 		}
-		
+
 		foreach($deleteUserIds as $deleteUserId) {
 			// Callbackを呼ぶため、個々でdelete
 			if(!$this->delete($deleteUserId)) {
 				return false;
 			}
 		}
-		
+
 		// 退会ユーザーは、user_idを0で更新
 		$fields = array(
 			$Upload->alias.'.user_id' => 0,
@@ -1171,7 +1171,7 @@ class User extends AppModel
 		if(!$Upload->updateAll($fields, $conditions)) {
 			return false;
 		}
-		
+
 		return true;
 	}
 }

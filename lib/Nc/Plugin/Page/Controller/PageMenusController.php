@@ -148,7 +148,7 @@ class PageMenusController extends PageAppController {
  */
 	public function add_community($currentPageId) {
 		$user = $this->Auth->user();
-		// モデレータ以上
+		// モデレーター以上
 		$adminHierarchy = $this->ModuleSystemLink->findHierarchyByPluginName($this->request->params['plugin'], $user['authority_id']);
 		if($adminHierarchy <= NC_AUTH_GENERAL || !$this->request->is('post')) {
 			$this->response->statusCode('403');

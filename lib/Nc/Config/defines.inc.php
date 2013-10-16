@@ -83,7 +83,7 @@ define('NC_ALLOW_CREATING_COMMUNITY_ADMIN', 	4);			// 公開コミュニティ�
 //-----------------権限(Authority.myportal_use_flag)------------------------------------
 define('NC_MYPORTAL_USE_NOT', 0);			// 使用しない
 define('NC_MYPORTAL_USE_ALL', 1);			// すべて公開
-define('NC_MYPORTAL_MEMBERS', 2);			// ログイン会員のみ公開(allow_myportal_viewing_hierarchyの権限以上で閲覧可能とする[主担、モデレータ、一般、ゲスト])
+define('NC_MYPORTAL_MEMBERS', 2);			// ログイン会員のみ公開(allow_myportal_viewing_hierarchyの権限以上で閲覧可能とする[主担、モデレーター、一般、ゲスト])
 
 //-----------------display_flag-------------------------------------------
 

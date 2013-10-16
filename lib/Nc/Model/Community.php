@@ -134,7 +134,7 @@ class Community extends AppModel
 		$data['Community']['upload_id'] = 0;
 		// TODO:Configにコミュニティーのデフォルトの公開範囲の仕方を変更できるフラグから設定する。
 		$data['Community']['publication_range_flag'] = NC_PUBLICATION_RANGE_FLAG_ONLY_USER;
-		// TODO:Configにコミュニティーのデフォルトの公開された場合の権限を設定する。ゲストOr一般,モデレータ
+		// TODO:Configにコミュニティーのデフォルトの公開された場合の権限を設定する。ゲストOr一般,モデレーター
 		$data['Community']['publication_authority'] = NC_AUTH_GUEST_ID;
 		// TODO:Configにコミュニティーのデフォルトの参加受付の仕方を変更できるフラグから設定する。
 		$data['Community']['participate_flag'] = NC_PARTICIPATE_FLAG_ONLY_USER;
