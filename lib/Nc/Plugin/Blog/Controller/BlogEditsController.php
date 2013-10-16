@@ -29,7 +29,7 @@ class BlogEditsController extends BlogAppController {
  */
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Security->disabledFields = array('Blog.post_hierarchy', 'Blog.term_hierarchy', 'Blog.mail_hierarchy', 'Blog.comment_hierarchy', 'Blog.comment_mail_hierarchy');
+		$this->Security->unlockedFields = array('Blog.post_hierarchy', 'Blog.term_hierarchy', 'Blog.mail_hierarchy', 'Blog.comment_hierarchy', 'Blog.comment_mail_hierarchy');
 	}
 
 /**

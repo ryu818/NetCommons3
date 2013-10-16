@@ -41,7 +41,7 @@ class AnnouncementEditsController extends AnnouncementAppController {
  */
 	public function beforeFilter() {
 		parent::beforeFilter();
-		$this->Security->disabledFields = array('AnnouncementEdit.post_hierarchy');
+		$this->Security->unlockedFields = array('AnnouncementEdit.post_hierarchy');
 	}
 
 /**
