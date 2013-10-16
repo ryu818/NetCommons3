@@ -83,14 +83,14 @@ if (isset($current_urls) && count($current_urls) > 0):
 		if (isset($form_get_values[$key])):
 			$get_str = (string)var_export(h($form_get_values[$key]), true);
 			if($get_str != $pre_get_str) {
-				$header_log .= '<a class="nc-log-title nc-title-color" href="#" onclick="$(this).next().slideToggle(); return false;">GET :</a><pre class="nc-log-get">'.$get_str.'</pre>';
+				$header_log .= '<div class="nc-log-content"><a class="nc-log-title nc-title-color" href="#" onclick="$(this).next().slideToggle(); return false;">GET :</a><pre class="nc-log-get">'.$get_str.'</pre></div>';
 			}
 			$pre_get_str = $get_str;
 		endif;
 		if (isset($form_post_values[$key])):
 			$post_str = (string)var_export(h($form_post_values[$key]), true);
 			if($post_str != $pre_post_str) {
-				$header_log .= '<a class="nc-log-title nc-log-post-title nc-title-color" href="#" onclick="$(this).next().slideToggle(); return false;">'.$methodTitle.'</a><pre class="nc-log-post">'.$post_str.'</pre>';
+				$header_log .= '<div class="nc-log-content"><a class="nc-log-title nc-log-post-title nc-title-color" href="#" onclick="$(this).next().slideToggle(); return false;">'.$methodTitle.'</a><pre class="nc-log-post">'.$post_str.'</pre></div>';
 			}
 			$pre_post_str = $post_str;
 		endif;

@@ -1089,6 +1089,10 @@ a.nc-log-title {
 	padding: 0 5px;
 	display:block;
 }
+.nc-log-content {
+	max-width: 1230px;
+    overflow: auto;
+}
 a.nc-log-post-title {
 	color:#0000ff;
 }
