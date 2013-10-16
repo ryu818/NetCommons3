@@ -1,7 +1,6 @@
 <?php
 /**
  * PageControllerクラス
- * TODO:Tokenチェックもおこなっていない。
  * <pre>
  * ページメニュー表示用コントローラ
  * </pre>
@@ -17,7 +16,7 @@ class PageController extends PageAppController {
  * Component name
  * @var array
  */
-	public $components = array('Page.PageMenu');
+	public $components = array('Security', 'Page.PageMenu');
 
 /**
  * Model name
@@ -74,7 +73,26 @@ class PageController extends PageAppController {
 			Configure::write(NC_CONFIG_KEY.'.'.'language', $active_lang);
 			$this->Session->write(NC_CONFIG_KEY.'.language', $active_lang);
 		}
+
 		parent::beforeFilter();
+
+		if ($this->action == 'background') {
+			if ($this->request->is('post') && in_array($this->request->data['type'], array('search', 'patterns_search', 'images_search'))) {
+				$this->Security->csrfUseOnce = false;
+			}
+			$this->Security->unlockedFields = array('type', 'isRedirect','Background', 'PageStyle.style','PageStyle.original_background_image','PageStyle.original_background_repeat');
+		} else if($this->action == 'display_position') {
+			$this->Security->unlockedFields = array('type', 'isRedirect',
+				'PageStyle.width-custom',
+				'PageStyle.height-custom',
+				'PageStyle.style.margin-left',
+				'PageStyle.style.margin-right',
+			);
+		} else if($this->action == 'layout') {
+			$this->Security->unlockedFields = array('type', 'isRedirect','PageLayout.layouts');
+		} else {
+			$this->Security->unlockedFields = array('type', 'isRedirect');
+		}
 	}
 
 /**

@@ -52,6 +52,7 @@ class PageMenusController extends PageAppController {
  * <pre>
  * 	ページメニューの言語切替の値を選択言語としてセット
  * </pre>
+ * TODO:Tokenチェックもおこなっていない。
  * @param   void
  * @return  void
  * @since   v 3.0.0.0

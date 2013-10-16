@@ -5,7 +5,7 @@
  * <pre>
  * ページ移動、ショートカット作成、ペースト
  * </pre>
- *
+ * TODO:Tokenチェックもおこなっていない。
  * @copyright     Copyright 2012, NetCommons Project
  * @package       App.Controller
  * @author        Noriko Arai,Ryuji Masukawa

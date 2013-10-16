@@ -105,7 +105,7 @@ $displayHeaderMenu = Configure::read(NC_CONFIG_KEY.'.'.'display_header_menu');
 <?php
 $show_page_setting = false;
 $params = array('plugin' => 'page', 'controller' => 'page', 'action' => 'index', 'block_id' => 0);
-$options = array('return');
+$options = array('return', 'requested' => _OFF);	// Tokenがrequested=1の場合、セットされないため1をセット
 if(!$is_controls && isset($page_menu)) {
 	$show_page_setting = true;
 	$params['action'] = $page_menu;
