@@ -397,6 +397,15 @@ class PageMenuComponent extends Component {
 			if($action == 'paste' || $action == 'shortcut') {
 				unset($child_page['Page']['id']);	// pageをinsertするため
 			}
+			if($child_page['Page']['display_sequence'] == 1) {
+				if($child_page['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
+					$child_page['Page']['page_name'] = "Myportal Top";
+				} else if($child_page['Page']['space_type'] == NC_SPACE_TYPE_PRIVATE) {
+					$child_page['Page']['page_name'] = "Private Top";
+				} else if($child_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
+					$child_page['Page']['page_name'] = "Community Top";
+				}
+			}
 			if(empty($child_page['Page']['id']) || empty($fieldChildList)) {
 				$ret = $this->_controller->Page->save($child_page, false);
 			} else {
@@ -1178,6 +1187,10 @@ class PageMenuComponent extends Component {
 				'room_id' => $room_id,
 				'lang' => $lang
 			);
+			if($move_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP && $move_page['Page']['thread_num'] == 1) {
+				unset($appendField['lang']);
+				$appendField['display_sequence'] = 0;
+			}
 			$ret_childs = $this->childsValidateErrors($action, $child_copy_pages, $ins_page, $appendField);
 			if(!$ret_childs) {
 				// 子ページエラーメッセージ
@@ -1434,6 +1447,14 @@ class PageMenuComponent extends Component {
 			if($move_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP && $move_page['Page']['thread_num'] == 1) {
 				if(!$this->_controller->PageMenuCommunity->copyCommunity($ins_new_room_id, $copy_room_id_arr[0], $rename_count)) {
 					throw new InternalErrorException(__('Failed to register the database, (%s).', 'communities'));
+				}
+				// root_id更新
+				$fields = array('Page.root_id'=>$ins_new_room_id);
+				$conditions = array(
+					'Page.room_id' => $ins_new_room_id
+				);
+				if(!$this->_controller->Page->updateAll($fields, $conditions)) {
+					throw new InternalErrorException(__($error_mes, 'pages'));
 				}
 			}
 		}
