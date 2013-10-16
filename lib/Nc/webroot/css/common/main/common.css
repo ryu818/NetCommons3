@@ -1090,8 +1090,6 @@ a.nc-log-title {
 	display:block;
 }
 .nc-log-content {
-	max-width: 1230px;
-    overflow: auto;
 }
 a.nc-log-post-title {
 	color:#0000ff;
@@ -1106,6 +1104,8 @@ pre.nc-log-post,pre.nc-log-get,pre.nc-log-put,pre.nc-log-delete {
     border-bottom-right-radius: 3px;
     border-style: none solid solid;
     border-width: 0 1px 1px;
+    max-width: 1193px;
+    overflow: auto;
 }
 td.nc-log-save, .nc-log td.nc-log-post {
 	background-color: #d5ffe6;
