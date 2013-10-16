@@ -1190,6 +1190,7 @@ class PageMenuComponent extends Component {
 			if($move_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP && $move_page['Page']['thread_num'] == 1) {
 				unset($appendField['lang']);
 				$appendField['display_sequence'] = 0;
+				$appendField['permalink'] = $ins_page['Page']['permalink'];
 			}
 			$ret_childs = $this->childsValidateErrors($action, $child_copy_pages, $ins_page, $appendField);
 			if(!$ret_childs) {
@@ -1549,7 +1550,7 @@ class PageMenuComponent extends Component {
 					$this->_controller->TempData->destroy($hash_key);
 					return false;
 				}
-				list($ins_block, $ins_content) = $ins_ret;
+				list($ret, $ins_block, $ins_content) = $ins_ret;
 
 				$root_id_arr[$block['Block']['id']] = $ins_block['Block']['root_id'];
 				$parent_id_arr[$block['Block']['id']] = $ins_block['Block']['id'];

@@ -114,7 +114,7 @@ class BlockOperation extends AppModel {
  * @param  Model Page    $page(ペースト、ショートカット、移動、作成用):追加先ページ
  * @param  integer       $newRootId ページのペースト、ショートカット作成、移動時 root_id
  * @param  integer       $newParentId ページのペースト、ショートカット作成、移動時 parent_id
- * @return false or array(, Model Block   $ins_block, Model Content   $insContent)
+ * @return false or array(boolean, Model Block   $ins_block, Model Content   $insContent)
  * @since  v 3.0.0.0
  */
 	public function addBlock($action, $prePage, $module, $block = null, $content = null, $isShortcut = null, $page = null, $newRootId = null, $newParentId = null) {
