@@ -75,7 +75,7 @@ class FileBehavior extends ModelBehavior {
 	}
 
 	protected function _getInstance($file_path, $create_flag=false) {
-		return new File($file_path, $create_flag);
+		return new File($file_path, $create_flag, 0755);
 	}
 
 /**

@@ -481,7 +481,7 @@ class InstallController extends Controller {
 		}
 
 		// page_styleコピー
-		$pageStyleFolder = new Folder($xmlFilePath . 'theme' .DS .  'page_styles');
+		$pageStyleFolder = new Folder($xmlFilePath . 'theme' .DS .  'page_styles', false, 0755);
 		$pageStyleFolder->copy(WWW_ROOT . 'theme' .DS .  'page_styles');
 
 		/*
