@@ -981,9 +981,10 @@ class PageMenuComponent extends Component {
 		// コピー先権限チェック
 		if(isset($move_page['Page'])) {
 			if($move_page['Page']['thread_num'] <= 1) {
-				if($move_page['Page']['space_type'] != NC_SPACE_TYPE_GROUP || $adminHierarchy <= NC_AUTH_MODERATE) {
+				if(($position != 'inner' && $move_page['Page']['space_type'] != NC_SPACE_TYPE_GROUP) ||
+					$adminHierarchy <= NC_AUTH_MODERATE) {
 					// 主担以上
-					// TODO:現状、パブリック、マイポータル、マイページ直下への操作はエラーとする
+					// パブリック、マイポータル、マイページ直下の上下への操作はエラーとする
 					$this->_controller->response->statusCode('403');
 					$this->_controller->flash(__('Forbidden permission to access the page.'), '');
 					return false;
