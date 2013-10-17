@@ -409,7 +409,6 @@ class CheckAuthComponent extends Component {
 						return false;
 					}
 				}
-
 				$result = $this->_getPage($controller, $permalink, $page_id, $userId, $lang);
 
 				if($result === false) {
@@ -463,7 +462,7 @@ class CheckAuthComponent extends Component {
 				$pageLayouts = $controller->PageLayout->findScope('first', $center_page, $rets['is_page_layout_node']);
 				//$controller->nc_page_themes = $controller->PageTheme->findScope('first', $center_page, $rets['is_page_theme_node']);
 				//$controller->nc_page_columns = $controller->PageColumn->findScope('first', $center_page, $rets['is_page_column_node']);
-				
+
 				$controller->nc_page = isset($active_page) ? $active_page : $page;	// blockから取得できるPage優先
 				$controller->nc_current_page = $page;								// pageから取得できるPage
 				if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_DISABLE
@@ -610,7 +609,6 @@ class CheckAuthComponent extends Component {
 		$page = null;
 		$request_page = null;
 		$center_page = false;
-		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		if(empty($userId)) {
 			$page_params = array(
 				'fields' => $controller->Page->getFieldsArray($userId),
@@ -743,10 +741,10 @@ class CheckAuthComponent extends Component {
 				$controller->content_id = intval($block['Content']['master_id']);
 			}
 		}
-		
+
 		$pluginName = $controller->request->params['plugin'];
 		Configure::write(NC_SYSTEM_KEY.'.plugin', Inflector::camelize($pluginName));
-		
+
 		Configure::write(NC_SYSTEM_KEY.'.content_id', $controller->content_id);
 
 		if(isset($page)) {

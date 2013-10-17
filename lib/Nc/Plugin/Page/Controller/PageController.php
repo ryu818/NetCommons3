@@ -68,11 +68,13 @@ class PageController extends PageAppController {
 	{
 		include_once dirname(dirname(__FILE__)).'/Config/defines.inc.php';
 
-		parent::beforeFilter();
+		$activeLang = isset($this->request->named['active_lang']) ? $this->request->named['active_lang'] : null;
+		$languages = $this->Language->findSelectList();
+		$sessLang = $this->Session->read(NC_CONFIG_KEY.'.language');
 
-		$activeLang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.lang');
-		if(isset($activeLang)) {
-			$sessLang = $this->Session->read(NC_SYSTEM_KEY.'.language');
+		$this->Session->write(NC_SYSTEM_KEY.'.page_menu.lang', $sessLang);
+		parent::beforeFilter();
+		if(isset($activeLang) && isset($languages[$activeLang])) {
 			Configure::write(NC_CONFIG_KEY.'.'.'language', $activeLang);
 			$this->Session->write(NC_CONFIG_KEY.'.language', $activeLang);
 		}
@@ -120,11 +122,11 @@ class PageController extends PageAppController {
 
 /**
  * ページメニュー表示
- * @param   string $activeLang
+ * @param   void
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function index($activeLang = null) {
+	public function index() {
 		$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', $this->action);
 		$this->Session->delete(NC_SYSTEM_KEY.'.page_menu.PageUserLink');
 
@@ -141,11 +143,6 @@ class PageController extends PageAppController {
 
 		// 言語切替
 		$languages = $this->Language->findSelectList();
-		if(isset($activeLang) && isset($languages[$activeLang])) {
-			$this->Session->write(NC_SYSTEM_KEY.'.page_menu.lang', $activeLang);
-			Configure::write(NC_CONFIG_KEY.'.'.'language', $activeLang);
-			$this->Session->write(NC_CONFIG_KEY.'.language', $activeLang);
-		}
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 
 		$this->paginate['limit'] = $limit;

@@ -30,7 +30,7 @@ if(isset($is_edit) && $is_edit == _ON){
 		<?php
 			foreach($languages as $key => $value) {
 				$selected = ($key == $lang) ? ' selected="selected"' : '';
-				echo("<option value=\"".$this->Html->url(array('plugin' => 'page', 'controller' => 'page', 'action' => 'index', $key))."\"".$selected.">".h(__($value))."</option>\n");
+				echo("<option value=\"".$this->Html->url(array('plugin' => 'page', 'controller' => 'page', 'action' => 'index', 'active_lang' => $key))."\"".$selected.">".h(__($value))."</option>\n");
 			}
 		?>
 		</select>
