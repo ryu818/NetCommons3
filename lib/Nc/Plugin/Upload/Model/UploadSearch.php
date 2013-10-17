@@ -45,10 +45,11 @@ class UploadSearch extends AppModel {
 /**
  * 検索条件のプラグイン選択肢取得処理
  * @param   array $conditions
+ * @param   string $conditions
  * @return  array
  * @since   v 3.0.0.0
  */
-	public function findPluginOptions($conditions) {
+	public function findPluginOptions($conditions, $plugin = null) {
 		$Module = ClassRegistry::init('Module');
 
 		$params = array(
@@ -59,8 +60,16 @@ class UploadSearch extends AppModel {
 			'group' => array('UploadSearch.plugin'),
 		);
 		$plugins = $this->find('all', $params);
+		if(!empty($plugin)) {
+			$plugins[] = array(
+				'UploadSearch' => array('plugin' => Inflector::camelize($plugin)),
+			);
+		}
 		$uploadSearchPluginOptions = array('' => __('All'));
 		foreach ($plugins as $plugin) {
+			if($plugin['UploadSearch']['plugin'] == 'Upload') {
+				continue;
+			}
 			$moduleName = $Module->loadModuleName($plugin['UploadSearch']['plugin']);
 			$uploadSearchPluginOptions[$plugin['UploadSearch']['plugin']] = $moduleName;
 		}
@@ -146,7 +155,7 @@ class UploadSearch extends AppModel {
 		if (!empty($data['UploadSearch']['plugin'])) {
 			$conditions['UploadSearch.plugin'] = $data['UploadSearch']['plugin'];
 		}
-		
+
 		// 日付指定
 		if ($isAdmin && $data['UploadSearch']['user_type'] == UPLOAD_SEARCH_CONDITION_USER_ALL) {
 			$data['UploadSearch']['created'] = $data['UploadSearch']['created-all'];
@@ -282,7 +291,7 @@ class UploadSearch extends AppModel {
  */
 	public function findIsUseUploads($uploadIds) {
 		$Module = ClassRegistry::init('Module');
-		
+
 		$conditions = array(
 			$this->alias.'.id' => $uploadIds,
 			$this->alias.'.is_use' => _ON
@@ -317,9 +326,9 @@ class UploadSearch extends AppModel {
 			for($i =0; $i < count($results); $i++) {
 				$results[$i]['Upload'] = $results[$i]['UploadSearch'];
 				unset($results[$i]['UploadSearch']);
-				
+
 				$results[$i]['Upload']['module_name'] = $Module->loadModuleName($results[$i]['Upload']['plugin']);
-				
+
 				if(!empty($results[$i]['Page']['id'])) {
 					$results[$i] = $this->setPageName($results[$i]);
 				}

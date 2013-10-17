@@ -130,15 +130,15 @@ class UploadController extends UploadAppController
 			$uploadSearchCreatedOptions = array();
 
 			$searchConditions = array('UploadSearch.user_id'=> $userId);
-			$uploadSearchPluginOptions['myself'] = $this->UploadSearch->findPluginOptions($searchConditions);
+			$uploadSearchPluginOptions['myself'] = $this->UploadSearch->findPluginOptions($searchConditions, $plugin);
 			$uploadSearchCreatedOptions['myself'] = $this->UploadSearch->findCreatedOptions($searchConditions);
 			if($isAdmin) {
 				// 管理者の場合、すべてと退会ユーザーの絞り込みのための選択肢をあらかじめ取得
-				$uploadSearchPluginOptions['all'] = $this->UploadSearch->findPluginOptions(array());
+				$uploadSearchPluginOptions['all'] = $this->UploadSearch->findPluginOptions(array(), $plugin);
 				$uploadSearchCreatedOptions['all'] = $this->UploadSearch->findCreatedOptions(array());
 
 				$searchConditions = array('UploadSearch.user_id'=> '0');
-				$uploadSearchPluginOptions['withdraw'] = $this->UploadSearch->findPluginOptions($searchConditions);
+				$uploadSearchPluginOptions['withdraw'] = $this->UploadSearch->findPluginOptions($searchConditions, $plugin);
 				$uploadSearchCreatedOptions['withdraw'] = $this->UploadSearch->findCreatedOptions($searchConditions);
 			}
 			$this->set('upload_search_plugin_options', $uploadSearchPluginOptions);
