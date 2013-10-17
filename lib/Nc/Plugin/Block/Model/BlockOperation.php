@@ -134,7 +134,10 @@ class BlockOperation extends AppModel {
 		}
 
 		$Content->create();
-		if($action == 'paste' || $action == 'shortcut' || $action == 'move') {
+		$lastContentId = 0;
+		if(empty($content['Content']['id'])) {
+			// コンテンツなし
+		} else if($action == 'paste' || $action == 'shortcut' || $action == 'move') {
 			// ブロック操作
 			$masterContent = $content;
 			if($content['Content']['shortcut_type'] != NC_SHORTCUT_TYPE_OFF) {
@@ -198,7 +201,7 @@ class BlockOperation extends AppModel {
 						'module_id' => $content['Content']['module_id'],
 						'title' => $content['Content']['title'],
 						'shortcut_type' => $shortcutFlag,
-						'room_id' => ($shortcutFlag == NC_SHORTCUT_TYPE_SHOW_AUTH) ? $page['Page']['room_id'] : $content['Content']['room_id'],
+						'room_id' => ($shortcutFlag == NC_SHORTCUT_TYPE_OFF || $shortcutFlag == NC_SHORTCUT_TYPE_SHOW_AUTH) ? $page['Page']['room_id'] : $content['Content']['room_id'],
 						'display_flag' => $content['Content']['display_flag'],
 						'is_approved' => $content['Content']['is_approved'],
 						'url' => $content['Content']['url']
@@ -218,14 +221,32 @@ class BlockOperation extends AppModel {
 					}
 				}
 				if($action == 'move') {
-					$insContent['Content']['id'] = $content['Content']['id'];
+					// もし、移動元ページに該当コンテンツがはってあれば、権限つきショートカットとして移動
+					// はってなければ、コンテンツ毎移動。
+					$otherBlock = $this->find('first', array(
+						'fields' => array($this->alias.'.id'),
+						'conditions' => array(
+							$this->alias.'.content_id' => $content['Content']['id'],
+							$this->alias.'.page_id !=' => $prePage['Page']['id']
+						),
+						'recursive' => -1,
+					));
+					if(!isset($otherBlock[$this->alias])) {
+						$insContent['Content']['id'] = $content['Content']['id'];
+					} else {
+						$insContent['Content']['master_id'] = $content['Content']['id'];
+						$insContent['Content']['shortcut_type'] = NC_SHORTCUT_TYPE_SHOW_AUTH;
+					}
 				}
-
+				$Content->create();
 				$ins_ret = $Content->save($insContent);
 				if(!$ins_ret) {
 					return false;
 				}
 				$lastContentId = $Content->id;
+				if(isset($otherBlock[$this->alias])) {
+					$masterContentId = $lastContentId;
+				}
 			}
 		} else {
 			// ブロック追加時
@@ -261,7 +282,7 @@ class BlockOperation extends AppModel {
 		}
 		$insContent['Content']['id'] = $lastContentId;
 
-		if($insContent['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_OFF && !isset($insContent['Content']['master_id'])) {
+		if($lastContentId > 0 && $insContent['Content']['shortcut_type'] == NC_SHORTCUT_TYPE_OFF && !isset($insContent['Content']['master_id'])) {
 			if(!$Content->saveField('master_id', $lastContentId)) {
 				return false;
 			}
