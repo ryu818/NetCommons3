@@ -68,13 +68,14 @@ class PageController extends PageAppController {
 	{
 		include_once dirname(dirname(__FILE__)).'/Config/defines.inc.php';
 
-		$active_lang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.lang');
-		if(isset($active_lang)) {
-			Configure::write(NC_CONFIG_KEY.'.'.'language', $active_lang);
-			$this->Session->write(NC_CONFIG_KEY.'.language', $active_lang);
-		}
-
 		parent::beforeFilter();
+
+		$activeLang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.lang');
+		if(isset($activeLang)) {
+			$sessLang = $this->Session->read(NC_SYSTEM_KEY.'.language');
+			Configure::write(NC_CONFIG_KEY.'.'.'language', $activeLang);
+			$this->Session->write(NC_CONFIG_KEY.'.language', $activeLang);
+		}
 
 		if ($this->action == 'background') {
 			if ($this->request->is('post') && in_array($this->request->data['type'], array('search', 'patterns_search', 'images_search'))) {
@@ -109,22 +110,21 @@ class PageController extends PageAppController {
 		parent::afterFilter();
 		if($this->action != 'index') {
 			$this->Session->delete(NC_SYSTEM_KEY.'.page_menu.lang');
-			$this->Session->delete(NC_SYSTEM_KEY.'.page_menu.pre_lang');
 		}
-		$pre_lang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.pre_lang');
-		if(isset($pre_lang)) {
-			Configure::write(NC_CONFIG_KEY.'.'.'language', $pre_lang);
-			$this->Session->write(NC_CONFIG_KEY.'.language', $pre_lang);
+		$preLang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.lang');
+		if(isset($preLang)) {
+			Configure::write(NC_CONFIG_KEY.'.'.'language', $preLang);
+			$this->Session->write(NC_CONFIG_KEY.'.language', $preLang);
 		}
 	}
 
 /**
  * ページメニュー表示
- * @param   string $active_lang
+ * @param   string $activeLang
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function index($active_lang = null) {
+	public function index($activeLang = null) {
 		$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', $this->action);
 		$this->Session->delete(NC_SYSTEM_KEY.'.page_menu.PageUserLink');
 
@@ -141,15 +141,10 @@ class PageController extends PageAppController {
 
 		// 言語切替
 		$languages = $this->Language->findSelectList();
-		if(isset($active_lang) && isset($languages[$active_lang])) {
-			$preLang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.pre_lang');
-			if(!isset($preLang)) {
-				$this->Session->write(NC_SYSTEM_KEY.'.page_menu.pre_lang', $this->Session->read(NC_CONFIG_KEY.'.language'));
-			}
-			$this->Session->write(NC_SYSTEM_KEY.'.page_menu.lang', $active_lang);
-
-			Configure::write(NC_CONFIG_KEY.'.'.'language', $active_lang);
-			$this->Session->write(NC_CONFIG_KEY.'.language', $active_lang);
+		if(isset($activeLang) && isset($languages[$activeLang])) {
+			$this->Session->write(NC_SYSTEM_KEY.'.page_menu.lang', $activeLang);
+			Configure::write(NC_CONFIG_KEY.'.'.'language', $activeLang);
+			$this->Session->write(NC_CONFIG_KEY.'.language', $activeLang);
 		}
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 

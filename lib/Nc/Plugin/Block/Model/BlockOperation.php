@@ -135,7 +135,7 @@ class BlockOperation extends AppModel {
 
 		$Content->create();
 		$lastContentId = 0;
-		if(empty($content['Content']['id'])) {
+		if(($action == 'move' || $action == 'shortcut') && empty($content['Content']['id'])) {
 			// コンテンツなし
 		} else if($action == 'paste' || $action == 'shortcut' || $action == 'move') {
 			// ブロック操作

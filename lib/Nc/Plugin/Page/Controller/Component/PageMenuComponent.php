@@ -159,6 +159,9 @@ class PageMenuComponent extends Component {
 				}
 				break;
 			case 'delete':
+			case 'chgsequence':
+			case 'move':
+
 				// 各スペースタイプのトップページは最低１つ以上ないと削除不可。
 				if (!$is_child && $page['Page']['thread_num'] == 2 && $page['Page']['display_sequence'] == 1) {
 					// 該当ルームのTopページの数を取得
@@ -171,7 +174,11 @@ class PageMenuComponent extends Component {
 					$count = $this->_controller->Page->find('count', array('conditions' => $conditions));
 
 					if($count == 1) {
-						echo __d('page', 'Top of each page is required at least one page. <br />You can\'t delete.');
+						if($request->params['action'] == 'delete') {
+							echo __d('page', 'Top of each page is required at least one page. <br />You can\'t delete.');
+						} else {
+							echo __d('page', 'Top of each page is required at least one page. <br />You can\'t move.');
+						}
 						$this->_controller->render(false, 'ajax');
 						return false;
 					}
@@ -185,7 +192,11 @@ class PageMenuComponent extends Component {
 					);
 					$count = $this->_controller->Page->find('count', array('conditions' => $conditions));
 					if($count > 1) {
-						echo __d('page', 'If you want to delete the top page, please run after deleting all the pages of this room.<br />You can\'t delete.');
+						if($request->params['action'] == 'delete') {
+							echo __d('page', 'If you want to delete the top page, please run after deleting all the pages of this room.<br />You can\'t delete.');
+						} else {
+							echo __d('page', 'If you want to move the top page, please run after deleting all the pages of this room.<br />You can\'t move.');
+						}
 						$this->_controller->render(false, 'ajax');
 						return false;
 					}
@@ -193,7 +204,7 @@ class PageMenuComponent extends Component {
 				// break;
 			case 'edit':
 				if($page['Page']['thread_num'] == 0 || ($page['Page']['thread_num'] == 1 && $page['Page']['space_type'] != NC_SPACE_TYPE_GROUP)) {
-					//コミュニティーのTop Node以外の編集は許さない
+					//Top Nodeの編集はコミュニティTop以外許さない
 					throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 				}
 				/*if($page['Page']['space_type'] != NC_SPACE_TYPE_PUBLIC && $page['Page']['thread_num'] == 2 && $page['Page']['display_sequence'] == 1) {
@@ -201,8 +212,6 @@ class PageMenuComponent extends Component {
 					throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 				}*/
 				break;
-			case 'chgsequence':
-			case 'move':
 			case 'shortcut':
 			case 'paste':
 				// ページロックしてあれば、移動不可。

@@ -67,12 +67,11 @@ class SetConfigComponent extends Component {
 			$languages = $controller->Language->find('first', array('language' => $lang));
 			if (!isset($languages['Language'])) {
 				$lang = null;
-			}else {
-				$this->Session->write(NC_CONFIG_KEY.'.'.'language', $lang);
 			}
 		}
+		$sessLang = $this->Session->read(NC_CONFIG_KEY.'.'.'language');
 		if(empty($lang)) {
-			$lang = $this->Session->read(NC_CONFIG_KEY.'.'.'language');
+			$lang = $sessLang;
 			if(empty($lang)) {
 				//システム管理のシステム標準使用言語の「自動」で選択している場合、自動で判断する。
 				if(empty($config_language)) {
@@ -80,8 +79,10 @@ class SetConfigComponent extends Component {
 				} else {
 					$lang = $config_language;
 				}
-				$this->Session->write(NC_CONFIG_KEY.'.'.'language', $lang);
 			}
+		}
+		if(!empty($lang) && $lang != $sessLang) {
+			$this->Session->write(NC_CONFIG_KEY.'.'.'language', $lang);
 		}
 
 		// ******************************************************************************************
