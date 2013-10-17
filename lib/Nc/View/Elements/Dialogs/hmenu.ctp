@@ -64,6 +64,28 @@ $displayHeaderMenu = Configure::read(NC_CONFIG_KEY.'.'.'display_header_menu');
 				<?php endif; ?>
 			</li>
 			<li class="nc-hmenu-li">
+				<?php /*言語切替 */ ?>
+				<select id="nc-languages" style="width:110px;">
+				<?php
+					$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
+					$languages = Configure::read(NC_CONFIG_KEY.'.'.'languages');
+					foreach($languages as $key => $value) {
+						$selected = ($key == $lang) ? ' selected="selected"' : '';
+						echo("<option value=\"".$this->Html->url(array('?' => array('lang' => $key)))."\"".$selected.">".h(__($value))."</option>\n");
+					}
+				?>
+				</select>
+				<script>
+				$(function(){
+					$("#nc-languages").select2({
+						minimumResultsForSearch:-1
+					}).change( function(e){
+						location.href =  $(this).val();
+					});
+				});
+				</script>
+			</li>
+			<li class="nc-hmenu-li">
 				<?php if(empty($nc_user['id'])): ?>
 					<?php
 						$loginUrl = array('controller' => 'users', 'action' => 'login');

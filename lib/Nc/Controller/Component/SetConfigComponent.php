@@ -63,12 +63,7 @@ class SetConfigComponent extends Component {
 		if($lang == '') {
 			$lang = isset($controller->request->data['lang']) ? $controller->request->data['lang'] : '';
 		}
-		if(!empty($lang)) {
-			$languages = $controller->Language->find('first', array('language' => $lang));
-			if (!isset($languages['Language'])) {
-				$lang = null;
-			}
-		}
+		$languages = $controller->Language->findSelectList();
 		$sessLang = $this->Session->read(NC_CONFIG_KEY.'.'.'language');
 		if(empty($lang)) {
 			$lang = $sessLang;
@@ -81,6 +76,16 @@ class SetConfigComponent extends Component {
 				}
 			}
 		}
+		if(!empty($lang)) {
+			$bufLang = null;
+			foreach($languages as $key => $language) {
+				if($lang == $key) {
+					$bufLang = $lang;
+					break;
+				}
+			}
+			$lang = $bufLang;
+		}
 		if(!empty($lang) && $lang != $sessLang) {
 			$this->Session->write(NC_CONFIG_KEY.'.'.'language', $lang);
 		}
@@ -90,6 +95,7 @@ class SetConfigComponent extends Component {
 		// ******************************************************************************************
 		$configs = $controller->Config->findList('list', 0, array(NC_SYSTEM_CATID, NC_LOGIN_CATID, NC_SERVER_CATID, NC_STYLE_CATID, NC_DEVELOPMENT_CATID), $lang);
 		$configs['language'] = $lang;
+		$configs['languages'] = $languages;
 
 		// ******************************************************************************************
 		// タイムゾーン

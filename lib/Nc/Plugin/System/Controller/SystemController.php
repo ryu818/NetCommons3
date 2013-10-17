@@ -245,7 +245,7 @@ class SystemController extends SystemAppController {
 		}
 		$this->_actionCommon(NC_MEMBERSHIP_CATID, !$isError);
 
-		$this->set('autoregist_author', $this->Authority->findSelectList());
+		$this->set('autoregist_author', Configure::read(NC_CONFIG_KEY.'.'.'languages'));
 		$conditions = array('autoregist_use != ' => 'disabled');
 		$this->set('autoregist_use_items', $this->Item->findList('all', $conditions));
 

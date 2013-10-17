@@ -69,11 +69,11 @@ class PageController extends PageAppController {
 		include_once dirname(dirname(__FILE__)).'/Config/defines.inc.php';
 
 		$activeLang = isset($this->request->named['active_lang']) ? $this->request->named['active_lang'] : null;
-		$languages = $this->Language->findSelectList();
 		$sessLang = $this->Session->read(NC_CONFIG_KEY.'.language');
 
 		$this->Session->write(NC_SYSTEM_KEY.'.page_menu.lang', $sessLang);
 		parent::beforeFilter();
+		$languages = Configure::read(NC_CONFIG_KEY.'.'.'languages');
 		if(isset($activeLang) && isset($languages[$activeLang])) {
 			Configure::write(NC_CONFIG_KEY.'.'.'language', $activeLang);
 			$this->Session->write(NC_CONFIG_KEY.'.language', $activeLang);
@@ -142,7 +142,7 @@ class PageController extends PageAppController {
 		$pageId = isset($this->request->query['page_id']) ? intval($this->request->query['page_id']) : (isset($centerPage) ? $centerPage['Page']['id'] : null);
 
 		// 言語切替
-		$languages = $this->Language->findSelectList();
+		$languages = Configure::read(NC_CONFIG_KEY.'.'.'languages');
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 
 		$this->paginate['limit'] = $limit;
@@ -350,7 +350,7 @@ class PageController extends PageAppController {
  */
 	protected function _initializeStyle() {
 		// 言語切替
-		$languages = $this->Language->findSelectList();
+		$languages = Configure::read(NC_CONFIG_KEY.'.'.'languages');
 		$centerPage = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');
 		if($centerPage['PageAuthority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
 			$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', 'index');

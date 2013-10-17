@@ -48,7 +48,7 @@ class SystemCommonComponent extends Component {
 		if(isset($preLang)) {
 			return $activeLang;
 		}
-		$languages = $this->_controller->Language->findSelectList();
+		$languages = Configure::read(NC_CONFIG_KEY.'.'.'languages');
 		$this->_controller->set("language", $activeLang);
 		$this->_controller->set("languages", $languages);
 		if(isset($activeLang) && isset($languages[$activeLang])) {

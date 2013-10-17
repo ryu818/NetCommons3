@@ -213,7 +213,7 @@ class UserController extends UserAppController {
 					if($user['User']['id'] == $loginUser['id']) {
 						continue;
 					}
-					
+
 					$chkBaseAuthorityId = $this->Authority->getUserAuthorityId($user['Authority']['hierarchy']);
 
 					foreach($chk_arr as $itemId => $chk) {
@@ -255,7 +255,7 @@ class UserController extends UserAppController {
 			$this->set('item_publics', $this->ItemAuthorityLink->findIsPublicForLoginUser());
 		}
 		$this->set('authorities', $this->Authority->findSelectList());
-		$this->set('languages', $this->Language->findSelectList());
+		$this->set('languages', Configure::read(NC_CONFIG_KEY.'.'.'languages'));
 
 		// 参加コミュニティー
 		if($this->hierarchy >= NC_AUTH_MIN_CHIEF) {
@@ -350,7 +350,7 @@ class UserController extends UserAppController {
 			$fieldList = array('login_id', 'password', 'handle', 'authority_id', 'is_active', 'permalink', 'avatar', 'lang', 'timezone_offset', 'email', 'mobile_email');
 			if($this->User->validates(array('items' => $items), $fieldList) && $ret) {
 				$isAdd = empty($user['User']['id']) ? true : false;
-				
+
 				if(!empty($user['User']['id']) && empty($user['User']['avatar'])) {
 					// Uploadデータ削除
 					$user['User']['avatar']['remove'] = _ON;
@@ -435,12 +435,12 @@ class UserController extends UserAppController {
 		$this->set('user_item_links', $userItemLinks);
 		$this->set("items", $items);
 		$this->set('authorities', $this->Authority->findSelectList());
-		$this->set('languages', $this->Language->findSelectList());
+		$this->set('languages', Configure::read(NC_CONFIG_KEY.'.'.'languages'));
 	}
 
 /**
  * アバターアップロード処理
- * @param   array User 
+ * @param   array User
  * @return  void
  * @since   v 3.0.0.0
  */
@@ -804,7 +804,7 @@ class UserController extends UserAppController {
 		if(isset($this->request->data['activeLang'])) {
 			$activeLang = $this->request->data['activeLang'];
 		}
-		$languages = $this->Language->findSelectList();
+		$languages = Configure::read(NC_CONFIG_KEY.'.'.'languages');
 		$this->set("language", $activeLang);
 		$this->set("languages", $languages);
 		if(isset($activeLang) && isset($languages[$activeLang])) {
