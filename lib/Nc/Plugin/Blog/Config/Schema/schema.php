@@ -1,4 +1,4 @@
-<?php 
+<?php
 class BlogSchema extends CakeSchema {
 
 	public function before($event = array()) {
@@ -35,7 +35,7 @@ class BlogSchema extends CakeSchema {
 			'content_id' => array('column' => array('content_id', 'created'), 'unique' => 1),
 			'blog_post_id' => array('column' => array('blog_post_id', 'created'), 'unique' => 0)
 		),
-		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
+		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);
 
 	public $blog_posts = array(
@@ -71,7 +71,7 @@ class BlogSchema extends CakeSchema {
 			'created_user_id' => array('column' => array('content_id', 'created_user_id'), 'unique' => 0),
 			'post_date' => array('column' => array('content_id', 'status', 'post_date', 'id'), 'unique' => 0)
 		),
-		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
+		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);
 
 	public $blog_styles = array(
@@ -93,7 +93,7 @@ class BlogSchema extends CakeSchema {
 			'PRIMARY' => array('column' => 'id', 'unique' => 1),
 			'block_id' => array('column' => 'block_id', 'unique' => 0)
 		),
-		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
+		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);
 
 	public $blog_term_links = array(
@@ -111,7 +111,7 @@ class BlogSchema extends CakeSchema {
 			'PRIMARY' => array('column' => 'id', 'unique' => 1),
 			'blog_post_id' => array('column' => 'blog_post_id', 'unique' => 0)
 		),
-		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
+		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);
 
 	public $blog_terms = array(
@@ -135,7 +135,7 @@ class BlogSchema extends CakeSchema {
 			'taxonomy' => array('column' => array('content_id', 'taxonomy'), 'unique' => 0),
 			'name' => array('column' => array('content_id', 'name', 'taxonomy'), 'unique' => 0)
 		),
-		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
+		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);
 
 	public $blogs = array(
@@ -180,7 +180,7 @@ class BlogSchema extends CakeSchema {
 		'indexes' => array(
 			'PRIMARY' => array('column' => 'id', 'unique' => 1)
 		),
-		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'MyISAM')
+		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);
 
 }
