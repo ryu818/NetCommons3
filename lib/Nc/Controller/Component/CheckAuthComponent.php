@@ -347,7 +347,10 @@ class CheckAuthComponent extends Component {
 		$isActiveContent = (isset($controller->request->params['block_type']) && $controller->request->params['block_type'] == 'active-contents') ? true : false;
 
 		$permalink = trim($permalink, '/');
-		Configure::write(NC_SYSTEM_KEY.'.permalink', $permalink);
+		$configPermalink = Configure::read(NC_SYSTEM_KEY.'.permalink');
+		if(!isset($configPermalink)) {
+			Configure::write(NC_SYSTEM_KEY.'.permalink', $permalink);
+		}
 		Configure::write(NC_SYSTEM_KEY.'.block_id', $block_id);
 
 		// メンバ変数セット
