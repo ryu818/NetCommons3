@@ -26,7 +26,7 @@ if(isset($is_edit) && $is_edit == _ON){
 	<?php echo(__d('page', 'Pages menu')); ?>
 	<?php if(!empty($languages) && count($languages) > 1): ?>
 	<div class="pages-menu-language-outer">
-		<select id="pages-menu-language">
+		<select id="pages-menu-language" class="language">
 		<?php
 			foreach($languages as $key => $value) {
 				$selected = ($key == $lang) ? ' selected="selected"' : '';

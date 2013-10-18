@@ -25,7 +25,8 @@
 	<script>
 		$(function(){
 			$('#user-language<?php echo $id; ?>').select2({
-				minimumResultsForSearch:-1
+				minimumResultsForSearch:-1,
+				width: 'element'
 			}).change( function(e){
 				var lang = $(this).val();
 				var url = lang;

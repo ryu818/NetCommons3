@@ -44,7 +44,6 @@
 						'value' => isset($page_style[$model_name]['scope']) ? $page_style[$model_name]['scope'] : NC_PAGE_SCOPE_SITE,
 						'label' => false,
 						'div' => false,
-						'style' => 'width: 200px;',
 					);
 					echo $this->Form->input($model_name.'.scope', $settings);
 				?>
@@ -73,7 +72,7 @@
 						'value' => isset($page_style[$model_name]['lang']) ? $page_style[$model_name]['lang'] : '',
 						'label' => false,
 						'div' => false,
-						'style' => 'width: 150px;',
+						'class' => 'language',
 					);
 					echo $this->Form->input($model_name.'.lang', $settings);
 				?>
@@ -81,8 +80,7 @@
 		</dl>
 	</li>
 </ul>
-<?php 
+<?php
 	echo $this->Form->hidden('type' , array('id' => $id. '-type', 'name' => 'type', 'value' => 'submit'));
 	echo $this->Form->hidden('isRedirect' , array('id' => $id. '-redirect', 'name' => 'isRedirect', 'value' => ''));
 ?>
-	

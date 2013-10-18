@@ -65,7 +65,7 @@ $displayHeaderMenu = Configure::read(NC_CONFIG_KEY.'.'.'display_header_menu');
 			</li>
 			<li class="nc-hmenu-li">
 				<?php /*言語切替 */ ?>
-				<select id="nc-languages" style="width:110px;">
+				<select id="nc-languages" class="language">
 				<?php
 					$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 					$languages = Configure::read(NC_CONFIG_KEY.'.'.'languages');
@@ -78,7 +78,8 @@ $displayHeaderMenu = Configure::read(NC_CONFIG_KEY.'.'.'display_header_menu');
 				<script>
 				$(function(){
 					$("#nc-languages").select2({
-						minimumResultsForSearch:-1
+						minimumResultsForSearch:-1,
+						width: 'element'
 					}).change( function(e){
 						location.href =  $(this).val();
 					});
