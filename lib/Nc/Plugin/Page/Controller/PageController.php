@@ -96,6 +96,12 @@ class PageController extends PageAppController {
 		} else {
 			$this->Security->unlockedFields = array('type', 'isRedirect');
 		}
+
+		$loginUserId = $this->Auth->user('id');
+		if(((empty($loginUserId) && $this->action != 'index' && $this->action != 'close' && $this->action != 'display')) ||
+			(empty($loginUserId) && !Configure::read(NC_CONFIG_KEY.'.'.'display_page_menu'))) {
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
+		}
 	}
 
 /**
@@ -352,7 +358,7 @@ class PageController extends PageAppController {
 		// 言語切替
 		$languages = Configure::read(NC_CONFIG_KEY.'.'.'languages');
 		$centerPage = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');
-		if($centerPage['PageAuthority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
+		if(!isset($centerPage['PageAuthority']) || $centerPage['PageAuthority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
 			$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', 'index');
 			$this->response->statusCode('403');
 			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');

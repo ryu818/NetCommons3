@@ -1,5 +1,17 @@
+<?php
+/**
+ * ヘッダーメニュー画面
+ *
+ * @copyright     Copyright 2012, NetCommons Project
+ * @package       View
+ * @author        Noriko Arai,Ryuji Masukawa
+ * @since         v 3.0.0.0
+ * @license       http://www.netcommons.org/license.txt  NetCommons License
+ */
+$ncUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
+?>
 <div id="nc-pages-setting-dialog" style="visibility:hidden;">
-	<div class="nc-pages-setting-icon table-cell nc-panel-color">
+	<div class="nc-pages-setting-icon table-cell nc-panel-color"<?php if(!isset($ncUser)): ?> style="display:none;"<?php endif; ?>>
 		<?php
 		$postfix = ($this->action == 'index') ? '-on' : '';
 		echo $this->Html->link('', array('plugin' => 'page', 'controller' => 'page', 'action' => 'index'),
