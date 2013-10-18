@@ -26,14 +26,20 @@ class FileBehavior extends ModelBehavior {
  **/
 	public function createFile(Model $Model, $path, $file_name, $content, $gz_flag = true) {
 		$file_path = $path . $file_name;
-		$file = $this->_getInstance($file_path, true);
+		$file= $this->_getInstance($file_path);
 		if (!$file->write($content)) {
 			return null;
 		}
+		if(is_file($file_path)) chmod($file_path, 0666);
+
 		if ($gz_flag) {
 			$gz_content = gzencode($content);
-			$gz_file = $this->_getInstance($file_path . $this->gz_extension, true);
-			$gz_file->write($gz_content);
+			$gz_file = $this->_getInstance($file_path . $this->gz_extension);
+			if(! $gz_file->write($gz_content))
+			{
+				return null;
+			}
+			if(is_file($file_path . $this->gz_extension)) chmod($file_path . $this->gz_extension, 0666);
 		}
 		return $file_name;
 	}
