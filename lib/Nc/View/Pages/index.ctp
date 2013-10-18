@@ -49,7 +49,7 @@
 		<?php echo($headercolumn_str); ?>
 	</header>
 	<?php endif; ?>
-	<div class="table">
+	<div class="table widthmax">
 		<?php if(isset($leftcolumn_str)): ?>
 		<div id="leftcolumn" class="nc-columns table-cell" data-page='<?php echo($page_id_arr[2]); ?>' data-columns='top'>
 			<?php if($ncMode == NC_BLOCK_MODE && isset($pages[$page_id_arr[2]]) && $pages[$page_id_arr[2]]['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF): ?>
