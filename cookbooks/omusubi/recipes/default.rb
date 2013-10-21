@@ -1,8 +1,17 @@
+# Configure your sources.list to the nearby mirror
+execute "sources.list-update" do
+  command "sed -i 's/us.archive/ja.archive/g' /etc/apt/sources.list"
+end
+
 execute "apt-get" do
   command "apt-get update"
 end
 
-packages = %w{git subversion nginx php5 php5-mysql  php5-pgsql php5-curl php5-cli php5-fpm php-pear mysql-server postgresql curl imagemagick php5-imagick}
+packages = %w{
+  php5 php5-mysql php5-pgsql php5-curl php5-cli php5-fpm php5-imagick php5-xdebug php-pear
+  git subversion nginx
+  mysql-server postgresql curl imagemagick
+}
 
 packages.each do |pkg|
   package pkg do
