@@ -1,3 +1,8 @@
+# Configure your sources.list to the nearby mirror
+execute "sources.list-update" do
+  command "sed -i 's/us.archive/ja.archive/g' /etc/apt/sources.list"
+end
+
 execute "apt-get" do
   command "apt-get update"
 end
