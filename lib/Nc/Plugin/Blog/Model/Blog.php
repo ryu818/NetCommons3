@@ -193,6 +193,7 @@ class Blog extends AppModel
 				),
 				'inList' => array(
 					'rule' => array('inList', array(
+						NC_AUTH_GUEST,
 						NC_AUTH_MIN_GENERAL,
 						NC_AUTH_MIN_MODERATE,
 						NC_AUTH_MIN_CHIEF,

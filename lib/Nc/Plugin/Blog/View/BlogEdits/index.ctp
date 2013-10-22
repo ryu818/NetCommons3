@@ -257,7 +257,7 @@ $this->extend('/Frame/block');
 								<div class="hr">
 								<?php
 									echo $this->Form->label('Blog.comment_mail_hierarchy', __('Notify whom? :'));
-									echo $this->Form->authoritySlider('Blog.comment_mail_hierarchy', array('value' => $blog['Blog']['comment_mail_hierarchy']));
+									echo $this->Form->authoritySlider('Blog.comment_mail_hierarchy', array('value' => $blog['Blog']['comment_mail_hierarchy'], 'min_authority_id' => NC_AUTH_GUEST_ID));
 									$settings = array(
 										'type' => 'text',
 										'value' => $blog['Blog']['comment_mail_subject'],
