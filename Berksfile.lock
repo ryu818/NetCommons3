@@ -1,0 +1,22 @@
+{
+  "sources": {
+    "php": {
+      "locked_version": "1.2.6"
+    },
+    "omusubi": {
+      "path": "./cookbooks/omusubi"
+    },
+    "build-essential": {
+      "locked_version": "1.4.2"
+    },
+    "xml": {
+      "locked_version": "1.2.0"
+    },
+    "mysql": {
+      "locked_version": "3.0.12"
+    },
+    "openssl": {
+      "locked_version": "1.1.0"
+    }
+  }
+}
