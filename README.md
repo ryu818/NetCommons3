@@ -28,12 +28,24 @@ gitでクローンする場合は、ソースを配置したいパスに移動�
 git clone https://github.com/ryu818/NetCommons3.git
 </pre>
 
+### 依存ライブラリをインストール
+#### ubuntu
+<pre>
+sudo aptitude install zlib1g-dev ruby ruby-dev 
+</pre>
+
+#### vagrant plugin
+<pre>
+cd NetCommons3
+vagrant plugin install vagrant-berkshelf
+sudo gem i berkshelf
+</pre>
+
 ## 起動
 
 ### vagrantを起動
 配置したソースのパスでvagrantを起動します。初回のみOSのダウンロードに時間がかかります。
 <pre>
-cd NetCommons3
 vagrant up
 </pre>
 

@@ -10,6 +10,13 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "./", "/vagrant_data", :create => true, :owner=> 'www-data', :group=>'www-data', :mount_options => ['dmode=775','fmode=775']
   doc_root = '/vagrant_data/app/webroot'
 
+  config.berkshelf.enabled = true
+
+  config.vm.provider :virtualbox do |vb|
+    vb.gui = false
+    vb.customize ["modifyvm", :id, "--memory", "1024"]
+  end
+
   config.vm.provision :chef_solo do |chef|
     chef.cookbooks_path = "./cookbooks"
     chef.add_recipe "omusubi"

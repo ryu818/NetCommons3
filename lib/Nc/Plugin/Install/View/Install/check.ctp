@@ -47,11 +47,11 @@ $this->assign('title', __d('install', 'Setting Check'));
 				// webroot/theme is writable
 				if (is_writable(WWW_ROOT.'theme')) {
 					echo '<p class="success message">' . __d('install', '[%s] is writable.', 'app/webroot/theme')  . '</p>';
-					if (!is_writable(WWW_ROOT.'theme'.DS.'assets')) {
+					if (!is_writable(WWW_ROOT.'theme'.DS.'assets') && is_dir(WWW_ROOT.'theme'.DS.'assets')) {
 						$check = false;
 						echo '<p class="error message">' . __d('install', '[%s] is NOT writable.', 'app/webroot/theme/assets')  . '</p>';
 					}
-					if (!is_writable(WWW_ROOT.'theme'.DS.'page_styles')) {
+					if (!is_writable(WWW_ROOT.'theme'.DS.'page_styles') && is_dir(WWW_ROOT.'theme'.DS.'page_styles')) {
 						$check = false;
 						echo '<p class="error message">' . __d('install', '[%s] is NOT writable.', 'app/webroot/theme/page_styles')  . '</p>';
 					}
