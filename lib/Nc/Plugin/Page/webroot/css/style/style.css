@@ -12,6 +12,10 @@ ul.pages-menu-style-scopes li dl dd {
 	padding: 3px;
 }
 
+#pages-menu-style-init-tab {
+	min-width:364px;
+}
+
 ul.pages-menu-background-original-ul li dl dt,ul.pages-menu-background-original-ul li dl dd {
 	padding: 2px 5px;
 }
@@ -67,6 +71,16 @@ ul.pages-menu-style-details li dl dd {
 
 .pages-menu-style-colorpicker {
 	width: 70px;
+}
+
+.pages-menu-style-font {
+	width: 160px;
+}
+.pages-menu-style-font-size, .pages-menu-style-line-height {
+	width: 150px;;
+}
+.pages-menu-style-border-style {
+	width: 140px;
 }
 
 /* 背景絞り込み */

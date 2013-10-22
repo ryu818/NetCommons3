@@ -87,7 +87,7 @@ echo $this->element('scope', array('languages' => $languages, 'model_name' => 'P
 								'value' => '',
 								'label' => false,
 								'div' => false,
-								'style' => 'width: 170px;',
+								'class' => 'pages-menu-style-font',
 							);
 							echo $this->Form->input($name, $settings);
 						?>
@@ -121,7 +121,7 @@ echo $this->element('scope', array('languages' => $languages, 'model_name' => 'P
 								'value' => '',
 								'label' => false,
 								'div' => false,
-								'style' => 'width: 150px;',
+								'class' => 'pages-menu-style-font-size',
 							);
 							echo $this->Form->input($name, $settings);
 						?>
@@ -147,7 +147,7 @@ echo $this->element('scope', array('languages' => $languages, 'model_name' => 'P
 								'value' => '',
 								'label' => false,
 								'div' => false,
-								'style' => 'width: 150px;',
+								'class' => 'pages-menu-style-line-height',
 							);
 							echo $this->Form->input($name, $settings);
 						?>
@@ -196,7 +196,7 @@ echo $this->element('scope', array('languages' => $languages, 'model_name' => 'P
 								'value' => '',
 								'label' => false,
 								'div' => false,
-								'style' => 'width: 140px;',
+								'style' => 'pages-menu-style-border-style',
 							);
 							echo $this->Form->input($name, $settings);
 						?>
