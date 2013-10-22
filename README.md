@@ -29,9 +29,9 @@ git clone https://github.com/ryu818/NetCommons3.git
 </pre>
 
 ### 依存ライブラリをインストール
-#### ubuntu
+#### ubuntu 12.10
 <pre>
-sudo aptitude install zlib1g-dev ruby ruby-dev 
+sudo aptitude install zlib1g-dev ruby ruby-dev lsb-core
 </pre>
 
 #### vagrant plugin
