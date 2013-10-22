@@ -39,6 +39,7 @@
 					$options[NC_PAGE_SCOPE_CURRENT] = __d('page', 'Only the current page');
 					$settings = array(
 						'id' => $id.'-scope',
+						'class' => 'pages-menu-style-scope',
 						'type' => 'select',
 						'options' => $options,
 						'value' => isset($page_style[$model_name]['scope']) ? $page_style[$model_name]['scope'] : NC_PAGE_SCOPE_SITE,

@@ -16,6 +16,10 @@ ul.pages-menu-style-scopes li dl dd {
 	min-width:364px;
 }
 
+.pages-menu-style-scope {
+	width:200px;
+}
+
 ul.pages-menu-background-original-ul li dl dt,ul.pages-menu-background-original-ul li dl dd {
 	padding: 2px 5px;
 }
