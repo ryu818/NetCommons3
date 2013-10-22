@@ -87,7 +87,7 @@ class UserController extends UserAppController {
  * @since   v 3.0.0.0
  */
 	public function index() {
-		$this->set("items", $this->Item->findList('list', array(), array('ItemLang.name')));
+		$this->set("items", $this->UserItem->findList('list', array(), array('UserItemLang.name')));
 		// 言語切替
 		$this->_setLanguage('Elements/list');
 
@@ -168,7 +168,7 @@ class UserController extends UserAppController {
 			"alias" => $alias,
 			"conditions" => array(
 				$alias.".user_id = User.id",
-				$alias.".item_id" => NC_ITEM_ID_USERNAME,
+				$alias.".user_item_id" => NC_ITEM_ID_USERNAME,
 				$alias.".lang" => $activeLang,
 			)
 		);
@@ -199,7 +199,7 @@ class UserController extends UserAppController {
 			);
 			$users = $this->User->find('all', $params);
 			if($this->hierarchy < NC_AUTH_MIN_CHIEF) {
-				$itemsAuthoritiesLinks = $this->ItemAuthorityLink->findList();
+				$itemsAuthoritiesLinks = $this->UserItemAuthorityLink->findList();
 				$chk_arr = array(
 					NC_ITEM_ID_HANDLE => 'handle',
 					NC_ITEM_ID_USERNAME => 'username',
@@ -248,11 +248,11 @@ class UserController extends UserAppController {
 
 		include_once dirname(dirname(__FILE__)).'/Config/defines.inc.php';
 
-		$items = $this->Item->findList();
+		$items = $this->UserItem->findList();
 		$this->set('items', $items);
 		// 会員管理の管理者ならば、個人情報管理をみない。
 		if($this->hierarchy < NC_AUTH_MIN_CHIEF) {
-			$this->set('item_publics', $this->ItemAuthorityLink->findIsPublicForLoginUser());
+			$this->set('item_publics', $this->UserItemAuthorityLink->findIsPublicForLoginUser());
 		}
 		$this->set('authorities', $this->Authority->findSelectList());
 		$this->set('languages', Configure::read(NC_CONFIG_KEY.'.'.'languages'));
@@ -309,7 +309,7 @@ class UserController extends UserAppController {
 			return;
 		}
 
-		$items = $this->Item->findList();
+		$items = $this->UserItem->findList();
 		if ($this->request->is('post') && !isset($this->request->data['PageUserLink'])) {
 			if(!isset($this->request->data['User'])) {
 				throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
@@ -329,15 +329,15 @@ class UserController extends UserAppController {
 			if(isset($this->request->data['UserItemLink'])) {
 				$bufItems = array();
 				foreach($items as $item) {
-					$bufItems[$item['Item']['id']] = $item;
+					$bufItems[$item['UserItem']['id']] = $item;
 				}
 				foreach($this->request->data['UserItemLink'] as $itemId => $userItemLink) {
 					if(!isset($bufItems[$itemId])) {
 						continue;
 					}
 					$this->request->data['UserItemLink'][$itemId]['user_id'] = empty($userId) ? 1 : $userId;
-					$this->request->data['UserItemLink'][$itemId]['item_id'] = $itemId;
-					if($bufItems[$itemId]['Item']['is_lang']) {
+					$this->request->data['UserItemLink'][$itemId]['user_item_id'] = $itemId;
+					if($bufItems[$itemId]['UserItem']['is_lang']) {
 						$this->request->data['UserItemLink'][$itemId]['lang'] = $lang;
 					} else {
 						$this->request->data['UserItemLink'][$itemId]['lang'] = '';
@@ -423,7 +423,7 @@ class UserController extends UserAppController {
 			$userItemLinks = $this->UserItemLink->find('all', $params);
 			$bufUserItemLinks = array();
 			foreach($userItemLinks as $userItemLink) {
-				$bufUserItemLinks[$userItemLink['UserItemLink']['item_id']] = $userItemLink;
+				$bufUserItemLinks[$userItemLink['UserItemLink']['user_item_id']] = $userItemLink;
 			}
 			$userItemLinks = $bufUserItemLinks;
 		}
@@ -459,7 +459,7 @@ class UserController extends UserAppController {
 
 		$this->set('id', $this->id.'-'.$userId);	// top idをuser_id単位に設定
 		$this->set('name', 'User.avatar');
-		$this->set('item', $this->Item->findList('first', array('Item.id' => NC_ITEM_ID_AVATAR)));
+		$this->set('item', $this->UserItem->findList('first', array('UserItem.id' => NC_ITEM_ID_AVATAR)));
 		$this->render('/Elements/avatar');
 		return;
 	}
@@ -739,25 +739,25 @@ class UserController extends UserAppController {
 	public function display_setting() {
 		if ($this->request->is('post')) {
 			foreach($this->request->data as $data) {
-				if(!isset($data['Item'])) {
+				if(!isset($data['UserItem'])) {
 					throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 				}
 				// 会員管理管理者しか使用しないため、リクエストを信用してupdate
 				$fields = array(
-					'Item.list_num'=>intval($data['Item']['list_num']),
-					'Item.col_num'=>intval($data['Item']['col_num']),
-					'Item.row_num'=>intval($data['Item']['row_num']),
+					'UserItem.list_num'=>intval($data['UserItem']['list_num']),
+					'UserItem.col_num'=>intval($data['UserItem']['col_num']),
+					'UserItem.row_num'=>intval($data['UserItem']['row_num']),
 				);
 				$conditions = array(
-					"Item.id" => intval($data['Item']['id'])
+					"UserItem.id" => intval($data['UserItem']['id'])
 				);
-				if(!$this->Item->updateAll($fields, $conditions)) {
+				if(!$this->UserItem->updateAll($fields, $conditions)) {
 					throw new InternalErrorException(__('Failed to update the database, (%s).', 'items'));
 				}
 			}
 			$this->Session->setFlash(__('Has been successfully updated.'));
 		}
-		$this->set("items", $this->Item->findList('all'));
+		$this->set("items", $this->UserItem->findList('all'));
 	}
 
 /**
@@ -768,13 +768,13 @@ class UserController extends UserAppController {
  */
 	public function add_item($itemId = null) {
 		if(isset($itemId)) {
-			$conditions = array('Item.id' => $itemId);
-			$item = $this->Item->findList('first', $conditions);
-			if(!isset($item['Item'])) {
+			$conditions = array('UserItem.id' => $itemId);
+			$item = $this->UserItem->findList('first', $conditions);
+			if(!isset($item['UserItem'])) {
 				throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 			}
 		} else {
-			$item = $this->Item->findDefault();
+			$item = $this->UserItem->findDefault();
 		}
 
 		if ($this->request->is('post')) {

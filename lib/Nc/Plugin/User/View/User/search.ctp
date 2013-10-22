@@ -38,11 +38,11 @@
 			$colNum = 0;
 			$rowNum = 0;
 			foreach ($items as $key => $item) {
-				if(($listNum != intval($item['Item']['list_num']) - 1) || $colNum != intval($item['Item']['col_num']) - 1) {
+				if(($listNum != intval($item['UserItem']['list_num']) - 1) || $colNum != intval($item['UserItem']['col_num']) - 1) {
 					$rowNum = 1;
 				}
 
-				if(isset($item_publics[$item['Item']['id']]) && $item_publics[$item['Item']['id']] === false){
+				if(isset($item_publics[$item['UserItem']['id']]) && $item_publics[$item['UserItem']['id']] === false){
 					// 全部の権限でログイン会員の閲覧権限がないならば、ラベルを消す。自分自身以外検索結果に表示されないため。
 					$rets[$key] = '';
 					continue;
@@ -53,8 +53,8 @@
 				if($ret == '') {
 					continue;
 				}
-				$listNum = intval($item['Item']['list_num']) - 1;
-				$colNum = intval($item['Item']['col_num']) - 1;
+				$listNum = intval($item['UserItem']['list_num']) - 1;
+				$colNum = intval($item['UserItem']['col_num']) - 1;
 				if(!isset($listMaxArr[$listNum]) || $listMaxArr[$listNum] < $rowNum) {
 					$listMaxArr[$listNum] = $rowNum;
 				}
@@ -84,7 +84,7 @@
 			$itemList[$colNum][$rowCount] = $ret;
 			$rowCount++;
 
-			if($item['Item']['tag_name'] == 'is_active') {
+			if($item['UserItem']['tag_name'] == 'is_active') {
 				// 状態の下に参加コミュニティーを表示（固定）
 				$communityItem = array(
 					'Item' => array(

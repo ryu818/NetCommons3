@@ -31,10 +31,10 @@
 		?>
 	</div>
 	<?php
-		echo $this->Form->create('Item', array('data-ajax' => '#user-display-setting'));
+		echo $this->Form->create('UserItem', array('data-ajax' => '#user-display-setting'));
 		$itemLists = array();
 		foreach ($items as $item) {
-			$itemLists[intval($item['Item']['list_num'])][intval($item['Item']['col_num'])][intval($item['Item']['row_num'])] = $item;
+			$itemLists[intval($item['UserItem']['list_num'])][intval($item['UserItem']['col_num'])][intval($item['UserItem']['row_num'])] = $item;
 		}
 	?>
 	<div class="user-display-setting">
@@ -55,9 +55,9 @@
 						<?php foreach ($itemList as $colNum => $itemCol): ?>
 						<div class="table-cell top user-display-setting-col<?php if($colNum != $count): ?> user-display-setting-right-line<?php endif; ?>" style="width:<?php echo $width;?>%;">
 							<?php foreach ($itemCol as $rowNum => $item): ?>
-							<div class="user-display-setting-area-outer" data-item-id="<?php echo $item['Item']['id']; ?>">
+							<div class="user-display-setting-area-outer" data-item-id="<?php echo $item['UserItem']['id']; ?>">
 								<div class="user-display-setting-area-title nc-title-color">
-									<?php if($item['Item']['display_flag'] == NC_DISPLAY_FLAG_ON): ?>
+									<?php if($item['UserItem']['display_flag'] == NC_DISPLAY_FLAG_ON): ?>
 										<a class="user-display-setting-area-display-flag" href="#" title="<?php echo(__('To private')); ?>" onclick="$.User.display(event, '<?php echo($id); ?>', this, '<?php echo($this->Js->escape($this->Html->url(array('action' => 'display')))); ?>');">
 											<img class="icon" alt="<?php echo(__('To private')); ?>" src="<?php echo($this->webroot); ?>img/icons/base/on.gif" data-alt="<?php echo(__('To public')); ?>" />
 										</a>
@@ -68,10 +68,10 @@
 									<?php endif; ?>
 									<h4>
 										<?php
-											if(!isset($item['ItemLang']['name'])) {
-												$item['ItemLang']['name'] = $item['Item']['default_name'];
+											if(!isset($item['UserItemLang']['name'])) {
+												$item['UserItemLang']['name'] = $item['UserItem']['default_name'];
 											}
-											echo($item['ItemLang']['name']);
+											echo($item['UserItemLang']['name']);
 										 ?>
 									</h4>
 									<a class="nc-widget-area-title-arrow"><span class="nc-arrow"></span></a>

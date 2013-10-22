@@ -18,7 +18,7 @@
 		echo $this->Form->create('User', $options);
 		$itemLists = array();
 		foreach ($items as $item) {
-			$itemLists[intval($item['Item']['list_num'])][intval($item['Item']['col_num'])][intval($item['Item']['row_num'])] = $item;
+			$itemLists[intval($item['UserItem']['list_num'])][intval($item['UserItem']['col_num'])][intval($item['UserItem']['row_num'])] = $item;
 		}
 	?>
 	<?php echo $this->element('language'); ?>

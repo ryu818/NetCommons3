@@ -161,12 +161,13 @@ define('NC_SPACE_MYPORTAL_PREFIX', 'myportal');
 define('NC_SPACE_PRIVATE_PREFIX', 'private');
 define('NC_SPACE_GROUP_PREFIX', 'community');
 //-----------------page_styles, page_infs, page_columns-------------------------------------------
+// scope
 define('NC_PAGE_SCOPE_SITE', 1);	// サイト全体
 define('NC_PAGE_SCOPE_SPACE', 2);	// スペースタイプ全体
 define('NC_PAGE_SCOPE_ROOM', 3);	// ルーム
 define('NC_PAGE_SCOPE_NODE', 4);	// ノード
 define('NC_PAGE_SCOPE_CURRENT', 5);	// カレントページのみ
-
+// page_styles.type
 define('NC_PAGE_TYPE_FONT_ID', 1);			// フォント設定
 define('NC_PAGE_TYPE_BACKGROUND_ID', 2);	// 背景
 define('NC_PAGE_TYPE_DISPLAY_ID', 3);		// 表示位置
@@ -194,7 +195,7 @@ define('NC_AUTOLOGIN_ON', 2);		// 自動ログイン
 //-----------User.col_num-----------------------------------------------
 define("NC_USER_MAX_COL_NUM", 3);				// 項目設定- 列数の最大数
 
-//-----------------User.active_flag-------------------------------------------
+//-----------------User.is_active-------------------------------------------
 
 define('NC_USER_IS_ACTIVE_OFF',     0);		//利用不可
 define('NC_USER_IS_ACTIVE_ON',      1);		//利用可能
@@ -231,7 +232,7 @@ define('NC_BLOCK_MODE', 1);
 //-----------------ページ送り：リストを5ページ分まで表示----------------------
 define('NC_PAGINATE_VIEWS', 5);
 
-//-----------------Item.id-------------------------------------------
+//-----------------UserItem.id-------------------------------------------
 
 define('NC_ITEM_ID_LOGIN_ID',			1);
 define('NC_ITEM_ID_PASSWORD',			2);

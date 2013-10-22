@@ -1268,7 +1268,7 @@ class Page extends AppModel
 
 				$CommunityTag = ClassRegistry::init('CommunityTag');
 				$params = array(
-					'fields' => array('CommunityTag.tag_id'),
+					'fields' => array('CommunityTag.community_sum_tag_id'),
 					'conditions' => array(
 						"CommunityTag.room_id" => $page['Page']['id']
 					)
@@ -1284,25 +1284,25 @@ class Page extends AppModel
 						return false;
 					}
 
-					$Tag = ClassRegistry::init('Tag');
+					$CommunitySumTag = ClassRegistry::init('CommunitySumTag');
 					$params = array(
 						'conditions' => array(
-							"Tag.id" => $communities_tag_ids
+							"CommunitySumTag.id" => $communities_tag_ids
 						)
 					);
 
-					$tags = $Tag->find('all', $params);
+					$tags = $CommunitySumTag->find('all', $params);
 					foreach($tags as $tag) {
 						if($tag['Tag']['used_number'] <= 1) {
 							// delete
-							$ret = $Tag->delete($tag['Tag']['id']);
+							$ret = $CommunitySumTag->delete($tag['Tag']['id']);
 						} else {
 							// update
-							$fields = array('Tag.used_number'=> intval($tag['Tag']['used_number']) - 1);
+							$fields = array('CommunitySumTag.used_number'=> intval($tag['Tag']['used_number']) - 1);
 							$conditions = array(
-								"Tag.id" => $tag['Tag']['id']
+								"CommunitySumTag.id" => $tag['Tag']['id']
 							);
-							$ret = $Tag->updateAll($fields, $conditions);
+							$ret = $CommunitySumTag->updateAll($fields, $conditions);
 						}
 						if(!$ret) {
 							return false;
@@ -1606,7 +1606,7 @@ class Page extends AppModel
 		}
 		return true;
 	}
-	
+
 /**
  * is_page_XXX_nodeが指定されているNodeのリストを取得
  *
@@ -1637,7 +1637,7 @@ class Page extends AppModel
 		);
 		$parentIds = array($page['Page']['parent_id']);
 		$pages = $this->find('all', $params);
-		
+
 		foreach($rets as $key => $ret) {
 			if($page['Page'][$key]) {
 				$rets[$key] = $page['Page']['id'];

@@ -127,35 +127,35 @@
 					foreach ($autoregist_use_items as $useItem) {
 						$autoregist_use_settings = array(
 							'type' => 'select',
-							'value' => $useItem['Item']['autoregist_use'],
+							'value' => $useItem['UserItem']['autoregist_use'],
 							'options' => $autoregist_use_items_options,
 							'label' => false,
 							'div' => false
 						);
-						if ($useItem['Item']['tag_name'] == 'login_id'
-							|| $useItem['Item']['tag_name'] == 'password'
-							|| $useItem['Item']['tag_name'] == 'handle') {
+						if ($useItem['UserItem']['tag_name'] == 'login_id'
+							|| $useItem['UserItem']['tag_name'] == 'password'
+							|| $useItem['UserItem']['tag_name'] == 'handle') {
 							$autoregist_use_settings['disabled'] = true;
 						}
 						$autoregist_sendmail_settings = array(
 							'type' => 'select',
-							'value' => ($useItem['Item']['autoregist_sendmail'] == _ON) ? _ON : _OFF,
+							'value' => ($useItem['UserItem']['autoregist_sendmail'] == _ON) ? _ON : _OFF,
 							'options' => $autoregist_sendmail_options,
 							'label' => false,
 							'div' => false
 						);
 						$hideClass = '';
-						if ($useItem['Item']['autoregist_use'] == 'hide') {
+						if ($useItem['UserItem']['autoregist_use'] == 'hide') {
 							$hideClass .= ' system-autoregist-item-hide none';
 						}
-						if(!isset($useItem['ItemLang']['name'])) {
-							$useItem['ItemLang']['name'] = $useItem['Item']['default_name'];
+						if(!isset($useItem['UserItemLang']['name'])) {
+							$useItem['UserItemLang']['name'] = $useItem['UserItem']['default_name'];
 						}
 						echo '<li class="system-autoregist-use-items'.$hideClass.'"><dl>'
-								.'<dt><span>'.h($useItem['ItemLang']['name']).'</span></dt>'
+								.'<dt><span>'.h($useItem['UserItemLang']['name']).'</span></dt>'
 								.'<dd>'
-									.'<span>'.$this->Form->input('Item.'.$useItem['Item']['id'].'.autoregist_use', $autoregist_use_settings).'</span>'
-									.'<span>'.$this->Form->input('Item.'.$useItem['Item']['id'].'.autoregist_sendmail', $autoregist_sendmail_settings).'</span>'
+									.'<span>'.$this->Form->input('UserItem.'.$useItem['UserItem']['id'].'.autoregist_use', $autoregist_use_settings).'</span>'
+									.'<span>'.$this->Form->input('UserItem.'.$useItem['UserItem']['id'].'.autoregist_sendmail', $autoregist_sendmail_settings).'</span>'
 								.'</dd>'
 							.'</dl></li>';
 					}

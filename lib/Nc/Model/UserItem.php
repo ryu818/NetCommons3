@@ -1,6 +1,6 @@
 <?php
 /**
- * Itemモデル
+ * UserItemモデル
  *
  * @copyright     Copyright 2012, NetCommons Project
  * @package       app.Model
@@ -8,9 +8,9 @@
  * @since         v 3.0.0.0
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
-class Item extends AppModel
+class UserItem extends AppModel
 {
-	public $order = array("Item.list_num" => "ASC", "Item.col_num" => "ASC", "Item.row_num" => "ASC");
+	public $order = array("UserItem.list_num" => "ASC", "UserItem.col_num" => "ASC", "UserItem.row_num" => "ASC");
 
 /**
  * バリデート処理
@@ -230,12 +230,12 @@ class Item extends AppModel
 /**
  * 項目設定　追加・編集時初期値
  * @param   void
- * @return  Model Item ItemLang
+ * @return  Model UserItem UserItemLang
  * @since   v 3.0.0.0
  */
 	public function findDefault() {
 		$ret = array(
-			'Item' => array(
+			'UserItem' => array(
 				'id' => 0,
 				'default_name' => '',
 				'default_description' => '',
@@ -262,7 +262,7 @@ class Item extends AppModel
 				'autoregist_use' => 'hide',
 				'autoregist_sendmail' => _ON,
 			),
-			'ItemLang' => array(
+			'UserItemLang' => array(
 				'name' => '',
 				'description' => '',
 				'options' => '',
@@ -288,8 +288,8 @@ class Item extends AppModel
 		}
 		if(count($fields) == 0) {
 			$fields = array(
-				'Item.*',
-				'ItemLang.name', 'ItemLang.description', 'ItemLang.options'
+				'UserItem.*',
+				'UserItemLang.name', 'UserItemLang.description', 'UserItemLang.options'
 			);
 		}
 
@@ -297,11 +297,11 @@ class Item extends AppModel
 			'fields' => $fields,
 			'joins' => array(
 				array("type" => "INNER",
-					"table" => "item_langs",
-					"alias" => "ItemLang",
+					"table" => "user_item_langs",
+					"alias" => "UserItemLang",
 					"conditions" => array(
-						"`ItemLang`.`item_id`=`Item`.`id`",
-						"`ItemLang`.`lang`" => $lang
+						"`UserItemLang`.`user_item_id`=`UserItem`.`id`",
+						"`UserItemLang`.`lang`" => $lang
 					)
 				),
 			),

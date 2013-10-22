@@ -1,6 +1,6 @@
 <?php
 /**
- * ItemAuthorityLinkモデル
+ * UserItemAuthorityLinkモデル
  *
  * @copyright     Copyright 2012, NetCommons Project
  * @package       app.Model
@@ -8,7 +8,7 @@
  * @since         v 3.0.0.0
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
-class ItemAuthorityLink extends AppModel
+class UserItemAuthorityLink extends AppModel
 {
 /**
  * data[user_authority_id][item_id][edit_lower_hierarchy|show_lower_hierarchy] = hierarchyとして取得
@@ -25,16 +25,16 @@ class ItemAuthorityLink extends AppModel
 		$ret = array();
 
 		$singleFlag = false;
-		if(isset($results['ItemAuthorityLink'])) {
+		if(isset($results['UserItemAuthorityLink'])) {
 			$singleFlag = true;
 			$results[] = $results;
 		}
 
 		foreach ($results as $key => $result) {
-			$userAuthorityId = $result['ItemAuthorityLink']['user_authority_id'];
-			$itemId = $result['ItemAuthorityLink']['item_id'];
-			$ret[$userAuthorityId][$itemId]['edit_lower_hierarchy'] = $result['ItemAuthorityLink']['edit_lower_hierarchy'];
-			$ret[$userAuthorityId][$itemId]['show_lower_hierarchy'] = $result['ItemAuthorityLink']['show_lower_hierarchy'];
+			$userAuthorityId = $result['UserItemAuthorityLink']['user_authority_id'];
+			$itemId = $result['UserItemAuthorityLink']['item_id'];
+			$ret[$userAuthorityId][$itemId]['edit_lower_hierarchy'] = $result['UserItemAuthorityLink']['edit_lower_hierarchy'];
+			$ret[$userAuthorityId][$itemId]['show_lower_hierarchy'] = $result['UserItemAuthorityLink']['show_lower_hierarchy'];
 		}
 		if($singleFlag) {
 			return $ret[0];
@@ -47,12 +47,12 @@ class ItemAuthorityLink extends AppModel
  * @param   array $owner 情報の所有者の会員情報
  * 	$ownerが空ならば、全部の権限で閲覧権限がないならばfalse,1つでも閲覧権限があればtrue
  * @return  array data[item_id] = boolean
- * 
+ *
  * @since   v 3.0.0.0
  */
 	public function findIsPublicForLoginUser($owner = null) {
 		$Authority = ClassRegistry::init('Authority');
-		
+
 		$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
 		$loginUserId = isset($loginUser['id']) ? $loginUser['id'] : _OFF;
 		if($loginUserId === _OFF) {
@@ -65,11 +65,11 @@ class ItemAuthorityLink extends AppModel
 			$userAuthorityId = $Authority->getUserAuthorityId($owner['Authority']['hierarchy']);
 			$params = array(
 				'conditions'=>array(
-					'ItemAuthorityLink.user_authority_id' => $userAuthorityId
+					'UserItemAuthorityLink.user_authority_id' => $userAuthorityId
 				)
 			);
 			$itemAuthorityLinks = $this->findList('all', $params);
-			
+
 			$rets = array();
 			foreach($itemAuthorityLinks[$userAuthorityId] as $itemId => $itemAuthorityLink) {
 				if($loginHierarchy >= $itemAuthorityLink['show_lower_hierarchy']) {
@@ -79,9 +79,9 @@ class ItemAuthorityLink extends AppModel
 				}
 			}
 		} else {
-			$bufItemAuthorityLinks = $this->findList();
+			$bufUserItemAuthorityLinks = $this->findList();
 			$rets = array();
-			foreach($bufItemAuthorityLinks as $userAuthorityId => $itemAuthorityLinks) {
+			foreach($bufUserItemAuthorityLinks as $userAuthorityId => $itemAuthorityLinks) {
 				foreach($itemAuthorityLinks as $itemId => $itemAuthorityLink) {
 					if(isset($rets[$itemId]) && $rets[$itemId]) {
 						continue;

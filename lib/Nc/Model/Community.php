@@ -23,14 +23,15 @@ class Community extends AppModel
 
 		//エラーメッセージ取得
 		$this->validate = array(
-			'upload_id' => array(
-				'numeric' => array(
-					'rule' => array('numeric'),
-					'allowEmpty' => true,
-					'message' => __('The input must be a number.')
+			'is_upload' => array(
+				'boolean'  => array(
+					'rule' => array('boolean'),
+					'last' => true,
+					'required' => true,
+					'message' => __('The input must be a boolean.')
 				)
 			),
-				// TODO:publication_range_flag admin_hierarchyのチェックが必要
+			// TODO:publication_range_flag admin_hierarchyのチェックが必要
 			'publication_range_flag' => array(
 				'numeric' => array(
 					'rule' => array('numeric'),
@@ -42,7 +43,14 @@ class Community extends AppModel
 					'message' => __('The input must be a number bigger than %d and less than %d.', NC_PUBLICATION_RANGE_FLAG_ONLY_USER, NC_PUBLICATION_RANGE_FLAG_ALL)
 				)
 			),
-			// TODO:participate_flag admin_hierarchyのチェックが必要
+			'participate_as_general' => array(
+				'boolean'  => array(
+					'rule' => array('boolean'),
+					'last' => true,
+					'required' => true,
+					'message' => __('The input must be a boolean.')
+				)
+			),
 			'participate_flag' => array(
 				'numeric' => array(
 					'rule' => array('numeric'),
@@ -70,7 +78,7 @@ class Community extends AppModel
 					'message' => __('It contains an invalid string.')
 				)
 			),
-			'participate_notice_flag' => array(
+			'is_participate_notice' => array(
 				'boolean'  => array(
 					'rule' => array('boolean'),
 					'last' => true,
@@ -94,7 +102,7 @@ class Community extends AppModel
 					'message' => __('It contains an invalid string.')
 				)
 			),
-			'resign_notice_flag' => array(
+			'is_resign_notice' => array(
 				'boolean'  => array(
 					'rule' => array('boolean'),
 					'last' => true,
@@ -131,17 +139,18 @@ class Community extends AppModel
 		$data = array();
 
 		$data['Community']['photo'] = 'community.gif';	// TODO:test
-		$data['Community']['upload_id'] = 0;
+		$data['Community']['is_upload'] = _OFF;
 		// TODO:Configにコミュニティーのデフォルトの公開範囲の仕方を変更できるフラグから設定する。
 		$data['Community']['publication_range_flag'] = NC_PUBLICATION_RANGE_FLAG_ONLY_USER;
-		// TODO:Configにコミュニティーのデフォルトの公開された場合の権限を設定する。ゲストOr一般,モデレーター
+		$data['Community']['participate_as_general'] = _OFF;
+		// TODO:Configにコミュニティーのデフォルトの公開された場合の権限を設定する。ゲストOr一般,モデレータ
 		$data['Community']['publication_authority'] = NC_AUTH_GUEST_ID;
 		// TODO:Configにコミュニティーのデフォルトの参加受付の仕方を変更できるフラグから設定する。
 		$data['Community']['participate_flag'] = NC_PARTICIPATE_FLAG_ONLY_USER;
 		$data['Community']['invite_hierarchy'] = NC_AUTH_MIN_CHIEF;
-		$data['Community']['participate_notice_flag'] = _ON;
+		$data['Community']['is_participate_notice'] = _ON;
 		$data['Community']['participate_notice_hierarchy'] = NC_AUTH_MIN_CHIEF;
-		$data['Community']['resign_notice_flag'] = _ON;
+		$data['Community']['is_resign_notice'] = _ON;
 		$data['Community']['resign_notice_hierarchy'] = NC_AUTH_MIN_CHIEF;
 
 		return $data;
@@ -190,11 +199,11 @@ class Community extends AppModel
 			'joins' => array(
 				array(
 					'type' => "INNER",
-					'table' => "tags",
-					'alias' => "Tag",
+					'table' => "community_sum_tags",
+					'alias' => "CommyunitySumTag",
 					'conditions' => array(
-						"`Tag`.`id`=`CommunityTag`.`tag_id`",
-						'Tag.lang' => $lang
+						"`CommyunitySumTag`.`id`=`CommunityTag`.`community_sum_tag_id`",
+						'CommyunitySumTag.lang' => $lang
 					)
 				)
 			),

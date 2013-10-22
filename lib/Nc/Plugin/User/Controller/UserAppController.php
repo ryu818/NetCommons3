@@ -15,7 +15,7 @@ class UserAppController extends AppPluginController {
  *
  * @var array
  */
-	public $uses = array('Item', 'UserItemLink', 'PageUserLink', 'ItemAuthorityLink');
+	public $uses = array('UserItem', 'UserItemLink', 'PageUserLink', 'UserItemAuthorityLink');
 
 /**
  * __construct

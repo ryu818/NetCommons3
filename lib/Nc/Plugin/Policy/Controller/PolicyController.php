@@ -21,17 +21,17 @@ class PolicyController extends AppPluginController {
  * @var array
  */
 	public $components = array('Security', 'CheckAuth' => array('allowAuth' => NC_AUTH_GUEST));
-	
+
 /**
  * Model name
  *
  * @var array
  */
-	public $uses = array('Item', 'ItemAuthorityLink');
+	public $uses = array('UserItem', 'UserItemAuthorityLink');
 
 /**
  * 表示前処理
- * 
+ *
  * @param   void
  * @return  void
  * @since   v 3.0.0.0
@@ -40,7 +40,7 @@ class PolicyController extends AppPluginController {
 		parent::beforeFilter();
 		include_once dirname(dirname(__FILE__)).'/Config/defines.inc.php';
 		$this->Security->validatePost = false;
-		$items = $this->Item->findList();
+		$items = $this->UserItem->findList();
 		$userAuthorityId = NC_AUTH_OTHER_ID;
 		switch($this->action) {
 			case 'index':
@@ -60,22 +60,22 @@ class PolicyController extends AppPluginController {
 				break;
 		}
 		$type = isset($this->request->data['type']) ? $this->request->data['type'] : 'submit';
-		if($this->request->is('post') && $type == 'submit' && is_array($this->request->data['ItemAuthorityLink'])) {
+		if($this->request->is('post') && $type == 'submit' && is_array($this->request->data['UserItemAuthorityLink'])) {
 			// 登録処理
-			foreach($this->request->data['ItemAuthorityLink'] as $itemId => $ItemAuthorityLinks) {
+			foreach($this->request->data['UserItemAuthorityLink'] as $itemId => $UserItemAuthorityLinks) {
 				$fields = array();
-				foreach($ItemAuthorityLinks as $key => $value) {
+				foreach($UserItemAuthorityLinks as $key => $value) {
 					if($key != 'edit_lower_hierarchy' && $key != 'show_lower_hierarchy') {
 						continue;
 					}
-					$fields['ItemAuthorityLink.'. $key] = $value;
+					$fields['UserItemAuthorityLink.'. $key] = $value;
 				}
 				$conditions = array(
-					"ItemAuthorityLink.item_id" => $itemId,
-					"ItemAuthorityLink.user_authority_id" => $userAuthorityId
+					"UserItemAuthorityLink.user_item_id" => $itemId,
+					"UserItemAuthorityLink.user_authority_id" => $userAuthorityId
 				);
-				if(!$this->ItemAuthorityLink->updateAll($fields, $conditions)) {
-					throw new InternalErrorException(__('Failed to update the database, (%s).', 'item_authority_links'));
+				if(!$this->UserItemAuthorityLink->updateAll($fields, $conditions)) {
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'user_item_authority_links'));
 				}
 			}
 			$this->Session->setFlash(__('Has been successfully updated.'));
@@ -83,17 +83,17 @@ class PolicyController extends AppPluginController {
 		$params = array(
 			'conditions' => array('user_authority_id' => $userAuthorityId)
 		);
-		$ItemAuthorityLinks = $this->ItemAuthorityLink->findList('all', $params);
+		$UserItemAuthorityLinks = $this->UserItemAuthorityLink->findList('all', $params);
 
 		if($this->action != 'index') {
 			$this->set('id', $this->id.'_'.$this->action);
 		}
 		$this->set('items', $items);
 		$this->set('user_authority_id', $userAuthorityId);
-		$this->set('item_authority_links', $ItemAuthorityLinks[$userAuthorityId]);
-		
-		
-		
+		$this->set('user_item_authority_links', $UserItemAuthorityLinks[$userAuthorityId]);
+
+
+
 	}
 
 /**
@@ -107,7 +107,7 @@ class PolicyController extends AppPluginController {
 			$this->render('Elements/list');
 		}
 	}
-	
+
 /**
  * 一覧表示(主担)
  * @param   void
@@ -117,7 +117,7 @@ class PolicyController extends AppPluginController {
 	public function chief() {
 		$this->render('Elements/list');
 	}
-	
+
 /**
  * 一覧表示(モデレーター)
  * @param   void
@@ -127,7 +127,7 @@ class PolicyController extends AppPluginController {
 	public function moderate() {
 		$this->render('Elements/list');
 	}
-	
+
 /**
  * 一覧表示(一般)
  * @param   void
@@ -137,7 +137,7 @@ class PolicyController extends AppPluginController {
 	public function general() {
 		$this->render('Elements/list');
 	}
-	
+
 /**
  * 一覧表示(ゲスト)
  * @param   void

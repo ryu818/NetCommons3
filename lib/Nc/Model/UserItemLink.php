@@ -40,7 +40,7 @@ class UserItemLink extends AppModel
 				)
 			),
 			// lang
-			'item_id' => array(
+			'user_item_id' => array(
 				'numeric' => array(
 					'rule' => array('numeric'),
 					'required' => true,
@@ -68,12 +68,12 @@ class UserItemLink extends AppModel
 		/*
 		 * エラーメッセージ設定
 		 */
-		if(!isset($this->data['UserItemLink']['item_id'])) {
+		if(!isset($this->data['UserItemLink']['user_item_id'])) {
 			return true;
 		}
 		if(!isset($options['items'])) {
-			$Item = ClassRegistry::init('Item');
-			$items = $Item->findList();
+			$UserItem = ClassRegistry::init('UserItem');
+			$items = $UserItem->findList();
 		} else {
 			$items = $options['items'];
 		}
@@ -83,23 +83,23 @@ class UserItemLink extends AppModel
 				/*
 		 		 * emailカラムセット
 		 		 */
-				if($bufItem['Item']['tag_name'] == "" && ($bufItem['Item']['type'] == 'email' || $bufItem['Item']['type'] == 'mobile_email')) {
-					$this->emailTags[] = $bufItem['Item']['id'];
+				if($bufItem['UserItem']['tag_name'] == "" && ($bufItem['UserItem']['type'] == 'email' || $bufItem['UserItem']['type'] == 'mobile_email')) {
+					$this->emailTags[] = $bufItem['UserItem']['id'];
 				}
 			}
-			if($this->data['UserItemLink']['item_id'] == $bufItem['Item']['id']) {
+			if($this->data['UserItemLink']['user_item_id'] == $bufItem['UserItem']['id']) {
 				$item = $bufItem;
 			}
 		}
 
-		if(!isset($item['ItemLang']['name'])) {
-			$name = $item['Item']['default_name'];
+		if(!isset($item['UserItemLang']['name'])) {
+			$name = $item['UserItem']['default_name'];
 		} else {
-			$name = $item['ItemLang']['name'];
+			$name = $item['UserItemLang']['name'];
 		}
 
 		// 必須チェック
-		if($item['Item']['required'] == _ON) {
+		if($item['UserItem']['required'] == _ON) {
 			$this->validate['content']['notEmpty'] = array(
 				'rule' => array('notEmpty'),
 				'last' => true,
@@ -110,8 +110,8 @@ class UserItemLink extends AppModel
 		}
 
 		// 重複チェック
-		if($item['Item']['allow_duplicate'] == _OFF) {
-			if($item['Item']['type'] == 'email' || $item['Item']['type'] == 'mobile_email') {
+		if($item['UserItem']['allow_duplicate'] == _OFF) {
+			if($item['UserItem']['type'] == 'email' || $item['UserItem']['type'] == 'mobile_email') {
 				$this->validate['content']['duplicateEmail'] = array(
 					'rule' => array('duplicateEmail'),
 					//'last' => false,
@@ -129,28 +129,28 @@ class UserItemLink extends AppModel
 		}
 
 		// minlengthチェック
-		if($item['Item']['minlength'] != '0') {
+		if($item['UserItem']['minlength'] != '0') {
 			$this->validate['content']['minlength'] = array(
-				'rule' => array('minLength', $item['Item']['minlength']),
+				'rule' => array('minLength', $item['UserItem']['minlength']),
 				//'last' => false,
 				'allowEmpty' => true,
-				'message' => __('The input must be at least %s characters.', $item['Item']['minlength']),
+				'message' => __('The input must be at least %s characters.', $item['UserItem']['minlength']),
 			);
 		}
 
 		// maxlengthチェック
-		if($item['Item']['maxlength'] != '0') {
+		if($item['UserItem']['maxlength'] != '0') {
 			$this->validate['content']['maxLength'] = array(
-				'rule' => array('maxLength', $item['Item']['maxlength']),
+				'rule' => array('maxLength', $item['UserItem']['maxlength']),
 				//'last' => true,
 				//'required' => true,
 				'allowEmpty' => true,
-				'message' => __('The input must be up to %s characters.', $item['Item']['maxlength']),
+				'message' => __('The input must be up to %s characters.', $item['UserItem']['maxlength']),
 			);
 		}
 
 		// emailチェック
-		if($item['Item']['type'] == 'email' || $item['Item']['type'] == 'mobile_email') {
+		if($item['UserItem']['type'] == 'email' || $item['UserItem']['type'] == 'mobile_email') {
 			$this->validate['content']['email'] = array(
 				'rule' => array('email'),
 				//'last' => true,
@@ -161,9 +161,9 @@ class UserItemLink extends AppModel
 		}
 
 		// 正規表現チェック
-		if($item['Item']['regexp'] != '') {
+		if($item['UserItem']['regexp'] != '') {
 			$this->validate['content']['custom'] = array(
-				'rule' => array('custom', $item['Item']['regexp']),
+				'rule' => array('custom', $item['UserItem']['regexp']),
 				//'last' => true,
 				//'required' => true,
 				'allowEmpty' => true,
@@ -182,8 +182,8 @@ class UserItemLink extends AppModel
  * @since   v 3.0.0.0
  */
 	public function duplicate($data) {
-		if(!empty($this->data[$this->alias]['item_id']) && !empty($this->data[$this->alias]['user_id'])) {
-			$data['item_id !='] = $this->data[$this->alias]['item_id'];
+		if(!empty($this->data[$this->alias]['user_item_id']) && !empty($this->data[$this->alias]['user_id'])) {
+			$data['user_item_id !='] = $this->data[$this->alias]['user_item_id'];
 			$data['user_id !='] = $this->data[$this->alias]['user_id'];
 		}
 
@@ -204,7 +204,7 @@ class UserItemLink extends AppModel
 		$values = array_values($data);
 
 		$conditions = array(
-			'item_id' => $this->emailTags,
+			'user_item_id' => $this->emailTags,
 			'content' => $values[0],
 		);
 		if(!empty($this->data[$this->alias]['user_id'])) {
@@ -267,7 +267,7 @@ class UserItemLink extends AppModel
 			);
 			$conditions = array(
 				$this->alias.".user_id" => $this->data[$this->alias]['user_id'],
-				$this->alias.".item_id" => $this->data[$this->alias]['item_id']
+				$this->alias.".user_item_id" => $this->data[$this->alias]['user_item_id']
 			);
 			$this->updateAll($fields, $conditions);
 		}

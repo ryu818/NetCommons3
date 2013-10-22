@@ -8,69 +8,69 @@
  * @since         v 3.0.0.0
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
-if($item['Item']['tag_name'] != '' && $item['Item']['tag_name'] != 'username') {
-	$name = 'User.'.$item['Item']['tag_name'];
-	$value = isset($user['User'][$item['Item']['tag_name']]) ? $user['User'][$item['Item']['tag_name']] : null;
+if($item['UserItem']['tag_name'] != '' && $item['UserItem']['tag_name'] != 'username') {
+	$name = 'User.'.$item['UserItem']['tag_name'];
+	$value = isset($user['User'][$item['UserItem']['tag_name']]) ? $user['User'][$item['UserItem']['tag_name']] : null;
 } else {
-	$name = 'UserItemLink.'.$item['Item']['id'].'.content';
-	$value = isset($user_item_links[$item['Item']['id']]['UserItemLink']) ? $user_item_links[$item['Item']['id']]['UserItemLink']['content'] : null;
+	$name = 'UserItemLink.'.$item['UserItem']['id'].'.content';
+	$value = isset($user_item_links[$item['UserItem']['id']]['UserItemLink']) ? $user_item_links[$item['UserItem']['id']]['UserItemLink']['content'] : null;
 }
-$userItemLinkId =  isset($user_item_links[$item['Item']['id']]['UserItemLink']) ? $user_item_links[$item['Item']['id']]['UserItemLink']['id'] : 0;
+$userItemLinkId =  isset($user_item_links[$item['UserItem']['id']]['UserItemLink']) ? $user_item_links[$item['UserItem']['id']]['UserItemLink']['id'] : 0;
 $publicFlag = null;
-if($item['Item']['allow_public_flag']) {
-	if(isset($user_item_links[$item['Item']['id']]['UserItemLink'])) {
-		$publicFlag = $user_item_links[$item['Item']['id']]['UserItemLink']['public_flag'];
+if($item['UserItem']['allow_public_flag']) {
+	if(isset($user_item_links[$item['UserItem']['id']]['UserItemLink'])) {
+		$publicFlag = $user_item_links[$item['UserItem']['id']]['UserItemLink']['public_flag'];
 	} else {
 		$publicFlag = _ON;
 	}
 }
 $emailReceptionFlag = null;
-if($item['Item']['allow_email_reception_flag']) {
-	if(isset($user_item_links[$item['Item']['id']]['UserItemLink'])) {
-		$emailReceptionFlag = $user_item_links[$item['Item']['id']]['UserItemLink']['email_reception_flag'];
+if($item['UserItem']['allow_email_reception_flag']) {
+	if(isset($user_item_links[$item['UserItem']['id']]['UserItemLink'])) {
+		$emailReceptionFlag = $user_item_links[$item['UserItem']['id']]['UserItemLink']['email_reception_flag'];
 	} else {
 		$emailReceptionFlag = _ON;
 	}
 }
-if(!isset($item['ItemLang']['name'])) {
-	$item['ItemLang']['name'] = $item['Item']['default_name'];
+if(!isset($item['UserItemLang']['name'])) {
+	$item['UserItemLang']['name'] = $item['UserItem']['default_name'];
 }
 $attribute = array();
-if(!empty($item['Item']['attribute'])) {
+if(!empty($item['UserItem']['attribute'])) {
 	$attributeNames = array('class', 'cols', 'rows', 'style', 'size', 'div', 'maxlength');
 	$regexp = "\s*=\s*([\"'])?([^ \"']*)";
 	foreach($attributeNames as $attributeName) {
-		if(preg_match("/".$attributeName.$regexp."/i" , $item['Item']['attribute'], $matches)) {
+		if(preg_match("/".$attributeName.$regexp."/i" , $item['UserItem']['attribute'], $matches)) {
 			$attribute[$attributeName] = $matches[2];
 		}
 	}
 }
 
 $options = array();
-if($item['Item']['type'] == 'checkbox' || $item['Item']['type'] == 'radio' || $item['Item']['type'] == 'select') {
-	if($item['Item']['tag_name'] == 'lang') {
+if($item['UserItem']['type'] == 'checkbox' || $item['UserItem']['type'] == 'radio' || $item['UserItem']['type'] == 'select') {
+	if($item['UserItem']['tag_name'] == 'lang') {
 		$options = $languages;
-	} else if($item['Item']['tag_name'] == 'authority_id') {
+	} else if($item['UserItem']['tag_name'] == 'authority_id') {
 		$options = $authorities;
 	} else {
-		if(!isset($item['ItemLang']['options'])) {
-			$item['ItemLang']['options'] = $item['Item']['default_options'];
+		if(!isset($item['UserItemLang']['options'])) {
+			$item['UserItemLang']['options'] = $item['UserItem']['default_options'];
 		}
-		$options = !empty($item['ItemLang']['options']) ? unserialize($item['ItemLang']['options']) : array();
+		$options = !empty($item['UserItemLang']['options']) ? unserialize($item['UserItemLang']['options']) : array();
 	}
 
-	if($item['Item']['tag_name'] != 'authority_id') {
+	if($item['UserItem']['tag_name'] != 'authority_id') {
 		foreach($options as $key => $option) {
-			$options[$key] = ($item['Item']['tag_name'] == 'lang') ? __($option) : $option;
+			$options[$key] = ($item['UserItem']['tag_name'] == 'lang') ? __($option) : $option;
 		}
 	}
 
 	if(!$isEdit) {
 		$bufOptions = $options;
 		$options = array();
-		if($item['Item']['type'] == 'select') {
+		if($item['UserItem']['type'] == 'select') {
 			$options[''] = __('-- Not specify --');
-		} else if($item['Item']['type'] == 'radio') {
+		} else if($item['UserItem']['type'] == 'radio') {
 			$options[''] = __('Not specified');
 		}
 		foreach($bufOptions as $bufKey => $bufOption) {
@@ -80,21 +80,21 @@ if($item['Item']['type'] == 'checkbox' || $item['Item']['type'] == 'radio' || $i
 
 	} else if(!isset($user['User']['id'])) {
 		// 新規
-		if($item['Item']['tag_name'] == 'timezone_offset') {
+		if($item['UserItem']['tag_name'] == 'timezone_offset') {
 			$value = Configure::read(NC_CONFIG_KEY.'.'.'timezone_offset');
-		} else if($item['Item']['tag_name'] == 'lang') {
+		} else if($item['UserItem']['tag_name'] == 'lang') {
 			$value = Configure::read(NC_CONFIG_KEY.'.'.'language');
-		} else if($item['Item']['tag_name'] == 'authority_id') {
+		} else if($item['UserItem']['tag_name'] == 'authority_id') {
 			$value = NC_AUTH_GENERAL_ID;	// 固定値
-		} else if($item['Item']['default_selected'] != '') {
-			$value = unserialize($item['Item']['default_selected']);
+		} else if($item['UserItem']['default_selected'] != '') {
+			$value = unserialize($item['UserItem']['default_selected']);
 		} else {
 			$value = null;
 		}
 	} else {
 		// 編集
 		if($value != '' && $value != null) {
-			if($item['Item']['tag_name'] == '') {
+			if($item['UserItem']['tag_name'] == '') {
 				$bufValue = @unserialize($value);
 				if($bufValue !== false) {
 					$value = $bufValue;
@@ -106,7 +106,7 @@ if($item['Item']['type'] == 'checkbox' || $item['Item']['type'] == 'radio' || $i
 	}
 	if($value === false) {
 		$value = null;
-	} else if(is_array($value) && $item['Item']['type'] != 'checkbox') {
+	} else if(is_array($value) && $item['UserItem']['type'] != 'checkbox') {
 		$bufValueArr = $value;
 		foreach($bufValueArr as $key => $bufValue) {
 			if($bufValue) {
@@ -116,24 +116,24 @@ if($item['Item']['type'] == 'checkbox' || $item['Item']['type'] == 'radio' || $i
 	}
 }
 
-if(!$isEdit && ($item['Item']['type'] == 'file' || $item['Item']['tag_name'] == 'password' ||
-	$item['Item']['tag_name'] == 'timezone_offset' || $item['Item']['tag_name'] == 'lang' ||
-	$item['Item']['tag_name'] == 'previous_login' || $item['Item']['tag_name'] == 'created_user_id' ||
-	$item['Item']['tag_name'] == 'created_user_name' || $item['Item']['tag_name'] == 'modified_user_name' ||
-	$item['Item']['tag_name'] == 'modified_user_name')) {
+if(!$isEdit && ($item['UserItem']['type'] == 'file' || $item['UserItem']['tag_name'] == 'password' ||
+	$item['UserItem']['tag_name'] == 'timezone_offset' || $item['UserItem']['tag_name'] == 'lang' ||
+	$item['UserItem']['tag_name'] == 'previous_login' || $item['UserItem']['tag_name'] == 'created_user_id' ||
+	$item['UserItem']['tag_name'] == 'created_user_name' || $item['UserItem']['tag_name'] == 'modified_user_name' ||
+	$item['UserItem']['tag_name'] == 'modified_user_name')) {
 	// 対象会員の絞り込み非表示項目
 	return;
 }
 
 ?>
 
-<?php if(!$isEdit || $item['Item']['display_title']): ?>
+<?php if(!$isEdit || $item['UserItem']['display_title']): ?>
 <dl>
 	<dt>
 		<?php
-			echo $this->Form->label($name, $item['ItemLang']['name']);
+			echo $this->Form->label($name, $item['UserItemLang']['name']);
 		?>
-		<?php if($isEdit && $item['Item']['required'] && ($item['Item']['type'] != 'password' || empty($user_id))): ?>
+		<?php if($isEdit && $item['UserItem']['required'] && ($item['UserItem']['type'] != 'password' || empty($user_id))): ?>
 		<span class="require"><?php echo __('*'); ?></span>
 		<?php endif; ?>
 	</dt>
@@ -141,37 +141,37 @@ if(!$isEdit && ($item['Item']['type'] == 'file' || $item['Item']['tag_name'] == 
 <?php endif; ?>
 		<?php
 			if($isEdit && ($userItemLinkId || isset($publicFlag) || isset($emailReceptionFlag))) {
-				echo $this->Form->hidden('UserItemLink.'.$item['Item']['id'].'.id' , array('value' => $userItemLinkId));
+				echo $this->Form->hidden('UserItemLink.'.$item['UserItem']['id'].'.id' , array('value' => $userItemLinkId));
 			}
-			if ($item['Item']['type'] == 'text' || $item['Item']['type'] == 'email' || $item['Item']['type'] == 'mobile_email') {
+			if ($item['UserItem']['type'] == 'text' || $item['UserItem']['type'] == 'email' || $item['UserItem']['type'] == 'mobile_email') {
 				$settings = array(
 					'type' => 'text',
 					'value' => $value,
 					'label' => false,
 					'div' => false,
-					'maxlength' => !empty($item['Item']['maxlength']) ? $item['Item']['maxlength'] : null,
+					'maxlength' => !empty($item['UserItem']['maxlength']) ? $item['UserItem']['maxlength'] : null,
 					'size' => 15,
 					'error' => array('attributes' => array(
 						'selector' => true
 					)),
 				);
-				if($isEdit && $item['Item']['tag_name'] == 'handle') {
+				if($isEdit && $item['UserItem']['tag_name'] == 'handle') {
 					$settings['onchange'] = "$.User.chgHandle('".$id."', this);";
 					echo "<span class=\"display-none\">".h($value)."</span>";
 				}
 				$settings = array_merge($settings, $attribute);
 				echo $this->Form->input($name, $settings);
-				if($item['Item']['type'] != 'text' && $value != '') {
+				if($item['UserItem']['type'] != 'text' && $value != '') {
 					$this->assign('isEmail', '1');
 				}
-			} else if($item['Item']['type'] == 'password') {
+			} else if($item['UserItem']['type'] == 'password') {
 				/*TODO:パスワードは自分自身ならばパスワード確認も表示するべき*/
 				$settings = array(
 					'type' => 'password',
 					'value' => "",
 					'label' => false,
 					'div' => false,
-					'maxlength' => !empty($item['Item']['maxlength']) ? $item['Item']['maxlength'] : null,
+					'maxlength' => !empty($item['UserItem']['maxlength']) ? $item['UserItem']['maxlength'] : null,
 					'size' => 15,
 					'error' => array('attributes' => array(
 						'selector' => true
@@ -181,19 +181,19 @@ if(!$isEdit && ($item['Item']['type'] == 'file' || $item['Item']['tag_name'] == 
 				);
 				$settings = array_merge($settings, $attribute);
 				echo $this->Form->input($name, $settings);
-			} else if($item['Item']['type'] == 'checkbox' || $item['Item']['type'] == 'radio' || $item['Item']['type'] == 'select') {
+			} else if($item['UserItem']['type'] == 'checkbox' || $item['UserItem']['type'] == 'radio' || $item['UserItem']['type'] == 'select') {
 				$settings = array(
-					'type' => $item['Item']['type'],
+					'type' => $item['UserItem']['type'],
 					'options' => $options,
 					'value' => $value,
-					'label' => ($item['Item']['type'] == 'select') ? false : true,
+					'label' => ($item['UserItem']['type'] == 'select') ? false : true,
 					'div' => false,
 					'legend' => false,
 				);
 				$settings = array_merge($settings, $attribute);
 				echo $this->Form->input($name, $settings);
 
-			} else if($item['Item']['type'] == 'textarea') {
+			} else if($item['UserItem']['type'] == 'textarea') {
 				if($isEdit) {
 					$settings = array(
 						'escape' => false,
@@ -210,7 +210,7 @@ if(!$isEdit && ($item['Item']['type'] == 'file' || $item['Item']['tag_name'] == 
 						'value' => $value,
 						'label' => false,
 						'div' => false,
-						'maxlength' => !empty($item['Item']['maxlength']) ? $item['Item']['maxlength'] : null,
+						'maxlength' => !empty($item['UserItem']['maxlength']) ? $item['UserItem']['maxlength'] : null,
 						'size' => 15,
 						'error' => array('attributes' => array(
 							'selector' => true
@@ -219,7 +219,7 @@ if(!$isEdit && ($item['Item']['type'] == 'file' || $item['Item']['tag_name'] == 
 
 					echo $this->Form->input($name, $settings);
 				}
-			} else if($item['Item']['type'] == 'file') {
+			} else if($item['UserItem']['type'] == 'file') {
 				echo '<div class="user-avatar-outer">'
 						.$this->element('avatar', array('name'=>$name,'avatar'=>$value, 'item' => $item))
 					.'</div>';
@@ -243,10 +243,10 @@ if(!$isEdit && ($item['Item']['type'] == 'file' || $item['Item']['tag_name'] == 
 						'onclick' => "$.User.deleteAvatar('".$id."');return false;"
 					));
 				echo '</div>';
-			} else if($item['Item']['type'] == 'label') {
-				if($item['Item']['tag_name'] == 'created' || $item['Item']['tag_name'] == 'modified' ||
-					$item['Item']['tag_name'] == 'password_regist' || $item['Item']['tag_name'] == 'last_login' ||
-					$item['Item']['tag_name'] == 'previous_login') {
+			} else if($item['UserItem']['type'] == 'label') {
+				if($item['UserItem']['tag_name'] == 'created' || $item['UserItem']['tag_name'] == 'modified' ||
+					$item['UserItem']['tag_name'] == 'password_regist' || $item['UserItem']['tag_name'] == 'last_login' ||
+					$item['UserItem']['tag_name'] == 'previous_login') {
 					if(!$isEdit) {
 						for($i = 0; $i < 2; $i++) {
 							$settings = array(
@@ -261,7 +261,7 @@ if(!$isEdit && ($item['Item']['type'] == 'file' || $item['Item']['tag_name'] == 
 								)),
 							);
 							echo '<div class="user-search-date">'.$this->Form->input($name.'.'.$i, $settings).'&nbsp;';
-							switch($item['Item']['tag_name']) {
+							switch($item['UserItem']['tag_name']) {
 								case 'last_login':
 									if($i == 0) {
 										echo __d('user', 'not logged more than <span style=\'color:#ff0000;\'>X</span>days');
@@ -285,7 +285,7 @@ if(!$isEdit && ($item['Item']['type'] == 'file' || $item['Item']['tag_name'] == 
 				} else {
 					echo h($value);
 				}
-			} else if($item['Item']['type'] == 'communities') {
+			} else if($item['UserItem']['type'] == 'communities') {
 				// 参加コミュニティー
 				if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 					$notMembers = array('0' => __d('user', 'Members not in any communuty'));
@@ -298,11 +298,11 @@ if(!$isEdit && ($item['Item']['type'] == 'file' || $item['Item']['tag_name'] == 
 				echo $this->Form->selectRooms($name, $communities, array('empty' => array('' => __('-- Not specify --'))));
 			}
 			if($isEdit) {
-				if($item['ItemLang']['description'] != '' && $item['ItemLang']['description'] != null) {
-					if(!isset($item['ItemLang']['description'])) {
-						$description = $item['Item']['default_description'];
+				if($item['UserItemLang']['description'] != '' && $item['UserItemLang']['description'] != null) {
+					if(!isset($item['UserItemLang']['description'])) {
+						$description = $item['UserItem']['default_description'];
 					} else {
-						$description = $item['ItemLang']['description'];
+						$description = $item['UserItemLang']['description'];
 					}
 					echo '<div class="note">'.h($description).'</div>';
 				}
@@ -310,7 +310,7 @@ if(!$isEdit && ($item['Item']['type'] == 'file' || $item['Item']['tag_name'] == 
 					echo '<div class="user-checkbox">';
 				}
 				if (isset($publicFlag)) {
-					$publicFlagName = 'UserItemLink.'.$item['Item']['id'].'.public_flag';
+					$publicFlagName = 'UserItemLink.'.$item['UserItem']['id'].'.public_flag';
 					$settings = array(
 						'type' => 'checkbox',
 						'value' => _ON,
@@ -322,7 +322,7 @@ if(!$isEdit && ($item['Item']['type'] == 'file' || $item['Item']['tag_name'] == 
 					echo $this->Form->input($publicFlagName, $settings);
 				}
 				if (isset($emailReceptionFlag)) {
-					$emailReceptionFlagName = 'UserItemLink.'.$item['Item']['id'].'.email_reception_flag';
+					$emailReceptionFlagName = 'UserItemLink.'.$item['UserItem']['id'].'.email_reception_flag';
 					$settings = array(
 						'type' => 'checkbox',
 						'value' => _ON,
@@ -338,7 +338,7 @@ if(!$isEdit && ($item['Item']['type'] == 'file' || $item['Item']['tag_name'] == 
 				}
 			}
 		?>
-<?php if($item['Item']['display_title']): ?>
+<?php if($item['UserItem']['display_title']): ?>
 	</dd>
 </dl>
 <?php endif; ?>

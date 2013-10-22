@@ -120,7 +120,7 @@
 									<input class="common-btn" type="button" value="<?php echo(__d('page','Upload')); ?>" onclick="return false;" />
 								</div>
 								<input type="hidden" name="data[Community][photo]" value="<?php echo(h($community_params['community']['Community']['photo'])); ?>" />
-								<input type="hidden" name="data[Community][upload_id]" value="<?php echo(intval($community_params['community']['Community']['upload_id'])); ?>" />
+								<input type="hidden" name="data[Community][is_upload]" value="<?php echo(intval($community_params['community']['Community']['is_upload'])); ?>" />
 							</dd>
 						</dl>
 					</li>

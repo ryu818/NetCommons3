@@ -18,7 +18,7 @@ class SystemController extends SystemAppController {
  *
  * @var array
  */
-	public $uses = array('ConfigLang', 'System.ConfigRegist', 'Item');
+	public $uses = array('ConfigLang', 'System.ConfigRegist', 'UserItem');
 
 /**
  * Component name
@@ -230,24 +230,24 @@ class SystemController extends SystemAppController {
 	public function autoregist() {
 
 		$isError = false;
-		if($this->request->is('post') && isset($this->request->data['Item'])) {
-			$dataItems = $this->request->data['Item'];
+		if($this->request->is('post') && isset($this->request->data['UserItem'])) {
+			$dataItems = $this->request->data['UserItem'];
 			foreach ($dataItems as $itemId => $dataItem) {
 				$dataItem['id'] = $itemId;
-				if(!$this->Item->save($dataItem)) {
+				if(!$this->UserItem->save($dataItem)) {
 					$isError = true;
 				}
 			}
 		}
 
 		if ($isError) {
-			$this->ConfigRegist->invalidate('autoregist_use_items', __('Failed to update the database, (%s).', 'Item'));
+			$this->ConfigRegist->invalidate('autoregist_use_items', __('Failed to update the database, (%s).', 'user_items'));
 		}
 		$this->_actionCommon(NC_MEMBERSHIP_CATID, !$isError);
 
 		$this->set('autoregist_author', Configure::read(NC_CONFIG_KEY.'.'.'languages'));
 		$conditions = array('autoregist_use != ' => 'disabled');
-		$this->set('autoregist_use_items', $this->Item->findList('all', $conditions));
+		$this->set('autoregist_use_items', $this->UserItem->findList('all', $conditions));
 
 	}
 

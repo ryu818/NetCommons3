@@ -102,12 +102,12 @@ class Config extends AppModel
 		foreach($results as $key => $result) {
 			if(isset($result['options']) && isset($result['domain'])) {
 				if($result['name'] == 'default_TZ') {
-					$Item = ClassRegistry::init('Item');
-					$item = $Item->findList('first', array('Item.id' => NC_ITEM_ID_TIMEZONE_OFFSET));
-					if(!isset($item['ItemLang']['options'])) {
-						$item['ItemLang']['options'] = $item['Item']['default_options'];
+					$UserItem = ClassRegistry::init('UserItem');
+					$item = $UserItem->findList('first', array('UserItem.id' => NC_ITEM_ID_TIMEZONE_OFFSET));
+					if(!isset($item['UserItemLang']['options'])) {
+						$item['UserItemLang']['options'] = $item['UserItem']['default_options'];
 					}
-					$results[$key]['options'] = !empty($item['ItemLang']['options']) ? unserialize($item['ItemLang']['options']) : array();
+					$results[$key]['options'] = !empty($item['UserItemLang']['options']) ? unserialize($item['UserItemLang']['options']) : array();
 				} else {
 					$domain = $result['domain'];
 					$results[$key]['options'] = $this->convertOptions($result['options'], $domain);

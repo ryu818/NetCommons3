@@ -36,12 +36,12 @@
 			$colNum = 0;
 			$rowNum = 0;
 			foreach ($items as $key => $item) {
-				if(($listNum != intval($item['Item']['list_num']) - 1) || $colNum != intval($item['Item']['col_num']) - 1) {
+				if(($listNum != intval($item['UserItem']['list_num']) - 1) || $colNum != intval($item['UserItem']['col_num']) - 1) {
 					$rowNum = 1;
 				}
 
-				$listNum = intval($item['Item']['list_num']) - 1;
-				$colNum = intval($item['Item']['col_num']) - 1;
+				$listNum = intval($item['UserItem']['list_num']) - 1;
+				$colNum = intval($item['UserItem']['col_num']) - 1;
 				if(!isset($listMaxArr[$listNum]) || $listMaxArr[$listNum] < $rowNum) {
 					$listMaxArr[$listNum] = $rowNum;
 				}
@@ -87,15 +87,15 @@
 								<dl>
 									<dt>
 										<?php
-											if(!isset($item['ItemLang']['name'])) {
-												$item['ItemLang']['name'] = $item['Item']['default_name'];
+											if(!isset($item['UserItemLang']['name'])) {
+												$item['UserItemLang']['name'] = $item['UserItem']['default_name'];
 											}
-											if($item['Item']['tag_name'] != '' && $item['Item']['tag_name'] != 'username') {
+											if($item['UserItem']['tag_name'] != '' && $item['UserItem']['tag_name'] != 'username') {
 												$name = 'User.'.$item['Item']['tag_name'];
 											} else {
-												$name = 'UserItemLink.'.$item['Item']['id'].'.content';
+												$name = 'UserItemLink.'.$item['UserItem']['id'].'.content';
 											}
-											echo $this->Form->label($name, $item['ItemLang']['name']);
+											echo $this->Form->label($name, $item['UserItemLang']['name']);
 										?>
 									</dt>
 									<dd>
@@ -103,7 +103,7 @@
 											$NotAllowedFunction = 'if(ui.value == 0) {return false;} ';
 											$otherLabel = "<span class='disable-lbl'>".__d('policy', 'Not allowed to edit')."</span>";
 											$otherShowLabel = "<span class='disable-lbl'>".__d('policy', 'Not allowed to view')."</span>";
-											if($item['Item']['tag_name'] == 'authority_id') {
+											if($item['UserItem']['tag_name'] == 'authority_id') {
 												$minAuthorityId = NC_AUTH_ADMIN_ID;
 											} else if($user_authority_id <= NC_AUTH_ADMIN_ID) {
 												$minAuthorityId = $user_authority_id;
@@ -112,8 +112,8 @@
 											} else {
 												$minAuthorityId = $user_authority_id - 2;
 											}
-											$editId = 'policy-edit-lower-hierarchy-'.$item['Item']['id'].'-'.$user_authority_id;
-											$showId = 'policy-show-lower-hierarchy-'.$item['Item']['id'].'-'.$user_authority_id;
+											$editId = 'policy-edit-lower-hierarchy-'.$item['UserItem']['id'].'-'.$user_authority_id;
+											$showId = 'policy-show-lower-hierarchy-'.$item['UserItem']['id'].'-'.$user_authority_id;
 											$LinkageFunction = "
 												var editSlider = $('#%s-slider');
 												var authorityId = editSlider.slider( 'option', 'value' );
@@ -123,31 +123,31 @@
 											";
 											$addClass = '';
 											$sliderOptions = array();
-											if($item['Item']['type'] == 'label') {
+											if($item['UserItem']['type'] == 'label') {
 												$sliderOptions['disabled'] = true;
 												$addClass .= ' disable-lbl';
 											}
 											$sliderOptions['slide'] = 'function( event, ui ) {' .$NotAllowedFunction. sprintf($LinkageFunction, $showId, '>') .'}';
 											$adminLabel = __('Administrator').__(' - ').__('Clerk');
-											
+
 											echo '<div class="policy-edit-subtitle">'.__d('policy', 'Range that allows editing').':</div>';
-											echo '<div class="policy-edit-orange'.$addClass.'">'. $this->Form->authoritySlider($editId, 
-													array('id' => $editId, 'name' => 'ItemAuthorityLink['.$item['Item']['id'].'][edit_lower_hierarchy]', 
-													'value' => $item_authority_links[$item['Item']['id']]['edit_lower_hierarchy'], 'min_authority_id' => $minAuthorityId, 
+											echo '<div class="policy-edit-orange'.$addClass.'">'. $this->Form->authoritySlider($editId,
+													array('id' => $editId, 'name' => 'UserItemAuthorityLink['.$item['UserItem']['id'].'][edit_lower_hierarchy]',
+													'value' => $user_item_authority_links[$item['UserItem']['id']]['edit_lower_hierarchy'], 'min_authority_id' => $minAuthorityId,
 													'max_authority_id' => NC_AUTH_OTHER_ID, 'other_label' => $otherLabel, 'administrator_label' => $adminLabel, 'width' => 92)
 													, $sliderOptions
 											) . '</div>';
 											$addClass = '';
 											$sliderOptions = array();
 											$sliderOptions['slide'] = 'function( event, ui ) {' .$NotAllowedFunction. sprintf($LinkageFunction, $editId, '<') .'}';
-											if($item['Item']['tag_name'] == 'handle') {
+											if($item['UserItem']['tag_name'] == 'handle') {
 												$sliderOptions['disabled'] = true;
 												$addClass .= ' disable-lbl';
 											}
 											echo '<div class="policy-edit-subtitle">'.__d('policy', 'Range that allows viewing').':</div>';
-											echo '<div class="policy-edit-blue'.$addClass.'">'. $this->Form->authoritySlider($showId, 
-													array('id' => $showId, 'name' => 'ItemAuthorityLink['.$item['Item']['id'].'][show_lower_hierarchy]', 
-													'value' => $item_authority_links[$item['Item']['id']]['show_lower_hierarchy'], 'min_authority_id' => NC_AUTH_GUEST_ID, 
+											echo '<div class="policy-edit-blue'.$addClass.'">'. $this->Form->authoritySlider($showId,
+													array('id' => $showId, 'name' => 'UserItemAuthorityLink['.$item['UserItem']['id'].'][show_lower_hierarchy]',
+													'value' => $user_item_authority_links[$item['UserItem']['id']]['show_lower_hierarchy'], 'min_authority_id' => NC_AUTH_GUEST_ID,
 													'max_authority_id' => NC_AUTH_OTHER_ID, 'other_label' => $otherShowLabel, 'administrator_label' => $adminLabel, 'width' => 92)
 													, $sliderOptions
 											) . '</div>';

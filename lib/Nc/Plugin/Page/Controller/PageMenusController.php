@@ -249,9 +249,9 @@ class PageMenusController extends PageAppController {
 				throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'communities'));
 			}
 			list($community, $communityLang, $communityTag) = $ret;
-			$fieldCommunityList = array('photo', 'upload_id', 'publication_range_flag', 'participate_flag',
-										'invite_hierarchy', 'participate_notice_flag', 'participate_notice_hierarchy',
-										'resign_notice_flag', 'resign_notice_hierarchy');
+			$fieldCommunityList = array('photo', 'is_upload', 'publication_range_flag', 'participate_as_general','participate_flag',
+					'invite_hierarchy', 'is_participate_notice', 'participate_notice_hierarchy',
+					'is_resign_notice', 'resign_notice_hierarchy');
 			// TODO:descriptionは使用しなくなる可能性あり。
 			$fieldCommunityLangList = array('room_id', 'community_name', 'lang', 'summary', 'description');
 			// TODO:CommunityTagについては現状、未作成

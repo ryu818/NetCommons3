@@ -16,7 +16,7 @@
 // ・ラベル、パスワード、画像ファイルはシステムでのみ使用
 // ・メールの場合のみ「各自でメールの受信可否を設定可能にする」を表示
 // ・リストボックス、選択式のoptionの指定（追加、削除）
-echo $this->Form->create('Item', array('data-pjax' => '#'.$id));
+echo $this->Form->create('UserItem', array('data-pjax' => '#'.$id));
 ?>
 <fieldset class="form">
 	<ul class="lists user-add-item">
@@ -24,7 +24,7 @@ echo $this->Form->create('Item', array('data-pjax' => '#'.$id));
 			<dl>
 				<dt>
 					<?php
-						echo $this->Form->label('ItemLang.name', __d('user', 'Item name'));
+						echo $this->Form->label('UserItemLang.name', __d('user', 'Item name'));
 					?>
 					<span class="require"><?php echo __('*'); ?></span>
 				</dt>
@@ -32,7 +32,7 @@ echo $this->Form->create('Item', array('data-pjax' => '#'.$id));
 					<?php
 						$settings = array(
 							'type' => 'text',
-							'value' => $item['ItemLang']['name'],
+							'value' => $item['UserItemLang']['name'],
 							'label' => false,
 							'div' => false,
 							'maxlength' => NC_VALIDATOR_TITLE_LEN,
@@ -42,14 +42,14 @@ echo $this->Form->create('Item', array('data-pjax' => '#'.$id));
 								'selector' => true
 							))
 						);
-						echo $this->Form->input('ItemLang.name', $settings);
+						echo $this->Form->input('UserItemLang.name', $settings);
 					?>
 					<div class="hr">
 					<?php
-						echo $this->Form->input('Item.allow_self_edit',array(
+						echo $this->Form->input('UserItem.allow_self_edit',array(
 							'type' => 'checkbox',
 							'value' => _ON,
-							'checked' => !empty($item['Item']['allow_self_edit']) ? true : false,
+							'checked' => !empty($item['UserItem']['allow_self_edit']) ? true : false,
 							'label' => __d('user', 'Enable individual edit.'),
 						));
 					?>
@@ -57,34 +57,34 @@ echo $this->Form->create('Item', array('data-pjax' => '#'.$id));
 					<?php echo __d('user', 'Administrator and clerk editable.'); ?>
 					</div>
 					<?php
-						echo $this->Form->input('Item.required',array(
+						echo $this->Form->input('UserItem.required',array(
 							'type' => 'checkbox',
 							'value' => _ON,
-							'checked' => !empty($item['Item']['required']) ? true : false,
+							'checked' => !empty($item['UserItem']['required']) ? true : false,
 							'label' => __d('user', 'Designate as required items.'),
 						));
-						echo $this->Form->input('Item.allow_public_flag',array(
+						echo $this->Form->input('UserItem.allow_public_flag',array(
 							'type' => 'checkbox',
 							'value' => _ON,
-							'checked' => !empty($item['Item']['allow_public_flag']) ? true : false,
+							'checked' => !empty($item['UserItem']['allow_public_flag']) ? true : false,
 							'label' => __d('user', 'Enable individual public/private setting.'),
 						));
-						echo $this->Form->input('Item.is_lang',array(
+						echo $this->Form->input('UserItem.is_lang',array(
 							'type' => 'checkbox',
 							'value' => _ON,
-							'checked' => !empty($item['Item']['is_lang']) ? true : false,
+							'checked' => !empty($item['UserItem']['is_lang']) ? true : false,
 							'label' => __d('user', 'Setable in each language.'),
 						));
-						echo $this->Form->input('Item.allow_duplicate',array(
+						echo $this->Form->input('UserItem.allow_duplicate',array(
 							'type' => 'checkbox',
 							'value' => _ON,
-							'checked' => !empty($item['Item']['allow_duplicate']) ? true : false,
+							'checked' => !empty($item['UserItem']['allow_duplicate']) ? true : false,
 							'label' => __d('user', 'Allow duplication.'),
 						));
-						echo $this->Form->input('Item.display_title',array(
+						echo $this->Form->input('UserItem.display_title',array(
 							'type' => 'checkbox',
 							'value' => _ON,
-							'checked' => !empty($item['Item']['display_title']) ? true : false,
+							'checked' => !empty($item['UserItem']['display_title']) ? true : false,
 							'label' => __d('user', 'Display the title.'),
 						));
 					?>
@@ -96,14 +96,14 @@ echo $this->Form->create('Item', array('data-pjax' => '#'.$id));
 			<dl>
 				<dt>
 					<?php
-						echo $this->Form->label('Item.type', __d('user', 'Input type'));
+						echo $this->Form->label('UserItem.type', __d('user', 'Input type'));
 					?>
 					<span class="require"><?php echo __('*'); ?></span>
 				</dt>
 				<dd>
 					<?php
 						$settings = array(
-							'value' => $item['Item']['type'],
+							'value' => $item['UserItem']['type'],
 							'label' => false,
 							'div' => false,
 							'type' =>'select',
@@ -121,12 +121,12 @@ echo $this->Form->create('Item', array('data-pjax' => '#'.$id));
 							),
 							'onchange' => '$.User.changeAddItemType();',
 						);
-						echo $this->Form->input('Item.type', $settings);
+						echo $this->Form->input('UserItem.type', $settings);
 
-						echo $this->Form->input('Item.allow_email_reception_flag',array(
+						echo $this->Form->input('UserItem.allow_email_reception_flag',array(
 							'type' => 'checkbox',
 							'value' => _ON,
-							'checked' => !empty($item['Item']['allow_email_reception_flag']) ? true : false,
+							'checked' => !empty($item['UserItem']['allow_email_reception_flag']) ? true : false,
 							'label' => __d('user', 'Enable individual email receipt / non-receipt setting.'),
 						));
 					?>
@@ -137,7 +137,7 @@ echo $this->Form->create('Item', array('data-pjax' => '#'.$id));
 			<dl>
 				<dt>
 					<?php
-						echo $this->Form->label('ItemLang.description', __d('user', 'Description'));
+						echo $this->Form->label('UserItemLang.description', __d('user', 'Description'));
 					?>
 				</dt>
 				<dd>
@@ -145,7 +145,7 @@ echo $this->Form->create('Item', array('data-pjax' => '#'.$id));
 						$settings = array(
 							'type' => 'textarea',
 							'escape' => false,
-							'value' => $item['ItemLang']['description'],
+							'value' => $item['UserItemLang']['description'],
 							'label' => false,
 							'div' => false,
 							'error' => array('attributes' => array(
@@ -155,7 +155,7 @@ echo $this->Form->create('Item', array('data-pjax' => '#'.$id));
 							'rows' => 3,
 							'class' => 'user-add-item-textarea',
 						);
-						echo $this->Form->input('ItemLang.description', $settings);
+						echo $this->Form->input('UserItemLang.description', $settings);
 					?>
 				</dd>
 			</dl>
@@ -164,14 +164,14 @@ echo $this->Form->create('Item', array('data-pjax' => '#'.$id));
 			<dl>
 				<dt>
 					<?php
-						echo $this->Form->label('Item.attribute', __d('user', 'Attribute'));
+						echo $this->Form->label('UserItem.attribute', __d('user', 'Attribute'));
 					?>
 				</dt>
 				<dd>
 					<?php
 						$settings = array(
 							'type' => 'text',
-							'value' => $item['Item']['attribute'],
+							'value' => $item['UserItem']['attribute'],
 							'label' => false,
 							'div' => false,
 							'maxlength' => NC_VALIDATOR_VARCHAR_LEN,
@@ -181,7 +181,7 @@ echo $this->Form->create('Item', array('data-pjax' => '#'.$id));
 								'selector' => true
 							))
 						);
-						echo $this->Form->input('Item.attribute', $settings);
+						echo $this->Form->input('UserItem.attribute', $settings);
 					?>
 					<div class="note">
 					<?php
@@ -195,14 +195,14 @@ echo $this->Form->create('Item', array('data-pjax' => '#'.$id));
 			<dl>
 				<dt>
 					<?php
-						echo $this->Form->label('Item.regexp', __d('user', 'Regexp'));
+						echo $this->Form->label('UserItem.regexp', __d('user', 'Regexp'));
 					?>
 				</dt>
 				<dd>
 					<?php
 						$settings = array(
 							'type' => 'text',
-							'value' => $item['Item']['regexp'],
+							'value' => $item['UserItem']['regexp'],
 							'label' => false,
 							'div' => false,
 							'maxlength' => NC_VALIDATOR_VARCHAR_LEN,
@@ -212,7 +212,7 @@ echo $this->Form->create('Item', array('data-pjax' => '#'.$id));
 								'selector' => true
 							))
 						);
-						echo $this->Form->input('Item.regexp', $settings);
+						echo $this->Form->input('UserItem.regexp', $settings);
 					?>
 					<div class="note">
 					<?php
@@ -226,14 +226,14 @@ echo $this->Form->create('Item', array('data-pjax' => '#'.$id));
 			<dl>
 				<dt>
 					<?php
-						echo $this->Form->label('Item.minlength', __d('user', 'Minimum number of characters'));
+						echo $this->Form->label('UserItem.minlength', __d('user', 'Minimum number of characters'));
 					?>
 				</dt>
 				<dd>
 					<?php
 						$settings = array(
 							'type' => 'text',
-							'value' => $item['Item']['minlength'],
+							'value' => $item['UserItem']['minlength'],
 							'label' => false,
 							'div' => false,
 							'maxlength' => 5,
@@ -243,7 +243,7 @@ echo $this->Form->create('Item', array('data-pjax' => '#'.$id));
 								'selector' => true
 							))
 						);
-						echo $this->Form->input('Item.minlength', $settings);
+						echo $this->Form->input('UserItem.minlength', $settings);
 					?>
 				</dd>
 			</dl>
@@ -252,14 +252,14 @@ echo $this->Form->create('Item', array('data-pjax' => '#'.$id));
 			<dl>
 				<dt>
 					<?php
-						echo $this->Form->label('Item.maxlength', __d('user', 'Maximum number of characters'));
+						echo $this->Form->label('UserItem.maxlength', __d('user', 'Maximum number of characters'));
 					?>
 				</dt>
 				<dd>
 					<?php
 						$settings = array(
 							'type' => 'text',
-							'value' => $item['Item']['maxlength'],
+							'value' => $item['UserItem']['maxlength'],
 							'label' => false,
 							'div' => false,
 							'maxlength' => 5,
@@ -269,7 +269,7 @@ echo $this->Form->create('Item', array('data-pjax' => '#'.$id));
 								'selector' => true
 							))
 						);
-						echo $this->Form->input('Item.maxlength', $settings);
+						echo $this->Form->input('UserItem.maxlength', $settings);
 					?>
 				</dd>
 			</dl>

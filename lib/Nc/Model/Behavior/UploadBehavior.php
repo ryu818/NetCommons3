@@ -32,7 +32,7 @@ class UploadBehavior extends ModelBehavior {
 		'fields' => array('dir' => 'file_path', 'type' => 'file_type', 'size' => 'file_size'),
 		// 'fields' => array('dir' => 'dir', 'type' => 'type', 'size' => 'size'),
 // Modify for NetCommons Extentions By Ryuji.M --E N D
-		
+
 		'mimetypes' => array(),
 		'extensions' => array(),
 		'maxSize' => 2097152,
@@ -103,7 +103,7 @@ class UploadBehavior extends ModelBehavior {
 	private $__foldersToRemove = array();
 
 	protected $_removingOnly = array();
-	
+
 // Add for NetCommons Extentions By Ryuji.M --START
 
 /**
@@ -115,7 +115,7 @@ class UploadBehavior extends ModelBehavior {
 	public $uploadFileNames = array();
 
 	protected $uploadUserId = null;
-	
+
 	private $__extensionType = null;
 // Add for NetCommons Extentions By Ryuji.M --E N D
 
@@ -172,7 +172,7 @@ class UploadBehavior extends ModelBehavior {
 			$this->defaults['fieldName'] = 'content';
 			$this->defaults['uniqueIdName'] = 'revision_group_id';
 		}
-		
+
 		//$this->defaults['rootDir'] = ROOT . DS . APP_DIR . DS;
 // Add for NetCommons Extentions By Ryuji.M --E N D
 		if (!isset($this->settings[$model->alias][$field])) {
@@ -338,7 +338,7 @@ class UploadBehavior extends ModelBehavior {
 			} else {
 				$libraryGeometry = NC_UPLOAD_LIBRARY_THUMBNAIL_WIDTH_RESIZE_MODE;
 			}
-			$this->settings[$model->alias][$field]['thumbnailSizes'] = $options['thumbnailSizes'] = array_merge((array) $this->settings[$model->alias][$field]['thumbnailSizes'], 
+			$this->settings[$model->alias][$field]['thumbnailSizes'] = $options['thumbnailSizes'] = array_merge((array) $this->settings[$model->alias][$field]['thumbnailSizes'],
 					array('library' => $libraryGeometry));
 // Add for NetCommons Extentions By Ryuji.M --E N D
 
@@ -528,7 +528,7 @@ class UploadBehavior extends ModelBehavior {
 					$temp[$model->alias][$options['fields']['dir']] = "'{$tempPath}'";
 				}
 			}
-			
+
 // Add for NetCommons Extentions By Ryuji.M --START
 			if ($this->settings[$model->alias][$field]['useUploadModel'] &&
 				(!empty($tempPath) || (isset($this->settings[$model->alias][$field]['thumbnailSizes']['original']) && $this->runtime[$model->alias][$field]['size'] != filesize($filePath)))) {
@@ -826,7 +826,7 @@ class UploadBehavior extends ModelBehavior {
 			if (is_string($mimetypes)) {
 				$mimetypes = array($mimetypes);
 			}
-			
+
 			foreach ($mimetypes as $key => $value) {
 				if (!is_int($key)) {
 					$mimetypes = $this->settings[$model->alias][$field]['mimetypes'];
@@ -834,14 +834,14 @@ class UploadBehavior extends ModelBehavior {
 				}
 			}
 			if (empty($mimetypes)) $mimetypes = $this->settings[$model->alias][$field]['mimetypes'];
-			
+
 			return in_array($check[$field]['type'], $mimetypes);
 		}
 		if(!$ret) {
 			return __('Invalid MimeType.');
 		}
 		return $ret;
-		
+
 // 		// Non-file uploads also mean the mimetype is invalid
 // 		if (!isset($check[$field]['type']) || !strlen($check[$field]['type'])) {
 // 			return false;
@@ -947,7 +947,7 @@ class UploadBehavior extends ModelBehavior {
 			return __('File size too large. Max %s.', CakeNumber::toReadableSize($size));
 		}
 		return $ret;
-		
+
 		//if (!isset($check[$field]['size']) || !strlen($check[$field]['size'])) {
 		//	return false;
 		//}
@@ -991,7 +991,7 @@ class UploadBehavior extends ModelBehavior {
 			return __('File size too large. Min %s.', CakeNumber::toReadableSize($size));
 		}
 		return $ret;
-		
+
 //		if (!isset($check[$field]['size']) || !strlen($check[$field]['size'])) {
 // 			return false;
 // 		}
@@ -1047,7 +1047,7 @@ class UploadBehavior extends ModelBehavior {
 			if(preg_match('/\.gz$/', $pathInfo['extension'])) {
 				$pathInfo['extension'] = 'gz';
 			}
-			
+
 			$extensions = array_map('strtolower', $extensions);
 			$ret = in_array(strtolower($pathInfo['extension']), $extensions);
 		}
@@ -1895,7 +1895,7 @@ class UploadBehavior extends ModelBehavior {
 		if (!$createThumbnails || !$hasThumbnails) {
 			return $this->__filesToRemove;
 		}
-		
+
 // Add for NetCommons Extentions By Ryuji.M --START
 		if ($this->settings[$model->alias][$field]['useUploadModel']) {
 			// Uploadテーブル削除
@@ -1924,8 +1924,8 @@ class UploadBehavior extends ModelBehavior {
 			}
 			$modelName = isset($options['modelName']) ? $options['modelName'] : $model->alias;
 			$fieldName = isset($options['fieldName']) ? $options['fieldName'] : $field;
-			
-			
+
+
 			$delConditions = array(
 				'unique_id'=> $uniqueId,
 				'model_name'=> $modelName,
@@ -2053,7 +2053,7 @@ class UploadBehavior extends ModelBehavior {
  */
 	public function uploadFile(Model $model, $data = null) {
 		$model->set($data);
-	
+
 		if(empty($data[$model->alias][$model->primaryKey])) {
 			foreach ($this->settings[$model->alias] as $field => $options) {
 				if(!$model->validates(array('fieldList' => array($field)))) {
@@ -2098,7 +2098,7 @@ class UploadBehavior extends ModelBehavior {
  * @return mixed success:uploadId.(extension) error:false
  */
 	public function saveUpload(Model $model, $field, $uploadFile, $options, $beforeUploadId = null) {
-	
+
 		$Upload = ClassRegistry::init('Upload');
 		// Upload登録
 		$pathinfo = $this->_pathinfo($uploadFile['name']);
@@ -2126,7 +2126,7 @@ class UploadBehavior extends ModelBehavior {
 		if (!empty($model->id)) {
 			$data['Upload']['is_use'] = _ON;
 		}
-		
+
 		// PHPエラーチェック処理
 		if(!$this->_checkPHPError($model, $field, $uploadFile)) {
 			return false;
@@ -2145,14 +2145,14 @@ class UploadBehavior extends ModelBehavior {
 
 		return $Upload->id. '.'. $pathinfo['extension'];
 	}
-	
+
 /**
  * アップロードリンクテーブルへの登録更新
  *
  * @param AppModel $model Model instance
  * @param string $field
  * @param array $options
- * @return 
+ * @return
  */
 	public function saveUploadLink(Model $model, $field, $options = null) {
 		if(!is_array($options)) {
@@ -2160,7 +2160,7 @@ class UploadBehavior extends ModelBehavior {
 		} else {
 			$options = array_merge($this->settings[$model->alias][$field], $options);
 		}
-		
+
 		//if (!isset($model->data[$model->alias][$field])) {
 		if (isset($model->data[$model->alias][$field]) && !is_string($model->data[$model->alias][$field])) {
 			// データなし
@@ -2188,7 +2188,7 @@ class UploadBehavior extends ModelBehavior {
 		}
 		$modelName = isset($options['modelName']) ? $options['modelName'] : $model->alias;
 		$fieldName = isset($options['fieldName']) ? $options['fieldName'] : $field;
-		
+
 		if($isWysiwyg) {
 			$text = isset($options['wysiwygText']) ? $options['wysiwygText'] : (isset($model->data[$modelName][$fieldName]) ? $model->data[$modelName][$fieldName] : null);
 			if(!isset($text)) {
@@ -2211,7 +2211,7 @@ class UploadBehavior extends ModelBehavior {
 			if(intval($uploadId) <= 0) {
 				return true;
 			}
-			
+
 			$uploadLink = $UploadLink->find('first', array(
 				'recursive' => -1,
 				'fields' => array('UploadLink.id', 'UploadLink.is_use'),
@@ -2223,7 +2223,7 @@ class UploadBehavior extends ModelBehavior {
 					'field_name' => $fieldName,
 				)
 			));
-			
+
 			if(is_string($options['checkComponentAction'])) {
 				$checkComponentAction = $options['checkComponentAction'];
 			} else {
@@ -2249,7 +2249,7 @@ class UploadBehavior extends ModelBehavior {
 				if ((!isset($uploadLink['UploadLink']) || !$uploadLink['UploadLink']['is_use'])  &&
 					$this->settings[$model->alias][$field]['useUploadModel']) {
 					$Upload = ClassRegistry::init('Upload');
-					
+
 					$data = array(
 						'Upload.is_use' => _ON,
 					);
@@ -2304,10 +2304,10 @@ class UploadBehavior extends ModelBehavior {
 			$model->invalidate($field, __('PHP Extension is aborted file uploads.'));
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 /**
  * FileTypeでのextensions,maxSizeセット処理
  * @param AppModel $model Model instance
@@ -2342,13 +2342,17 @@ class UploadBehavior extends ModelBehavior {
 					'conditions' => $conditions,
 				);
 				$allowExtension = $Config->find('all', $params);
-				$options['extensions'] = explode(',', $allowExtension['allow_extension']);
+				if(isset($allowExtension['allow_extension'])) {
+					$options['extensions'] = explode(',', $allowExtension['allow_extension']);
+				} else {
+					$options['extensions'] = array();
+				}
 				$this->__extensionType = 'file';
 			} else {
 				$options['extensions'] = explode(',', $options['fileType']);
 			}
 		}
-		if(!isset($this->settings[$model->alias][$field]['fileType']) || 
+		if(!isset($this->settings[$model->alias][$field]['fileType']) ||
 			$this->settings[$model->alias][$field]['fileType'] != $options['fileType']) {
 			$options['maxSize'] = ($options['fileType'] == 'image') ? NC_UPLOAD_MAX_SIZE_IMAGE : NC_UPLOAD_MAX_SIZE_ATTACHMENT;
 		}
@@ -2358,7 +2362,7 @@ class UploadBehavior extends ModelBehavior {
  * アップロードファイル名取得
  * @param AppModel $model Model instance
  * @param string $field Name of field being modified
- * @return  string 
+ * @return  string
  * @since   v 3.0.0.0
  */
 	public function getUploadFileNames(Model $model, $field) {

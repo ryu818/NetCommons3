@@ -62,8 +62,8 @@ class User extends AppModel
 		 * エラーメッセージ設定
 		 */
 		if(!isset($options['items'])) {
-			$Item = ClassRegistry::init('Item');
-			$items = $Item->findList();
+			$UserItem = ClassRegistry::init('UserItem');
+			$items = $UserItem->findList();
 		} else {
 			$items = $options['items'];
 		}
@@ -72,27 +72,27 @@ class User extends AppModel
 		 */
 		$this->emailTags = array();
 		foreach($items as $item) {
-			if($item['Item']['tag_name'] == "" && ($item['Item']['type'] == 'email' || $item['Item']['type'] == 'mobile_email')) {
-				$this->emailTags[] = $item['Item']['id'];
+			if($item['UserItem']['tag_name'] == "" && ($item['UserItem']['type'] == 'email' || $item['UserItem']['type'] == 'mobile_email')) {
+				$this->emailTags[] = $item['UserItem']['id'];
 			}
 		}
 
 		foreach($items as $item) {
-			if($item['Item']['tag_name'] == "" || $item['Item']['tag_name'] == "username") {
+			if($item['UserItem']['tag_name'] == "" || $item['UserItem']['tag_name'] == "username") {
 				continue;
 			}
-			if(!isset($item['ItemLang']['name'])) {
-				$name = $item['Item']['default_name'];
+			if(!isset($item['UserItemLang']['name'])) {
+				$name = $item['UserItem']['default_name'];
 			} else {
-				$name = $item['ItemLang']['name'];
+				$name = $item['UserItemLang']['name'];
 			}
 
 			// 必須チェック
-			if($item['Item']['required'] == _ON) {
-				//if($item['Item']['tag_name'] != 'password' || empty($this->data[$this->alias]['id'])) {
+			if($item['UserItem']['required'] == _ON) {
+				//if($item['UserItem']['tag_name'] != 'password' || empty($this->data[$this->alias]['id'])) {
 					// パスワードで編集ならば必須としない
 					// TODO:インストールでは、パスワードで編集であっても必須チェックをしなければならないため、一時コメントアウト。
-					$this->validate[$item['Item']['tag_name']]['notEmpty'] = array(
+					$this->validate[$item['UserItem']['tag_name']]['notEmpty'] = array(
 						'rule' => array('notEmpty'),
 						'last' => true,
 						//'required' => true,
@@ -103,16 +103,16 @@ class User extends AppModel
 			}
 
 			// 重複チェック
-			if($item['Item']['allow_duplicate'] == _OFF) {
-				if($item['Item']['type'] == 'email' || $item['Item']['type'] == 'mobile_email') {
-					$this->validate[$item['Item']['tag_name']]['duplicateEmail'] = array(
+			if($item['UserItem']['allow_duplicate'] == _OFF) {
+				if($item['UserItem']['type'] == 'email' || $item['UserItem']['type'] == 'mobile_email') {
+					$this->validate[$item['UserItem']['tag_name']]['duplicateEmail'] = array(
 						'rule' => array('duplicateEmail'),
 						//'last' => false,
 						'allowEmpty' => true,
 						'message' => __('The contents of %s is already in use.', $name),
 					);
 				} else {
-					$this->validate[$item['Item']['tag_name']]['duplicate'] = array(
+					$this->validate[$item['UserItem']['tag_name']]['duplicate'] = array(
 						'rule' => array('duplicate'),
 						//'last' => false,
 						'allowEmpty' => true,
@@ -122,29 +122,29 @@ class User extends AppModel
 			}
 
 			// minlengthチェック
-			if($item['Item']['minlength'] != '0') {
-				$this->validate[$item['Item']['tag_name']]['minlength'] = array(
-					'rule' => array('minLength', $item['Item']['minlength']),
+			if($item['UserItem']['minlength'] != '0') {
+				$this->validate[$item['UserItem']['tag_name']]['minlength'] = array(
+					'rule' => array('minLength', $item['UserItem']['minlength']),
 					//'last' => false,
 					'allowEmpty' => true,
-					'message' => __('The input must be at least %s characters.', $item['Item']['minlength']),
+					'message' => __('The input must be at least %s characters.', $item['UserItem']['minlength']),
 				);
 			}
 
 			// maxlengthチェック
-			if($item['Item']['maxlength'] != '0') {
-				$this->validate[$item['Item']['tag_name']]['maxLength'] = array(
-					'rule' => array('maxLength', $item['Item']['maxlength']),
+			if($item['UserItem']['maxlength'] != '0') {
+				$this->validate[$item['UserItem']['tag_name']]['maxLength'] = array(
+					'rule' => array('maxLength', $item['UserItem']['maxlength']),
 					//'last' => true,
 					//'required' => true,
 					'allowEmpty' => true,
-					'message' => __('The input must be up to %s characters.', $item['Item']['maxlength']),
+					'message' => __('The input must be up to %s characters.', $item['UserItem']['maxlength']),
 				);
 			}
 
 			// emailチェック
-			if($item['Item']['type'] == 'email' || $item['Item']['type'] == 'mobile_email') {
-				$this->validate[$item['Item']['tag_name']]['email'] = array(
+			if($item['UserItem']['type'] == 'email' || $item['UserItem']['type'] == 'mobile_email') {
+				$this->validate[$item['UserItem']['tag_name']]['email'] = array(
 					'rule' => array('email'),
 					//'last' => true,
 					//'required' => true,
@@ -154,9 +154,9 @@ class User extends AppModel
 			}
 
 			// 正規表現チェック
-			if($item['Item']['regexp'] != '') {
-				$this->validate[$item['Item']['tag_name']]['custom'] = array(
-					'rule' => array('custom', $item['Item']['regexp']),
+			if($item['UserItem']['regexp'] != '') {
+				$this->validate[$item['UserItem']['tag_name']]['custom'] = array(
+					'rule' => array('custom', $item['UserItem']['regexp']),
 					//'last' => true,
 					//'required' => true,
 					'allowEmpty' => true,
@@ -165,24 +165,24 @@ class User extends AppModel
 			}
 
 			// permalinkチェック
-			if($item['Item']['tag_name'] == 'permalink') {
-				$this->validate[$item['Item']['tag_name']]['invalidPermalink'] = array(
+			if($item['UserItem']['tag_name'] == 'permalink') {
+				$this->validate[$item['UserItem']['tag_name']]['invalidPermalink'] = array(
 					'rule' => array('invalidPermalink'),
 					'last' => true,
 					'message' => __('It contains an invalid string.')
 				);
 			}
 
-			if($item['Item']['tag_name'] == "avatar") {
+			if($item['UserItem']['tag_name'] == "avatar") {
 				$required = false;
-				if($item['Item']['required'] == _ON) {
+				if($item['UserItem']['required'] == _ON) {
 					$required = true;
 				}
-				$this->validate[$item['Item']['tag_name']]['isValidExtension'] = array(
+				$this->validate[$item['UserItem']['tag_name']]['isValidExtension'] = array(
 					'rule' => array('isValidExtension', null, $required),
 					'last' => true
 				);
-				$this->validate[$item['Item']['tag_name']]['isBelowMaxSize'] = array(
+				$this->validate[$item['UserItem']['tag_name']]['isBelowMaxSize'] = array(
 					'rule' => array('isBelowMaxSize', null, $required),
 					'last' => true
 				);
@@ -304,7 +304,7 @@ class User extends AppModel
 		if(count($this->emailTags) > 0) {
 			$UserItemLink = ClassRegistry::init('UserItemLink');
 			$conditions = array(
-				'item_id' => $this->emailTags,
+				'user_item_id' => $this->emailTags,
 				'content' => $values[0],
 			);
 			if(!empty($this->data[$this->alias]['id']))
@@ -818,8 +818,8 @@ class User extends AppModel
 		if(isset($request->data['User']) || isset($request->data['UserItemLink'])) {
 			if($adminHierarchy < NC_AUTH_MIN_CHIEF && !isset($itemAuthorityLinks)) {
 				// 会員管理が編集不可能(会員管理が編集可能ならば、すべてから検索可能)
-				$ItemAuthorityLink = ClassRegistry::init('ItemAuthorityLink');
-				$itemAuthorityLinks = $ItemAuthorityLink->findList();
+				$UserItemAuthorityLink = ClassRegistry::init('UserItemAuthorityLink');
+				$itemAuthorityLinks = $UserItemAuthorityLink->findList();
 
 				$authorities = $Authority->find('list', array('fields' => array('id', 'hierarchy')));
 				$bufAuthorities = array();
@@ -828,9 +828,9 @@ class User extends AppModel
 				}
 			}
 
-			$Item = ClassRegistry::init('Item');
+			$UserItem = ClassRegistry::init('UserItem');
 
-			$allItems = $Item->find('all', array(
+			$allItems = $UserItem->find('all', array(
 				'fields' => 'id, tag_name, type, allow_public_flag',
 				'recursive' => -1
 			));
@@ -841,12 +841,12 @@ class User extends AppModel
 			$itemsTags = array();
 
 			foreach($allItems as $bufItem) {
-				$items[$bufItem['Item']['id']] = $bufItem['Item']['tag_name'];
-				$itemsAllowPublicFlags[$bufItem['Item']['id']] = $bufItem['Item']['allow_public_flag'];
-				$itemsTypes[$bufItem['Item']['id']] = $bufItem['Item']['type'];
+				$items[$bufItem['UserItem']['id']] = $bufItem['UserItem']['tag_name'];
+				$itemsAllowPublicFlags[$bufItem['UserItem']['id']] = $bufItem['UserItem']['allow_public_flag'];
+				$itemsTypes[$bufItem['UserItem']['id']] = $bufItem['UserItem']['type'];
 
-				if($bufItem['Item']['tag_name'] != '') {
-					$itemsTags[$bufItem['Item']['tag_name']] = $bufItem['Item']['id'];
+				if($bufItem['UserItem']['tag_name'] != '') {
+					$itemsTags[$bufItem['UserItem']['tag_name']] = $bufItem['UserItem']['id'];
 				}
 			}
 
@@ -1059,7 +1059,7 @@ class User extends AppModel
 								"alias" => $alias,
 								"conditions" => array(
 									$alias.".user_id = User.id",
-									$alias.".item_id" => $itemId,
+									$alias.".user_item_id" => $itemId,
 									$set_content
 								)
 							);
@@ -1078,7 +1078,7 @@ class User extends AppModel
 								"alias" => $alias,
 								"conditions" => array(
 									$alias.".user_id = User.id",
-									$alias.".item_id" => $itemId,
+									$alias.".user_item_id" => $itemId,
 									$joinsKey => $joinsValue
 								)
 							);

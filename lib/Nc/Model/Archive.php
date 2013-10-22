@@ -321,8 +321,8 @@ class Archive extends AppModel
 			'Archive.status' => NC_STATUS_PUBLISH,
 			'Archive.is_approved' => _ON,
 			'OR' => array(
-				'Archive.group_id' => 0,
-				'GroupLink.id IS NOT NULL',
+				'Archive.user_group_id' => 0,
+				'UserGroupLink.id IS NOT NULL',
 			)
 		);
 
@@ -452,10 +452,10 @@ class Archive extends AppModel
 				),
 				array(
 					"type" => "LEFT",
-					"table" => "group_links",
-					"alias" => "GroupLink",
-					"conditions" => "`Archive`.`group_id`=`GroupLink`.`group_id`".
-						" AND `GroupLink`.`created`=".$userId
+					"table" => "user_group_links",
+					"alias" => "UserGroupLink",
+					"conditions" => "`Archive`.`user_group_id`=`UserGroupLink`.`user_group_id`".
+						" AND `UserGroupLink`.`created`=".$userId
 				),
 			),
 			'group' => array('Archive.module_id', 'Archive.parent_model_name', 'Archive.parent_id'),

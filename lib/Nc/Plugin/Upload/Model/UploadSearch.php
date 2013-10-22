@@ -21,7 +21,7 @@ class UploadSearch extends AppModel {
 /**
  * 検索条件初期値
  * @param   void
- * @return  Model Item ItemLang
+ * @return  Model UploadSearch
  * @since   v 3.0.0.0
  */
 	public function findDefault() {

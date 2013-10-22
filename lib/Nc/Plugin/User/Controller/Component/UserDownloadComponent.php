@@ -41,8 +41,8 @@ class UserDownloadComponent extends Component {
  */
 	public function check($uploadLink, $fileOwnerId, $downloadPassword=null) {
 		$User = ClassRegistry::init('User');
-		$Item = ClassRegistry::init('Item');
-		$ItemAuthorityLink = ClassRegistry::init('ItemAuthorityLink');
+		$UserItem = ClassRegistry::init('UserItem');
+		$UserItemAuthorityLink = ClassRegistry::init('UserItemAuthorityLink');
 
 		$loginUser = $this->_controller->Auth->user();
 		$loginUserId = isset($loginUser['id']) ? intval($loginUser['id']) : 0;
@@ -51,10 +51,10 @@ class UserDownloadComponent extends Component {
 		}
 
 		$fileOwner = $User->findById($fileOwnerId);
-		$avatar = $Item->findByTagName('avatar');
+		$avatar = $UserItem->findByTagName('avatar');
 
-		$publicFlags = $ItemAuthorityLink->findIsPublicForLoginUser($fileOwner);
-		if (!$publicFlags[$avatar['Item']['id']]) {
+		$publicFlags = $UserItemAuthorityLink->findIsPublicForLoginUser($fileOwner);
+		if (!$publicFlags[$avatar['UserItem']['id']]) {
 			return false;
 		}
 

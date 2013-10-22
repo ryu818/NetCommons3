@@ -33,7 +33,7 @@ class PageMenuCommunity extends AppModel {
 			return false;
 		}
 
-		// TODO: upload_idが0でないならば、upload_idを新規に登録しなおす必要がある。
+		// TODO: is_uploadが0でないならば、upload_idを新規に登録しなおす必要がある。
 		// 現状、アップロード処理がないため未作成。
 		unset($community['Community']['id']);
 		$community['Community']['room_id'] = $new_room_id;
@@ -66,7 +66,7 @@ class PageMenuCommunity extends AppModel {
 			}
 		}
 
-		$fields = array('CommunityTag.tag_id','CommunityTag.tag_value','CommunityTag.display_sequence');
+		$fields = array('CommunityTag.community_sum_tag_id','CommunityTag.tag_value','CommunityTag.display_sequence');
 		$conditions = array(
 			'CommunityTag.room_id' => $copy_room_id
 		);
@@ -79,7 +79,7 @@ class PageMenuCommunity extends AppModel {
 			}
 		}
 
-		// TODO:tagsテーブルの更新処理未作成
+		// TODO:commyunity_sum_tagsテーブルの更新処理未作成
 
 		return true;
 	}
