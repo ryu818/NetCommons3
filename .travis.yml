@@ -103,6 +103,7 @@ before_script:
       }
     }
     }" > app/Config/database.php
+    - composer require "pear-cakephp/cakephp": "2.4.1"
 
 script:
   - cd app/; ./Console/cake test app All --stderr
