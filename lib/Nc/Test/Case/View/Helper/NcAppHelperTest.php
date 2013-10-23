@@ -11,7 +11,7 @@ App::uses('Controller', 'Controller');
 App::uses('View', 'View');
 App::uses('Helper', 'View/AppHelper');
 
-class NC_AppHelperTest extends CakeTestCase {
+class NcAppHelperTest extends CakeTestCase {
 	public function setUp() {
 		parent::setUp();
 		$Controller = new Controller();
