@@ -72,6 +72,7 @@ App::build(array(
 	'Locale'                    => array(APP . 'Locale' . DS, NC . 'Locale' . DS),
 	'Vendor'                    => array(APP . 'Vendor' . DS, NC . 'Vendor' . DS),
 	'Plugin'                    => array(APP . 'Plugin' . DS, NC . 'Plugin' . DS),
+	//'Test'                      => array(APP . 'Test' . DS, NC . 'Test' . DS),
 ));
 // ブロック用テーマ - webroot
 App::build(array(

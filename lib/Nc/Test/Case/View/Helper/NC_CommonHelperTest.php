@@ -5,9 +5,9 @@ App::uses('CommonHelper', 'View/Helper');
 
 /**
  * CommonHelper Test Case
- *
+ * lib/Nc以下のテストなのでNC_をプレフィックスとして使用。
  */
-class CommonHelperTest extends CakeTestCase {
+class NC_CommonHelperTest extends CakeTestCase {
 
 /**
  * setUp method
