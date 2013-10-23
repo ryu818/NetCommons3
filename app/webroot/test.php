@@ -42,6 +42,23 @@ if (!defined('ROOT')) {
 	define('ROOT', dirname(dirname(dirname(__FILE__))));
 }
 
+/*
+ * vendorのパス
+ * */
+if (!defined('VENDORS')) {
+	define('VENDORS', ROOT . DS . 'lib' . DS . 'Nc'.DS . 'Vendor' . DS);
+}
+
+/**
+ * CakePHP本体
+ */
+if(! defined('CAKE_CORE_INCLUDE_PATH'))
+{
+	define("CAKE_CORE_INCLUDE_PATH" , VENDORS . DS . 'pear-pear.cakephp.org' . DS . 'CakePHP');
+}
+
+
+
 /**
  * The actual directory name for the "app".
  *
