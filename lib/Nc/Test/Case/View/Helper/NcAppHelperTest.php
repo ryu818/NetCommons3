@@ -21,12 +21,15 @@ class NcAppHelperTest extends CakeTestCase {
 
 	public function testUrl() {
 		$text = "test";
-		$this->assertEqual('http://localhost/test' , $this->app->url($text , true));
+		$host = FULL_BASE_URL;
+
+		$this->assertEqual($host.'/test' , $this->app->url($text , true));
 		$this->assertEqual('/test' , $this->app->url($text));
 
-		$text = "http://localhost/test";
-		$this->assertEqual('http://localhost/test' , $this->app->url($text , true));
-		$this->assertEqual('http://localhost/test' , $this->app->url($text));
+
+		$text = $host.'/test';
+		$this->assertEqual($text , $this->app->url($text , true));
+		$this->assertEqual($text , $this->app->url($text));
 
 		$this->assertEqual(null , $this->app->url());
 		$this->assertEqual(null , $this->app->url(null));
