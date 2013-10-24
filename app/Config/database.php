@@ -71,13 +71,13 @@ class DATABASE_CONFIG {
 	);
 
 	public $test = array(
-		'datasource' => NC_DATASOURCE,
-		'persistent' => NC_PERSISTENT,
-		'host' => NC_HOST,
-		'login' => NC_LOGIN,
-		'password' => NC_PASSWORD,
-		'database' => NC_DATABASE,
-		'prefix' => NC_PREFIX,
-		'encoding' => NC_ENCODING,
+		'datasource' => "Database/Mysql",
+		'persistent' => false,
+		'host' => "localhost",
+		'login' => "root",
+		'password' => "",
+		'database' => "netcommons3_test",
+		'prefix' => "",
+		'encoding' => "utf8",
 	);
 }
