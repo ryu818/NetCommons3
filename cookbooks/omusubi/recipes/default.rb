@@ -3,19 +3,30 @@ execute "sources.list update" do
   command "sed -i 's/us.archive/ja.archive/g' /etc/apt/sources.list"
 end
 
-execute "add latest php5 repository" do
-  command "apt-get remove php5*; add-apt-repository ppa:ondrej/php5"
-  not_if { ::File.exists?("/etc/apt/sources.list.d/ondrej-php5-#{node[:lsb][:codename]}.list")}
-end
-
 execute "apt-get update" do
   command "apt-get update"
 end
 
+# Install packages necessary for installation
+%w{python-software-properties}.each do |pkg|
+  package pkg do
+    action [:install, :upgrade]
+  end
+end
+
+execute "add latest php5 repository" do
+  command "apt-get remove php5*; add-apt-repository ppa:ondrej/php5; apt-get update"
+  not_if { ::File.exists?("/etc/apt/sources.list.d/ondrej-php5-#{node[:lsb][:codename]}.list")}
+end
+
+# Install packages necessary for this project
 packages = %w{
   php5 php5-mysql php5-pgsql php5-curl php5-cli php5-fpm php5-imagick php5-xdebug php-pear
   git subversion nginx
   mysql-server postgresql curl imagemagick
+  lv zsh tree axel expect
+  emacs emacs-goodies-el debian-el gettext-el global w3m w3m-el w3m-img magit
+  iftop iotop iperf nethogs sysstat
 }
 
 packages.each do |pkg|
