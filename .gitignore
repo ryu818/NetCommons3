@@ -45,3 +45,9 @@ $RECYCLE.BIN/
 
 # Vagrant無視設定
 /.vagrant
+
+# tag無視設定
+GPATH
+GRTAGS
+GSYMS
+GTAGS
