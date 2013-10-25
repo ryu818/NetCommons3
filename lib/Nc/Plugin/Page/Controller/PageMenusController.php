@@ -357,65 +357,66 @@ class PageMenusController extends PageAppController {
 				'photo_samples' => $this->PageMenu->getCommunityPhoto()
 			);
 			$this->set('community_params', $community_params);
-
-			// 自動保存
-			$autoRegistParams = $this->RevisionList->beforeAutoRegist(isset($communityLang['CommunityLang']['id']) ? $communityLang['CommunityLang']['id'] : null);
-
-			$isAutoRegist = $autoRegistParams['isAutoRegist'];
-			$revisionName = $autoRegistParams['revision_name'];
-			$pointer = _OFF;
-			if(empty($communityLang['CommunityLang']['revision_group_id']) || !$isAutoRegist) {
-				$pointer = _ON;
-			}
-			$revision = array(
-				'Revision' => array(
-					'group_id' => $communityLang['CommunityLang']['revision_group_id'],
-					'pointer' => $pointer,
-					'is_approved_pointer' => _ON,
-					'revision_name' => $revisionName,
-					'content_id' => 0,
-					'content' => $this->request->data['Revision']['content']
-				)
-			);
-
-			$fieldListRevision = array(
-				'group_id', 'pointer', 'is_approved_pointer', 'revision_name', 'content_id', 'content',
-			);
-			unset($this->Revision->validate['content']['notEmpty']);
-			$this->Revision->set($revision);
 			$this->Community->set($community);
 			$this->CommunityLang->set($communityLang);
-			if (!$this->Revision->validates(array('fieldList' => $fieldListRevision))) {
-				$errorFlag = 3;
-			}
 			if (!$this->Community->validates(array('fieldList' => $fieldCommunityList))) {
 				$errorFlag = 2;
 			}
 			if (!$this->CommunityLang->validates(array('fieldList' => $fieldCommunityLangList))) {
 				$errorFlag = 2;
 			}
-			if (!$this->CommunityTag->validateTags($communityTag['CommunityTag']['tag_value'])) {
-				$errorFlag = 3;
-			}
+			if(isset($this->request->data['Revision']['content'])) {
+				// 自動保存
+				$autoRegistParams = $this->RevisionList->beforeAutoRegist(isset($communityLang['CommunityLang']['id']) ? $communityLang['CommunityLang']['id'] : null);
 
-			if(!$errorFlag && $this->request->is('post') &&
-				(!empty($communityLang['CommunityLang']['revision_group_id']) || $this->Revision->isNotEmptyContent($revision[$this->Revision->alias]))) {
-				if (!$this->Revision->save($revision, false, $fieldListRevision) && count($this->Revision->valodationErrors) > 0) {
-					throw new InternalErrorException(__('Failed to update the database, (%s).', 'revisions'));
+				$isAutoRegist = $autoRegistParams['isAutoRegist'];
+				$revisionName = $autoRegistParams['revision_name'];
+				$pointer = _OFF;
+				if(empty($communityLang['CommunityLang']['revision_group_id']) || !$isAutoRegist) {
+					$pointer = _ON;
 				}
-				if(empty($communityLang['CommunityLang']['revision_group_id'])) {
-					$communityLang['CommunityLang']['revision_group_id'] = $this->Revision->id;
-					$this->CommunityLang->set($communityLang);	// 再セット
-				}
-				if (!$this->CommunityLang->save($communityLang, false, $fieldCommunityLangList)) {
-					throw new InternalErrorException(__('Failed to update the database, (%s).', 'community_langs'));
-				}
-			}
+				$revision = array(
+					'Revision' => array(
+						'group_id' => $communityLang['CommunityLang']['revision_group_id'],
+						'pointer' => $pointer,
+						'is_approved_pointer' => _ON,
+						'revision_name' => $revisionName,
+						'content_id' => 0,
+						'content' => $this->request->data['Revision']['content']
+					)
+				);
 
-			if($isAutoRegist) {
-				// 自動保存時後処理
-				$this->RevisionList->afterAutoRegist($this->Revision->id);
-				return;
+				$fieldListRevision = array(
+					'group_id', 'pointer', 'is_approved_pointer', 'revision_name', 'content_id', 'content',
+				);
+				unset($this->Revision->validate['content']['notEmpty']);
+				$this->Revision->set($revision);
+				if (!$this->Revision->validates(array('fieldList' => $fieldListRevision))) {
+					$errorFlag = 3;
+				}
+				if (!$this->CommunityTag->validateTags($communityTag['CommunityTag']['tag_value'])) {
+					$errorFlag = 3;
+				}
+
+				if(!$errorFlag && $this->request->is('post') &&
+					(!empty($communityLang['CommunityLang']['revision_group_id']) || $this->Revision->isNotEmptyContent($revision[$this->Revision->alias]))) {
+					if (!$this->Revision->save($revision, false, $fieldListRevision) && count($this->Revision->valodationErrors) > 0) {
+						throw new InternalErrorException(__('Failed to update the database, (%s).', 'revisions'));
+					}
+					if(empty($communityLang['CommunityLang']['revision_group_id'])) {
+						$communityLang['CommunityLang']['revision_group_id'] = $this->Revision->id;
+						$this->CommunityLang->set($communityLang);	// 再セット
+					}
+					if (!$this->CommunityLang->save($communityLang, false, $fieldCommunityLangList)) {
+						throw new InternalErrorException(__('Failed to update the database, (%s).', 'community_langs'));
+					}
+				}
+
+				if($isAutoRegist) {
+					// 自動保存時後処理
+					$this->RevisionList->afterAutoRegist($this->Revision->id);
+					return;
+				}
 			}
 		}
 
@@ -463,7 +464,7 @@ class PageMenusController extends PageAppController {
 					throw new InternalErrorException(__('Failed to update the database, (%s).', 'community_langs'));
 				}
 
-				if (!$this->CommunityTag->saveTags($insPage['Page']['id'], $lang, $communityTag['CommunityTag']['tag_value'])) {
+				if (isset($communityTag) && !$this->CommunityTag->saveTags($insPage['Page']['id'], $lang, $communityTag['CommunityTag']['tag_value'])) {
 					throw new InternalErrorException(__('Failed to update the database, (%s).', 'community_tags'));
 				}
 
