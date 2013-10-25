@@ -128,7 +128,7 @@ class AnnouncementOperationComponent extends Component {
 					$newGroupId = $this->{$table}->id;
 					$newGroupIdArr[$groupId] = $newGroupId;
 				} else if($table == 'Announcement') {
-					$newArchiveUniqueIdArr[$id] = $this->{$table}->id;;
+					$newArchiveUniqueIdArr[$id] = $this->{$table}->id;
 				}
 			}
 		}
