@@ -257,7 +257,7 @@ class UploadBehavior extends ModelBehavior {
 			if (!in_array($options['thumbnailMethod'], $this->_resizeMethods)) {
 				$options['thumbnailMethod'] = 'imagick';
 			}
-			$options['thumbnailSizes']['library'] = NC_UPLOAD_LIBRARY_THUMBNAIL_WIDTH_RESIZE_MODE;	// 削除時では、beforeSavが呼ばれないため、ここで初期値設定
+			$options['thumbnailSizes']['library'] = NC_UPLOAD_LIBRARY_THUMBNAIL_WIDTH_RESIZE_MODE;	// 削除時では、beforeSaveが呼ばれないため、ここで初期値設定
 // Modify for NetCommons Extentions By Ryuji.M --E N D
 			if (!in_array($options['pathMethod'], $this->_pathMethods)) {
 				$options['pathMethod'] = 'primaryKey';
@@ -618,7 +618,10 @@ class UploadBehavior extends ModelBehavior {
 				$data[$model->alias][$field] = $model->id . '.' . $data[$model->alias]['extension'];
 			}
 // Add for NetCommons Extentions By Ryuji.M --E N D
-			$this->_prepareFilesForDeletion($model, $field, $data, $options);
+// Modify for NetCommons Extentions By Ryuji.M --START
+			$this->_prepareFilesForDeletion($model, $field, $data, $options, true);
+			// $this->_prepareFilesForDeletion($model, $field, $data, $options);
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 		}
 		return true;
 	}
@@ -1864,8 +1867,10 @@ class UploadBehavior extends ModelBehavior {
 
 		return 'application/octet-stream';
 	}
-
-	public function _prepareFilesForDeletion(Model $model, $field, $data, $options) {
+// Modify for NetCommons Extentions By Ryuji.M --START
+	public function _prepareFilesForDeletion(Model $model, $field, $data, $options, $isDelete = false) {
+	//public function _prepareFilesForDeletion(Model $model, $field, $data, $options) {
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 		if (!strlen($data[$model->alias][$field])) return $this->__filesToRemove;
 
 		if (!empty($options['fields']['dir']) && isset($data[$model->alias][$options['fields']['dir']])) {
@@ -1936,7 +1941,7 @@ class UploadBehavior extends ModelBehavior {
 				return false;
 			}
 		}
-		if($options['isWysiwyg']) {
+		if(!$isDelete && $options['isWysiwyg']) {
 			return $this->__filesToRemove;
 		}
 // Add for NetCommons Extentions By Ryuji.M --E N D
@@ -2080,7 +2085,7 @@ class UploadBehavior extends ModelBehavior {
  * @param boolean $cascade
  * @return boolean
  */
-	public function deleteFile(Model $model, $id, $cascade = true) {
+	public function deleteUploadFile(Model $model, $id, $cascade = true) {
 		$model->id = $id;
 		if ($this->beforeDelete($model, $cascade)) {
 			$this->afterDelete($model);

@@ -295,7 +295,7 @@ class UploadController extends UploadAppController
 				$pluginName = $bufUpload['Upload']['plugin'];
 				$uploadModelName = $bufUpload['Upload']['upload_model_name'];
 
-				// Upload.upload_model_nameからdeleteFileを呼ぶ。そうしなければサムネイル毎、削除してくれないものが発生するため。
+				// Upload.upload_model_nameからdeleteFileを呼ぶ。そうしなければサムネイル等、削除してくれないものが発生するため。
 				// モデルからさがし、なければ、プラグインモデルからさがす。
 				if($uploadModelName != 'UploadLibrary' && !isset($deleteClasses[$uploadModelName])) {
 					$deleteClass = ClassRegistry::init($uploadModelName);
@@ -330,7 +330,7 @@ class UploadController extends UploadAppController
 						'thumbnailSizes' => $thumbnailSizes,
 					));
 				}
-				if(!$this->UploadLibrary->deleteFile($bufUploadId)) {
+				if(!$this->UploadLibrary->deleteUploadFile($bufUploadId)) {
 					throw new InternalErrorException(__('Failed to update the database, (%s).', 'uploads'));
 				}
 			}
