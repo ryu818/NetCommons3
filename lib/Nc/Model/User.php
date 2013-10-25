@@ -229,10 +229,11 @@ class User extends AppModel
  * 		マイポータル、プライベートスペースが使用可能かどうかが変更されている場合、
  *		それに応じてpagesテーブルのdisplay_flagを変更する(NC_DISPLAY_FLAG_ON or NC_DISPLAY_FLAG_DISABLE)
  * @param   boolean $created
+ * @param   array   $options
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function afterSave($created) {
+	public function afterSave($created, $options = array()) {
 		if (!$created && count($this->changedAuthorityId) > 0) {
 			$Authority = ClassRegistry::init('Authority');
 			$Page = ClassRegistry::init('Page');
