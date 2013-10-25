@@ -70,6 +70,9 @@ class PageController extends PageAppController {
 
 		$activeLang = isset($this->request->named['active_lang']) ? $this->request->named['active_lang'] : null;
 		$sessLang = $this->Session->read(NC_CONFIG_KEY.'.language');
+		if(!isset($activeLang)) {
+			$activeLang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.activeLang');
+		}
 
 		$this->Session->write(NC_SYSTEM_KEY.'.page_menu.lang', $sessLang);
 		parent::beforeFilter();
@@ -77,6 +80,7 @@ class PageController extends PageAppController {
 		if(isset($activeLang) && isset($languages[$activeLang])) {
 			Configure::write(NC_CONFIG_KEY.'.'.'language', $activeLang);
 			$this->Session->write(NC_CONFIG_KEY.'.language', $activeLang);
+			$this->Session->write(NC_SYSTEM_KEY.'.page_menu.activeLang', $activeLang);
 		}
 
 		if ($this->action == 'index') {
@@ -119,8 +123,9 @@ class PageController extends PageAppController {
 	public function afterFilter()
 	{
 		parent::afterFilter();
-		if($this->action != 'index') {
+		if($this->action != 'index' && $this->action != 'close') {
 			$this->Session->delete(NC_SYSTEM_KEY.'.page_menu.lang');
+			$this->Session->delete(NC_SYSTEM_KEY.'.page_menu.activeLang');
 		}
 		$preLang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.lang');
 		if(isset($preLang)) {
