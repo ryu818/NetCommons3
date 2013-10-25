@@ -326,7 +326,7 @@ class UploadSearch extends AppModel {
 			for($i =0; $i < count($results); $i++) {
 				$results[$i]['Upload'] = $results[$i]['UploadSearch'];
 				unset($results[$i]['UploadSearch']);
-
+				$results[$i]['UploadLink']['module_name'] = $Module->loadModuleName($results[$i]['UploadLink']['plugin']);
 				$results[$i]['Upload']['module_name'] = $Module->loadModuleName($results[$i]['Upload']['plugin']);
 
 				if(!empty($results[$i]['Page']['id'])) {

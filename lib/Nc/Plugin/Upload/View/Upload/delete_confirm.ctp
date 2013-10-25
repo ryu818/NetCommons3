@@ -36,13 +36,14 @@ echo $this->Form->create('UploadConfirm', array(
 				<ul>
 					<?php foreach ($upload as $location): ?>
 						<li>
-							<span><?php echo(h($location['Upload']['module_name'])); ?></span>
+							<span><?php echo(h($location['UploadLink']['module_name'])); ?></span>
+							[<span><?php echo(h($location['Upload']['module_name'])); ?></span>
 							<?php if (isset($location['Page']['page_name'])): ?>
 							<span><?php echo(h($location['Page']['page_name'])); ?></span>
 							<?php endif; ?>
 							<?php if (isset($location['Content']['title'])): ?>
 							<span><?php echo(h($location['Content']['title'])); ?></span>
-							<?php endif; ?>
+							<?php endif; ?>]
 						</li>
 					<?php endforeach; ?>
 				</ul>
