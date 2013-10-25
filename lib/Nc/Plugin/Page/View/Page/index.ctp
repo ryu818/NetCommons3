@@ -41,7 +41,7 @@ $ncUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 		echo $this->Html->link('', '#',
 		array('title' => __d('page', 'File upload'), 'class' => 'nc-page-uploads-icon' . $postfix . ' nc-tooltip',
 			'data-tooltip-desc' => __d('page', 'I can display the file upload list, add, edit or delete.'),
-			'onclick' => '$.Common.showUploadDialog(\'nc-pages-setting-dialog-upload\', {\'el\' : this}); return false;'));
+			'onclick' => '$.Common.showUploadDialog(\'nc-pages-setting-dialog-upload\', {\'el\' : this, \'popup_type\' : \'file\'}); return false;'));
 		?>
 	</div>
 	<div class="table-cell nc-panel-color">
