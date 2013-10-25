@@ -36,6 +36,7 @@
 			$deallocation = $this->Form->button(__d('page', 'Unassign members'), array('name' => 'deallocation', 'class' => 'common-btn common-btn-light', 'type' => 'button',
 				'data-ajax-url' => $this->Html->url(array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'deallocation', $page['Page']['id'])),
 				'data-ajax' => '#pages-menu-edit-item-'.$page['Page']['id'],
+				'data-ajax-data' => h('{"token": "'.$this->params['_Token']['key'].'"}'),	// JSONのエラーとなるためh関数を用いてエスケープ
 				'data-ajax-confirm' => h(__d('page','Unassign members of [%s]. Are you sure?',$page['Page']['page_name'])),'data-ajax-type' => 'post'
 			));
 		} else {

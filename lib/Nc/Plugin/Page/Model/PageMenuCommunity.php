@@ -15,28 +15,32 @@ class PageMenuCommunity extends AppModel {
 /**
  * 参加情報コピー処理
  *
- * @param integer $new_room_id
- * @param integer $copy_room_id
- * @param integer $rename_count 0より大きいならばprefixつきでコミュニティ名称をリネーム
+ * @param integer $newRoomId
+ * @param integer $copyRoomId
+ * @param integer $renameCount 0より大きいならばprefixつきでコミュニティ名称をリネーム
  *
  * @return  boolean
  * @since  v 3.0.0.0
  */
-	public function copyCommunity($new_room_id, $copy_room_id, $rename_count = 0) {
+	public function copyCommunity($newRoomId, $copyRoomId, $renameCount = 0) {
 		$CommunityLang = ClassRegistry::init('CommunityLang');
 		$CommunityTag = ClassRegistry::init('CommunityTag');
+		$UploadLink = ClassRegistry::init('UploadLink');
+		$uploadLinkFields = array(
+			'UploadLink.upload_id','UploadLink.plugin','UploadLink.content_id','UploadLink.model_name',
+			'UploadLink.field_name', 'UploadLink.access_hierarchy', 'UploadLink.is_use', 'UploadLink.download_password', 'UploadLink.check_component_action'
+		);
 		$conditions = array(
-			'Community.room_id' => $copy_room_id
+			'Community.room_id' => $copyRoomId
 		);
 		$community = $this->find('first', $conditions);
 		if(!isset($community['Community'])) {
 			return false;
 		}
+		$oldCommunityId = $community['Community']['id'];
 
-		// TODO: is_uploadが0でないならば、upload_idを新規に登録しなおす必要がある。
-		// 現状、アップロード処理がないため未作成。
 		unset($community['Community']['id']);
-		$community['Community']['room_id'] = $new_room_id;
+		$community['Community']['room_id'] = $newRoomId;
 		unset($community['Community']['created']);
 		unset($community['Community']['created_user_id']);
 		unset($community['Community']['created_user_name']);
@@ -49,37 +53,97 @@ class PageMenuCommunity extends AppModel {
 			return false;
 		}
 
-		$fields = array('CommunityLang.lang','CommunityLang.community_name','CommunityLang.summary','CommunityLang.description');
+		if($community['Community']['is_upload']) {
+			// Community.photoのuploadLinkコピー
+			$uploadLinks = $UploadLink->find('all', array(
+				'fields' => $uploadLinkFields,
+				'conditions' => array(
+					'UploadLink.plugin' => 'Page',
+					'UploadLink.model_name' => 'Community',
+					'UploadLink.field_name' => 'photo',
+					'UploadLink.unique_id' => $oldCommunityId,
+				),
+				'recursive' => -1,
+				'order' => array('UploadLink.id'),
+			));
+			foreach($uploadLinks as $uploadLink) {
+				$UploadLink->create();
+				$uploadLink['UploadLink']['unique_id'] = $this->id;
+				if(!$UploadLink->save($uploadLink)) {
+					return false;
+				}
+			}
+		}
+
+		$fields = array('CommunityLang.lang','CommunityLang.community_name','CommunityLang.summary','CommunityLang.revision_group_id');
 		$conditions = array(
-			'CommunityLang.room_id' => $copy_room_id
+			'CommunityLang.room_id' => $copyRoomId
 		);
-		$community_langs = $CommunityLang->find('all', array('fields' => $fields, 'conditions' => $conditions));
-		foreach($community_langs as $community_lang) {
+		$communityLangs = $CommunityLang->find('all', array('fields' => $fields, 'conditions' => $conditions));
+		foreach($communityLangs as $communityLang) {
+			// Revisionコピー
+			if($communityLang['CommunityLang']['revision_group_id'] > 0) {
+				$Revision = ClassRegistry::init('Revision');
+				$revisions = $Revision->find('all', array(
+					'fields' => array('Revision.pointer','Revision.is_approved_pointer','Revision.revision_name','Revision.content_id','Revision.content'),
+					'conditions' => array('Revision.group_id' => $communityLang['CommunityLang']['revision_group_id']),
+					'recursive' => -1,
+					'order' => array('Revision.id'),
+				));
+				$newGroupId = 0;
+				foreach($revisions as $revision) {
+					$Revision->create();
+					$revision['Revision']['group_id'] = $newGroupId;
+					if(!$Revision->save($revision)) {
+						return false;
+					}
+					if($newGroupId == 0) {
+						$newGroupId = $Revision->id;
+						if(!$Revision->saveField('group_id', $newGroupId)) {
+							return false;
+						}
+					}
+				}
+
+				// RevisionのuploadLinkコピー
+				$uploadLinks = $UploadLink->find('all', array(
+					'fields' => $uploadLinkFields,
+					'conditions' => array(
+						'UploadLink.plugin' => 'Page',
+						'UploadLink.model_name' => 'Revision',
+						'UploadLink.field_name' => 'content',
+						'UploadLink.unique_id' => $communityLang['CommunityLang']['revision_group_id'],
+					),
+					'recursive' => -1,
+					'order' => array('UploadLink.id'),
+				));
+				foreach($uploadLinks as $uploadLink) {
+					$UploadLink->create();
+					$uploadLink['UploadLink']['unique_id'] = $newGroupId;
+					if(!$UploadLink->save($uploadLink)) {
+						return false;
+					}
+				}
+				$communityLang['CommunityLang']['revision_group_id'] = $newGroupId;
+			}
+
 			$CommunityLang->create();
-			$community_lang['CommunityLang']['room_id'] = $new_room_id;
-			if($rename_count > 0) {
-				$community_name = preg_replace('/^\[copy[0-9]+\](.*)/', "$1", $community_lang['CommunityLang']['community_name']);
-				$community_lang['CommunityLang']['community_name'] = __d('pages', '[copy%s]%s', $rename_count, $community_name) ;
+			$communityLang['CommunityLang']['room_id'] = $newRoomId;
+			if($renameCount > 0) {
+				$community_name = preg_replace('/^\[copy[0-9]+\](.*)/', "$1", $communityLang['CommunityLang']['community_name']);
+				$communityLang['CommunityLang']['community_name'] = __d('pages', '[copy%s]%s', $renameCount, $community_name) ;
 			}
-			if(!$CommunityLang->save($community_lang)) {
+			if(!$CommunityLang->save($communityLang)) {
 				return false;
 			}
-		}
 
-		$fields = array('CommunityTag.community_sum_tag_id','CommunityTag.tag_value','CommunityTag.display_sequence');
-		$conditions = array(
-			'CommunityTag.room_id' => $copy_room_id
-		);
-		$community_tags = $CommunityTag->find('all', array('fields' => $fields, 'conditions' => $conditions));
-		foreach($community_tags as $community_tag) {
-			$CommunityTag->create();
-			$community_tag['CommunityTag']['room_id'] = $new_room_id;
-			if(!$CommunityTag->save($community_tag)) {
-				return false;
+			$tagValues = $CommunityTag->findCommaDelimitedTags($copyRoomId, $communityLang['CommunityLang']['lang']);
+			if($tagValues != '') {
+				if(!$CommunityTag->saveTags($newRoomId, $communityLang['CommunityLang']['lang'], $tagValues)) {
+					return false;
+				}
 			}
 		}
-
-		// TODO:commyunity_sum_tagsテーブルの更新処理未作成
 
 		return true;
 	}

@@ -189,7 +189,7 @@ app\\webroot\\theme\\assets下に圧縮したものと、そうでないもの�
 	public $communities = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'room_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'key' => 'index'),
-		'photo' => array('type' => 'string', 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'コミュニティーの写真(選択ファイル名 OR (Upload.id).(extension))', 'charset' => 'utf8'),
+		'photo' => array('type' => 'string', 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'コミュニティーの写真(選択ファイル名 OR (Upload.id)_library.(extension))', 'charset' => 'utf8'),
 		'is_upload' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'comment' => 'アップロードファイルを指定したかどうか。'),
 		'publication_range_flag' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3, 'comment' => '公開範囲
 0:参加者のみ（コミュニティー参加者のみが閲覧可能）
@@ -228,7 +228,7 @@ app\\webroot\\theme\\assets下に圧縮したものと、そうでないもの�
 		'lang' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 10, 'collate' => 'utf8_general_ci', 'comment' => '言語(ja,en等)', 'charset' => 'utf8'),
 		'community_name' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'コミュニティー名称', 'charset' => 'utf8'),
 		'summary' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '概要', 'charset' => 'utf8'),
-		'description' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '詳細', 'charset' => 'utf8'),
+		'revision_group_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'comment' => '活動の概要へのRevison.id'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'created_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
 		'created_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
@@ -266,6 +266,7 @@ app\\webroot\\theme\\assets下に圧縮したものと、そうでないもの�
 		'room_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'key' => 'index'),
 		'community_sum_tag_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'tag_value' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'タグ名称', 'charset' => 'utf8'),
+		'lang' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 10, 'collate' => 'utf8_general_ci', 'comment' => '言語(ja,en等)', 'charset' => 'utf8'),
 		'display_sequence' => array('type' => 'integer', 'null' => false, 'default' => '0', 'comment' => 'コミュニティー単位の表示順序(room_id毎の連番)'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'created_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
@@ -762,7 +763,7 @@ right：右寄せ', 'charset' => 'utf8'),
 Revisionから復元処理があるため、一度、記事として登録されたファイルは、登録される。'),
 		'download_password' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'ダウンロード用パスワード', 'charset' => 'utf8'),
 		'check_component_action' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '表示チェック用コンポーネント、アクション名をカンマ区切りで設定。記述コンポーネント、アクション名がすべてtrueならば閲覧可能（アクション名のdefaultはcheckメソッド）。
-[プラグイン名].[コンポーネント名][アクション名]（Camel形式）の形式で登録。', 'charset' => 'utf8'),
+[プラグイン名].[コンポーネント名].[アクション名]（Camel形式）の形式で登録。', 'charset' => 'utf8'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'created_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
 		'created_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),

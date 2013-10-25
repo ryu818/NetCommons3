@@ -245,6 +245,8 @@ class UploadLink extends AppModel
 			)
 		));
 		$useUploadIdArr = $this->getExtractedUploadId($text);
+		// TODO:閲覧チェックを行い問題なければ登録するべき
+
 		$newUploadIdArr = array_diff($useUploadIdArr, $dbUploadIdArr);
 		if (!empty($newUploadIdArr)) {
 			// 新しく追加したファイル
@@ -282,12 +284,16 @@ class UploadLink extends AppModel
 				$this->alias.'.field_name' => $options['fieldName'],
 			);
 			foreach ($dbUploadIdArr as $uploadId) {
+				$fields = array(
+					$this->alias.".access_hierarchy" =>$options['accessHierarchy'],
+					$this->alias.".is_use" => _ON,
+					$this->alias.".download_password" => '"' .$options['downloadPassword'] . '"',
+					$this->alias.".check_component_action" => '"' .$options['checkComponentAction'] . '"',
+				);
 				$conditions[$this->alias.'.upload_id'] = $uploadId;
 				if (isset($useUploadIdArr[$uploadId])) {
 					// 使用中
-					$fields = array(
-						$this->alias.".is_use" => _ON
-					);
+
 					if(!$this->updateAll($fields, $conditions)) {
 						return false;
 					}
@@ -300,7 +306,7 @@ class UploadLink extends AppModel
 					}
 				} else {
 					// 未使用
-					$fields = array($this->alias.'.is_use' => _OFF);
+					$fields[$this->alias.'.is_use'] = _OFF;
 					if(!$this->updateAll($fields, $conditions)) {
 						return false;
 					}
@@ -325,7 +331,8 @@ class UploadLink extends AppModel
 			return array();
 		}
 
-		$searchKey = 'nc-downloads/';
+		$baseUrl = Router::url('/', true);
+		$searchKey = $baseUrl.'nc-downloads/';
 		$count = substr_count($text, $searchKey);
 		if (!$count) {
 			return array();
@@ -333,19 +340,47 @@ class UploadLink extends AppModel
 
 		$parts = explode($searchKey, $text);
 		$matchUploadIdArr = array();
+
+		$matchUploadFileNameArr = array();
+
 		for ($i = 1; $i <= $count; $i++) {
-			if(!preg_match("/^([0-9]+)/", $parts[$i], $matches)) {
+			if(preg_match ( "/^([0-9]+)(_[a-zA-Z_-]+)\.(.+?)['\"]{1}/" , $parts[$i], $matches)) {
+				$uploadId = $matches[1];
+				$thumbnailPostFix = $matches[2];
+				$extension = $matches[3];
+			} else if(preg_match ( "/^([0-9]+)\.(.+?)['\"]{1}/" , $parts[$i], $matches)) {
+				$uploadId = $matches[1];
+				$thumbnailPostFix = '';
+				$extension = $matches[2];
+			} else {
 				continue;
 			}
-			if(!isset($matches[1])) {
-				continue;
+
+			if(isset($matchUploadFileNameArr[$uploadId])) {
+				$matchUploadFileNameArr[$uploadId] = array();
 			}
-			$id = $matches[1];
-			$matchUploadIdArr[$id] = $id;
+			$matchUploadFileNameArr[$uploadId][] = $uploadId.$thumbnailPostFix.".".$extension;
+
+			$matchUploadIdArr[$uploadId] = $uploadId;
 		}
 		// 存在しているものだけ返す
 		$Upload = ClassRegistry::init('Upload');
-		return $Upload->find('list', array('fields' => array('Upload.id'), 'conditions' => array($Upload->primaryKey => $matchUploadIdArr)));
+		$uploads = $Upload->find('all', array('fields' => array('Upload.id', 'Upload.plugin', 'Upload.file_path'), 'conditions' => array($Upload->primaryKey => $matchUploadIdArr)));
+		$matchUploadIdArr = array();
+		foreach($uploads as $upload) {
+			$exists = false;
+			$fileNames = $matchUploadFileNameArr[$upload['Upload']['id']];
+			foreach($fileNames as $fileName) {
+				if(file_exists(NC_UPLOADS_DIR.$upload['Upload']['plugin'].DS.$upload['Upload']['file_path'].$fileName)) {
+					$exists = true;
+					break;
+				}
+			}
+			if($exists) {
+				$matchUploadIdArr[$upload['Upload']['id']] = $upload['Upload']['id'];
+			}
+		}
+		return $matchUploadIdArr;
 	}
 
 /**

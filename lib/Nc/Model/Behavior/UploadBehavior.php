@@ -2189,6 +2189,11 @@ class UploadBehavior extends ModelBehavior {
 		}
 		$modelName = isset($options['modelName']) ? $options['modelName'] : $model->alias;
 		$fieldName = isset($options['fieldName']) ? $options['fieldName'] : $field;
+		if(is_string($options['checkComponentAction'])) {
+			$checkComponentAction = $options['checkComponentAction'];
+		} else {
+			$checkComponentAction = implode(',', $options['checkComponentAction']);
+		}
 
 		if($isWysiwyg) {
 			$text = isset($options['wysiwygText']) ? $options['wysiwygText'] : (isset($model->data[$modelName][$fieldName]) ? $model->data[$modelName][$fieldName] : null);
@@ -2201,15 +2206,48 @@ class UploadBehavior extends ModelBehavior {
 				'uniqueId' => $uniqueId,
 				'modelName' => $modelName,
 				'fieldName' => $fieldName,
+				'accessHierarchy' =>$options['accessHierarchy'],
+				'downloadPassword' => $options['downloadPassword'],
+				'checkComponentAction' => $checkComponentAction,
 			);
 			return $UploadLink->updateUploadInfoForWysiwyg($text, $options);
 		} else {
+			$Upload = ClassRegistry::init('Upload');
 			$fileName = isset($model->data[$model->alias][$field]) ? $model->data[$model->alias][$field] : null;
 			if(!isset($fileName)) {
 				return true;
 			}
-			$uploadId = substr($fileName, 0, strpos($fileName, '.'));
+
+			if(preg_match ( "/^([0-9]+)(_[a-zA-Z_-]+)\.(.+)$/" , $fileName, $matches)) {
+				$uploadId = $matches[1];
+				$thumbnailPostFix = $matches[2];
+				$extension = $matches[3];
+			} else if(preg_match ( "/^([0-9]+)\.(.+)$/" , $fileName, $matches)) {
+				$uploadId = $matches[1];
+				$thumbnailPostFix = '';
+				$extension = $matches[2];
+			} else {
+				$uploadId = 0;
+			}
+
+			$upload = $Upload->findById($uploadId);
+			if(isset($upload['Upload'])) {
+				if(!file_exists(NC_UPLOADS_DIR.$upload['Upload']['plugin'].DS.$upload['Upload']['file_path'].$fileName)) {
+					$uploadId = 0;
+				}
+				// TODO:閲覧チェックを行い問題なければ登録するべき
+			} else {
+				$uploadId = 0;
+			}
+
 			if(intval($uploadId) <= 0) {
+				if(isset($uploadLink['UploadLink'])) {
+					// delete
+					// 例：コミュニティーの写真をファイル選択し、その後、プリセットされた画像を選択した場合にUploadLinkを削除。
+					if(!$UploadLink->delete($uploadLink['UploadLink']['id'])) {
+						return false;
+					}
+				}
 				return true;
 			}
 
@@ -2224,12 +2262,6 @@ class UploadBehavior extends ModelBehavior {
 					'field_name' => $fieldName,
 				)
 			));
-
-			if(is_string($options['checkComponentAction'])) {
-				$checkComponentAction = $options['checkComponentAction'];
-			} else {
-				$checkComponentAction = implode(',', $options['checkComponentAction']);
-			}
 
 			$data = array('UploadLink' => array(
 				'upload_id' => $uploadId,

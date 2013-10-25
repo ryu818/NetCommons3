@@ -79,7 +79,10 @@ class PageController extends PageAppController {
 			$this->Session->write(NC_CONFIG_KEY.'.language', $activeLang);
 		}
 
-		if ($this->action == 'background') {
+		if ($this->action == 'index') {
+			$this->Security->validatePost = false;
+			$this->Security->csrfUseOnce = false;
+		} else if ($this->action == 'background') {
 			if ($this->request->is('post') && in_array($this->request->data['type'], array('search', 'patterns_search', 'images_search'))) {
 				$this->Security->csrfUseOnce = false;
 			}

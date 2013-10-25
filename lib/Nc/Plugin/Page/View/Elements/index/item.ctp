@@ -214,7 +214,7 @@
 	</div>
 
 	<?php endif; ?>
-	</form>
+	<?php echo $this->Form->end(); ?>
 	<?php if($is_sel_members): ?>
 	<div id="pages-menu-edit-participant-<?php echo(h($page['Page']['id'])); ?>" class="pages-menu-edit-view  pages-menu-edit-participant-outer" style="display:none;">
 	</div>

@@ -1051,6 +1051,9 @@ class PageMenuComponent extends Component {
 			$lang = $move_page['Page']['lang'];
 			$chk_display_page = $move_parent_page;
 		}
+		if($copy_page['Page']['id'] == $copy_page['Page']['room_id']) {
+			$room_id = $copy_page['Page']['room_id'];
+		}
 
 		// 固定リンク、ページ名称設定
 		$page_name = $copy_page['Page']['page_name'];

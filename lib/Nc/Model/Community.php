@@ -10,6 +10,20 @@
  */
 class Community extends AppModel
 {
+/**
+ * Behavior name
+ *
+ * @var array
+ */
+	public $actsAs = array(
+		'Upload' => array(
+			'photo' => array(
+				'fileType' => 'image',
+				'checkComponentAction'=>'Page.CommunityDownload',
+				//'deleteOnUpdate' => true,
+			),
+		),
+	);
 	public $validate = array();
 
 /**
@@ -184,48 +198,13 @@ class Community extends AppModel
 			'CommunityLang.lang' => $lang
 		);
 		$community_lang = $CommunityLang->find('first', array(
-			'recursive' => -1,
 			'conditions' => $conditions
 		));
 		if(!isset($community_lang['CommunityLang'])) {
 			$community_lang = $CommunityLang->getDefault('', $room_id);
 		}
 
-		$params = array(
-			'fields' => array('CommunityTag.tag_value'),
-			'conditions' => array(
-				'CommunityTag.room_id' => $room_id
-			),
-			'joins' => array(
-				array(
-					'type' => "INNER",
-					'table' => "community_sum_tags",
-					'alias' => "CommyunitySumTag",
-					'conditions' => array(
-						"`CommyunitySumTag`.`id`=`CommunityTag`.`community_sum_tag_id`",
-						'CommyunitySumTag.lang' => $lang
-					)
-				)
-			),
-			'order' => array('CommunityTag.display_sequence' => 'ASC')
-		);
-
-		$ret_communities_tags = $CommunityTag->find('list', $params);
-		if(!isset($communities_tags['CommunityTag'])) {
-			$communities_tag['CommunityTag']['tag_values'] = '';
-		} else {
-			if(count($ret_communities_tags) > 0) {
-				$tags_str = '';
-				foreach($ret_communities_tags as $ret_communities_tag) {
-					if($tags_str != '') {
-						$tags_str .= ',';
-					}
-					$tags_str .= $ret_communities_tag;
-
-				}
-			}
-			$communities_tag['CommunityTag']['tag_values'] = $tags_str;
-		}
+		$communities_tag['CommunityTag']['tag_value'] = $CommunityTag->findCommaDelimitedTags($room_id, $lang);
 
 		return array($community, $community_lang, $communities_tag);
 	}

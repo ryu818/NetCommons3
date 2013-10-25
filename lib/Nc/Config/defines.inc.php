@@ -36,6 +36,8 @@ define('NC_VALIDATOR_BLOCK_TITLE_LEN', 100);
 
 define('NC_VALIDATOR_USER_NAME_LEN', 100);
 
+define('NC_VALIDATOR_TAG_NAME_LEN', 30);
+
 //-----------------禁止URL-------------------------------------------
 define('NC_PROHIBITION_URL', '/^(users\/|controls\/)/i');
 
