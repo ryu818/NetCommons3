@@ -134,7 +134,7 @@
 				</dd>
 			</dl>
 		</li>
-		<?php if($popup_type == 'image'): ?>
+		<?php if($popup_type == 'image' && $is_wysiwyg): ?>
 		<li class="upload-fileinfo-{{if !$data['unit'] || $data['unit'] == '%'}}percent{{else}}px{{/if}}-size" >
 			<dl>
 				<dt>
