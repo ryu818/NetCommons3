@@ -104,9 +104,6 @@ class CakeTestLoader extends PHPUnit_Runner_StandardTestSuiteLoader {
 			}
 
 		}
-		//var_dump(TESTS.'Case');
-		//var_dump($directory);
-		//var_dump($fileList);
 
 		$testCases = array();
 		foreach ($fileList as $testCaseFile) {
@@ -126,7 +123,7 @@ class CakeTestLoader extends PHPUnit_Runner_StandardTestSuiteLoader {
  * @return array
  */
 	protected static function _getRecursiveFileList($directory = '.') {
-		$fileList = array();var_dump($directory);
+		$fileList = array();
 		if (!is_dir($directory)) {
 			return $fileList;
 		}
