@@ -399,6 +399,9 @@ class UploadController extends UploadAppController
 			$this->set('dialog_id', $id);
 			$this->set('id', 'upload-'.$this->action.'-'.$id);
 		}
+		$this->UploadLibrary->uploadSettings('file_name', array(
+			'isWysiwyg' => $isWysiwyg,
+		));
 		$this->set('popup_type', $popupType);
 		$this->set('is_wysiwyg', $isWysiwyg);
 		$this->set('is_callback', $isCallback);
