@@ -114,6 +114,7 @@ class UploadLink extends AppModel
 				),
 		);
 	}
+
 /**
  * beforeDelete
  * @return  boolean
@@ -233,9 +234,9 @@ class UploadLink extends AppModel
 		);
 		$options = array_merge($default, $options);
 
-		$dbUploadIdArr = $this->find('list', array(
+		$uploadLinks = $this->find('list', array(
 			'recursive' => -1,
-			'fields' => array($this->alias.'.upload_id'),
+			'fields' => array($this->alias.'.upload_id', $this->alias.'.check_component_action'),
 			'conditions' => array(
 				'plugin' => $options['plugin'],
 				'content_id' => $options['contentId'],
@@ -244,13 +245,19 @@ class UploadLink extends AppModel
 				'unique_id' => $options['uniqueId'],
 			)
 		));
-		$useUploadIdArr = $this->getExtractedUploadId($text);
-		// TODO:閲覧チェックを行い問題なければ登録するべき
+		$dbUploadIdArr = array_keys($uploadLinks);
+
+		$results = $this->getExtractedUploadId($text);
+		$useUploadIdArr = array();
+		$useUploadOwnerUserIdArr = array();
+		if(count($results) > 0) {
+			list($useUploadIdArr, $useUploadOwnerUserIdArr) = $results;
+		}
 
 		$newUploadIdArr = array_diff($useUploadIdArr, $dbUploadIdArr);
 		if (!empty($newUploadIdArr)) {
 			// 新しく追加したファイル
-			foreach ($newUploadIdArr as $uploadId) {
+			foreach ($newUploadIdArr as $key => $uploadId) {
 				$this->create();
 				$data = array($this->alias => array(
 					'upload_id' => $uploadId,
@@ -264,6 +271,7 @@ class UploadLink extends AppModel
 					'download_password' => $options['downloadPassword'],
 					'check_component_action' => $options['checkComponentAction'],
 				));
+				$data[$this->alias]['check_component_action'] = $this->checkComponentAction($data[$this->alias]['check_component_action'], $useUploadOwnerUserIdArr[$key]);
 				if(!$this->save($data)) {
 					return false;
 				}
@@ -291,9 +299,12 @@ class UploadLink extends AppModel
 					$this->alias.".check_component_action" => '"' .$options['checkComponentAction'] . '"',
 				);
 				$conditions[$this->alias.'.upload_id'] = $uploadId;
+
 				if (isset($useUploadIdArr[$uploadId])) {
 					// 使用中
-
+					if($uploadLinks[$uploadId] == 'Download.checkAdmin') {
+						$fields[$this->alias.'.check_component_action'] = '"' .$this->checkComponentAction($options['checkComponentAction'], $useUploadOwnerUserIdArr[$uploadId]) . '"';
+					}
 					if(!$this->updateAll($fields, $conditions)) {
 						return false;
 					}
@@ -324,7 +335,7 @@ class UploadLink extends AppModel
  * 文字列から抽出したアップロードIDの配列を取得
  *
  * @param string $text
- * @return array アップロードID配列
+ * @return array (アップロードID配列, onwerUserIdの配列)
  */
 	public function getExtractedUploadId($text) {
 		if (empty($text)) {
@@ -365,8 +376,9 @@ class UploadLink extends AppModel
 		}
 		// 存在しているものだけ返す
 		$Upload = ClassRegistry::init('Upload');
-		$uploads = $Upload->find('all', array('fields' => array('Upload.id', 'Upload.plugin', 'Upload.file_path'), 'conditions' => array($Upload->primaryKey => $matchUploadIdArr)));
+		$uploads = $Upload->find('all', array('fields' => array('Upload.id', 'Upload.user_id', 'Upload.plugin', 'Upload.file_path'), 'conditions' => array($Upload->primaryKey => $matchUploadIdArr)));
 		$matchUploadIdArr = array();
+		$onwerUserIdArr = array();
 		foreach($uploads as $upload) {
 			$exists = false;
 			$fileNames = $matchUploadFileNameArr[$upload['Upload']['id']];
@@ -378,9 +390,10 @@ class UploadLink extends AppModel
 			}
 			if($exists) {
 				$matchUploadIdArr[$upload['Upload']['id']] = $upload['Upload']['id'];
+				$onwerUserIdArr[$upload['Upload']['id']] = $upload['Upload']['user_id'];
 			}
 		}
-		return $matchUploadIdArr;
+		return array($matchUploadIdArr, $onwerUserIdArr);
 	}
 
 /**
@@ -410,5 +423,27 @@ class UploadLink extends AppModel
 			return false;
 		}
 		return true;
+	}
+
+/**
+ * 自分自身OR管理者ならばuploadLinkに閲覧権限を追加。
+ * 			それ以外、check_component_actionを「Download.checkAdmin」にし、自分自身OR管理者ならば閲覧を許す。
+ * 			(一般１(一般)、一般２(主担)が同じコミュニティーに参加しており、一般１のコミュニティー内部に画像挿入（Upload.id:1)、
+ *			その内容を一般２がコピーし、コミュニティー紹介に貼り付け。ログインしていなくても画像がみえてしまう等の現象を防ぐため。）
+ * @param   string $checkComponentAction
+ * @param   integer $ownerUserId
+ * @return  boolean
+ * @since   v 3.0.0.0
+ */
+	public function checkComponentAction($checkComponentAction, $ownerUserId) {
+		$Authority = ClassRegistry::init('Authority');
+
+		$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
+		$loginUserId = $loginUser['id'];
+		$isAdmin = ($Authority->getUserAuthorityId($loginUser['hierarchy']) == NC_AUTH_ADMIN_ID) ? true : false;
+		if(!$isAdmin && $loginUserId != $ownerUserId) {
+			return 'Download.checkAdmin';
+		}
+		return $checkComponentAction;
 	}
 }

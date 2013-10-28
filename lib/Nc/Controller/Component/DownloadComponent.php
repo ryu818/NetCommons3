@@ -32,7 +32,7 @@ class DownloadComponent extends Component {
 	}
 
 /**
- * ダウンロード権限チェック処理
+ * ダウンロード権限チェック処理(共通)
  * @param   array $uploadLink
  * @param   int $fileOwnerId
  * @param   string $downloadPassword
@@ -78,6 +78,30 @@ class DownloadComponent extends Component {
 			return false;
 		}
 
+		return true;
+	}
+
+/**
+ * ダウンロード権限チェック処理
+ * 自分自身OR管理者ならば閲覧を許す。
+ *
+ * @param   array $uploadLink
+ * @param   int $fileOwnerId
+ * @param   string $downloadPassword
+ * @return  boolean
+ * @since   v 3.0.0.0
+ */
+	public function checkAdmin($uploadLink, $fileOwnerId, $downloadPassword=null) {
+		$Authority = ClassRegistry::init('Authority');
+
+		$loginUser = $this->_controller->Auth->user();
+		$loginUserId = isset($loginUser['id']) ? intval($loginUser['id']) : 0;
+		$loginUserHierarchy = isset($loginUser['hierarchy']) ? intval($loginUser['hierarchy']) : 0;
+
+		$isAdmin = ($Authority->getUserAuthorityId($loginUserHierarchy) == NC_AUTH_ADMIN_ID) ? true : false;
+		if(!$isAdmin && $loginUserId != $fileOwnerId) {
+			return false;
+		}
 		return true;
 	}
 
