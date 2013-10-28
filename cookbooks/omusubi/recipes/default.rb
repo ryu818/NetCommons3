@@ -59,6 +59,12 @@ template "/etc/php5/fpm/php.ini" do
   variables(:directives => node[:php][:directives])
 end
 
+template "/etc/php5/cli/php.ini" do
+  source "php.ini.erb"
+  mode 0644
+  variables(:directives => node[:php][:directives])
+end
+
 service 'apache2' do
   action :stop
 end
