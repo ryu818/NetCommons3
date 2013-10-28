@@ -119,10 +119,12 @@ class CakeFixtureManager {
 				$fixturePaths[] = CAKE . 'Test' . DS . 'Fixture';
 			} elseif (strpos($fixture, 'app.') === 0) {
 				$fixture = substr($fixture, strlen('app.'));
+				// Modify for NetCommons Extentions By NEKOGET --START
 				$fixturePaths = array(
 					NC.'Test' . DS . 'Fixture', //lib/NC以下のFixtureを優先的に見る。
 					TESTS . 'Fixture'
 				);
+				// Modify for NetCommons Extentions By NEKOGET --E N D
 			} elseif (strpos($fixture, 'plugin.') === 0) {
 				$parts = explode('.', $fixture, 3);
 				$pluginName = $parts[1];
@@ -132,11 +134,13 @@ class CakeFixtureManager {
 					TESTS . 'Fixture'
 				);
 			} else {
+				// Modify for NetCommons Extentions By NEKOGET --START
 				$fixturePaths = array(
 					NC.'Test' . DS . 'Fixture', //lib/NC以下のFixtureを優先的に見る。
 					TESTS . 'Fixture',
 					CAKE . 'Test' . DS . 'Fixture'
 				);
+				// Modify for NetCommons Extentions By NEKOGET --E N D
 			}
 
 			$loaded = false;
