@@ -74,8 +74,8 @@ define('NC_SYSTEM_KEY', 'System');
 //-----------------権限(Authority.allow_creating_community)------------------------------------
 define('NC_ALLOW_CREATING_COMMUNITY_OFF', 		0);			// コミュニティー作成不可（デフォルト）
 define('NC_ALLOW_CREATING_COMMUNITY_ONLY_USER', 1);			// 参加者のみのコミュニティー作成可
-define('NC_ALLOW_CREATING_COMMUNITY_ALL_USER', 	2);			// 一部公開（すべてのログイン会員が閲覧可能）までのコミュニティー作成可
-define('NC_ALLOW_CREATING_COMMUNITY_ALL', 		3);			// 公開（すべてのユーザーが閲覧可能）までのコミュニティー作成可
+define('NC_ALLOW_CREATING_COMMUNITY_ALL_USER', 	2);			// 公開（すべてのログイン会員が閲覧可能）までのコミュニティー作成可
+define('NC_ALLOW_CREATING_COMMUNITY_FORCE_ALL', 3);			// 「全会員を強制的に参加させる。」コミュニティー作成可
 define('NC_ALLOW_CREATING_COMMUNITY_ADMIN', 	4);			// 公開コミュニティーまで作成でき、すべてのコミュニティーの表示順変更、削除が可能
 
 //-----------------権限(Authority.allow_new_participant)------------------------------------
@@ -86,6 +86,9 @@ define('NC_ALLOW_CREATING_COMMUNITY_ADMIN', 	4);			// 公開コミュニティ�
 define('NC_MYPORTAL_USE_NOT', 0);			// 使用しない
 define('NC_MYPORTAL_USE_ALL', 1);			// すべて公開
 define('NC_MYPORTAL_MEMBERS', 2);			// ログイン会員のみ公開(allow_myportal_viewing_hierarchyの権限以上で閲覧可能とする[主担、モデレーター、一般、ゲスト])
+
+//-----------------権限(Authority.allow_style_flag)------------------------------------
+define('NC_ALLOWED_TO_EDIT_CSS', 2);			// CSSの編集まで許可する。
 
 //-----------------display_flag-------------------------------------------
 
@@ -109,9 +112,9 @@ define('NC_SHORTCUT_TYPE_SHOW_AUTH', 2);		// 表示中のルーム権限より�
 
 //-----------------Community.publication_range_flag-------------------------------------------
 
-define('NC_PUBLICATION_RANGE_FLAG_ONLY_USER', 0);		// 参加者のみ（コミュニティー参加者のみが閲覧可能）
-define('NC_PUBLICATION_RANGE_FLAG_LOGIN_USER', 1);		// 一部公開（すべてのログイン会員が閲覧可能）
-define('NC_PUBLICATION_RANGE_FLAG_ALL', 2);				// 公開（すべてのユーザーが閲覧可能）
+define('NC_PUBLICATION_RANGE_FLAG_ONLY_USER', 0);		// 非公開（コミュニティー参加者のみが閲覧可能）
+define('NC_PUBLICATION_RANGE_FLAG_LOGIN_USER', 1);		// 公開（すべてのログイン会員が閲覧可能）
+define('NC_PUBLICATION_RANGE_FLAG_ALL', 2);				// 公開（すべてのユーザーが閲覧可能） - 未使用
 
 //-----------------Community.participate_flag-------------------------------------------
 

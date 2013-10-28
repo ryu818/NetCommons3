@@ -159,6 +159,9 @@ class AuthorityCommonComponent extends Component {
 		$disabledMyportalCreateroomFlagArr = explode('|', AUTHORITY_MYPORTAL_CREATEROOM_FLAG_DISABLED);
 		$disabledPrivateCreateroomFlagArr = explode('|', AUTHORITY_PRIVATE_CREATEROOM_FLAG_DISABLED);
 		$disabledAllowHtmltagFlagArr = explode('|', AUTHORITY_ALLOW_HTMLTAG_FLAG_DISABLED);
+		$disabledAllowMetaFlagArr = explode('|', AUTHORITY_ALLOW_META_FLAG_DISABLED);
+		$disabledAllowThemeFlagArr = explode('|', AUTHORITY_ALLOW_THEME_FLAG_DISABLED);
+		$disabledAllowStyleFlagArr = explode('|', AUTHORITY_ALLOW_STYLE_FLAG_DISABLED);
 		$disabledAllowLayoutFlagArr = explode('|', AUTHORITY_ALLOW_LAYOUT_FLAG_DISABLED);
 		$disabledAllowAttachmentArr = explode('|', AUTHORITY_ALLOW_ATTACHMENT_DISABLED);
 		$disabledAllowVideoArr = explode('|', AUTHORITY_ALLOW_VIDEO_DISABLED);
@@ -183,6 +186,9 @@ class AuthorityCommonComponent extends Component {
 				'myportal_createroom_flag' => $disabledMyportalCreateroomFlagArr[$index],
 				'private_createroom_flag' => $disabledPrivateCreateroomFlagArr[$index],
 				'allow_htmltag_flag' => $disabledAllowHtmltagFlagArr[$index],
+				'allow_meta_flag' => $disabledAllowMetaFlagArr[$index],
+				'allow_theme_flag' => $disabledAllowThemeFlagArr[$index],
+				'allow_style_flag' => $disabledAllowStyleFlagArr[$index],
 				'allow_layout_flag' => $disabledAllowLayoutFlagArr[$index],
 				'allow_attachment' => $disabledAllowAttachmentArr[$index],
 				'allow_video' => $disabledAllowVideoArr[$index],

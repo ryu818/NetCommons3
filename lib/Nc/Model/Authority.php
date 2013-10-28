@@ -61,7 +61,7 @@ class Authority extends AppModel
 					NC_ALLOW_CREATING_COMMUNITY_OFF,
 					NC_ALLOW_CREATING_COMMUNITY_ONLY_USER,
 					NC_ALLOW_CREATING_COMMUNITY_ALL_USER,
-					NC_ALLOW_CREATING_COMMUNITY_ALL,
+					NC_ALLOW_CREATING_COMMUNITY_FORCE_ALL,
 					NC_ALLOW_CREATING_COMMUNITY_ADMIN,
 				), false),
 				'allowEmpty' => true,
@@ -156,14 +156,46 @@ class Authority extends AppModel
 				)
 			),
 
+			'allow_meta_flag' => array(
+				'boolean'  => array(
+					'rule' => array('boolean'),
+					'last' => true,
+					'required' => true,
+					'allowEmpty' => false,
+					'message' => __('The input must be a boolean.')
+				)
+			),
+
+			'allow_theme_flag' => array(
+				'boolean'  => array(
+					'rule' => array('boolean'),
+					'last' => true,
+					'required' => true,
+					'allowEmpty' => false,
+					'message' => __('The input must be a boolean.')
+				)
+			),
+
+			'allow_style_flag' => array(
+				'inList' => array(
+					'rule' => array('inList', array(
+						_OFF,
+						_ON,
+						NC_ALLOWED_TO_EDIT_CSS,
+					), false),
+					'allowEmpty' => false,
+					'message' => __('It contains an invalid string.')
+				),
+			),
+
 			'allow_layout_flag' => array(
 				'boolean'  => array(
-									'rule' => array('boolean'),
-									'last' => true,
-									'required' => true,
-									'allowEmpty' => false,
-									'message' => __('The input must be a boolean.')
-								)
+					'rule' => array('boolean'),
+					'last' => true,
+					'required' => true,
+					'allowEmpty' => false,
+					'message' => __('The input must be a boolean.')
+				)
 			),
 
 			'allow_attachment' => array(
@@ -374,6 +406,9 @@ class Authority extends AppModel
 		$myportalCreateroomFlagArr = explode('|', AUTHORITY_MYPORTAL_CREATEROOM_FLAG_LIST);
 		$privateCreateroomFlagArr = explode('|', AUTHORITY_PRIVATE_CREATEROOM_FLAG_LIST);
 		$allowHtmltagFlagArr = explode('|', AUTHORITY_ALLOW_HTMLTAG_FLAG_LIST);
+		$allowMetaFlagArr = explode('|', AUTHORITY_ALLOW_META_FLAG_LIST);
+		$allowThemeFlagArr = explode('|', AUTHORITY_ALLOW_THEME_FLAG_LIST);
+		$allowStyleFlagArr = explode('|', AUTHORITY_ALLOW_STYLE_FLAG_LIST);
 		$allowLayoutFlagArr = explode('|', AUTHORITY_ALLOW_LAYOUT_FLAG_LIST);
 		$allowAttachmentArr = explode('|', AUTHORITY_ALLOW_ATTACHMENT);
 		$allowVideoArr = explode('|', AUTHORITY_ALLOW_VIDEO);
@@ -403,6 +438,9 @@ class Authority extends AppModel
 				'myportal_createroom_flag' => $myportalCreateroomFlagArr[$index],
 				'private_createroom_flag' => $privateCreateroomFlagArr[$index],
 				'allow_htmltag_flag' => $allowHtmltagFlagArr[$index],
+				'allow_meta_flag' => $allowMetaFlagArr[$index],
+				'allow_theme_flag' => $allowThemeFlagArr[$index],
+				'allow_style_flag' => $allowStyleFlagArr[$index],
 				'allow_layout_flag' => $allowLayoutFlagArr[$index],
 				'allow_attachment' => $allowAttachmentArr[$index],
 				'allow_video' => $allowVideoArr[$index],
