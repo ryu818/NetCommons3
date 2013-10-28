@@ -10,6 +10,29 @@
  */
 class CommunityLang extends AppModel
 {
+	public $actsAs = array(
+		'Upload' => array(
+			'revision_group_id' => array(
+				'checkComponentAction'=>'Page.CommunityDownload.checkRevision',
+			),
+		),
+	);
+
+	public $belongsTo = array(
+		'Revision'      => array(
+			'foreignKey'    => '',
+			'type' => 'LEFT',
+			'fields' => array('id', 'group_id', 'content',
+				'revision_name', 'is_approved_pointer', 'created', 'created_user_id', 'created_user_name'),
+			'conditions' => array(
+				'CommunityLang.revision_group_id = Revision.group_id',
+				'Revision.pointer' => _ON,
+				'Revision.revision_name !=' => 'auto-draft',
+				'Revision.is_approved_pointer' => _ON
+			),
+		),
+	);
+
 	public $validate = array();
 
 	/**
@@ -42,17 +65,29 @@ class CommunityLang extends AppModel
 					'message' => __('The input must be up to %s characters.' , NC_VALIDATOR_TEXTAREA_LEN),
 				)
 			),
+			'revision_group_id' => array(
+				'numeric' => array(
+					'rule' => array('numeric'),
+					'allowEmpty' => false,
+					'message' => __('The input must be a number.')
+				)
+			),
 		);
 	}
 
 	public function getDefault($page_name = '', $room_id = 0) {
-		$data = array();
-
-		$data['CommunityLang']['lang'] = Configure::read(NC_CONFIG_KEY.'.'.'language');
-		$data['CommunityLang']['room_id'] = $room_id;
-		$data['CommunityLang']['community_name'] = $page_name;
-		$data['CommunityLang']['summary'] = '';
-		$data['CommunityLang']['description'] = '';
-		return $data;
+		return array(
+			'CommunityLang' => array(
+				'lang' => Configure::read(NC_CONFIG_KEY.'.'.'language'),
+				'room_id' => $room_id,
+				'community_name' => $page_name,
+				'summary' => '',
+				'revision_group_id' => 0,
+			),
+			'Revision' => array(
+				'content' => '',
+				'revision_name' => 'publish',
+			)
+		);
 	}
 }

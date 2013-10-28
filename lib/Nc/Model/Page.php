@@ -1104,7 +1104,7 @@ class Page extends AppModel
 			);
 		}
 		if(empty($spaceType) || $spaceType == NC_SPACE_TYPE_GROUP || (is_array($spaceType) && in_array(NC_SPACE_TYPE_GROUP, $spaceType))) {
-			$ret[count($ret)] = 'Community.publication_range_flag, CommunityLang.community_name, CommunityLang.summary, CommunityLang.description';
+			$ret[count($ret)] = 'Community.publication_range_flag, CommunityLang.community_name, CommunityLang.summary';
 		}
 		return $ret;
 	}
@@ -1223,7 +1223,6 @@ class Page extends AppModel
 		// TODO:page_columns削除
 		// TODO:page_themes削除
 		// TODO:uploads削除
-		// コミュニティーの写真、コミュニティーのWYSIWYGの画像も含まれる。
 		// TODO:menu削除
 
 		if($page['Page']['id'] == $page['Page']['room_id']) {
@@ -1252,12 +1251,14 @@ class Page extends AppModel
 				$conditions = array(
 					"Community.room_id" => $page['Page']['id']
 				);
+				$community = $Community->findByRoomId($page['Page']['id']);
 				$ret = $Community->deleteAll($conditions);
 				if(!$ret) {
 					return false;
 				}
 
 				$CommunityLang = ClassRegistry::init('CommunityLang');
+				$communityLangs = $CommunityLang->findAllByRoomId($page['Page']['id']);
 				$conditions = array(
 					"CommunityLang.room_id" => $page['Page']['id']
 				);
@@ -1266,47 +1267,41 @@ class Page extends AppModel
 					return false;
 				}
 
+				$UploadLink = ClassRegistry::init('UploadLink');
+				$Revision = ClassRegistry::init('Revision');
 				$CommunityTag = ClassRegistry::init('CommunityTag');
-				$params = array(
-					'fields' => array('CommunityTag.community_sum_tag_id'),
-					'conditions' => array(
-						"CommunityTag.room_id" => $page['Page']['id']
-					)
+				$conditions = array(
+					"UploadLink.plugin" => 'Page',
+					"UploadLink.unique_id" => $community['Community']['id'],
+					"UploadLink.model_name" => 'Community',
+					"UploadLink.field_name" => 'photo',
 				);
-
-				$communities_tag_ids = $CommunityTag->find('list', $params);
-				if(count($communities_tag_ids) > 0) {
-					$conditions = array(
-						"CommunityTag.room_id" => $page['Page']['id']
-					);
-					$ret = $CommunityTag->deleteAll($conditions);
-					if(!$ret) {
-						return false;
-					}
-
-					$CommunitySumTag = ClassRegistry::init('CommunitySumTag');
-					$params = array(
-						'conditions' => array(
-							"CommunitySumTag.id" => $communities_tag_ids
-						)
-					);
-
-					$tags = $CommunitySumTag->find('all', $params);
-					foreach($tags as $tag) {
-						if($tag['Tag']['used_number'] <= 1) {
-							// delete
-							$ret = $CommunitySumTag->delete($tag['Tag']['id']);
-						} else {
-							// update
-							$fields = array('CommunitySumTag.used_number'=> intval($tag['Tag']['used_number']) - 1);
-							$conditions = array(
-								"CommunitySumTag.id" => $tag['Tag']['id']
-							);
-							$ret = $CommunitySumTag->updateAll($fields, $conditions);
-						}
+				$ret = $UploadLink->deleteAll($conditions);
+				if(!$ret) {
+					return false;
+				}
+				foreach($communityLangs as $communityLang) {
+					if($communityLang['CommunityLang']['revision_group_id'] > 0) {
+						$conditions = array(
+							"UploadLink.plugin" => 'Page',
+							"UploadLink.unique_id" => $communityLang['CommunityLang']['revision_group_id'],
+							"UploadLink.model_name" => 'Revision',
+							"UploadLink.field_name" => 'content',
+						);
+						$ret = $UploadLink->deleteAll($conditions);
 						if(!$ret) {
 							return false;
 						}
+						$conditions = array(
+							"Revision.group_id" => $communityLang['CommunityLang']['revision_group_id'],
+						);
+						$ret = $Revision->deleteAll($conditions);
+						if(!$ret) {
+							return false;
+						}
+					}
+					if(!$CommunityTag->deleteTags($page['Page']['id'], $communityLang['CommunityLang']['lang'])) {
+						return false;
 					}
 				}
 			}

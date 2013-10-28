@@ -282,30 +282,34 @@ ul.pages-menu-community-lists legend {
 .pages-menu-default-show-user {
 	color: #5e5e5e;
 }
+
+.pages-menu-community-participate-as-general-outer {
+	padding: 2px 15px;
+}
 /* スライドバー */
 .pages-menu-community-slider-outer {
-	padding:5px 20px 23px;
+	padding:5px 20px 0;
 }
 
 /* 写真 */
-div.pages-menu-community-photo {
-	background:url("../../img/common/layer/layer.gif") no-repeat scroll 0 center transparent;
-	background-repeat:no-repeat;
+.pages-menu-community-photo {
+	padding:5px;
 	float:left;
-	width:117px;
-	height:114px;
-	padding:0;
-	margin:0 10px 0 0;
+	clear:none;
+	border: 1px solid #cdcdcd;
+    border-radius: 4px 4px 4px 4px;
+    margin: 4px;
+    padding: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.pages-menu-community-photo div.pages-menu-community-photo-inner {
+	width: 98px;
+	height: 98px;
+	background-repeat: repeat;
+	display:block;
+	border: 1px solid #efefef;
 }
 
-div.pages-menu-community-photo img {
-	background-color:transparent;
-	background-position:center center;
-	background-repeat:no-repeat;
-	width:98px;
-	height:98px;
-	margin:7px 10px;
-}
 
 div.pages-menu-community-photo-sample {
 	border:1px solid #ccc;
@@ -339,6 +343,15 @@ input.pages-menu-community-photo-file {
 .pages-menu-community-detail-setting {
 	text-align:right;
 	padding: 0 10px 0 0;
+}
+dd.pages-menu-community-description {
+	width: 520px !important;
+}
+textarea.pages-menu-community-description {
+	height: 220px !important;
+}
+.pages-menu-community-keyword {
+	width: 410px;
 }
 
 /* 参加者修正 */
@@ -417,4 +430,7 @@ input.pages-menu-community-photo-file {
 
 .pages-menu-edit-item .error-message {
 	width:170px;
+}
+.pages-menu-community-lists .error-message {
+	width:auto;
 }

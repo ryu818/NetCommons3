@@ -178,10 +178,10 @@
 								$value = __d('authority', 'Allow to create normal community.');
 								break;
 							case NC_ALLOW_CREATING_COMMUNITY_ALL_USER:
-								$value = __d('authority', 'Allow to create partial public community.');
-								break;
-							case NC_ALLOW_CREATING_COMMUNITY_ALL:
 								$value = __d('authority', 'Allow to create public community.');
+								break;
+							case NC_ALLOW_CREATING_COMMUNITY_FORCE_ALL:
+								$value = __d('authority', 'Allow to create public community[Join to force all members.].');
 								break;
 							default:
 								$value = __d('authority', 'Allow to create all communities, display order change, or delete.');
@@ -229,6 +229,65 @@
 							$value = __d('authority', 'Permitted');
 						} else {
 							$value = __d('authority', 'Not permitted');
+						}
+						echo $value;
+					?>
+				</dd>
+			</dl>
+		</li>
+		<li>
+			<dl>
+				<dt>
+					<?php
+						echo __d('authority', 'Allow to change page information?');
+					?>
+				</dt>
+				<dd>
+					<?php
+						if($authority['Authority']['allow_meta_flag'] == _ON) {
+							$value = __d('authority', 'Allowed');
+						} else {
+							$value = __d('authority', 'Not allowed');
+						}
+						echo $value;
+					?>
+				</dd>
+			</dl>
+		</li>
+		<li>
+			<dl>
+				<dt>
+					<?php
+						echo __d('authority', 'Allow to change page theme?');
+					?>
+				</dt>
+				<dd>
+					<?php
+						if($authority['Authority']['allow_theme_flag'] == _ON) {
+							$value = __d('authority', 'Allowed');
+						} else {
+							$value = __d('authority', 'Not allowed');
+						}
+						echo $value;
+					?>
+				</dd>
+			</dl>
+		</li>
+		<li>
+			<dl>
+				<dt>
+					<?php
+						echo __d('authority', 'Allow to change page style?');
+					?>
+				</dt>
+				<dd>
+					<?php
+						if($authority['Authority']['allow_style_flag'] == NC_ALLOWED_TO_EDIT_CSS) {
+							$value = __d('authority', 'Allowed to edit the CSS');
+						} else if($authority['Authority']['allow_style_flag'] == _ON) {
+							$value = __d('authority', 'Allowed');
+						} else {
+							$value = __d('authority', 'Not allowed');
 						}
 						echo $value;
 					?>

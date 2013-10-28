@@ -30,7 +30,7 @@ class PageMenusController extends PageAppController {
  *
  * @var array
  */
-	public $uses = array('PageUserLink', 'Community', 'CommunityLang', 'CommunityTag', 'TempData',
+	public $uses = array('PageUserLink', 'Revision', 'Community', 'CommunityLang', 'CommunityTag', 'TempData',
 			'Page.PageBlock', 'Page.PageMenuUserLink', 'Page.PageMenuCommunity', 'Block.BlockOperation');
 
 /**
@@ -38,7 +38,7 @@ class PageMenusController extends PageAppController {
  *
  * @var array
  */
-	public $components = array('Page.PageMenu');	// 権限チェックは、ここActionで行う。admin_hierarchyが管理者ならばすべて許すため。
+	public $components = array('RevisionList', 'Security', 'Page.PageMenu');	// 権限チェックは、ここActionで行う。admin_hierarchyが管理者ならばすべて許すため。
 
 /**
  * Helper name
@@ -52,19 +52,36 @@ class PageMenusController extends PageAppController {
  * <pre>
  * 	ページメニューの言語切替の値を選択言語としてセット
  * </pre>
- * TODO:Tokenチェックもおこなっていない。
  * @param   void
  * @return  void
  * @since   v 3.0.0.0
  */
 	public function beforeFilter()
 	{
-		$active_lang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.lang');
-		if(isset($active_lang)) {
-			Configure::write(NC_CONFIG_KEY.'.'.'language', $active_lang);
-			$this->Session->write(NC_CONFIG_KEY.'.language', $active_lang);
+		$activeLang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.activeLang');
+		if(isset($activeLang)) {
+			Configure::write(NC_CONFIG_KEY.'.'.'language', $activeLang);
+			$this->Session->write(NC_CONFIG_KEY.'.language', $activeLang);
 		}
 		parent::beforeFilter();
+
+		// Token
+		$this->Security->validatePost = false;
+		$this->Security->csrfUseOnce = false;
+		if($this->request->is('post') && $this->action != 'edit' && $this->action != 'participant') {
+			// 手動でTokenチェック
+			$this->Security->csrfCheck = false;
+			if($this->action == 'participant_detail' || $this->action == 'participant_cancel') {
+				// 参加者詳細、参加者修正画面 キャンセルボタンでは、登録していないため、チェックはしない。
+				return;
+			}
+			$requestToken = isset($this->request->data['token']) ? $this->request->data['token'] : null;
+			$csrfTokens = $this->Session->read('_Token.csrfTokens');
+			if (!isset($csrfTokens[$requestToken]) || $csrfTokens[$requestToken] < time()) {
+				$this->errorToken();
+				return;
+			}
+		}
 	}
 
 /**
@@ -79,10 +96,10 @@ class PageMenusController extends PageAppController {
 	public function afterFilter()
 	{
 		parent::afterFilter();
-		$pre_lang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.pre_lang');
-		if(isset($pre_lang)) {
-			Configure::write(NC_CONFIG_KEY.'.'.'language', $pre_lang);
-			$this->Session->write(NC_CONFIG_KEY.'.language', $pre_lang);
+		$lang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.lang');
+		if(isset($lang)) {
+			Configure::write(NC_CONFIG_KEY.'.'.'language', $lang);
+			$this->Session->write(NC_CONFIG_KEY.'.language', $lang);
 		}
 	}
 
@@ -252,10 +269,7 @@ class PageMenusController extends PageAppController {
 			$fieldCommunityList = array('photo', 'is_upload', 'publication_range_flag', 'participate_as_general','participate_flag',
 					'invite_hierarchy', 'is_participate_notice', 'participate_notice_hierarchy',
 					'is_resign_notice', 'resign_notice_hierarchy');
-			// TODO:descriptionは使用しなくなる可能性あり。
-			$fieldCommunityLangList = array('room_id', 'community_name', 'lang', 'summary', 'description');
-			// TODO:CommunityTagについては現状、未作成
-			//$fieldCommunityTagList = array('tag_value');
+			$fieldCommunityLangList = array('room_id', 'community_name', 'lang', 'summary', 'revision_group_id');
 
 			if(isset($this->request->data['Community'])) {
 				// merge
@@ -263,19 +277,17 @@ class PageMenusController extends PageAppController {
 			}
 			if(isset($this->request->data['CommunityLang'])) {
 				// merge
-				if(isset($this->request->data['CommunityLang']['lang'])) {
-					unset($this->request->data['CommunityLang']['lang']);
-				}
-				if(isset($this->request->data['CommunityLang']['room_id'])) {
-					unset($this->request->data['CommunityLang']['room_id']);
-				}
+				unset($this->request->data['CommunityLang']['lang']);
+				unset($this->request->data['CommunityLang']['room_id']);
+				unset($this->request->data['CommunityLang']['revision_group_id']);
 				$communityLang['CommunityLang'] = array_merge($communityLang['CommunityLang'], $this->request->data['CommunityLang']);
 			}
-
-			//if(isset($this->request->data['CommunityTag'])) {
-			//	// merge
-			//	$communityTag['CommunityTag'] = $this->request->data['CommunityTag'];
-			//}
+			if(isset($this->request->data['Revision']['content'])) {
+				$communityLang['Revision']['content'] = $this->request->data['Revision']['content'];
+			}
+			if(isset($this->request->data['CommunityTag']['tag_value'])) {
+				$communityTag['CommunityTag']['tag_value'] = $this->request->data['CommunityTag']['tag_value'];
+			}
 		}
 
 		if(!isset($currentPage['Page'])) {
@@ -329,13 +341,6 @@ class PageMenusController extends PageAppController {
 			$fieldList = array('page_name', 'permalink', 'display_from_date', 'display_to_date', 'display_apply_subpage');
 		}
 		$currentPage['Page'] = array_merge($currentPage['Page'], $page['Page']);
-		/*foreach($fieldList as $key => $field) {
-			if(isset($page['Page'][$field])) {
-				$currentPage['Page'][$field] = $page['Page'][$field];
-			} else {
-				unset($fieldList[$key]);
-			}
-		}*/
 
 		$insPage = $this->Page->setPageName($currentPage, _ON);
 		$this->Page->set($insPage);
@@ -345,16 +350,6 @@ class PageMenusController extends PageAppController {
 			// コミュニティーならば
 			$communityLang['CommunityLang']['community_name'] = $insPage['Page']['page_name'];
 
-			$this->Community->set($community);
-			$this->CommunityLang->set($communityLang);
-
-			if (!$this->Community->validates(array('fieldList' => $fieldCommunityList))) {
-				$errorFlag = 2;
-			}
-			if (!$this->CommunityLang->validates(array('fieldList' => $fieldCommunityLangList))) {
-				$errorFlag = 2;
-			}
-
 			$community_params = array(
 				'community' => $community,
 				'community_lang' => $communityLang,
@@ -362,6 +357,67 @@ class PageMenusController extends PageAppController {
 				'photo_samples' => $this->PageMenu->getCommunityPhoto()
 			);
 			$this->set('community_params', $community_params);
+			$this->Community->set($community);
+			$this->CommunityLang->set($communityLang);
+			if (!$this->Community->validates(array('fieldList' => $fieldCommunityList))) {
+				$errorFlag = 2;
+			}
+			if (!$this->CommunityLang->validates(array('fieldList' => $fieldCommunityLangList))) {
+				$errorFlag = 2;
+			}
+			if(isset($this->request->data['Revision']['content'])) {
+				// 自動保存
+				$autoRegistParams = $this->RevisionList->beforeAutoRegist(isset($communityLang['CommunityLang']['id']) ? $communityLang['CommunityLang']['id'] : null);
+
+				$isAutoRegist = $autoRegistParams['isAutoRegist'];
+				$revisionName = $autoRegistParams['revision_name'];
+				$pointer = _OFF;
+				if(empty($communityLang['CommunityLang']['revision_group_id']) || !$isAutoRegist) {
+					$pointer = _ON;
+				}
+				$revision = array(
+					'Revision' => array(
+						'group_id' => $communityLang['CommunityLang']['revision_group_id'],
+						'pointer' => $pointer,
+						'is_approved_pointer' => _ON,
+						'revision_name' => $revisionName,
+						'content_id' => 0,
+						'content' => $this->request->data['Revision']['content']
+					)
+				);
+
+				$fieldListRevision = array(
+					'group_id', 'pointer', 'is_approved_pointer', 'revision_name', 'content_id', 'content',
+				);
+				unset($this->Revision->validate['content']['notEmpty']);
+				$this->Revision->set($revision);
+				if (!$this->Revision->validates(array('fieldList' => $fieldListRevision))) {
+					$errorFlag = 3;
+				}
+				if (!$this->CommunityTag->validateTags($communityTag['CommunityTag']['tag_value'])) {
+					$errorFlag = 3;
+				}
+
+				if(!$errorFlag && $this->request->is('post') &&
+					(!empty($communityLang['CommunityLang']['revision_group_id']) || $this->Revision->isNotEmptyContent($revision[$this->Revision->alias]))) {
+					if (!$this->Revision->save($revision, false, $fieldListRevision) && count($this->Revision->valodationErrors) > 0) {
+						throw new InternalErrorException(__('Failed to update the database, (%s).', 'revisions'));
+					}
+					if(empty($communityLang['CommunityLang']['revision_group_id'])) {
+						$communityLang['CommunityLang']['revision_group_id'] = $this->Revision->id;
+						$this->CommunityLang->set($communityLang);	// 再セット
+					}
+					if (!$this->CommunityLang->save($communityLang, false, $fieldCommunityLangList)) {
+						throw new InternalErrorException(__('Failed to update the database, (%s).', 'community_langs'));
+					}
+				}
+
+				if($isAutoRegist) {
+					// 自動保存時後処理
+					$this->RevisionList->afterAutoRegist($this->Revision->id);
+					return;
+				}
+			}
 		}
 
 		// 編集ページ以下のページ取得
@@ -373,7 +429,7 @@ class PageMenusController extends PageAppController {
 
 		$this->Page->set($insPage);
 		$ret = $this->Page->validates(array('fieldList' => $fieldList));
-		if ($ret && !$errorFlag && $retChilds !== false) {
+		if ($this->request->is('post') && $ret && !$errorFlag && $retChilds !== false) {
 			// 更新処理
 			if (!$this->Page->save($insPage, false, $fieldList)) {
 				throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
@@ -403,8 +459,13 @@ class PageMenusController extends PageAppController {
 				if (!$this->Community->save($community, false, $fieldCommunityList)) {
 					throw new InternalErrorException(__('Failed to update the database, (%s).', 'communities'));
 				}
+
 				if (!$this->CommunityLang->save($communityLang, false, $fieldCommunityLangList)) {
 					throw new InternalErrorException(__('Failed to update the database, (%s).', 'community_langs'));
+				}
+
+				if (isset($communityTag) && !$this->CommunityTag->saveTags($insPage['Page']['id'], $lang, $communityTag['CommunityTag']['tag_value'])) {
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'community_tags'));
 				}
 
 				// Community.publication_range_flagが一部公開（すべてのログイン会員が閲覧可能）以外に更新されたら、PageUserLinkの不参加会員削除
@@ -478,6 +539,11 @@ class PageMenusController extends PageAppController {
 				throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'communities'));
 			}
 			list($community, $communityLang, $communityTag) = $ret;
+			// 自動保存等で最新のデータがあった場合、表示
+			$revision = $this->Revision->findRevisions(null,$communityLang['CommunityLang']['revision_group_id'], 1);
+			if(isset($revision[0])) {
+				$communityLang['Revision'] = $revision[0]['Revision'];
+			}
 			$community_params = array(
 				'community' => $community,
 				'community_lang' => $communityLang,
@@ -683,7 +749,7 @@ class PageMenusController extends PageAppController {
 		// 再取得
 		$page = $this->Page->findAuthById($insPages[0]['Page']['id'], $userId);
 		$parentPage = $this->Page->findAuthById($page['Page']['parent_id'], $userId);
-		$childPages = $this->Page->findChilds('all', $page);
+		$childPages = $this->Page->findChilds('all', $page, null, $userId);
 		//$page = $insPages[0];
 		//$parentPage = $this->Page->findById($page['Page']['parent_id']);
 		//$childPages = $insPages;
@@ -890,7 +956,7 @@ class PageMenusController extends PageAppController {
 		if(!$adminHierarchy) {
 			return;
 		}
-		$childPages = $this->Page->findChilds('all', $page);
+		$childPages = $this->Page->findChilds('all', $page, null, $userId);
 
 		// 登録処理
 		$pageIdListArr = $this->_getIdList($page, $childPages);

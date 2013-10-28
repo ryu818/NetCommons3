@@ -54,6 +54,7 @@
 			<?php
 				echo $this->Html->link(__d('page', 'Unassign members'), array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'deallocation'),
 					array('title' => __d('page', 'Unassign members'), 'class' => 'link hover-highlight', 'data-page-edit-id' => '','data-ajax' => '#pages-menu-edit-item',
+						'data-ajax-data' => '{"token": "'.$this->params['_Token']['key'].'"}',
 						'data-ajax-confirm' => h(__d('page','Unassign members of [%s]. Are you sure?',$page['Page']['page_name'])), 'data-ajax-type' => 'post'
 				));
 			?>

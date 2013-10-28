@@ -49,7 +49,6 @@ App::build(array(
 	'Lib'                       => array(NC),
 	'Console'                    => array(APP . 'Console' . DS, NC . 'Console'),
 	'Console/Command'            => array(APP . 'Console' . DS . 'Command' . DS, NC . 'Console' . DS . 'Command' . DS),
-
 	'Model'                     => array(APP . 'Model' . DS, NC . 'Model' . DS),
 	'Model/Behavior'            => array(APP . 'Model' . DS . 'Behavior' . DS, NC . 'Model' . DS . 'Behavior' . DS),
 	'Model/Datasource'          => array(APP.'Model' . DS . 'Datasource' . DS, NC . 'Model' . DS . 'Datasource' . DS),
@@ -72,7 +71,6 @@ App::build(array(
 	'Locale'                    => array(APP . 'Locale' . DS, NC . 'Locale' . DS),
 	'Vendor'                    => array(APP . 'Vendor' . DS, NC . 'Vendor' . DS),
 	'Plugin'                    => array(APP . 'Plugin' . DS, NC . 'Plugin' . DS),
-	//'Test'                      => array(APP . 'Test' . DS, NC . 'Test' . DS),
 ));
 // ブロック用テーマ - webroot
 App::build(array(

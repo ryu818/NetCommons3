@@ -62,6 +62,7 @@ if(isset($is_edit) && $is_edit == _ON){
 		array('title' => __d('page', 'Add page'), 'id' => 'pages-menu-add-btn' ,
 		'class' => 'pages-menu-btn'. $class_postfix,
 		'data-ajax' => '#pages-menu-add-temp', 'data-ajax-type' => 'POST'));
+	echo $this->Form->hidden('token' , array('id' => "pages-menu-token", 'value' => $this->params['_Token']['key']));
 	 ?>
 </div>
 <?php endif; ?>

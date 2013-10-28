@@ -36,6 +36,7 @@
 			$deallocation = $this->Form->button(__d('page', 'Unassign members'), array('name' => 'deallocation', 'class' => 'common-btn common-btn-light', 'type' => 'button',
 				'data-ajax-url' => $this->Html->url(array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'deallocation', $page['Page']['id'])),
 				'data-ajax' => '#pages-menu-edit-item-'.$page['Page']['id'],
+				'data-ajax-data' => h('{"token": "'.$this->params['_Token']['key'].'"}'),	// JSONのエラーとなるためh関数を用いてエスケープ
 				'data-ajax-confirm' => h(__d('page','Unassign members of [%s]. Are you sure?',$page['Page']['page_name'])),'data-ajax-type' => 'post'
 			));
 		} else {
@@ -45,7 +46,7 @@
 			$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'common-btn')).
 			$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
 				'onclick' => "$.PageMenu.hideDetail(".$page['Page']['id'].");", 'data-ajax-url' => $this->Html->url(array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'participant_cancel', $page['Page']['id'])),
-				'data-ajax' => '#pages-menu-edit-participant-tmp', 'data-ajax-method' => 'inner')).$deallocation
+				'data-ajax' => '#pages-menu-edit-participant-tmp', 'data-ajax-method' => 'inner', 'data-ajax-callback' => 'return false;')).$deallocation
 		);
 		if(isset($this->request->data['isSearch']) && $this->request->data['isSearch']) {
 			echo $this->Form->hiddenVars('User', array(), false);

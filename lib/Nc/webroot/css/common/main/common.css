@@ -58,6 +58,7 @@ input[type="checkbox"], input[type="radio"] {
 }
 
 .clear {
+	float: none !important;
 	clear : both !important;
 }
 .clearfix:after, .lists:after {

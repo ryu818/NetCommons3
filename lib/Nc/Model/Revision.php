@@ -88,9 +88,10 @@ class Revision extends AppModel
  * @since   v 3.0.0.0
  */
 	public function beforeValidate($options = array()) {
-		if(isset($this->data[$this->alias]['content']) && (preg_match('/^\s*<div><\/div>\s*$/iu', $this->data[$this->alias]['content']) || preg_match('/^\s*<br\s*\/?>\s*$/iu', $this->data[$this->alias]['content']))) {
+		if(!$this->isNotEmptyContent($this->data[$this->alias])) {
 			$this->data[$this->alias]['content'] = "";
 		}
+		// TODO:未作成
 		//$this->data[$this->alias]['content'] = $this->cleanHTML($this->data[$this->alias]['content']);
 		return true;
 	}
@@ -103,7 +104,8 @@ class Revision extends AppModel
  * @since   v 3.0.0.0
  */
 	public function beforeSave($options = array()) {
-		if($this->data[$this->alias]['group_id'] != 0 && $this->data[$this->alias]['revision_name'] != 'auto-draft') {
+		if(isset($this->data[$this->alias]['group_id']) && isset($this->data[$this->alias]['revision_name']) &&
+			$this->data[$this->alias]['group_id'] != 0 && $this->data[$this->alias]['revision_name'] != 'auto-draft') {
 			$revisions = $this->findRevisions(null, $this->data[$this->alias]['group_id'], 1);
 			if(isset($revisions[0]) && $revisions[0][$this->alias]['revision_name']  != 'auto-draft'
 				&& $revisions[0][$this->alias]['content'] == $this->data[$this->alias]['content'] &&
@@ -206,6 +208,22 @@ class Revision extends AppModel
 				$this->delete($revision);
 			}
 		}
+	}
+
+
+/**
+ * WYSIWYGのコンテンツが空ではないかどうかチェック
+ *
+ * @param  array     $check
+ * @return boolean
+ * @since   v 3.0.0.0
+ */
+	public function isNotEmptyContent($check){
+		$content = $check['content'];
+		if(isset($content) && (preg_match('/^\s*<div><\/div>\s*$/iu', $content) || preg_match('/^\s*<br\s*\/?>\s*$/iu', $content))) {
+			return false;
+		}
+		return true;
 	}
 
 /**

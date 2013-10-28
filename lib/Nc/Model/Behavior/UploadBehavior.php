@@ -257,7 +257,7 @@ class UploadBehavior extends ModelBehavior {
 			if (!in_array($options['thumbnailMethod'], $this->_resizeMethods)) {
 				$options['thumbnailMethod'] = 'imagick';
 			}
-			$options['thumbnailSizes']['library'] = NC_UPLOAD_LIBRARY_THUMBNAIL_WIDTH_RESIZE_MODE;	// 削除時では、beforeSavが呼ばれないため、ここで初期値設定
+			$options['thumbnailSizes']['library'] = NC_UPLOAD_LIBRARY_THUMBNAIL_WIDTH_RESIZE_MODE;	// 削除時では、beforeSaveが呼ばれないため、ここで初期値設定
 // Modify for NetCommons Extentions By Ryuji.M --E N D
 			if (!in_array($options['pathMethod'], $this->_pathMethods)) {
 				$options['pathMethod'] = 'primaryKey';
@@ -618,7 +618,10 @@ class UploadBehavior extends ModelBehavior {
 				$data[$model->alias][$field] = $model->id . '.' . $data[$model->alias]['extension'];
 			}
 // Add for NetCommons Extentions By Ryuji.M --E N D
-			$this->_prepareFilesForDeletion($model, $field, $data, $options);
+// Modify for NetCommons Extentions By Ryuji.M --START
+			$this->_prepareFilesForDeletion($model, $field, $data, $options, true);
+			// $this->_prepareFilesForDeletion($model, $field, $data, $options);
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 		}
 		return true;
 	}
@@ -1864,8 +1867,10 @@ class UploadBehavior extends ModelBehavior {
 
 		return 'application/octet-stream';
 	}
-
-	public function _prepareFilesForDeletion(Model $model, $field, $data, $options) {
+// Modify for NetCommons Extentions By Ryuji.M --START
+	public function _prepareFilesForDeletion(Model $model, $field, $data, $options, $isDelete = false) {
+	//public function _prepareFilesForDeletion(Model $model, $field, $data, $options) {
+// Modify for NetCommons Extentions By Ryuji.M --E N D
 		if (!strlen($data[$model->alias][$field])) return $this->__filesToRemove;
 
 		if (!empty($options['fields']['dir']) && isset($data[$model->alias][$options['fields']['dir']])) {
@@ -1936,7 +1941,7 @@ class UploadBehavior extends ModelBehavior {
 				return false;
 			}
 		}
-		if($options['isWysiwyg']) {
+		if(!$isDelete && $options['isWysiwyg']) {
 			return $this->__filesToRemove;
 		}
 // Add for NetCommons Extentions By Ryuji.M --E N D
@@ -2080,7 +2085,7 @@ class UploadBehavior extends ModelBehavior {
  * @param boolean $cascade
  * @return boolean
  */
-	public function deleteFile(Model $model, $id, $cascade = true) {
+	public function deleteUploadFile(Model $model, $id, $cascade = true) {
 		$model->id = $id;
 		if ($this->beforeDelete($model, $cascade)) {
 			$this->afterDelete($model);
@@ -2189,6 +2194,11 @@ class UploadBehavior extends ModelBehavior {
 		}
 		$modelName = isset($options['modelName']) ? $options['modelName'] : $model->alias;
 		$fieldName = isset($options['fieldName']) ? $options['fieldName'] : $field;
+		if(is_string($options['checkComponentAction'])) {
+			$checkComponentAction = $options['checkComponentAction'];
+		} else {
+			$checkComponentAction = implode(',', $options['checkComponentAction']);
+		}
 
 		if($isWysiwyg) {
 			$text = isset($options['wysiwygText']) ? $options['wysiwygText'] : (isset($model->data[$modelName][$fieldName]) ? $model->data[$modelName][$fieldName] : null);
@@ -2201,15 +2211,48 @@ class UploadBehavior extends ModelBehavior {
 				'uniqueId' => $uniqueId,
 				'modelName' => $modelName,
 				'fieldName' => $fieldName,
+				'accessHierarchy' =>$options['accessHierarchy'],
+				'downloadPassword' => $options['downloadPassword'],
+				'checkComponentAction' => $checkComponentAction,
 			);
 			return $UploadLink->updateUploadInfoForWysiwyg($text, $options);
 		} else {
+			$Upload = ClassRegistry::init('Upload');
 			$fileName = isset($model->data[$model->alias][$field]) ? $model->data[$model->alias][$field] : null;
 			if(!isset($fileName)) {
 				return true;
 			}
-			$uploadId = substr($fileName, 0, strpos($fileName, '.'));
+
+			if(preg_match ( "/^([0-9]+)(_[a-zA-Z_-]+)\.(.+)$/" , $fileName, $matches)) {
+				$uploadId = $matches[1];
+				$thumbnailPostFix = $matches[2];
+				$extension = $matches[3];
+			} else if(preg_match ( "/^([0-9]+)\.(.+)$/" , $fileName, $matches)) {
+				$uploadId = $matches[1];
+				$thumbnailPostFix = '';
+				$extension = $matches[2];
+			} else {
+				$uploadId = 0;
+			}
+
+			$upload = $Upload->findById($uploadId);
+			if(isset($upload['Upload'])) {
+				if(!file_exists(NC_UPLOADS_DIR.$upload['Upload']['plugin'].DS.$upload['Upload']['file_path'].$fileName)) {
+					$uploadId = 0;
+				}
+				// TODO:閲覧チェックを行い問題なければ登録するべき
+			} else {
+				$uploadId = 0;
+			}
+
 			if(intval($uploadId) <= 0) {
+				if(isset($uploadLink['UploadLink'])) {
+					// delete
+					// 例：コミュニティーの写真をファイル選択し、その後、プリセットされた画像を選択した場合にUploadLinkを削除。
+					if(!$UploadLink->delete($uploadLink['UploadLink']['id'])) {
+						return false;
+					}
+				}
 				return true;
 			}
 
@@ -2224,12 +2267,6 @@ class UploadBehavior extends ModelBehavior {
 					'field_name' => $fieldName,
 				)
 			));
-
-			if(is_string($options['checkComponentAction'])) {
-				$checkComponentAction = $options['checkComponentAction'];
-			} else {
-				$checkComponentAction = implode(',', $options['checkComponentAction']);
-			}
 
 			$data = array('UploadLink' => array(
 				'upload_id' => $uploadId,

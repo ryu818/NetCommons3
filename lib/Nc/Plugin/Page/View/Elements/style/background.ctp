@@ -65,8 +65,8 @@ echo $this->element('style/filter');
 			echo $this->Form->button(__('Select file'), array(
 				'name' => 'select_file',
 				'type' => 'button',
-				'class' => 'common-btn pages-menu-background-original-btn',
-				'onclick' => "$.Common.showUploadDialog('dialog-".$id."', {'el' : this, 'action' : 'library', 'callback' : function(id, url, libraryUrl){\$.PageStyle.selectBackgroundFile(id, url, libraryUrl);}});"
+				'class' => 'common-btn pages-menu-select-file-btn',
+				'onclick' => "$.Common.showUploadDialog('dialog-".$id."', {'el' : this, 'action' : 'library', 'callback' : function(fileName, url, libraryUrl){\$.PageStyle.selectBackgroundFile(fileName, url, libraryUrl);}});"
 			));
 		?>
 		<fieldset class="form">

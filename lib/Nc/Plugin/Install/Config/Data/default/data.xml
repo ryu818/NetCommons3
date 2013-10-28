@@ -54,6 +54,9 @@
             <column name="myportal_createroom_flag">1</column>
             <column name="private_createroom_flag">0</column>
             <column name="allow_htmltag_flag">1</column>
+            <column name="allow_meta_flag">1</column>
+            <column name="allow_theme_flag">1</column>
+            <column name="allow_style_flag">2</column>
             <column name="allow_layout_flag">1</column>
             <column name="allow_attachment">2</column>
             <column name="allow_video">1</column>
@@ -89,6 +92,9 @@
             <column name="myportal_createroom_flag">0</column>
             <column name="private_createroom_flag">0</column>
             <column name="allow_htmltag_flag">1</column>
+            <column name="allow_meta_flag">1</column>
+            <column name="allow_theme_flag">1</column>
+            <column name="allow_style_flag">1</column>
             <column name="allow_layout_flag">1</column>
             <column name="allow_attachment">2</column>
             <column name="allow_video">1</column>
@@ -124,6 +130,9 @@
             <column name="myportal_createroom_flag">0</column>
             <column name="private_createroom_flag">0</column>
             <column name="allow_htmltag_flag">1</column>
+            <column name="allow_meta_flag">1</column>
+            <column name="allow_theme_flag">1</column>
+            <column name="allow_style_flag">1</column>
             <column name="allow_layout_flag">1</column>
             <column name="allow_attachment">2</column>
             <column name="allow_video">1</column>
@@ -159,7 +168,10 @@
             <column name="myportal_createroom_flag">0</column>
             <column name="private_createroom_flag">0</column>
             <column name="allow_htmltag_flag">0</column>
-            <column name="allow_layout_flag">1</column>
+            <column name="allow_meta_flag">1</column>
+            <column name="allow_theme_flag">1</column>
+            <column name="allow_style_flag">0</column>
+            <column name="allow_layout_flag">0</column>
             <column name="allow_attachment">1</column>
             <column name="allow_video">1</column>
             <column name="max_size">10485760</column>
@@ -194,7 +206,10 @@
             <column name="myportal_createroom_flag">0</column>
             <column name="private_createroom_flag">0</column>
             <column name="allow_htmltag_flag">0</column>
-            <column name="allow_layout_flag">1</column>
+            <column name="allow_meta_flag">1</column>
+            <column name="allow_theme_flag">1</column>
+            <column name="allow_style_flag">0</column>
+            <column name="allow_layout_flag">0</column>
             <column name="allow_attachment">0</column>
             <column name="allow_video">0</column>
             <column name="max_size">10485760</column>
@@ -229,6 +244,9 @@
             <column name="myportal_createroom_flag">0</column>
             <column name="private_createroom_flag">0</column>
             <column name="allow_htmltag_flag">1</column>
+            <column name="allow_meta_flag">1</column>
+            <column name="allow_theme_flag">1</column>
+            <column name="allow_style_flag">1</column>
             <column name="allow_layout_flag">1</column>
             <column name="allow_attachment">2</column>
             <column name="allow_video">1</column>

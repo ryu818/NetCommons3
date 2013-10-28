@@ -70,9 +70,9 @@ app\\webroot\\theme\\assets下に圧縮したものと、そうでないもの�
 401-500：管理者'),
 		'allow_creating_community' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3, 'comment' => 'コミュニティー作成権限
 0：コミュニティー作成不可（デフォルト）
-1：参加者のみのコミュニティー作成可
-2：一部公開（すべてのログイン会員が閲覧可能）までのコミュニティー作成可
-3：公開（すべてのユーザーが閲覧可能）までのコミュニティー作成可
+1：非公開(参加者のみ)のコミュニティー作成可
+2：公開（すべてのログイン会員が閲覧可能）までのコミュニティー作成可
+3：公開「全会員を強制的に参加させる。」までのコミュニティー作成可。
 4：公開コミュニティーまで作成でき、すべてのコミュニティーの表示順変更、削除が可能'),
 		'allow_new_participant' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'comment' => 'コミュニティーで主担ならば、新規に参加者の追加を許すかどうか。新規追加を許さない場合、SNSのような振る舞いになる。'),
 		'myportal_use_flag' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3, 'comment' => 'マイポータルを使用するかどうか。'),
@@ -84,7 +84,13 @@ app\\webroot\\theme\\assets下に圧縮したものと、そうでないもの�
 		'myportal_createroom_flag' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'comment' => 'マイポータル内にルームの新規作成を許可するかどうか（未使用）。'),
 		'private_createroom_flag' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'comment' => 'マイルーム内にルームの新規作成を許可するかどうか（未使用）。'),
 		'allow_htmltag_flag' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'comment' => 'HTMLタグの書き込み制限をするかどうか。'),
-		'allow_layout_flag' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'comment' => 'ページスタイルのレイアウト変更を許すかどうか。'),
+		'allow_meta_flag' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'comment' => 'ページ情報の変更を許すかどうか。'),
+		'allow_theme_flag' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'comment' => 'ページテーマの変更を許すかどうか。'),
+		'allow_style_flag' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3, 'comment' => 'ページスタイルの変更を許すかどうか。
+0：許可しない。
+1：許可する。
+2：CSSの編集まで許可する。'),
+		'allow_layout_flag' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'comment' => 'ページレイアウトの変更を許すかどうか。'),
 		'allow_attachment' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3, 'comment' => '編集画面からのファイルアップロードを行うかどうか。
 0:許可しない。
 1:画像のみ。
@@ -189,12 +195,11 @@ app\\webroot\\theme\\assets下に圧縮したものと、そうでないもの�
 	public $communities = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'room_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'key' => 'index'),
-		'photo' => array('type' => 'string', 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'コミュニティーの写真(選択ファイル名 OR (Upload.id).(extension))', 'charset' => 'utf8'),
+		'photo' => array('type' => 'string', 'null' => true, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'コミュニティーの写真(選択ファイル名 OR (Upload.id)_library.(extension))', 'charset' => 'utf8'),
 		'is_upload' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'comment' => 'アップロードファイルを指定したかどうか。'),
 		'publication_range_flag' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3, 'comment' => '公開範囲
-0:参加者のみ（コミュニティー参加者のみが閲覧可能）
-1:一部公開（すべてのログイン会員が閲覧可能）
-2:公開（すべてのユーザーが閲覧可能）'),
+0:非公開（コミュニティー参加者のみが閲覧可能）
+1:公開（すべてのログイン会員が閲覧可能）'),
 		'participate_as_general' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'comment' => '公開コミュニティーの場合のみ指定。一般として参加させるかどうか。チェックがついていた場合、会員新規登録時、コミュニティー登録時にPageUserLinkテーブルに一般として登録する。'),
 		'participate_flag' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3, 'comment' => '参加方法
 0:参加会員のみ
@@ -228,7 +233,7 @@ app\\webroot\\theme\\assets下に圧縮したものと、そうでないもの�
 		'lang' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 10, 'collate' => 'utf8_general_ci', 'comment' => '言語(ja,en等)', 'charset' => 'utf8'),
 		'community_name' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'コミュニティー名称', 'charset' => 'utf8'),
 		'summary' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '概要', 'charset' => 'utf8'),
-		'description' => array('type' => 'text', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '詳細', 'charset' => 'utf8'),
+		'revision_group_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'comment' => '活動の概要へのRevison.id'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'created_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
 		'created_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
@@ -266,6 +271,7 @@ app\\webroot\\theme\\assets下に圧縮したものと、そうでないもの�
 		'room_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'key' => 'index'),
 		'community_sum_tag_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'tag_value' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'タグ名称', 'charset' => 'utf8'),
+		'lang' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 10, 'collate' => 'utf8_general_ci', 'comment' => '言語(ja,en等)', 'charset' => 'utf8'),
 		'display_sequence' => array('type' => 'integer', 'null' => false, 'default' => '0', 'comment' => 'コミュニティー単位の表示順序(room_id毎の連番)'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'created_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
@@ -762,7 +768,7 @@ right：右寄せ', 'charset' => 'utf8'),
 Revisionから復元処理があるため、一度、記事として登録されたファイルは、登録される。'),
 		'download_password' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => 'ダウンロード用パスワード', 'charset' => 'utf8'),
 		'check_component_action' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'comment' => '表示チェック用コンポーネント、アクション名をカンマ区切りで設定。記述コンポーネント、アクション名がすべてtrueならば閲覧可能（アクション名のdefaultはcheckメソッド）。
-[プラグイン名].[コンポーネント名][アクション名]（Camel形式）の形式で登録。', 'charset' => 'utf8'),
+[プラグイン名].[コンポーネント名].[アクション名]（Camel形式）の形式で登録。', 'charset' => 'utf8'),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
 		'created_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
 		'created_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),

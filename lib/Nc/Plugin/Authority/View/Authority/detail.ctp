@@ -118,8 +118,8 @@
 						$options = array(
 							NC_ALLOW_CREATING_COMMUNITY_OFF => __d('authority', 'Community can not create.'),
 							NC_ALLOW_CREATING_COMMUNITY_ONLY_USER => __d('authority', 'Allow to create normal community.'),
-							NC_ALLOW_CREATING_COMMUNITY_ALL_USER => __d('authority', 'Allow to create partial public community.'),
-							NC_ALLOW_CREATING_COMMUNITY_ALL => __d('authority', 'Allow to create public community.'),
+							NC_ALLOW_CREATING_COMMUNITY_ALL_USER => __d('authority', 'Allow to create public community.'),
+							NC_ALLOW_CREATING_COMMUNITY_FORCE_ALL => __d('authority', 'Allow to create public community[Join to force all members.].'),
 							NC_ALLOW_CREATING_COMMUNITY_ADMIN => __d('authority', 'Allow to create all communities, display order change, or delete.'),
 						);
 						$settings = array(
@@ -148,27 +148,17 @@
 							<li>
 								<dl>
 									<dt>
-										<?php echo __d('authority', 'Partial public community'); ?>
+										<?php echo __d('authority', 'Public community'); ?>
 									</dt>
 									<dd>
 										:<?php echo __d('authority', 'Login members of all the viewable.'); ?>
 									</dd>
 								</dl>
 							</li>
-							<li>
-								<dl>
-									<dt>
-										<?php echo __d('authority', 'Public community'); ?>
-									</dt>
-									<dd>
-										:<?php echo __d('authority', 'Only as the participant the viewable.'); ?>
-									</dd>
-								</dl>
-							</li>
 						</ul>
-						<?php echo __d('authority', 'The default authority of the public community can be set from system management.'); ?>
+						<?php echo __d('authority', 'The default authority of the public community[Join to force all members.] can be set from system management.'); ?>
 					</div>
-				
+
 					<?php
 						$columnName = 'allow_new_participant';
 						$settings = array(
@@ -230,6 +220,78 @@
 						$settings = array(
 							'type' => 'radio',
 							'options' => array(_ON => __d('authority', 'Permitted'), _OFF => __d('authority', 'Not permitted')),
+							'value' => $authority['Authority'][$columnName],
+							'div' => false,
+							'legend' => false,
+							'disabled' => $authorityDisabled['Authority'][$columnName],
+						);
+						echo $this->Form->input('Authority.'.$columnName, $settings);
+					?>
+				</dd>
+			</dl>
+		</li>
+		<li>
+			<dl>
+				<dt>
+					<?php
+						$columnName = 'allow_meta_flag';
+						echo $this->Form->label('Authority.'.$columnName,  __d('authority', 'Allow to change page information?'));
+					?>
+					<span class="require"><?php echo __('*'); ?></span>
+				</dt>
+				<dd>
+					<?php
+						$settings = array(
+							'type' => 'radio',
+							'options' => array(_ON => __d('authority', 'Allowed'), _OFF => __d('authority', 'Not allowed')),
+							'value' => $authority['Authority'][$columnName],
+							'div' => false,
+							'legend' => false,
+							'disabled' => $authorityDisabled['Authority'][$columnName],
+						);
+						echo $this->Form->input('Authority.'.$columnName, $settings);
+					?>
+				</dd>
+			</dl>
+		</li>
+		<li>
+			<dl>
+				<dt>
+					<?php
+						$columnName = 'allow_theme_flag';
+						echo $this->Form->label('Authority.'.$columnName,  __d('authority', 'Allow to change page theme?'));
+					?>
+					<span class="require"><?php echo __('*'); ?></span>
+				</dt>
+				<dd>
+					<?php
+						$settings = array(
+							'type' => 'radio',
+							'options' => array(_ON => __d('authority', 'Allowed'), _OFF => __d('authority', 'Not allowed')),
+							'value' => $authority['Authority'][$columnName],
+							'div' => false,
+							'legend' => false,
+							'disabled' => $authorityDisabled['Authority'][$columnName],
+						);
+						echo $this->Form->input('Authority.'.$columnName, $settings);
+					?>
+				</dd>
+			</dl>
+		</li>
+		<li>
+			<dl>
+				<dt>
+					<?php
+						$columnName = 'allow_style_flag';
+						echo $this->Form->label('Authority.'.$columnName,  __d('authority', 'Allow to change page style?'));
+					?>
+					<span class="require"><?php echo __('*'); ?></span>
+				</dt>
+				<dd>
+					<?php
+						$settings = array(
+							'type' => 'radio',
+							'options' => array(NC_ALLOWED_TO_EDIT_CSS => __d('authority', 'Allowed to edit the CSS'), _ON => __d('authority', 'Allowed'), _OFF => __d('authority', 'Not allowed')),
 							'value' => $authority['Authority'][$columnName],
 							'div' => false,
 							'legend' => false,
