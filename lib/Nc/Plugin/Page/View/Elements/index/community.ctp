@@ -283,11 +283,9 @@
 		</div>
 	</div>
 	<div class="btn-bottom">
-		<input type="submit" class="common-btn" name="ok" value="<?php echo( __('Ok')); ?>" />
+		<input onclick="$(this.form).attr('data-is-participant', 0);" type="submit" class="common-btn" name="ok" value="<?php echo( __('Ok')); ?>" />
 		<input type="button" class="common-btn" name="cancel" value="<?php echo(__('Cancel')); ?>" onclick="$('#pages-menu-edit-detail-<?php echo($page['Page']['id']);?>').slideUp(300);" />
-
-		<input type="button" class="common-btn common-btn-light" name="participant" value="<?php echo(__d('page','Edit members')); ?>" data-page-edit-id=<?php echo($page['Page']['id']);?> data-ajax-url="<?php echo($this->Html->url(array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'participant', $page['Page']['id']))); ?>" data-ajax="#pages-menu-edit-participant-<?php echo($page['Page']['id']);?>" />
-
+		<input onclick="$(this.form).attr('data-is-participant', 1);" type="submit" class="common-btn common-btn-light" name="participant" value="<?php echo(__d('page','Edit members')); ?>" />
 	</div>
 </div>
 <?php
