@@ -39,7 +39,8 @@ class CakeTestLoader extends PHPUnit_Runner_StandardTestSuiteLoader {
 	public function load($filePath, $params = '') {
 		$file = $this->_resolveTestFile($filePath, $params);
 		// Modify for NetCommons Extentions By NEKOGET --START
-		//app/Test/Caseにファイルがなかったら、lib/Nc/Test/Caseを見に行く。
+		// 追加コード
+		// app/Test/Caseにファイルがなかったら、lib/Nc/Test/Caseを見に行く。
 		if(! is_file($file . 'Test.php'))
 		{
 			$file = str_replace(TESTS , NC. 'Test' . DS  , $file);
@@ -99,6 +100,7 @@ class CakeTestLoader extends PHPUnit_Runner_StandardTestSuiteLoader {
 
 		$fileList = self::_getRecursiveFileList($directory);
 		// Modify for NetCommons Extentions By NEKOGET --START
+		//追加コード
 		if($directory == TESTS.'Case'){
 			$NcfileList = self::_getRecursiveFileList(NC.'Test' . DS . 'Case');
 			foreach($NcfileList as $NcFile)
@@ -107,7 +109,6 @@ class CakeTestLoader extends PHPUnit_Runner_StandardTestSuiteLoader {
 			}
 		}
 		// Modify for NetCommons Extentions By NEKOGET --E N D
-
 		$testCases = array();
 		foreach ($fileList as $testCaseFile) {
 			$case = str_replace($directory . DS, '', $testCaseFile);
