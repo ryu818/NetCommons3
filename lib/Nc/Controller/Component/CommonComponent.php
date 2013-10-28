@@ -54,6 +54,7 @@ class CommonComponent extends Component {
 									'permalink', 'myportal_page_id', 'private_page_id', 'avatar',
 									'lang', 'timezone_offset', 'email', 'mobile_email', 'last_login',
 									'Authority.hierarchy', 'Authority.myportal_use_flag', 'Authority.allow_myportal_viewing_hierarchy', 'Authority.private_use_flag',
+									'Authority.allow_creating_community',
 									'Authority.public_createroom_flag', 'Authority.group_createroom_flag', 'Authority.myportal_createroom_flag',
 									'Authority.private_createroom_flag', 'Authority.allow_htmltag_flag', 'Authority.allow_meta_flag',
 									'Authority.allow_theme_flag', 'Authority.allow_style_flag', 'Authority.allow_layout_flag',
@@ -292,29 +293,5 @@ class CommonComponent extends Component {
 			$params['controller'] = $controllerArr[1];
 		}
 		return $params;
-	}
-
-/**
- * 直近のクエリについての情報を得る
- * @param   string  $source
- * @return  array
- * @since   v 3.0.0.0
- */
-	public function getSqlInfo($source = 'default') {
-		$db = ConnectionManager::getDataSource($source);
-		$log = $db->getLog(false, false);
-		if(isset($log['log'][count($log['log']) - 1])) {
-			$retLog = $log['log'][count($log['log']) - 1];
-			$ret = array(
-				'id' => count($log['log']),
-				'query' => $retLog['query'],
-				'affected' => $retLog['affected'],
-				'numRows' => $retLog['numRows'],
-				'took' => $retLog['took'],
-			);
-		} else {
-			return false;
-		}
-		return $ret;
 	}
 }
