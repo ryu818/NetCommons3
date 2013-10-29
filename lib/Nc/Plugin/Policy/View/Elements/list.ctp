@@ -91,7 +91,7 @@
 												$item['UserItemLang']['name'] = $item['UserItem']['default_name'];
 											}
 											if($item['UserItem']['tag_name'] != '' && $item['UserItem']['tag_name'] != 'username') {
-												$name = 'User.'.$item['Item']['tag_name'];
+												$name = 'User.'.$item['UserItem']['tag_name'];
 											} else {
 												$name = 'UserItemLink.'.$item['UserItem']['id'].'.content';
 											}
