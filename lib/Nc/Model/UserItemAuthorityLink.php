@@ -32,7 +32,7 @@ class UserItemAuthorityLink extends AppModel
 
 		foreach ($results as $key => $result) {
 			$userAuthorityId = $result['UserItemAuthorityLink']['user_authority_id'];
-			$itemId = $result['UserItemAuthorityLink']['item_id'];
+			$itemId = $result['UserItemAuthorityLink']['user_item_id'];
 			$ret[$userAuthorityId][$itemId]['edit_lower_hierarchy'] = $result['UserItemAuthorityLink']['edit_lower_hierarchy'];
 			$ret[$userAuthorityId][$itemId]['show_lower_hierarchy'] = $result['UserItemAuthorityLink']['show_lower_hierarchy'];
 		}
