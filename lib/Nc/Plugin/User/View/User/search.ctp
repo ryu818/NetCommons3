@@ -84,8 +84,8 @@
 			$itemList[$colNum][$rowCount] = $ret;
 			$rowCount++;
 
-			if($item['UserItem']['tag_name'] == 'is_active') {
-				// 状態の下に参加コミュニティーを表示（固定）
+			if($colNum == 0 && $rowCount >= $listMax) {
+				// １列目の最後に参加コミュニティーを表示（固定）
 				$communityItem = array(
 					'UserItem' => array(
 						'id' => 0,
