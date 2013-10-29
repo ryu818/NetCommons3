@@ -25,6 +25,9 @@ class FileBehavior extends ModelBehavior {
  * @since   v 3.0.0.0
  **/
 	public function createFile(Model $Model, $path, $file_name, $content, $gz_flag = true) {
+		if(! mb_substr($path,-1) != DS){
+			$path .= DS;
+		}
 		$file_path = $path . $file_name;
 		$file= $this->_getInstance($file_path , true);
 		if (!$file->write($content)) {
