@@ -87,7 +87,7 @@
 			if($item['UserItem']['tag_name'] == 'is_active') {
 				// 状態の下に参加コミュニティーを表示（固定）
 				$communityItem = array(
-					'Item' => array(
+					'UserItem' => array(
 						'id' => 0,
 						'type' => 'communities',
 						'tag_name' => 'communities',
@@ -95,7 +95,7 @@
 						'allow_email_reception_flag' => false,
 						'display_title' => true,
 					),
-					'ItemLang' => array(
+					'UserItemLang' => array(
 						'name' => __d('user', 'Communities'),
 						'lang' => '',
 					)
