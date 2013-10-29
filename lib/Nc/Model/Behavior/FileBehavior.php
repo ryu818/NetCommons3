@@ -49,6 +49,8 @@ class FileBehavior extends ModelBehavior {
 
 /**
  * パスの最後にある名前の部分を返す(マルチバイト版)
+ * basename($path)と同じ挙動となる。
+ * $suffixがある場合は取り除いたものをかえす
  *
  * @param   Model  $Model
  * @param   string $path
@@ -57,8 +59,7 @@ class FileBehavior extends ModelBehavior {
  * @since   v 3.0.0.0
  **/
 	public function basename(Model $Model, $path, $suffix = null){
-		$tmp = preg_split('/[\/\\\\]/', $path);
-		$res = end($tmp);
+		$res = basename($path);
 		if(strlen($suffix)){
 			$suffix = preg_quote($suffix);
 			$res = preg_replace("/({$suffix})$/u", "", $res);

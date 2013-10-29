@@ -106,6 +106,63 @@ class NcFileBehaviorTest extends CakeTestCase {
  * @return void
  */
 	public function testBasename() {
+		$model = new User;
+
+		//ファイル名の場合
+		$path = TMP . "tests" . DS;
+		$name = "testfile";
+		$ck   = $this->File->basename($model , $path . $name);
+		$this->assertEqual($name , $ck);
+
+		//パスの最後にフォルダの区切り文字がある場合
+		$path = TMP . "tests" . DS;
+		$name = 'testfile' . DS;
+		$ck   = $this->File->basename($model , $path . $name);
+		$this->assertEqual(basename($path . $name) , $ck);
+
+		//日本語の場合
+		$path = TMP . "tests" . DS;
+		$name = 'テストファイル';
+		$ck   = $this->File->basename($model , $path . $name);
+		$this->assertEqual(basename($path . $name) , $ck);
+
+		//日本語名のフォルダの場合
+		$path = TMP . "tests" . DS;
+		$name = 'テストファイル' . DS;
+		$ck   = $this->File->basename($model , $path . $name);
+		$this->assertEqual(basename($path . $name) , $ck);
+
+		//suffixがつく場合
+		$path   = TMP . "tests" . DS;
+		$name   = 'testtest.txt';
+		$suffix = '.txt';
+		$ans    = 'testtest';
+		$ck     = $this->File->basename($model , $path . $name , $suffix);
+		$this->assertEqual($ans , $ck);
+
+		//suffixがつく場合 最後がフォルダ
+		$path   = TMP . "tests" . DS;
+		$name   = 'testtest.txt' . DS;
+		$suffix = '.txt';
+		$ans    = 'testtest';
+		$ck     = $this->File->basename($model , $path . $name , $suffix);
+		$this->assertEqual($ans , $ck);
+
+		//suffixがつく場合 日本語
+		$path   = TMP . "tests" . DS;
+		$name   = 'テストファイル.頁';
+		$suffix = '.頁';
+		$ans    = 'テストファイル';
+		$ck     = $this->File->basename($model , $path . $name , $suffix);
+		$this->assertEqual($ans , $ck);
+
+		//suffixがつく場合 フォルダの場合 日本語
+		$path   = TMP . "tests" . DS;
+		$name   = 'テストファイル.頁'. DS;
+		$suffix = '.頁';
+		$ans    = 'テストファイル';
+		$ck     = $this->File->basename($model , $path . $name , $suffix);
+		$this->assertEqual($ans , $ck);
 	}
 
 /**
