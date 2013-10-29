@@ -108,7 +108,6 @@ class CakeTestLoader extends PHPUnit_Runner_StandardTestSuiteLoader {
 				$fileList[] = TESTS.'Case' . DS . str_replace(NC.'Test' . DS . 'Case' . DS , '' , $NcFile);
 			}
 		}
-		var_dump($fileList);
 		// Modify for NetCommons Extentions By NEKOGET --E N D
 		$testCases = array();
 		foreach ($fileList as $testCaseFile) {
