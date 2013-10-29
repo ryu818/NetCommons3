@@ -4595,30 +4595,6 @@ e-mail：{X-EMAIL}
             <column name="modified_user_name">admin</column>
         </table>
         <table name="module_system_links">
-            <column name="id">6</column>
-            <column name="authority_id">1</column>
-            <column name="module_id">2</column>
-            <column name="hierarchy">400</column>
-            <column name="created">NULL</column>
-            <column name="created_user_id">0</column>
-            <column name="created_user_name"></column>
-            <column name="modified">NULL</column>
-            <column name="modified_user_id">0</column>
-            <column name="modified_user_name"></column>
-        </table>
-        <table name="module_system_links">
-            <column name="id">7</column>
-            <column name="authority_id">5</column>
-            <column name="module_id">2</column>
-            <column name="hierarchy">400</column>
-            <column name="created">NULL</column>
-            <column name="created_user_id">0</column>
-            <column name="created_user_name"></column>
-            <column name="modified">NULL</column>
-            <column name="modified_user_id">0</column>
-            <column name="modified_user_name"></column>
-        </table>
-        <table name="module_system_links">
             <column name="id">8</column>
             <column name="authority_id">1</column>
             <column name="module_id">3</column>

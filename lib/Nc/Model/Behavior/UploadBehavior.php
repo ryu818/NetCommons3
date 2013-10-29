@@ -2240,7 +2240,6 @@ class UploadBehavior extends ModelBehavior {
 				if(!file_exists(NC_UPLOADS_DIR.$upload['Upload']['plugin'].DS.$upload['Upload']['file_path'].$fileName)) {
 					$uploadId = 0;
 				}
-				// TODO:閲覧チェックを行い問題なければ登録するべき
 			} else {
 				$uploadId = 0;
 			}
@@ -2256,9 +2255,11 @@ class UploadBehavior extends ModelBehavior {
 				return true;
 			}
 
+
+
 			$uploadLink = $UploadLink->find('first', array(
 				'recursive' => -1,
-				'fields' => array('UploadLink.id', 'UploadLink.is_use'),
+				'fields' => array('UploadLink.id', 'UploadLink.is_use', 'UploadLink.check_component_action'),
 				'conditions' => array(
 					'plugin' => $options['plugin'],
 					//'content_id'=>$options['contentId'],	// TODO:必要かも
@@ -2267,8 +2268,18 @@ class UploadBehavior extends ModelBehavior {
 					'field_name' => $fieldName,
 				)
 			));
+			$UploadLinkId = 0;
+			if(isset($uploadLink['UploadLink'])) {
+				$UploadLinkId = $uploadLink['UploadLink']['id'];
+				if($uploadLink['UploadLink']['check_component_action'] == 'Download.checkAdmin') {
+					$checkComponentAction = $UploadLink->checkComponentAction($checkComponentAction, $upload['Upload']['user_id']);
+				}
+			} else {
+				$checkComponentAction = $UploadLink->checkComponentAction($checkComponentAction, $upload['Upload']['user_id']);
+			}
 
 			$data = array('UploadLink' => array(
+				'id' => $UploadLinkId,
 				'upload_id' => $uploadId,
 				'plugin' => $options['plugin'],
 				'content_id' => $options['contentId'],
@@ -2280,9 +2291,6 @@ class UploadBehavior extends ModelBehavior {
 				'download_password' => $options['downloadPassword'],
 				'check_component_action' => $checkComponentAction,
 			));
-			if(isset($uploadLink['UploadLink'])) {
-				$data['UploadLink']['id'] = $uploadLink['UploadLink']['id'];
-			}
 			if($UploadLink->save($data)) {
 				if ((!isset($uploadLink['UploadLink']) || !$uploadLink['UploadLink']['is_use'])  &&
 					$this->settings[$model->alias][$field]['useUploadModel']) {

@@ -61,7 +61,7 @@ class NcDownloadsController extends AppController {
  */
 	public function index($fileName) {
 		$this->autoRender = false;
-		
+
 		if(!preg_match("/^([0-9]+)(_|-){0,1}(.*)\.(.*)/", $fileName, $matches)) {
 			throw new NotFoundException(__('File not found.'));
 		}
@@ -117,6 +117,9 @@ class NcDownloadsController extends AppController {
 		} else {
 			$checkComponentActionArr = array();
 		}
+		if($uploadLink['is_use'] == _OFF) {
+			return false;
+		}
 
 		foreach ($checkComponentActionArr as $checkComponentAction) {
 
@@ -132,24 +135,39 @@ class NcDownloadsController extends AppController {
 
 			$parts = explode('.', $checkComponentAction);
 			$partsCount = count($parts);
-			switch ($partsCount) {
-				case 1:
-					$component = $parts[0];
-					$action = 'check';
-					break;
-				case 2:
-					$component = $parts[0].'.'.$parts[1];
-					$action = 'check';
-					break;
-				case 3:
-					$component = $parts[0].'.'.$parts[1];
-					$action = $parts[2];
-					break;
-				default:
-					// 不正な形式のためエラー
-					return false;
+			if($parts[0] == 'Download') {
+				switch ($partsCount) {
+					case 1:
+						$component = $parts[0];
+						$action = 'check';
+						break;
+					case 2:
+						$component = $parts[0];
+						$action = $parts[1];
+						break;
+					default:
+						// 不正な形式のためエラー
+						return false;
+				}
+			} else {
+				switch ($partsCount) {
+					case 1:
+						$component = $parts[0];
+						$action = 'check';
+						break;
+					case 2:
+						$component = $parts[0].'.'.$parts[1];
+						$action = 'check';
+						break;
+					case 3:
+						$component = $parts[0].'.'.$parts[1];
+						$action = $parts[2];
+						break;
+					default:
+						// 不正な形式のためエラー
+						return false;
+				}
 			}
-
 			$loadedComponent = $this->Components->load($component);
 			$loadedComponent->startup($this);
 			if (!$loadedComponent->$action($uploadLink, $fileOwnerId, $downloadPassword)) {
@@ -176,7 +194,7 @@ class NcDownloadsController extends AppController {
 		$isAvailable = false;
 		foreach ($paths as $path) {
 			$mimetexPath = $path . 'mimetex/';
-	
+
 			if (substr(PHP_OS, 0, 3) == 'WIN') {
 				$mimetex = $mimetexPath . 'mimetex.exe';
 			} else {
