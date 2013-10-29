@@ -107,7 +107,7 @@ before_script:
     }" > app/Config/database.php
 
 script:
-  - cd app/; ./Console/cake test app All --stderr
+  - cd app/; ./Console/cake test app NcAll --stderr
 
 notifications:
   email: false
