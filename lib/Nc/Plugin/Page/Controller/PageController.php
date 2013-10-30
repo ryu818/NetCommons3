@@ -206,14 +206,6 @@ class PageController extends PageAppController {
 			$activeTab = $selActiveTab;
 		}
 
-		// 管理系の権限を取得
-		if($userId) {
-			$adminHierarchy = $this->ModuleSystemLink->findHierarchyByPluginName($this->request->params['plugin'], $loginUser['authority_id']);
-		} else {
-			$adminHierarchy = NC_AUTH_OTHER;
-		}
-		$elementParams['admin_hierarchy'] = $adminHierarchy;
-
 		$parentPage = $this->Page->findAuthById($centerPage['Page']['parent_id'], $userId);
 		if(!isset($parentPage['Page'])) {
 			$this->response->statusCode('404');
@@ -232,7 +224,7 @@ class PageController extends PageAppController {
 			} else if($parentPage['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
 				$isAdd = true;
 			}
-			if($adminHierarchy >= NC_AUTH_MIN_MODERATE) {
+			if(!empty($loginUser['allow_creating_community'])) {
 				$isAddCommunity = true;
 			}
 			if(($centerPage['Page']['space_type'] != NC_SPACE_TYPE_GROUP && $activeTab == 1) ||
@@ -287,7 +279,7 @@ class PageController extends PageAppController {
 		// コミュニティー数
 		//$this->paginate['extra'] = array('user_id' => $userId);
 		$this->paginate['user_id'] = $userId;
-		if($isEdit && $adminHierarchy >= NC_AUTH_MIN_ADMIN) {
+		if($isEdit && $loginUser['allow_creating_community'] == NC_ALLOW_CREATING_COMMUNITY_ADMIN) {
 			$this->paginate['is_all'] = true;
 		} else {
 			$this->paginate['is_all'] = false;
@@ -302,7 +294,7 @@ class PageController extends PageAppController {
 				)
 			);
 			$options = array(
-				'isShowAllCommunity' => true,
+				//'isShowAllCommunity' => false,
 				'isMyPortalCurrent' => false,
 				'ativePageId' => $pageId,
 			);

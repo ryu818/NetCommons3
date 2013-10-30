@@ -24,7 +24,7 @@ class PageOperationsController extends PageAppController {
  *
  * @var array
  */
-	public $components = array('Page.PageMenu');	// 権限チェックは、ここActionで行う。admin_hierarchyが管理者ならばすべて許すため。
+	public $components = array('Page.PageMenu');
 
 /**
  * Model name
@@ -86,8 +86,7 @@ class PageOperationsController extends PageAppController {
 		$user_id = $this->Auth->user('id');
 		$current_page = $this->Page->findAuthById($copy_page_id, $user_id);
 
-		$admin_hierarchy = $this->PageMenu->validatorPage($this->request, $current_page);
-		if(!$admin_hierarchy) {
+		if(!$this->PageMenu->validatorPage($this->request, $current_page)) {
 			return;
 		}
 		// $copy_page_id = $this->request->query['page_id'];

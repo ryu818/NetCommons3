@@ -200,7 +200,7 @@ app\\webroot\\theme\\assets下に圧縮したものと、そうでないもの�
 		'publication_range_flag' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3, 'comment' => '公開範囲
 0:非公開（コミュニティー参加者のみが閲覧可能）
 1:公開（すべてのログイン会員が閲覧可能）'),
-		'participate_as_general' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'comment' => '公開コミュニティーの場合のみ指定。一般として参加させるかどうか。チェックがついていた場合、会員新規登録時、コミュニティー登録時にPageUserLinkテーブルに一般として登録する。'),
+		'participate_force_all_users' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'comment' => '公開コミュニティーの場合のみ指定。強制的に一般(ゲスト)として参加させるかどうか。チェックがついていた場合、PageUserLinkテーブルに存在していなくてもコミュニティー一覧にも表示させる。'),
 		'participate_flag' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3, 'comment' => '参加方法
 0:参加会員のみ
 1:招待制（コミュニティーメンバーから招待を受けた会員のみ参加可能）

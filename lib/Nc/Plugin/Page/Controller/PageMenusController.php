@@ -38,7 +38,7 @@ class PageMenusController extends PageAppController {
  *
  * @var array
  */
-	public $components = array('RevisionList', 'Security', 'Page.PageMenu');	// 権限チェックは、ここActionで行う。admin_hierarchyが管理者ならばすべて許すため。
+	public $components = array('RevisionList', 'Security', 'Page.PageMenu');
 
 /**
  * Helper name
@@ -136,8 +136,7 @@ class PageMenusController extends PageAppController {
 		}
 
 		// 権限チェック
-		$adminHierarchy = $this->PageMenu->validatorPage($this->request, $currentPage, $parentPage);
-		if(!$adminHierarchy) {
+		if(!$this->PageMenu->validatorPage($this->request, $currentPage, $parentPage)) {
 			return;
 		}
 
@@ -154,7 +153,7 @@ class PageMenusController extends PageAppController {
 		if(!$this->Page->incrementDisplaySeq($page, 1, array('not' => array('Page.id' => $page['Page']['id'])))) {
 			throw new InternalErrorException(__('Failed to update the database, (%s).', 'pages'));
 		}
-		$this->_renderItem($page, $parentPage, $adminHierarchy);
+		$this->_renderItem($page, $parentPage);
 	}
 
 /**
@@ -165,9 +164,7 @@ class PageMenusController extends PageAppController {
  */
 	public function add_community($currentPageId) {
 		$user = $this->Auth->user();
-		// モデレーター以上
-		$adminHierarchy = $this->ModuleSystemLink->findHierarchyByPluginName($this->request->params['plugin'], $user['authority_id']);
-		if($adminHierarchy <= NC_AUTH_GENERAL || !$this->request->is('post')) {
+		if(empty($user['allow_creating_community']) || !$this->request->is('post')) {
 			$this->response->statusCode('403');
 			$this->flash(__('Forbidden permission to access the page.'), '');
 			return;
@@ -251,7 +248,8 @@ class PageMenusController extends PageAppController {
  */
 	public function edit() {
 		App::uses('Sanitize', 'Utility');
-		$userId = $this->Auth->user('id');
+		$loginUser = $this->Auth->user();
+		$userId = $loginUser['id'];
 		$page['Page'] = $this->request->data['Page'];
 
 		$isDetail = false;
@@ -261,12 +259,12 @@ class PageMenusController extends PageAppController {
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		if($currentPage['Page']['thread_num'] == 1 && $currentPage['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
 			// コミュニティー
-			$ret = $this->Community->getCommunityData($currentPage['Page']['room_id'], $this->request->data);
+			$ret = $this->Community->getCommunityData($currentPage['Page']['room_id']);
 			if($ret === false) {
 				throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'communities'));
 			}
 			list($community, $communityLang, $communityTag) = $ret;
-			$fieldCommunityList = array('photo', 'is_upload', 'publication_range_flag', 'participate_as_general','participate_flag',
+			$fieldCommunityList = array('photo', 'is_upload', 'publication_range_flag', 'participate_force_all_users','participate_flag',
 					'invite_hierarchy', 'is_participate_notice', 'participate_notice_hierarchy',
 					'is_resign_notice', 'resign_notice_hierarchy');
 			$fieldCommunityLangList = array('room_id', 'community_name', 'lang', 'summary', 'revision_group_id');
@@ -304,8 +302,7 @@ class PageMenusController extends PageAppController {
 		}
 
 		// 権限チェック
-		$adminHierarchy = $this->PageMenu->validatorPage($this->request, $currentPage);
-		if(!$adminHierarchy) {
+		if(!$this->PageMenu->validatorPage($this->request, $currentPage)) {
 			return;
 		}
 
@@ -407,7 +404,7 @@ class PageMenusController extends PageAppController {
 						$communityLang['CommunityLang']['revision_group_id'] = $this->Revision->id;
 						$this->CommunityLang->set($communityLang);	// 再セット
 					}
-					if (!$this->CommunityLang->save($communityLang, false, $fieldCommunityLangList)) {
+					if ($isAutoRegist && !$this->CommunityLang->save($communityLang, false, $fieldCommunityLangList)) {
 						throw new InternalErrorException(__('Failed to update the database, (%s).', 'community_langs'));
 					}
 				}
@@ -503,7 +500,7 @@ class PageMenusController extends PageAppController {
 			$currentPage['Page']['permalink'] = $inputPermalink;
 		}
 
-		$this->_renderItem($currentPage, $parentPage, $adminHierarchy, $isDetail, $errorFlag, $childPages, $bufCurrentPermalink);
+		$this->_renderItem($currentPage, $parentPage, $isDetail, $errorFlag, $childPages, $bufCurrentPermalink);
 	}
 
 /**
@@ -517,8 +514,7 @@ class PageMenusController extends PageAppController {
 		$page = $this->Page->findAuthById($pageId, $userId);
 
 		// 権限チェック
-		$adminHierarchy = $this->PageMenu->validatorPage($this->request, $page);
-		if(!$adminHierarchy) {
+		if(!$this->PageMenu->validatorPage($this->request, $page)) {
 			return;
 		}
 
@@ -577,8 +573,7 @@ class PageMenusController extends PageAppController {
 		}
 
 		// 権限チェック
-		$adminHierarchy = $this->PageMenu->validatorPage($this->request, $currentPage);
-		if(!$adminHierarchy) {
+		if(!$this->PageMenu->validatorPage($this->request, $currentPage)) {
 			return;
 		}
 
@@ -645,8 +640,7 @@ class PageMenusController extends PageAppController {
 		}
 
 		// 権限チェック
-		$adminHierarchy = $this->PageMenu->validatorPage($this->request, $currentPage, $parentPage);
-		if(!$adminHierarchy) {
+		if(!$this->PageMenu->validatorPage($this->request, $currentPage, $parentPage)) {
 			return;
 		}
 
@@ -712,8 +706,7 @@ class PageMenusController extends PageAppController {
 
 		// 権限チェック
 		$currentPage = $this->Page->findAuthById($page['Page']['id'], $userId);
-		$adminHierarchy = $this->PageMenu->validatorPage($this->request, $currentPage);
-		if(!$adminHierarchy) {
+		if(!$this->PageMenu->validatorPage($this->request, $currentPage)) {
 			return;
 		}
 
@@ -754,7 +747,7 @@ class PageMenusController extends PageAppController {
 		//$parentPage = $this->Page->findById($page['Page']['parent_id']);
 		//$childPages = $insPages;
 
-		$this->_renderItem($page, $parentPage, $adminHierarchy, false, false, $childPages);
+		$this->_renderItem($page, $parentPage, false, false, $childPages);
 	}
 
 /**
@@ -778,8 +771,7 @@ class PageMenusController extends PageAppController {
 		}
 
 		// 権限チェック
-		$adminHierarchy = $this->PageMenu->validatorPage($this->request, $page, $parentPage);
-		if(!$adminHierarchy) {
+		if(!$this->PageMenu->validatorPage($this->request, $page, $parentPage)) {
 			return;
 		}
 
@@ -790,8 +782,7 @@ class PageMenusController extends PageAppController {
 			if(!isset($authority['Authority'])) {
 				throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 			}
-			$pageUserLinks = $this->PageMenu->participantSession($this->request, $pageId, $user['hierarchy'], $authList);
-
+			$pageUserLinks = $this->PageMenu->participantSession($this->request, $pageId, $authList);
 			if(!empty($pageUserLinks['PageUserLink'])) {
 				$isSetChief = false;
 				foreach($pageUserLinks['PageUserLink'] as $bufPageUserLink) {
@@ -842,7 +833,7 @@ class PageMenusController extends PageAppController {
 			$this->Session->delete(NC_SYSTEM_KEY.'.page_menu.PageUserLink['.$pageId.']');
 			$this->Session->setFlash(__('Has been successfully updated.'));
 
-			$this->_renderItem($page, $parentPage, $adminHierarchy, false, false, $childPages);
+			$this->_renderItem($page, $parentPage, false, false, $childPages);
 			return;
 		}
 		if(!$this->request->is('post') || (isset($this->request->data['isSearch']) && $this->request->data['isSearch'])) {
@@ -853,7 +844,6 @@ class PageMenusController extends PageAppController {
 
 		$this->set('page', $page);
 		$this->set('auth_list', $authList);
-		$this->set('admin_hierarchy', $adminHierarchy);
 	}
 
 /**
@@ -873,8 +863,7 @@ class PageMenusController extends PageAppController {
 			// 子グループ
 			$parentPage = $this->Page->findAuthById($page['Page']['parent_id'], $userId);
 		}
-		$adminHierarchy = $this->PageMenu->validatorPage($this->request, $page, $parentPage);
-		if(!$adminHierarchy) {
+		if(!$this->PageMenu->validatorPage($this->request, $page, $parentPage)) {
 			return;
 		}
 
@@ -905,9 +894,8 @@ class PageMenusController extends PageAppController {
 		$this->set('auth_list',$this->Authority->findAuthSelect());
 		$this->set('user_id', $userId);
 		$this->set('page', $page);
-		$this->set('page_user_links', $this->PageMenu->participantSession($this->request, $pageId, $adminHierarchy));
+		$this->set('page_user_links', $this->PageMenu->participantSession($this->request, $pageId));
 		$this->set('default_authority_id', $defaultAuthorityId);
-		$this->set('admin_hierarchy', $adminHierarchy);
 		$this->set('participant_type', $participantType);
 	}
 
@@ -927,8 +915,7 @@ class PageMenusController extends PageAppController {
 			// 子グループ
 			$parentPage = $this->Page->findAuthById($page['Page']['parent_id'], $userId);
 		}
-		$adminHierarchy = $this->PageMenu->validatorPage($this->request, $page, $parentPage);
-		if(!$adminHierarchy) {
+		if(!$this->PageMenu->validatorPage($this->request, $page, $parentPage)) {
 			return;
 		}
 		$this->Session->delete(NC_SYSTEM_KEY.'.page_menu.PageUserLink['.$pageId.']');
@@ -949,11 +936,11 @@ class PageMenusController extends PageAppController {
 		// 権限チェック
 		if($page['Page']['root_id'] != $page['Page']['room_id']) {
 			// 子グループ
-			$adminHierarchy = $this->PageMenu->validatorPage($this->request, $page, $parentPage);
+			$ret = $this->PageMenu->validatorPage($this->request, $page, $parentPage);
 		} else {
-			$adminHierarchy = $this->PageMenu->validatorPage($this->request, $page);
+			$ret = $this->PageMenu->validatorPage($this->request, $page);
 		}
-		if(!$adminHierarchy) {
+		if(!$ret) {
 			return;
 		}
 		$childPages = $this->Page->findChilds('all', $page, null, $userId);
@@ -980,14 +967,13 @@ class PageMenusController extends PageAppController {
 		}
 
 		$this->Session->setFlash(__('Has been successfully updated.'));
-		$this->_renderItem($page, $parentPage, $adminHierarchy, false, false, $childPages);
+		$this->_renderItem($page, $parentPage, false, false, $childPages);
 	}
 
 /**
  * ページのitemのrenderを行う
  * @param   Model Page    $page
  * @param   Model Pages   $parentPage
- * @param   integer       $adminHierarchy
  * @param   boolean       $isDetail
  * @param   boolean       $errorFlag
  * @param   Model Pages   $childPages
@@ -995,7 +981,8 @@ class PageMenusController extends PageAppController {
  * @return  void
  * @since   v 3.0.0.0
  */
-	private function _renderItem($page, $parentPage = null, $adminHierarchy, $isDetail = false, $errorFlag = false, $childPages = null, $prePermalink = null) {
+	private function _renderItem($page, $parentPage = null, $isDetail = false, $errorFlag = false, $childPages = null, $prePermalink = null) {
+		$isParticipant = isset($this->request->data['is_participant']) ? intval($this->request->data['is_participant']) : _OFF;
 		if(isset($parentPage)) {
 			$this->set('parent_page', $parentPage);
 		}
@@ -1009,12 +996,15 @@ class PageMenusController extends PageAppController {
 		$this->set('page', $page);
 		$this->set('space_type', $page['Page']['space_type']);
 		$this->set('page_id', $page['Page']['id']);
-		$this->set('admin_hierarchy', $adminHierarchy);
 		$this->set('is_detail', $isDetail);
 		$this->set('error_flag', $errorFlag);
+		$this->set('is_participant', $isParticipant);
 		if(isset($prePermalink) && $prePermalink != $page['Page']['permalink']) {
 			$this->set('permalink', rtrim($this->Page->getPermalink(str_replace('%2F', '/', urlencode($page['Page']['permalink'])), $page['Page']['space_type']), '/'));
 			$this->set('pre_permalink', rtrim($this->Page->getPermalink(str_replace('%2F', '/', urlencode($prePermalink)), $page['Page']['space_type']), '/'));
+		} else {
+			$this->set('permalink', '');
+			$this->set('pre_permalink', '');
 		}
 		$this->render('Elements/index/item');
 	}

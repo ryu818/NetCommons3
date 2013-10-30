@@ -36,7 +36,7 @@ if(isset($is_edit) && $is_edit == _ON){
 		</select>
 	</div>
 	<?php endif; ?>
-	<?php if($admin_hierarchy != NC_AUTH_OTHER): ?>
+	<?php if($hierarchy >= NC_AUTH_MIN_CHIEF): ?>
 	<a id="pages-menu-edit-btn" class="nc-tooltip" title="<?php echo(h($setting)); ?>" data-tooltip-desc="<?php echo(h($tooltip_setting)); ?>" href="<?php echo($this->Html->url(array('plugin' => 'page', 'controller' => 'page', 'action' => 'index', '?' => array('is_edit' => !$is_edit)))); ?>" data-ajax="#nc-pages-setting-dialog">
 		<span class="<?php echo($setting_class); ?>"></span>
 	</a>
@@ -69,7 +69,7 @@ if(isset($is_edit) && $is_edit == _ON){
 <div id="pages-menu-tab" data-ajax-url="<?php echo $this->Html->url(array('plugin' => 'page', 'controller' => 'page', 'action' => 'index'));?>">
 	<ul data-pages-header="true">
 		<li><a href="#pages-menu-page"><span><?php echo(__d('page', 'Page list'));?></span></a></li>
-		<li><a href="#pages-menu-community"><span><?php echo(__d('page', 'Participation community'));?></span></a></li>
+		<li><a href="#pages-menu-community"><span><?php echo(__d('page', 'Community list'));?></span></a></li>
 	</ul>
 
 	<div id="pages-menu-page" class="nc-pages-setting-content">
@@ -88,21 +88,21 @@ if(isset($is_edit) && $is_edit == _ON){
 				<?php $parent_id = NC_TOP_PUBLIC_ID; ?>
 				<?php echo($this->element('index/edit_page', array('pages' => $pages, 'menus' => $pages[NC_SPACE_TYPE_PUBLIC][$thread_num][$parent_id],
 						'space_type' => NC_SPACE_TYPE_PUBLIC, 'page_id' => $page_id,
-						'admin_hierarchy' => $admin_hierarchy, 'is_detail' => $is_detail, 'parent_page' => isset($parent_page) ? $parent_page : null,
+						'is_detail' => $is_detail, 'parent_page' => isset($parent_page) ? $parent_page : null,
 						'community_params' => $community_params))); ?>
 			<?php endif; ?>
 			<?php if(!empty($pages[NC_SPACE_TYPE_MYPORTAL])): ?>
 				<?php $parent_id = NC_TOP_MYPORTAL_ID;?>
 				<?php echo($this->element('index/edit_page', array('pages' => $pages, 'menus' => $pages[NC_SPACE_TYPE_MYPORTAL][$thread_num][$parent_id],
 						'space_type' => NC_SPACE_TYPE_MYPORTAL, 'page_id' => $page_id,
-						'admin_hierarchy' => $admin_hierarchy, 'is_detail' => $is_detail, 'parent_page' => isset($parent_page) ? $parent_page : null,
+						'is_detail' => $is_detail, 'parent_page' => isset($parent_page) ? $parent_page : null,
 						'community_params' => $community_params))); ?>
 			<?php endif; ?>
 			<?php if(!empty($pages[NC_SPACE_TYPE_PRIVATE])): ?>
 				<?php $parent_id = NC_TOP_PRIVATE_ID;?>
 				<?php echo($this->element('index/edit_page', array('pages' => $pages, 'menus' => $pages[NC_SPACE_TYPE_PRIVATE][$thread_num][$parent_id],
 						'space_type' => NC_SPACE_TYPE_PRIVATE, 'page_id' => $page_id,
-						'admin_hierarchy' => $admin_hierarchy, 'is_detail' => $is_detail, 'parent_page' => isset($parent_page) ? $parent_page : null,
+						'is_detail' => $is_detail, 'parent_page' => isset($parent_page) ? $parent_page : null,
 						'community_params' => $community_params))); ?>
 			<?php endif; ?>
 		</ol>
@@ -153,7 +153,7 @@ if(isset($is_edit) && $is_edit == _ON){
 					<?php /* $parent_id = 1; */ ?>
 					<?php echo($this->element('index/edit_page', array('pages' => $pages_group, 'menus' => $pages_group[NC_SPACE_TYPE_GROUP][$thread_num][$parent_id],
 							'space_type' => NC_SPACE_TYPE_GROUP, 'page_id' => $page_id,
-							'admin_hierarchy' => $admin_hierarchy, 'is_detail' => $is_detail, 'parent_page' => isset($parent_page) ? $parent_page : null,
+							'is_detail' => $is_detail, 'parent_page' => isset($parent_page) ? $parent_page : null,
 							'community_params' => $community_params))); ?>
 				<?php endif; ?>
 			</ol>
@@ -174,6 +174,6 @@ if(isset($is_edit) && $is_edit == _ON){
 ?>
 <script>
 $(function(){
-	$('#pages-menu-tab').PageMenu(<?php echo($is_edit);?>, <?php echo($page_id);?>, <?php echo($active_tab);?>, <?php echo($sel_active_tab);?>, <?php echo($copy_page_id);?>);
+	$('#pages-menu-tab').PageMenu(<?php echo($is_edit);?>, <?php echo($page_id);?>, <?php echo($active_tab);?>, <?php echo($sel_active_tab);?>, <?php echo($copy_page_id);?><?php if(!empty($this->request->query['participant_page_id'])): ?>, <?php echo intval($this->request->query['participant_page_id']); ?><?php endif; ?>);
 });
 </script>

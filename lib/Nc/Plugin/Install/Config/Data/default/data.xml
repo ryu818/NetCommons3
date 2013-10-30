@@ -1190,9 +1190,9 @@
             <column name="cat_id">0</column>
             <column name="name">default_entry_group_authority_id</column>
             <column name="type">select</column>
-            <column name="title">Role in the communities</column>
+            <column name="title">Role in [Join to force all members.] communities</column>
             <column name="value">4</column>
-            <column name="description">(Advised：Common User)&lt;br /&gt;A new member is assigned the role shown, unless specified otherwise.</column>
+            <column name="description">(Advised：Common User)&lt;br /&gt;A new member is assigned the role shown, unless specified otherwise. In the normal public community, the default value is set to a guest.</column>
             <column name="options">a:2:{s:18:&quot;NC_AUTH_GENERAL_ID&quot;;s:11:&quot;Common User&quot;;s:16:&quot;NC_AUTH_GUEST_ID&quot;;s:5:&quot;Guest&quot;;}</column>
             <column name="domain">system</column>
             <column name="attribute"></column>

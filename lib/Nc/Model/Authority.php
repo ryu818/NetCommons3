@@ -552,32 +552,28 @@ class Authority extends AppModel
  * @param  integer       $authorityId
  * @param  Model Page    $page
  * @return integer
- * 			0:参加者のみ表示　
- * 			1:すべての会員表示（変更不可)
- * 			2:すべての会員表示（PageUserLinkにない会員は、default値と不参加のみ変更可）
- * 			3:すべての会員表示（変更可）
+ * 			0(NC_DISPLAY_FLAG_ENTRY_USERS):参加者のみ表示
+ * 			1(NC_PARTICIPANT_TYPE_DEFAULT_ENABLED):すべての会員表示（PageUserLinkにない会員は、default値と不参加のみ変更可）
+ * 			2(NC_PARTICIPANT_TYPE_ENABLED):参加者のみ表示
  * @since  v 3.0.0.0
  */
 	public function getParticipantType($authorityId, $page) {
 		if($page['Page']['space_type'] == NC_SPACE_TYPE_PRIVATE || $page['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
-			return 0;
+			return NC_DISPLAY_FLAG_ENTRY_USERS;
 		} else if($page['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC) {
-			return 3;
+			return NC_PARTICIPANT_TYPE_ENABLED;
 		}
 		$authority = $this->findById($authorityId);
 		if(!isset($authority['Authority'])) {
-			return 0;
+			return NC_DISPLAY_FLAG_ENTRY_USERS;
 		}
 
-		if($authority['Authority']['allow_new_participant']) {
-			return 3;
-		} else if($page['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_ALL) {
-			return 1;
-		} else if($page['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_LOGIN_USER) {
-			return 2;
+		if($authority['Authority']['allow_new_participant'] || $page['Community']['participate_force_all_users'] == _ON ) {
+			return NC_PARTICIPANT_TYPE_ENABLED;
+		} else if($page['Community']['publication_range_flag'] != NC_PUBLICATION_RANGE_FLAG_ONLY_USER) {
+			return NC_PARTICIPANT_TYPE_DEFAULT_ENABLED;
 		}
-
-		return 0;
+		return NC_DISPLAY_FLAG_ENTRY_USERS;
 	}
 
 /**

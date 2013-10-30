@@ -22,16 +22,15 @@ if($radio) {
 		$checked .= " checked=\"checked\"";
 	}
 	$hidden_detail_html = "";
-	if($isNoneMember || ($active_user_id == $user_id && $admin_hierarchy < NC_AUTH_MIN_ADMIN) ||
-		(!$existsPageUserLink && ($participant_type == 1 || ($participant_type == 2 && $value != $default_authority_id && $value != NC_AUTH_OTHER_ID)))) {
-		// ページメニューの管理者ならば、変更を許可
+	if($isNoneMember || ($active_user_id == $user_id) ||
+		(!$existsPageUserLink && ($participant_type == NC_PARTICIPANT_TYPE_DEFAULT_ENABLED && $value != $default_authority_id && $value != NC_AUTH_OTHER_ID))) {
 		// participant_typeをみて、disabledを切替える。
 		$checked .= " disabled=\"disabled\"";
 		if($value == $authority_id) {
 			$hidden_detail_html .= "<input type=\"hidden\" name=\"".$name."\" value=\"".$value."\" />";
 		}
 		$isDisablStr = " disabled=\"disabled\"";
-	} else if(!$existsPageUserLink && $participant_type <= 2) {
+	} else if(!$existsPageUserLink && $participant_type <= NC_PARTICIPANT_TYPE_DEFAULT_ENABLED) {
 		$isDisablStr = " disabled=\"disabled\"";
 	}
 }

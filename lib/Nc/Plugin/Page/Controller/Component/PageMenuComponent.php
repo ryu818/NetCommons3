@@ -35,7 +35,7 @@ class PageMenuComponent extends Component {
  * @param  CakeRequest $request
  * @param  Page Model  $page
  * @param  Page Model  $parentPage
- * @return mixed $admin_hierarchy or false + flashメッセージ
+ * @return boolean or false + flashメッセージ
  * @since   v 3.0.0.0
  */
 	public function validatorPage($request, $page = null, $parentPage = null) {
@@ -59,15 +59,8 @@ class PageMenuComponent extends Component {
 			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
-		$adminHierarchy = $this->_controller->ModuleSystemLink->findHierarchyByPluginName($request->params['plugin'], $loginUser['authority_id']);
-		if($adminHierarchy < NC_AUTH_MIN_GENERAL) {
-			$this->_controller->response->statusCode('403');
-			$this->_controller->flash(__('Forbidden permission to access the page.'), '');
-			return false;
-		}
-
 		if(is_null($page)) {
-			return $adminHierarchy;
+			return false;
 		}
 		if(!isset($page['Page'])) {
 			$this->_controller->response->statusCode('404');
@@ -75,17 +68,17 @@ class PageMenuComponent extends Component {
 			return;
 		}
 
-		if(!$this->checkAuth($adminHierarchy, $page, $parentPage)) {
+		if(!$this->checkAuth($page, $parentPage)) {
 			$this->_controller->response->statusCode('403');
 			$this->_controller->flash(__('Forbidden permission to access the page.'), '');
 			return false;
 		}
 
-		if(!$this->validatorPageDetail($request, $page, $parentPage, $adminHierarchy)) {
+		if(!$this->validatorPageDetail($request, $page, $parentPage)) {
 			return false;
 		}
 
-		return $adminHierarchy;
+		return true;
 	}
 
 /**
@@ -99,20 +92,14 @@ class PageMenuComponent extends Component {
  *  	一般権限のHierarchyも２つに分離し、ページ操作、ブロック操作を行えるかどうかを追加するほうが望ましい。
  *  ゲスト：ページメニューをみるだけ。
  * </pre>
- * @param  integer     $adminHierarchy
  * @param  Page Model  $page
  * @param  Page Model  $parentPage
  * @return boolean
  * @since   v 3.0.0.0
  */
-	public function checkAuth($adminHierarchy, $page = null, $parentPage = null) {
-		$is_auth_ok = false;
-		if($adminHierarchy >= NC_AUTH_MIN_ADMIN) {
-			$is_auth_ok = true;
-		}
-
+	public function checkAuth($page = null, $parentPage = null) {
 		$chk_page = isset($parentPage) ? $parentPage : $page;
-		if(!$is_auth_ok && !$this->_controller->CheckAuth->checkAuth($chk_page['PageAuthority']['hierarchy'], NC_AUTH_CHIEF)) {
+		if(!$this->_controller->CheckAuth->checkAuth($chk_page['PageAuthority']['hierarchy'], NC_AUTH_CHIEF)) {
 			return false;
 		}
 
@@ -128,13 +115,13 @@ class PageMenuComponent extends Component {
  * @param  CakeRequest $request
  * @param  Page Model  $page
  * @param  Page Model  $parentPage
- * @param  integer     $adminHierarchy
  * @param  boolean     $is_child
  *
  * @return boolean
  * @since   v 3.0.0.0
  */
-	public function validatorPageDetail($request, $page = null, $parentPage = null, $adminHierarchy = null, $is_child = false) {
+	public function validatorPageDetail($request, $page = null, $parentPage = null, $is_child = false) {
+		$user = $this->_controller->Auth->user();
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		if($is_child == false && $page['Page']['lang'] != '' && $page['Page']['lang'] != $lang) {
 			// 編集のlangと現在のlangが異なる
@@ -222,8 +209,7 @@ class PageMenuComponent extends Component {
 					return false;
 				}
 				if($page['Page']['thread_num'] <= 1) {
-					if($page['Page']['space_type'] != NC_SPACE_TYPE_GROUP || $adminHierarchy < NC_AUTH_MIN_CHIEF) {
-						//コミュニティーの表示順変更等は$adminHierarchy=NC_AUTH_MIN_CHIEF以上
+					if($page['Page']['space_type'] != NC_SPACE_TYPE_GROUP || $user['allow_creating_community'] == NC_ALLOW_CREATING_COMMUNITY_ADMIN) {
 						// TODO:後にパブリックのものをコミュニティへペースト等ができるようにしたほうが望ましい。
 						throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 					}
@@ -662,12 +648,11 @@ class PageMenuComponent extends Component {
  *
  * @param   CakeRequest $request
  * @param   integer     $pageId
- * @param   integer     $userHierarchy
  * @param   array       $authList	権限リストになければベースの権限でセットさせる
  * @return  array $page_user_links
  * @since   v 3.0.0.0
  */
-	public function participantSession($request, $pageId, $userHierarchy, $authList = null) {
+	public function participantSession($request, $pageId, $authList = null) {
 		$loginUser = $this->_controller->Auth->user();
 		$userId = $loginUser['id'];
 
@@ -684,7 +669,7 @@ class PageMenuComponent extends Component {
 				}
 			}
 
-			if($userHierarchy < NC_AUTH_MIN_ADMIN) {
+			if($loginUser['allow_creating_community'] != NC_ALLOW_CREATING_COMMUNITY_ADMIN) {
 				// ページメニューが管理者権限でないならば、ログイン会員は必ず主担として参加
 				$bufPageUserLinksParams['PageUserLink'][$userId] = array(
 					'id' => 0,
@@ -921,6 +906,7 @@ class PageMenuComponent extends Component {
  * @since   v 3.0.0.0
  */
 	public function operatePage($action, $is_confirm, $copy_page_id, $move_page_id, $position = 'bottom') {
+		//// $user = $this->_controller->Auth->user();
 		$ins_pages = array();
 		$copy_pages = array();
 		//
@@ -955,8 +941,7 @@ class PageMenuComponent extends Component {
 		}
 
 		// 権限チェック
-		$adminHierarchy = $this->validatorPage($this->_controller->request, $copy_page);
-		if(!$adminHierarchy) {
+		if(!$this->validatorPage($this->_controller->request, $copy_page)) {
 			return false;
 		}
 
@@ -981,15 +966,13 @@ class PageMenuComponent extends Component {
 		// コピー先権限チェック
 		if(isset($move_page['Page'])) {
 			if($move_page['Page']['thread_num'] <= 1) {
-				if(($position != 'inner' && $move_page['Page']['space_type'] != NC_SPACE_TYPE_GROUP) ||
-					$adminHierarchy <= NC_AUTH_MODERATE) {
-					// 主担以上
+				if($position != 'inner' && $move_page['Page']['space_type'] != NC_SPACE_TYPE_GROUP) {
 					// パブリック、マイポータル、マイページ直下の上下への操作はエラーとする
 					$this->_controller->response->statusCode('403');
 					$this->_controller->flash(__('Forbidden permission to access the page.'), '');
 					return false;
 				}
-			} else if(!$this->checkAuth($adminHierarchy, $move_page, $move_parent_page)) {
+			} else if(!$this->checkAuth($move_page, $move_parent_page)) {
 				$this->_controller->response->statusCode('403');
 				$this->_controller->flash(__('Forbidden permission to access the page.'), '');
 				return false;

@@ -650,14 +650,14 @@ class Page extends AppModel
  *
  * @param   integer|string 'all'  $userId
  * @param   integer  $spaceType nullならば、すべてのルームが対象
- * @param   boolean $isShowAllCommunity:default true
- * 					true :公開コミュニティーを含む閲覧可能なすべてのコミュニティー　
+ * @param   boolean $isShowAllCommunity:default false
+ * 					true :公開コミュニティーを含む閲覧可能なすべてのコミュニティー
  * 					false:参加コミュニティーのみ
- * 						PageUserLinkテーブルがあるデータ+コミュニティーのデフォルト参加が一般ならば、公開コミュニティーすべて-不参加にした会員のルームを引く。
+ * 						PageUserLinkテーブルがあるデータ + コミュニティーの「全会員を強制的に参加させる。」コミュニティー - 不参加にした会員のルームを引く。
  * @return  array key:room_id => array(key:thread_num => page_name)
  * @since   v 3.0.0.0
  */
-	public function findRoomList($userId, $spaceType = null, $isShowAllCommunity = true) {
+	public function findRoomList($userId, $spaceType = null, $isShowAllCommunity = false) {
 		$addParams = array();
 		if(isset($spaceType)) {
 			$addParams = array(
@@ -683,10 +683,10 @@ class Page extends AppModel
  * @param   integer|string 'all'  $userId
  * @param   array   $addParams
  * @param   array   $options
- * 				'isShowAllCommunity':default true
- * 					true :公開コミュニティーを含む閲覧可能なすべてのコミュニティー　
+ * 				'isShowAllCommunity':default false
+ * 					true :公開コミュニティーを含む閲覧可能なすべてのコミュニティー
  * 					false:参加コミュニティーのみ
- * 						PageUserLinkテーブルがあるデータ+コミュニティーのデフォルト参加が一般ならば、公開コミュニティーすべて-不参加にした会員のルームを引く。
+ * 						PageUserLinkテーブルがあるデータ + コミュニティーの「全会員を強制的に参加させる。」コミュニティー - 不参加にした会員のルームを引く。
  * 				'isMyPortalCurrent':カレントのマイポータルを優先的に取得するかどうか default false
  * 				'ativePageId': $type='menu'時に使用。アクティブなページIDを指定default null
  * @return  Model Pages
@@ -707,10 +707,10 @@ class Page extends AppModel
  * @param   integer|string 'all'  $userId
  * @param   array   $addParams
  * @param   array   $options
- * 				'isShowAllCommunity':default true
- * 					true :公開コミュニティーを含む閲覧可能なすべてのコミュニティー　
+ * 				'isShowAllCommunity':default false
+ * 					true :公開コミュニティーを含む閲覧可能なすべてのコミュニティー
  * 					false:参加コミュニティーのみ
- * 						PageUserLinkテーブルがあるデータ+コミュニティーのデフォルト参加が一般ならば、公開コミュニティーすべて-不参加にした会員のルームを引く。
+ * 						PageUserLinkテーブルがあるデータ + コミュニティーの「全会員を強制的に参加させる。」コミュニティー - 不参加にした会員のルームを引く。
  * 				'isMyPortalCurrent':カレントのマイポータルを優先的に取得するかどうか default false
  * 				'ativePageId': $type='menu'時に使用。アクティブなページIDを指定default null
  * 				'autoLang' : 言語を自動で条件にいれる場合、true default true
@@ -727,7 +727,7 @@ class Page extends AppModel
 		}
 
 		$options = array_merge(array(
-			'isShowAllCommunity' => true,
+			'isShowAllCommunity' => false,
 			'isMyPortalCurrent' => false,
 			'ativePageId' => null,
 			'autoLang' => true,
@@ -786,14 +786,13 @@ class Page extends AppModel
 			$currentPrivate = $currentUser['User']['private_page_id'];
 		}
 
-		$defaultHierarchy = Configure::read(NC_CONFIG_KEY.'.default_entry_group_hierarchy');
 		if($userId === 'all') {
 			// 全ルーム取得
 		} else if(empty($userId)) {
 			// ログイン前
 			// TODO:NC_SPACE_TYPE_MYPORTALは設定によっては、ログインした一部会員しかみえないため
 			// 修正する必要あり？
-			if($defaultHierarchy >= NC_AUTH_MIN_GENERAL || $options['isShowAllCommunity']) {
+			if($options['isShowAllCommunity']) {
 				$conditions['or'] = array(
 					'Page.space_type' => array(NC_SPACE_TYPE_PUBLIC, NC_SPACE_TYPE_MYPORTAL),
 					'Community.publication_range_flag' => NC_PUBLICATION_RANGE_FLAG_ALL,
@@ -809,7 +808,7 @@ class Page extends AppModel
 			}
 		} else {
 			// ログイン後
-			if($defaultHierarchy >= NC_AUTH_MIN_GENERAL || $options['isShowAllCommunity']) {
+			if($options['isShowAllCommunity']) {
 				$conditions['or'] = array(
 					'Page.space_type' => array(NC_SPACE_TYPE_PUBLIC, NC_SPACE_TYPE_MYPORTAL, NC_SPACE_TYPE_PRIVATE),
 					array(
@@ -825,6 +824,10 @@ class Page extends AppModel
 			} else {
 				$conditions['or'] = array(
 					'Page.space_type' => array(NC_SPACE_TYPE_PUBLIC, NC_SPACE_TYPE_MYPORTAL, NC_SPACE_TYPE_PRIVATE),
+					array(
+						'Community.participate_force_all_users' => _ON,
+						'or' => array('PageUserLink.authority_id !=' => NC_AUTH_OTHER_ID,'PageUserLink.authority_id IS NULL'),
+					),
 					'PageUserLink.authority_id !=' => NC_AUTH_OTHER_ID,
 					//array(
 					//	'PageUserLink.authority_id IS NOT NULL',
@@ -835,18 +838,19 @@ class Page extends AppModel
 
 		}
 
-		if(!empty($userId) && $userId != 'all' || ($defaultHierarchy >= NC_AUTH_MIN_GENERAL || $options['isShowAllCommunity'])) {
+		if(!empty($userId) || $options['isShowAllCommunity']) {
+			$bufUserId = ($userId == 'all') ? $loginUser['id'] : $userId;
 			// ログイン後 OR すべての公開コミュニティーを含む
 			$joins[] = array(
 				"type" => "LEFT",
 				"table" => "page_user_links",
 				"alias" => "PageUserLink",
-				"conditions" => "`PageUserLink`.`user_id`=".intval($userId).
+				"conditions" => "`PageUserLink`.`user_id`=".intval($bufUserId).
 				" AND `Page`.`room_id`=`PageUserLink`.`room_id`"
 			);
 		}
 
-		if(!empty($userId) && $userId != 'all') {
+		if(!empty($userId)) {
 			// ログイン後
 			$joins[] = array(
 				"type" => "LEFT",
@@ -1056,9 +1060,10 @@ class Page extends AppModel
 			'limit' => $limit,
 			'recursive' => $recursive
 		);
-		$options = array(
-			'isShowAllCommunity' => true
-		);
+		$options = array('isShowAllCommunity' => false);
+		if(isset($extra['isShowAllCommunity']) && $extra['isShowAllCommunity']) {
+			$options['isShowAllCommunity'] = true;
+		}
 		return $this->findViewable('list', ($is_all) ? 'all' : $extra['user_id'], $addParams, $options);
 	}
 
@@ -1076,11 +1081,15 @@ class Page extends AppModel
 		} else {
 			$is_all = false;
 		}
+		$options = array('isShowAllCommunity' => false);
+		if(isset($extra['isShowAllCommunity']) && $extra['isShowAllCommunity']) {
+			$options['isShowAllCommunity'] = true;
+		}
 		$params = array(
 			'conditions' => $conditions,
 			'recursive' => $recursive
 		);
-		return $this->findCommunityCount(($is_all) ? 'all' : $extra['user_id'], $params);
+		return $this->findCommunityCount(($is_all) ? 'all' : $extra['user_id'], $params, $options);
 	}
 
 /**
@@ -1091,7 +1100,7 @@ class Page extends AppModel
  * @since   v 3.0.0.0
  */
 	public function getFieldsArray($userId, $spaceType = null) {
-		if(empty($userId) || $userId == 'all') {
+		if(empty($userId)) {
 			$ret = array(
 				'Page.*',
 			);
@@ -1104,7 +1113,10 @@ class Page extends AppModel
 			);
 		}
 		if(empty($spaceType) || $spaceType == NC_SPACE_TYPE_GROUP || (is_array($spaceType) && in_array(NC_SPACE_TYPE_GROUP, $spaceType))) {
-			$ret[count($ret)] = 'Community.publication_range_flag, CommunityLang.community_name, CommunityLang.summary';
+			$ret[] = 'Community.publication_range_flag';
+			$ret[] = 'Community.participate_force_all_users';
+			$ret[] = 'CommunityLang.community_name';
+			$ret[] = 'CommunityLang.summary';
 		}
 		return $ret;
 	}
@@ -1135,13 +1147,13 @@ class Page extends AppModel
 		);
 		if(empty($spaceType) || $spaceType == NC_SPACE_TYPE_GROUP) {
 			$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
-			$ret[count($ret)] = array(
+			$ret[] = array(
 				"type" => "LEFT",
 				"table" => "communities",
 				"alias" => "Community",
 				"conditions" => "`Page`.`root_id`=`Community`.`room_id`"
 			);
-			$ret[count($ret)] = array(
+			$ret[] = array(
 				"type" => "LEFT",
 				"table" => "community_langs",
 				"alias" => "CommunityLang",

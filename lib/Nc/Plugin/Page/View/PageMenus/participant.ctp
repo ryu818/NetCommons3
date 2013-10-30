@@ -76,7 +76,7 @@ $(function(){
                 {display: '<?php echo($this->element('index/auth_list', array('auth' => $auth_list[NC_AUTH_MODERATE],'user_id' => '0', 'selauth'=> true,  'radio'=> false, 'all_selected' => true, 'authority_id' => NC_AUTH_MODERATE_ID)));?>', name : 'moderator', width: 120, sortable : false, align: 'center'  },
                 {display: '<?php echo($this->element('index/auth_list', array('auth' => $auth_list[NC_AUTH_GENERAL], 'user_id' => '0', 'selauth'=> true,  'radio'=> false, 'all_selected' => true, 'authority_id' => NC_AUTH_GENERAL_ID)));?>', name : 'general', width: 120, sortable : false, align: 'center'  },
                 {display: '<?php echo($this->element('index/auth_list', array('auth' => $auth_list[NC_AUTH_GUEST],   'user_id' => '0', 'selauth'=> false, 'radio'=> false, 'all_selected' => true, 'authority_id' => NC_AUTH_GUEST_ID)));?>', name : 'guest', width: 120, sortable : false, align: 'center'  }
-                <?php if($page['Page']['space_type'] != NC_SPACE_TYPE_PUBLIC && (!isset($page['Community']) || $page['Community']['publication_range_flag'] != NC_PUBLICATION_RANGE_FLAG_ALL)): ?>
+                <?php if($page['Page']['space_type'] != NC_SPACE_TYPE_PUBLIC): ?>
                 ,{display: '<?php echo($this->element('index/auth_list', array('auth' => $auth_list[NC_AUTH_OTHER],   'user_id' => '0', 'selauth'=> false, 'radio'=> false, 'all_selected' => true, 'authority_id' => NC_AUTH_OTHER_ID)));?>', name : 'none', width: 120, sortable : false, align: 'center'  }
                 <?php endif; ?>
             ],

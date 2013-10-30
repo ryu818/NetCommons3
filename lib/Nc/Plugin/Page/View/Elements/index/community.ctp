@@ -8,6 +8,7 @@
  * @since         v 3.0.0.0
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
+$ncUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 ?>
 <div class="pages-menu-community-tab">
 	<div id="pages-menu-community-tab<?php echo($page['Page']['id']); ?>">
@@ -33,8 +34,7 @@
 										'value' => $community_params['community']['Community']['publication_range_flag'],
 										'type' =>'radio',
 										'options' => array(
-											NC_PUBLICATION_RANGE_FLAG_ALL => __d('page', 'Public(All user can see content.)'),
-											NC_PUBLICATION_RANGE_FLAG_LOGIN_USER => __d('page', 'Some public(All login user can see content.)'),
+											NC_PUBLICATION_RANGE_FLAG_LOGIN_USER => __d('page', 'Public(All login user can see content.)'),
 											NC_PUBLICATION_RANGE_FLAG_ONLY_USER => __d('page', 'Private(Only participant user can see content.)'),
 										),
 										'div' => false,
@@ -50,18 +50,23 @@
 										));
 									}
 									echo $this->Form->input('Community.publication_range_flag', $settings);
+									$isParticipateForceAllUsers = in_array($ncUser['allow_creating_community'], array(NC_ALLOW_CREATING_COMMUNITY_FORCE_ALL, NC_ALLOW_CREATING_COMMUNITY_ADMIN));
 								?>
-								<div id="pages-menu-community-participate-as-general-outer-<?php echo $page['Page']['id']; ?>" class="pages-menu-community-participate-as-general-outer"<?php if($community_params['community']['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_ONLY_USER):?>style="display:none;"<?php endif; ?>>
+
+								<?php if(!empty($community_params['community']['Community']['participate_force_all_users']) || $isParticipateForceAllUsers):?>
+								<div id="pages-menu-community-participate-force-outer-<?php echo $page['Page']['id']; ?>" class="pages-menu-community-participate-force-outer"<?php if($community_params['community']['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_ONLY_USER):?>style="display:none;"<?php endif; ?>>
 								<?php
-									/* 会員追加時に一般として参加させる。 */
-									echo $this->Form->input('Community.participate_as_general',array(
+									/* 全会員を強制的に参加させる。 */
+									echo $this->Form->input('Community.participate_force_all_users',array(
 										'type' => 'checkbox',
 										'value' => _ON,
-										'checked' => !empty($community_params['community']['Community']['participate_as_general']) ? true : false,
-										'label' => __d('page', 'You participate as general authority.'),
+										'checked' => !empty($community_params['community']['Community']['participate_force_all_users']) ? true : false,
+										'label' => __d('page', 'Join to force all members.'),
+										'disabled' => $isParticipateForceAllUsers ? false : true,
 									));
 								?>
 								</div>
+								<?php endif; ?>
 							</dd>
 						</dl>
 					</li>
@@ -283,9 +288,12 @@
 		</div>
 	</div>
 	<div class="btn-bottom">
-		<input onclick="$(this.form).attr('data-is-participant', 0);" type="submit" class="common-btn" name="ok" value="<?php echo( __('Ok')); ?>" />
+		<?php
+			echo $this->Form->hidden('is_participant' , array('id' => 'pages-menu-is-participant-'.$page['Page']['id'], 'name' => 'is_participant', 'value' => _OFF));
+		?>
+		<input onclick="$('#pages-menu-is-participant-<?php echo $page['Page']['id'];?>').val(0);" type="submit" class="common-btn" name="ok" value="<?php echo( __('Ok')); ?>" />
 		<input type="button" class="common-btn" name="cancel" value="<?php echo(__('Cancel')); ?>" onclick="$('#pages-menu-edit-detail-<?php echo($page['Page']['id']);?>').slideUp(300);" />
-		<input onclick="$(this.form).attr('data-is-participant', 1);" type="submit" class="common-btn common-btn-light" name="participant" value="<?php echo(__d('page','Edit members')); ?>" />
+		<input onclick="$('#pages-menu-is-participant-<?php echo $page['Page']['id'];?>').val(1);" type="submit" class="common-btn common-btn-light" name="participant" value="<?php echo(__d('page','Edit members')); ?>" />
 	</div>
 </div>
 <?php

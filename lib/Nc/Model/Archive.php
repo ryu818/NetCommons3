@@ -300,14 +300,14 @@ class Archive extends AppModel
  * @param   array     $moduleIdArr					モジュールの絞り込み
  * @param   string    $lang							言語の絞り込み
  * @param   boolean   $isDisplayComment				コメントの新着を表示するかどうか default:true
- * @param   boolean   $isShowAllCommunity			default:true
+ * @param   boolean   $isShowAllCommunity			default:false
  * 						true :公開コミュニティーを含む閲覧可能なすべてのコミュニティー　
  * 						false:参加コミュニティーのみ
  * @param   boolean   $isDisplayAllMyportal			マイポータルすべての新着を表示する。
  * @return  Model Archives
  * @since   v 3.0.0.0
  */
-	public function findList($type = 'all', $addConditions = array(), $userId = null, $roomIdArr = null, $moduleIdArr = null, $lang = null, $isDisplayComment = true, $isShowAllCommunity = true, $isDisplayAllMyportal = false) {
+	public function findList($type = 'all', $addConditions = array(), $userId = null, $roomIdArr = null, $moduleIdArr = null, $lang = null, $isDisplayComment = true, $isShowAllCommunity = false, $isDisplayAllMyportal = false) {
 		// TODO: マイポータル、コミュニティ、マイルームでの動作を検証すること。
 		$ret = array();
 		$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');

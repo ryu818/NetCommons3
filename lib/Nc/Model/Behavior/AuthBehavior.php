@@ -57,7 +57,7 @@ class AuthBehavior extends ModelBehavior {
 				'Community' => array(
 					'foreignKey'    => '',
 					'type' => 'LEFT',
-					'fields' => array('publication_range_flag'),
+					'fields' => array('publication_range_flag', 'participate_force_all_users'),
 					'conditions' => "`Page`.`root_id`=`Community`.`room_id`"
 				),
 				'User' => array(
@@ -225,7 +225,8 @@ class AuthBehavior extends ModelBehavior {
 			$Community = ClassRegistry::init('Community');
 			$params = array(
 				'fields' => array(
-					'Community.publication_range_flag'
+					'Community.publication_range_flag',
+					'Community.participate_force_all_users',
 				),
 				'conditions' => array('room_id' => $val[$modelName]['root_id']),
 				'recursive' => -1,
@@ -299,9 +300,12 @@ class AuthBehavior extends ModelBehavior {
 				(intval($loginUserId) == 0 && $val['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_LOGIN_USER)) {
 				$authorityId = NC_AUTH_OTHER_ID;
 				$hierarchy = NC_AUTH_OTHER;
-			} else {
+			} else if ($val['Community']['participate_force_all_users'] == _ON) {
 				$authorityId = Configure::read(NC_CONFIG_KEY.'.default_entry_group_authority_id');
 				$hierarchy = Configure::read(NC_CONFIG_KEY.'.default_entry_group_hierarchy');
+			} else {
+				$authorityId = NC_AUTH_GUEST_ID;
+				$hierarchy = NC_AUTH_GUEST;
 			}
 		}
 		$Authority = ClassRegistry::init('Authority');

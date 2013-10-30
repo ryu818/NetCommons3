@@ -14,7 +14,7 @@
 
 		?>
 		<?php echo($this->element('index/item', array('pages' => $pages, 'page' => $page, 'space_type' => $space_type,
-			'page_id' => $page_id, 'admin_hierarchy' => $admin_hierarchy, 'is_child' => isset($is_child) ? $is_child : _OFF,
+			'page_id' => $page_id, 'is_child' => isset($is_child) ? $is_child : _OFF,
 			'is_detail' => $is_detail, 'parent_page' => isset($parent_page) ? $parent_page : null,
 			'community_params' => $community_params, 'is_root_parent_chief' => (isset($is_root_parent_chief) && $is_root_parent_chief) ? $is_root_parent_chief : $buf_is_root_parent_chief
 		))); ?>

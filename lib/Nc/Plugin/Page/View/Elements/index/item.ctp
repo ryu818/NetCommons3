@@ -1,4 +1,5 @@
 <?php
+	$ncUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 	$is_chief = false;
 	$is_chgseq = false;
 	$is_edit = false;
@@ -19,27 +20,15 @@
 		$is_top = true;
 	}
 
-	if($admin_hierarchy >= NC_AUTH_MIN_GENERAL && ($page['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF || $admin_hierarchy >= NC_AUTH_MIN_ADMIN)){
+	if($page['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF){
 		$is_chief = true;
 	}
 
 	if($is_top) {
-		switch($space_type) {
-			case NC_SPACE_TYPE_PUBLIC:
-			case NC_SPACE_TYPE_MYPORTAL:
-			case NC_SPACE_TYPE_PRIVATE:
-				if($admin_hierarchy >= NC_AUTH_MIN_ADMIN) {
-					$is_parent_chief = true;
-				}
-				break;
-			case NC_SPACE_TYPE_GROUP:
-				// コミュニティ
-				if($admin_hierarchy >= NC_AUTH_MIN_CHIEF) {
-					$is_parent_chief = true;
-				}
-				break;
+		if($ncUser['allow_creating_community'] == NC_ALLOW_CREATING_COMMUNITY_ADMIN) {
+			$is_parent_chief = true;
 		}
-	} else if(isset($parent_page) && $admin_hierarchy >= NC_AUTH_MIN_GENERAL && ($parent_page['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF || $admin_hierarchy >= NC_AUTH_MIN_ADMIN)) {
+	} else if(isset($parent_page) && $parent_page['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
 		$is_parent_chief = true;
 	}
 
@@ -52,7 +41,7 @@
 	if($is_top) {
 		// コミュニティー以外のTopならば、移動させない。
 		$move['inner'] = true;
-		if($space_type == NC_SPACE_TYPE_GROUP && $admin_hierarchy >= NC_AUTH_MIN_CHIEF) {
+		if($space_type == NC_SPACE_TYPE_GROUP && $is_parent_chief) {
 			$is_chgseq = true;
 			$attr .= " data-dd-group = \"".$page['Page']['thread_num']."\"";
 			$attr .= " data-dd-group-sequence = \"top-bottom-only\"";
@@ -107,12 +96,13 @@
 			//$is_sel_modules = true;
 		}
 	}
+
 	if($is_edit && !$is_node_top_page) {
 		$is_edit_detail = true;
 	}
 
 	$is_editing_page_name = false;
-	if($page['Page']['id'] == $page_id && ($is_detail || (isset($error_flag) && $error_flag))) {
+	if($is_edit && $page['Page']['id'] == $page_id && ($is_detail || (isset($error_flag) && $error_flag))) {
 		$is_editing_page_name = true;
 	}
 	$class = $this->element('index/init_page', array('page' => $page, 'is_edit' => _ON));
@@ -222,7 +212,7 @@
 	<?php if(isset($pages) && !empty($pages[$space_type][$next_thread_num][$page['Page']['id']])): ?>
 		<ol class="dd-list">
 			<?php echo($this->element('index/edit_page', array('pages' => $pages, 'menus' => $pages[$space_type][$next_thread_num][$page['Page']['id']],
-				'page_id' => $page_id, 'space_type' => $space_type, 'admin_hierarchy' => $admin_hierarchy,
+				'page_id' => $page_id, 'space_type' => $space_type,
 				'is_child' => true, 'is_display' => $is_display, 'is_detail' => $is_detail,
 				'parent_page' => $page, 'community_params' => isset($community_params) ? $community_params : null,
 				'is_root_parent_chief' => isset($is_root_parent_chief) ? $is_root_parent_chief : true))); ?>
@@ -276,10 +266,10 @@
 	?>
 	</div>
 	<?php endif; ?>
-	<?php if((!isset($error_flag) || !$error_flag) && (!isset($is_child) || !$is_child) && isset($pre_permalink)): ?>
+	<?php if((!isset($error_flag) || !$error_flag) && (!isset($is_child) || !$is_child) && $this->request->is('post')): ?>
 	<script>
 	$(function(){
-		$.PageMenu.itemInit(<?php echo($page['Page']['id']); ?>, '<?php echo($this->Html->url('/', true).$this->Js->escape($pre_permalink)); ?>', '<?php echo($this->Html->url('/', true).$this->Js->escape($permalink)); ?>');
+		$.PageMenu.itemInit(<?php echo($page['Page']['id']); ?>, '<?php echo($this->Html->url('/', true).$this->Js->escape($pre_permalink)); ?>', '<?php echo($this->Html->url('/', true).$this->Js->escape($permalink)); ?>', <?php echo($is_participant); ?>);
 	});
 	</script>
 	<?php endif; ?>
