@@ -73,15 +73,24 @@ class FileBehavior extends ModelBehavior {
  * @param   Model  $Model
  * @param   string $file_path
  * @param   boolean $gz_flag
- * @return	void
+ * @return	boolean
  * @since   v 3.0.0.0
  **/
 	public function deleteFile(Model $Model, $file_path, $gz_flag = true) {
 		$file = $this->_getInstance($file_path);
-		if ($file->delete() && $gz_flag && file_exists($file_path . $this->gz_extension)) {
-			$gz_file = $this->_getInstance($file_path . $this->gz_extension);
-			$gz_file->delete();
+		if (! $gz_flag || ($gz_flag && !file_exists($file_path . $this->gz_extension))) {
+				//gzファイルを削除しない設定
+				//もしくは/gzファイルを削除する設定でなおかつ、gzファイルが存在しない場合
+			   return $file->delete();
 		}
+		elseif ($gz_flag && file_exists($file_path . $this->gz_extension)) {
+			//gzファイルを削除する設定でなおかつ、gzファイルが存在する場合
+			$gz_file = $this->_getInstance($file_path . $this->gz_extension);
+			if( $gz_file->delete() && $file->delete()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	protected function _getInstance($file_path, $create_flag=false) {

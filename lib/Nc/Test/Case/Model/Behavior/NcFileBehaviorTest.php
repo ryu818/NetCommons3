@@ -28,6 +28,17 @@ class NcFileBehaviorTest extends CakeTestCase {
 		parent::tearDown();
 	}
 
+	/**
+	 * テストで作成したファイルを消す
+	 * @param $path
+	 */
+	public function unlinkFile($path) {
+		//指定されたファイル
+		if(file_exists(realpath($path))) unlink(realpath($path));
+		//gzファイル
+		if(file_exists(realpath($path . ".gz"))) unlink(realpath($path. ".gz"));
+	}
+
 /**
  * testCreateFile method
  *
@@ -44,8 +55,8 @@ class NcFileBehaviorTest extends CakeTestCase {
 		$ck = $this->File->createFile($model , $path , $name , $content , true);
 
 		$this->assertEqual($name , $ck); //作成に成功した
-		$this->assertEqual(true , is_file($path . $name));//生成したファイルが存在する。
-		$this->assertEqual(true , is_file($path . $name .  ".gz"));//生成したgzファイルが存在する。
+		$this->assertEqual(true , file_exists($path . $name));//生成したファイルが存在する。
+		$this->assertEqual(true , file_exists($path . $name .  ".gz"));//生成したgzファイルが存在する。
 		$text = file_get_contents($path . $name);
 		$this->assertEqual($text , $content); //ファイルの中にかかれているものが指定したモノ。
 		//ファイルが書き込み可能かしらべる
@@ -53,9 +64,7 @@ class NcFileBehaviorTest extends CakeTestCase {
 		$this->assertEqual(true , is_readable($path . $name . '.gz'));
 
 		//テストのため生成したファイルを削除
-
-		if(is_file(realpath($path .  $name))) unlink(realpath($path .  $name));
-		if(is_file($path .  $name . ".gz")) unlink($path . $name . ".gz");
+		$this->unlinkFile(realpath($path .  $name));
 
 		//$pathに最後区切り文字がはいっていない場合  ---------------------------
 		$model = new User;
@@ -65,8 +74,8 @@ class NcFileBehaviorTest extends CakeTestCase {
 		$ck = $this->File->createFile($model , $path , $name , $content , true);
 
 		$this->assertEqual($name , $ck); //作成に成功した
-		$this->assertEqual(true , is_file($path . DS . $name));//生成したファイルが存在する。
-		$this->assertEqual(true , is_file($path . DS . $name .  ".gz"));//生成したgzファイルが存在する。
+		$this->assertEqual(true , file_exists($path . DS . $name));//生成したファイルが存在する。
+		$this->assertEqual(true , file_exists($path . DS . $name .  ".gz"));//生成したgzファイルが存在する。
 		$text = file_get_contents($path . DS . $name);
 		$this->assertEqual($text , $content); //ファイルの中にかかれているものが指定したモノ。
 		//ファイルが書き込み可能かしらべる
@@ -74,8 +83,8 @@ class NcFileBehaviorTest extends CakeTestCase {
 		$this->assertEqual(true , is_readable($path . DS . $name . '.gz'));
 
 		//テストのため生成したファイルを削除
-		if(is_file($path . DS . $name)) unlink($path . DS . $name);
-		if(is_file($path . DS . $name . ".gz")) unlink($path . DS . $name . ".gz");
+		$this->unlinkFile($path . DS . $name);
+
 
 		//gzファイルを作らない場合 --------------------------- ----------------
 		//$pathに最後区切り文字がはいっていない場合
@@ -86,8 +95,8 @@ class NcFileBehaviorTest extends CakeTestCase {
 		$ck = $this->File->createFile($model , $path , $name , $content ,false);
 
 		$this->assertEqual($name , $ck); //作成に成功したのでファイル名が戻ってくる
-		$this->assertEqual(true , is_file($path . DS . $name));//生成したファイルが存在する。
-		$this->assertEqual(false , is_file($path . DS . $name .  ".gz"));//生成したgzファイルが存在する。
+		$this->assertEqual(true , file_exists($path . DS . $name));//生成したファイルが存在する。
+		$this->assertEqual(false , file_exists($path . DS . $name .  ".gz"));//生成したgzファイルが存在する。
 		$text = file_get_contents($path . DS . $name);
 		$this->assertEqual($text , $content); //ファイルの中にかかれているものが指定したモノ。
 		//ファイルのパーミッションを調べる 0666になっているはず
@@ -95,9 +104,7 @@ class NcFileBehaviorTest extends CakeTestCase {
 		$this->assertEqual(true , is_readable($path . DS .  $name));
 
 		//テストのため生成したファイルを削除
-		if(is_file($path . DS . $name)) unlink($path . DS . $name);
-		if(is_file($path . DS . $name . ".gz")) unlink($path . DS . $name . ".gz");
-
+		$this->unlinkFile($path . DS . $name);
 	}
 
 /**
@@ -156,6 +163,97 @@ class NcFileBehaviorTest extends CakeTestCase {
  * @return void
  */
 	public function testDeleteFile() {
+
+		//テスト用にファイルを作成
+		$model   = new User;
+		$path    = TMP . "tests";
+		$name    = "NcFileBehaviorTestFile.txt";
+		$content = "unitTest TEXT";
+		$ck      = $this->File->createFile($model , $path , $name , $content ,true);
+		$this->assertEqual($name , $ck); //作成に成功したのでファイル名が戻ってくる
+		$this->assertEqual(true , file_exists($path . DS . $name));//生成したファイルが存在する。
+		$this->assertEqual(true , file_exists($path . DS . $name .  ".gz"));//生成したgzファイルが存在する。
+		$text = file_get_contents($path . DS . $name);
+		$this->assertEqual($text , $content); //ファイルの中にかかれているものが指定したモノ。
+		//ファイルが書き込み可能かしらべる
+		$this->assertEqual(true , is_readable($path . DS .  $name));
+
+		$file_path = $path . DS . $name;
+		$gz_path   = $file_path . '.gz';
+
+		//gzファイルも含めて削除 --
+		$ck = $this->File->deleteFile($model , $file_path, true);
+		//trueが戻る。
+		$this->assertEqual(true , $ck);
+		//ファイルは削除されたので、存在しないはず
+		$this->assertEqual(false , file_exists($file_path));
+		$this->assertEqual(false , file_exists($gz_path));
+		//テストのため生成したファイルを削除
+		$this->unlinkFile($file_path);
+
+		//存在しないファイルを指定して削除。--
+		$ck = $this->File->deleteFile($model , $file_path, true);
+		//存在しないファイルが指定されたのでfalse
+		$this->assertEqual(false , $ck);
+		//ファイルは存在しない
+		$this->assertEqual(false , file_exists($file_path));
+		$this->assertEqual(false , file_exists($gz_path));
+
+		//指定したファイルのみ削除 --
+		$model     = new User;
+		$path      = TMP . "tests";
+		$name      = "NcFileBehaviorTestFile.txt";
+		$content   = "unitTest TEXT";
+		$file_path = $path . DS . $name;
+		$gz_path   = $file_path . '.gz';
+		$ck = $this->File->createFile($model , $path , $name , $content ,true);
+		$this->assertEqual($name , $ck); //作成に成功したのでファイル名が戻ってくる
+		$this->assertEqual(true , file_exists($file_path));//生成したファイルが存在する。
+		$this->assertEqual(true , file_exists($gz_path));//生成したgzファイルが存在する。
+		$text = file_get_contents($file_path);
+		$this->assertEqual($text , $content); //ファイルの中にかかれているものが指定したモノ。
+		//ファイルが書き込み可能かしらべる
+		$this->assertEqual(true , is_readable($file_path));
+
+		//gzファイルも含めない削除 --
+		$ck = $this->File->deleteFile($model , $file_path,false);
+		//trueが戻る。
+		$this->assertEqual(true , $ck);
+		//ファイルは削除されたので、存在しないはず
+		$this->assertEqual(false , file_exists($file_path));
+		//gzファイルは存在する
+		$this->assertEqual(true , file_exists($gz_path));
+
+		//テストのため生成したファイルを削除
+		$this->unlinkFile($file_path);
+
+		//gzファイルが存在しない状態で、gzファイルも含めて削除 --
+		$model     = new User;
+		$path      = TMP . "tests";
+		$name      = "NcFileBehaviorTestFile.txt";
+		$content   = "unitTest TEXT";
+		$file_path = $path . DS . $name;
+		$gz_path   = $file_path . '.gz';
+		$ck = $this->File->createFile($model , $path , $name , $content ,false);
+		$this->assertEqual($name , $ck); //作成に成功したのでファイル名が戻ってくる
+		$this->assertEqual(true , file_exists($file_path));//生成したファイルが存在する。
+		$this->assertEqual(false , file_exists($gz_path));//生成したgzファイルは存在しない
+		$text = file_get_contents($file_path);
+		$this->assertEqual($text , $content); //ファイルの中にかかれているものが指定したモノ。
+		//ファイルが書き込み可能かしらべる
+		$this->assertEqual(true , is_readable($file_path));
+
+		//gzファイルを含めるファイル削除
+		$ck = $this->File->deleteFile($model , $file_path,true);
+		//trueが戻る。
+		$this->assertEqual(true , $ck);
+		//ファイルは削除されたので、存在しないはず
+		$this->assertEqual(false , file_exists($file_path));
+		//gzファイルはそもそも存在しない。
+		$this->assertEqual(false , file_exists($gz_path));
+
+		//テストのため生成したファイルを削除
+		$this->unlinkFile($file_path);
 	}
 
 /**
