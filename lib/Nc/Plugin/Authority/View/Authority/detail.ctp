@@ -117,7 +117,7 @@
 					<?php
 						$options = array(
 							NC_ALLOW_CREATING_COMMUNITY_OFF => __d('authority', 'Community can not create.'),
-							NC_ALLOW_CREATING_COMMUNITY_ONLY_USER => __d('authority', 'Allow to create normal community.'),
+							NC_ALLOW_CREATING_COMMUNITY_ONLY_USER => __d('authority', 'Allow to create private community.'),
 							NC_ALLOW_CREATING_COMMUNITY_ALL_USER => __d('authority', 'Allow to create public community.'),
 							NC_ALLOW_CREATING_COMMUNITY_FORCE_ALL => __d('authority', 'Allow to create public community[Join to force all members.].'),
 							NC_ALLOW_CREATING_COMMUNITY_ADMIN => __d('authority', 'Allow to create all communities, display order change, or delete.'),
@@ -138,7 +138,7 @@
 							<li>
 								<dl>
 									<dt>
-										<?php echo __d('authority', 'Normal community'); ?>
+										<?php echo __d('authority', 'Private community'); ?>
 									</dt>
 									<dd>
 										:<?php echo __d('authority', 'Users of all the viewable.'); ?>

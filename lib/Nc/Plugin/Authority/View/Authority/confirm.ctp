@@ -175,7 +175,7 @@
 								$value = __d('authority', 'Community can not create.');
 								break;
 							case NC_ALLOW_CREATING_COMMUNITY_ONLY_USER:
-								$value = __d('authority', 'Allow to create normal community.');
+								$value = __d('authority', 'Allow to create private community.');
 								break;
 							case NC_ALLOW_CREATING_COMMUNITY_ALL_USER:
 								$value = __d('authority', 'Allow to create public community.');
