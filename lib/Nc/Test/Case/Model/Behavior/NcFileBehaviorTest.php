@@ -148,21 +148,6 @@ class NcFileBehaviorTest extends CakeTestCase {
 		$ck     = $this->File->basename($model , $path . $name , $suffix);
 		$this->assertEqual($ans , $ck);
 
-		//suffixがつく場合 日本語
-		$path   = TMP . "tests" . DS;
-		$name   = 'テストファイル.頁';
-		$suffix = '.頁';
-		$ans    = 'テストファイル';
-		$ck     = $this->File->basename($model , $path . $name , $suffix);
-		$this->assertEqual($ans , $ck);
-
-		//suffixがつく場合 フォルダの場合 日本語
-		$path   = TMP . "tests" . DS;
-		$name   = 'テストファイル.頁'. DS;
-		$suffix = '.頁';
-		$ans    = 'テストファイル';
-		$ck     = $this->File->basename($model , $path . $name , $suffix);
-		$this->assertEqual($ans , $ck);
 	}
 
 /**
