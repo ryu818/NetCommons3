@@ -323,20 +323,22 @@ class NcFormHelper extends FormHelper {
  */
 	public function selectRooms($fieldName, $rooms, $attributes = array()) {
 		$options = array();
-		if($rooms === false || count($rooms) == 0) {
-			return '';
-		}
+// 		if($rooms === false || count($rooms) == 0) {
+// 			return '';
+// 		}
 		$attributes = array_merge( array('escape' => false, 'empty' => false, 'class' => 'select_rooms'), $attributes);
-		foreach($rooms as $key => $room) {
-			if(is_array($room)) {
-				$optionNameSpace = '';
-				for ($i = 1; $i < $room['Page']['thread_num']; $i++) {
-					$optionNameSpace .= '&nbsp;&nbsp;';
+		if($rooms !== false && count($rooms) > 0) {
+			foreach($rooms as $key => $room) {
+				if(is_array($room)) {
+					$optionNameSpace = '';
+					for ($i = 1; $i < $room['Page']['thread_num']; $i++) {
+						$optionNameSpace .= '&nbsp;&nbsp;';
+					}
+					$roomName = $optionNameSpace.h($room['Page']['page_name']);
+					$options[$room['Page']['id']] = $roomName;
+				} else {
+					$options[$key] = $room;
 				}
-				$roomName = $optionNameSpace.h($room['Page']['page_name']);
-				$options[$room['Page']['id']] = $roomName;
-			} else {
-				$options[$key] = $room;
 			}
 		}
 
