@@ -874,23 +874,25 @@ class User extends AppModel
 						$roomId = intval($value);
 
 						if($roomId == 0) {
-							// コミュニティに参加していない会員
-							// 自分のコミュニティに参加している会員を取得
+							// コミュニティーに参加していない会員
+							// 自分のコミュニティーに参加している会員を取得
 							if($adminHierarchy < NC_AUTH_MIN_CHIEF) {
 								// 会員管理の主担より小さい場合、検索不可
 								continue;
 							}
 
-							// 公開コミュニティーがあれば、PageUserLink.authority_id = NC_AUTH_OTHER_IDの会員が検索対象
-							// 公開コミュニティーがなければ、PageUserLink.authority_id がNULL OR NC_AUTH_OTHER_IDの会員すべて
+							// 公開コミュニティー「すべての会員をデフォルトで参加させる」があれば、PageUserLink.authority_id = NC_AUTH_OTHER_IDの会員が検索対象
+							// 公開コミュニティー「すべての会員をデフォルトで参加させる」がなければ、PageUserLink.authority_id がNULL OR NC_AUTH_OTHER_IDの会員すべて
 							$Community = ClassRegistry::init('Community');
 							$roomIds = $Community->find('list', array(
 								'fields' => array('Community.id', 'Community.room_id'),
-								'conditions' => array('publication_range_flag' =>
-									array(
-										NC_PUBLICATION_RANGE_FLAG_LOGIN_USER,
-										NC_PUBLICATION_RANGE_FLAG_ALL
-									)
+								'conditions' => array(
+									'publication_range_flag' =>
+										array(
+											NC_PUBLICATION_RANGE_FLAG_LOGIN_USER,
+											NC_PUBLICATION_RANGE_FLAG_ALL
+										),
+									'participate_force_all_users' => _ON,
 								)
 							));
 							if(count($roomIds) > 0) {
@@ -902,14 +904,43 @@ class User extends AppModel
 							$PageUserLink = ClassRegistry::init('PageUserLink');
 							if($isPublicCommunity) {
 								// DISTINCT等で同じIDを省いていない。
-								$params = array(
-									'fields' => array('PageUserLink.user_id'),
-									'conditions' => array(
-										'PageUserLink.room_id' => $roomIds,
-										'PageUserLink.authority_id' => NC_AUTH_OTHER_ID
-									),
-								);
-								$userIds = $PageUserLink->find('list', $params);
+								// 全部で不参加
+								$userIds = array();
+								foreach($roomIds as $roomId) {
+									$params = array(
+										'fields' => array('PageUserLink.user_id'),
+										'conditions' => array(
+											'PageUserLink.room_id' => $roomId,
+											'PageUserLink.authority_id' => NC_AUTH_OTHER_ID
+										),
+									);
+									if(count($userIds) > 0) {
+										$params['conditions']['user_id'] = $userIds;
+									}
+									$userIds = $PageUserLink->find('list', $params);
+									if(count($userIds) == 0) {
+										break;
+									}
+								}
+
+								if(count($userIds) > 0) {
+									$params = array(
+										'fields' => array('PageUserLink.user_id'),
+										'conditions' => array(
+											'PageUserLink.user_id' => $userIds,
+											'PageUserLink.authority_id !=' => NC_AUTH_OTHER_ID
+										),
+										'joins' => array(array(
+											"type" => "INNER",
+											"table" => "communities",
+											"alias" => "Community",
+											"conditions" => "`PageUserLink`.`room_id`=`Community`.`room_id`"
+										)),
+									);
+									$entryUserIds = $PageUserLink->find('list', $params);
+									$userIds = array_diff($userIds, $entryUserIds);
+								}
+								$conditions['User.id'] = $userIds;
 							} else {
 								$roomIds = $Community->find('list', array(
 									'fields' => array('Community.id', 'Community.room_id')
@@ -940,7 +971,7 @@ class User extends AppModel
 
 						} else {
 							$params = array(
-								'fields' => array('Community.publication_range_flag'),
+								'fields' => array('Community.participate_force_all_users'),
 								'joins' => array(array(
 									"type" => "INNER",
 									"table" => "communities",
@@ -953,14 +984,15 @@ class User extends AppModel
 							);
 							$Page = ClassRegistry::init('Page');
 							$room = $Page->find('first', $params);
-							if($room['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_ONLY_USER) {
+							if(intval($room['Community']['participate_force_all_users']) == _OFF) {
 								$joins[$joinsCount] = array(
 									"type" => "INNER",
 									"table" => "page_user_links",
 									"alias" => 'PageUserLink',
 									"conditions" => array(
 										"PageUserLink.user_id = User.id",
-										"PageUserLink.room_id" => $roomId
+										"PageUserLink.room_id" => $roomId,
+										'PageUserLink.authority_id !=' => NC_AUTH_OTHER_ID,
 									)
 								);
 								$joinsCount++;
