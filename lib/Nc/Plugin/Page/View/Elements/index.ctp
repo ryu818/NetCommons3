@@ -131,6 +131,7 @@ if(isset($is_edit) && $is_edit == _ON){
 		<?php
 			echo $this->Form->button(__('Expand All'), array('class' => 'pages-menu-expand-all', 'name' => 'expand'));
 			echo $this->Form->button(__('Collapse All'), array('class' => 'pages-menu-collapse-all', 'name' => 'collapse'));
+			$paginatorQueryOptions = array('url' => array('is_paginator' => _ON), 'data-ajax' => '#nc-pages-setting-dialog');
 		?>
 		</div>
 		<div class="pages-menu-counter-outer">
@@ -142,7 +143,7 @@ if(isset($is_edit) && $is_edit == _ON){
 				<?php endforeach; ?>
 			</select>
 		</div>
-		<?php echo($this->element('/common/paginator', array('add_params' => array('data-ajax' => '#nc-pages-setting-dialog'),'views' => $views))); ?>
+		<?php echo($this->element('/common/paginator', array('options' => $paginatorQueryOptions))); ?>
 		<?php
 			$thread_num = 1;
 			$parent_id = NC_TOP_GROUP_ID;
@@ -165,7 +166,7 @@ if(isset($is_edit) && $is_edit == _ON){
 				<?php endif; ?>
 			</ol>
 		<?php endif; ?>
-		<?php echo($this->element('/common/paginator', array('add_params' => array('data-ajax' => '#nc-pages-setting-dialog'),'views' => $views))); ?>
+		<?php echo($this->element('/common/paginator', array('options' => $paginatorQueryOptions))); ?>
 	</div>
 </div>
 <?php

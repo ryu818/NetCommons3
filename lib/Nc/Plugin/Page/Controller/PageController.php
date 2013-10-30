@@ -151,6 +151,8 @@ class PageController extends PageAppController {
 		$isEdit = isset($this->request->query['is_edit']) ? intval($this->request->query['is_edit']) : _OFF;
 		$isDetail = isset($this->request->query['is_detail']) ? intval($this->request->query['is_detail']) : _OFF;
 		$activeTab = isset($this->request->query['active_tab']) ? intval($this->request->query['active_tab']) : null;
+		$isPaginator = !empty($this->request->named['is_paginator']) ? intval($this->request->named['is_paginator']) : _OFF;
+		//$paginatorPage = !empty($this->request->named['page']) ? intval($this->request->named['page']) : null;
 		$limit = !empty($this->request->named['limit']) ? intval($this->request->named['limit']) : PAGES_COMMUNITY_LIMIT;
 		$views = !empty($this->request->named['views']) ? intval($this->request->named['views']) : PAGES_COMMUNITY_VIEWS;
 		$pageId = isset($this->request->query['page_id']) ? intval($this->request->query['page_id']) : (isset($centerPage) ? $centerPage['Page']['id'] : null);
@@ -161,8 +163,12 @@ class PageController extends PageAppController {
 
 		$this->paginate['limit'] = $limit;
 
-		if(isset($this->request->named['page']) || isset($this->request->named['limit'])) {
+		if($isPaginator) {
 			$activeTab = 1;
+			if(!isset($this->request->named['page'])) {
+				// set page
+				$this->request->params['named']['page'] = 1;
+			}
 		} else if(!isset($activeTab)) {
 			$activeTab = ($this->nc_page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) ? 1 : 0;
 		}
