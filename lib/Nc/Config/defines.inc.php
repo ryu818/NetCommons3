@@ -90,6 +90,12 @@ define('NC_MYPORTAL_MEMBERS', 2);			// ログイン会員のみ公開(allow_mypo
 //-----------------権限(Authority.allow_style_flag)------------------------------------
 define('NC_ALLOWED_TO_EDIT_CSS', 2);			// CSSの編集まで許可する。
 
+//-----------------participant_type（Authority.getParticipantTypeで使用）------
+
+define('NC_PARTICIPANT_TYPE_ENABLED', 3);			// すべての会員表示（すべての権限へ変更可）
+define('NC_PARTICIPANT_TYPE_DEFAULT_ENABLED', 2);	// すべての会員表示（PageUserLinkにない会員は、default値と不参加のみ変更可）
+define('NC_DISPLAY_FLAG_ENTRY_USERS', 0);			// 参加者のみ表示
+
 //-----------------display_flag-------------------------------------------
 
 define('NC_DISPLAY_FLAG_OFF', 0);		// 非公開
@@ -114,7 +120,7 @@ define('NC_SHORTCUT_TYPE_SHOW_AUTH', 2);		// 表示中のルーム権限より�
 
 define('NC_PUBLICATION_RANGE_FLAG_ONLY_USER', 0);		// 非公開（コミュニティー参加者のみが閲覧可能）
 define('NC_PUBLICATION_RANGE_FLAG_LOGIN_USER', 1);		// 公開（すべてのログイン会員が閲覧可能）
-define('NC_PUBLICATION_RANGE_FLAG_ALL', 2);				// 公開（すべてのユーザーが閲覧可能） - 未使用
+define('NC_PUBLICATION_RANGE_FLAG_ALL', 2);				// 公開（すべてのユーザーが閲覧可能） - 画面では未使用 但し処理は組込み済。
 
 //-----------------Community.participate_flag-------------------------------------------
 

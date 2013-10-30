@@ -419,11 +419,8 @@ class User extends AppModel
  * @param   Model Page $page
  * @param   integer  $participantType
  * 						0:参加者のみ表示　
- * 						1:すべての会員表示（変更不可)
- * 						2:すべての会員表示（PageUserLinkにない会員は、default値と不参加のみ変更可）
- * 						3:すべての会員表示（変更可）
- * 						false: 公開
- * 						true : 参加者のみ公開
+ * 						1:すべての会員表示（PageUserLinkにない会員は、default値と不参加のみ変更可）
+ * 						2:すべての会員表示（すべての権限へ変更可）
  * 						null : 親ルームのデータを取得しない(会員参加登録時使用)
  * @param   array    $conditions
  * @param   array    $joins
@@ -434,7 +431,7 @@ class User extends AppModel
  * @return  array array($total, $pages_users_link)
  * @since   v 3.0.0.0
  */
-	public function findParticipant($page, $participantType = true, $conditions = array(), $joins = array(), $startPage = 1, $limit= 30, $sortname= 'chief', $sortorder = 'DESC') {
+	public function findParticipant($page, $participantType = NC_PARTICIPANT_TYPE_DEFAULT_ENABLED, $conditions = array(), $joins = array(), $startPage = 1, $limit= 30, $sortname= 'chief', $sortorder = 'DESC') {
 
 		$roomId = $page['Page']['id'];
 		$fields = array(
@@ -450,8 +447,9 @@ class User extends AppModel
 			'Authority.display_participants_editing',
 			'Authority.hierarchy',
 			'Community.publication_range_flag',
+			'Community.participate_force_all_users',
 		);
-		$type = ($participantType == 0  || is_null($participantType)) ? "INNER" : "LEFT";
+		$type = ($participantType == NC_DISPLAY_FLAG_ENTRY_USERS  || is_null($participantType)) ? "INNER" : "LEFT";
 		$joins[] = array(
 			"type" => $type,
 			"table" => "page_user_links",
@@ -495,7 +493,7 @@ class User extends AppModel
 			$Page = ClassRegistry::init('Page');
 			$parentPage = $Page->findById($page['Page']['parent_id']);
 			$parentRoomId = $parentPage['Page']['room_id'];
-			$type = ($participantType == 0) ? "INNER" : "LEFT";
+			$type = ($participantType == NC_DISPLAY_FLAG_ENTRY_USERS) ? "INNER" : "LEFT";
 			$joins[] = array(
 				"type" => "LEFT",
 				"table" => "page_user_links",
@@ -612,7 +610,8 @@ class User extends AppModel
 			'fields' => array('Content.id', 'Content.room_id', 'Content.shortcut_type'),
 			'conditions' => array(
 				'Content.master_id' => $contentId,
-				'Content.id !=' => $contentId,
+				//'Content.id !=' => $contentId,
+				'Content.shortcut_type' => NC_SHORTCUT_TYPE_SHOW_AUTH,
 			)
 		);
 		$shortcutContents = $Content->find('all', $params);
@@ -677,13 +676,16 @@ class User extends AppModel
  */
 	public function getSendMailsByPageId($pageId = null, $moreThanHierarchy = null, $conditions = array(), $order = array()) {
 		// TODO:現状Userテーブルのみから取得　今後UserItemLinkテーブルからも取得できるように修正予定
+		$Page = ClassRegistry::init('Page');
+		$UserItem = ClassRegistry::init('UserItem');
+		$UserItemLink = ClassRegistry::init('UserItemLink');
+
 		$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
 		$userId = $loginUser['id'];
 		$emailRes = array('email' => array(), 'mobileEmail' => array());
-		$Page = ClassRegistry::init('Page');
 
 		$page_params = array(
-			'fields' => array('Page.*', 'Community.publication_range_flag'),
+			'fields' => array('Page.*', 'Community.publication_range_flag', 'Community.participate_force_all_users'),
 			'joins' => array(
 				array("type" => "LEFT",
 					"table" => "communities",
@@ -709,12 +711,13 @@ class User extends AppModel
 				$type = 'INNER';
 			}
 			$isDefaultEntry = false;
-			if($page['Community']['publication_range_flag'] != NC_PUBLICATION_RANGE_FLAG_ONLY_USER) {
+			if($page['Community']['publication_range_flag'] != NC_PUBLICATION_RANGE_FLAG_ONLY_USER &&
+				$page['Community']['participate_force_all_users'] == _ON) {
 				$isDefaultEntry = true;
 			}
 
 			$params = array(
-				'fields' => array('User.email', 'User.mobile_email', 'PageUserLink.authority_id', 'PageAuthority.hierarchy'),	// 'PageUserLink.authority_id',
+				'fields' => array('User.id', 'User.email', 'User.mobile_email', 'PageUserLink.authority_id', 'PageAuthority.hierarchy'),	// 'PageUserLink.authority_id',
 				'joins' => array(
 					array("type" => $type,
 						"table" => "page_user_links",
@@ -758,7 +761,7 @@ class User extends AppModel
 				);
 			}
 			$params = array(
-				'fields' => array('User.email', 'User.mobile_email', 'Authority.hierarchy'),
+				'fields' => array('User.id', 'User.email', 'User.mobile_email', 'Authority.hierarchy'),
 				'joins' => $joins,
 				'conditions' => $conditions,
 				'order' => $order,
@@ -770,21 +773,34 @@ class User extends AppModel
 		if (count($users) == 0) {
 			return $emailRes;
 		}
+
+		// メールを受信可否、受け取るかどうかの設定を取得
+		$userItems = $UserItem->find('list', array(
+			'fields' => array('id', 'allow_email_reception_flag'),
+			'conditions' => array('tag_name' => array('email', 'mobile_email'))
+		));
+		$itemIds = array_keys($userItems);
+
+
 		foreach($users as $user) {
-			if(isset($user['Authority']) && $user['PageUserLink']['authority_id'] === (string) NC_AUTH_OTHER_ID) {
+			if(isset($user['PageAuthority']) && $user['PageUserLink']['authority_id'] === (string) NC_AUTH_OTHER_ID) {
 				continue;
 			}
-			if(isset($user['Authority']) && $user['Authority']['hierarchy'] === null) {
+			if(isset($user['PageAuthority']) && $user['PageAuthority']['hierarchy'] === null) {
 				if(!$isDefaultEntry) {
 					continue;
 				}
-				$user['Authority']['hierarchy'] = $defaultEntryHierarchy;
+				$user['PageAuthority']['hierarchy'] = $defaultEntryHierarchy;
 			}
-			if($moreThanHierarchy == null || (isset($user['Authority']) && $user['Authority']['hierarchy'] >= $moreThanHierarchy)) {
-				if(!empty($user['User']['email'])) {
+			if($moreThanHierarchy == null || (isset($user['PageAuthority']) && $user['PageAuthority']['hierarchy'] >= $moreThanHierarchy)) {
+				$userItemLinks = $UserItemLink->find('list', array(
+					'fields' => array('user_item_id', 'email_reception_flag'),
+					'conditions' => array('user_id' => $user['User']['id'],'user_item_id' => $itemIds)
+				));
+				if(!empty($user['User']['email']) && (empty($userItems[NC_ITEM_ID_EMAIL]) || $userItemLinks[NC_ITEM_ID_EMAIL] == _ON)) {
 					$emailRes['email'][$user['User']['email']] = $user['User']['email'] ;
 				}
-				if(!empty($user['User']['mobile_email'])) {
+				if(!empty($user['User']['mobile_email']) && (empty($userItems[NC_ITEM_ID_MOBILE_EMAIL]) || $userItemLinks[NC_ITEM_ID_MOBILE_EMAIL] == _ON)) {
 					$emailRes['mobileEmail'][$user['User']['mobile_email']] = $user['User']['mobile_email'] ;
 				}
 			}
