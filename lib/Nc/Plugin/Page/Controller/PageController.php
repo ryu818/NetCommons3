@@ -355,29 +355,94 @@ class PageController extends PageAppController {
 
 /**
  * Style initialize処理
+ * 	権限チェック、言語設定
  * @param   void
- * @param   string $id
- * @return  Model Page $centerPage
+ * @return  false|Model Page $centerPage
  * @since   v 3.0.0.0
  */
-	protected function _initializeStyle() {
+	protected function _initializeSetting() {
 		// 言語切替
 		$languages = Configure::read(NC_CONFIG_KEY.'.'.'languages');
-		$centerPage = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');
-		if(!isset($centerPage['PageAuthority']) || $centerPage['PageAuthority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
-			$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', 'index');
-			$this->response->statusCode('403');
-			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
-			return;
-		}
-		$this->set('page', $centerPage);
 		if($this->action == 'style' && !$this->request->is('post')) {
 			$elementParams['languages'] = $languages;
 			$this->set('element_params', $elementParams);
 		} else {
 			$this->set('languages', $languages);
 		}
+
+		$centerPage = $this->_checkAuthChief();
+		$this->set('page', $centerPage);
+		if($centerPage === false) {
+			return false;
+		}
+		if(!$this->_checkAuthAction()) {
+			return false;
+		}
+
 		return $centerPage;
+	}
+
+/**
+ * Centerページが主担より小さいならばエラー
+ * @param   void
+ * @return  false|Model Page $centerPage
+ * @since   v 3.0.0.0
+ */
+	protected function _checkAuthChief() {
+		$centerPage = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');
+
+		if(!isset($centerPage['PageAuthority']) || $centerPage['PageAuthority']['hierarchy'] < NC_AUTH_MIN_CHIEF) {
+			$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', 'index');
+			$this->response->statusCode('403');
+			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
+			return false;
+		}
+		return $centerPage;
+	}
+
+/**
+ * 各設定画面の編集権限チェック
+ * @param   void
+ * @return  boolean
+ * @since   v 3.0.0.0
+ */
+	protected function _checkAuthAction() {
+		$loginUser = $this->Auth->user();
+		$ret = true;
+
+		switch($this->action) {
+			case 'meta':
+				if(!$loginUser['allow_meta_flag']) {
+					$ret = false;
+				}
+				break;
+			case 'theme':
+				if(!$loginUser['allow_theme_flag']) {
+					$ret = false;
+				}
+				break;
+			case 'style':
+			case 'background':
+			case 'color':
+			case 'display_position':
+			case 'edit_css':
+				if(!$loginUser['allow_style_flag']) {
+					$ret = false;
+				}
+				break;
+			case 'layout':
+				if(!$loginUser['allow_layout_flag']) {
+					$ret = false;
+				}
+				break;
+		}
+		if(!$ret) {
+			$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', 'index');
+			$this->response->statusCode('403');
+			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
+			return $ret;
+		}
+		return $ret;
 	}
 
 /**
@@ -387,11 +452,10 @@ class PageController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function style() {
-		$centerPage = $this->_initializeStyle();
-		$pageStyles = $this->PageStyle->findScopeStyle('all', $centerPage);
-
-		$pageStyles[NC_PAGE_TYPE_FONT_ID] = $this->_saveScope($this->PageStyle, isset($pageStyles[NC_PAGE_TYPE_FONT_ID]) ? $pageStyles[NC_PAGE_TYPE_FONT_ID] : null, $centerPage, NC_PAGE_TYPE_FONT_ID);
-		$this->set('page_style', isset($pageStyles[NC_PAGE_TYPE_FONT_ID][0]) ? $pageStyles[NC_PAGE_TYPE_FONT_ID][0] : null);
+		$centerPage = $this->_initializeSetting();
+		if(!$centerPage) {
+			return;
+		}
 		$this->set('id', 'pages-menu-style');
 		if ($this->request->is('post')) {
 			$this->render('/Elements/style/font');
@@ -412,7 +476,7 @@ class PageController extends PageAppController {
  */
 	protected function _saveScope(Model $Model, $pageStyles, $centerPage, $type = _OFF) {
 		if ($this->request->is('post')) {
-			$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
+			$loginUser = $this->Auth->user();
 			$isAdmin = ($this->Authority->getUserAuthorityId($loginUser['hierarchy']) == NC_AUTH_ADMIN_ID) ? true : false;
 
 			if($Model->name == 'PageStyle') {
@@ -524,7 +588,10 @@ class PageController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function background() {
-		$centerPage = $this->_initializeStyle();
+		$centerPage = $this->_initializeSetting();
+		if(!$centerPage) {
+			return;
+		}
 		$pageStyles = $this->PageStyle->findScopeStyle('all', $centerPage);
 		if($this->request->is('post') && !in_array($this->request->data['type'], array('search', 'patterns_search', 'images_search'))) {
 			$pageStyles[NC_PAGE_TYPE_BACKGROUND_ID] = $this->_saveScope($this->PageStyle, isset($pageStyles[NC_PAGE_TYPE_BACKGROUND_ID]) ? $pageStyles[NC_PAGE_TYPE_BACKGROUND_ID] : null, $centerPage, NC_PAGE_TYPE_BACKGROUND_ID);
@@ -616,7 +683,10 @@ class PageController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function display_position() {
-		$centerPage = $this->_initializeStyle();
+		$centerPage = $this->_initializeSetting();
+		if(!$centerPage) {
+			return;
+		}
 		$pageStyles = $this->PageStyle->findScopeStyle('all', $centerPage);
 
 		$pageStyles[NC_PAGE_TYPE_DISPLAY_ID] = $this->_saveScope($this->PageStyle, isset($pageStyles[NC_PAGE_TYPE_DISPLAY_ID]) ? $pageStyles[NC_PAGE_TYPE_DISPLAY_ID] : null, $centerPage, NC_PAGE_TYPE_DISPLAY_ID);
@@ -634,7 +704,10 @@ class PageController extends PageAppController {
  */
 	public function edit_css() {
 		App::uses('File', 'Utility');
-		$centerPage = $this->_initializeStyle();
+		$centerPage = $this->_initializeSetting();
+		if(!$centerPage) {
+			return;
+		}
 		$pageStyles = $this->PageStyle->findScopeStyle('all', $centerPage);
 		$pageStyles[NC_PAGE_TYPE_EDIT_CSS_ID] = $this->_saveScope($this->PageStyle, isset($pageStyles[NC_PAGE_TYPE_EDIT_CSS_ID]) ? $pageStyles[NC_PAGE_TYPE_EDIT_CSS_ID] : null, $centerPage, NC_PAGE_TYPE_EDIT_CSS_ID);
 		$pageStyle = isset($pageStyles[NC_PAGE_TYPE_EDIT_CSS_ID][0]) ? $pageStyles[NC_PAGE_TYPE_EDIT_CSS_ID][0] : null;
@@ -686,7 +759,10 @@ class PageController extends PageAppController {
 		$filePath = App::pluginPath('Page') . 'webroot'. DS . 'img'. DS . 'layouts';
 		$layoutDir = new Folder($filePath);
 		$layoutFiles = $layoutDir->find('.*\.(jpg|gif|png)');
-		$centerPage = $this->_initializeStyle();
+		$centerPage = $this->_initializeSetting();
+		if(!$centerPage) {
+			return;
+		}
 		$pageLayouts = $this->PageLayout->findScope('all', $centerPage);
 		$pageLayouts = $this->_saveScope($this->PageLayout, $pageLayouts, $centerPage);
 

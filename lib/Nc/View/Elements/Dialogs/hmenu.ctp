@@ -44,7 +44,7 @@ $params = array('plugin' => 'page', 'controller' => 'page', 'action' => 'index',
 $options = array('return', 'requested' => _OFF);	// Tokenがrequested=1の場合、セットされないため1をセット
 if($canShowPageSetting && isset($pageMenu)) {
 	$showPageSetting = true;
-	if(isset($ncUser)) {
+	if(isset($ncUser) && $hierarchy >= NC_AUTH_MIN_CHIEF) {
 		$params['action'] = $pageMenu;
 	}
 }
