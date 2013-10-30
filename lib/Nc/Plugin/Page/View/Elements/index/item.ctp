@@ -135,7 +135,7 @@
 	echo $this->Form->create(null, array('url' => array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'edit'), 'id' => 'PagesMenuForm-'.$page['Page']['id'], 'class' => 'pages-menu-edit-form','data-ajax' => '#pages-menu-edit-item-'.$page['Page']['id']));
 	?>
 	<input type="hidden" name="data[Page][id]" value="<?php echo(intval($page['Page']['id'])); ?>" />
-	<div class="dd-drag-content pages-menu-edit-content clearfix">
+	<div class="dd-drag-content pages-menu-edit-content clearfix<?php if(!$is_chief): ?> disable-area<?php endif; ?>">
 		<?php if($is_display): ?>
 			<?php if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_ON): ?>
 				<a class="pages-menu-display-flag" href="#" title="<?php echo(__('To private')); ?>">

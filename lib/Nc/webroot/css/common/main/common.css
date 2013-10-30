@@ -300,6 +300,14 @@ input.normal-text {
 	opacity:.5;
 	filter:Alpha(Opacity=50);
 }
+.disable-area {
+	background-color:#000 !important;
+	opacity:.5;
+	filter:Alpha(Opacity=50);
+}
+.disable-area:hover {
+	background:transparent !important;
+}
 
 /* 上部説明 */
 div.top-description {
