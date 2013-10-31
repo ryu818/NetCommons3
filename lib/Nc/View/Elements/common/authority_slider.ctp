@@ -5,6 +5,9 @@
 			if($sliderOptionsStr != '{') {
 				$sliderOptionsStr .= ',';
 			}
+			if(gettype($sliderOption) == 'boolean') {
+				$sliderOption = ($sliderOption) ? 'true' : 'false';
+			}
 			$sliderOptionsStr .= $sliderKey .':'.$sliderOption;
 		}
 	}
@@ -31,7 +34,7 @@
 			$leftArr[] = 100;
 		} else {
 			$width += $addWidth;
-			$leftArr[] = $width;			
+			$leftArr[] = $width;
 		}
 	}
 
@@ -44,7 +47,7 @@
 	$domId = $this->Form->domId($options);
 	$id = $domId['id'];
 	$i = 0;
-	
+
 ?>
 
 <div id="<?php echo($id); ?>-slider" class="authority-slider" style="width:<?php echo (count($leftArr) - 1)*$sliderWidth; ?>px;">
