@@ -72,9 +72,9 @@ app\\webroot\\theme\\assets下に圧縮したものと、そうでないもの�
 0：コミュニティー作成不可（デフォルト）
 1：非公開(参加者のみ)のコミュニティー作成可
 2：公開（すべてのログイン会員が閲覧可能）までのコミュニティー作成可
-3：公開「全会員を強制的に参加させる。」までのコミュニティー作成可。
+3：公開・非公開「全会員を強制的に参加させる。」までのコミュニティー作成可。
 4：公開コミュニティーまで作成でき、すべてのコミュニティーの表示順変更、削除が可能'),
-		'allow_new_participant' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'comment' => 'コミュニティーで主担ならば、新規に参加者の追加を許すかどうか。新規追加を許さない場合、SNSのような振る舞いになる。'),
+		'allow_new_participant' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'comment' => 'コミュニティーで主担ならば、参加会員を自由に追加でき、参加方法で「参加者のみ」を選択可能にするかどうか。この項目がOFFの場合、SNSのような振る舞いになる。'),
 		'myportal_use_flag' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3, 'comment' => 'マイポータルを使用するかどうか。'),
 		'allow_myportal_viewing_hierarchy' => array('type' => 'integer', 'null' => false, 'default' => '0', 'comment' => 'マイポータルを閲覧できる権限
 （1,101,201,301のみ）'),

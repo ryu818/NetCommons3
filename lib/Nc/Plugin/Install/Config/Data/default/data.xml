@@ -51,7 +51,7 @@
             <column name="private_use_flag">1</column>
             <column name="public_createroom_flag">1</column>
             <column name="group_createroom_flag">1</column>
-            <column name="myportal_createroom_flag">1</column>
+            <column name="myportal_createroom_flag">0</column>
             <column name="private_createroom_flag">0</column>
             <column name="allow_htmltag_flag">1</column>
             <column name="allow_meta_flag">1</column>
@@ -87,11 +87,11 @@
             <column name="myportal_use_flag">0</column>
             <column name="allow_myportal_viewing_hierarchy">1</column>
             <column name="private_use_flag">1</column>
-            <column name="public_createroom_flag">0</column>
-            <column name="group_createroom_flag">0</column>
+            <column name="public_createroom_flag">1</column>
+            <column name="group_createroom_flag">1</column>
             <column name="myportal_createroom_flag">0</column>
             <column name="private_createroom_flag">0</column>
-            <column name="allow_htmltag_flag">1</column>
+            <column name="allow_htmltag_flag">0</column>
             <column name="allow_meta_flag">1</column>
             <column name="allow_theme_flag">1</column>
             <column name="allow_style_flag">1</column>
@@ -120,7 +120,7 @@
             <column name="default_name">Moderator</column>
             <column name="system_flag">1</column>
             <column name="hierarchy">250</column>
-            <column name="allow_creating_community">1</column>
+            <column name="allow_creating_community">0</column>
             <column name="allow_new_participant">0</column>
             <column name="myportal_use_flag">0</column>
             <column name="allow_myportal_viewing_hierarchy">1</column>
@@ -129,13 +129,13 @@
             <column name="group_createroom_flag">0</column>
             <column name="myportal_createroom_flag">0</column>
             <column name="private_createroom_flag">0</column>
-            <column name="allow_htmltag_flag">1</column>
+            <column name="allow_htmltag_flag">0</column>
             <column name="allow_meta_flag">1</column>
             <column name="allow_theme_flag">1</column>
-            <column name="allow_style_flag">1</column>
-            <column name="allow_layout_flag">1</column>
+            <column name="allow_style_flag">0</column>
+            <column name="allow_layout_flag">0</column>
             <column name="allow_attachment">2</column>
-            <column name="allow_video">1</column>
+            <column name="allow_video">0</column>
             <column name="max_size">52428800</column>
             <column name="change_leftcolumn_flag">0</column>
             <column name="change_rightcolumn_flag">0</column>
@@ -158,7 +158,7 @@
             <column name="default_name">Common User</column>
             <column name="system_flag">1</column>
             <column name="hierarchy">150</column>
-            <column name="allow_creating_community">1</column>
+            <column name="allow_creating_community">0</column>
             <column name="allow_new_participant">0</column>
             <column name="myportal_use_flag">1</column>
             <column name="allow_myportal_viewing_hierarchy">1</column>
@@ -173,7 +173,7 @@
             <column name="allow_style_flag">0</column>
             <column name="allow_layout_flag">0</column>
             <column name="allow_attachment">1</column>
-            <column name="allow_video">1</column>
+            <column name="allow_video">0</column>
             <column name="max_size">10485760</column>
             <column name="change_leftcolumn_flag">0</column>
             <column name="change_rightcolumn_flag">0</column>
@@ -239,11 +239,11 @@
             <column name="myportal_use_flag">0</column>
             <column name="allow_myportal_viewing_hierarchy">1</column>
             <column name="private_use_flag">1</column>
-            <column name="public_createroom_flag">0</column>
-            <column name="group_createroom_flag">0</column>
+            <column name="public_createroom_flag">1</column>
+            <column name="group_createroom_flag">1</column>
             <column name="myportal_createroom_flag">0</column>
             <column name="private_createroom_flag">0</column>
-            <column name="allow_htmltag_flag">1</column>
+            <column name="allow_htmltag_flag">0</column>
             <column name="allow_meta_flag">1</column>
             <column name="allow_theme_flag">1</column>
             <column name="allow_style_flag">1</column>
@@ -2908,6 +2908,54 @@ We recommend that you change your password after login.</column>
             <column name="id">82</column>
             <column name="module_id">0</column>
             <column name="cat_id">8</column>
+            <column name="name">community_default_publication_range</column>
+            <column name="type">select</column>
+            <column name="title">Default publication range</column>
+            <column name="value">0</column>
+            <column name="description"></column>
+            <column name="options">a:2:{i:0;s:47:&quot;Private(Only participant user can see content.)&quot;;i:1;s:39:&quot;Public(All login user can see content.)&quot;;}</column>
+            <column name="domain">system</column>
+            <column name="attribute">style=&quot;width:360px;&quot;</column>
+            <column name="required">1</column>
+            <column name="minlength">0</column>
+            <column name="maxlength">0</column>
+            <column name="regexp"></column>
+            <column name="lang_flag">0</column>
+            <column name="created">NULL</column>
+            <column name="created_user_id">0</column>
+            <column name="created_user_name"></column>
+            <column name="modified">NULL</column>
+            <column name="modified_user_id">0</column>
+            <column name="modified_user_name"></column>
+        </table>
+        <table name="configs">
+            <column name="id">83</column>
+            <column name="module_id">0</column>
+            <column name="cat_id">8</column>
+            <column name="name">community_default_participate_flag</column>
+            <column name="type">select</column>
+            <column name="title">Default how to participate</column>
+            <column name="value">1</column>
+            <column name="description"></column>
+            <column name="options">a:4:{i:3;s:37:&quot;Free(All login user can participate.)&quot;;i:2;s:49:&quot;Invitation(Require the approval of room manager.)&quot;;i:1;s:45:&quot;Invitation(Only Invite user can participate.)&quot;;i:0;s:21:&quot;Only participant user&quot;;}</column>
+            <column name="domain">system</column>
+            <column name="attribute">style=&quot;width:360px;&quot;</column>
+            <column name="required">1</column>
+            <column name="minlength">0</column>
+            <column name="maxlength">0</column>
+            <column name="regexp"></column>
+            <column name="lang_flag">0</column>
+            <column name="created">NULL</column>
+            <column name="created_user_id">0</column>
+            <column name="created_user_name"></column>
+            <column name="modified">NULL</column>
+            <column name="modified_user_id">0</column>
+            <column name="modified_user_name"></column>
+        </table>
+        <table name="configs">
+            <column name="id">84</column>
+            <column name="module_id">0</column>
+            <column name="cat_id">8</column>
             <column name="name">community_participate_sendmail</column>
             <column name="type">radio</column>
             <column name="title">Default deliver mail when participated</column>
@@ -2929,7 +2977,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_name"></column>
         </table>
         <table name="configs">
-            <column name="id">83</column>
+            <column name="id">85</column>
             <column name="module_id">0</column>
             <column name="cat_id">8</column>
             <column name="name">community_mail_participate_announce_subject</column>
@@ -2953,7 +3001,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_name"></column>
         </table>
         <table name="configs">
-            <column name="id">84</column>
+            <column name="id">86</column>
             <column name="module_id">0</column>
             <column name="cat_id">8</column>
             <column name="name">community_mail_participate_announce_body</column>
@@ -2977,31 +3025,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_name"></column>
         </table>
         <table name="configs">
-            <column name="id">85</column>
-            <column name="module_id">0</column>
-            <column name="cat_id">8</column>
-            <column name="name">community_withdraw_use</column>
-            <column name="type">select</column>
-            <column name="title">Setting of community membership cancellation</column>
-            <column name="value">0</column>
-            <column name="description"></column>
-            <column name="options">a:2:{i:1;s:37:&quot;Automatically membership cancellation&quot;;i:0;s:10:&quot;Do not use&quot;;}</column>
-            <column name="domain">system</column>
-            <column name="attribute">style=&quot;width:150px;&quot;</column>
-            <column name="required">1</column>
-            <column name="minlength">0</column>
-            <column name="maxlength">0</column>
-            <column name="regexp"></column>
-            <column name="lang_flag">0</column>
-            <column name="created">NULL</column>
-            <column name="created_user_id">0</column>
-            <column name="created_user_name"></column>
-            <column name="modified">NULL</column>
-            <column name="modified_user_id">0</column>
-            <column name="modified_user_name"></column>
-        </table>
-        <table name="configs">
-            <column name="id">86</column>
+            <column name="id">87</column>
             <column name="module_id">0</column>
             <column name="cat_id">8</column>
             <column name="name">community_withdraw_sendmail</column>
@@ -3025,7 +3049,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_name"></column>
         </table>
         <table name="configs">
-            <column name="id">87</column>
+            <column name="id">88</column>
             <column name="module_id">0</column>
             <column name="cat_id">8</column>
             <column name="name">community_mail_withdraw_subject</column>
@@ -3049,7 +3073,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_name"></column>
         </table>
         <table name="configs">
-            <column name="id">88</column>
+            <column name="id">89</column>
             <column name="module_id">0</column>
             <column name="cat_id">8</column>
             <column name="name">community_mail_withdraw_body</column>
@@ -3073,7 +3097,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_name"></column>
         </table>
         <table name="configs">
-            <column name="id">89</column>
+            <column name="id">90</column>
             <column name="module_id">0</column>
             <column name="cat_id">8</column>
             <column name="name">community_mail_invite_subject</column>
@@ -3097,7 +3121,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_name"></column>
         </table>
         <table name="configs">
-            <column name="id">90</column>
+            <column name="id">91</column>
             <column name="module_id">0</column>
             <column name="cat_id">8</column>
             <column name="name">community_mail_invite_body</column>
@@ -3121,7 +3145,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_name"></column>
         </table>
         <table name="configs">
-            <column name="id">91</column>
+            <column name="id">92</column>
             <column name="module_id">0</column>
             <column name="cat_id">8</column>
             <column name="name">community_mail_wait_approval_subject</column>
@@ -3145,7 +3169,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_name"></column>
         </table>
         <table name="configs">
-            <column name="id">92</column>
+            <column name="id">93</column>
             <column name="module_id">0</column>
             <column name="cat_id">8</column>
             <column name="name">community_mail_wait_approval_body</column>
@@ -3169,7 +3193,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_name"></column>
         </table>
         <table name="configs">
-            <column name="id">93</column>
+            <column name="id">94</column>
             <column name="module_id">0</column>
             <column name="cat_id">8</column>
             <column name="name">community_mail_confirm_approval_subject</column>
@@ -3193,7 +3217,7 @@ We recommend that you change your password after login.</column>
             <column name="modified_user_name"></column>
         </table>
         <table name="configs">
-            <column name="id">94</column>
+            <column name="id">95</column>
             <column name="module_id">0</column>
             <column name="cat_id">8</column>
             <column name="name">community_mail_confirm_approval_body</column>
@@ -3222,7 +3246,7 @@ To allow participant and send a mail to the user, please click the link below.
             <column name="modified_user_name"></column>
         </table>
         <table name="configs">
-            <column name="id">95</column>
+            <column name="id">96</column>
             <column name="module_id">0</column>
             <column name="cat_id">8</column>
             <column name="name">community_mail_approved_subject</column>
@@ -3246,7 +3270,7 @@ To allow participant and send a mail to the user, please click the link below.
             <column name="modified_user_name"></column>
         </table>
         <table name="configs">
-            <column name="id">96</column>
+            <column name="id">97</column>
             <column name="module_id">0</column>
             <column name="cat_id">8</column>
             <column name="name">community_mail_approved_body</column>
@@ -3272,7 +3296,7 @@ This is the community's URL:
             <column name="modified_user_name"></column>
         </table>
         <table name="configs">
-            <column name="id">97</column>
+            <column name="id">98</column>
             <column name="module_id">0</column>
             <column name="cat_id">9</column>
             <column name="name">debug</column>
@@ -3296,7 +3320,7 @@ This is the community's URL:
             <column name="modified_user_name"></column>
         </table>
         <table name="configs">
-            <column name="id">98</column>
+            <column name="id">99</column>
             <column name="module_id">0</column>
             <column name="cat_id">10</column>
             <column name="name">allow_extension</column>

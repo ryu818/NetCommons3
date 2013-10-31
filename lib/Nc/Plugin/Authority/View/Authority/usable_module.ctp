@@ -25,7 +25,7 @@
 			$title = __d('authority', 'Edit authority');
 		}
 		$title .= ' ['.$authority['Authority']['default_name'].']';
-		$backUrl = array('action' => 'detail', $authorityId);
+		$backUrl = array('action' => 'detail2', $authorityId);
 		$backAttr = array('data-ajax' => '#authority-list', 'data-ajax-type' => 'post', 'data-ajax-serialize' => true);
 	?>
 	<?php
@@ -41,7 +41,11 @@
 	?>
 	&nbsp;&gt;&gt;&nbsp;
 	<?php
-		echo $this->Html->link(__d('authority', 'Detail setting'), $backUrl, $bufBackAttr);
+		echo $this->Html->link(__d('authority', 'Detail setting'), array('action' => 'detail', $authorityId), $bufBackAttr);
+	?>
+	&nbsp;&gt;&gt;&nbsp;
+	<?php
+		echo $this->Html->link(__d('authority', 'Detail setting (Part 2)'), $backUrl, $bufBackAttr);
 	?>
 	&nbsp;&gt;&gt;&nbsp;
 	<h3 class="bold display-inline">

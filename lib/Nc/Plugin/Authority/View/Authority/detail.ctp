@@ -12,12 +12,11 @@
 <div id="authority-list" class="authority-edit ui-tabs-panel ui-widget-content ui-corner-all">
 	<?php
 		$authorityId = null;
-		$options = array('action' => 'usable_module', 'data-ajax' => '#authority-list');
+		$options = array('action' => 'detail2', 'data-ajax' => '#authority-list');
 		if(!empty($authority['Authority']['id'])) {
 			$options['url'] = array($authority['Authority']['id']);
 			$authorityId = $authority['Authority']['id'];
 		}
-		$options['data-confirm-url'] = $this->Html->url(array('action' => 'confirm', $authorityId));
 		echo $this->Form->create('Authority', $options);
 
 		if(empty($authorityId)) {
@@ -101,79 +100,6 @@
 						);
 						echo $this->Form->input('Authority.'.$columnName, $settings);
 					?>
-				</dd>
-			</dl>
-		</li>
-		<li>
-			<dl>
-				<dt>
-					<?php
-						$columnName = 'allow_creating_community';
-						echo $this->Form->label('Authority.'.$columnName,  __d('authority', 'Community creating authority'));
-					?>
-					<span class="require"><?php echo __('*'); ?></span>
-				</dt>
-				<dd>
-					<?php
-						$options = array(
-							NC_ALLOW_CREATING_COMMUNITY_OFF => __d('authority', 'Community can not create.'),
-							NC_ALLOW_CREATING_COMMUNITY_ONLY_USER => __d('authority', 'Allow to create private community.'),
-							NC_ALLOW_CREATING_COMMUNITY_ALL_USER => __d('authority', 'Allow to create public community.'),
-							NC_ALLOW_CREATING_COMMUNITY_FORCE_ALL => __d('authority', 'Allow to create public community[Join to force all members.].'),
-							NC_ALLOW_CREATING_COMMUNITY_ADMIN => __d('authority', 'Allow to create all communities, display order change, or delete.'),
-						);
-						$settings = array(
-							'type' => 'select',
-							'options' => $options,
-							'value' => $authority['Authority'][$columnName],
-							'label' => false,
-							'div' => false,
-							'class' => 'authority-community-creating-authority',
-							'disabled' => $authorityDisabled['Authority'][$columnName],
-						);
-						echo $this->Form->input('Authority.'.$columnName, $settings);
-					?>
-					<div class="note">
-						<ul class="lists authority-note-lists">
-							<li>
-								<dl>
-									<dt>
-										<?php echo __d('authority', 'Private community'); ?>
-									</dt>
-									<dd>
-										:<?php echo __d('authority', 'Users of all the viewable.'); ?>
-									</dd>
-								</dl>
-							</li>
-							<li>
-								<dl>
-									<dt>
-										<?php echo __d('authority', 'Public community'); ?>
-									</dt>
-									<dd>
-										:<?php echo __d('authority', 'Login members of all the viewable.'); ?>
-									</dd>
-								</dl>
-							</li>
-						</ul>
-						<?php echo __d('authority', 'The default authority of the public community[Join to force all members.] can be set from system management.'); ?>
-					</div>
-
-					<?php
-						$columnName = 'allow_new_participant';
-						$settings = array(
-							'type' => 'checkbox',
-							'value' => $authority['Authority'][$columnName],
-							'checked' => ($authority['Authority'][$columnName]) ? true : false,
-							'label' => __d('authority', 'Allow to add new participants in the community.'),
-							'div' => false,
-							'disabled' => $authorityDisabled['Authority'][$columnName],
-						);
-						echo $this->Form->input('Authority.'.$columnName, $settings);
-					?>
-					<div class="note">
-						<?php echo __d('authority', 'If you do not allow new participants, available as SNS.'); ?>
-					</div>
 				</dd>
 			</dl>
 		</li>
@@ -398,134 +324,6 @@
 			</dl>
 		</li>
 	</ul>
-	<fieldset class="authority-system-module-fieldset">
-		<legend>
-			<?php
-				echo __d('authority', 'Select system-control modules to use');
-			?>
-		</legend>
-		<?php foreach ($system_modules as $dirName => $module): ?>
-			<?php
-				if(count($system_modules_options['checked']) > 0 && $system_modules_options['checked'][0] == 'All' || in_array($dirName, $system_modules_options['checked'])) {
-					$checked = true;
-				} else {
-					$checked = false;
-				}
-				if(count($system_modules_options['enabled']) > 0 && $system_modules_options['enabled'][0] == 'All' || in_array($dirName, $system_modules_options['enabled'])) {
-					$disabled = false;
-				} else {
-					$disabled = true;
-				}
-
-				$settings = array(
-					'id' => 'ModuleSystemLink' . $id .'-'. $module['Module']['id'],
-					'type' => 'checkbox',
-					'value' => $module['Module']['dir_name'],
-					'checked' => $checked,
-					'label' => $module['Module']['module_name'],
-					'div' => false,
-					'disabled' => $disabled,
-				);
-				echo $this->Form->input('ModuleSystemLink.'.$module['Module']['id'].'.dir_name', $settings);
-			?>
-		<?php endforeach; ?>
-	</fieldset>
-	<fieldset class="authority-fieldset">
-		<legend>
-			<?php echo __d('authority', 'Select site-manager modules to use');?>
-		</legend>
-		<?php foreach ($site_modules as $dirName => $module): ?>
-			<?php
-				if(count($system_modules_options['checked']) > 0 && $system_modules_options['checked'][0] == 'All' || in_array($dirName, $system_modules_options['checked'])) {
-					$checked = true;
-				} else {
-					$checked = false;
-				}
-				if(count($system_modules_options['enabled']) > 0 && $system_modules_options['enabled'][0] == 'All' || in_array($dirName, $system_modules_options['enabled'])) {
-					$disabled = false;
-				} else {
-					$disabled = true;
-				}
-
-				$settings = array(
-					'id' => 'ModuleSystemLink' . $id .'-'. $module['Module']['id'],
-					'type' => 'checkbox',
-					'value' => $module['Module']['dir_name'],
-					'checked' => $checked,
-					'label' => $module['Module']['module_name'],
-					'div' => false,
-					'disabled' => $disabled,
-				);
-				echo $this->Form->input('ModuleSystemLink.'.$module['Module']['id'].'.dir_name', $settings);
-			?>
-		<?php endforeach; ?>
-	</fieldset>
-	<fieldset class="authority-fieldset">
-		<legend>
-			<?php echo __d('authority', 'Allow to use the User Manager?');?>
-		</legend>
-		<?php
-			if($authority['Authority']['hierarchy'] < NC_AUTH_MIN_CHIEF || $authority['Authority']['id'] == NC_AUTH_CLERK_ID) {
-				$disabled = true;
-			} else {
-				$disabled = false;
-			}
-			$options = array(
-				NC_AUTH_CHIEF => __d('authority', 'User Search, User Login, Delete'),
-				NC_AUTH_GENERAL => __d('authority', 'Only search user'),
-			);
-			$settings = array(
-				'type' => 'select',
-				'options' => $options,
-				'value' => ($user['ModuleSystemLink']['hierarchy'] >= NC_AUTH_MIN_CHIEF) ?  NC_AUTH_CHIEF : NC_AUTH_GENERAL,
-				'label' => false,
-				'div' => false,
-				'disabled' => $disabled,
-			);
-			echo $this->Form->input('ModuleSystemLink.'.$user['Module']['id'].'.hierarchy', $settings);
-		?>
-		<div class="note">
-			<?php echo __d('authority', 'The user whose authority is under the basic authority also can view and edit after setting the [User Search, User Login, Delete].'); ?>
-		</div>
-	</fieldset>
-	<fieldset class="authority-fieldset">
-		<legend>
-			<?php echo __d('authority', 'Create room?');?>
-		</legend>
-		<ul>
-		<li>
-		<?php
-			$columnName = 'public_createroom_flag';
-			$settings = array(
-				'type' => 'checkbox',
-				'value' => $authority['Authority'][$columnName],
-				'checked' => ($authority['Authority'][$columnName]) ? true : false,
-				'label' => __d('authority', 'Allow to create room in Public Space.'),
-				'div' => false,
-				'disabled' => $authorityDisabled['Authority'][$columnName],
-			);
-			echo $this->Form->input('Authority.'.$columnName, $settings);
-		?>
-		</li>
-		<li>
-		<?php
-			// TODO: マイポータルもサブグループを作成できるようにするほうが望ましい。myportal_createroom_flag
-			// private_createroom_flag
-
-			$columnName = 'group_createroom_flag';
-			$settings = array(
-				'type' => 'checkbox',
-				'value' => $authority['Authority'][$columnName],
-				'checked' => ($authority['Authority'][$columnName]) ? true : false,
-				'label' => __d('authority', 'Allow to create room in Community.'),
-				'div' => false,
-				'disabled' => $authorityDisabled['Authority'][$columnName],
-			);
-			echo $this->Form->input('Authority.'.$columnName, $settings);
-		?>
-		</li>
-		</ul>
-	</fieldset>
 	<fieldset class="authority-fieldset">
 		<legend>
 			<?php echo __d('authority', 'Page block operation');?>

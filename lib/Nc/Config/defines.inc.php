@@ -73,9 +73,9 @@ define('NC_SYSTEM_KEY', 'System');
 
 //-----------------権限(Authority.allow_creating_community)------------------------------------
 define('NC_ALLOW_CREATING_COMMUNITY_OFF', 		0);			// コミュニティー作成不可（デフォルト）
-define('NC_ALLOW_CREATING_COMMUNITY_ONLY_USER', 1);			// 参加者のみのコミュニティー作成可
+define('NC_ALLOW_CREATING_COMMUNITY_ONLY_USER', 1);			// 非公開(コミュニティー参加者のみが閲覧可能）のコミュニティー作成可
 define('NC_ALLOW_CREATING_COMMUNITY_ALL_USER', 	2);			// 公開（すべてのログイン会員が閲覧可能）までのコミュニティー作成可
-define('NC_ALLOW_CREATING_COMMUNITY_FORCE_ALL', 3);			// 「全会員を強制的に参加させる。」コミュニティー作成可
+define('NC_ALLOW_CREATING_COMMUNITY_FORCE_ALL', 3);			// 公開・非公開「全会員を強制的に参加させる。」コミュニティー作成可
 define('NC_ALLOW_CREATING_COMMUNITY_ADMIN', 	4);			// 公開コミュニティーまで作成でき、すべてのコミュニティーの表示順変更、削除が可能
 
 //-----------------権限(Authority.allow_new_participant)------------------------------------
@@ -126,7 +126,7 @@ define('NC_PUBLICATION_RANGE_FLAG_ALL', 2);				// 公開（すべてのユーザ
 
 define('NC_PARTICIPATE_FLAG_ONLY_USER', 0);			// 参加会員のみ
 define('NC_PARTICIPATE_FLAG_INVITE', 1);			// 招待制（コミュニティーメンバーから招待を受けた会員のみ参加可能）
-define('NC_PARTICIPATE_FLAG_ACCEPT', 2);			// 承認制（主担の承認が必要）
+define('NC_PARTICIPATE_FLAG_ACCEPT', 2);			// 招待制（主担の承認が必要）
 define('NC_PARTICIPATE_FLAG_FREE', 3);				// 参加受付制(希望者は誰でも参加可能）
 
 //-----------------is_approved-------------------------------------------

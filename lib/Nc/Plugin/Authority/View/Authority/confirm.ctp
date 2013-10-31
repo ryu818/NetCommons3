@@ -27,7 +27,7 @@
 		if ($authority['Authority']['myportal_use_flag'] != NC_MYPORTAL_USE_NOT || $authority['Authority']['private_use_flag'] != _OFF) {
 			$backAction = 'usable_module';
 		} else {
-			$backAction = 'detail';
+			$backAction = 'detail2';
 		}
 		$title .= ' ['.$authority['Authority']['default_name'].']';
 		$backUrl = array('action' => $backAction, $authorityId);
@@ -47,6 +47,10 @@
 	&nbsp;&gt;&gt;&nbsp;
 	<?php
 		echo $this->Html->link(__d('authority', 'Detail setting'), array('action' => 'detail', $authorityId), $bufBackAttr);
+	?>
+	&nbsp;&gt;&gt;&nbsp;
+	<?php
+		echo $this->Html->link(__d('authority', 'Detail setting (Part 2)'), array('action' => 'detail2', $authorityId), $bufBackAttr);
 	?>
 	&nbsp;&gt;&gt;&nbsp;
 	<?php if ($backAction == 'usable_module'): ?>
@@ -181,7 +185,7 @@
 								$value = __d('authority', 'Allow to create public community.');
 								break;
 							case NC_ALLOW_CREATING_COMMUNITY_FORCE_ALL:
-								$value = __d('authority', 'Allow to create public community[Join to force all members.].');
+								$value = __d('authority', 'Allow to create public/private community[Join to force all members.].');
 								break;
 							default:
 								$value = __d('authority', 'Allow to create all communities, display order change, or delete.');
@@ -191,7 +195,7 @@
 					?>
 					<?php if($authority['Authority']['allow_new_participant']): ?>
 						<div class="authority-confirm-sub-div">
-							<?php echo __d('authority', 'Allow to add new participants in the community.'); ?>
+							<?php echo __d('authority', 'If the chief in the community, you can add a participation member freely and possible to select "Only participants" in how to participate.'); ?>
 						</div>
 					<?php endif; ?>
 				</dd>
