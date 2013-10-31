@@ -21,7 +21,7 @@ end
 
 # Install packages necessary for this project
 packages = %w{
-  php5 php5-mysql php5-pgsql php5-curl php5-cli php5-fpm php5-imagick php5-xdebug php-pear
+  php5 php5-mysql php5-pgsql php5-curl php5-cli php5-fpm php5-imagick php5-xdebug php5-mcrypt php-pear
   git subversion nginx
   mysql-server postgresql curl imagemagick
   lv zsh tree axel expect
