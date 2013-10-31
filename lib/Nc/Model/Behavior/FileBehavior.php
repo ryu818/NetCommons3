@@ -99,6 +99,7 @@ class FileBehavior extends ModelBehavior {
 
 /**
  * 指定パスにあるディレクトリ一覧を返す
+ * $is_fileがtrueの場合は、指定パスにあるファイル一覧をかえす。フォルダは含まれない。
  *
  * @param   Model  $Model
  * @param  string	$path	対象パス
