@@ -168,6 +168,21 @@ class AuthorityController extends AuthorityAppController {
 		$authority = $this->AuthorityCommon->setInit($authorityId);
 		$this->set('authorityDisabled', $this->AuthorityCommon->getDisabled($authority['Authority']['id'], $authority['Authority']['base_authority_id']));
 
+		$this->AuthorityCommon->setMaxSizeOptions();
+	}
+
+/**
+ * 詳細設定（その2）
+ * @param   integer $authorityId
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function detail2($authorityId = null) {
+		// 言語切替
+		$this->AuthorityCommon->setLanguage();
+		$authority = $this->AuthorityCommon->setInit($authorityId);
+		$this->set('authorityDisabled', $this->AuthorityCommon->getDisabled($authority['Authority']['id'], $authority['Authority']['base_authority_id']));
+
 		$this->_setDetail($authorityId, $authority);
 	}
 
@@ -179,7 +194,6 @@ class AuthorityController extends AuthorityAppController {
  * @since   v 3.0.0.0
  */
 	protected function _setDetail($authorityId, $authority) {
-		$this->AuthorityCommon->setMaxSizeOptions();
 
 		list($systemModules, $siteModules) = $this->AuthorityCommon->findSystemModuleLists($authorityId);
 
@@ -241,6 +255,7 @@ class AuthorityController extends AuthorityAppController {
 		$this->AuthorityCommon->setLanguage();
 		$authority = $this->AuthorityCommon->setInit($authorityId);
 		list($user, $systemModules, $siteModules, $systemModulesOptions) = $this->_setDetail($authorityId, $authority);
+		$this->AuthorityCommon->setMaxSizeOptions();
 
 		$this->_setUsableModule($authorityId);
 

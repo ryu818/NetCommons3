@@ -15,10 +15,11 @@
 <fieldset class="form system-fieldset">
 	<ul class="lists">
 		<?php
+			echo $this->element('item', array('item' => $configs['community_default_publication_range']));
+			echo $this->element('item', array('item' => $configs['community_default_participate_flag']));
 			echo $this->element('item', array('item' => $configs['community_participate_sendmail']));
 			echo $this->element('item', array('item' => $configs['community_mail_participate_announce_subject']));
 			echo $this->element('item', array('item' => $configs['community_mail_participate_announce_body']));
-			echo $this->element('item', array('item' => $configs['community_withdraw_use']));
 			echo $this->element('item', array('item' => $configs['community_withdraw_sendmail']));
 			echo $this->element('item', array('item' => $configs['community_mail_withdraw_subject']));
 			echo $this->element('item', array('item' => $configs['community_mail_withdraw_body']));

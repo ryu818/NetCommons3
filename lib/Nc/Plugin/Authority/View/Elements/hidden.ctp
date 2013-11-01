@@ -3,21 +3,14 @@ $fieldsList = array(
 	'id',
 	'system_flag',
 	'hierarchy',
-
 );
 if($this->action != 'edit' || (isset($action) && $action == 'set_level')) {
 	$fieldsList[] = 'default_name';
 }
 $detailColumns = array(
-	'allow_creating_community',
-	'allow_new_participant',
 	'myportal_use_flag',
 	'allow_myportal_viewing_hierarchy',
 	'private_use_flag',
-	'public_createroom_flag',
-	'group_createroom_flag',
-	'myportal_createroom_flag',
-	'private_createroom_flag',
 	'allow_htmltag_flag',
 	'allow_meta_flag',
 	'allow_theme_flag',
@@ -36,16 +29,30 @@ $detailColumns = array(
 	'allow_shortcut_operation',
 	'allow_operation_of_shortcut',
 );
-if($this->action != 'detail') {
-	$fieldsList = array_merge($fieldsList, $detailColumns);
+$detailColumns2 = array(
+	'allow_creating_community',
+	'allow_new_participant',
+	'public_createroom_flag',
+	'group_createroom_flag',
+	'myportal_createroom_flag',
+	'private_createroom_flag',
+);
+if($this->action != 'detail' && $this->action != 'detail2') {
+	$fieldsList = array_merge($fieldsList, $detailColumns, $detailColumns2);
 	echo $this->Form->hiddenVars('ModuleSystemLink');
+
 } else {
-	foreach($detailColumns as $columnName) {
+	$bufDetailColumns = ($this->action == 'detail') ? $detailColumns : $detailColumns2;
+	foreach($bufDetailColumns as $columnName) {
 		if(isset($authorityDisabled['Authority'][$columnName]) && $authorityDisabled['Authority'][$columnName] == _ON) {
 			$fieldsList[] = $columnName;
 		}
 	}
-	if($authority['Authority']['system_flag']) {
+	$bufDetailColumnsReverse = ($this->action == 'detail') ? $detailColumns2 : $detailColumns;
+	foreach($bufDetailColumnsReverse as $columnName) {
+		$fieldsList[] = $columnName;
+	}
+	if($this->action == 'detail' && $authority['Authority']['system_flag']) {
 		$fieldsList[] = 'display_participants_editing';
 	}
 }
