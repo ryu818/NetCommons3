@@ -296,13 +296,13 @@ class AuthBehavior extends ModelBehavior {
 			$authorityId = NC_AUTH_OTHER_ID;
 			$hierarchy = NC_AUTH_OTHER;
 		} else {
-			if($val['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_ONLY_USER ||
+			if ($val['Community']['participate_force_all_users'] == _ON) {
+				$authorityId = Configure::read(NC_CONFIG_KEY.'.default_entry_group_authority_id');
+				$hierarchy = Configure::read(NC_CONFIG_KEY.'.default_entry_group_hierarchy');
+			} else if($val['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_ONLY_USER ||
 				(intval($loginUserId) == 0 && $val['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_LOGIN_USER)) {
 				$authorityId = NC_AUTH_OTHER_ID;
 				$hierarchy = NC_AUTH_OTHER;
-			} else if ($val['Community']['participate_force_all_users'] == _ON) {
-				$authorityId = Configure::read(NC_CONFIG_KEY.'.default_entry_group_authority_id');
-				$hierarchy = Configure::read(NC_CONFIG_KEY.'.default_entry_group_hierarchy');
 			} else {
 				$authorityId = NC_AUTH_GUEST_ID;
 				$hierarchy = NC_AUTH_GUEST;
