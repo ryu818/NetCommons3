@@ -74,3 +74,9 @@ end
       action [:start, :restart]
     end
 end
+
+group "www-data" do
+  action :modify
+  members "vagrant"
+  append true
+end
