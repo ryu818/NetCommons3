@@ -25,9 +25,11 @@
 <table id="user-list" summary="<?php echo __d('user', 'Display a list of members.'); ?>" data-url="<?php echo $this->Html->url(array('action' => 'detail', 'language' => $language));?>">
 </table>
 <?php
-	echo $this->Html->div('submit align-right',
-		$this->Form->button(__('Delete'), array('name' => 'delete', 'class' => 'common-btn', 'type' => 'submit'))
-	);
+	if($hierarchy >= NC_AUTH_MIN_CHIEF) {
+		echo $this->Html->div('submit align-right',
+			$this->Form->button(__('Delete'), array('name' => 'delete', 'class' => 'common-btn', 'type' => 'submit'))
+		);
+	}
 	echo $this->Form->hiddenVars('User', array(), false);
 	echo $this->Form->hiddenVars('UserItemLink', array(), false);
 	echo $this->Form->end();
