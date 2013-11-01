@@ -308,6 +308,13 @@ class AuthBehavior extends ModelBehavior {
 				$hierarchy = NC_AUTH_GUEST;
 			}
 		}
+		// ゲスト権限でパブリック OR コミュニティー OR 自分自身ではないマイページ、マイポータルならば、ゲスト権限で上書き
+		if($hierarchy >= NC_AUTH_MIN_GENERAL && $val['Authority']['hierarchy'] <= NC_AUTH_GUEST &&
+			($val[$modelName]['space_type'] == NC_SPACE_TYPE_PUBLIC || $val[$modelName]['space_type'] == NC_SPACE_TYPE_GROUP ||
+			$userId != $loginUserId)) {
+			$authorityId = NC_AUTH_GUEST_ID;
+			$hierarchy = NC_AUTH_GUEST;
+		}
 		$Authority = ClassRegistry::init('Authority');
 		list($minHierarchy, $maxHierarchy) = $Authority->getHierarchyByUserAuthorityId($authorityId);
 		if(isset($val['Authority']['display_participants_editing']) && $val['Authority']['display_participants_editing'] &&
