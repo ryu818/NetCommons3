@@ -78,7 +78,6 @@ class CommonBehavior extends ModelBehavior {
  * @since   v 3.0.0.0
  */
 	protected function _calcOperation(Model $Model, $scope, $countTargetColname, $incCnt = 1, $valueTargetColname = null, $voterId = null) {
-
 		if (is_array($scope)) {
 			$conditions = $scope;
 		} elseif (is_string($scope)) {
