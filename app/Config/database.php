@@ -77,7 +77,7 @@ class DATABASE_CONFIG {
 		'login' => "root",
 		'password' => "",
 		'database' => "netcommons3_test",
-		'prefix' => "",
+		'prefix' => "nc3_",
 		'encoding' => "utf8",
 	);
 }
