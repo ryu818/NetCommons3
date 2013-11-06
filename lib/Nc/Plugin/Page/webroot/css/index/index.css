@@ -30,6 +30,14 @@
 	color: #715b95;
 }
 
+.pages-menu-handle-community-dark a {
+	color: #4a3b61;
+}
+
+.pages-menu-handle-community-light a {
+	color: #a394ba;
+}
+
 .pages-menu-top {
 	position: absolute;
 	height: 36px;
@@ -72,6 +80,12 @@
 .pages-menu-handle-community-room {
 	background-color: #715b95;
 }
+.pages-menu-handle-community-dark-room {
+	background-color: #4a3b61;
+}
+.pages-menu-handle-community-light-room {
+	background-color: #a394ba;
+}
 
 .pages-menu-handle-myportal-topnode {
 	background-color: #f6f9fb;
@@ -79,7 +93,7 @@
 .pages-menu-handle-private-topnode {
 	background-color: #f7faf7;
 }
-.pages-menu-handle-community-topnode {
+.pages-menu-handle-community-dark-topnode,.pages-menu-handle-community-topnode,.pages-menu-handle-community-light-topnode {
 	background-color: #f8f7fa;
 }
 
@@ -209,6 +223,11 @@ input.pages-menu-edit-title {
 	min-width:230px;
 }
 
+/* 透過された行がDragできなくなるためFirefox */
+.pages-menu-edit-item .dd-drag-handle {
+	z-index: 1;
+}
+
 /* ページ追加・編集 */
 .pages-menu-edit-view {
 	display: block;
@@ -280,7 +299,8 @@ ul.pages-menu-community-lists legend {
 	font-weight:bold;
 }
 .pages-menu-default-show-user {
-	color: #5e5e5e;
+	opacity:.8;
+	filter:Alpha(Opacity=80);
 }
 
 .pages-menu-community-participate-force-outer {
@@ -430,6 +450,9 @@ textarea.pages-menu-community-description {
 
 .pages-menu-edit-item .error-message {
 	width:170px;
+}
+.pages-menu-edit-participant .error-message {
+	width: 785px;
 }
 .pages-menu-community-lists .error-message {
 	width:auto;

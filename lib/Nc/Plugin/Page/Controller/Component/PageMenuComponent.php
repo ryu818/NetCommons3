@@ -68,7 +68,10 @@ class PageMenuComponent extends Component {
 			return;
 		}
 
-		if(!$this->checkAuth($page, $parentPage)) {
+
+		if(!$this->checkAuth($page, $parentPage) &&
+			!(($request->params['action'] == 'delete' || $request->params['action'] == 'chgsequence') && $page['Page']['space_type'] == NC_SPACE_TYPE_GROUP
+				&& $page['Page']['thread_num'] == 1 && $loginUser['allow_creating_community'] == NC_ALLOW_CREATING_COMMUNITY_ADMIN)) {
 			$this->_controller->response->statusCode('403');
 			$this->_controller->flash(__('Forbidden permission to access the page.'), '');
 			return false;
@@ -128,6 +131,13 @@ class PageMenuComponent extends Component {
 			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 
+		// コミュニティー作成権限がない会員は、コミュニティーで主担にしてもコミュニティー修正、参加者修正できなくする。->人的管理をしない。
+		if($page['Page']['thread_num'] == 1 && $page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
+			if($user['allow_creating_community'] == NC_ALLOW_CREATING_COMMUNITY_OFF) {
+				throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
+			}
+		}
+
 		switch($request->params['action']) {
 			case 'add':
 				if($page['Page']['thread_num'] == 0) {
@@ -148,7 +158,6 @@ class PageMenuComponent extends Component {
 			case 'delete':
 			case 'chgsequence':
 			case 'move':
-
 				// 各スペースタイプのトップページは最低１つ以上ないと削除不可。
 				if (!$is_child && $page['Page']['thread_num'] == 2 && $page['Page']['display_sequence'] == 1) {
 					// 該当ルームのTopページの数を取得
@@ -209,7 +218,7 @@ class PageMenuComponent extends Component {
 					return false;
 				}
 				if($page['Page']['thread_num'] <= 1) {
-					if($page['Page']['space_type'] != NC_SPACE_TYPE_GROUP || $user['allow_creating_community'] == NC_ALLOW_CREATING_COMMUNITY_ADMIN) {
+					if($page['Page']['space_type'] != NC_SPACE_TYPE_GROUP || $user['allow_creating_community'] != NC_ALLOW_CREATING_COMMUNITY_ADMIN) {
 						// TODO:後にパブリックのものをコミュニティへペースト等ができるようにしたほうが望ましい。
 						throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 					}
@@ -443,7 +452,10 @@ class PageMenuComponent extends Component {
 			unset($ins_page['Page']['id']);
 
 			// hierarchy
-			$ins_page['PageAuthority']['hierarchy'] =$parentPage['PageAuthority']['hierarchy'];
+			$ins_page['PageAuthority']['hierarchy'] = $parentPage['PageAuthority']['hierarchy'];
+		}
+		if($type != 'inner') {
+			$ins_page['Page']['room_id'] = $parentPage['Page']['room_id'];
 		}
 		if($current_page['Page']['thread_num'] == 1) {
 			$display_sequence = 1;
@@ -801,7 +813,7 @@ class PageMenuComponent extends Component {
 				if($position != 'inner' && $move_page['Page']['thread_num'] == 1) {
 					// コミュニティ
 					return '';	// 確認メッセージなし
-				} else if(count($blocks) > 0) {
+				} else if(count($blocks) > 0 || (count($pre_room_id_arr) > 0 && $pre_parent_page['Page']['room_id'] != $move_parent_page['Page']['room_id'])) {
 					// ブロックあり
 					if($pre_room_id != $move_room_id) {
 						// 異なるルームへ
@@ -941,7 +953,8 @@ class PageMenuComponent extends Component {
 		}
 
 		// 権限チェック
-		if(!$this->validatorPage($this->_controller->request, $copy_page)) {
+		$bufCopyParentPage = ($copy_page['Page']['thread_num'] > 1) ? $copy_parent_page : null;
+		if(!$this->validatorPage($this->_controller->request, $copy_page, $bufCopyParentPage)) {
 			return false;
 		}
 
@@ -965,6 +978,7 @@ class PageMenuComponent extends Component {
 
 		// コピー先権限チェック
 		if(isset($move_page['Page'])) {
+			$bufMoveParentPage = ($position != 'inner') ? $move_parent_page : null;
 			if($move_page['Page']['thread_num'] <= 1) {
 				if($position != 'inner' && $move_page['Page']['space_type'] != NC_SPACE_TYPE_GROUP) {
 					// パブリック、マイポータル、マイページ直下の上下への操作はエラーとする
@@ -972,7 +986,7 @@ class PageMenuComponent extends Component {
 					$this->_controller->flash(__('Forbidden permission to access the page.'), '');
 					return false;
 				}
-			} else if(!$this->checkAuth($move_page, $move_parent_page)) {
+			} else if(!$this->checkAuth($move_page, $bufMoveParentPage)) {
 				$this->_controller->response->statusCode('403');
 				$this->_controller->flash(__('Forbidden permission to access the page.'), '');
 				return false;
@@ -1402,7 +1416,7 @@ class PageMenuComponent extends Component {
 		// 異なるルームへの操作で移動元にルームが存在していれば権限の割り当てを解除する
 		if($action == 'move' && $copy_parent_page['Page']['room_id'] != $move_parent_page['Page']['room_id'] && count($copy_room_id_arr) > 0) {
 			foreach($copy_room_id_arr as $copy_room_id) {
-				if(!$this->_controller->PageMenuUserLink->deallocationRoom($copy_room_id)) {
+				if(!$this->_controller->PageMenuUserLink->deallocation($copy_room_id, $copy_page_id_arr, $move_parent_page)) {
 					throw new InternalErrorException(__('Failed to delete the database, (%s).', 'page_user_links'));
 				}
 			}

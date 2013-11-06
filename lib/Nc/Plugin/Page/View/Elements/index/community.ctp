@@ -9,6 +9,14 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 $ncUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
+$isCreatePublicCommunity = in_array($ncUser['allow_creating_community'], array(NC_ALLOW_CREATING_COMMUNITY_ALL_USER, NC_ALLOW_CREATING_COMMUNITY_FORCE_ALL, NC_ALLOW_CREATING_COMMUNITY_ADMIN));
+$isParticipateForceAllUsers = in_array($ncUser['allow_creating_community'], array(NC_ALLOW_CREATING_COMMUNITY_FORCE_ALL, NC_ALLOW_CREATING_COMMUNITY_ADMIN));
+$isOnlyParticipant = !empty($ncUser['allow_new_participant']) ? true : false;
+$isParticipateFlag = (!$isOnlyParticipant && $community_params['community']['Community']['participate_flag'] == NC_PARTICIPATE_FLAG_ONLY_USER) ? false :true;
+// もし、既にparticipate_flag==NC_PARTICIPATE_FLAG_ONLY_USERに設定されていれば表示
+if($community_params['community']['Community']['participate_flag'] == NC_PARTICIPATE_FLAG_ONLY_USER) {
+	$isOnlyParticipant = true;
+}
 ?>
 <div class="pages-menu-community-tab">
 	<div id="pages-menu-community-tab<?php echo($page['Page']['id']); ?>">
@@ -41,6 +49,7 @@ $ncUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 										'before' => '<div>',
 										'separator' => '</div><div>',
     									'after' => '</div>',
+										'disabled' => $isCreatePublicCommunity ? false : true,
 									);
 									if(isset($is_child)) {
 										$settings['error'] = false;
@@ -50,23 +59,7 @@ $ncUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 										));
 									}
 									echo $this->Form->input('Community.publication_range_flag', $settings);
-									$isParticipateForceAllUsers = in_array($ncUser['allow_creating_community'], array(NC_ALLOW_CREATING_COMMUNITY_FORCE_ALL, NC_ALLOW_CREATING_COMMUNITY_ADMIN));
 								?>
-
-								<?php if(!empty($community_params['community']['Community']['participate_force_all_users']) || $isParticipateForceAllUsers):?>
-								<div id="pages-menu-community-participate-force-outer-<?php echo $page['Page']['id']; ?>" class="pages-menu-community-participate-force-outer"<?php if($community_params['community']['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_ONLY_USER):?>style="display:none;"<?php endif; ?>>
-								<?php
-									/* 全会員を強制的に参加させる。 */
-									echo $this->Form->input('Community.participate_force_all_users',array(
-										'type' => 'checkbox',
-										'value' => _ON,
-										'checked' => !empty($community_params['community']['Community']['participate_force_all_users']) ? true : false,
-										'label' => __d('page', 'Join to force all members.'),
-										'disabled' => $isParticipateForceAllUsers ? false : true,
-									));
-								?>
-								</div>
-								<?php endif; ?>
 							</dd>
 						</dl>
 					</li>
@@ -79,21 +72,25 @@ $ncUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 							</dt>
 							<dd>
 								<?php
+									$options = array(
+										NC_PARTICIPATE_FLAG_FREE => __d('page', 'Free(All login user can participate.)'),
+										NC_PARTICIPATE_FLAG_ACCEPT => __d('page', 'Invitation(Require the approval of room manager.)'),
+										NC_PARTICIPATE_FLAG_INVITE => __d('page', 'Invitation(Only Invite user can participate.)'),
+									);
+									if($isOnlyParticipant) {
+										$options[NC_PARTICIPATE_FLAG_ONLY_USER] = __d('page', 'Only participant user');
+									}
 									$settings = array(
 										'id' => "pages-menu-community-participate-".$page['Page']['id'].'-',
 										'legend' => false,
 										'value' => $community_params['community']['Community']['participate_flag'],
 										'type' =>'radio',
-										'options' => array(
-											NC_PARTICIPATE_FLAG_FREE => __d('page', 'Free（All login user can participate.)'),
-											NC_PARTICIPATE_FLAG_ACCEPT => __d('page', 'Require the approval of room manager.'),
-											NC_PARTICIPATE_FLAG_INVITE => __d('page', 'Invitation(Only Invite user can participate.)'),
-											NC_PARTICIPATE_FLAG_ONLY_USER => __d('page', 'Only participant user')
-										),
+										'options' => $options,
 										'div' => false,
 										'before' => '<div>',
 										'separator' => '</div><div>',
     									'after' => '</div>',
+										'disabled' => $isParticipateFlag ? false : true,
 									);
 									if(isset($is_child)) {
 										$settings['error'] = false;
@@ -103,8 +100,21 @@ $ncUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 										));
 									}
 									echo $this->Form->input('Community.participate_flag', $settings);
-
 								?>
+								<?php if(!empty($community_params['community']['Community']['participate_force_all_users']) || $isParticipateForceAllUsers):?>
+								<div id="pages-menu-community-participate-force-outer-<?php echo $page['Page']['id']; ?>" class="pages-menu-community-participate-force-outer"<?php if($community_params['community']['Community']['participate_flag'] != NC_PARTICIPATE_FLAG_ONLY_USER):?>style="display:none;"<?php endif; ?>>
+								<?php
+									/* 全会員を強制的に参加させる。 */
+									echo $this->Form->input('Community.participate_force_all_users',array(
+										'type' => 'checkbox',
+										'value' => _ON,
+										'checked' => !empty($community_params['community']['Community']['participate_force_all_users']) ? true : false,
+										'label' => __d('page', 'Join to force all members.'),
+										'disabled' => $isParticipateForceAllUsers ? false : true,
+									));
+								?>
+								</div>
+								<?php endif; ?>
 								<div class="hr clearfix">
 									<div class="float-left">
 										<?php echo(__d('page', 'Authority to invite'));?>
@@ -115,10 +125,15 @@ $ncUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 											if($community_params['community']['Community']['participate_flag'] == NC_PARTICIPATE_FLAG_ONLY_USER) {
 												$disable = true;
 											}
-											echo $this->Form->authoritySlider('Community.invite_hierarchy', array('id' => "pages-menu-community-invite-authority-".$page['Page']['id'].'-' , 'value' => $community_params['community']['Community']['invite_hierarchy']),  array('disabled' => true));
+											echo $this->Form->authoritySlider('Community.invite_hierarchy', array('id' => "pages-menu-community-invite-authority-".$page['Page']['id'] , 'value' => $community_params['community']['Community']['invite_hierarchy']),  array('disabled' => $disable));
 										?>
 									</div>
 								</div>
+								<?php
+									if($isOnlyParticipant) {
+										echo "<div class=\"note\">" . __d('page', 'Withdrawal of the community is not used when I make "Only participant user".') . "</div>";
+									}
+								?>
 							</dd>
 						</dl>
 					</li>

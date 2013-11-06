@@ -1,3 +1,14 @@
+<?php
+/**
+ * ページメニュー：参加者修正画面
+ *
+ * @copyright     Copyright 2012, NetCommons Project
+ * @package       Plugin.Page.View
+ * @author        Noriko Arai,Ryuji Masukawa
+ * @since         v 3.0.0.0
+ * @license       http://www.netcommons.org/license.txt  NetCommons License
+ */
+?>
 <div id="pages-menu-edit-participant-<?php echo($page['Page']['id']);?>" class="pages-menu-edit-view pages-menu-edit-participant-outer">
 <div class="pages-menu-edit-participant">
 	<div class="bold">
@@ -29,6 +40,7 @@
 	?>
 	</div>
 	<?php echo $this->Form->create(null, $form_params); ?>
+	<?php echo $this->Form->error('PageUserLink.authority_id'); ?>
 	<table id="pages-menu-edit-participant-grid-<?php echo($page['Page']['id']);?>" style="display:none;">
 	</table>
 	<?php
@@ -72,12 +84,12 @@ $(function(){
             colModel :
             [
                 {display: __d('pages', 'Room members'), name : 'handle', width: 140, height: 44, sortable : true, align: 'left' },
-                {display: '<?php echo($this->element('index/auth_list', array('auth' => $auth_list[NC_AUTH_CHIEF],   'user_id' => '0', 'selauth'=> true,  'radio'=> false, 'all_selected' => true, 'authority_id' => NC_AUTH_CHIEF_ID)));?>', name : 'chief', width: 120, sortable : true, align: 'center'  },
-                {display: '<?php echo($this->element('index/auth_list', array('auth' => $auth_list[NC_AUTH_MODERATE],'user_id' => '0', 'selauth'=> true,  'radio'=> false, 'all_selected' => true, 'authority_id' => NC_AUTH_MODERATE_ID)));?>', name : 'moderator', width: 120, sortable : false, align: 'center'  },
-                {display: '<?php echo($this->element('index/auth_list', array('auth' => $auth_list[NC_AUTH_GENERAL], 'user_id' => '0', 'selauth'=> true,  'radio'=> false, 'all_selected' => true, 'authority_id' => NC_AUTH_GENERAL_ID)));?>', name : 'general', width: 120, sortable : false, align: 'center'  },
-                {display: '<?php echo($this->element('index/auth_list', array('auth' => $auth_list[NC_AUTH_GUEST],   'user_id' => '0', 'selauth'=> false, 'radio'=> false, 'all_selected' => true, 'authority_id' => NC_AUTH_GUEST_ID)));?>', name : 'guest', width: 120, sortable : false, align: 'center'  }
+                {display: '<?php echo($this->element('index/auth_list', array('key' => 0, 'auth' => $auth_list[NC_AUTH_CHIEF],   'user_id' => '0', 'selauth'=> true,  'radio'=> false, 'all_selected' => true, 'authority_id' => NC_AUTH_CHIEF_ID)));?>', name : 'chief', width: 120, sortable : true, align: 'center'  },
+                {display: '<?php echo($this->element('index/auth_list', array('key' => 0, 'auth' => $auth_list[NC_AUTH_MODERATE],'user_id' => '0', 'selauth'=> true,  'radio'=> false, 'all_selected' => true, 'authority_id' => NC_AUTH_MODERATE_ID)));?>', name : 'moderator', width: 120, sortable : false, align: 'center'  },
+                {display: '<?php echo($this->element('index/auth_list', array('key' => 0, 'auth' => $auth_list[NC_AUTH_GENERAL], 'user_id' => '0', 'selauth'=> true,  'radio'=> false, 'all_selected' => true, 'authority_id' => NC_AUTH_GENERAL_ID)));?>', name : 'general', width: 120, sortable : false, align: 'center'  },
+                {display: '<?php echo($this->element('index/auth_list', array('key' => 0, 'auth' => $auth_list[NC_AUTH_GUEST],   'user_id' => '0', 'selauth'=> false, 'radio'=> false, 'all_selected' => true, 'authority_id' => NC_AUTH_GUEST_ID)));?>', name : 'guest', width: 120, sortable : false, align: 'center'  }
                 <?php if($page['Page']['space_type'] != NC_SPACE_TYPE_PUBLIC): ?>
-                ,{display: '<?php echo($this->element('index/auth_list', array('auth' => $auth_list[NC_AUTH_OTHER],   'user_id' => '0', 'selauth'=> false, 'radio'=> false, 'all_selected' => true, 'authority_id' => NC_AUTH_OTHER_ID)));?>', name : 'none', width: 120, sortable : false, align: 'center'  }
+                ,{display: '<?php echo($this->element('index/auth_list', array('key' => 0, 'auth' => $auth_list[NC_AUTH_OTHER],   'user_id' => '0', 'selauth'=> false, 'radio'=> false, 'all_selected' => true, 'authority_id' => NC_AUTH_OTHER_ID)));?>', name : 'none', width: 120, sortable : false, align: 'center'  }
                 <?php endif; ?>
             ],
             sortname: "chief",

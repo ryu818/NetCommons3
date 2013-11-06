@@ -1,4 +1,13 @@
 <?php
+/**
+ * ページメニュー：編集後メニュー行->項目
+ *
+ * @copyright     Copyright 2012, NetCommons Project
+ * @package       Plugin.Page.View
+ * @author        Noriko Arai,Ryuji Masukawa
+ * @since         v 3.0.0.0
+ * @license       http://www.netcommons.org/license.txt  NetCommons License
+ */
 	$ncUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 	$is_chief = false;
 	$is_chgseq = false;
@@ -43,6 +52,8 @@
 		$move['inner'] = true;
 		if($space_type == NC_SPACE_TYPE_GROUP && $is_parent_chief) {
 			$is_chgseq = true;
+$is_operate_chief = true;
+
 			$attr .= " data-dd-group = \"".$page['Page']['thread_num']."\"";
 			$attr .= " data-dd-group-sequence = \"top-bottom-only\"";
 		}
@@ -56,7 +67,7 @@
 				'inner' => true
 			);
 		}
-		if($is_chief && $page['Page']['display_sequence'] != 1) {
+		if($is_chief && $page['Page']['display_sequence'] != 1 && $is_parent_chief) {
 			$is_chgseq = true;
 		}
 	}
@@ -77,21 +88,23 @@
 		$attr .= " data-dd-sequence = \"bottom-only\"";
 	}
 
-	if($is_chief && (!$is_top || $space_type == NC_SPACE_TYPE_GROUP)) {
+	if($is_chief && ((!$is_top || $space_type == NC_SPACE_TYPE_GROUP) && $is_parent_chief)) {
 		$is_edit = true;
 	}
 
-	if($is_chief && (($is_top && $page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) || !$is_node_top_page)) {
+	if($is_chief && (($is_top && $page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) || !$is_node_top_page) && ($is_top || $is_parent_chief)) {
 		// 主担ならばTopNodeでもなく、各ノードのトップページでなければ公開設定を許す
 		$is_display = true;
 	}
 
 	if($is_operate_chief) {
 		if(!$is_top || $space_type == NC_SPACE_TYPE_GROUP) {
-			$is_edit = true;
+			if($is_chief) {
+				$is_edit = true;
+			}
 			$is_delete = true;
 		}
-		if(!$is_node_top_page && $space_type != NC_SPACE_TYPE_MYPORTAL && $space_type != NC_SPACE_TYPE_PRIVATE ) {
+		if($is_chief && !$is_node_top_page && $space_type != NC_SPACE_TYPE_MYPORTAL && $space_type != NC_SPACE_TYPE_PRIVATE ) {
 			$is_sel_members = true;
 			//$is_sel_modules = true;
 		}
@@ -105,6 +118,21 @@
 	if($is_edit && $page['Page']['id'] == $page_id && ($is_detail || (isset($error_flag) && $error_flag))) {
 		$is_editing_page_name = true;
 	}
+
+	// コミュニティー作成権限がない会員は、コミュニティーで主担にしてもコミュニティー修正、参加者修正できなくする。->人的管理をしない。
+	if($page['Page']['thread_num'] == 1 && $page['Page']['space_type'] == NC_SPACE_TYPE_GROUP &&
+		$ncUser['allow_creating_community'] == NC_ALLOW_CREATING_COMMUNITY_OFF) {
+		$is_chgseq = false;
+		$is_edit = false;
+		$is_edit_detail = false;
+		$is_delete = false;
+		$is_sel_modules = false;
+		$is_sel_members = false;
+		$is_contents = false;
+		$is_display = false;
+		$is_operate_chief = false;
+	}
+
 	$class = $this->element('index/init_page', array('page' => $page, 'is_edit' => _ON));
 	$next_thread_num = $page['Page']['thread_num']+1;
 
@@ -218,7 +246,7 @@
 				'is_root_parent_chief' => isset($is_root_parent_chief) ? $is_root_parent_chief : true))); ?>
 		</ol>
 	<?php endif; ?>
-	<?php if($is_edit || $is_delete || $is_chief || $is_sel_modules || $is_sel_members): ?>
+	<?php if($is_operate_chief && ($is_edit || $is_delete || $is_chief || $is_sel_modules || $is_sel_members)): ?>
 	<div class="pages-menu-edit-operation clearfix"<?php if($page['Page']['id'] != $page_id): ?> style="display:none;"<?php endif; ?>>
 	<?php
 		if($is_edit_detail) {
@@ -231,7 +259,7 @@
 				array('title' => __('Edit'), 'class' => 'pages-menu-edit-icon disable-lbl',
 				'onclick' => 'return false;'));
 		}
-		if($is_parent_chief || $is_chief || $is_sel_modules || $is_sel_members) {
+		if($is_chief || $is_sel_modules || $is_sel_members) {
 			$copy_page_id = $this->Session->read('Pages.'.'copy_page_id');
 			if(isset($copy_page_id)) {
 				$operation_class = ' pages-menu-edit-highlight-icon';

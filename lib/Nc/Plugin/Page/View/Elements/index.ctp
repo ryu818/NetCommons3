@@ -10,6 +10,7 @@
  */
 ?>
 <?php
+$ncUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 $lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 if(isset($is_edit) && $is_edit == _ON){
 	$setting = __d('page', 'Exit page editor');
@@ -36,7 +37,7 @@ if(isset($is_edit) && $is_edit == _ON){
 		</select>
 	</div>
 	<?php endif; ?>
-	<?php if($hierarchy >= NC_AUTH_MIN_CHIEF): ?>
+	<?php if(isset($ncUser)): ?>
 	<a id="pages-menu-edit-btn" class="nc-tooltip" title="<?php echo(h($setting)); ?>" data-tooltip-desc="<?php echo(h($tooltip_setting)); ?>" href="<?php echo($this->Html->url(array('plugin' => 'page', 'controller' => 'page', 'action' => 'index', '?' => array('is_edit' => !$is_edit)))); ?>" data-ajax="#nc-pages-setting-dialog">
 		<span class="<?php echo($setting_class); ?>"></span>
 	</a>

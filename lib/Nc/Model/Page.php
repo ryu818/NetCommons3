@@ -815,6 +815,10 @@ class Page extends AppModel
 						'Community.publication_range_flag' => array(NC_PUBLICATION_RANGE_FLAG_LOGIN_USER, NC_PUBLICATION_RANGE_FLAG_ALL),
 						'or' => array('PageUserLink.authority_id !=' => NC_AUTH_OTHER_ID,'PageUserLink.authority_id IS NULL'),
 					),
+					array(
+						'Community.participate_force_all_users' => _ON,
+						'or' => array('PageUserLink.authority_id !=' => NC_AUTH_OTHER_ID,'PageUserLink.authority_id IS NULL'),
+					),
 					'PageUserLink.authority_id !=' => NC_AUTH_OTHER_ID,
 					//array(
 					//	'PageUserLink.authority_id IS NOT NULL',
@@ -1115,6 +1119,7 @@ class Page extends AppModel
 		if(empty($spaceType) || $spaceType == NC_SPACE_TYPE_GROUP || (is_array($spaceType) && in_array(NC_SPACE_TYPE_GROUP, $spaceType))) {
 			$ret[] = 'Community.publication_range_flag';
 			$ret[] = 'Community.participate_force_all_users';
+			$ret[] = 'Community.participate_flag';
 			$ret[] = 'CommunityLang.community_name';
 			$ret[] = 'CommunityLang.summary';
 		}

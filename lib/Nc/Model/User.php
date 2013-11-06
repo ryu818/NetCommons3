@@ -13,7 +13,7 @@ class User extends AppModel
 	public $belongsTo = array(
 		'Authority'    => array(
 			//'foreignKey'    => '',
-			'fields' => array('id', 'hierarchy', 'myportal_use_flag',
+			'fields' => array('id', 'hierarchy', 'allow_creating_community', 'allow_new_participant', 'myportal_use_flag',
 				 'allow_myportal_viewing_hierarchy', 'private_use_flag', 'display_participants_editing'),
 		),
 	);
@@ -433,11 +433,14 @@ class User extends AppModel
  */
 	public function findParticipant($page, $participantType = NC_PARTICIPANT_TYPE_DEFAULT_ENABLED, $conditions = array(), $joins = array(), $startPage = 1, $limit= 30, $sortname= 'chief', $sortorder = 'DESC') {
 
-		$roomId = $page['Page']['id'];
+		$roomId = $page['Page']['room_id'];
+		$rootId = $page['Page']['root_id'];
 		$fields = array(
 			'PageUserLink.id',
 			'PageUserLink.user_id',
 			'PageUserLink.authority_id',
+			'Page.space_type',
+			'Page.root_id',
 			'User.id',
 			'User.handle',
 			'User.authority_id',
@@ -448,6 +451,7 @@ class User extends AppModel
 			'Authority.hierarchy',
 			'Community.publication_range_flag',
 			'Community.participate_force_all_users',
+			'Community.participate_flag',
 		);
 		$type = ($participantType == NC_DISPLAY_FLAG_ENTRY_USERS  || is_null($participantType)) ? "INNER" : "LEFT";
 		$joins[] = array(
@@ -456,6 +460,12 @@ class User extends AppModel
 			"alias" => "PageUserLink",
 			"conditions" => "`User`.`id`=`PageUserLink`.`user_id`".
 			" AND `PageUserLink`.`room_id` =".intval($roomId)
+		);
+		$joins[] = array(
+			"type" => $type,
+			"table" => "pages",
+			"alias" => "Page",
+			"conditions" => "`Page`.`id`=`PageUserLink`.`room_id`"
 		);
 		$joins[] = array(
 			"type" => "LEFT",
@@ -474,7 +484,7 @@ class User extends AppModel
 			"type" => "LEFT",
 			"table" => "communities",
 			"alias" => "Community",
-			"conditions" => array('Community.room_id' => $roomId),
+			"conditions" => array('Community.room_id' => $rootId),
 		);
 		/*$joins[] = array(
 			"type" => "LEFT",

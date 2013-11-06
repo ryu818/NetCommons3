@@ -186,13 +186,13 @@ class AuthBehavior extends ModelBehavior {
 	public function getDefaultAuthority($Model, $val, $modelName = 'Page', $isLoginUser = false) {
 		$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
 		$loginUserId = isset($loginUser['id']) ? $loginUser['id'] : _OFF;
-		$pageUserLinkModelName = ($modelName == 'BlockPage') ? 'BlockPageUserLink' : 'PageUserLink';
-		if(isset($val[$pageUserLinkModelName]['authority_id']) && $val[$pageUserLinkModelName]['authority_id'] == NC_AUTH_OTHER_ID) {
-			return array(
-				'id' => NC_AUTH_OTHER_ID,
-				'hierarchy' => NC_AUTH_OTHER
-			);
-		}
+// 		$pageUserLinkModelName = ($modelName == 'BlockPage') ? 'BlockPageUserLink' : 'PageUserLink';
+// 		if(isset($val[$pageUserLinkModelName]['authority_id']) && $val[$pageUserLinkModelName]['authority_id'] == NC_AUTH_OTHER_ID) {
+// 			return array(
+// 				'id' => NC_AUTH_OTHER_ID,
+// 				'hierarchy' => NC_AUTH_OTHER
+// 			);
+// 		}
 
 		// Page取得
 		if((!isset($val[$modelName]['space_type']) || !isset($val[$modelName]['root_id'])) && isset($val['Content']['room_id'])) {
@@ -243,8 +243,8 @@ class AuthBehavior extends ModelBehavior {
 		// User取得
 		if($isLoginUser) {
 			$userId = $loginUserId;
-		} else if(isset($val[$pageUserLinkModelName]['user_id'])) {
-			$userId = $val[$pageUserLinkModelName]['user_id'];
+// 		} else if(isset($val[$pageUserLinkModelName]['user_id'])) {
+// 			$userId = $val[$pageUserLinkModelName]['user_id'];
 		} else if(isset($val[$Model->alias]['user_id'])) {
 			$userId = $val[$Model->alias]['user_id'];
 		} else if($Model->alias != 'Page' && $Model->alias != 'Block' && $Model->alias != 'Content' && isset($val[$Model->alias]['created_user_id'])) {
@@ -309,7 +309,8 @@ class AuthBehavior extends ModelBehavior {
 			}
 		}
 		// ゲスト権限でパブリック OR コミュニティー OR 自分自身ではないマイページ、マイポータルならば、ゲスト権限で上書き
-		if($hierarchy >= NC_AUTH_MIN_GENERAL && $val['Authority']['hierarchy'] <= NC_AUTH_GUEST &&
+		$userHierarchy = isset($val['Authority']['hierarchy']) ? $val['Authority']['hierarchy'] : $loginUser['hierarchy'];
+		if($hierarchy >= NC_AUTH_MIN_GENERAL && $userHierarchy <= NC_AUTH_GUEST &&
 			($val[$modelName]['space_type'] == NC_SPACE_TYPE_PUBLIC || $val[$modelName]['space_type'] == NC_SPACE_TYPE_GROUP ||
 			$userId != $loginUserId)) {
 			$authorityId = NC_AUTH_GUEST_ID;

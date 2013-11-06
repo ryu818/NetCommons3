@@ -456,6 +456,10 @@ class PageController extends PageAppController {
 		if(!$centerPage) {
 			return;
 		}
+		$pageStyles = $this->PageStyle->findScopeStyle('all', $centerPage);
+
+		$pageStyles[NC_PAGE_TYPE_FONT_ID] = $this->_saveScope($this->PageStyle, isset($pageStyles[NC_PAGE_TYPE_FONT_ID]) ? $pageStyles[NC_PAGE_TYPE_FONT_ID] : null, $centerPage, NC_PAGE_TYPE_FONT_ID);
+		$this->set('page_style', isset($pageStyles[NC_PAGE_TYPE_FONT_ID][0]) ? $pageStyles[NC_PAGE_TYPE_FONT_ID][0] : null);
 		$this->set('id', 'pages-menu-style');
 		if ($this->request->is('post')) {
 			$this->render('/Elements/style/font');

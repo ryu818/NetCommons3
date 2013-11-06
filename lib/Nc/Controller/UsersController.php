@@ -64,40 +64,6 @@ class UsersController extends AppController {
  */
 	public function beforeFilter() {
 		parent::beforeFilter();
-		/*
-		//ログイン処理を行うactionを指定
-		$this->Auth->loginAction = array('controller' => 'users', 'action' => 'login');
-
-		$this->Auth->logoutRedirect = '/';
-
-		//ユーザーIDとパスワードのフィールドを指定
-		$this->Auth->authenticate = array('NcForm' =>
-			array(
-				'fields' => array('username' => 'login_id'),
-				'scope' => array('User.is_active' => NC_USER_IS_ACTIVE_ON),
-				'findFields' => array(
-									'id', 'login_id', 'handle', 'username', 'authority_id',
-									'permalink', 'myportal_page_id', 'private_page_id', 'avatar',
-									'lang', 'timezone_offset', 'email', 'mobile_email',
-									'Authority.hierarchy', 'Authority.myportal_use_flag', 'Authority.private_use_flag',
-									'Authority.public_createroom_flag', 'Authority.group_createroom_flag', 'Authority.myportal_createroom_flag',
-									'Authority.private_createroom_flag', 'Authority.allow_htmltag_flag', 'Authority.allow_layout_flag',
-									'Authority.allow_attachment', 'Authority.allow_video', 'Authority.change_leftcolumn_flag',
-									'Authority.change_rightcolumn_flag', 'Authority.change_headercolumn_flag', 'Authority.change_footercolumn_flag',
-								),
-			)
-		);
-		$this->Auth->allow('login');
-
-		//権限が無いactionを実行した際のエラーメッセージ
-        $this->Auth->authError = __('Forbidden permission to access the page.');
-        //ログイン後にリダイレクトするURL
-        //$this->Auth->loginRedirect = '/users/index';
-         */
-
-		// ログインは、ページ表示時にログイン画面を非表示にして取得されたままになっており、
-		// 時間がたつと、セキュリティエラーになってしまうため、チェックしないように修正。
-		// ログイン、ログアウト処理なので、Tokenチェックもする意味もあまりないと判断。
 		$this->Security->csrfCheck = false;
 		//$this->Security->unlockedFields = array('UploadSearch.file_type', 'UploadSearch.page');
 	}

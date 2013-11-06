@@ -15,16 +15,15 @@ class PageUserLink extends AppModel
 /**
  * 参加会員修正時のPageUserLink登録・更新処理
  * @param  Model Page  $page
- * @param  boolean     $isParticipantOnly  参加会員のみ falseの場合、参加者の追加も許す
  * @param  array       $postPageUserLinks 変更後Sessionデータ array(0 => array('user_id', 'authority_id'))
  * @param  array       $prePageUserLinks  変更前DBデータ array(0 => 'PageUserLink' => array('user_id', 'authority_id')))
- * @param  array       $preParentPageUserLinks 変更前親ルームDBデータ array(0 => 'PageUserLink' => array('user_id', 'authority_id')))
+ * @param  array       $preParentPageUserLinks 変更前親ルームDBデータ array(0 => 'PageUserLink' => array('user_id', 'authority_id'))) 子グループの場合
  * @param  integer     $participantType
  * 						0:参加者のみ表示　
  * 						1:すべての会員表示（変更不可)
  * 						2:すべての会員表示（PageUserLinkにない会員は、default値と不参加のみ変更可）
  * 						3:すべての会員表示（変更可）
- * @return boolean
+ * @return string success error or, reload
  * @since  v 3.0.0.0
  */
 	public function saveParticipant($page, $postPageUserLinks, $prePageUserLinks, $preParentPageUserLinks = null, $participantType = null) {
@@ -42,6 +41,7 @@ class PageUserLink extends AppModel
 			$preUserIdArr[$pageUserLink['PageUserLink']['user_id']] = $pageUserLink['PageUserLink']['authority_id'];
 		}
 		if(isset($preParentPageUserLinks)) {
+			// 子グループ
 			foreach($preParentPageUserLinks as $pageUserLink) {
 				$bufPreParentUserIdArr[$pageUserLink['PageUserLink']['user_id']] = $pageUserLink['PageUserLink']['authority_id'];
 			}
@@ -57,17 +57,28 @@ class PageUserLink extends AppModel
 		} else if(isset($participantType) && $participantType != 0){
 			$preParentUserIdArr = $postUserIdArr;
 		} else {
-			return false;
+			return 'error';
 		}
 
 		unset($page['Authority']);
+
+		$preParentUserIdArr = $this->varidateParticipant($page, $preParentUserIdArr, $postUserIdArr);
+		if($preParentUserIdArr === false) {
+			// エラーを上部に表示
+			return 'reload';
+		}
 
 		foreach($preParentUserIdArr as $userId => $parentAuthorityId) {
 			$authorityId = isset($postUserIdArr[$userId]) ? intval($postUserIdArr[$userId]) : null;
 			$preAuthorityId = isset($preUserIdArr[$userId]) ? intval($preUserIdArr[$userId]) : null;
 			$page['PageUserLink']['user_id'] = $userId;
 			$defaultAuthorityId = $this->getDefaultAuthorityId($page);
-			if(!isset($authorityId) || $preAuthorityId === $authorityId || ($authorityId == $defaultAuthorityId && $authorityId != NC_AUTH_OTHER_ID)) {
+			if($page['Page']['id'] != $page['Page']['room_id']) {
+				// サブグループの新規登録時は、以前のデータはないため、初期化。
+				$preAuthorityId = null;
+			}
+			if(!isset($authorityId) || $preAuthorityId === $authorityId ||
+				 ($authorityId == $defaultAuthorityId && $authorityId != NC_AUTH_OTHER_ID)) {
 				// 既にあるデータか、default値といっしょなので、Insertしない。
 				if($authorityId == $defaultAuthorityId && $authorityId != $preAuthorityId) {
 					// delete
@@ -76,27 +87,10 @@ class PageUserLink extends AppModel
 						"PageUserLink.room_id" => $roomId
 					);
 					if(!$this->deleteAll($conditions)) {
-						return false;
+						return 'error';
 					}
 				}
 				continue;
-			}
-			if($page['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC && $authorityId == NC_AUTH_OTHER_ID) {
-				// パブリックで不参加にはできない。
-				continue;
-			}
-			if(!isset($bufPreParentUserIdArr[$userId])) {
-				if($preAuthorityId == null) {
-					if($participantType <= 1) {
-						// 変更不可
-						continue;
-					} else if($participantType == 2 && $authorityId != NC_AUTH_OTHER_ID) {
-						continue;
-					}
-				} else if($preAuthorityId != null && $participantType == 2 && !($authorityId == NC_AUTH_OTHER_ID || $authorityId == $defaultAuthorityId)) {
-					// default値と不参加のみ変更可
-					continue;
-				}
 			}
 
 			if($authorityId == NC_AUTH_OTHER_ID) {
@@ -109,7 +103,7 @@ class PageUserLink extends AppModel
 					"PageUserLink.room_id" => $roomId
 				);
 				if(!$this->deleteAll($conditions)) {
-					return false;
+					return 'error';
 				}
 			} else if(isset($preAuthorityId)) {
 				// 更新
@@ -121,7 +115,7 @@ class PageUserLink extends AppModel
 					'user_id' => $userId
 				);
 				if(!$this->updateAll($fields, $conditions)) {
-					return false;
+					return 'error';
 				}
 			} else {
 				// 登録
@@ -134,7 +128,7 @@ class PageUserLink extends AppModel
 					)
 				);
 				if(!$this->save($pageUserLink)) {
-					return false;
+					return 'error';
 				}
 			}
 		}
@@ -145,7 +139,7 @@ class PageUserLink extends AppModel
 		//		状態になってしまうため
 		// 公開ルームならば、子供のルームも不参加として登録
 		if(count($deleteUserIdArr) == 0) {
-			return true;
+			return 'success';
 		}
 		$Page = ClassRegistry::init('Page');
 		$roomIdListArr = array();
@@ -158,7 +152,7 @@ class PageUserLink extends AppModel
 			}
 		}
 		if(count($roomIdListArr) == 0) {
-			return true;
+			return 'success';
 		}
 		if($defaultAuthorityId == NC_AUTH_OTHER_ID) {
 			// 非公開ルーム
@@ -193,7 +187,7 @@ class PageUserLink extends AppModel
 							)
 						);
 						if(!$this->save($pageUserLink)) {
-							return false;
+							return 'error';
 						}
 					} else {
 						// 更新
@@ -205,13 +199,99 @@ class PageUserLink extends AppModel
 							'user_id' => $userId
 						);
 						if(!$this->updateAll($fields, $conditions)) {
-							return false;
+							return 'error';
 						}
 					}
 				}
 			}
 		}
 
-		return true;
+		return 'success';
+	}
+
+
+/**
+ * 会員参加バリデート
+ * ・パブリックで不参加にはできない。
+ * ・会員が存在しない。
+ * ・権限が存在しないか、リストに表示されない権限
+ * ・コミュニティーを退会・参加者修正する場合は「コミュニティー修正、参加者修正」できる人がいるかどうかのチェックとする。
+ *  但し、「参加者のみ」コミュニティーの場合、「参加者のみ」のコミュニティーを作成できる主担がいるかどうかのチェック
+ *  チェックし、一人も該当会員がいない場合、falseを返す。
+ * @param  Model Page  $page
+ * @param  array       $preParentUserIdArr array (user_id => authority_id)	現在の参加者情報
+ * @param  array       $postUserIdArr  array (user_id => authority_id)		更新する参加者情報
+ * @return boolean false|array       $preParentUserIdArr array (user_id => authority_id)	現在の参加者情報
+ * @since  v 3.0.0.0
+ */
+	public function varidateParticipant($page, $preParentUserIdArr, $postUserIdArr) {
+		$User = ClassRegistry::init('User');
+		$Authority = ClassRegistry::init('Authority');
+		$isCommunityEdit = ($page['Page']['space_type'] == NC_SPACE_TYPE_GROUP) ? false : true;
+
+		$authorities = $Authority->find('list', array(
+			'fields' => array(
+				'Authority.id',
+				'Authority.hierarchy'
+			),
+			'conditions' => array('display_participants_editing' => _ON)
+		));
+
+		foreach($preParentUserIdArr as $userId => $parentAuthorityId) {
+			$authorityId = isset($postUserIdArr[$userId]) ? intval($postUserIdArr[$userId]) : null;
+
+			if($page['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC && $authorityId == NC_AUTH_OTHER_ID) {
+				// パブリックで不参加にはできない。
+				unset($preParentUserIdArr[$userId]);
+				continue;
+			}
+
+			$activeUser = $User->findById($userId);
+			if(!isset($activeUser['User'])) {
+				// 会員が存在しない。
+				unset($preParentUserIdArr[$userId]);
+				continue;
+			}
+			if(!isset($authorities[$authorityId])) {
+				// 権限が存在しないか、リストに表示されない権限
+				unset($preParentUserIdArr[$userId]);
+				continue;
+			}
+
+			$minHierarchy = $Authority->getMinHierarchy($authorities[$authorityId]);
+
+			if($page['Page']['space_type'] != NC_SPACE_TYPE_GROUP || $activeUser['Authority']['hierarchy'] == NC_AUTH_GUEST ||
+				($page['Page']['thread_num'] == 1 && $page['Community']['participate_flag'] == NC_PARTICIPATE_FLAG_ONLY_USER)) {
+				// パブリック、自分自身以外のマイポータル、「参加者のみ」のコミュニティーでは、自分の権限以上にはなれない。
+				// 但し、パブリック以外のルーム下に、さらにルームを作成した場合は、自分以上にもなれる。
+				if($Authority->getMinHierarchy($activeUser['Authority']['hierarchy']) < $minHierarchy) {
+					unset($preParentUserIdArr[$userId]);
+					continue;
+				}
+			}
+			if(!$isCommunityEdit && $minHierarchy >= NC_AUTH_MIN_CHIEF) {
+				// コミュニティーを退会・参加者修正する場合は「コミュニティー修正、参加者修正」できる人がいるかどうかのチェックとする。
+				// 但し、「参加者のみ」コミュニティーの場合、「参加者のみ」のコミュニティーを作成できる主担がいるかどうかのチェック
+				if($activeUser['Authority']['allow_creating_community'] != NC_ALLOW_CREATING_COMMUNITY_OFF) {
+					if($page['Community']['participate_flag'] == NC_PARTICIPATE_FLAG_ONLY_USER) {
+						if($activeUser['Authority']['allow_new_participant']) {
+							$isCommunityEdit = true;
+						}
+					} else {
+						$isCommunityEdit = true;
+					}
+				}
+			}
+		}
+		if(!$isCommunityEdit) {
+			if($page['Community']['participate_flag'] == NC_PARTICIPATE_FLAG_ONLY_USER) {
+				$this->invalidate('authority_id', __d('page', 'Chief who "can add a participation member freely" has to set the one, if community of "only participating users". Please try again.'));
+			} else {
+				$this->invalidate('authority_id', __d('page', 'Chief who can edit the community has to set the one.Please try again.'));
+			}
+			return false;
+		}
+
+		return $preParentUserIdArr;
 	}
 }

@@ -490,14 +490,15 @@ class UserController extends UserAppController {
 			'conditions' => array('Page.space_type' => array(NC_SPACE_TYPE_PUBLIC, NC_SPACE_TYPE_GROUP)),
 			'order' => array(
 				'Page.space_type' => "ASC",
-				'Page.lang' => "ASC",
 				'Page.root_id' => "ASC",
+				'Page.lang' => "ASC",
 				'Page.thread_num' => "ASC",
 				'Page.display_sequence' => "ASC"
 			)
 		);
 		$options = array(
-			'autoLang' => false
+			'autoLang' => false,
+			'isShowAllCommunity' => true,
 		);
 		$rooms = $this->Page->findViewableRoom('all', 'all', $addParams, $options);
 
@@ -537,7 +538,9 @@ class UserController extends UserAppController {
 			// 前へ、次へ時
 			$enrollRoomIds = array();
 			foreach($this->request->data['PageUserLink'] as $key => $pageUserLink) {
-				$enrollRoomIds[$key] = $key;
+				$keyArr = explode('_', $key);
+				$pageId = $keyArr[count($keyArr) - 1];
+				$enrollRoomIds[$pageId] = $pageId;
 			}
 		} else {
 			$enrollRoomIds = $this->Page->findViewableRoom('list', $userId, $addParams, $options);
@@ -570,10 +573,11 @@ class UserController extends UserAppController {
 		}
 
 		$addParams = array(
-			'conditions' => array('Page.space_type' => array(NC_SPACE_TYPE_PUBLIC, NC_SPACE_TYPE_GROUP))
+			'conditions' => array('Page.space_type' => array(NC_SPACE_TYPE_PUBLIC, NC_SPACE_TYPE_GROUP)),
 		);
 		$options = array(
-			'autoLang' => false
+			'autoLang' => false,
+			'isShowAllCommunity' => true,
 		);
 		$enrollRooms = $this->Page->findViewableRoom('all', $userId, $addParams, $options);
 
@@ -582,7 +586,9 @@ class UserController extends UserAppController {
 
 			$pageIdArr = array();
 			$pageUserLinkRoomIds = array();
-			foreach($this->request->data['PageUserLink'] as $pageId => $PageUserLink) {
+			foreach($this->request->data['PageUserLink'] as $key => $PageUserLink) {
+				$keyArr = explode('_', $key);
+				$pageId = $keyArr[count($keyArr) - 1];
 				if(empty($PageUserLink['room_id'])) {
 					continue;
 				}
@@ -590,8 +596,12 @@ class UserController extends UserAppController {
 				$spaceType = null;
 				$threadNum = null;
 				$rootId = null;
+				$pagelang = null;
 				$authorityId = null;
 				$publicationRangeFlag = null;
+				$participateForceAllUsers = null;
+				$participateFlag = null;
+				$displaySequence = null;
 				if(!empty($PageUserLink['authority_id'])) {
 					$authorityId = $PageUserLink['authority_id'];
 					$pageIdArr[] = $pageId;
@@ -600,8 +610,12 @@ class UserController extends UserAppController {
 					$spaceType = $enrollRooms[$pageId]['Page']['space_type'];
 					$threadNum = $enrollRooms[$pageId]['Page']['thread_num'];
 					$rootId = $enrollRooms[$pageId]['Page']['root_id'];
+					$pagelang = $enrollRooms[$pageId]['Page']['lang'];
+					$displaySequence = $enrollRooms[$pageId]['Page']['display_sequence'];
 					$authorityId = $enrollRooms[$pageId]['PageAuthority']['id'];
 					$publicationRangeFlag = $enrollRooms[$pageId]['Community']['publication_range_flag'];
+					$participateForceAllUsers = $enrollRooms[$pageId]['Community']['participate_force_all_users'];
+					$participateFlag = $enrollRooms[$pageId]['Community']['participate_flag'];
 				} else {
 					$pageIdArr[] = $pageId;
 				}
@@ -617,13 +631,18 @@ class UserController extends UserAppController {
 						'space_type' => $spaceType,
 						'thread_num' => $threadNum,
 						'root_id' => $rootId,
+						'lang' => $pagelang,
+						'display_sequence' => $displaySequence
 					),
 					'Community' => array(
-						'publication_range_flag' => $publicationRangeFlag
+						'publication_range_flag' => $publicationRangeFlag,
+						'participate_force_all_users' => $participateForceAllUsers,
+						'participate_flag' => $participateFlag
 					),
 					'Authority' => $user['Authority'],
 				);
 			}
+
 			// spaceTypeよりデフォルトの権限設定
 			if(count($pageIdArr) > 0) {
 				$pages = $this->Page->findAuthById($pageIdArr, $userId);
@@ -637,7 +656,11 @@ class UserController extends UserAppController {
 						$pageUserLinks[$pageId]['Page']['space_type'] = $pages[$PageUserLink['PageUserLink']['room_id']]['Page']['space_type'];
 						$pageUserLinks[$pageId]['Page']['thread_num'] = $pages[$PageUserLink['PageUserLink']['room_id']]['Page']['thread_num'];
 						$pageUserLinks[$pageId]['Page']['root_id'] = $pages[$PageUserLink['PageUserLink']['room_id']]['Page']['root_id'];
+						$pageUserLinks[$pageId]['Page']['lang'] = $pages[$PageUserLink['PageUserLink']['room_id']]['Page']['lang'];
+						$pageUserLinks[$pageId]['Page']['display_sequence'] = $pages[$PageUserLink['PageUserLink']['room_id']]['Page']['display_sequence'];
 						$pageUserLinks[$pageId]['Community']['publication_range_flag'] = $pages[$PageUserLink['PageUserLink']['room_id']]['Community']['publication_range_flag'];
+						$pageUserLinks[$pageId]['Community']['participate_force_all_users'] = $pages[$PageUserLink['PageUserLink']['room_id']]['Community']['participate_force_all_users'];
+						$pageUserLinks[$pageId]['Community']['participate_flag'] = $pages[$PageUserLink['PageUserLink']['room_id']]['Community']['participate_flag'];
 					}
 				}
 			}
@@ -660,9 +683,13 @@ class UserController extends UserAppController {
 							'space_type' => $enrollRoom['Page']['space_type'],
 							'thread_num' => $enrollRoom['Page']['thread_num'],
 							'root_id' => $enrollRoom['Page']['root_id'],
+							'lang' => $enrollRoom['Page']['lang'],
+							'display_sequence' => $enrollRoom['Page']['display_sequence'],
 						),
 						'Community' => array(
-							'publication_range_flag' => $enrollRoom['Community']['publication_range_flag']
+							'publication_range_flag' => $enrollRoom['Community']['publication_range_flag'],
+							'participate_force_all_users' => $enrollRoom['Community']['participate_force_all_users'],
+							'participate_flag' => $enrollRoom['Community']['participate_flag']
 						),
 					);
 					$pageUserLinkRoomIds[] = $pageId;
@@ -675,7 +702,7 @@ class UserController extends UserAppController {
 					'conditions' => array(
 						'room_id' => $pageUserLinkRoomIds,
 						'user_id' => $userId,
-					)
+					),
 				));
 
 				foreach($insertPageUserLinks as $pageId => $insertPageUserLink) {
@@ -692,7 +719,6 @@ class UserController extends UserAppController {
 						$bufAuthorityId = $pageUserLinkList[$insertPageUserLink['PageUserLink']['room_id']][$buf[0]];
 						$insertPageUserLink['PageUserLink']['id'] = $buf[0];
 					}
-
 					$this->PageUserLink->create();
 					if($insertPageUserLink['PageUserLink']['authority_id'] == $defaultAuthorityId) {
 						// 参加するルームのデフォルト値->削除
@@ -708,12 +734,10 @@ class UserController extends UserAppController {
 				}
 
 				// 会員一覧に唯一の主担が消された場合、メッセージを表示する
-				$successMessage = '';
-				$uniqueChiefRoomIds = $this->UserCommon->isUniqueChief($insertPageUserLinks);
+				$uniqueChiefRoomIds = $this->UserCommon->isUniqueChief($user, $insertPageUserLinks);
 				if(count($uniqueChiefRoomIds) > 0) {
-					foreach($uniqueChiefRoomIds as $uniqueChiefRoomId) {
-						$this->User->invalidate('authority_id', __d('user', 'In the [%1$s], the only chief did not exist. When do not appoint a chief again, in the [%2$s] cannot edit it.',
-							$insertPageUserLinks[$uniqueChiefRoomId]['Page']['page_name'], $insertPageUserLinks[$uniqueChiefRoomId]['Page']['page_name']));
+					foreach($uniqueChiefRoomIds as $uniqueChiefRoomId => $errorStr) {
+						$this->User->invalidate('authority_id', $errorStr);
 					}
 				}
 

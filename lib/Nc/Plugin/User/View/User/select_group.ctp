@@ -22,8 +22,9 @@
 		if(isset($room['Page']['parent_page_name'])) {
 			$optionName .= '('.h($room['Page']['parent_page_name']).')';
 		}
-
-		$option = array('value' => $room['Page']['id']);
+		// 権限設定の表示順を保持するため、space_type等もkeyに設定。
+		$option = array('value' => $room['Page']['space_type']."_".$room['Page']['root_id']."_".$room['Page']['lang']
+			."_".$room['Page']['thread_num']."_".$room['Page']['display_sequence']."_".$room['Page']['id']);
 		if($room['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC) {
 			$option['disabled'] = true;
 			$option['class'] = 'disable-lbl';
@@ -31,6 +32,7 @@
 		}
 		$option['name'] = $optionNameSpace.$optionName;
 		$option['title'] = $optionName;
+		$option['data-room-id'] = $room['Page']['id'];
 		if(isset($room['Page']['parent_room_id'])) {
 			$option['data-parent-id'] = $room['Page']['parent_room_id'];
 		}

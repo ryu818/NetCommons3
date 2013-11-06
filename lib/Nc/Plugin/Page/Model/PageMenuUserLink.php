@@ -51,6 +51,40 @@ class PageMenuUserLink extends AppModel {
 	}
 
 /**
+ * 権限解除処理
+ *
+ * @param integer $deallocationRoomId 解除するルームID
+ * @param array $pageIdListArr $deallocationRoomIdを含む解除するルーム以下のpage_idリスト
+ * @param Model Page $parentPage $deallocationRoomIdの親ページ
+ * @param integer $room_id
+ *
+ * @return  boolean
+ * @since  v 3.0.0.0
+ */
+	public function deallocation($deallocationRoomId, $pageIdListArr, $parentPage) {
+		$Page = ClassRegistry::init('Page');
+		$PageBlock = ClassRegistry::init('Page.PageBlock');
+		$fields = array(
+			'room_id' => $parentPage['Page']['room_id']
+		);
+		$conditions = array(
+			'id' => $pageIdListArr
+		);
+		if(!$Page->updateAll($fields, $conditions)) {
+			return false;
+		}
+		if(!$this->deallocationRoom($deallocationRoomId)) {
+			return false;
+		}
+
+		// 権限の割り当て解除で、そこにはってあったブロックの変更処理
+		if(!$PageBlock->deallocationBlock($pageIdListArr, $parentPage['Page']['room_id'])) {
+			return false;
+		}
+		return true;
+	}
+
+/**
  * 権限解除で、PageUserLink,ModuleLinkテーブル削除処理
  *
  * @param integer $room_id
