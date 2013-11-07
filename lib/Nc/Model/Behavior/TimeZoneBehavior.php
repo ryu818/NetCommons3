@@ -28,12 +28,18 @@ class TimeZoneBehavior extends ModelBehavior {
  * @param   Model   $Model
  * @param   string  $timeUtc 協定世界時、nullならば現在の協定世界時
  * @param   string  $format nullならば__('Y-m-d H:i:s')
- * @return  string  Date 日付を表す文字列
+ * @return  string  Date 日付を表す文字列 不正なパラメータが渡された場合はnullが戻る
  * @since   v 3.0.0.0
  */
 	public function date(Model $Model=null, $timeUtc = null, $format = null) {
 		if($format === null) {
 			$format =  __('Y-m-d H:i:s');
+		}
+		//$timeUtcがしていされていて、
+		//strtotime()で正しい値が戻ってこないなら、$timeに入れるべき値ではないということ。
+		if($timeUtc && ! strtotime($timeUtc))
+		{
+			return null;
 		}
 		if ($timeUtc === null) {
 			$timeUtc = gmdate(NC_VALIDATOR_DATE_TIME);
@@ -58,13 +64,18 @@ class TimeZoneBehavior extends ModelBehavior {
  * @param   Model   $Model
  * @param   string  $time 地域のTimeZoneを考慮した日時（地方標準時）
  * @param   string  $format nullならばNC_DB_DATE_FORMAT
- * @return  string  Date 日付を表す文字列
+ * @return  string  Date 日付を表す文字列 不正なパラメータが渡された場合はnullが戻る
  * @since   v 3.0.0.0
  */
 	public function dateUtc(Model $Model, $time, $format = null) {
 
    		if($format === null) {
 	    	$format =  NC_DB_DATE_FORMAT;
+		}
+		//strtotime()で正しい値が戻ってこないなら、$timeに入れるべき値ではないということ。
+		if(! strtotime($time))
+		{
+			return null;
 		}
 
 		$time = date(NC_VALIDATOR_DATE_TIME, strtotime($time));
@@ -98,12 +109,15 @@ class TimeZoneBehavior extends ModelBehavior {
  * 未来の日付かどうかチェック(過去の日付は入力不可)
  *
  * @param   Model   $Model
- * @param   array    $data
+ * @param   array or string    $data
  * @param   boolean  $gm グリニッジに変換して比較するかどうか default:true
  * @return  boolean
  * @since   v 3.0.0.0
  */
 	public function isFutureDateTime(Model $Model, $data, $gm = true) {
+		if($data && !is_array($data)) {
+			$data = array($data);
+		}
 		$values = array_values($data);
 		$date_time = $values[0];
 		if($gm) {

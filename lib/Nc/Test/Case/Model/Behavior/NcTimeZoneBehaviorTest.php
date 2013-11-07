@@ -103,10 +103,10 @@ class NcTimeZoneBehaviorTest extends CakeTestCase {
 		//2013.11.31 25:11:23 日付は補正されるが、25時を指定した場合はエラー
 		//時間がとれないので、1970-01-01 00:00:00で戻る。
 		$ck = $this->TimeZone->date($model , '20131131251123');
-		$this->assertEqual('1970-01-01 00:00:00' , $ck);
+		$this->assertEqual(null , $ck);
 		//時刻として認識されないフォーマット名ので、1970-01-01 00:00:00で戻る
 		$ck = $this->TimeZone->date($model , '2013.12.01 06:11:AA');
-		$this->assertEqual('1970-01-01 00:00:00' , $ck);
+		$this->assertEqual(null , $ck);
 
 		$ck = $this->TimeZone->date($model , '2013-12-01 06:11:23');
 		$this->assertEqual('2013-12-01 06:11:23' , $ck);
@@ -139,12 +139,12 @@ class NcTimeZoneBehaviorTest extends CakeTestCase {
 
 		//日付のフォーマットでは無いので、1970-01-01が戻る
 		$time = '2013.12.1 16:56:00';
-		$ans  = "1970-01-01";
+		$ans  = null;
 		$ck = $this->TimeZone->dateUtc($model , $time , 'Y-m-d');
 		$this->assertEqual($ans , $ck);
 		//日付のフォーマットでは無いので、1970-01-01が戻る
 		$time = '2013-12-1 AA:56:00';
-		$ans  = "1970-01-01";
+		$ans  = null;
 		$ck = $this->TimeZone->dateUtc($model , $time , 'Y-m-d');
 		$this->assertEqual($ans , $ck);
 	}
@@ -166,6 +166,17 @@ class NcTimeZoneBehaviorTest extends CakeTestCase {
 		$this->assertEqual(false , $ck);
 		//不正な値だった場合 :処理中に"1970-01-01"の値になるため、過去日として判定される。
 		$ck = $this->TimeZone->isFutureDateTime($model , array('AAAAAAAA'));
+		$this->assertEqual(false , $ck);
+
+		//配列じゃなくても判定する
+		//未来日・
+		$ck = $this->TimeZone->isFutureDateTime($model , date('Y-m-d H:i:s' , time() + 60));
+		$this->assertEqual(true , $ck);
+		//過去日
+		$ck = $this->TimeZone->isFutureDateTime($model , date('Y-m-d H:i:s' , time() - 60));
+		$this->assertEqual(false , $ck);
+		//不正な値だった場合　false
+		$ck = $this->TimeZone->isFutureDateTime($model , 'BBBBB');
 		$this->assertEqual(false , $ck);
 	}
 
