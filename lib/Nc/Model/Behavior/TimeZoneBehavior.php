@@ -64,7 +64,7 @@ class TimeZoneBehavior extends ModelBehavior {
  * @param   Model   $Model
  * @param   string  $time 地域のTimeZoneを考慮した日時（地方標準時）
  * @param   string  $format nullならばNC_DB_DATE_FORMAT
- * @return  string  Date 日付を表す文字列
+ * @return  string  Date 日付を表す文字列 不正なパラメータが渡された場合はnullが戻る
  * @since   v 3.0.0.0
  */
 	public function dateUtc(Model $Model, $time, $format = null) {
