@@ -127,6 +127,7 @@ class NcCommonBehaviorTest extends CakeTestCase {
 		//sqlに User.modified_user_id+1が含まれていることを確認
 		$sql_text = '/User.modified_user_id\+1/';
 		$this->assertEqual(true , preg_match($sql_text , $sql['query']));
+		var_dump($sql);
 
 
 	}
