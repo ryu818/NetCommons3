@@ -28,12 +28,18 @@ class TimeZoneBehavior extends ModelBehavior {
  * @param   Model   $Model
  * @param   string  $timeUtc 協定世界時、nullならば現在の協定世界時
  * @param   string  $format nullならば__('Y-m-d H:i:s')
- * @return  string  Date 日付を表す文字列
+ * @return  string  Date 日付を表す文字列 不正なパラメータが渡された場合はnullが戻る
  * @since   v 3.0.0.0
  */
 	public function date(Model $Model=null, $timeUtc = null, $format = null) {
 		if($format === null) {
 			$format =  __('Y-m-d H:i:s');
+		}
+		//$timeUtcがしていされていて、
+		//strtotime()で正しい値が戻ってこないなら、$timeに入れるべき値ではないということ。
+		if($timeUtc && ! strtotime($timeUtc))
+		{
+			return null;
 		}
 		if ($timeUtc === null) {
 			$timeUtc = gmdate(NC_VALIDATOR_DATE_TIME);
@@ -65,6 +71,11 @@ class TimeZoneBehavior extends ModelBehavior {
 
    		if($format === null) {
 	    	$format =  NC_DB_DATE_FORMAT;
+		}
+		//strtotime()で正しい値が戻ってこないなら、$timeに入れるべき値ではないということ。
+		if(! strtotime($time))
+		{
+			return null;
 		}
 
 		$time = date(NC_VALIDATOR_DATE_TIME, strtotime($time));
