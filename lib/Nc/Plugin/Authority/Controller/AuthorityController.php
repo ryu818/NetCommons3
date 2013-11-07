@@ -18,7 +18,7 @@ class AuthorityController extends AuthorityAppController {
  *
  * @var array
  */
-	public $uses = array('AuthorityLang', 'PageUserLink', 'Authority.ModuleList', 'Authority.ModuleLinkList');
+	public $uses = array('AuthorityLang', 'PageUserLink', 'Authority.ModuleList', 'Authority.ModuleLinkList', 'Authority.AuthorityPageUserLink');
 
 /**
  * Component name
@@ -119,6 +119,9 @@ class AuthorityController extends AuthorityAppController {
 				if(!isset($authority['Authority']['allow_creating_community']) ||
 					(intval($this->request->data['Authority']['hierarchy']) < $ret[0] || intval($this->request->data['Authority']['hierarchy']) > $ret[1])) {
 					$authority = $this->Authority->findDefault($this->request->data['Authority']['base_authority_id']);
+					if(!empty($authorityId)) {
+						$authority[$this->Authority->alias]['id'] = $authorityId;
+					}
 				}
 
 			}
@@ -417,26 +420,15 @@ class AuthorityController extends AuthorityAppController {
 				}
 
 			}
+
 			if (!$created) {
-				if($preAuthority['Authority']['display_participants_editing'] != _OFF && $authority['Authority']['display_participants_editing'] == _OFF) {
-					// page_user_linksで該当データがあれば、authority_id更新
-					// デフォルトの参加権限であっても、PageUserLinkに追加されてしまう。
-					$userAuthorityId = $this->Authority->getUserAuthorityId($authority['Authority']['hierarchy']);
-					$pageUserLinks = $this->PageUserLink->findAllByAuthorityId($authorityId);
-					if(count($pageUserLinks) > 0) {
-						$fields = array(
-							'PageUserLink.authority_id' => $userAuthorityId
-						);
-						$conditions = array(
-							"PageUserLink.authority_id" => $authorityId
-						);
-						if(!$this->PageUserLink->updateAll($fields, $conditions)) {
-							throw new InternalErrorException(__('Failed to update the database, (%s).', 'page_user_links'));
-						}
-					}
+				if(!$this->AuthorityPageUserLink->updateDisplayParticipantsEditingFromOnToOff($preAuthority, $authority)) {
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'page_user_links'));
+				}
+				if(!$this->AuthorityPageUserLink->updateHierarchyLower($preAuthority, $authority)) {
+					throw new InternalErrorException(__('Failed to update the database, (%s).', 'page_user_links'));
 				}
 			}
-
 
 			/**
 			 * 「マイポータル、プライベートルームを使用する」がNC_DISPLAY_FLAG_ONからNC_DISPLAY_FLAG_OFFに変更されたら、マイポータル、プライベートルームのdisplay_flag=NC_DISPLAY_FLAG_DISABLEを立てる
