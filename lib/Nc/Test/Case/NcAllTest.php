@@ -14,6 +14,7 @@ class NcAllTest extends CakeTestSuite {
 			'Test' . DS . 'Case' . DS . 'Controller',
 			'Test' . DS . 'Case' . DS . 'Controller' . DS . 'Component',
 			'Test' . DS . 'Case' . DS . 'Model',
+			'Test' . DS . 'Case' . DS . 'Model'. DS . 'Behavior',
 			'Test' . DS . 'Case' . DS . 'View',
 			'Test' . DS . 'Case' . DS . 'View' . DS . 'Helper'
 		);
@@ -27,7 +28,7 @@ class NcAllTest extends CakeTestSuite {
 			{
 				foreach($testDirList as $t)
 				{
-					$testDir = $p. DS .$t ;
+					$testDir = $p .$t ;
 					if(is_dir($testDir))
 					{
 						$suite->addTestDirectory($testDir);
