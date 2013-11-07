@@ -167,6 +167,17 @@ class NcTimeZoneBehaviorTest extends CakeTestCase {
 		//不正な値だった場合 :処理中に"1970-01-01"の値になるため、過去日として判定される。
 		$ck = $this->TimeZone->isFutureDateTime($model , array('AAAAAAAA'));
 		$this->assertEqual(false , $ck);
+
+		//配列じゃなくても判定する
+		//未来日・
+		$ck = $this->TimeZone->isFutureDateTime($model , date('Y-m-d H:i:s' , time() + 60));
+		$this->assertEqual(true , $ck);
+		//過去日
+		$ck = $this->TimeZone->isFutureDateTime($model , date('Y-m-d H:i:s' , time() - 60));
+		$this->assertEqual(false , $ck);
+		//不正な値だった場合　false
+		$ck = $this->TimeZone->isFutureDateTime($model , 'BBBBB');
+		$this->assertEqual(false , $ck);
 	}
 
 /**

@@ -98,12 +98,15 @@ class TimeZoneBehavior extends ModelBehavior {
  * 未来の日付かどうかチェック(過去の日付は入力不可)
  *
  * @param   Model   $Model
- * @param   array    $data
+ * @param   array or string    $data
  * @param   boolean  $gm グリニッジに変換して比較するかどうか default:true
  * @return  boolean
  * @since   v 3.0.0.0
  */
 	public function isFutureDateTime(Model $Model, $data, $gm = true) {
+		if($data && !is_array($data)) {
+			$data = array($data);
+		}
 		$values = array_values($data);
 		$date_time = $values[0];
 		if($gm) {
