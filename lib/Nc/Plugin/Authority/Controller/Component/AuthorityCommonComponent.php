@@ -169,6 +169,7 @@ class AuthorityCommonComponent extends Component {
 		$disabledChangeRightcolumnFlagArr = explode('|', AUTHORITY_CHANGE_RIGHTCOLUMN_FLAG_DISABLED);
 		$disabledChangeHeadercolumnFlagArr = explode('|', AUTHORITY_CHANGE_HEADERCOLUMN_FLAG_DISABLED);
 		$disabledChangeFootercolumnFlagArr = explode('|', AUTHORITY_CHANGE_FOOTERCOLUMN_FLAG_DISABLED);
+		$disabledDisplayParticipantsEditingArr = explode('|', AUTHORITY_DISPLAY_PARTICIPANTS_EDITING_DISABLED);
 		$disabledAllowMoveOperationArr = explode('|', AUTHORITY_ALLOW_MOVE_OPERATION_DISABLED);
 		$disabledAllowCopyOperationArr = explode('|', AUTHORITY_ALLOW_COPY_OPERATION_DISABLED);
 		$disabledAllowShortcutOperationArr = explode('|', AUTHORITY_ALLOW_SHORTCUT_OPERATION_DISABLED);
@@ -196,6 +197,7 @@ class AuthorityCommonComponent extends Component {
 				'change_rightcolumn_flag' => $disabledChangeRightcolumnFlagArr[$index],
 				'change_headercolumn_flag' => $disabledChangeHeadercolumnFlagArr[$index],
 				'change_footercolumn_flag' => $disabledChangeFootercolumnFlagArr[$index],
+				'display_participants_editing' => $disabledDisplayParticipantsEditingArr[$index],
 				'allow_move_operation' => $disabledAllowMoveOperationArr[$index],
 				'allow_copy_operation' => $disabledAllowCopyOperationArr[$index],
 				'allow_shortcut_operation' => $disabledAllowShortcutOperationArr[$index],

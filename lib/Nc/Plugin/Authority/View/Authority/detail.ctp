@@ -117,7 +117,7 @@
 						if($authority['Authority']['system_flag']) {
 							$disabled = true;
 						} else {
-							$disabled = false;
+							$disabled = $authorityDisabled['Authority'][$columnName];
 						}
 						$settings = array(
 							'type' => 'radio',
