@@ -252,35 +252,6 @@ class AuthBehavior extends ModelBehavior {
 		} else if($Model->alias == 'User' && isset($val[$Model->alias]['id'])) {
 			$userId = $val[$Model->alias]['id'];
 		}
-
-		if(isset($val['User']['authority_id'])) {
-			$bufAuthorityId = $val['User']['authority_id'];
-		} else if(isset($val['Authority']['id'])) {
-			$bufAuthorityId = $val['Authority']['id'];
-		}
-		if(!empty($userId) && $userId == $loginUserId) {
-			$bufAuthorityId = $val['User']['authority_id'] = $loginUser['authority_id'];
-			$val['Authority']['hierarchy'] = $loginUser['hierarchy'];
-			$val['Authority']['display_participants_editing'] = $loginUser['display_participants_editing'];
-		} else if((!isset($bufAuthorityId) || !isset($val['Authority']['hierarchy']) ||
-			!isset($val['Authority']['display_participants_editing'])) && isset($userId)) {
-			$User = ClassRegistry::init('User');
-			$currentUser = $User->find('first', array(
-				'fields' => array(
-					'User.authority_id', 'Authority.hierarchy','Authority.display_participants_editing'
-				),
-				'conditions' => array('User.id' => $userId),
-			));
-			if(isset($currentUser['User'])) {
-				$val['User']['authority_id'] = $bufAuthorityId = $currentUser['User']['authority_id'];
-				if(isset($val['Authority'])) {
-					$val['Authority'] = array_merge($currentUser['Authority'], $val['Authority']);
-				} else {
-					$val['Authority'] = $currentUser['Authority'];
-				}
-			}
-		}
-
 		$authorityId = NC_AUTH_OTHER_ID;
 		$hierarchy = NC_AUTH_OTHER;
 		if($val[$modelName]['space_type'] == NC_SPACE_TYPE_PUBLIC) {
@@ -308,14 +279,44 @@ class AuthBehavior extends ModelBehavior {
 				$hierarchy = NC_AUTH_GUEST;
 			}
 		}
+
+		if(isset($val['User']['authority_id'])) {
+			$bufAuthorityId = $val['User']['authority_id'];
+		} else if(isset($val['Authority']['id'])) {
+			$bufAuthorityId = $val['Authority']['id'];
+		}
+		if(!empty($userId) && $userId == $loginUserId) {
+			$bufAuthorityId = $val['User']['authority_id'] = $loginUser['authority_id'];
+			$val['Authority']['hierarchy'] = $loginUser['hierarchy'];
+			$val['Authority']['display_participants_editing'] = $loginUser['display_participants_editing'];
+		} else if((!isset($bufAuthorityId) || !isset($val['Authority']['hierarchy']) ||
+				!isset($val['Authority']['display_participants_editing'])) && isset($userId)) {
+			$User = ClassRegistry::init('User');
+			$currentUser = $User->find('first', array(
+				'fields' => array(
+					'User.authority_id', 'Authority.hierarchy','Authority.display_participants_editing'
+				),
+				'conditions' => array('User.id' => $userId),
+			));
+			if(isset($currentUser['User'])) {
+				$val['User']['authority_id'] = $bufAuthorityId = $currentUser['User']['authority_id'];
+				if(isset($val['Authority'])) {
+					$val['Authority'] = array_merge($currentUser['Authority'], $val['Authority']);
+				} else {
+					$val['Authority'] = $currentUser['Authority'];
+				}
+			}
+		}
+
 		// ゲスト権限でパブリック OR コミュニティー OR 自分自身ではないマイページ、マイポータルならば、ゲスト権限で上書き
 		$userHierarchy = isset($val['Authority']['hierarchy']) ? $val['Authority']['hierarchy'] : $loginUser['hierarchy'];
 		if($hierarchy >= NC_AUTH_MIN_GENERAL && $userHierarchy <= NC_AUTH_GUEST &&
 			($val[$modelName]['space_type'] == NC_SPACE_TYPE_PUBLIC || $val[$modelName]['space_type'] == NC_SPACE_TYPE_GROUP ||
-			$userId != $loginUserId)) {
+				$userId != $loginUserId)) {
 			$authorityId = NC_AUTH_GUEST_ID;
 			$hierarchy = NC_AUTH_GUEST;
 		}
+
 		$Authority = ClassRegistry::init('Authority');
 		list($minHierarchy, $maxHierarchy) = $Authority->getHierarchyByUserAuthorityId($authorityId);
 		if(isset($val['Authority']['display_participants_editing']) && $val['Authority']['display_participants_editing'] &&
@@ -323,6 +324,7 @@ class AuthBehavior extends ModelBehavior {
 			$authorityId = $bufAuthorityId;
 			$hierarchy = $val['Authority']['hierarchy'];
 		}
+
 		return array(
 			'id' => $authorityId,
 			'hierarchy' => $hierarchy

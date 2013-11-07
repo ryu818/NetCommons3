@@ -422,10 +422,10 @@ class AuthorityController extends AuthorityAppController {
 			}
 
 			if (!$created) {
-				if(!$this->AuthorityPageUserLink->updateDisplayParticipantsEditingFromOnToOff($preAuthority, $authority)) {
+				if(!$this->AuthorityPageUserLink->updateHierarchyLower($preAuthority, $authority)) {
 					throw new InternalErrorException(__('Failed to update the database, (%s).', 'page_user_links'));
 				}
-				if(!$this->AuthorityPageUserLink->updateHierarchyLower($preAuthority, $authority)) {
+				if(!$this->AuthorityPageUserLink->updateDisplayParticipantsEditingFromOnToOff($preAuthority, $authority)) {
 					throw new InternalErrorException(__('Failed to update the database, (%s).', 'page_user_links'));
 				}
 			}

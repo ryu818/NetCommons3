@@ -242,8 +242,8 @@ class User extends AppModel
 			$newAuthorityId = $this->changedAuthorityId['authority_id'];
 			$myportalPageId = $this->changedAuthorityId['myportal_page_id'];
 			$privatePageId = $this->changedAuthorityId['private_page_id'];
-			$oldAuthority = $Authority->find('first', array('fields' => array('myportal_use_flag', 'private_use_flag'), 'conditions' => array($Authority->primaryKey => $oldAuthorityId), 'recursive' => -1));
-			$newAuthority = $Authority->find('first', array('fields' => array('myportal_use_flag', 'private_use_flag'), 'conditions' => array($Authority->primaryKey => $newAuthorityId), 'recursive' => -1));
+			$oldAuthority = $Authority->find('first', array('conditions' => array($Authority->primaryKey => $oldAuthorityId), 'recursive' => -1));
+			$newAuthority = $Authority->find('first', array('conditions' => array($Authority->primaryKey => $newAuthorityId), 'recursive' => -1));
 			if($oldAuthority['Authority']['myportal_use_flag'] != $newAuthority['Authority']['myportal_use_flag']) {
 				// update
 				$fields = array($Page->alias.'.display_flag'=> ($newAuthority['Authority']['myportal_use_flag']) ? NC_DISPLAY_FLAG_ON : NC_DISPLAY_FLAG_DISABLE);
@@ -260,6 +260,13 @@ class User extends AppModel
 				);
 				$Page->updateAll($fields, $conditions);
 			}
+
+			if($oldAuthority['Authority']['id'] != $newAuthority['Authority']['id']) {
+				// 権限変更
+				$AuthorityPageUserLink = ClassRegistry::init('Authority.AuthorityPageUserLink');
+				$AuthorityPageUserLink->updateHierarchyLower($oldAuthority, $newAuthority, $this->data[$this->alias]['id']);
+			}
+
 		}
 	}
 
