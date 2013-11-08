@@ -1,7 +1,6 @@
 <?php
 App::uses('CommonBehavior', 'Model/Behavior');
 App::uses('User', 'Model');
-
 /**
  * CommonBehavior Test Case
  *
@@ -25,7 +24,7 @@ class NcCommonBehaviorTest extends CakeTestCase {
 	public function setUp() {
 		parent::setUp();
 		$this->Common = new CommonBehavior();
-		$this->User = new User();
+
 	}
 
 /**
@@ -105,7 +104,7 @@ class NcCommonBehaviorTest extends CakeTestCase {
  * @return void
  */
 	public function testVoting() {
-
+		//TODO : Plugin/Blog で Model/BlogPost 経由でテストコードを用意する
 	}
 
 /**
