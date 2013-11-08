@@ -1,10 +1,7 @@
 <?php
 /**
- * Created by IntelliJ IDEA.
- * User: nekoget
- * Date: 13/11/06
- * Time: 16:52
- * To change this template use File | Settings | File Templates.
+ * Page Fixture
+ * Last update 2013.11.08
  */
 
 class NcPageFixture extends CakeTestFixture {

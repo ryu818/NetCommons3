@@ -1,10 +1,6 @@
 <?php
 /**
- * Created by IntelliJ IDEA.
- * User: nekoget
- * Date: 13/10/23
- * Time: 16:19
- * To change this template use File | Settings | File Templates.
+ * User Fixture
  */
 class NcUserFixture extends CakeTestFixture {
 	public $useDbConfig = 'test';
