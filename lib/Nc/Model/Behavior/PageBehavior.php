@@ -15,7 +15,7 @@ class PageBehavior extends ModelBehavior {
  * @param Model   $Model
  * @param array    $page
  * @param integer  $type 0:表示時 1:登録時
- * @return boolean
+ * @return array
  * @since   v 3.0.0.0
  */
 	public function setPageName(Model $Model, $page, $type = 0, $alias = 'Page') {
