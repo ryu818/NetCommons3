@@ -156,6 +156,13 @@ class PageController extends PageAppController {
 		$limit = !empty($this->request->named['limit']) ? intval($this->request->named['limit']) : PAGES_COMMUNITY_LIMIT;
 		$views = !empty($this->request->named['views']) ? intval($this->request->named['views']) : PAGES_COMMUNITY_VIEWS;
 		$pageId = isset($this->request->query['page_id']) ? intval($this->request->query['page_id']) : (isset($centerPage) ? $centerPage['Page']['id'] : null);
+		$participantPageId = isset($this->request->query['participant_page_id']) ? intval($this->request->query['participant_page_id']) : null;
+		if(!empty($participantPageId)) {
+			$participantPage = $this->Page->findById($participantPageId);
+			if($participantPage && $participantPage['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
+				$activeTab = 1;
+			}
+		}
 
 		// 言語切替
 		$languages = Configure::read(NC_CONFIG_KEY.'.'.'languages');
@@ -208,7 +215,7 @@ class PageController extends PageAppController {
 			}
 		}
 		if(isset($this->request->query['page_id'])) {
-			// コピー、ペーストでコミュニティへペーストした場合、コミュニティタブへ
+			// コピー、ペーストでコミュニティーへペーストした場合、コミュニティタブへ
 			$activeTab = $selActiveTab;
 		}
 

@@ -435,3 +435,37 @@ msgid  	"Display the left column and right column"
 msgstr 	"左右カラム表示"
 msgid  	"Display the footer"
 msgstr 	"フッター表示"
+
+## コミュニティー情報
+msgid  	"[%s] Community information"
+msgstr 	"[%s] コミュニティー情報"
+
+msgid  	"Resign from community"
+msgstr 	"コミュニティーから退会"
+msgid  	"Do you resign from \"%s\" community?"
+msgstr 	"「%s」コミュニティーから退会しますか？"
+
+msgid  	"Participate community"
+msgstr 	"コミュニティーに参加する"
+
+msgid  	"Join the \"%s\", are you sure?"
+msgstr 	"「%s」に本当に参加しますか？"
+
+msgid  	"Invite to this community"
+msgstr 	"このコミュニティーへの招待"
+
+msgid  	"Invite to \"%s\" community"
+msgstr 	"「%s」コミュニティーへの招待"
+
+msgid  	"Because you are the only chief, membership removal of %s is not possible.<br />Please identify a different chief first before removing membership."
+msgstr 	"あなたは%sの唯一の主担のため、退会できません。<br />別の主担を任命してから退会してください。"
+
+msgid  	"Already participating."
+msgstr 	"既に参加しています。"
+
+msgid  	"You resigned."
+msgstr 	"退会しました。"
+msgid  	"You participated."
+msgstr 	"参加しました。"
+msgid  	"You invited."
+msgstr 	"招待しました。"

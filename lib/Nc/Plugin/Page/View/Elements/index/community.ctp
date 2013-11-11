@@ -308,7 +308,7 @@ if($community_params['community']['Community']['participate_flag'] == NC_PARTICI
 		?>
 		<input onclick="$('#pages-menu-is-participant-<?php echo $page['Page']['id'];?>').val(0);" type="submit" class="common-btn" name="ok" value="<?php echo( __('Ok')); ?>" />
 		<input type="button" class="common-btn" name="cancel" value="<?php echo(__('Cancel')); ?>" onclick="$('#pages-menu-edit-detail-<?php echo($page['Page']['id']);?>').slideUp(300);" />
-		<input onclick="$('#pages-menu-is-participant-<?php echo $page['Page']['id'];?>').val(1);" type="submit" class="common-btn common-btn-light" name="participant" value="<?php echo(__d('page','Edit members')); ?>" />
+		<input onclick="$('#pages-menu-is-participant-<?php echo $page['Page']['id'];?>').val(1);" type="submit" class="common-btn nc-button-blue" name="participant" value="<?php echo(__d('page','Edit members')); ?>" />
 	</div>
 </div>
 <?php

@@ -1120,6 +1120,8 @@ class Page extends AppModel
 			$ret[] = 'Community.publication_range_flag';
 			$ret[] = 'Community.participate_force_all_users';
 			$ret[] = 'Community.participate_flag';
+			$ret[] = 'Community.is_upload';
+			$ret[] = 'Community.photo';
 			$ret[] = 'CommunityLang.community_name';
 			$ret[] = 'CommunityLang.summary';
 		}
@@ -1162,7 +1164,7 @@ class Page extends AppModel
 				"type" => "LEFT",
 				"table" => "community_langs",
 				"alias" => "CommunityLang",
-				"conditions" => "`Page`.`id`=`CommunityLang`.`room_id`".
+				"conditions" => "`Page`.`root_id`=`CommunityLang`.`room_id`".
 					" AND `CommunityLang`.`lang` ='".$lang."'"
 			);
 		}

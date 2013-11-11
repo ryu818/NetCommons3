@@ -70,6 +70,7 @@ class PageMenusController extends PageAppController {
 		$this->Security->csrfUseOnce = false;
 		if($this->request->is('post') && $this->action != 'edit' && $this->action != 'participant') {
 			// 手動でTokenチェック
+			// TODO:edit,participantや、そのほかのActionでもTokenチェックされているか確認すること。
 			$this->Security->csrfCheck = false;
 			if($this->action == 'participant_detail' || $this->action == 'participant_cancel') {
 				// 参加者詳細、参加者修正画面 キャンセルボタンでは、登録していないため、チェックはしない。
@@ -238,6 +239,181 @@ class PageMenusController extends PageAppController {
 		echo Router::url('/', true). $permalink . '/blocks/page/index?is_edit=1&is_detail=1';	// URL固定
 		// コミュニティ追加時にlocation.hrefを行うため、layoutは表示しない。そうしないと、URLに$.Common.flashが表示されてしまう。
 		$this->render(false, false);
+	}
+
+/**
+ * コミュニティー情報表示
+ * @param   integer   current page_id
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function community_inf($currentPageId) {
+		$user = $this->Auth->user();
+		$ret = $this->Community->getCommunityData($currentPageId);
+		if($ret === false) {
+			throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'communities'));
+		}
+		list($community, $communityLang, $communityTag) = $ret;
+		$isParticipate = $this->PageUserLink->isParticipate($currentPageId, $user['id']);
+		if($isParticipate) {
+			$authority = $this->Authority->findById($isParticipate);
+			if(!$authority) {
+				throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'authorities'));
+			}
+			$minHierarchy = $this->Authority->getMinHierarchy($authority['Authority']['hierarchy']);
+			$this->set('min_hierarchy', $minHierarchy);
+		}
+
+		$this->set('community', $community);
+		$this->set('community_lang', $communityLang);
+		$this->set('community_tag', $communityTag);
+		$this->set('is_participate', $isParticipate);
+
+	}
+
+/**
+ * コミュニティーから退会
+ * @param   integer   current page_id
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function resign_community($currentPageId) {
+		$user = $this->Auth->user();
+		$centerPage = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');
+		$ret = $this->Community->getCommunityData($currentPageId);
+		if($ret === false) {
+			throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'communities'));
+		}
+		list($community, $communityLang, $communityTag) = $ret;
+
+		if (empty($user['id']) || !$this->request->is('post') || $community['Community']['participate_flag'] == NC_PARTICIPATE_FLAG_ONLY_USER) {
+			$this->response->statusCode('403');
+			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
+			return;
+		}
+
+		// 退会可能かどうか
+		if(!$this->PageUserLink->isResign($currentPageId, $user['id'])) {
+			$this->flash(__d('page', 'Because you are the only chief, membership removal of %s is not possible.<br />Please identify a different chief first before removing membership.', $communityLang['CommunityLang']['community_name']), '');
+			return;
+		}
+
+		// 退会処理
+		$conditions = array(
+			'room_id' => $currentPageId,
+			'user_id' => $user['id'],
+		);
+		if(!$this->PageUserLink->deleteAll($conditions)) {
+			throw new InternalErrorException(__('Failed to delete the database, (%s).', 'page_user_links'));
+		}
+
+		if($centerPage['Page']['root_id'] == $currentPageId) {
+			$redirectUrl =Router::url('/', true);
+			$this->flash(__d('page', 'You resigned.'), $redirectUrl);
+			return;
+		} else {
+			$this->Session->setFlash(__d('page', 'You resigned.'));
+			$this->render(false, 'ajax');
+		}
+
+		// TODO:メール通知機能未実装
+	}
+
+/**
+ * コミュニティーに参加する
+ * @param   integer   current page_id
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function participate_community($currentPageId) {
+
+		$currentPageId = 108;
+
+		$user = $this->Auth->user();
+		$centerPage = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');
+		$ret = $this->Community->getCommunityData($currentPageId);
+		if($ret === false) {
+			throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'communities'));
+		}
+
+		list($community, $communityLang, $communityTag) = $ret;
+
+		$currentPage = $this->Page->findById($currentPageId);
+
+		if (!$currentPage || empty($user['id']) || !$this->request->is('post') || $community['Community']['participate_flag'] != NC_PARTICIPATE_FLAG_FREE) {
+			$this->response->statusCode('403');
+			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
+			return;
+		}
+
+		// 既に参加中かどうかチェック
+		$redirectUrl =Router::url('/', true) . '/' . NC_SPACE_GROUP_PREFIX . '/'. $currentPage['Page']['permalink'];
+		if($this->PageUserLink->isParticipate($currentPageId, $user['id'])) {
+			// 既に参加中
+			$this->flash(__d('page', 'Already participating.'), $redirectUrl);
+			return;
+		}
+
+		// 一般として参加
+		// page_user_links Insert
+		$insPageUserLink = array('PageUserLink' => array(
+			'room_id' => $currentPageId,
+			'user_id' => $user['id'],
+			'authority_id' => NC_AUTH_GENERAL_ID
+		));
+		$this->PageUserLink->create();
+		if(!$this->PageUserLink->save($insPageUserLink)) {
+			throw new InternalErrorException(__('Failed to register the database, (%s).', 'page_user_links'));
+		}
+
+		$this->flash(__d('page', 'You participated.'), $redirectUrl);
+
+		// TODO:メール通知機能未実装
+		return;
+	}
+
+/**
+ * このコミュニティーへの招待
+ * @param   integer   current page_id
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function invite_community($currentPageId) {
+		$user = $this->Auth->user();
+		$ret = $this->Community->getCommunityData($currentPageId);
+		if($ret === false) {
+			throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'communities'));
+		}
+
+		list($community, $communityLang, $communityTag) = $ret;
+
+		if (empty($user['id']) || $community['Community']['participate_flag'] == NC_PARTICIPATE_FLAG_ONLY_USER) {
+			$this->response->statusCode('403');
+			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
+			return;
+		}
+
+		$isParticipate = $this->PageUserLink->isParticipate($currentPageId, $user['id']);
+		if($isParticipate) {
+			$authority = $this->Authority->findById($isParticipate);
+			if(!$authority) {
+				throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'authorities'));
+			}
+			$minHierarchy = $this->Authority->getMinHierarchy($authority['Authority']['hierarchy']);
+			if ($minHierarchy < $community['Community']['invite_hierarchy']) {
+				$this->response->statusCode('403');
+				$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
+				return;
+			}
+		} else {
+			// 参加していないのに招待
+			$this->response->statusCode('403');
+			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
+			return;
+		}
+		if ($this->request->is('post')) {
+			// TODO:招待処理 未作成
+		}
 	}
 
 /**
