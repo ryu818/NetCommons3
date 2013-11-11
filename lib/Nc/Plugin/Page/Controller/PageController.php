@@ -202,6 +202,11 @@ class PageController extends PageAppController {
 		if(!isset($this->request->named['page'])) {
 			if(isset($pageId)) {
 				$page = $this->Page->findById($pageId);
+				if($isEdit && $page['Page']['thread_num'] == 2 && $page['Page']['display_sequence'] == 1) {
+					// Topページ
+					$pageId = $page['Page']['parent_id'];
+					$page = $this->Page->findById($pageId);
+				}
 				$communityPage = $this->Page->findById($page['Page']['root_id']);
 			} else if($centerPage['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
 				$communityPage = $this->Page->findById($centerPage['Page']['root_id']);
