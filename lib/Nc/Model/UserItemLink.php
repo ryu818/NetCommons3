@@ -256,10 +256,11 @@ class UserItemLink extends AppModel
 /**
  * langがはいっているデータならば、public_flag, email_reception_flag同期化
  * @param   boolean $created
+ * @param   array   $options
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	public function afterSave($created) {
+	public function afterSave($created, $options = array()) {
 		if($this->data[$this->alias]['lang'] != '') {
 			$fields = array(
 				$this->alias.'.public_flag' => isset($this->data[$this->alias]['public_flag']) ? $this->data[$this->alias]['public_flag'] : _ON,

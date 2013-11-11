@@ -364,10 +364,11 @@ class PageStyle extends AppModel
  * 更新後処理
  * 		 uploadLink更新処理
  * @param   boolean $created
+ * @param   array   $options
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	public function afterSave($created) {
+	public function afterSave($created, $options = array()) {
 		if(!empty($this->data[$this->alias]['original_background_image'])) {
 			$UploadLink = ClassRegistry::init('UploadLink');
 			$uploadArr = explode('.', $this->data[$this->alias]['original_background_image']);
@@ -405,7 +406,7 @@ class PageStyle extends AppModel
 				$UploadLink->save($uploadLink);
 			}
 		}
-		return parent::afterSave($created);
+		return parent::afterSave($created, $options);
 	}
 
 /**

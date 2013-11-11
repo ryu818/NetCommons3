@@ -910,7 +910,7 @@ class PageMenusController extends PageAppController {
 		$this->TempData->gc();
 
 		$hashKey = $this->PageMenu->getOperationKey($page['Page']['id'], $page['DropPage']['id']);
-		if($this->TempData->read($hashKey) !== false) {
+		if($this->TempData->readData($hashKey) !== false) {
 			// 既に実行中
 			$this->response->statusCode('200');
 			$this->flash(__d('page', 'You are already running. Please try again at a later time.'), '');
