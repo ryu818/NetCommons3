@@ -323,7 +323,7 @@ class PageStyle extends AppModel
 	public function findScopeStyle( $type = 'all', $page ) {
 		$Asset = ClassRegistry::init('Asset');
 		$postfix = $Asset->getPostFix();
-		$path = 'theme' . DS . 'page_styles' . DS;
+		$path = 'theme' . '/' . 'page_styles' . '/';
 		$pageStyles = $this->findScope('all', $page);
 		// type毎の優先順位が高いもののみ取得
 		$ret = array();
