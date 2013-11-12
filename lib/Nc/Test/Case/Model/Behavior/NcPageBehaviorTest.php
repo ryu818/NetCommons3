@@ -95,6 +95,28 @@ class NcPageBehaviorTest extends CakeTestCase {
  * @return void
  */
 	public function testUpdateDisplayFlag() {
+		$model = new Page;
+		$model->useDbConfig = 'test';
+
+		//$ck["display_flag"]=1のデータ（公開） 公開開始日に到達していて、終了日にも到達している。
+		$page = $model->find('first' , array('conditions'=>array('id'=>14)));
+		$ck = $this->Page->updateDisplayFlag($model , $page['Page']);
+		//公開期間が終わっているから、offになる。
+		$this->assertEqual(0 , $ck["display_flag"]);
+
+		//$ck["display_flag"]=0(非公開)のデータ 公開開始日に到達していて、終了日に到達していない
+		$page = $model->find('first' , array('conditions'=>array('id'=>15)));
+		$ck = $this->Page->updateDisplayFlag($model , $page['Page']);
+		//仕様不可なので、2のままになる。
+		$this->assertEqual(1 , $ck["display_flag"]);
+
+		//$ck["display_flag"]=2のデータ 公開開始日に到達していて、終了日に到達していない
+		$page = $model->find('first' , array('conditions'=>array('id'=>16)));
+		$ck = $this->Page->updateDisplayFlag($model , $page['Page']);
+		//仕様不可なので、2のままになる。
+		$this->assertEqual(2 , $ck["display_flag"]);
+
+
 	}
 
 }

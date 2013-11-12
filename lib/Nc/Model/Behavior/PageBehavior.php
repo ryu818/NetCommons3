@@ -124,17 +124,18 @@ class PageBehavior extends ModelBehavior {
  * ページメニューの階層構造を表示するafterコールバック
  *
  * @param  Model     $Model
- * @param  array     $results
- * @param  array     $fetch_params
- * @return array     $pages['space_type']['thread_num']['parent_id']['display_sequence']
+ * @param  array     $val
+ * @return array     $val
  * @since   v 3.0.0.0
  */
 	public function updateDisplayFlag(Model $Model, $val) {
 		$d = gmdate("Y-m-d H:i:s");
 
 		// 公開日時
-		if(!empty($val['display_from_date']) && $val['display_flag'] != NC_DISPLAY_FLAG_DISABLE &&
-				strtotime($val['display_from_date']) <= strtotime($d)) {
+		if(!empty($val['display_from_date']) //公開日時が指定されている。
+			&& $val['display_flag'] != NC_DISPLAY_FLAG_DISABLE //使用不可ではない、
+			&& $val['display_flag'] != NC_DISPLAY_FLAG_ON //公開ではない。
+			&& strtotime($val['display_from_date']) <= strtotime($d)) { //公開開始日を経過している・
 
 			$page_id_arr = array($val['id']);
 
@@ -147,21 +148,35 @@ class PageBehavior extends ModelBehavior {
 					}
 				}
 			}
-
-			$val['display_flag'] = NC_DISPLAY_FLAG_ON;
-
+			//公開フラグを設定
 			$fields = array(
-				'display_flag' => $val['display_flag'],
-				'display_from_date' => null
+				'display_flag' => NC_DISPLAY_FLAG_ON
 			);
 			$conditions = array(
 				'id' => $page_id_arr
 			);
+			$dataSource = $Model->getDataSource();
+			$dataSource->begin();
 			$result = $Model->updateAll($fields, $conditions);
+			if(!$result)
+			{
+				$dataSource->rollback();
+				//TODO 更新に失敗した場合の処理
+			}
+			else
+			{
+				//処理成功
+				$dataSource->commit();
+				//更新された場合の値
+				$val['display_flag'] = NC_DISPLAY_FLAG_ON;
+			}
 		}
 
-		if(!empty($val['display_to_date']) && $val['display_flag'] != NC_DISPLAY_FLAG_DISABLE &&
-				strtotime($val['display_to_date']) <= strtotime($d)) {
+		if(!empty($val['display_to_date']) //公開日が指定されている
+			&& $val['display_flag'] != NC_DISPLAY_FLAG_DISABLE //使用不可ではない
+			&& $val['display_flag'] != NC_DISPLAY_FLAG_OFF //非公開ではない
+			&& strtotime($val['display_to_date']) <= strtotime($d)) {//現在時刻を経過している・
+
 			// 現在のページ以下のページを取得
 			if(!isset($child_pages)) {
 				$current_page['Page'] = $val;
@@ -173,19 +188,30 @@ class PageBehavior extends ModelBehavior {
 					$page_id_arr[] = $page_id;
 				}
 			}
-
-			$val['display_flag'] = NC_DISPLAY_FLAG_OFF;
-
+			//非公開フラグに設定
 			$fields = array(
-				'display_flag' => $val['display_flag'],
-				'display_to_date' => null
+				'display_flag' => NC_DISPLAY_FLAG_OFF,
 			);
 			$conditions = array(
 				'id' => $page_id_arr
 			);
+			$dataSource = $Model->getDataSource();
+			$dataSource->begin();
 			$result = $Model->updateAll($fields, $conditions);
-		}
+			if(!$result)
+			{
+				$dataSource->rollback();
+				//TODO 更新に失敗した場合の処理
 
+			} else {
+				//処理成功
+				$dataSource->commit();
+				//成功時のデータにする。
+				$val['display_flag'] = NC_DISPLAY_FLAG_OFF;
+			}
+			return $val;
+		}
+		//それ以外の場合そのまま。
 		return $val;
 	}
 }
