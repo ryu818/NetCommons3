@@ -24,11 +24,11 @@
 
 SET app=%0
 SET lib=%~dp0
-// Modify for NetCommons Extentions By Ryuji.M --START
-// composerを利用するため、Vendor下のCakePHPを使用するように修正
+:: Modify for NetCommons Extentions By Ryuji.M --START
+:: composerを利用するため、Vendor下のCakePHPを使用するように修正
 php -q ".\cake.php" -working "%CD% " %*
 :: php -q "%lib%cake.php" -working "%CD% " %*
-// Modify for NetCommons Extentions By Ryuji.M --E N D
+:: Modify for NetCommons Extentions By Ryuji.M --E N D
 
 echo.
 
