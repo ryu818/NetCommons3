@@ -209,7 +209,6 @@ class PageUserLink extends AppModel
 		return 'success';
 	}
 
-
 /**
  * 会員参加バリデート
  * ・パブリックで不参加にはできない。
@@ -293,5 +292,80 @@ class PageUserLink extends AppModel
 		}
 
 		return $preParentUserIdArr;
+	}
+
+/**
+ * コミュニティー参加中かどうか
+ *  強制参加のコミュニティー以外で使用可能
+ * @param  integer $roomId
+ * @param  integer $userId
+ * @return boolean false|integer authority_id
+ * @since  v 3.0.0.0
+ */
+	public function isParticipate($roomId, $userId) {
+		// 既に参加中かどうかチェック
+		$params = array(
+			'fields' => array(
+				'PageUserLink.authority_id'
+			),
+			'conditions' => array(
+				'PageUserLink.room_id' => $roomId,
+				'PageUserLink.user_id' => $userId,
+			)
+		);
+		$pageUserLink = $this->find('first', $params);
+		if(!$pageUserLink) {
+			// 参加していない
+			return false;
+		}
+		return intval($pageUserLink[$this->alias]['authority_id']);
+	}
+
+/**
+ * コミュニティー退会可能かどうか
+ *  「参加者のみ」のコミュニティー以外で使用可能
+ *  人的管理ができるルームの主担が一人もいなくならないようにチェック。
+ * @param  integer $roomId
+ * @param  integer $userId
+ * @return boolean
+ * @since  v 3.0.0.0
+ */
+	public function isResign($roomId, $userId) {
+		$Authority = ClassRegistry::init('Authority');
+		$authorityIds = $Authority->find('list', array(
+			'fields' => array(
+				'Authority.id'
+			),
+			'conditions' => array(
+				'Authority.hierarchy >=' => NC_AUTH_MIN_CHIEF,
+				'Authority.allow_creating_community !=' => NC_ALLOW_CREATING_COMMUNITY_OFF,
+				//'Authority.display_participants_editing' => _ON
+			)
+		));
+
+		$params = array(
+			'fields' => array(
+				'PageUserLink.id'
+			),
+			'joins' => array(
+				array(
+					"type" => "INNER",
+					"table" => "communities",
+					"alias" => "Community",
+					"conditions" => "`PageUserLink`.`room_id`=`Community`.`room_id`"
+				),
+			),
+			'conditions' => array(
+				'PageUserLink.room_id' => $roomId,
+				'PageUserLink.user_id !=' => $userId,
+				'PageUserLink.authority_id' => $authorityIds,
+			)
+		);
+		$pageUserLink = $this->find('first', $params);
+		if(!$pageUserLink) {
+			// コミュニティー編集できる会員がいなくなるためエラー
+			return false;
+		}
+		return true;
 	}
 }

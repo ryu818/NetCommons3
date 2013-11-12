@@ -145,10 +145,11 @@ class BlogComment extends AppModel
 * コメントトラックバック更新後処理
 * is_approvedが_ONならば、該当が存在しているならば、Archiveを更新
 * @param boolean $created
+* @param   array   $options
 * @return boolean
 * @since v 3.0.0.0
 */
-	public function afterSave($created) {
+	public function afterSave($created, $options = array()) {
 		if (!$created) {
 			$Archive = ClassRegistry::init('Archive');
 			if($this->data[$this->alias]['is_approved'] == NC_APPROVED_FLAG_ON) {

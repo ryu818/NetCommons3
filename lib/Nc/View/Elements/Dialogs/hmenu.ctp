@@ -78,11 +78,30 @@ if($canShowPageSetting && !empty($this->params['active_plugin']) && $this->param
 					<span class="nc-hmenu-logo"></span>
 				</a>
 			</li>
+			<?php if(isset($page) && $page['Page']['space_type'] == NC_SPACE_TYPE_GROUP): ?>
+			<li class="nc-hmenu-li nc-hmenu-logo-li">
+				<?php
+					$communityInfParams = array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'community_inf', $page['Page']['root_id']);
+				?>
+				<div class="nc-hmenu-community-photo-outer" >
+				<a id="nc-hmenu-community-photo" class="nc-tooltip" data-ajax-effect="fold" data-ajax-force="true" data-ajax-dialog-options='{"title" : "<?php echo($this->Js->escape(__d('page', '[%s] Community information', $page['CommunityLang']['community_name'])));?>"}' data-ajax="#nc-community-inf" data-ajax-dialog="true" title="<?php echo(__d('page', '[%s] Community information', $page['CommunityLang']['community_name'])); ?>" href="<?php echo($this->Html->url($communityInfParams)); ?>">
+				<?php
+					if(!$page['Community']['is_upload']) {
+						$imageUrl = $this->Html->url('/', true).'page/img/community/'.$page['Community']['photo'];
+					} else {
+						$imageUrl = $this->Html->url('/', true).'nc-downloads/'.$page['Community']['photo'];
+					}
+					echo '<img alt="'.__d('page', '[%s] Community information', $page['CommunityLang']['community_name']).'" src="'.$imageUrl.'" />';
+				?>
+				</a>
+				</div>
+			</li>
+			<?php endif; ?>
 			<?php if($canShowPageSetting): ?>
 			<li class="nc-hmenu-li">
 				<?php echo $this->Html->link(__('Pages settings'), array('plugin' => 'page', 'controller' => 'page', 'action' => $action, 'block_id' => 0), array('id' => 'nc-pages-setting', 'class' => 'nc-hmenu-menu-a', 'aria-haspopup' => 'true', 'data-page-setting-url' => $this->Html->url(array('plugin' => 'page',  'controller' => 'page', 'action' => $subAction)))); ?>
 			</li>
-			<li class="nc-hmenu-li">
+			<li class="nc-hmenu-li nc-hmenu-li-right">
 				<div id="nc-pages-menu-path">
 					<span><?php echo trim($this->element('Pages/breadcrumb', array('pages_list' => $pages_list)),"\n\t "); ?></span>
 				</div>

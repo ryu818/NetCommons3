@@ -257,7 +257,7 @@ $is_operate_chief = true;
 		} else {
 			echo $this->Html->link('', '#',
 				array('title' => __('Edit'), 'class' => 'pages-menu-edit-icon disable-lbl',
-				'onclick' => 'return false;'));
+				'onclick' => '$(\'.pages-menu-edit-content:first\',$(\'#pages-menu-edit-item-'.$page['Page']['id'].'\')).click();return false;'));
 		}
 		if($is_chief || $is_sel_modules || $is_sel_members) {
 			$copy_page_id = $this->Session->read('Pages.'.'copy_page_id');

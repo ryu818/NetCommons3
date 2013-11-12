@@ -193,7 +193,7 @@ class PageOperationsController extends PageAppController {
 	public function check($copy_page_id) {
 		$move_page_id = $this->request->query['page_id'];
 		$hash_key = $this->PageMenu->getOperationKey($copy_page_id, $move_page_id);
-		$data = $this->TempData->read($hash_key);
+		$data = $this->TempData->readData($hash_key);
 		if(!isset($data)) {
 			$this->render(false, 'ajax');
 			return;

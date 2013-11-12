@@ -134,10 +134,11 @@ class Revision extends AppModel
  * 		・group_idが0ならば、$this->idで更新
  * 		・自動保存でNC_REVISION_AUTO_DRAFT_GC_LIFETIMEより古いものを削除
  * @param   boolean $created
+ * @param   array   $options
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	public function afterSave($created) {
+	public function afterSave($created, $options = array()) {
 		if ($created) {
 			if($this->data[$this->alias]['group_id'] == 0) {
 				// group_idが0ならば、$this->idで更新

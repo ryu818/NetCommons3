@@ -15,7 +15,8 @@
 			'plugins/fileupload/jquery.fileupload',				// fileuploadを複数includeすると
 			'plugins/fileupload/jquery.iframe-transport',		// javascriptで「too much recursion」エラーになるため、親でinclude
 			'plugins/select2',
-			'plugins/jquery.tmpl'
+			'plugins/jquery.tmpl',
+			'plugins/jquery.cj-object-scaler',
 	);
 	if($this->params['controller'] == 'pages') {
 		$common_js[] = 'pages/common/';

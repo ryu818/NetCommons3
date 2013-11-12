@@ -60,7 +60,7 @@ class TempData extends AppModel
  * @param integer|string $id The key of the value to read
  * @return mixed The value of the key or false if it does not exist
  */
-	public function read($id) {
+	public function readData($id) {
 		$id = $this->__id($id);
 		$row = $this->find('first', array(
 			'conditions' => array('id' => $id)

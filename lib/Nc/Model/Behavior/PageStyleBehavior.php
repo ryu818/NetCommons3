@@ -72,7 +72,7 @@ class PageStyleBehavior extends ModelBehavior {
 			$rets = $Page->findNodeFlag($page, array($isNodeColumn => _OFF));
 			$nodeId = $rets[$isNodeColumn];
 		}
-		
+
 		$conditions = array(
 			'or' => array(
 				array(
@@ -160,7 +160,7 @@ class PageStyleBehavior extends ModelBehavior {
 						}
 					}
 				}
-				
+
 				// 登録処理
 				$savePageStyle[$Model->alias]['id'] = $id;
 				if(!$Model->save($savePageStyle)) {
@@ -177,10 +177,11 @@ class PageStyleBehavior extends ModelBehavior {
  * 		scope: NC_PAGE_SCOPE_NODE かつ、page_idが入っていればPage.is_XXXX_nodeを更新
  * @param   Model   $Model
  * @param   boolean $created
+ * @param   array   $options
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function afterSave(Model $Model, $created) {
+	public function afterSave(Model $Model, $created, $options = array()) {
 		$isNodeColumn = 'is_' . Inflector::underscore($Model->name) . '_node';
 		if ($created && !empty($Model->data[$Model->alias]['page_id'])) {
 			if(in_array($Model->data[$Model->alias]['scope'], array(NC_PAGE_SCOPE_NODE, NC_PAGE_SCOPE_ROOM))) {

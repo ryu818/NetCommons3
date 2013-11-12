@@ -156,6 +156,13 @@ class PageController extends PageAppController {
 		$limit = !empty($this->request->named['limit']) ? intval($this->request->named['limit']) : PAGES_COMMUNITY_LIMIT;
 		$views = !empty($this->request->named['views']) ? intval($this->request->named['views']) : PAGES_COMMUNITY_VIEWS;
 		$pageId = isset($this->request->query['page_id']) ? intval($this->request->query['page_id']) : (isset($centerPage) ? $centerPage['Page']['id'] : null);
+		$participantPageId = isset($this->request->query['participant_page_id']) ? intval($this->request->query['participant_page_id']) : null;
+		if(!empty($participantPageId)) {
+			$participantPage = $this->Page->findById($participantPageId);
+			if($participantPage && $participantPage['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
+				$activeTab = 1;
+			}
+		}
 
 		// 言語切替
 		$languages = Configure::read(NC_CONFIG_KEY.'.'.'languages');
@@ -195,6 +202,11 @@ class PageController extends PageAppController {
 		if(!isset($this->request->named['page'])) {
 			if(isset($pageId)) {
 				$page = $this->Page->findById($pageId);
+				if($isEdit && $page['Page']['thread_num'] == 2 && $page['Page']['display_sequence'] == 1) {
+					// Topページ
+					$pageId = $page['Page']['parent_id'];
+					$page = $this->Page->findById($pageId);
+				}
 				$communityPage = $this->Page->findById($page['Page']['root_id']);
 			} else if($centerPage['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
 				$communityPage = $this->Page->findById($centerPage['Page']['root_id']);
@@ -208,7 +220,7 @@ class PageController extends PageAppController {
 			}
 		}
 		if(isset($this->request->query['page_id'])) {
-			// コピー、ペーストでコミュニティへペーストした場合、コミュニティタブへ
+			// コピー、ペーストでコミュニティーへペーストした場合、コミュニティタブへ
 			$activeTab = $selActiveTab;
 		}
 
