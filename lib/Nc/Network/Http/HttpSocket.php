@@ -110,7 +110,7 @@ class HttpSocket extends CakeSocket {
 		)
 // Add for NetCommons Extentions By R.Ohga --START
 // システム管理のプロキシサーバーの設定を確認するフラグ
-		'nc_proxy' => true
+		,'nc_proxy' => true
 // Add for NetCommons Extentions By R.Ohga --E N D
 	);
 
