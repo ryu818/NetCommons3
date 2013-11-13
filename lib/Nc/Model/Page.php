@@ -981,7 +981,7 @@ class Page extends AppModel
  * Current Pageの子供のページを取得
  *
  * @param string    $type first or all or list
- * @param array     $current_user
+ * @param array     $currentPage pageの1件分の配列
  * @param string    $lang
  * @param   integer|string 'all'  $userId
  * @return  array   $fields
