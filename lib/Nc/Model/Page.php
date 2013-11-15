@@ -21,6 +21,9 @@ class Page extends AppModel
 // 公開日付をsaveする前に変換するかどうかのフラグ
 	public $autoConvert = true;
 
+	public $PageTree;
+
+
 /**
  * バリデート処理
  * @param   void
@@ -29,6 +32,8 @@ class Page extends AppModel
  */
 	public function __construct() {
 		parent::__construct();
+
+		$this->PageTree = ClassRegistry::init('PageTree');
 
 		//エラーメッセージ取得
 		$this->validate = array(
@@ -344,13 +349,15 @@ class Page extends AppModel
 
 /**
  * 初期値設定
+ * 新規でページを作る際の初期データの作成を助ける。
+ *
  * @param   integer $spaceType
  * @return  Model Page
  * @since   v 3.0.0.0
  */
 	public function findDefault($spaceType) {
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
-		$data = array('Page');
+		$data = array();
 
 		$data['Page']['root_id'] = 0;
 		$data['Page']['parent_id'] = 0;
@@ -384,11 +391,7 @@ class Page extends AppModel
 			$data['Page']['parent_id'] = NC_TOP_GROUP_ID;
 			$data['Page']['page_name'] = "Community";
 		}
-		if($spaceType == NC_SPACE_TYPE_PRIVATE) {
-			$ins_page['Page']['lang'] = '';
-		} else {
-			$ins_page['Page']['lang'] = $lang;
-		}
+
 		return $data;
 	}
 
