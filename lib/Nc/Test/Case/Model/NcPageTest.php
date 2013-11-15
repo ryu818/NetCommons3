@@ -46,7 +46,7 @@ class NcPageTest extends CakeTestCase {
  *
  * @return void
  */
-	public function testFindDefault() {
+	public function testGetDefaultData() {
 
 		//パブリックスペースのページを作るとき用の基本データ
 		$result = array (
@@ -73,7 +73,7 @@ class NcPageTest extends CakeTestCase {
 			),
 		);
 
-		$ck = $this->Page->findDefault(NC_SPACE_TYPE_PUBLIC);
+		$ck = $this->Page->getDefaultData(NC_SPACE_TYPE_PUBLIC);
 		$this->assertEqual($result , $ck);
 
 		//マイポータルのページを作るとき用の基本データ
@@ -100,7 +100,7 @@ class NcPageTest extends CakeTestCase {
 				'page_name' => 'Myportal',
 			)
 		);
-		$ck = $this->Page->findDefault(NC_SPACE_TYPE_MYPORTAL);
+		$ck = $this->Page->getDefaultData(NC_SPACE_TYPE_MYPORTAL);
 		$this->assertEqual($result , $ck);
 
 		//プライベートスペース（マイルーム）
@@ -127,7 +127,7 @@ class NcPageTest extends CakeTestCase {
 				'page_name' => 'Private room',
 			),
 		);
-		$ck = $this->Page->findDefault(NC_SPACE_TYPE_PRIVATE );
+		$ck = $this->Page->getDefaultData(NC_SPACE_TYPE_PRIVATE );
 		$this->assertEqual($result , $ck);
 
 		//コミュニティー
@@ -154,7 +154,7 @@ class NcPageTest extends CakeTestCase {
 				'page_name' => 'Community',
 			),
 		);
-		$ck = $this->Page->findDefault(NC_SPACE_TYPE_GROUP);
+		$ck = $this->Page->getDefaultData(NC_SPACE_TYPE_GROUP);
 		$this->assertEqual($result , $ck);
 
 	}

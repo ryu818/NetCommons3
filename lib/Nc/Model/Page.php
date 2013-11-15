@@ -355,7 +355,7 @@ class Page extends AppModel
  * @return  Model Page
  * @since   v 3.0.0.0
  */
-	public function findDefault($spaceType) {
+	public function getDefaultData($spaceType) {
 		$data = array();
 
 		$data['Page']['root_id'] = 0;
@@ -1500,7 +1500,7 @@ class Page extends AppModel
 			$pageName = '';
 		}
 
-		$insPage = $this->findDefault($spaceType);
+		$insPage = $this->getDefaultData($spaceType);
 		if(!isset($useFlag) || $authority['Authority'][$useFlag]) {
 			$insPage['Page']['display_flag'] = NC_DISPLAY_FLAG_ON;
 		} else {
