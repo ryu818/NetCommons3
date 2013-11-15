@@ -356,7 +356,6 @@ class Page extends AppModel
  * @since   v 3.0.0.0
  */
 	public function findDefault($spaceType) {
-		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		$data = array();
 
 		$data['Page']['root_id'] = 0;
