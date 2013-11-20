@@ -335,6 +335,7 @@ class NcPageTest extends CakeTestCase {
  */
 	public function testFindViewable() {
 
+		/*
 		//閲覧可能のページリストを取得
 		//user_idの指定なし
 		$type = 'all';
@@ -357,6 +358,7 @@ class NcPageTest extends CakeTestCase {
 		$user_id = 1;
 		//$ck = $this->Page->findViewable($type);
 		//var_export($ck);
+		*/
 
 	}
 
