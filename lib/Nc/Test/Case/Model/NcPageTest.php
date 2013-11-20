@@ -35,8 +35,6 @@ class NcPageTest extends CakeTestCase {
 		$this->Page->Authority->useDbConfig    = 'test';
 		$this->Page->PageTree->useDbConfig     = 'test';
 		$this->Page->PageUserLink->useDbConfig = 'test';
-
-
 	}
 
 /**
@@ -338,8 +336,26 @@ class NcPageTest extends CakeTestCase {
 	public function testFindViewable() {
 
 		//閲覧可能のページリストを取得
+		//user_idの指定なし
 		$type = 'all';
 		$ck = $this->Page->findViewable($type);
+		//var_dump($ck);
+		//1件だけHITする。
+		$this->assertEqual(1 , count($ck));
+		$this->assertEqual(9 , $ck[9]['Page']['id']);
+
+		//user_idが指定されている場合
+		//public_roomとuser_id:1の場合はそれのprivate_roomもHITする。
+		$type = 'all';
+		$user_id = 1;
+		$ck = $this->Page->findViewable($type , $user_id);
+		$this->assertEqual(2 , count($ck));
+		$this->assertEqual(9 , $ck[9]['Page']['id']);
+		$this->assertEqual(11 , $ck[11]['Page']['id']);
+
+		$type = 'thread';
+		$user_id = 1;
+		//$ck = $this->Page->findViewable($type);
 		//var_export($ck);
 
 	}
