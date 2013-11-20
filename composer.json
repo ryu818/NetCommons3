@@ -5,12 +5,31 @@
         {
             "type": "pear",
             "url": "http://pear.cakephp.org"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/topaz2/migrations"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/cakephp/cakephp.git"
         }
     ],
+    "minimum-stability": "dev",
     "require": {
-        "pear-cakephp/cakephp": "2.4.1"
+        "cakedc/migrations": "dev-master",
+        "ext-mcrypt": "*",
+        "ext-mbstring": "*"
     },
-    "config": {
-        "vendor-dir": "lib/Nc/Vendor/"
-    }
+    "require-dev": {
+        "cakephp/cakephp": "3.0.x-dev"
+    },
+    "autoload": {
+        "psr-0": {
+            "Cake\\": "."
+        }
+    },
+    "bin": [
+        "Cake/Console/cake"
+    ]
 }
