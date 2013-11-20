@@ -8,7 +8,7 @@ Vagrant.configure("2") do |config|
   config.vm.network :forwarded_port, guest: 80, host: 8080
 
   config.vm.synced_folder "./", "/vagrant_data", :create => true, :owner=> 'www-data', :group=>'www-data', :mount_options => ['dmode=775','fmode=775']
-  doc_root = '/vagrant_data/app/webroot'
+  doc_root = '/vagrant_data/webroot'
 
   config.berkshelf.enabled = true
 

@@ -12,24 +12,28 @@
         },
         {
             "type": "vcs",
-            "url": "https://github.com/cakephp/cakephp.git"
+            "url": "https://github.com/topaz2/cakephp"
         }
     ],
     "minimum-stability": "dev",
     "require": {
-        "cakedc/migrations": "dev-master",
+        "php": ">=5.4",
         "ext-mcrypt": "*",
-        "ext-mbstring": "*"
+        "ext-mbstring": "*",
+        "cakephp/cakephp": "3.0.*-dev",
+        "cakephp/debug_kit": "2.2.*",
+        "cakedc/migrations": "dev-master"
     },
-    "require-dev": {
-        "cakephp/cakephp": "3.0.x-dev"
+    "suggest": {
+        "phpunit/phpunit": "Allows automated tests to be run without system-wide install."
     },
     "autoload": {
         "psr-0": {
-            "Cake\\": "."
+            "App\\": ".",
+            "": "./Plugin"
         }
     },
-    "bin": [
-        "Cake/Console/cake"
-    ]
+    "scripts": {
+        "post-install-cmd": "App\\Console\\Installer::postInstall"
+    }
 }

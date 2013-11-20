@@ -3,33 +3,221 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "c841d596d084dcb4e5756be0e396cfcf",
+    "hash": "5d7cfdbe9757ff0880230a251499c787",
     "packages": [
         {
-            "name": "pear-pear.cakephp.org/CakePHP",
-            "version": "2.4.1",
+            "name": "cakedc/migrations",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/topaz2/migrations.git",
+                "reference": "94036a606089c7e14b349eba043b0f58a0947e29"
+            },
             "dist": {
-                "type": "file",
-                "url": "http://pear.cakephp.org/get/CakePHP-2.4.1.tgz",
-                "reference": null,
-                "shasum": null
+                "type": "zip",
+                "url": "https://api.github.com/repos/topaz2/migrations/zipball/94036a606089c7e14b349eba043b0f58a0947e29",
+                "reference": "94036a606089c7e14b349eba043b0f58a0947e29",
+                "shasum": ""
             },
             "require": {
-                "php": ">=5.2.8.0"
+                "composer/installers": "*"
+            },
+            "type": "cakephp-plugin",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Cake Development Corporation",
+                    "homepage": "http://cakedc.com"
+                }
+            ],
+            "description": "Migrations Plugin for CakePHP",
+            "homepage": "http://cakedc.com",
+            "keywords": [
+                "cakephp",
+                "migrations"
+            ],
+            "support": {
+                "source": "https://github.com/topaz2/migrations/tree/2.2.3"
+            },
+            "time": "2013-10-21 10:45:27"
+        },
+        {
+            "name": "cakephp/cakephp",
+            "version": "3.0.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/topaz2/cakephp.git",
+                "reference": "578add2b63baad01b9e45bd3950acb2ac350900f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/topaz2/cakephp/zipball/578add2b63baad01b9e45bd3950acb2ac350900f",
+                "reference": "578add2b63baad01b9e45bd3950acb2ac350900f",
+                "shasum": ""
+            },
+            "require": {
+                "ext-mbstring": "*",
+                "ext-mcrypt": "*",
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.*"
+            },
+            "bin": [
+                "Cake/Console/cake"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Cake\\": "."
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "CakePHP Community",
+                    "homepage": "https://github.com/cakephp/cakephp/graphs/contributors"
+                }
+            ],
+            "description": "The CakePHP framework",
+            "homepage": "http://cakephp.org",
+            "keywords": [
+                "framework"
+            ],
+            "support": {
+                "issues": "https://github.com/cakephp/cakephp/issues",
+                "forum": "http://stackoverflow.com/tags/cakephp",
+                "irc": "irc://irc.freenode.org/cakephp",
+                "source": "https://github.com/cakephp/cakephp"
+            },
+            "time": "2013-11-05 08:33:55"
+        },
+        {
+            "name": "cakephp/debug_kit",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cakephp/debug_kit.git",
+                "reference": "a6d601c1f9f5e380aeef1587f702d41577e15327"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cakephp/debug_kit/zipball/a6d601c1f9f5e380aeef1587f702d41577e15327",
+                "reference": "a6d601c1f9f5e380aeef1587f702d41577e15327",
+                "shasum": ""
+            },
+            "require": {
+                "composer/installers": "*",
+                "php": ">=5.3.0"
+            },
+            "type": "cakephp-plugin",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.2.x-dev"
+                },
+                "installer-name": "DebugKit"
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mark Story",
+                    "homepage": "http://mark-story.com",
+                    "role": "Author"
+                },
+                {
+                    "name": "CakePHP Community",
+                    "homepage": "https://github.com/cakephp/debug_kit/graphs/contributors"
+                }
+            ],
+            "description": "CakePHP Debug Kit",
+            "homepage": "https://github.com/cakephp/debug_kit",
+            "keywords": [
+                "cakephp",
+                "debug",
+                "kit"
+            ],
+            "time": "2013-11-14 15:32:47"
+        },
+        {
+            "name": "composer/installers",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/composer/installers.git",
+                "reference": "d792632d27e1980d921cbbba12eab7b888338d4c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/composer/installers/zipball/d792632d27e1980d921cbbba12eab7b888338d4c",
+                "reference": "d792632d27e1980d921cbbba12eab7b888338d4c",
+                "shasum": ""
             },
             "replace": {
-                "pear-cakephp/cakephp": "== 2.4.1.0"
+                "shama/baton": "*"
             },
-            "type": "pear-library",
+            "require-dev": {
+                "composer/composer": "1.0.*@dev",
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "composer-installer",
+            "extra": {
+                "class": "Composer\\Installers\\Installer",
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
             "autoload": {
-                "classmap": [
-                    ""
-                ]
+                "psr-0": {
+                    "Composer\\Installers\\": "src/"
+                }
             },
-            "include-path": [
-                "/"
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
             ],
-            "description": "CakePHP is an application development framework for PHP 5.2+"
+            "authors": [
+                {
+                    "name": "Kyle Robinson Young",
+                    "email": "kyle@dontkry.com",
+                    "homepage": "https://github.com/shama",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A multi-framework Composer library installer",
+            "homepage": "http://composer.github.com/installers/",
+            "keywords": [
+                "TYPO3 CMS",
+                "TYPO3 Flow",
+                "TYPO3 Neos",
+                "agl",
+                "cakephp",
+                "codeigniter",
+                "concrete5",
+                "drupal",
+                "fuelphp",
+                "installer",
+                "joomla",
+                "kohana",
+                "laravel",
+                "li3",
+                "lithium",
+                "mako",
+                "modulework",
+                "phpbb",
+                "ppi",
+                "silverstripe",
+                "symfony",
+                "wordpress",
+                "zend"
+            ],
+            "time": "2013-10-24 16:13:49"
         }
     ],
     "packages-dev": [
@@ -38,13 +226,16 @@
     "aliases": [
 
     ],
-    "minimum-stability": "stable",
-    "stability-flags": [
-
-    ],
-    "platform": [
-
-    ],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "cakephp/cakephp": 20,
+        "cakedc/migrations": 20
+    },
+    "platform": {
+        "php": ">=5.4",
+        "ext-mcrypt": "*",
+        "ext-mbstring": "*"
+    },
     "platform-dev": [
 
     ]
