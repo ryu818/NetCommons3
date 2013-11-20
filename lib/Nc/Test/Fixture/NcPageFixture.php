@@ -11,7 +11,7 @@ class NcPageFixture extends CakeTestFixture {
 	public $fields = array(
 		'id'        =>array( 'type' => 'integer','null' => false, 'default' => null, 'key' => 'primary'),
 		'root_id'   =>array( 'type' => 'integer','length' =>11 ,'null'=>false ,'default' => 0), //int(11) NOT NULL DEFAULT '0' COMMENT '??????ID??????????????????0????0?',
-		//'parent_id' =>array( 'type' => 'integer','length' =>11 ,'null'=>false ,'default' => 0), //int(11) NOT NULL DEFAULT '0' COMMENT '????ID???0????0?',
+		'parent_id' =>array( 'type' => 'integer','length' =>11 ,'null'=>false ,'default' => 0), //int(11) NOT NULL DEFAULT '0' COMMENT '????ID???0????0?',
 		'thread_num'=>array( 'type' => 'integer','length' =>11 ,'null'=>false ,'default' => 0), // int(11) NOT NULL DEFAULT '0' COMMENT '??????????0?',
 		'display_sequence'=>array('type' => 'integer','length' =>11 ,'null'=>false ,'default' => 0), // int(11) NOT NULL DEFAULT '0' COMMENT '??????????1????????????????????????????1???????(?????????????????????0)?',
 		'page_name' =>array( 'type' => 'string' ,'length' =>30 ,'null'=>false), // varchar(30) NOT NULL COMMENT '????',
@@ -45,7 +45,7 @@ class NcPageFixture extends CakeTestFixture {
 		array(
 			'id'=> 1,
 			'root_id'=> 0 ,
-			//'parent_id'=> 0 ,
+			'parent_id'=> 0 ,
 			'thread_num'=> 0 ,
 			'display_sequence'=> 1 ,
 			'page_name'=> 'Public room',
@@ -77,7 +77,7 @@ class NcPageFixture extends CakeTestFixture {
 		array(
 			'id'                => 2,
 			'root_id'           => 0 ,
-			//'parent_id'         => 0 ,
+			'parent_id'         => 0 ,
 			'thread_num'        => 0 ,
 			'display_sequence'  => 2 ,
 			'page_name'         => 'Myportal',
@@ -109,7 +109,7 @@ class NcPageFixture extends CakeTestFixture {
 		array(
 			'id'                => 3,
 			'root_id'           => 0 ,
-			//'parent_id'         => 0 ,
+			'parent_id'         => 0 ,
 			'thread_num'        => 0 ,
 			'display_sequence'  => 3 ,
 			'page_name'         => 'Private room',
@@ -141,7 +141,7 @@ class NcPageFixture extends CakeTestFixture {
 		array(
 			'id'                => 4,
 			'root_id'           => 0 ,
-			//'parent_id'         => 0 ,
+			'parent_id'         => 0 ,
 			'thread_num'        => 0 ,
 			'display_sequence'  => 4,
 			'page_name'         => 'Community',
@@ -173,7 +173,7 @@ class NcPageFixture extends CakeTestFixture {
 		array(
 			'id'                => 5,
 			'root_id'           => 0 ,
-			//'parent_id'         => 0 ,
+			'parent_id'         => 0 ,
 			'thread_num'        => 0 ,
 			'display_sequence'  => 4,
 			'page_name'         => 'Headercolumn',
@@ -205,7 +205,7 @@ class NcPageFixture extends CakeTestFixture {
 		array(
 			'id'                => 6,
 			'root_id'           => 0 ,
-			//'parent_id'         => 0 ,
+			'parent_id'         => 0 ,
 			'thread_num'        => 0 ,
 			'display_sequence'  => 0,
 			'page_name'         => 'Leftcolumn',
@@ -237,7 +237,7 @@ class NcPageFixture extends CakeTestFixture {
 		array(
 			'id'                => 7,
 			'root_id'           => 0 ,
-			//'parent_id'         => 0 ,
+			'parent_id'         => 0 ,
 			'thread_num'        => 0 ,
 			'display_sequence'  => 0,
 			'page_name'         => 'Rightcolumn',
@@ -269,7 +269,7 @@ class NcPageFixture extends CakeTestFixture {
 		array(
 			'id'                => 8,
 			'root_id'           => 0 ,
-			//'parent_id'         => 0 ,
+			'parent_id'         => 0 ,
 			'thread_num'        => 0 ,
 			'display_sequence'  => 0,
 			'page_name'         => 'Footercolumn',
@@ -301,7 +301,7 @@ class NcPageFixture extends CakeTestFixture {
 		array(
 			'id'                => 9,
 			'root_id'           => 9 ,
-			//'parent_id'         => 1 ,
+			'parent_id'         => 1 ,
 			'thread_num'        => 1 ,
 			'display_sequence'  => 0,
 			'page_name'         => 'Public room',
@@ -333,7 +333,7 @@ class NcPageFixture extends CakeTestFixture {
 		array(
 			'id'                => 10,
 			'root_id'           => 10 ,
-			//'parent_id'         => 2 ,
+			'parent_id'         => 2 ,
 			'thread_num'        => 1 ,
 			'display_sequence'  => 0,
 			'page_name'         => 'Myportal',
@@ -365,7 +365,7 @@ class NcPageFixture extends CakeTestFixture {
 		array(
 			'id'                => 11,
 			'root_id'           => 11 ,
-			//'parent_id'         => 3 ,
+			'parent_id'         => 3 ,
 			'thread_num'        => 1 ,
 			'display_sequence'  => 0,
 			'page_name'         => 'Private room',
@@ -397,7 +397,7 @@ class NcPageFixture extends CakeTestFixture {
 		array(
 			'id'                => 12,
 			'root_id'           => 9 ,
-			//'parent_id'         => 9 ,
+			'parent_id'         => 9 ,
 			'thread_num'        => 2 ,
 			'display_sequence'  => 1,
 			'page_name'         => '??????',
@@ -429,7 +429,7 @@ class NcPageFixture extends CakeTestFixture {
 		array(
 			'id'                => 13,
 			'root_id'           => 10 ,
-			//'parent_id'         => 10 ,
+			'parent_id'         => 10 ,
 			'thread_num'        => 2 ,
 			'display_sequence'  => 1,
 			'page_name'         => 'Myportal Top',
@@ -461,7 +461,7 @@ class NcPageFixture extends CakeTestFixture {
 		array(
 			'id'                => 14,
 			'root_id'           => 11 ,
-			//'parent_id'         => 11 ,
+			'parent_id'         => 11 ,
 			'thread_num'        => 2 ,
 			'display_sequence'  => 1,
 			'page_name'         => 'Private Top',
@@ -493,7 +493,7 @@ class NcPageFixture extends CakeTestFixture {
 		array(
 			'id'                => 15,
 			'root_id'           => 11 ,
-			//'parent_id'         => 11 ,
+			'parent_id'         => 11 ,
 			'thread_num'        => 2 ,
 			'display_sequence'  => 1,
 			'page_name'         => 'Private Top',
@@ -525,7 +525,7 @@ class NcPageFixture extends CakeTestFixture {
 		array(
 			'id'                => 16,
 			'root_id'           => 11 ,
-			//'parent_id'         => 11 ,
+			'parent_id'         => 11 ,
 			'thread_num'        => 2 ,
 			'display_sequence'  => 1,
 			'page_name'         => 'Private',
