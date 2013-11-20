@@ -318,14 +318,7 @@ class NcPageTest extends CakeTestCase {
 				),
 			),
 		);
-
-		//全件
-		$ck = $this->Page->findRoomList('all');
-		$this->assertEqual($result , $ck);
-
-		//id指定
-		$ck = $this->Page->findRoomList(1);
-		var_export($ck);
+		//TODO 先に testFindViewableのテストをしてから書く。
 
 	}
 
@@ -343,6 +336,12 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testFindViewable() {
+
+		//閲覧可能のページリストを取得
+		$type = 'all';
+		$ck = $this->Page->findViewable($type);
+		//var_export($ck);
+
 	}
 
 /**
@@ -490,9 +489,6 @@ class NcPageTest extends CakeTestCase {
 		$this->assertEqual($result , $ck);
 		$this->Page->find('list' , array());
 		*/
-
-
-
 	}
 
 /**
