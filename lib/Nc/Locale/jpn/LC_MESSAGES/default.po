@@ -793,6 +793,15 @@ msgstr 	"%1$s年%2$s月"
 msgid "(%s)"
 msgstr 	"%s年"
 
+msgid  "%sd"
+msgstr "%s日"
+msgid  " %sh"
+msgstr "%s時"
+msgid  " %smin"
+msgstr 	"%s分"
+msgid  " %ss"
+msgstr 	"%s秒"
+
 ## 新規カラム追加
 msgid  	"Leftcolumn"
 msgstr 	"左カラム"
