@@ -21,6 +21,13 @@ class Page extends AppModel
 // 公開日付をsaveする前に変換するかどうかのフラグ
 	public $autoConvert = true;
 
+	// Model class object
+	public $Authority;
+	public $PageTree;
+	public $PageUserLink;
+
+
+
 /**
  * バリデート処理
  * @param   void
@@ -29,6 +36,10 @@ class Page extends AppModel
  */
 	public function __construct() {
 		parent::__construct();
+
+		$this->PageTree  = ClassRegistry::init('PageTree');
+		$this->Authority = ClassRegistry::init('Authority');
+		$this->PageUserLink = ClassRegistry::init('PageUserLink');
 
 		//エラーメッセージ取得
 		$this->validate = array(
@@ -344,13 +355,14 @@ class Page extends AppModel
 
 /**
  * 初期値設定
+ * 新規でページを作る際の初期データの作成を助ける。
+ *
  * @param   integer $spaceType
  * @return  Model Page
  * @since   v 3.0.0.0
  */
-	public function findDefault($spaceType) {
-		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
-		$data = array('Page');
+	public function getDefaultData($spaceType) {
+		$data = array();
 
 		$data['Page']['root_id'] = 0;
 		$data['Page']['parent_id'] = 0;
@@ -384,11 +396,7 @@ class Page extends AppModel
 			$data['Page']['parent_id'] = NC_TOP_GROUP_ID;
 			$data['Page']['page_name'] = "Community";
 		}
-		if($spaceType == NC_SPACE_TYPE_PRIVATE) {
-			$ins_page['Page']['lang'] = '';
-		} else {
-			$ins_page['Page']['lang'] = $lang;
-		}
+
 		return $data;
 	}
 
@@ -981,7 +989,7 @@ class Page extends AppModel
  * Current Pageの子供のページを取得
  *
  * @param string    $type first or all or list
- * @param array     $current_user
+ * @param array     $currentPage pageの1件分の配列
  * @param string    $lang
  * @param   integer|string 'all'  $userId
  * @return  array   $fields
@@ -1450,12 +1458,13 @@ class Page extends AppModel
 
 /**
  * マイポータル作成, マイルーム作成, ルーム参加
- * @param   Model User $user
+ * @param   array User $user 1レコード分の配列 $user['User']が含まれているもの。
  * @return  boolean false|array($myportalPageId, private_page_id)
  * @since   v 3.0.0.0
  */
 	public function createDefaultEntry($user) {
-		$Authority = ClassRegistry::init('Authority');
+
+		$Authority = $this->Authority;
 
 		$authority = $Authority->find('first', array(
 			'fields' => array('myportal_use_flag', 'private_use_flag'),
@@ -1465,8 +1474,11 @@ class Page extends AppModel
 		if(!isset($authority['Authority'])) {
 			return false;
 		}
+
+
 		$myportalPageId = $this->insTopRoom(NC_SPACE_TYPE_MYPORTAL, $user['User']['id'], $user['User']['permalink'], $authority);
-		$privatePageId = $this->insTopRoom(NC_SPACE_TYPE_PRIVATE, $user['User']['id'], $user['User']['permalink'], $authority);
+		$privatePageId  = $this->insTopRoom(NC_SPACE_TYPE_PRIVATE,  $user['User']['id'], $user['User']['permalink'], $authority);
+
 		if(!$myportalPageId || !$privatePageId) {
 			return false;
 		}
@@ -1475,9 +1487,10 @@ class Page extends AppModel
 	}
 
 /**
- * マイページ、マイポータルinsert
+ *　　　　　　 マイページ、マイポータルinsert
  *
  * @param integer   $spaceType
+ * @param integer   $userId
  * @param string    $permalink
  * @param array     $authority
  * @param array     $nodePage		編集の場合セット
@@ -1498,7 +1511,7 @@ class Page extends AppModel
 			$pageName = '';
 		}
 
-		$insPage = $this->findDefault($spaceType);
+		$insPage = $this->getDefaultData($spaceType);
 		if(!isset($useFlag) || $authority['Authority'][$useFlag]) {
 			$insPage['Page']['display_flag'] = NC_DISPLAY_FLAG_ON;
 		} else {
@@ -1585,7 +1598,7 @@ class Page extends AppModel
 		/*
 		 * page_user_links Insert
 		 */
-		$PageUserLink = ClassRegistry::init('PageUserLink');
+		$PageUserLink = $this->PageUserLink;
 		$pageUserLink = array('PageUserLink');
 		$pageUserLink['PageUserLink']['room_id'] = $newRoomId;
 		$pageUserLink['PageUserLink']['user_id'] = $userId;

@@ -85,6 +85,32 @@ class NcUserFixture extends CakeTestFixture {
 			'modified'=>'2013-10-31 09:52:46',
 			'modified_user_id'=>'0',
 			'modified_user_name'=>''
+		),
+		array(
+			'id'=>"7",
+			'login_id'=>'admin_7' ,
+			'password'=>'1a9faaae0428d9f50245c1fb77cad74a25fd917a' ,
+			'handle'=>'admin',
+			'authority_id'=>"1",
+			'is_active'=>"1",
+			'permalink'=>'admin',
+			'myportal_page_id'=>"10",
+			'private_page_id'=>"11",
+			'avatar'=>NULL,
+			'activate_key'=>NULL,
+			'lang'=>'ja',
+			'timezone_offset'=>"9",
+			'email'=>'',
+			'mobile_email'=>'',
+			'password_regist'=>NULL ,
+			'last_login'=>'2013-09-27 00:42:44',
+			'previous_login'=>'2013-07-22 08:20:15',
+			'created'=>'2013-10-31 04:09:21',
+			'created_user_id'=>"1",
+			'created_user_name'=>'admin',
+			'modified'=>'2013-10-31 09:52:46',
+			'modified_user_id'=>'0',
+			'modified_user_name'=>''
 		)
 	);
 
