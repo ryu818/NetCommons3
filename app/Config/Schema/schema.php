@@ -998,8 +998,8 @@ UploadLinkの対応するレコードが１件もない場合は「0」となる
 		'parent_id'     =>array( 'type' => 'integer','null'=>false ,'default' => 0 , 'comment'=>'先祖のpage_id'),
 		'children_id'   =>array( 'type' => 'integer','null'=>false ,'default' => 0 , 'comment'=>'子孫のpage_id'),
 		'stratum_num'   =>array('type' => 'integer','null'=>false ,'default' => 0 , 'comment'=>'先祖からみた子孫の階層'),
-		'created'       =>array('timestamp'),
-		'modified'      =>array('timestamp'),
+		'created'       =>array('type' => 'datetime', 'null' => true, 'default' => null),
+		'modified'      =>array('type' => 'datetime', 'null' => true, 'default' => null),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);
 
