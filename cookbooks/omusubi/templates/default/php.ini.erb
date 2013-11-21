@@ -1928,3 +1928,26 @@ ldap.max_links = -1
 ; Local Variables:
 ; tab-width: 4
 ; End:
+
+[xdebug]
+xdebug.overload_var_dump=0
+xdebug.auto_trace=1
+xdebug.trace_format=0
+xdebug.profiler_enable=1
+xdebug.show_local_vars=9
+xdebug.collect_params=4
+
+xdebug.remote_autostart=off
+xdebug.remote_enable=on
+xdebug.remote_handler=dbgp
+xdebug.remote_mode=req
+xdebug.remote_host=localhost
+xdebug.remote_port=9000
+
+;; xdebug.show_mem_delta=1
+;; xdebug.dump.GET=*
+;; xdebug.dump.POST=*
+;; xdebug.dump.SESSION=*
+;; xdebug.var_display_max_children=1024
+;; xdebug.var_display_max_data=5120
+;; xdebug.var_display_max_depth=30
