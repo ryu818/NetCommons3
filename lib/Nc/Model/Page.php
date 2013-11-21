@@ -722,8 +722,10 @@ class Page extends AppModel
  * 閲覧可能のページリストを取得
  *
  * type:listはkey,valueまで取得可能
- * TODO:左カラム等は現状、含めていない。
+ * TODO : 左カラム等は現状、含めていない。
+ *
  * TODO : $optionsがarrayでは無かった場合の考慮
+ * TODO : $addParamsがarrayではなかった場合の考慮
  *
  * @param   string  $type first or all or list, menu(メニュー表示時), child_menus(メニュー表示時)
  * @param   integer|string 'all'  $userId
@@ -781,14 +783,21 @@ class Page extends AppModel
 		} else if(!empty($userId) && $userId != 'all') {
 			$User = $this->User;
 			$currentUser     = $User->findById($userId);
-			$currentMyPortal = $currentUser['User']['myportal_page_id'];
-			$currentPrivate  = $currentUser['User']['private_page_id'];
+			if($currentUser){
+				$currentMyPortal = $currentUser['User']['myportal_page_id'];
+				$currentPrivate  = $currentUser['User']['private_page_id'];
+			}
+			else{
+				$currentMyPortal = null;
+				$currentPrivate  = null;
+			}
 		}
 
 		//$currentUser ログインしていなければnullでよさそう
 		//$currentMyPortal int or null?
 		//$currentPrivate int or null
 		//$centerPage array?
+		//$User
 
 		$joins = array(
 			array(
@@ -821,7 +830,7 @@ class Page extends AppModel
 			}
 		} else {
 			// ログイン後
-			if($options['isShowAllCommunity']) {
+			if(isset($options['isShowAllCommunity']) && $options['isShowAllCommunity']) {
 				$conditions['or'] = array(
 					'Page.space_type' => array(NC_SPACE_TYPE_PUBLIC, NC_SPACE_TYPE_MYPORTAL, NC_SPACE_TYPE_PRIVATE),
 					array(
@@ -981,7 +990,7 @@ class Page extends AppModel
 	 */
 	public function _format_findViewable_options($options=array())
 	{
-		//ベースの条件
+		//ベース
 		$base = array(
 			'isShowAllCommunity' => false,
 			'isMyPortalCurrent' => false,
@@ -1019,7 +1028,6 @@ class Page extends AppModel
 		if(isset($options['isRoom']) && $options['isRoom']) {
 			$conditions[] = "`Page`.`id`=`Page`.`room_id`";
 		}
-
 		return $conditions;
 	}
 
