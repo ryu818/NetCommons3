@@ -1,7 +1,4 @@
 <?php
-App::uses('Page', 'Model');
-App::uses('PageTree' , 'Model');
-
 /**
  * Page Test Case
  *
@@ -13,8 +10,7 @@ class NcPageTreeTest extends CakeTestCase {
 	 * @var array
 	 */
 	public $fixtures = array(
-		'NcPage',
-		'NcPageTree'
+		'NcPageTree',
 	);
 
 	/**
@@ -25,8 +21,6 @@ class NcPageTreeTest extends CakeTestCase {
 	public function setUp() {
 		parent::setUp();
 		$this->PageTree = ClassRegistry::init('PageTree');
-
-
 	}
 
 	/**
@@ -36,13 +30,8 @@ class NcPageTreeTest extends CakeTestCase {
 	 */
 	public function tearDown() {
 		unset($this->PageTree);
-
 		parent::tearDown();
 	}
 
-	public function testHoge()
-	{
-
-	}
 
 }

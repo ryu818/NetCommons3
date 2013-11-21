@@ -1,7 +1,4 @@
 <?php
-App::uses('Page', 'Model');
-App::uses('PageTree' , 'Model');
-
 /**
  * Page Test Case
  *
@@ -18,7 +15,9 @@ class NcPageTest extends CakeTestCase {
 		'NcAuthority',
 		'NcPageTree',
 		'NcPageUserLink',
-		'NcUser'
+		'NcUser',
+		'NcCommunity',
+		'NcCommunityLang'
 	);
 
 
@@ -30,11 +29,6 @@ class NcPageTest extends CakeTestCase {
 	public function setUp() {
 		parent::setUp();
 		$this->Page = ClassRegistry::init('Page');
-		$this->Page->useDbConfig = 'test';
-		//moderl内で呼ばれているModelの接続先情報の選択設定
-		$this->Page->Authority->useDbConfig    = 'test';
-		$this->Page->PageTree->useDbConfig     = 'test';
-		$this->Page->PageUserLink->useDbConfig = 'test';
 	}
 
 /**
@@ -163,7 +157,7 @@ class NcPageTest extends CakeTestCase {
 		);
 		$ck = $this->Page->getDefaultData(NC_SPACE_TYPE_GROUP);
 		$this->assertEqual($result , $ck);
-
+       //*/
 	}
 
 /**
@@ -195,6 +189,7 @@ class NcPageTest extends CakeTestCase {
  *
  * @return void
  */
+
 	public function testFindRoomList() {
 		$result = array (
 			9 =>
@@ -335,30 +330,44 @@ class NcPageTest extends CakeTestCase {
  */
 	public function testFindViewable() {
 
-		/*
+
 		//閲覧可能のページリストを取得
 		//user_idの指定なし
 		$type = 'all';
-		$ck = $this->Page->findViewable($type);
+		//$ck = $this->Page->findViewable($type);
 		//var_dump($ck);
 		//1件だけHITする。
-		$this->assertEqual(1 , count($ck));
-		$this->assertEqual(9 , $ck[9]['Page']['id']);
+		//$this->assertEqual(1 , count($ck));
+		//$this->assertEqual(9 , $ck[9]['Page']['id']);
 
 		//user_idが指定されている場合
 		//public_roomとuser_id:1の場合はそれのprivate_roomもHITする。
 		$type = 'all';
 		$user_id = 1;
-		$ck = $this->Page->findViewable($type , $user_id);
-		$this->assertEqual(2 , count($ck));
-		$this->assertEqual(9 , $ck[9]['Page']['id']);
-		$this->assertEqual(11 , $ck[11]['Page']['id']);
+		//$ck = $this->Page->findViewable($type , $user_id);
+		//$this->assertEqual(2 , count($ck));
+		//$this->assertEqual(9 , $ck[9]['Page']['id']);
+		//$this->assertEqual(11 , $ck[11]['Page']['id']);
 
 		$type = 'thread';
 		$user_id = 1;
-		//$ck = $this->Page->findViewable($type);
+		$roomIdAr = array(16);
+		$isShowAllCommunity = true;
+		//$ck  =  $this->Page->findViewable('all');
 		//var_export($ck);
-		*/
+		$addParams = array();
+		$addParams = array(
+			'fields' => array('Page.id' , 'Page.page_name')
+		);
+		$options = array(
+			//'isShowAllCommunity' => $isShowAllCommunity,
+			//'isMyPortalSelf' => false,
+		);
+
+		//$ck2 = $this->Page->findViewable('list' , 1 ,$addParams , $options);
+		//var_export($ck2);
+		//$this->assertTags($ck2 , $ck);
+
 
 	}
 
@@ -454,7 +463,7 @@ class NcPageTest extends CakeTestCase {
  * testCreateDefaultEntry method
  *
  * @return void
- */
+*/
 	public function testCreateDefaultEntry() {
 
 		//マイポータル作成, マイルーム作成, ルーム参加
@@ -492,7 +501,10 @@ class NcPageTest extends CakeTestCase {
 			0 => '17',
 			1 => '19',
 		);
+
 		$ck = $this->Page->createDefaultEntry($user);
+
+
 		$this->assertEqual($result , $ck);
 
 		//同じユーザの情報で再度実行しても作られる
