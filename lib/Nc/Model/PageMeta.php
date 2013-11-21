@@ -10,4 +10,13 @@
  */
 class PageMeta extends AppModel
 {
+/**
+ * construct
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
+	}
 }

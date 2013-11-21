@@ -15,7 +15,7 @@
 
 class Page extends AppModel
 {
-	public $actsAs = array('Page', 'TimeZone', 'Auth' => array('joins' => false, 'afterFind' => false));	// , 'Validation'
+	public $actsAs = array('Common','Page', 'TimeZone', 'Auth' => array('joins' => false, 'afterFind' => false));	// , 'Validation'
 	public $validate = array();
 
 // 公開日付をsaveする前に変換するかどうかのフラグ
@@ -34,11 +34,11 @@ class Page extends AppModel
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function __construct() {
-		parent::__construct();
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
 
-		$this->PageTree  = ClassRegistry::init('PageTree');
-		$this->Authority = ClassRegistry::init('Authority');
+		$this->PageTree     = ClassRegistry::init('PageTree');
+		$this->Authority    = ClassRegistry::init('Authority');
 		$this->PageUserLink = ClassRegistry::init('PageUserLink');
 
 		//エラーメッセージ取得

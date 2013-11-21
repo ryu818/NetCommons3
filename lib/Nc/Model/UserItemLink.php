@@ -13,7 +13,15 @@ class UserItemLink extends AppModel
 	public $validate = array();
 
 	public $emailTags = array();
-
+	/**
+	 * construct
+	 * @param   void
+	 * @return  void
+	 * @since   v 3.0.0.0
+	 */
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
+	}
 /**
  * バリデート前処理
  *

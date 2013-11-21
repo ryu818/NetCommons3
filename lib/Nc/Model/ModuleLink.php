@@ -21,6 +21,16 @@ class ModuleLink extends AppModel
 	);
 
 /**
+ * construct
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
+	}
+
+/**
  * block_id,user_idから該当ブロックを取得
  * @param   mixed $room_id
  * @param   mixed $authority_id

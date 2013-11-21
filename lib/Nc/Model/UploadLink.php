@@ -11,14 +11,14 @@
 class UploadLink extends AppModel
 {
 /**
- * バリデート処理
+ * construct
  * @param   void
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function __construct() {
-		parent::__construct();
-
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
+		//バリデート処理
 		$this->validate = array(
 				'upload_id' => array(
 					'notEmpty'  => array(

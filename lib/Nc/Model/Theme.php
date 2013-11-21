@@ -15,6 +15,16 @@ class Theme extends AppModel
 	public $useTable = false;
 
 /**
+ * construct
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
+	}
+
+/**
  * 自動ログインパスポートキー削除
  * @param   string  $current_theme_name
  * @param   string $theme_kind Block or Page

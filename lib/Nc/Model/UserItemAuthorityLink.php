@@ -10,6 +10,15 @@
  */
 class UserItemAuthorityLink extends AppModel
 {
+	/**
+	 * construct
+	 * @param   void
+	 * @return  void
+	 * @since   v 3.0.0.0
+	 */
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
+	}
 /**
  * data[user_authority_id][item_id][edit_lower_hierarchy|show_lower_hierarchy] = hierarchyとして取得
  * @param   string $type

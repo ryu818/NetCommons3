@@ -13,6 +13,16 @@ class Language extends AppModel
 	public $primaryKey = 'language';
 
 /**
+ * construct
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
+	}
+
+/**
  * 言語リスト取得
  * @param   void
  * @return  array

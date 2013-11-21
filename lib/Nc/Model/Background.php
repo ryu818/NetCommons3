@@ -70,6 +70,16 @@ class Background extends AppModel
 	private $_groupID = 1;
 
 /**
+ * construct
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
+	}
+
+/**
  * 適用範囲内ページスタイルデータ取得
  * @param   Model page $page
  * @return  array $pageStyle[pageStyle.type] = Model PageStyle

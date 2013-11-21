@@ -105,8 +105,8 @@ class Community extends AppModel
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function __construct() {
-		parent::__construct();
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
 
 		//エラーメッセージ取得
 		$this->validate = array(

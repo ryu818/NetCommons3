@@ -23,8 +23,8 @@ class TempData extends AppModel
  * コンストラクタ
  *
  */
-	public function __construct() {
-		parent::__construct();
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
 		// 1日
 		$this->_timeout = 60 * 60 * 24;
 	}

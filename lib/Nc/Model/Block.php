@@ -24,16 +24,17 @@ class Block extends AppModel
 	// public $autoConvert = true;
 
 /**
- * バリデート処理
+ * construct
  * @param   void
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function __construct() {
-		parent::__construct();
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
 
 		/*
 		 * エラーメッセージ設定
+		 * バリデーション設定
 		 */
 		$this->validate = array(
 			'page_id' => array(

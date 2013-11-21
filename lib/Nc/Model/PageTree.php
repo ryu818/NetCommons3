@@ -1,6 +1,6 @@
 <?php
 /**
- * PageStratumモデル
+ * PageTreeモデル
  *
  * <pre>
  *  ページの階層情報を制御する
@@ -15,5 +15,24 @@
 
 class PageTree extends AppModel
 {
+
+/**
+ * construct
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
+
+	}
+
+
+	function hoge()
+	{
+		//var_dump($this->ds);
+		//var_dump($this->useDbConfig);
+		return $this->find('all');
+	}
 
 }

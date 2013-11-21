@@ -13,6 +13,17 @@ class PageUserLink extends AppModel
 	public $actsAs = array('Page', 'Auth' => array('joins' => false, 'afterFind' => false));
 
 /**
+ * construct
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
+	;
+	}
+
+/**
  * 参加会員修正時のPageUserLink登録・更新処理
  * @param  Model Page  $page
  * @param  array       $postPageUserLinks 変更後Sessionデータ array(0 => array('user_id', 'authority_id'))

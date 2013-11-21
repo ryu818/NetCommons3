@@ -21,6 +21,16 @@
 class Asset extends AppModel
 {
 	public $actsAs = array('TimeZone', 'File');
+
+/**
+ * construct
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function __construct($id = false, $table = null, $ds = null) {
+		parent::__construct($id, $table, $ds);
+	}
 /**
  * URLからJs、Cssファイルのデータを読み込み
  *
