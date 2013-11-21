@@ -15,17 +15,26 @@
 
 class Page extends AppModel
 {
-	public $actsAs = array('Common','Page', 'TimeZone', 'Auth' => array('joins' => false, 'afterFind' => false));	// , 'Validation'
+	public $actsAs = array(
+		'Common',
+		'Page',
+		'TimeZone',
+		'Auth' => array('joins' => false, 'afterFind' => false)
+	);	// , 'Validation'
+
+	//バリデーション設定
 	public $validate = array();
 
 // 公開日付をsaveする前に変換するかどうかのフラグ
 	public $autoConvert = true;
 
 	// Model class object
-	public $Authority;
-	public $PageTree;
-	public $PageUserLink;
-
+	public $Authority    = null;
+	public $PageTree     = null;
+	public $PageUserLink = null;
+	public $User         = null;
+	public $Block        = null;
+	public $Config       = null;
 
 
 /**
@@ -40,6 +49,10 @@ class Page extends AppModel
 		$this->PageTree     = ClassRegistry::init('PageTree');
 		$this->Authority    = ClassRegistry::init('Authority');
 		$this->PageUserLink = ClassRegistry::init('PageUserLink');
+		$this->User         = ClassRegistry::init('User');
+		$this->Block        = ClassRegistry::init('Block');
+		$this->Config       = ClassRegistry::init('Config');
+
 
 		//エラーメッセージ取得
 		$this->validate = array(
@@ -507,7 +520,7 @@ class Page extends AppModel
 				$setUserId = $userId;
 			}
 			if(!empty($setUserId)) {
-				$User = ClassRegistry::init('User');
+				$User = $this->User;
 				$currentUser = $User->findById($setUserId);
 			}
 
@@ -710,6 +723,7 @@ class Page extends AppModel
  *
  * type:listはkey,valueまで取得可能
  * TODO:左カラム等は現状、含めていない。
+ * TODO : $optionsがarrayでは無かった場合の考慮
  *
  * @param   string  $type first or all or list, menu(メニュー表示時), child_menus(メニュー表示時)
  * @param   integer|string 'all'  $userId
@@ -730,47 +744,24 @@ class Page extends AppModel
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
 
+		//設定されて意無かった場合 ログインユーザをセット
 		if(!isset($userId)) {
 			$userId = $loginUser['id'];
 		}
 
-		$options = array_merge(array(
-			'isShowAllCommunity' => false,
-			'isMyPortalCurrent' => false,
-			'ativePageId' => null,
-			'autoLang' => true,
-			'isRoom' => false,
-		), $options);
+		//$optionsを揃える
+		$conditions = $this->_format_findViewable_conditions($options);
 
-		$conditions = array(
-			'Page.position_flag' => _ON,
-			'Page.display_flag !=' => NC_DISPLAY_FLAG_DISABLE,
-			'Page.thread_num !=' => 0,
-		);
-		if($options['autoLang']) {
-			$conditions['Page.lang'] = array('', $lang);
-		}
+		if(isset($options['isMyPortalCurrent']) && $options['isMyPortalCurrent']) {
 
-		if($options['isRoom']) {
-			$conditions[] = "`Page`.`id`=`Page`.`room_id`";
-		}
-		$joins = array(
-			array(
-				"type" => "LEFT",
-				"table" => "communities",
-				"alias" => "Community",
-				"conditions" => "`Page`.`root_id`=`Community`.`room_id`"
-			),
-		);
 
-		if($options['isMyPortalCurrent']) {
 			$centerPage = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');
 
 			if($centerPage['Page']['room_id'] != $loginUser['myportal_page_id'] &&
 				$centerPage['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
 				// マイポータルで、現在のカレントのもの取得
 				// TODO:マイポータルに子グループを作成できる仕様にすると動作しない。
-				$User = ClassRegistry::init('User');
+				$User        = $this->User;
 				$currentUser = $User->currentUser($centerPage, $loginUser);
 
 				// allow_myportal_viewing_hierarchyは、会員権限の上下でみせるべきかいなか
@@ -788,11 +779,25 @@ class Page extends AppModel
 				$currentPrivate = $loginUser['private_page_id'];
 			}
 		} else if(!empty($userId) && $userId != 'all') {
-			$User = ClassRegistry::init('User');
-			$currentUser = $User->findById($userId);
+			$User = $this->User;
+			$currentUser     = $User->findById($userId);
 			$currentMyPortal = $currentUser['User']['myportal_page_id'];
-			$currentPrivate = $currentUser['User']['private_page_id'];
+			$currentPrivate  = $currentUser['User']['private_page_id'];
 		}
+
+		//$currentUser ログインしていなければnullでよさそう
+		//$currentMyPortal int or null?
+		//$currentPrivate int or null
+		//$centerPage array?
+
+		$joins = array(
+			array(
+				"type" => "LEFT",
+				"table" => "communities",
+				"alias" => "Community",
+				"conditions" => "`Page`.`root_id`=`Community`.`room_id`"
+			),
+		);
 
 		if($userId === 'all') {
 			// 全ルーム取得
@@ -800,7 +805,7 @@ class Page extends AppModel
 			// ログイン前
 			// TODO:NC_SPACE_TYPE_MYPORTALは設定によっては、ログインした一部会員しかみえないため
 			// 修正する必要あり？
-			if($options['isShowAllCommunity']) {
+			if(isset($options['isShowAllCommunity']) && $options['isShowAllCommunity']) {
 				$conditions['or'] = array(
 					'Page.space_type' => array(NC_SPACE_TYPE_PUBLIC, NC_SPACE_TYPE_MYPORTAL),
 					'Community.publication_range_flag' => NC_PUBLICATION_RANGE_FLAG_ALL,
@@ -850,7 +855,9 @@ class Page extends AppModel
 
 		}
 
-		if(!empty($userId) || $options['isShowAllCommunity']) {
+		if(!empty($userId)
+			|| (isset($options['isShowAllCommunity']) && $options['isShowAllCommunity'])
+		) {
 			$bufUserId = ($userId == 'all') ? $loginUser['id'] : $userId;
 			// ログイン後 OR すべての公開コミュニティーを含む
 			$joins[] = array(
@@ -957,10 +964,66 @@ class Page extends AppModel
 			}
 			return $results;
 		}
-		return $this->afterFindIds($this->find('all', $params), $userId, $type, isset($addParams['fields']) ? $addParams['fields'] : null, $options['ativePageId']);
+
+		return $this->afterFindIds(
+			$this->find('all', $params),
+			$userId,
+			$type,
+			isset($addParams['fields']) ? $addParams['fields'] : null,
+			isset($options['ativePageId']) ? $options['ativePageId'] : null
+		);
 	}
 
-/**
+
+	/**
+	 *  findViewableのoptionの情報を整える
+	 *  self::findViewable()から呼び出されることしか想定していない。
+	 */
+	public function _format_findViewable_options($options=array())
+	{
+		//ベースの条件
+		$base = array(
+			'isShowAllCommunity' => false,
+			'isMyPortalCurrent' => false,
+			'ativePageId' => null,
+			'autoLang' => true,
+			'isRoom' => false
+		);
+
+		if(! $options || ! is_array($options)) return $base;
+		$options = array_merge($base , $options);
+
+		return $options;
+	}
+
+	/**
+	 * _format_findViewable_optionsを利用し、検索条件を作成する
+	 */
+	public function _format_findViewable_conditions($options)
+	{
+		//言語取得
+		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
+		//$optionsのフォーマットを整える
+		$options = $this->_format_findViewable_options($options);
+		//conditionsのベース
+		$conditions = array(
+			'Page.position_flag' => _ON,
+			'Page.display_flag !=' => NC_DISPLAY_FLAG_DISABLE,
+			'Page.thread_num !=' => 0,
+		);
+
+		if(isset($options['autoLang']) && $options['autoLang'])  {
+			$conditions['Page.lang'] = array('', $lang);
+		}
+
+		if(isset($options['isRoom']) && $options['isRoom']) {
+			$conditions[] = "`Page`.`id`=`Page`.`room_id`";
+		}
+
+		return $conditions;
+	}
+
+	/**
  * CommunityLang.community_nameを含むページ情報取得
  *
  * @param integer   $pageId
@@ -1208,7 +1271,7 @@ class Page extends AppModel
 		/*
 		 * ブロック削除
 		*/
-		$Block = ClassRegistry::init('Block');
+		$Block = $this->Block;
 		$blocks = $Block->findAllByPageId($id);
 		if($blocks != false && count($blocks) > 0) {
 			if(isset($blocks['Block'])) {
@@ -1254,7 +1317,7 @@ class Page extends AppModel
 
 		if($page['Page']['id'] == $page['Page']['room_id']) {
 			// ルーム
-			$PageUserLink = ClassRegistry::init('PageUserLink');
+			$PageUserLink = $this->PageUserLink;
 			$conditions = array(
 				"PageUserLink.room_id" => $page['Page']['id']
 			);
@@ -1359,7 +1422,7 @@ class Page extends AppModel
 		 * 削除されたページがConfig.first_startpage_id,second_startpage_id,third_startpage_idならば、更新
 		* (パブリックに更新)
 		*/
-		$Config = ClassRegistry::init('Config');
+		$Config = $this->Config;
 		$conditions = array(
 			'module_id' => 0,
 			'cat_id' => NC_SYSTEM_CATID,
