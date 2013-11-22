@@ -34,7 +34,9 @@ class AppModel extends Model {
 
 /**
  * construct
- * @param   void
+ * @param integer|string|array $id Set this ID for this model on startup, can also be an array of options, see above.
+ * @param string $table Name of database table to use.
+ * @param string $ds DataSource connection name.
  * @return  void
  * @since   v 3.0.0.0
  */
@@ -133,10 +135,10 @@ class AppModel extends Model {
 		$options['fieldList'][] = 'modified_user_name';
 		return $this->save(array($this->alias => array($this->primaryKey => $id, $name => $value)), $options);
 	}
-	
+
 /**
  * Updates multiple model records based on a set of conditions.
- * 
+ *
  * <pre>
  * modified, modified_user_id, modified_user_nameを自動でセット
  * </pre>
@@ -152,12 +154,12 @@ class AppModel extends Model {
 
 		$id = isset($user['id']) ? $user['id'] : _OFF;
 		$usename = isset($user['handle']) ? $user['handle'] : '';
-		
+
 		if ($this->hasField('modified') && !isset($fields[$this->alias.'.modified'])) {
 			$db = $this->getDataSource();
 			$default = array('formatter' => 'date');
 			$colType = array_merge($default, $db->columns[$this->getColumnType('modified')]);
-			
+
 			if (!array_key_exists('format', $colType)) {
 				$time = strtotime('now');
 			} else {

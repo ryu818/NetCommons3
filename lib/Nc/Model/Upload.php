@@ -24,8 +24,10 @@ class Upload extends AppModel
 	);
 
 /**
- * バリデート処理
- * @param   void
+ * construct
+ * @param integer|string|array $id Set this ID for this model on startup, can also be an array of options, see above.
+ * @param string $table Name of database table to use.
+ * @param string $ds DataSource connection name.
  * @return  void
  * @since   v 3.0.0.0
  */
@@ -196,7 +198,7 @@ class Upload extends AppModel
 				$maxHeight = $result['upload_normal_height_size'];
 				break;
 		}
-		
+
 		return '['.$maxWidth.'x'.$maxHeight.']';
 	}
 
@@ -252,7 +254,7 @@ class Upload extends AppModel
 			// 無制限
 			return true;
 		}
-	
+
 		$filesizeSum = $this->findFileSizeSumByUserId($this->data[$this->alias]['user_id']);
 		$check = array_shift($check);
 		if ($filesizeSum + $check > $authority['Authority']['max_size']) {
@@ -279,7 +281,7 @@ class Upload extends AppModel
 	public function notEmptyExceptExtension($check) {
 		$check = array_shift($check);
 		preg_match('/(.*)\.(.*)$/', $check, $match);
-	
+
 		if (empty($match[1])) {
 			return __('Filename rejected.');
 		}
