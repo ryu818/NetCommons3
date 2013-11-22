@@ -753,52 +753,22 @@ class Page extends AppModel
 		}
 
 		//$optionsを揃える
+		$options    = $this->_format_findViewable_options($options);
+		//$conditionsを$optionsを使って整える。
 		$conditions = $this->_format_findViewable_conditions($options);
 
-		if(isset($options['isMyPortalCurrent']) && $options['isMyPortalCurrent']) {
 
-
+		//公開コミュニティーを含む閲覧可能なすべてのコミュニティーを取得したい場合
+		if($options['isMyPortalCurrent']) {
 			$centerPage = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');
-
-			if($centerPage['Page']['room_id'] != $loginUser['myportal_page_id'] &&
-				$centerPage['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
-				// マイポータルで、現在のカレントのもの取得
-				// TODO:マイポータルに子グループを作成できる仕様にすると動作しない。
-				$User        = $this->User;
-				$currentUser = $User->currentUser($centerPage, $loginUser);
-
-				// allow_myportal_viewing_hierarchyは、会員権限の上下でみせるべきかいなか
-				// 決定するため、$loginUser['hierarchy']でチェック
-				if(isset($currentUser['Authority']) && (
-					($currentUser['Authority']['myportal_use_flag'] == NC_MYPORTAL_USE_ALL) ||
-					($currentUser['Authority']['myportal_use_flag'] == NC_MYPORTAL_MEMBERS &&
-					$loginUser['hierarchy'] >= $currentUser['Authority']['allow_myportal_viewing_hierarchy']))) {
-					// 参加
-					$currentMyPortal = $centerPage['Page']['room_id'];
-				}
-				$currentPrivate = $loginUser['private_page_id'];
-			} else {
-				$currentMyPortal = $loginUser['myportal_page_id'];
-				$currentPrivate = $loginUser['private_page_id'];
-			}
+			list($currentMyPortal , $currentPrivate) = $this->_format_findViewable_currents_by_centerPage($centerPage , $loginUser);
 		} else if(!empty($userId) && $userId != 'all') {
 			$User = $this->User;
 			$currentUser     = $User->findById($userId);
-			if($currentUser){
-				$currentMyPortal = $currentUser['User']['myportal_page_id'];
-				$currentPrivate  = $currentUser['User']['private_page_id'];
-			}
-			else{
-				$currentMyPortal = null;
-				$currentPrivate  = null;
-			}
+			$currentMyPortal = $this->_format_findViewable_currentMyPortal($currentUser);
+			$currentPrivate  = $this->_format_findViewable_currentPrivate($currentUser);
 		}
 
-		//$currentUser ログインしていなければnullでよさそう
-		//$currentMyPortal int or null?
-		//$currentPrivate int or null
-		//$centerPage array?
-		//$User
 
 		$joins = array(
 			array(
@@ -984,10 +954,52 @@ class Page extends AppModel
 		);
 	}
 
+	//$currentMyPortalと $currentPrivateを取得するための処理
+	//$optionの条件もつっこむ？
+	public function _format_findViewable_currents_by_centerPage($centerPage , $loginUser)
+	{
+		$currentMyPortal = $this->_format_findViewable_currentMyPortal(array('User'=>$loginUser));
+		$currentPrivate  = $this->_format_findViewable_currentPrivate(array('User'=>$loginUser));
+		//$centerPageに情報がなければ、通常データを格納する。
+		if(!$centerPage || !isset($centerPage['Page']) || ! $centerPage['Page'])
+		{
+			return array($currentMyPortal , $currentPrivate);
+		}
+
+
+		if((
+				isset($centerPage['Page']['room_id'])
+				&& isset($loginUser['myportal_page_id'])
+				&& $centerPage['Page']['room_id'] != $loginUser['myportal_page_id']
+			)
+			&&
+			(
+				isset($centerPage['Page'])
+				&& isset($centerPage['Page']['space_type'])
+				&& $centerPage['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL
+			)) {
+				// マイポータルで、現在のカレントのもの取得
+				// TODO:マイポータルに子グループを作成できる仕様にすると動作しない。
+				$User        = $this->User;
+				$currentUser = $User->currentUser($centerPage, $loginUser);
+
+				// allow_myportal_viewing_hierarchyは、会員権限の上下でみせるべきかいなか
+				// 決定するため、$loginUser['hierarchy']でチェック
+				if(isset($currentUser['Authority']) && (
+					(isset($currentUser['Authority']['myportal_use_flag']) && $currentUser['Authority']['myportal_use_flag'] == NC_MYPORTAL_USE_ALL) ||
+					(isset($currentUser['Authority']['myportal_use_flag']) && $currentUser['Authority']['myportal_use_flag'] == NC_MYPORTAL_MEMBERS &&
+						$loginUser['hierarchy'] >= $currentUser['Authority']['allow_myportal_viewing_hierarchy']))) {
+				// 参加
+				$currentMyPortal = $centerPage['Page']['room_id'];
+			}
+		}
+		return array($currentMyPortal , $currentPrivate);
+	}
 
 	/**
 	 *  findViewableのoptionの情報を整える
 	 *  self::findViewable()から呼び出されることしか想定していない。
+	 *  TODO:テストがかけたらpublicをやめる。
 	 */
 	public function _format_findViewable_options($options=array())
 	{
@@ -1007,14 +1019,56 @@ class Page extends AppModel
 	}
 
 	/**
+	 * $currentUser配列からmyportal_page_idを抽出しかえす。
+	 * Model/Userにあっていい機能。
+	 * TODO : Model/Userへの移動検討
+	 * @param array or null $currentUser
+	 * @return int or null
+	 */
+	public function _format_findViewable_currentMyPortal($currentUser) {
+		if(! $currentUser
+			|| (! isset($currentUser['User']) || !$currentUser['User'])
+		)
+		{
+			return null;
+		}
+
+		if(isset($currentUser['User']['myportal_page_id']))
+		{
+			return $currentUser['User']['myportal_page_id'];
+		}
+		return null;
+	}
+
+	/**
+	 * $currentUser配列からcurrentPrivate'を抽出しかえす。
+	 * Model/Userにあっていい機能。
+	 * TODO : Model/Userへの移動検討
+	 * TODO:テストがかけたらpublicをやめる。
+	 * @param array or null $currentUser $currentUser
+	 * @return int or null
+	 */
+	public function _format_findViewable_currentPrivate($currentUser){
+		if(! $currentUser || (! isset($currentUser['User']) || !$currentUser['User'])) {
+			return null;
+		}
+
+		if(isset($currentUser['User']['private_page_id'])) {
+			return $currentUser['User']['private_page_id'];
+		}
+		return null;
+	}
+
+
+
+	/**
 	 * _format_findViewable_optionsを利用し、検索条件を作成する
 	 */
 	public function _format_findViewable_conditions($options)
 	{
 		//言語取得
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
-		//$optionsのフォーマットを整える
-		$options = $this->_format_findViewable_options($options);
+
 		//conditionsのベース
 		$conditions = array(
 			'Page.position_flag' => _ON,
@@ -1031,6 +1085,9 @@ class Page extends AppModel
 		}
 		return $conditions;
 	}
+
+
+
 
 	/**
  * CommunityLang.community_nameを含むページ情報取得
