@@ -6,28 +6,28 @@
 
 	if(isset($page_id_arr[1]) && $page_id_arr[1] != 0 && (isset($blocks[$page_id_arr[1]]) || $ncMode == NC_BLOCK_MODE)) {
 		// headercolumn
-		$headercolumn_str = $this->element('Pages/column', array('blocks' => isset($blocks[$page_id_arr[1]]) ? $blocks[$page_id_arr[1]] : null, 'page' => $pages[$page_id_arr[1]], 'parent_id' => 0, 'attr' => 'data-column-top="1"'));
+		$headercolumn_str = $this->element('Pages/column', array('column' => '/headercolumn', 'blocks' => isset($blocks[$page_id_arr[1]]) ? $blocks[$page_id_arr[1]] : null, 'page' => $pages[$page_id_arr[1]], 'parent_id' => 0, 'attr' => 'data-column-top="1"'));
 	}
 	if(isset($page_id_arr[2]) && $page_id_arr[2] != 0 && (isset($blocks[$page_id_arr[2]]) || $ncMode == NC_BLOCK_MODE)) {
 		// leftcolumn
-		$leftcolumn_str = $this->element('Pages/column', array('blocks' => isset($blocks[$page_id_arr[2]]) ? $blocks[$page_id_arr[2]] : null, 'page' => $pages[$page_id_arr[2]], 'parent_id' => 0, 'attr' => 'data-column-top="1"'));
+		$leftcolumn_str = $this->element('Pages/column', array('column' => '/leftcolumn', 'blocks' => isset($blocks[$page_id_arr[2]]) ? $blocks[$page_id_arr[2]] : null, 'page' => $pages[$page_id_arr[2]], 'parent_id' => 0, 'attr' => 'data-column-top="1"'));
 	}
 
 	if(isset($blocks[$page_id_arr[0]]) || $ncMode == NC_BLOCK_MODE) {
 		// centercolumn
-		$centercolumn_str = $this->element('Pages/column', array('blocks' => isset($blocks[$page_id_arr[0]]) ? $blocks[$page_id_arr[0]] : null, 'page' => $pages[$page_id_arr[0]], 'parent_id' => 0, 'attr' => 'data-column-top="1"'));
+		$centercolumn_str = $this->element('Pages/column', array('column' => '/centercolumn', 'blocks' => isset($blocks[$page_id_arr[0]]) ? $blocks[$page_id_arr[0]] : null, 'page' => $pages[$page_id_arr[0]], 'parent_id' => 0, 'attr' => 'data-column-top="1"'));
 
 	}
 
 	if(isset($page_id_arr[3]) && $page_id_arr[3] != 0 && (isset($blocks[$page_id_arr[3]]) || $ncMode == NC_BLOCK_MODE)) {
 		// rightcolumn
-		$rightcolumn_str = $this->element('Pages/column', array('blocks' => isset($blocks[$page_id_arr[3]]) ? $blocks[$page_id_arr[3]] : null, 'page' => $pages[$page_id_arr[3]], 'parent_id' => 0, 'attr' => 'data-column-top="1"'));
+		$rightcolumn_str = $this->element('Pages/column', array('column' => '/rightcolumn', 'blocks' => isset($blocks[$page_id_arr[3]]) ? $blocks[$page_id_arr[3]] : null, 'page' => $pages[$page_id_arr[3]], 'parent_id' => 0, 'attr' => 'data-column-top="1"'));
 
 	}
 
 	if(isset($page_id_arr[4]) && $page_id_arr[4] != 0 && (isset($blocks[$page_id_arr[4]]) || $ncMode == NC_BLOCK_MODE)) {
 		// footercolumn
-		$footercolumn_str = $this->element('Pages/column', array('blocks' => isset($blocks[$page_id_arr[4]]) ? $blocks[$page_id_arr[4]] : null, 'page' => $pages[$page_id_arr[4]], 'parent_id' => 0, 'attr' => 'data-column-top="1"'));
+		$footercolumn_str = $this->element('Pages/column', array('column' => '/footercolumn', 'blocks' => isset($blocks[$page_id_arr[4]]) ? $blocks[$page_id_arr[4]] : null, 'page' => $pages[$page_id_arr[4]], 'parent_id' => 0, 'attr' => 'data-column-top="1"'));
 	}
 ?>
 	<?php if(!empty($nc_user['id']) || Configure::read(NC_CONFIG_KEY.'.'.'display_header_menu') != NC_HEADER_MENU_NONE) {

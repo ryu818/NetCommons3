@@ -346,6 +346,14 @@ class CheckAuthComponent extends Component {
 		$lang = $this->Session->read(NC_CONFIG_KEY.'.'.'language');
 		$isActiveContent = (isset($controller->request->params['block_type']) && $controller->request->params['block_type'] == 'active-contents') ? true : false;
 
+		if($permalink != '' && preg_match('/(.*)(\/headercolumn|\/leftcolumn|\/centercolumn|\/rightcolumn|\/footercolumn)$/' , $permalink, $matches)) {
+			// (permalink)/(column)/(block_type)/(block_id)/(plugin)/(controller)/(action)/で画面を表示後のActiveブロックにおける
+			// リンク先をすべて(column)にするため（一般画面->詳細画面->一般画面というように遷移してもcolumn名をつける）にするため
+			$permalink = $matches[1];
+			Configure::write(NC_SYSTEM_KEY.'.nc_active_column.'.$block_id, $matches[2]);
+			$controller->request->params['column'] = $matches[2];
+		}
+
 		$permalink = trim($permalink, '/');
 		$configPermalink = Configure::read(NC_SYSTEM_KEY.'.permalink');
 		if(!isset($configPermalink)) {
