@@ -83,6 +83,8 @@ class UsersController extends AppController {
 		if(!empty($this->request->data)){
 			if(!$this->Auth->login()) {
 				$this->Session->setFlash(__('Incorrect sign in.Again, please enter.'), 'default', array(), 'auth');
+			} else {
+				$this->Session->setFlash(__('Sign in.'));
 			}
 
 			// ログイン後もSSLを有効にする設定の場合にログイン後かどうかのフラグをCookieに保持する
@@ -91,7 +93,6 @@ class UsersController extends AppController {
 				$this->Cookie->write('logged_in', _ON, false);
 			}
 
-			$this->Session->setFlash(__('Sign in.'));
 			$user = $this->Auth->user();//認証済みユーザーを取得
 
 			//フォームからのデータの場合
