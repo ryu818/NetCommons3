@@ -15,7 +15,6 @@
 
 class Block extends AppModel
 {
-	public $name = 'Block';
 	// public $belongsTo = array('Module');
 
 	public $actsAs = array('Page', 'TimeZone', 'Validation', 'Auth' => array('joins' => false, 'afterFind' => false));
@@ -34,7 +33,6 @@ class Block extends AppModel
 
 		/*
 		 * エラーメッセージ設定
-		 * バリデーション設定
 		 */
 		$this->validate = array(
 			'page_id' => array(
