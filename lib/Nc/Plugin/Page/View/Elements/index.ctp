@@ -142,7 +142,7 @@ if(isset($is_edit) && $is_edit == _ON){
 			<a data-ajax="#nc-pages-setting-dialog" class="nc-pages-community-type<?php if($community_type == 'search'): ?> nc-pages-community-type-current<?php endif; ?>" href="<?php echo $this->Html->url($urlSearchArr); ?>" data-file-type="search"><?php echo(__d('page', 'Search communities'));?></a>
 		</div>
 		<?php if($community_type == 'search'): ?>
-		<div class="nc-pages-community-search-outer nc-panel-color">
+		<div class="nc-pages-community-search-outer nc-panel-color clear">
 		<?php
 			echo $this->Form->create('CommunitySearch', array('data-ajax' => '#nc-pages-setting-dialog'));
 			echo $this->Form->input('text', array(
@@ -171,7 +171,7 @@ if(isset($is_edit) && $is_edit == _ON){
 		?>
 		</div>
 		<?php endif; ?>
-		<div class="pages-menu-expand-all-outer">
+		<div class="pages-menu-expand-all-outer clear">
 		<?php
 			echo $this->Form->button(__('Expand All'), array('class' => 'pages-menu-expand-all', 'name' => 'expand'));
 			echo $this->Form->button(__('Collapse All'), array('class' => 'pages-menu-collapse-all', 'name' => 'collapse'));
