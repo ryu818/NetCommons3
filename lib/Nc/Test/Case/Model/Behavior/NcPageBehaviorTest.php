@@ -1,7 +1,4 @@
 <?php
-App::uses('PageBehavior', 'Model/Behavior');
-App::uses('Page', 'Model');
-
 /**
  * PageBehavior Test Case
  *
@@ -109,13 +106,6 @@ class NcPageBehaviorTest extends CakeTestCase {
 		$ck = $this->Page->updateDisplayFlag($model , $page['Page']);
 		//仕様不可なので、2のままになる。
 		$this->assertEqual(1 , $ck["display_flag"]);
-
-		//$ck["display_flag"]=2のデータ 公開開始日に到達していて、終了日に到達していない
-		$page = $model->find('first' , array('conditions'=>array('id'=>16)));
-		$ck = $this->Page->updateDisplayFlag($model , $page['Page']);
-		//仕様不可なので、2のままになる。
-		$this->assertEqual(2 , $ck["display_flag"]);
-
 
 	}
 
