@@ -269,6 +269,9 @@ class MailComponent extends Component {
 			if(!preg_match('/'.preg_quote($key).'/', $str)) {
 				continue;
 			}
+			if(is_array($assignedTag)) {
+				$assignedTag = Router::url($assignedTag, true);
+			}
 			if(!isset($assignedTag)) {
 				$name = $this->_getAssignMethod($key);
 				if(isset($name)) {
