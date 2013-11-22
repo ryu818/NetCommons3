@@ -4,7 +4,7 @@
 		<span class="errorstr">-><?php echo(NC_VERSION); ?></span>
 	<?php endif; ?>
 </div>
-<div id="<?php echo($id); ?>-nc-message" class="nc-message">
+<div id="<?php echo($id); ?>-nc-message">
 <?php
 if ($version != NC_VERSION) {
 	echo($this->element('message', array('success' => _OFF, 'message' => __d('module', 'Different versions found.Please update all the modules to arrange the version.'))));
