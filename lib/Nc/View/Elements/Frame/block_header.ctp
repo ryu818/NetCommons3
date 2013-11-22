@@ -118,7 +118,7 @@ if($page_hierarchy >= NC_AUTH_MIN_CHIEF) {
 				$params['block_id'] = $block_id;
 
 				echo $this->Html->link(__('Display style'), $params,
-						array('title' => __('Display style'), 'id' => 'nc-block-display-styles-link'.$id, 'class' => 'link nc-hover-highlight','data-ajax' => '', 'data-block-display-styles-dialog-id' => 'nc-block-display-styles-dialog'.$block['Block']['id']));
+						array('title' => __('Display style'), 'id' => 'nc-block-display-styles-link'.$id, 'class' => 'link nc-hover-highlight','data-ajax' => '', 'data-block-display-styles-dialog-id' => $block_style_id ));
 			?>
 		</li>
 		<?php endif; ?>

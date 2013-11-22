@@ -130,6 +130,10 @@ class AppPluginController extends AppController
 		if(!empty($this->nc_page_styles) && !isset($this->viewVars['nc_page_styles'])) {
 			$this->set('nc_page_styles', $this->nc_page_styles);
 		}
+		if(!isset($this->viewVars['block_style_id'])) {
+			$this->set('block_style_id', 'nc-block-styles'.$this->id);
+		}
+
 		$this->set('ncType', $this->ncType);
 		$this->set('content_id', $this->content_id);
 	}

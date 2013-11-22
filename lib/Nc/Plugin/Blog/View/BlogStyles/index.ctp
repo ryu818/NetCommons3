@@ -38,7 +38,7 @@
 		echo $this->Form->hidden('token' , array('id' => "blog-style-widget-area-token".$id, 'value' => $this->params['_Token']['key']));
 		echo $this->Html->div('nc-btn-bottom',
 		$this->Form->button(__('Close'), array('name' => 'close', 'class' => 'nc-common-btn', 'type' => 'button',
-			'onclick' => '$(\'#nc-block-display-styles-dialog'.$block_id.'\').dialog(\'close\'); return false;'))
+			'onclick' => '$(\'#'.$block_style_id.'\').dialog(\'close\'); return false;'))
 		);
 	?>
 </div>
