@@ -26,7 +26,7 @@ if($community_params['community']['Community']['participate_flag'] == NC_PARTICI
 		</ul>
 		<div id="pages-menu-community<?php echo($page['Page']['id']); ?>" class="display-none">
 			<fieldset class="form">
-				<ul class="lists pages-menu-community-lists">
+				<ul class="nc-lists pages-menu-community-lists">
 					<li>
 						<dl>
 							<dt>
@@ -211,7 +211,7 @@ if($community_params['community']['Community']['participate_flag'] == NC_PARTICI
 						</a>
 					</li>
 				</ul>
-				<ul id="pages-menu-community-detail-<?php echo($page['Page']['id']);?>" class="lists pages-menu-community-lists" <?php if(!isset($error_flag) || $error_flag != 3):?>style="display:none;"<?php endif; ?>>
+				<ul id="pages-menu-community-detail-<?php echo($page['Page']['id']);?>" class="nc-lists pages-menu-community-lists" <?php if(!isset($error_flag) || $error_flag != 3):?>style="display:none;"<?php endif; ?>>
 					<li>
 						<dl>
 							<dt class="clear">

@@ -80,7 +80,7 @@ $ncUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 		</div>
 		<div class="table-cell">
 			<fieldset class="form">
-				<ul class="lists pages-menu-community-inf-lists">
+				<ul class="nc-lists pages-menu-community-inf-lists">
 					<li>
 						<dl>
 							<dt>
@@ -187,7 +187,7 @@ $ncUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 	</div>
 	<?php if($community_lang['CommunityLang']['summary'] || $community_lang['Revision']['content'] || $community_tag['CommunityTag']['tag_value']):?>
 	<fieldset class="form">
-		<ul class="lists pages-menu-community-inf-detail-lists">
+		<ul class="nc-lists pages-menu-community-inf-detail-lists">
 			<?php if($community_lang['CommunityLang']['summary']):?>
 			<li>
 				<dl>

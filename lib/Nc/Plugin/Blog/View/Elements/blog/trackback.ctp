@@ -1,7 +1,7 @@
 <?php if (!empty($trackbacks)): ?>
 	<article id="<?php echo $id?>-trackbacks" class="blog-trackback-group">
 		<h3 class="blog-trackback-title"><?php echo __d('blog', 'TrackBack')?></h3>
-		<ul class="lists">
+		<ul class="nc-lists">
 			<?php echo $this->element('blog/trackback_detail'); ?>
 		</ul>
 

@@ -16,7 +16,7 @@
 	<legend>
 		<?php echo __d('system', 'Turn your site off');?>
 	</legend>
-	<ul class="lists">
+	<ul class="nc-lists">
 		<?php
 			echo $this->element('item', array('item' => $configs['is_maintenance']));
 			echo $this->element('item', array('item' => $configs['maintenance_text']));
@@ -27,7 +27,7 @@
 	<legend>
 		<?php echo __d('system', 'Closed site');?>
 	</legend>
-	<ul class="lists">
+	<ul class="nc-lists">
 		<?php
 			echo $this->element('item', array('item' => $configs['is_closed_site']));
 		?>

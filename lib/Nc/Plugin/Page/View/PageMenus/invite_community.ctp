@@ -14,7 +14,7 @@
 	echo $this->Form->create('Community', array('data-ajax' => '#pages-menu-invite-community', 'data-ajax-callback' => 'if($.Common.isSetFlash(res)) {$(\'#pages-menu-community-inf'.'\').dialog(\'close\');}'));
 ?>
 	<fieldset class="form">
-		<ul class="lists pages-menu-invite-community-list">
+		<ul class="nc-lists pages-menu-invite-community-list">
 			<li>
 				<dl>
 					<dt>

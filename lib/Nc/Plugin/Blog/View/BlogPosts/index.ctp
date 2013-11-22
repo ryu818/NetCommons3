@@ -20,7 +20,7 @@ if($blog['Blog']['approved_flag'] == _ON && $hierarchy  <= NC_AUTH_MODERATE) {
 <div class="table widthmax">
 <div class="table-cell">
 <fieldset class="form">
-	<ul class="lists">
+	<ul class="nc-lists">
 		<li>
 			<dl>
 				<dt>

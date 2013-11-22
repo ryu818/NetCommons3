@@ -69,7 +69,7 @@
 	</div>
 
 	<fieldset class="form authority-detail authority-confirm">
-	<ul class="lists">
+	<ul class="nc-lists">
 		<li>
 			<dl>
 				<dt>

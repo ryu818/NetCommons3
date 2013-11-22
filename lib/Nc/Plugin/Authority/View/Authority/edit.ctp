@@ -32,7 +32,7 @@
 	</div>
 
 	<fieldset class="form">
-	<ul class="lists">
+	<ul class="nc-lists">
 		<li>
 			<dl>
 				<dt>
@@ -98,7 +98,7 @@
 	</ul>
 	</fieldset>
 
-	<ul id="authority-edit-desc<?php echo($id); ?>" class="lists authority-edit-desc">
+	<ul id="authority-edit-desc<?php echo($id); ?>" class="nc-lists authority-edit-desc">
 		<li id="authority-edit-desc<?php echo($id); ?>-<?php echo(NC_AUTH_ADMIN_ID); ?>">
 			<dl class="clearfix">
 				<dt>

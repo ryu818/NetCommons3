@@ -29,7 +29,7 @@
 				<img src="<?php echo $data['url']; ?>" alt="" />
 			</a>
 		</div>
-		<ul class="table-cell upload-fileinfo-base lists">
+		<ul class="table-cell upload-fileinfo-base nc-lists">
 			<li class="bold">
 				<span id="<?php echo $topId; ?>-file-name"><?php echo $data['file_name']; ?></span>
 			</li>
@@ -89,7 +89,7 @@
 	</div>
 	{{/if}}
 	<?php endif; ?>
-	<ul class="lists upload-fileinfo-detail">
+	<ul class="nc-lists upload-fileinfo-detail">
 		<?php if(isset($is_self_upload_file) && !$is_self_upload_file): ?>
 		<li>
 			<dl>

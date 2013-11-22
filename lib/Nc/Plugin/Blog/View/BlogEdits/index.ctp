@@ -15,7 +15,7 @@ $this->extend('/Frame/block');
 		<div id="blog-edits-tab-init<?php echo($id); ?>">
 			<?php /* 一般設定 */ ?>
 			<fieldset class="form">
-				<ul class="lists nc-edits-lists">
+				<ul class="nc-edits-lists">
 					<li>
 						<dl>
 							<dt>
@@ -193,7 +193,7 @@ $this->extend('/Frame/block');
 		<div id="blog-edits-tab-comment<?php echo($id); ?>">
 			<?php /* コメント設定 */ ?>
 			<fieldset class="form">
-				<ul class="lists nc-edits-lists">
+				<ul class="nc-edits-lists">
 					<li>
 						<dl>
 							<dt>
@@ -293,7 +293,7 @@ $this->extend('/Frame/block');
 		<div id="blog-edits-tab-trackback<?php echo($id); ?>">
 			<?php /* トラックバック設定 */ ?>
 			<fieldset class="form">
-				<ul class="lists nc-edits-lists">
+				<ul class="nc-edits-lists">
 					<li>
 						<dl>
 							<dt>
@@ -347,7 +347,7 @@ $this->extend('/Frame/block');
 		<div id="blog-edits-tab-approval<?php echo($id); ?>">
 			<?php /* 承認機能設定 */ ?>
 			<fieldset class="form">
-				<ul class="lists nc-edits-lists">
+				<ul class="nc-edits-lists">
 					<li>
 						<dl>
 							<dt>

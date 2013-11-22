@@ -20,7 +20,7 @@ echo $this->element('scope', array('languages' => $languages, 'model_name' => 'P
 
 ?>
 <fieldset class="form">
-	<ul class="lists pages-menu-style-details">
+	<ul class="nc-lists pages-menu-style-details">
 		<li><dl>
 			<dt>
 				<?php

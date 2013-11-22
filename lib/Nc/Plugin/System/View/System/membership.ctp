@@ -16,7 +16,7 @@
 	<legend>
 		<?php echo __d('system', 'User registration');?>
 	</legend>
-	<ul class="lists">
+	<ul class="nc-lists">
 		<?php
 			echo $this->element('item', array('item' => $configs['mail_add_user_subject']));
 			echo $this->element('item', array('item' => $configs['mail_add_user_body']));
@@ -27,7 +27,7 @@
 	<legend>
 		<?php echo __d('system', 'Notification of password');?>
 	</legend>
-	<ul class="lists">
+	<ul class="nc-lists">
 		<?php
 			echo $this->element('item', array('item' => $configs['mail_get_password_subject']));
 			echo $this->element('item', array('item' => $configs['mail_get_password_body']));
@@ -40,7 +40,7 @@
 	<legend>
 		<?php echo __d('system', 'Membership cancellation');?>
 	</legend>
-	<ul class="lists">
+	<ul class="nc-lists">
 		<?php
 			echo $this->element('item', array('item' => $configs['withdraw_membership_use']));
 			echo $this->element('item', array('item' => $configs['withdraw_disclaimer']));

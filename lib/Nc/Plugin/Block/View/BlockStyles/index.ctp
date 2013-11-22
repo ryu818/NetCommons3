@@ -10,7 +10,7 @@
 			$locale = Configure::read(NC_SYSTEM_KEY.'.locale');
 		?>
 		<fieldset class="form">
-			<ul class="lists nc-block-styles-lists">
+			<ul class="nc-lists nc-block-styles-lists">
 				<li>
 					<dl>
 						<dt>

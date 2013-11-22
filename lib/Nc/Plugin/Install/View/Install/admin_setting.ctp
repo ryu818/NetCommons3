@@ -49,7 +49,7 @@ $this->assign('title', __d('install', 'Admin user setting'));
 				),
 			);
 		?>
-		<ul class="lists install-lists">
+		<ul class="nc-lists install-lists">
 			<?php foreach($lists as $list): ?>
 			<li>
 				<dl>

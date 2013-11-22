@@ -16,7 +16,7 @@
 	<legend>
 		<?php echo __('Sign in');?>
 	</legend>
-	<ul class="lists">
+	<ul class="nc-lists">
 		<?php
 			echo $this->element('item', array('item' => $configs['autologin_use']));
 			echo $this->element('item', array('item' => $configs['autologin_cookie_name']));
@@ -29,7 +29,7 @@
 	<legend>
 		<?php echo __('Sign out');?>
 	</legend>
-	<ul class="lists">
+	<ul class="nc-lists">
 		<?php
 			echo $this->element('item', array('item' => $configs['session_timeout']));
 		?>

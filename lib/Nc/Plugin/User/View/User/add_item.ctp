@@ -19,7 +19,7 @@
 echo $this->Form->create('UserItem', array('data-pjax' => '#'.$id));
 ?>
 <fieldset class="form">
-	<ul class="lists user-add-item">
+	<ul class="nc-lists user-add-item">
 		<li>
 			<dl>
 				<dt>

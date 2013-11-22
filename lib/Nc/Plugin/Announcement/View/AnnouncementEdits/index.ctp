@@ -14,7 +14,7 @@ $this->extend('/Frame/block');
 	echo $this->Form->create('AnnouncementEdit', array('data-pjax' => '#'.$id));
 ?>
 <fieldset class="form">
-	<ul class="lists nc-edits-lists">
+	<ul class="nc-edits-lists">
 		<li>
 			<dl>
 				<dt>

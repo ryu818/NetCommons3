@@ -142,7 +142,7 @@
 					<?php if(count($itemList) > 0): ?>
 						<?php foreach ($itemList as $colNum => $itemCol): ?>
 						<div class="table-cell top user-edit-col<?php if($colNum != $count): ?> user-edit-right-line<?php endif; ?>" style="width:<?php echo $width;?>%;">
-							<ul class="lists user-edit-row">
+							<ul class="nc-lists user-edit-row">
 								<?php foreach ($itemCol as $rowNum => $ret): ?>
 								<li>
 									<?php

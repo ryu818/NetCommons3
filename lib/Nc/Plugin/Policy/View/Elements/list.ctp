@@ -81,7 +81,7 @@
 				<?php if(count($itemList) > 0): ?>
 					<?php foreach ($itemList as $colNum => $itemCol): ?>
 					<div class="table-cell top policy-edit-col" style="width:<?php echo $width;?>%;">
-						<ul class="lists">
+						<ul class="nc-lists">
 							<?php foreach ($itemCol as $rowNum => $item): ?>
 							<li class="clearfix policy-edit-row">
 								<dl>
