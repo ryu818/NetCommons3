@@ -1038,6 +1038,9 @@ UploadLinkの対応するレコードが１件もない場合は「0」となる
 		'stratum_num'   =>array('type' => 'integer','null'=>false ,'default' => 0 , 'comment'=>'先祖からみた子孫の階層'),
 		'created'       =>array('type' => 'datetime', 'null' => true, 'default' => null),
 		'modified'      =>array('type' => 'datetime', 'null' => true, 'default' => null),
+		'indexes' => array(
+			'PRIMARY' => array('column' => 'id', 'unique' => 1)
+		),
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);
 
