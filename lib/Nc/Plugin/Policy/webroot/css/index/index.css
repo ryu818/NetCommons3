@@ -19,12 +19,12 @@
 	font-size:130%;
 }
 
-.policy-edit-col ul.lists li dl dt {
+.policy-edit-col ul.nc-lists li dl dt {
 	width:auto;
 	padding: 10px 10px 0;
 }
 
-.policy-edit-col ul.lists dl dd {
+.policy-edit-col ul.nc-lists dl dd {
 	padding: 10px 25px;
 }
 
@@ -47,8 +47,4 @@
 
 .policy-edit-orange .nc-authority-slider-label, .policy-edit-blue .nc-authority-slider-label {
 	font-size: 90%;
-}
-
-.policy-edit-list ul li dl dd {
-	padding: 15px;
 }

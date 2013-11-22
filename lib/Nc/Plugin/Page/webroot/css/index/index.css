@@ -260,11 +260,11 @@ input.pages-menu-edit-title {
 	padding:5px;
 }
 
-.pages-menu-edit-outer .lists {
+.pages-menu-edit-outer .nc-lists {
 	min-width:340px;
 }
 
-.pages-menu-edit-outer .lists dt, .pages-menu-edit-outer .lists dd{
+.pages-menu-edit-outer .nc-lists dt, .pages-menu-edit-outer .nc-lists dd{
 	padding: 3px;
 }
 
