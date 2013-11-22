@@ -5,12 +5,12 @@
 	padding: 5px;
 }
 
-.system-fieldset ul.lists li dl dt {
+.system-fieldset ul.nc-lists li dl dt {
 	padding: 10px 5px;
 	width: 250px;
 }
 
-.system-fieldset ul.lists li dl dd {
+.system-fieldset ul.nc-lists li dl dd {
 	padding: 5px;
 	width:420px;
 }
