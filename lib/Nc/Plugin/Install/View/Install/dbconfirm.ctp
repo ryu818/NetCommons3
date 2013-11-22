@@ -73,14 +73,14 @@ $this->assign('title', __d('install', 'Confirm database settings'));
 
 				// Exists database
 				if ($exists_database) {
-					echo '<p class="success nc-message">' . __d('install', 'Database %s exists and connectable.', $config['database']) . '</p>';
+					echo '<p class="success message">' . __d('install', 'Database %s exists and connectable.', $config['database']) . '</p>';
 				} else {
 					$check = false;
-					echo '<p class="error nc-message">' . __d('install', 'Database %s does not exists.', $config['database']) . '</p>';
+					echo '<p class="error message">' . __d('install', 'Database %s does not exists.', $config['database']) . '</p>';
 				}
 
 				if ($exists_table) {
-					echo '<p class="error nc-message">' . __d('install', 'Tables for NetCommons already exist in your database.') . '</p>';
+					echo '<p class="error message">' . __d('install', 'Tables for NetCommons already exist in your database.') . '</p>';
 				}
 
 			?>
@@ -88,7 +88,7 @@ $this->assign('title', __d('install', 'Confirm database settings'));
 		<?php if(!$check): ?>
 		<div>
 			<?php if($failure_database): ?>
-				<?php echo '<p class="error nc-message">' . __d('install', 'Could not create database. Contact the server administrator for details.') . '</p>'; ?>
+				<?php echo '<p class="error message">' . __d('install', 'Could not create database. Contact the server administrator for details.') . '</p>'; ?>
 			<?php else: ?>
 			<div class="install-create-db">
 				<?php echo(__d('install', 'The following database was not found on the server:')); ?><span class="bold"><?php echo(h($config['database'])); ?></span>

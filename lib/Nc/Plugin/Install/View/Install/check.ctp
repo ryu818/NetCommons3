@@ -14,50 +14,50 @@ $this->assign('title', __d('install', 'Setting Check'));
 
 				// tmp is writable
 				if (is_writable(TMP)) {
-					echo '<p class="success nc-message">' . __d('install', '[%s] is writable.', 'app/tmp')  . '</p>';
+					echo '<p class="success message">' . __d('install', '[%s] is writable.', 'app/tmp')  . '</p>';
 					if (!is_writable(CACHE)) {
 						$check = false;
-						echo '<p class="error nc-message">' . __d('install', '[%s] is NOT writable.', 'app/tmp/cache')  . '</p>';
+						echo '<p class="error message">' . __d('install', '[%s] is NOT writable.', 'app/tmp/cache')  . '</p>';
 					}
 					if (!is_writable(LOGS)) {
 						$check = false;
-						echo '<p class="error nc-message">' . __d('install', '[%s] is NOT writable.', 'app/tmp/logs')  . '</p>';
+						echo '<p class="error message">' . __d('install', '[%s] is NOT writable.', 'app/tmp/logs')  . '</p>';
 					}
 				} else {
 					$check = false;
-					echo '<p class="error nc-message">' . __d('install', '[%s] is NOT writable.', 'app/tmp')  . '</p>';
+					echo '<p class="error message">' . __d('install', '[%s] is NOT writable.', 'app/tmp')  . '</p>';
 				}
 
 				// uploads is writable
 				if (is_writable(NC_UPLOADS_DIR)) {
-					echo '<p class="success nc-message">' . __d('install', '[%s] is writable.', 'uploads') . '</p>';
+					echo '<p class="success message">' . __d('install', '[%s] is writable.', 'uploads') . '</p>';
 				} else {
 					$check = false;
-					echo '<p class="error nc-message">' . __d('install', '[%s] is NOT writable.', 'uploads') . '</p>';
+					echo '<p class="error message">' . __d('install', '[%s] is NOT writable.', 'uploads') . '</p>';
 				}
 
 				// install.inc.php is writable
 				if (is_writable(APP . 'Config' . DS . NC_INSTALL_INC_FILE)) {
-					echo '<p class="success nc-message">' . __d('install', '[%s] is writable.', 'app/Config/install.inc.php') . '</p>';
+					echo '<p class="success message">' . __d('install', '[%s] is writable.', 'app/Config/install.inc.php') . '</p>';
 				} else {
 					$check = false;
-					echo '<p class="error nc-message">' . __d('install', '[%s] is NOT writable.', 'app/Config/install.inc.php') . '</p>';
+					echo '<p class="error message">' . __d('install', '[%s] is NOT writable.', 'app/Config/install.inc.php') . '</p>';
 				}
 
 				// webroot/theme is writable
 				if (is_writable(WWW_ROOT.'theme')) {
-					echo '<p class="success nc-message">' . __d('install', '[%s] is writable.', 'app/webroot/theme')  . '</p>';
+					echo '<p class="success message">' . __d('install', '[%s] is writable.', 'app/webroot/theme')  . '</p>';
 					if (!is_writable(WWW_ROOT.'theme'.DS.'assets') && is_dir(WWW_ROOT.'theme'.DS.'assets')) {
 						$check = false;
-						echo '<p class="error nc-message">' . __d('install', '[%s] is NOT writable.', 'app/webroot/theme/assets')  . '</p>';
+						echo '<p class="error message">' . __d('install', '[%s] is NOT writable.', 'app/webroot/theme/assets')  . '</p>';
 					}
 					if (!is_writable(WWW_ROOT.'theme'.DS.'page_styles') && is_dir(WWW_ROOT.'theme'.DS.'page_styles')) {
 						$check = false;
-						echo '<p class="error nc-message">' . __d('install', '[%s] is NOT writable.', 'app/webroot/theme/page_styles')  . '</p>';
+						echo '<p class="error message">' . __d('install', '[%s] is NOT writable.', 'app/webroot/theme/page_styles')  . '</p>';
 					}
 				} else {
 					$check = false;
-					echo '<p class="error nc-message">' . __d('install', '[%s] is NOT writable.', 'app/webroot/theme')  . '</p>';
+					echo '<p class="error message">' . __d('install', '[%s] is NOT writable.', 'app/webroot/theme')  . '</p>';
 				}
 
 				//mimetex
@@ -80,36 +80,36 @@ $this->assign('title', __d('install', 'Setting Check'));
 					}
 				}
 				if ($isAvailable) {
-					echo '<p class="success nc-message">' . __d('install', '[%s] is executable.', str_replace(ROOT, '', $mimetex)) . '</p>';
+					echo '<p class="success message">' . __d('install', '[%s] is executable.', str_replace(ROOT, '', $mimetex)) . '</p>';
 				} else {
 					$check = false;
-					echo '<p class="error nc-message">' . __d('install', '[%s] is NOT executable.', '/lib/Nc/Vendor/mimetex/'.$mimetexFile) . '</p>';
+					echo '<p class="error message">' . __d('install', '[%s] is NOT executable.', '/lib/Nc/Vendor/mimetex/'.$mimetexFile) . '</p>';
 				}
 
 				// mbstring
 				if (extension_loaded('mbstring') && function_exists('mb_convert_encoding')) {
-					echo '<p class="success nc-message">' . __d('install', 'function %s exists.', 'mb_convert_encoding()') . '</p>';
+					echo '<p class="success message">' . __d('install', 'function %s exists.', 'mb_convert_encoding()') . '</p>';
 				} elseif (function_exists("mb_detect_order")) {
 					$check = false;
-					echo '<p class="error nc-message">' . __d('install', 'Call to undefined function %s.', 'mb_convert_encoding()') . '</p>';
+					echo '<p class="error message">' . __d('install', 'Call to undefined function %s.', 'mb_convert_encoding()') . '</p>';
 				}
 
 				// 画像処理関数
 				if (extension_loaded('imagick')) {
-					echo '<p class="success nc-message">' . __d('install', 'function %s exists.', 'Imagick') . '</p>';
+					echo '<p class="success message">' . __d('install', 'function %s exists.', 'Imagick') . '</p>';
 				} elseif (extension_loaded('gd')) {
-					echo '<p class="success nc-message">' . __d('install', 'function %s exists.', 'GD') . '</p>';
+					echo '<p class="success message">' . __d('install', 'function %s exists.', 'GD') . '</p>';
 				} else {
 					$check = false;
-					echo '<p class="error nc-message">' . __d('install', 'Call to undefined function Imagick or GD.') . '</p>';
+					echo '<p class="error message">' . __d('install', 'Call to undefined function Imagick or GD.') . '</p>';
 				}
 
 				// php version
 				if (version_compare(phpversion(), '5.2.8', '>=')) {
-					echo '<p class="success nc-message">' . __d('install', 'PHP version %s >= 5.2.8', phpversion()) . '</p>';
+					echo '<p class="success message">' . __d('install', 'PHP version %s >= 5.2.8', phpversion()) . '</p>';
 				} else {
 					$check = false;
-					echo '<p class="error nc-message">' . __d('install', 'PHP version %s < 5.2.8', phpversion()) . '</p>';
+					echo '<p class="error message">' . __d('install', 'PHP version %s < 5.2.8', phpversion()) . '</p>';
 				}
 			?>
 		</div>
