@@ -74,7 +74,7 @@ if($community_params['community']['Community']['participate_flag'] == NC_PARTICI
 								<?php
 									$options = array(
 										NC_PARTICIPATE_FLAG_FREE => __d('page', 'Free(All login user can participate.)'),
-										NC_PARTICIPATE_FLAG_ACCEPT => __d('page', 'Invitation(Require the approval of room manager.)'),
+										NC_PARTICIPATE_FLAG_ACCEPT => __d('page', 'Free(Require the approval of room manager.)'),
 										NC_PARTICIPATE_FLAG_INVITE => __d('page', 'Invitation(Only Invite user can participate.)'),
 									);
 									if($isOnlyParticipant) {

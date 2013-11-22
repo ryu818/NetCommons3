@@ -262,13 +262,13 @@ class PageUserLink extends AppModel
 				unset($preParentUserIdArr[$userId]);
 				continue;
 			}
-			if(!isset($authorities[$authorityId])) {
+			if(!isset($authorities[$authorityId]) && $authorityId != NC_AUTH_OTHER_ID) {
 				// 権限が存在しないか、リストに表示されない権限
 				unset($preParentUserIdArr[$userId]);
 				continue;
 			}
 
-			$minHierarchy = $Authority->getMinHierarchy($authorities[$authorityId]);
+			$minHierarchy = $Authority->getMinHierarchy(isset($authorities[$authorityId]) ? $authorities[$authorityId] : NC_AUTH_OTHER);
 
 			if($page['Page']['space_type'] != NC_SPACE_TYPE_GROUP || $activeUser['Authority']['hierarchy'] == NC_AUTH_GUEST ||
 				($page['Page']['thread_num'] == 1 && $page['Community']['participate_flag'] == NC_PARTICIPATE_FLAG_ONLY_USER)) {
@@ -378,5 +378,38 @@ class PageUserLink extends AppModel
 			return false;
 		}
 		return true;
+	}
+
+/**
+ * 主担の会員のみ取得
+ * @param  integer $roomId
+ * @return boolean false|array userIds
+ * @since  v 3.0.0.0
+ */
+	public function findChiefByRoomId($roomId) {
+		// 既に参加中かどうかチェック
+		$params = array(
+			'fields' => array(
+				'PageUserLink.user_id'
+			),
+			'conditions' => array(
+				'PageUserLink.room_id' => $roomId,
+				'Authority.hierarchy >=' => NC_AUTH_MIN_CHIEF,
+			),
+			'joins' => array(
+				array(
+					"type" => "INNER",
+					"table" => "authorities",
+					"alias" => "Authority",
+					"conditions" => "`Authority`.`id`=`PageUserLink`.`authority_id`"
+				),
+			),
+		);
+		$pageUserLinks = $this->find('list', $params);
+		if(!$pageUserLinks) {
+			// 主担なし
+			return false;
+		}
+		return $pageUserLinks;
 	}
 }

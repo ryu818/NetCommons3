@@ -37,10 +37,22 @@
 					$tooltip_title = ' title="' . $tooltip_title . '"';
 				}
 			}
+			if($class == 'pages-menu-handle-community-light') {
+				$url = $this->webroot. $page['Page']['permalink'].$parameter;
+			} else {
+				$url = $this->webroot. $page['Page']['permalink'].$parameter;
+			}
 		?>
 		<li id="pages-menu-item-<?php echo(h($page['Page']['id'])); ?>" class="dd-item<?php if($tooltip_title != ''): ?> nc-tooltip<?php endif; ?>" data-id="<?php echo(h($page['Page']['id'])); ?>"<?php echo($tooltip_title); ?>>
 			<div class="pages-menu-handle <?php echo($class); ?><?php if($page['Page']['id'] == $page_id): ?> highlight<?php endif; ?><?php if($page['Page']['thread_num'] == 1): ?> pages-menu-handle-top<?php endif; ?>">
-			<a href="<?php echo($this->webroot); ?><?php echo($page['Page']['permalink'].$parameter); ?>" title="<?php echo(h($page['Page']['page_name'])); ?>">
+			<?php if($class == 'pages-menu-handle-community-light' || $class == 'pages-menu-handle-community-light pages-menu-handle-community-light-topnode'): ?>
+			<?php
+				$communityInfParams = array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'community_inf', $page['Page']['root_id']);
+			?>
+			<a id="nc-hmenu-community-photo" class="nc-tooltip" data-ajax-effect="fold" data-ajax-force="true" data-ajax-dialog-options='{"title" : "<?php echo($this->Js->escape(__d('page', '[%s] Community information', $page['Page']['page_name'])));?>"}' data-ajax="#pages-menu-community-inf" data-ajax-dialog="true" title="<?php echo(__d('page', '[%s] Community information', $page['Page']['page_name'])); ?>" href="<?php echo($this->Html->url($communityInfParams)); ?>">
+			<?php else: ?>
+			<a href="<?php echo($url); ?>" title="<?php echo(h($page['Page']['page_name'])); ?>">
+			<?php endif; ?>
 				<?php echo(h($page['Page']['page_name'])); ?>
 			</a>
 			<?php if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_OFF): ?>

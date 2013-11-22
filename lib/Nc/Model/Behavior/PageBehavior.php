@@ -27,7 +27,7 @@ class PageBehavior extends ModelBehavior {
 					App::uses('AuthComponent', 'Controller/Component');
 					$user = AuthComponent::user();
 					if($page[$alias]['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
-						// TODO:config_langsに{X-HANDLE}のマイポータル {X-USERNAME}のマイポータル等のデータを持ち、変換する。
+						// TODO:config_langsに{X-NAME}のマイポータル {X-USER_NAME}のマイポータル等のデータを持ち、変換する。
 						if($user['myportal_page_id'] == $page[$alias]['id']) {
 							$page[$alias]['page_name'] = __('Myportal of %s', $user['handle']);
 						} else {

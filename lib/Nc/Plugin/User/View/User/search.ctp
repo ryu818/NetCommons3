@@ -10,22 +10,39 @@
  */
 ?>
 <div id="user-search-<?php echo $id;?>">
+	<div id="user-search-main-<?php echo $id;?>">
 	<?php
-		$options = array('onsubmit' => "$('#user-search-".$id."').parent().dialog('close');");
-		if(isset($this->request->named['post_page_id'])) {
-			// ページ設定
-			$options['url'] = $this->Html->url(array(
-				'plugin' => 'page',
-				 'controller' => 'page_menus',
-				'action' => 'participant',
-				intval($this->request->named['post_page_id']),
-				'#' => null,
-			), true);
-			$options['data-ajax'] = '#pages-menu-edit-participant-'.intval($this->request->named['post_page_id']);
+		if(isset($this->request->named['select_member_room_id'])) {
+			// 招待会員選択
+			$options = array(
+				'url' => array(
+					'plugin' => 'page',
+					'controller' => 'page_menus',
+					'action' => 'select_member',
+					intval($this->request->named['select_member_room_id']),
+					'top_id' => $id,
+				),
+				'data-ajax' => '#user-search-result-main-'.$id,
+				'data-ajax-method' => 'inner',
+				'data-ajax-callback' => '$("#user-search-main-'.$id.'").slideUp(\'fast\', function(){$("#user-search-result-'.$id.'").slideDown();});',
+			);
 		} else {
-			$options['action'] = 'index';
-			$options['data-ajax'] = '#user-init-tab-list';
-			$options['data-ajax-method'] = 'inner';
+			$options = array('onsubmit' => "$('#user-search-".$id."').parent().dialog('close');");
+			if(isset($this->request->named['post_page_id'])) {
+				// ページ設定
+				$options['url'] = $this->Html->url(array(
+					'plugin' => 'page',
+					'controller' => 'page_menus',
+					'action' => 'participant',
+					intval($this->request->named['post_page_id']),
+					'#' => null,
+				), true);
+				$options['data-ajax'] = '#pages-menu-edit-participant-'.intval($this->request->named['post_page_id']);
+			} else {
+				$options['action'] = 'index';
+				$options['data-ajax'] = '#user-init-tab-list';
+				$options['data-ajax-method'] = 'inner';
+			}
 		}
 
 		echo $this->Form->create('User', $options);
@@ -141,6 +158,7 @@
 				</div>
 			</div>
 		</fieldset>
+
 	</div>
 	<?php
 		echo $this->Html->div('submit',
@@ -151,4 +169,25 @@
 		echo $this->Form->end();
 		echo $this->Html->css(array('User.search/'));
 	?>
+	</div>
+	<?php if(isset($this->request->named['select_member_room_id'])): ?>
+	<div id="user-search-result-<?php echo $id;?>" style="display:none;">
+		<div class="user-search-again">
+			<?php
+				$url = $this->Html->url($options['url']);
+				echo $this->Html->link('<span class="ui-icon ui-icon-plus float-left"></span>'.h(__d('user', 'Search again')), '#', array(
+					'class' => 'nowrap',
+					'escape' => false,
+					'onclick' => '$(\'#Form'.$id.'\').attr(\'action\', \''.$url.'\'); $(\'#user-search-result-'.$id.'\').slideUp(\'fast\', function(){$(\'#user-search-main-'.$id.'\').slideDown();}); return false;',
+				));
+			?>
+		</div>
+		<div id="user-search-result-main-<?php echo $id;?>"></div>
+		<?php
+			echo $this->Html->div('btn-bottom',
+				$this->Form->button(__('Close'), array('name' => 'close', 'class' => 'common-btn', 'type' => 'button', 'onclick' => "$('#user-search-".$id."').parent().dialog('close');return false;"))
+			);
+		?>
+	</div>
+	<?php endif; ?>
 </div>

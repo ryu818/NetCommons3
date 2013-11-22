@@ -1215,7 +1215,7 @@
             <column name="name">myportal_space_name</column>
             <column name="type">text</column>
             <column name="title">Name of Myportal Room</column>
-            <column name="value">Myportal of {X-HANDLE}</column>
+            <column name="value">Myportal of {X-USER}</column>
             <column name="description"></column>
             <column name="options"></column>
             <column name="domain">system</column>
@@ -1239,8 +1239,8 @@
             <column name="name">private_space_name</column>
             <column name="type">text</column>
             <column name="title">Name of Private Room</column>
-            <column name="value">Private room of {X-HANDLE}</column>
-            <column name="description">You may use the keyword, {X-HANDLE},{X-USER_NAME}.  It stands for the handle name, user name of each user.&lt;br /&gt;(i.e.：{X-HANDLE}&amp;#039;s room -&amp;gt; %s&amp;#039;s room)</column>
+            <column name="value">Private room of {X-USER}</column>
+            <column name="description">You may use the keyword, {X-USER},{X-USER_NAME}.  It stands for the handle name, user name of each user.&lt;br /&gt;(i.e.：{X-USER}&amp;#039;s room -&amp;gt; %s&amp;#039;s room)</column>
             <column name="options"></column>
             <column name="domain">system</column>
             <column name="attribute">size=&quot;15&quot;</column>
@@ -2661,13 +2661,13 @@ Clicking on the link below will activate the account of this user.</column>
             <column name="type">textarea</column>
             <column name="title">Body of user registration</column>
             <column name="value">Thank you for registering for {X-SITE_NAME}.
-Handle:{X-HANDLE}
+Handle:{X-USER}
 Login_id:{X-LOGIN_ID}
 Password:{X-PASSWORD}
 e-mail:{X-EMAIL}
 You may now log in by clicking on this link or copying and pasting it in your browser:
 {X-URL}</column>
-            <column name="description">You may use the keyword, {X-SITE_NAME}, {X-HANDLE}, {X-USER_NAME}&lt;br /&gt;{X-LOGIN_ID}, {X-PASSWORD}, {X-EMAIL}&lt;br /&gt;{X-URL}.  Each keyword stands for the site name, the handle name &lt;br/&gt;login id, password, e-mail address &lt;br/&gt; the list of grouprooms to join and the url.</column>
+            <column name="description">You may use the keyword, {X-SITE_NAME}, {X-USER}, {X-USER_NAME}&lt;br /&gt;{X-LOGIN_ID}, {X-PASSWORD}, {X-EMAIL}&lt;br /&gt;{X-URL}.  Each keyword stands for the site name, the handle name &lt;br/&gt;login id, password, e-mail address &lt;br/&gt; the list of grouprooms to join and the url.</column>
             <column name="options"></column>
             <column name="domain">system</column>
             <column name="attribute">class=&quot;system-textarea&quot;</column>
@@ -2887,8 +2887,8 @@ We recommend that you change your password after login.</column>
             <column name="name">mail_withdraw_membership_body</column>
             <column name="type">textarea</column>
             <column name="title">Withdraw membership body</column>
-            <column name="value">{X-SITE_NAME}'s {X-HANDLE} is already leaved.</column>
-            <column name="description">You may use the keyword, {X-SITE_NAME} and {X-HANDLE}, {X-USER_NAME}.  Each keyword stands for the site name and the handle name.</column>
+            <column name="value">{X-SITE_NAME}'s {X-USER} is already leaved.</column>
+            <column name="description">You may use the keyword, {X-SITE_NAME} and {X-USER}, {X-USER_NAME}.  Each keyword stands for the site name and the handle name.</column>
             <column name="options"></column>
             <column name="domain">system</column>
             <column name="attribute">class=&quot;system-textarea&quot;</column>
@@ -2937,7 +2937,7 @@ We recommend that you change your password after login.</column>
             <column name="title">Default how to participate</column>
             <column name="value">1</column>
             <column name="description"></column>
-            <column name="options">a:4:{i:3;s:37:&quot;Free(All login user can participate.)&quot;;i:2;s:49:&quot;Invitation(Require the approval of room manager.)&quot;;i:1;s:45:&quot;Invitation(Only Invite user can participate.)&quot;;i:0;s:21:&quot;Only participant user&quot;;}</column>
+            <column name="options">a:4:{i:3;s:37:&quot;Free(All login user can participate.)&quot;;i:2;s:49:&quot;Free(Require the approval of room manager.)&quot;;i:1;s:45:&quot;Invitation(Only Invite user can participate.)&quot;;i:0;s:21:&quot;Only participant user&quot;;}</column>
             <column name="domain">system</column>
             <column name="attribute">style=&quot;width:360px;&quot;</column>
             <column name="required">1</column>
@@ -3007,7 +3007,7 @@ We recommend that you change your password after login.</column>
             <column name="name">community_mail_participate_announce_body</column>
             <column name="type">textarea</column>
             <column name="title">Body of mail when participated</column>
-            <column name="value">{X-HANDLE} has joined {X-ROOM}.</column>
+            <column name="value">{X-USER} has joined {X-ROOM}.</column>
             <column name="description"></column>
             <column name="options"></column>
             <column name="domain">system</column>
@@ -3079,7 +3079,7 @@ We recommend that you change your password after login.</column>
             <column name="name">community_mail_withdraw_body</column>
             <column name="type">textarea</column>
             <column name="title">Body of mail when resigned</column>
-            <column name="value">Membership of {X-HANDLE} has been removed from {X-ROOM}.</column>
+            <column name="value">Membership of {X-USER} has been removed from {X-ROOM}.</column>
             <column name="description"></column>
             <column name="options"></column>
             <column name="domain">system</column>
@@ -3223,12 +3223,9 @@ We recommend that you change your password after login.</column>
             <column name="name">community_mail_confirm_approval_body</column>
             <column name="type">textarea</column>
             <column name="title">Body of community participation acceptance mail</column>
-            <column name="value">{X-HANDLE} want to join {X-ROOM}.
-Click the link below to view {X-HANDLE}'s profile.
-{X-MYPORTAL_URL}
-
-To allow participant and send a mail to the user, please click the link below.
-{X-APPROVE_URL}</column>
+            <column name="value">{X-USER} want to join {X-ROOM}.
+Click the link below to view {X-USER}'s profile.
+{X-USER_URL}</column>
             <column name="description"></column>
             <column name="options"></column>
             <column name="domain">system</column>
@@ -3362,7 +3359,7 @@ This is the community's URL:
             <column name="module_id">0</column>
             <column name="config_name">myportal_space_name</column>
             <column name="lang">ja</column>
-            <column name="value">{X-HANDLE}のマイポータル</column>
+            <column name="value">{X-USER}のマイポータル</column>
             <column name="created">NULL</column>
             <column name="created_user_id">0</column>
             <column name="created_user_name"></column>
@@ -3375,7 +3372,7 @@ This is the community's URL:
             <column name="module_id">0</column>
             <column name="config_name">private_space_name</column>
             <column name="lang">ja</column>
-            <column name="value">{X-HANDLE}のマイルーム</column>
+            <column name="value">{X-USER}のマイルーム</column>
             <column name="created">NULL</column>
             <column name="created_user_id">0</column>
             <column name="created_user_name"></column>
@@ -3593,7 +3590,7 @@ This is the community's URL:
             <column name="config_name">mail_add_user_body</column>
             <column name="lang">ja</column>
             <column name="value">会員登録が完了しましたのでお知らせします。
-ハンドル：{X-HANDLE}
+ハンドル：{X-USER}
 ログインID：{X-LOGIN_ID}
 パスワード：{X-PASSWORD}
 e-mail：{X-EMAIL}
@@ -3683,7 +3680,7 @@ e-mail：{X-EMAIL}
             <column name="module_id">0</column>
             <column name="config_name">mail_withdraw_membership_body</column>
             <column name="lang">ja</column>
-            <column name="value">{X-SITE_NAME}の{X-HANDLE}が退会しました。</column>
+            <column name="value">{X-SITE_NAME}の{X-USER}が退会しました。</column>
             <column name="created">NULL</column>
             <column name="created_user_id">0</column>
             <column name="created_user_name"></column>
@@ -3709,7 +3706,7 @@ e-mail：{X-EMAIL}
             <column name="module_id">0</column>
             <column name="config_name">community_mail_participate_announce_body</column>
             <column name="lang">ja</column>
-            <column name="value">{X-HANDLE}さんが{X-ROOM}に参加しました。</column>
+            <column name="value">{X-USER}さんが{X-ROOM}に参加しました。</column>
             <column name="created">NULL</column>
             <column name="created_user_id">0</column>
             <column name="created_user_name"></column>
@@ -3735,7 +3732,7 @@ e-mail：{X-EMAIL}
             <column name="module_id">0</column>
             <column name="config_name">community_mail_withdraw_body</column>
             <column name="lang">ja</column>
-            <column name="value">{X-HANDLE}さんが{X-ROOM}を退会しました。</column>
+            <column name="value">{X-USER}さんが{X-ROOM}を退会しました。</column>
             <column name="created">NULL</column>
             <column name="created_user_id">0</column>
             <column name="created_user_name"></column>
@@ -3761,7 +3758,7 @@ e-mail：{X-EMAIL}
             <column name="module_id">0</column>
             <column name="config_name">community_mail_invite_body</column>
             <column name="lang">ja</column>
-            <column name="value">私たちが参加している{X-SITE_NAME}に「{X-ROOM}」というコミュニティを作りました。ぜひ参加してください。</column>
+            <column name="value">私たちが参加している{X-SITE_NAME}に「{X-ROOM}」というコミュニティーを作りました。ぜひ参加してください。</column>
             <column name="created">NULL</column>
             <column name="created_user_id">0</column>
             <column name="created_user_name"></column>
@@ -3813,12 +3810,9 @@ e-mail：{X-EMAIL}
             <column name="module_id">0</column>
             <column name="config_name">community_mail_confirm_approval_body</column>
             <column name="lang">ja</column>
-            <column name="value">{X-HANDLE}さんから{X-ROOM}への参加申請がありました。
-{X-HANDLE}さんの詳細はこちら
-{X-MYPORTAL_URL}
-
-参加を許可する場合は、下記のリンクをクリックして参加ユーザ宛てに承認メールを送信してください。
-{X-APPROVE_URL}</column>
+            <column name="value">{X-USER}さんから{X-ROOM}への参加申請がありました。
+{X-USER}さんの詳細はこちら
+{X-USER_URL}</column>
             <column name="created">NULL</column>
             <column name="created_user_id">0</column>
             <column name="created_user_name"></column>
@@ -3845,7 +3839,7 @@ e-mail：{X-EMAIL}
             <column name="config_name">community_mail_approved_body</column>
             <column name="lang">ja</column>
             <column name="value">{X-ROOM}参加の承認が完了しました。
-参加したコミュニティのURL:
+参加したコミュニティーのURL:
 {X-COMMUNITY_URL}</column>
             <column name="created">NULL</column>
             <column name="created_user_id">0</column>
@@ -5415,7 +5409,7 @@ Valley以降、一貫してテーマとしてきたのも、まさにそのこ�
             <column name="permalink">admin</column>
             <column name="myportal_page_id">10</column>
             <column name="private_page_id">11</column>
-            <column name="avatar">NULL</column>
+            <column name="avatar"></column>
             <column name="activate_key">NULL</column>
             <column name="lang">ja</column>
             <column name="timezone_offset">9</column>

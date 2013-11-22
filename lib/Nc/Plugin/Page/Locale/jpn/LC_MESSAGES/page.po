@@ -41,6 +41,14 @@ msgstr 	"ページ一覧"
 msgid  	"Community list"
 msgstr 	"コミュニティー一覧"
 
+msgid  	"Communities have joined"
+msgstr 	"参加コミュニティー"
+msgid  	"Search communities"
+msgstr 	"コミュニティー検索"
+
+msgid  	"Search from disclosed communities"
+msgstr 	"公開コミュニティーから検索"
+
 msgid  	"Add community"
 msgstr 	"コミュニティー追加"
 msgid  	"Add page"
@@ -96,6 +104,9 @@ msgstr 	"下位ページ"
 msgid  	"Community setting"
 msgstr 	"コミュニティー設定"
 
+msgid  	"Community name"
+msgstr 	"コミュニティー名称"
+
 msgid  	"Publication range"
 msgstr 	"公開範囲"
 
@@ -111,8 +122,8 @@ msgid  	"How to participate"
 msgstr 	"参加方法"
 msgid  	"Free(All login user can participate.)"
 msgstr 	"参加受付制(希望者は誰でも参加可能）"
-msgid  	"Invitation(Require the approval of room manager.)"
-msgstr 	"招待制（主担の承認が必要）"
+msgid  	"Free(Require the approval of room manager.)"
+msgstr 	"参加受付制（主担の承認が必要）"
 msgid  	"Invitation(Only Invite user can participate.)"
 msgstr 	"招待制（コミュニティー参加者から招待を受けた会員のみ参加可能）"
 msgid  	"Only participant user"
@@ -439,6 +450,9 @@ msgstr 	"フッター表示"
 ## コミュニティー情報
 msgid  	"[%s] Community information"
 msgstr 	"[%s] コミュニティー情報"
+msgid  	"Community top"
+msgstr 	"コミュニティトップへ"
+
 
 msgid  	"Resign from community"
 msgstr 	"コミュニティーから退会"
@@ -463,9 +477,51 @@ msgstr 	"あなたは%sの唯一の主担のため、退会できません。<br
 msgid  	"Already participating."
 msgstr 	"既に参加しています。"
 
-msgid  	"You resigned."
-msgstr 	"退会しました。"
-msgid  	"You participated."
-msgstr 	"参加しました。"
 msgid  	"You invited."
 msgstr 	"招待しました。"
+
+## コミュニティー招待
+
+msgid  	"Select members"
+msgstr 	"会員選択"
+
+msgid  	"Members to be invited:"
+msgstr 	"招待する会員:"
+
+msgid  	"Invite"
+msgstr 	"招待する"
+
+msgid  	"Participating"
+msgstr 	"参加済み"
+
+msgid  	"Selected"
+msgstr 	"選択済み"
+
+msgid  	"Because there are members that do not exist, can not be invited."
+msgstr 	"存在しない会員がいるため、招待できません。"
+msgid  	"Because there are members of participation already, you can not invite."
+msgstr 	"既に参加済みの会員がいるため、招待できません。"
+
+msgid  	"To %s"
+msgstr 	"%sさんへ"
+
+msgid  	"To see the description of {X-ROOM}, please click below.\n{X-COMMUNITY_URL}\n\nTo joint {X-ROOM}, please click the URL below.\n{X-PARTICIPATE_URL}"
+msgstr 	"{X-ROOM}の説明を見るには以下をクリックしてください。\n{X-COMMUNITY_URL}\n\n{X-ROOM}に参加する場合は下記URLをクリックしてください。\n{X-PARTICIPATE_URL}"
+
+msgid  	"Transmission processing of invitation mails has been started."
+msgstr 	"招待メール送信処理を実行しました。"
+
+msgid  	"The approval key is invalid, or it is expired."
+msgstr 	"承認用キーが不正か、有効期限切れです。"
+
+msgid  	"It is awaiting approval already.Please wait until it is approved."
+msgstr 	"既に承認待ちです。承認されるまでお待ちください。"
+msgid  	"%1$s's participation for %2$s was approved."
+msgstr 	"%1$sさんの%2$s参加を承認しました。"
+msgid  	"Remove membership of %s."
+msgstr 	"%sを退会しました。"
+msgid  	"Has jointed %s."
+msgstr 	"%sに参加しました。"
+
+msgid  	"To allow participant and send a mail to the user, please click the link below.\n{X-APPROVE_URL}"
+msgstr 	"参加を許可する場合は、下記のリンクをクリックして参加ユーザー宛てに承認メールを送信してください。\n{X-APPROVE_URL}"

@@ -8,48 +8,55 @@
  * @since         v 3.0.0.0
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
+$ncUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 ?>
 <div data-width="590">
 	<div class="pages-menu-community-inf-btn-top">
 	<?php
-		if($is_participate && $community['Community']['participate_flag'] != NC_PARTICIPATE_FLAG_ONLY_USER) {
+		if(isset($ncUser) && $is_participate && $community['Community']['participate_flag'] != NC_PARTICIPATE_FLAG_ONLY_USER) {
 			echo $this->Form->button(__d('page', 'Resign from community'), array(
 				'name' => 'resign',
 				'class' => 'common-btn-min nc-button-red',
 				'type' => 'button',
 				'data-ajax-confirm' => __d('page', 'Do you resign from "%s" community?', $community_lang['CommunityLang']['community_name']),
 				'data-ajax-type' => 'post',
-				'data-ajax' => '#nc-community-inf',
+				'data-ajax' => '#pages-menu-community-inf',
 				'data-ajax-url' => $this->Html->url(array('action' => 'resign_community', $community['Community']['room_id'])),
 				'data-ajax-data' => h('{"token": "'.$this->params['_Token']['key'].'"}'),	// JSONのエラーとなるためh関数を用いてエスケープ
-				'data-ajax-callback' => 'return $.PageMenu.communityOperationCallback(e, res);',
+				'data-ajax-callback' => 'return $.PageCommunityInf.communityOperationCallback(e, res);',
 			));
 		}
 
-		if(!$is_participate && $community['Community']['participate_flag'] == NC_PARTICIPATE_FLAG_FREE) {
+		if(isset($ncUser) && !$is_participate && ($community['Community']['participate_flag'] == NC_PARTICIPATE_FLAG_FREE ||
+			$community['Community']['participate_flag'] == NC_PARTICIPATE_FLAG_ACCEPT)) {
 			echo $this->Form->button(__d('page', 'Participate community'), array(
 				'name' => 'participate',
 				'class' => 'common-btn-min nc-button-blue',
 				'type' => 'button',
 				'data-ajax-confirm' => __d('page', 'Join the "%s", are you sure?', $community_lang['CommunityLang']['community_name']),
 				'data-ajax-type' => 'post',
-				'data-ajax' => '#nc-community-inf',
+				'data-ajax' => '#pages-menu-community-inf',
 				'data-ajax-url' => $this->Html->url(array('action' => 'participate_community', $community['Community']['room_id'])),
 				'data-ajax-data' => h('{"token": "'.$this->params['_Token']['key'].'"}'),	// JSONのエラーとなるためh関数を用いてエスケープ
-				'data-ajax-callback' => 'return $.PageMenu.communityOperationCallback(e, res);',
+				'data-ajax-callback' => 'return $.PageCommunityInf.communityOperationCallback(e, res);',
 			));
 		}
 
-		if($is_participate && $min_hierarchy >= $community['Community']['invite_hierarchy'] && $community['Community']['participate_flag'] != NC_PARTICIPATE_FLAG_ONLY_USER) {
+		if(isset($ncUser) && $is_participate && $min_hierarchy >= $community['Community']['invite_hierarchy'] && $community['Community']['participate_flag'] != NC_PARTICIPATE_FLAG_ONLY_USER) {
+			$url = array('action' => 'invite_community', $community['Community']['room_id']);
+			if(!$this->request->is('ajax')) {
+				$url['is_center'] = _ON;
+			}
 			echo $this->Form->button(__d('page', 'Invite to this community'), array(
 				'name' => 'invite',
 				'class' => 'common-btn-min nc-button-blue',
 				'type' => 'button',
-				'data-ajax' => '#nc-community-inf',
+				'data-ajax' => '#pages-menu-community-inf',
 				'data-ajax-dialog' => 'true',
 				'data-ajax-force' => 'true',
-				'data-ajax-dialog-options' => h('{"title" : "'.$this->Js->escape(__d('page', 'Invite to "%s" community', $page['CommunityLang']['community_name'])).'", "resizable": true, "width":"600"}'),
-				'data-ajax-url' => $this->Html->url(array('action' => 'invite_community', $community['Community']['room_id'])),
+				'data-ajax-effect' => 'fold',
+				'data-ajax-dialog-options' => h('{"title" : "'.$this->Js->escape(__d('page', 'Invite to "%s" community', $community_lang['CommunityLang']['community_name'])).'", "resizable": true, "width":"600"}'),
+				'data-ajax-url' => $this->Html->url($url),
 			));
 		}
 	?>
@@ -74,6 +81,18 @@
 		<div class="table-cell">
 			<fieldset class="form">
 				<ul class="lists pages-menu-community-inf-lists">
+					<li>
+						<dl>
+							<dt>
+								<?php echo(__d('page', 'Community name'));?>
+							</dt>
+							<dd>
+								<?php
+									echo(h($community_lang['CommunityLang']['community_name']));
+								?>
+							</dd>
+						</dl>
+					</li>
 					<li>
 						<dl>
 							<dt>
@@ -108,7 +127,7 @@
 											echo(__d('page', 'Free(All login user can participate.)'));
 											break;
 										case NC_PARTICIPATE_FLAG_ACCEPT:
-											echo(__d('page', 'Invitation(Require the approval of room manager.)'));
+											echo(__d('page', 'Free(Require the approval of room manager.)'));
 											break;
 										case NC_PARTICIPATE_FLAG_INVITE:
 											echo(__d('page', 'Invitation(Only Invite user can participate.)'));
@@ -131,7 +150,7 @@
 							<dd>
 								<?php
 									/* TODO:ハンドルリンク未作成 */
-									echo($community['Community']['created_user_name']);
+									echo(h($community['Community']['created_user_name']));
 								?>
 							</dd>
 						</dl>
@@ -212,11 +231,23 @@
 		</ul>
 	</fieldset>
 	<?php endif; ?>
+	<?php if(isset($ncUser) && $is_participate && !$this->request->is('ajax')): ?>
+	<div class="pages-menu--community-inf-top">
 	<?php
-		echo $this->Html->div('btn-bottom',
-			$this->Form->button(__('Close'), array('name' => 'close', 'class' => 'common-btn', 'type' => 'button',
-				'onclick' => '$(\'#nc-community-inf'.'\').dialog(\'close\'); return false;'))
-		);
+		$permalink = (NC_SPACE_GROUP_PREFIX != '') ? NC_SPACE_GROUP_PREFIX  . '/'. $page['Page']['permalink'] : $page['Page']['permalink'];
+		$url = Router::url('/', true). $permalink;
+	?>
+	<a href="<?php echo $url;?>"><?php echo __d('page', 'Community top'); ?></a>
+	</div>
+	<?php endif; ?>
+	<?php
+		if($this->request->is('ajax')) {
+			echo $this->Html->div('btn-bottom',
+				$this->Form->button(__('Close'), array('name' => 'close', 'class' => 'common-btn', 'type' => 'button',
+					'onclick' => '$(\'#pages-menu-community-inf'.'\').dialog(\'close\'); return false;'))
+			);
+		}
+		echo $this->Html->script('Page.community_inf');
 		echo $this->Html->css('Page.community_inf');
 	?>
 </div>

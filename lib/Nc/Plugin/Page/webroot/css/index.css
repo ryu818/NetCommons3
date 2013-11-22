@@ -44,9 +44,38 @@
 	border:1px solid #96969d;
 	margin:0;
 	overflow: auto;
-	min-width:200px;
+	min-width:290px;
 	max-width:850px
 }
+
+/* 参加コミュニティー、コミュニティー検索 */
+#nc-pages-setting-dialog a.nc-pages-community-type {
+	padding: 4px 6px;
+	margin: 0 0 6px 3px;
+	display:block;
+	float:left;
+	background-color:#f8f7fa;
+	font-size:93%;
+	white-space:nowrap;
+	box-shadow: -1px 1px 2px rgba(0, 0, 0, .05) inset, rgba(255, 255, 255, .8);
+	border: 1px solid rgba(0, 0, 0, .1);
+	border-radius:2px;
+}
+#nc-pages-setting-dialog a.nc-pages-community-type-current {
+	color:#000000;
+	text-decoration: none;
+	cursor: default;
+	background-color:#f3f8fc;
+}
+.nc-pages-community-search-outer {
+	border: 1px solid #eee;
+	padding: 10px;
+	margin: 0 0 5px 0;
+}
+.nc-pages-community-search-text {
+	width:180px;
+}
+
 .nc-pages-setting-icon {
 	width: 35px;
 	border-right: 1px solid #cdcdcd;
