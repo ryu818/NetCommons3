@@ -92,8 +92,8 @@ define('NC_ALLOWED_TO_EDIT_CSS', 2);			// CSSの編集まで許可する。
 
 //-----------------participant_type（Authority.getParticipantTypeで使用）------
 
-define('NC_PARTICIPANT_TYPE_ENABLED', 3);			// すべての会員表示（すべての権限へ変更可）
-define('NC_PARTICIPANT_TYPE_DEFAULT_ENABLED', 2);	// すべての会員表示（PageUserLinkにない会員は、default値と不参加のみ変更可）
+define('NC_PARTICIPANT_TYPE_ENABLED', 2);			// すべての会員表示（すべての権限へ変更可）
+define('NC_PARTICIPANT_TYPE_DEFAULT_ENABLED', 1);	// すべての会員表示（PageUserLinkにない会員は、default値と不参加のみ変更可）
 define('NC_DISPLAY_FLAG_ENTRY_USERS', 0);			// 参加者のみ表示
 
 //-----------------display_flag-------------------------------------------
@@ -126,7 +126,7 @@ define('NC_PUBLICATION_RANGE_FLAG_ALL', 2);				// 公開（すべてのユーザ
 
 define('NC_PARTICIPATE_FLAG_ONLY_USER', 0);			// 参加会員のみ
 define('NC_PARTICIPATE_FLAG_INVITE', 1);			// 招待制（コミュニティーメンバーから招待を受けた会員のみ参加可能）
-define('NC_PARTICIPATE_FLAG_ACCEPT', 2);			// 招待制（主担の承認が必要）
+define('NC_PARTICIPATE_FLAG_ACCEPT', 2);			// 参加受付制（主担の承認が必要）
 define('NC_PARTICIPATE_FLAG_FREE', 3);				// 参加受付制(希望者は誰でも参加可能）
 
 //-----------------is_approved-------------------------------------------

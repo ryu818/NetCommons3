@@ -17,7 +17,7 @@
 	<legend>
 		<?php echo __d('system', 'System');?>
 	</legend>
-	<ul class="lists">
+	<ul class="nc-lists">
 		<?php
 			echo $this->element('item', array('item' => $configs['sitename']));
 			$options[''] = __('Auto');
@@ -34,7 +34,7 @@
 	<legend>
 		<?php echo __d('system', 'Default member setting');?>
 	</legend>
-	<ul class="lists">
+	<ul class="nc-lists">
 		<?php
 			echo $this->element('item', array('item' => $configs['default_entry_public_authority_id']));
 			echo $this->element('item', array('item' => $configs['default_entry_myportal_authority_id']));

@@ -128,11 +128,54 @@ if(isset($is_edit) && $is_edit == _ON){
 		<?php endif; ?>
 	</div>
 	<div id="pages-menu-community" class="nc-pages-setting-content">
+		<div class="clearfix">
+			<?php
+				/* 参加コミュニティー、コミュニティー検索切替  */
+				$serachText = isset($this->request->data['CommunitySearch']['text']) ? $this->request->data['CommunitySearch']['text'] : '';
+				$serachDisclosedCommunities = !empty($this->request->data['CommunitySearch']['disclosed_communities']) ? true : false;
+				$urlJoinedArr = $urlSearchArr = array('community_type' => 'joined', 'is_paginator' => _ON, '?' => array('is_edit' => $is_edit));
+				$urlSearchArr['community_type'] = 'search';
+				$urlSearchArr['search_communities_text'] = $serachText;
+				$urlSearchArr['disclosed_communities'] = $serachDisclosedCommunities;
+			?>
+			<a data-ajax="#nc-pages-setting-dialog" class="nc-pages-community-type<?php if($community_type != 'search'): ?> nc-pages-community-type-current<?php endif; ?>" href="<?php echo $this->Html->url($urlJoinedArr); ?>" data-community-type="joined"><?php echo( __d('page', 'Communities have joined'));?></a>
+			<a data-ajax="#nc-pages-setting-dialog" class="nc-pages-community-type<?php if($community_type == 'search'): ?> nc-pages-community-type-current<?php endif; ?>" href="<?php echo $this->Html->url($urlSearchArr); ?>" data-file-type="search"><?php echo(__d('page', 'Search communities'));?></a>
+		</div>
+		<?php if($community_type == 'search'): ?>
+		<div class="nc-pages-community-search-outer nc-panel-color">
+		<?php
+			echo $this->Form->create('CommunitySearch', array('data-ajax' => '#nc-pages-setting-dialog'));
+			echo $this->Form->input('text', array(
+				'id' => 'nc-pages-setting-community-search-text',
+				'type' => 'text',
+				'class' => 'text nc-pages-community-search-text',
+				'label' => false,
+				'div' => false,
+				'error' => array('attributes' => array(
+					'selector' => true
+				)),
+				'value' => $serachText,
+			));
+			echo $this->Form->button(__('Search'), array(
+				'type' => 'submit',
+				'class' => 'common-btn-min',
+			));
+			/* 公開コミュニティーから検索 */
+			echo $this->Form->input('disclosed_communities',array(
+				'type' => 'checkbox',
+				'value' => _ON,
+				'checked' => $serachDisclosedCommunities,
+				'label' => __d('page', 'Search from disclosed communities'),
+			));
+			echo $this->Form->end();
+		?>
+		</div>
+		<?php endif; ?>
 		<div class="pages-menu-expand-all-outer">
 		<?php
 			echo $this->Form->button(__('Expand All'), array('class' => 'pages-menu-expand-all', 'name' => 'expand'));
 			echo $this->Form->button(__('Collapse All'), array('class' => 'pages-menu-collapse-all', 'name' => 'collapse'));
-			$paginatorQueryOptions = array('url' => array('is_paginator' => _ON), 'data-ajax' => '#nc-pages-setting-dialog');
+			$paginatorQueryOptions = array('url' => $urlSearchArr, 'data-ajax' => '#nc-pages-setting-dialog');
 		?>
 		</div>
 		<div class="pages-menu-counter-outer">
@@ -140,7 +183,11 @@ if(isset($is_edit) && $is_edit == _ON){
 			<?php echo(__('Results per page')); ?>
 			<select id="pages-menu-community-limit" name="limit">
 				<?php foreach ($limit_select_values as $v): ?>
-				<option value="<?php echo($this->Html->url(array('plugin' => 'page', 'controller' => 'page', 'action' => 'index', 'limit' => $v, '?' => array('is_edit' => $is_edit)))); ?>"<?php if($limit == $v) { echo(' selected="selected"');}?>><?php echo(__('%s cases', $v)); ?></option>
+				<?php
+					$limitUrl = array('plugin' => 'page', 'controller' => 'page', 'action' => 'index', 'limit' => $v);
+					$limitUrl = array_merge($limitUrl, $urlSearchArr);
+				?>
+				<option value="<?php echo($this->Html->url($limitUrl)); ?>"<?php if($limit == $v) { echo(' selected="selected"');}?>><?php echo(__('%s cases', $v)); ?></option>
 				<?php endforeach; ?>
 			</select>
 		</div>
@@ -176,6 +223,6 @@ if(isset($is_edit) && $is_edit == _ON){
 ?>
 <script>
 $(function(){
-	$('#pages-menu-tab').PageMenu(<?php echo($is_edit);?>, <?php echo($page_id);?>, <?php echo($active_tab);?>, <?php echo($sel_active_tab);?>, <?php echo($copy_page_id);?><?php if(!empty($this->request->query['participant_page_id'])): ?>, <?php echo intval($this->request->query['participant_page_id']); ?><?php endif; ?>);
+	$('#pages-menu-tab').PageMenu(<?php echo($is_edit);?>, <?php echo($page_id);?>, <?php echo($active_tab);?>, <?php echo($sel_active_tab);?>, <?php if($this->request->is('post')) {echo 'true';} else{echo 'false';} ?>, <?php echo($copy_page_id);?><?php if(!empty($this->request->query['participant_page_id'])): ?>, <?php echo intval($this->request->query['participant_page_id']); ?><?php endif; ?>);
 });
 </script>

@@ -15,7 +15,6 @@
 
 class Block extends AppModel
 {
-	public $name = 'Block';
 	// public $belongsTo = array('Module');
 
 	public $actsAs = array('Page', 'TimeZone', 'Validation', 'Auth' => array('joins' => false, 'afterFind' => false));
@@ -25,7 +24,9 @@ class Block extends AppModel
 
 /**
  * construct
- * @param   void
+ * @param integer|string|array $id Set this ID for this model on startup, can also be an array of options, see above.
+ * @param string $table Name of database table to use.
+ * @param string $ds DataSource connection name.
  * @return  void
  * @since   v 3.0.0.0
  */
@@ -34,7 +35,6 @@ class Block extends AppModel
 
 		/*
 		 * エラーメッセージ設定
-		 * バリデーション設定
 		 */
 		$this->validate = array(
 			'page_id' => array(

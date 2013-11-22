@@ -15,7 +15,7 @@ $this->Form->inputDefaults(array(
 ));
 ?>
 <fieldset class="form<?php echo($class); ?>">
-	<ul class="lists">
+	<ul class="nc-lists">
 		<li>
 			<dl>
 				<dt>

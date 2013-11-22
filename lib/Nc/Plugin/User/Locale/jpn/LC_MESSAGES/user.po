@@ -31,6 +31,9 @@ msgid  	"logged within <span style='color:#ff0000;'>X</span>days"
 msgstr 	"日以内にログインしている"
 msgid  	"Communities"
 msgstr 	"参加コミュニティー"
+msgid  	"Search again"
+msgstr 	"再検索"
+
 
 msgid  	"Deleting the selected user(s). <br />Are you sure?"
 msgstr 	"選択した会員を全員削除します。<br />よろしいですか?"

@@ -36,10 +36,11 @@ class Page extends AppModel
 	public $Block        = null;
 	public $Config       = null;
 
-
 /**
- * バリデート処理
- * @param   void
+ * construct
+ * @param integer|string|array $id Set this ID for this model on startup, can also be an array of options, see above.
+ * @param string $table Name of database table to use.
+ * @param string $ds DataSource connection name.
  * @return  void
  * @since   v 3.0.0.0
  */
@@ -932,7 +933,7 @@ class Page extends AppModel
 			$conditions = array_merge($conditions, $addParams['conditions']);
 		}
 		if(isset($addParams['joins'])) {
-			$joins = array_merge($joins, $addParams['joins']);
+			$joins[] = $addParams['joins'];
 		}
 
 		$params = array(
@@ -1108,6 +1109,9 @@ class Page extends AppModel
 		if(isset($params['conditions'])) {
 			$addParams['conditions'] = array_merge($addParams['conditions'], $params['conditions']);
 		}
+		if(isset($params['joins'])) {
+			$addParams['joins'] = $params['joins'];
+		}
 
 		$options = array_merge($defaultOptions, $options);
 		return $this->findViewable('count', $loginUserId, $addParams, $options);
@@ -1143,6 +1147,9 @@ class Page extends AppModel
 			'limit' => $limit,
 			'recursive' => $recursive
 		);
+		if(isset($extra['joins'])) {
+			$addParams['joins'] = $extra['joins'];
+		}
 		$options = array('isShowAllCommunity' => false);
 		if(isset($extra['isShowAllCommunity']) && $extra['isShowAllCommunity']) {
 			$options['isShowAllCommunity'] = true;
@@ -1172,6 +1179,9 @@ class Page extends AppModel
 			'conditions' => $conditions,
 			'recursive' => $recursive
 		);
+		if(isset($extra['joins'])) {
+			$params['joins'] = $extra['joins'];
+		}
 		return $this->findCommunityCount(($is_all) ? 'all' : $extra['user_id'], $params, $options);
 	}
 

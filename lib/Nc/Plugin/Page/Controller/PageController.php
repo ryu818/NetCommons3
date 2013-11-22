@@ -85,7 +85,9 @@ class PageController extends PageAppController {
 
 		if ($this->action == 'index') {
 			$this->Security->validatePost = false;
-			$this->Security->csrfUseOnce = false;
+			if($this->request->is('post')) {
+				$this->Security->csrfUseOnce = false;
+			}
 		} else if ($this->action == 'background') {
 			if ($this->request->is('post') && in_array($this->request->data['type'], array('search', 'patterns_search', 'images_search'))) {
 				$this->Security->csrfUseOnce = false;
@@ -157,6 +159,7 @@ class PageController extends PageAppController {
 		$views = !empty($this->request->named['views']) ? intval($this->request->named['views']) : PAGES_COMMUNITY_VIEWS;
 		$pageId = isset($this->request->query['page_id']) ? intval($this->request->query['page_id']) : (isset($centerPage) ? $centerPage['Page']['id'] : null);
 		$participantPageId = isset($this->request->query['participant_page_id']) ? intval($this->request->query['participant_page_id']) : null;
+		$communityType = $this->getCommunityType();
 		if(!empty($participantPageId)) {
 			$participantPage = $this->Page->findById($participantPageId);
 			if($participantPage && $participantPage['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
@@ -287,6 +290,7 @@ class PageController extends PageAppController {
 				'Page.space_type' => array(NC_SPACE_TYPE_PUBLIC, NC_SPACE_TYPE_MYPORTAL, NC_SPACE_TYPE_PRIVATE)
 			)
 		);
+
 		$options = array(
 			'isShowAllCommunity' => false,
 			'isMyPortalCurrent' => true,
@@ -297,11 +301,15 @@ class PageController extends PageAppController {
 		// コミュニティー数
 		//$this->paginate['extra'] = array('user_id' => $userId);
 		$this->paginate['user_id'] = $userId;
-		if($isEdit && $loginUser['allow_creating_community'] == NC_ALLOW_CREATING_COMMUNITY_ADMIN) {
+		if($communityType == 'search' || ($isEdit && $loginUser['allow_creating_community'] == NC_ALLOW_CREATING_COMMUNITY_ADMIN)) {
 			$this->paginate['is_all'] = true;
 		} else {
 			$this->paginate['is_all'] = false;
 		}
+
+		// コミュニティー検索条件取得
+		$this->Community->getSearchParams($this->paginate, $this->request);
+
 		$pagesTopGroup = $this->paginate('Page');
 		$pagesGroup = array();
 		if(count($pagesTopGroup) > 0) {
@@ -339,8 +347,28 @@ class PageController extends PageAppController {
 		$elementParams['views'] = $views;
 		$elementParams['limit'] = $limit;
 		$elementParams['limit_select_values'] = explode('|', PAGES_COMMUNITY_LIMIT_SELECT);
+		$elementParams['community_type'] = $communityType;
 
 		$this->set('element_params', $elementParams);
+	}
+
+/**
+ * コミュニティータイプ取得 コミュニティー一覧(joined)か、コミュニティー検索(search)か。
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	protected function getCommunityType() {
+		$communityType = (empty($this->request->named['community_type'])) ? $this->Session->read(NC_SYSTEM_KEY.'.page_menu.community_type') :
+			$this->request->named['community_type'];
+		if(!empty($communityType)) {
+			// コミュニティー検索かどうかもセッションに保持
+			$communityType = ($communityType == 'search') ? 'search' : 'joined';
+			$this->Session->write(NC_SYSTEM_KEY.'.page_menu.community_type', $communityType);
+		} else {
+			$communityType = 'joined';
+		}
+		return $communityType;
 	}
 
 /**
@@ -805,7 +833,7 @@ class PageController extends PageAppController {
 	}
 
 /**
- * ページ設定最小化-最大化
+ * ページ設定表示・非表示切替
  * @param   void
  * @return  void
  * @since   v 3.0.0.0

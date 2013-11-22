@@ -16,7 +16,7 @@
 	<legend>
 		<?php echo __d('system', 'Module operation');?>
 	</legend>
-	<ul class="lists">
+	<ul class="nc-lists">
 		<?php
 			echo $this->element('item', array('item' => $configs['copy_operation_modules']));
 			echo $this->element('item', array('item' => $configs['shortcut_operation_modules']));
@@ -29,7 +29,7 @@
 	<legend>
 		<?php echo __d('system', 'Upload');?>
 	</legend>
-	<ul class="lists">
+	<ul class="nc-lists">
 		<?php
 			echo $this->element('item', array('item' => $configs['upload_normal_width_size'], 'nextItem' => $configs['upload_normal_height_size']));
 		?>

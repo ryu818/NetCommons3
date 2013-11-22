@@ -46,3 +46,65 @@ ul.pages-menu-community-inf-detail-lists li dl dt,ul.pages-menu-community-inf-de
 	display:block;
 	border: 1px solid #efefef;
 }
+
+.pages-menu-invite-community-select-members {
+	padding: 5px 0 0 0;
+}
+.pages-menu-invite-community {
+	width:350px;
+}
+
+ul.pages-menu-invite-community-list li {
+	clear:none;
+}
+
+/* 会員選択検索結果 */
+.pages-menu-invite-community-search-list {
+	padding:0 30px
+}
+.pages-menu-invite-community-search-list li {
+	width: 92px;
+	height: 112px;
+	float: left;
+	list-style-type: none;
+	margin: 0;
+	padding:0 5px;
+	position:relative;
+}
+.pages-menu-invite-community-search-photo {
+	width: 72px;
+	height: 72px;
+	float: none;
+}
+
+a .pages-menu-invite-community-search-photo {
+	border-color: #04419a;
+}
+.pages-menu-invite-community-search-handle {
+	width: 92px;
+	overflow: hidden;
+	text-align: center;
+}
+
+.pages-menu-invite-community-search-participating {
+	color:#494949;
+	background-color: #fff;
+    font-weight: bold;
+    left: 16px;
+    overflow: hidden;
+    position: absolute;
+    text-align: center;
+    top: 35px;
+    width: 78px;
+    padding: 2px 0;
+    background-color: #c6e9ff;
+}
+
+a .pages-menu-invite-community-search-participating {
+	display: none;
+}
+
+.pages-menu--community-inf-top {
+	text-align:right;
+	padding: 5px;
+}

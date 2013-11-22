@@ -294,7 +294,7 @@ $is_operate_chief = true;
 	?>
 	</div>
 	<?php endif; ?>
-	<?php if((!isset($error_flag) || !$error_flag) && (!isset($is_child) || !$is_child) && $this->request->is('post')): ?>
+	<?php if((!isset($error_flag) || !$error_flag) && (!isset($is_child) || !$is_child) && $this->request->is('post') && isset($pre_permalink)): ?>
 	<script>
 	$(function(){
 		$.PageMenu.itemInit(<?php echo($page['Page']['id']); ?>, '<?php echo($this->Html->url('/', true).$this->Js->escape($pre_permalink)); ?>', '<?php echo($this->Html->url('/', true).$this->Js->escape($permalink)); ?>', <?php echo($is_participant); ?>);

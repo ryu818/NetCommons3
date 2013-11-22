@@ -25,7 +25,7 @@ if($page['Page']['space_type'] == NC_SPACE_TYPE_PUBLIC) {
 } else {
 	$class = 'pages-menu-handle-community';
 	if($page['PageAuthority']['hierarchy'] <= NC_AUTH_GUEST) {
-		if($page['Community']['publication_range_flag'] < NC_PUBLICATION_RANGE_FLAG_LOGIN_USER) {
+		if($page['Community']['publication_range_flag'] == NC_PUBLICATION_RANGE_FLAG_ONLY_USER && !isset($page['PageUserLink']['authority_id'])) {
 			$class .= '-light';
 		}
 	} else {

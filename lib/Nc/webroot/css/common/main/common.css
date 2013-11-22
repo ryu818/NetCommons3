@@ -61,7 +61,7 @@ input[type="checkbox"], input[type="radio"] {
 	float: none !important;
 	clear : both !important;
 }
-.clearfix:after, .lists:after {
+.clearfix:after, .nc-lists:after, , .nc-edits-lists:after {
 	content: ".";
 	display: block !important;
 	clear: both !important;
@@ -559,35 +559,35 @@ ul.nc-paginator li.current,ul.nc-paginator a:hover  {
 }
 
 /* リスト表示 */
-ul.lists {
+ul.nc-lists, ul.nc-edits-lists {
 	margin:0;
 	padding:0;
 	list-style-image:none;
 	list-style-position:outside;
 	list-style-type:none;
 }
-ul.lists li {
+ul.nc-lists li, ul.nc-edits-lists li {
 	margin:0;
 	list-style-type: none;
 	clear: both;
 	/*border-top: 1px solid #d0d0d1;*/
 }
 
-ul.lists li dl {
+ul.nc-lists li dl, ul.nc-edits-lists li dl {
 	clear: both;
     /*content: ".";*/
     display: block;
     height: 0;
 }
 
-ul.lists li dl dt {
+ul.nc-lists li dl dt, ul.nc-edits-lists li dl dt {
 	float: left;
     padding: 10px;
     width : 100px;
 
 }
 
-ul.lists li dl dd {
+ul.nc-lists li dl dd, ul.nc-edits-lists li dl dd {
 	float: left;
 	padding: 10px;
 	/*overflow: hidden;*/

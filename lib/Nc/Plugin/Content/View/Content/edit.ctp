@@ -6,7 +6,7 @@
 				'data-ajax' => '#nc-content-edit-top'.$id.'-'.$content['Content']['id']
 			));
 		?>
-		<ul class="lists">
+		<ul class="nc-lists">
 			<li>
 				<dl>
 					<dt>

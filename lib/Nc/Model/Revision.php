@@ -20,8 +20,10 @@ class Revision extends AppModel
 	public $order = array('Revision.created' => 'DESC', 'Revision.id' => 'DESC');
 
 /**
- * バリデート処理
- * @param   void
+ * construct
+ * @param integer|string|array $id Set this ID for this model on startup, can also be an array of options, see above.
+ * @param string $table Name of database table to use.
+ * @param string $ds DataSource connection name.
  * @return  void
  * @since   v 3.0.0.0
  */

@@ -7,7 +7,7 @@
 ?>
 <div class="pages-menu-edit-outer">
 <fieldset class="form">
-	<ul class="lists">
+	<ul class="nc-lists">
 	<li>
 		<dl>
 			<dt>

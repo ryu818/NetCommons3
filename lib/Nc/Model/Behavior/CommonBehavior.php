@@ -98,7 +98,22 @@ class CommonBehavior extends ModelBehavior {
 	}
 
 /**
+ * SQL LIKE文escape処理
+ * @param   model        $Model
+ * @param   string  $str
+ * @return  string  $str
+ * @since   v 3.0.0.0
+ */
+	public function escapeLikeString(Model $Model, $str) {
+		// TODO:Test未作成
+		return str_replace(array('\\', '%', '_'),
+			array('\\\\', '\%', '\_'), $str
+		);
+	}
+
+/**
  * 直近のクエリについての情報を得る
+ * @param   model        $Model
  * @param   string  $source
  * @return  array
  * @since   v 3.0.0.0

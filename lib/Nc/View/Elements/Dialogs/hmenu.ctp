@@ -81,10 +81,10 @@ if($canShowPageSetting && !empty($this->params['active_plugin']) && $this->param
 			<?php if(isset($page) && $page['Page']['space_type'] == NC_SPACE_TYPE_GROUP): ?>
 			<li class="nc-hmenu-li nc-hmenu-logo-li">
 				<?php
-					$communityInfParams = array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'community_inf', $page['Page']['root_id']);
+					$communityInfParams = array('permalink'=> '/centercolumn','block_type'=> 'blocks', 'block_id'=> 0, 'plugin' => 'page', 'controller' => 'page_menus', 'action' => 'community_inf', $page['Page']['root_id']);
 				?>
 				<div class="nc-hmenu-community-photo-outer" >
-				<a id="nc-hmenu-community-photo" class="nc-tooltip" data-ajax-effect="fold" data-ajax-force="true" data-ajax-dialog-options='{"title" : "<?php echo($this->Js->escape(__d('page', '[%s] Community information', $page['CommunityLang']['community_name'])));?>"}' data-ajax="#nc-community-inf" data-ajax-dialog="true" title="<?php echo(__d('page', '[%s] Community information', $page['CommunityLang']['community_name'])); ?>" href="<?php echo($this->Html->url($communityInfParams)); ?>">
+				<a id="nc-hmenu-community-photo" class="nc-tooltip" data-ajax-effect="fold" data-ajax-force="true" data-ajax-dialog-options='{"title" : "<?php echo($this->Js->escape(__d('page', '[%s] Community information', $page['CommunityLang']['community_name'])));?>"}' data-ajax="#pages-menu-community-inf" data-ajax-dialog="true" title="<?php echo(__d('page', '[%s] Community information', $page['CommunityLang']['community_name'])); ?>" href="<?php echo($this->Html->url($communityInfParams)); ?>">
 				<?php
 					if(!$page['Community']['is_upload']) {
 						$imageUrl = $this->Html->url('/', true).'page/img/community/'.$page['Community']['photo'];

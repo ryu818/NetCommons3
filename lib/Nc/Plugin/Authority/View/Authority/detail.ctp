@@ -47,7 +47,7 @@
 
 
 	<fieldset class="form authority-detail">
-	<ul class="lists">
+	<ul class="nc-lists">
 		<li>
 			<dl>
 				<dt>

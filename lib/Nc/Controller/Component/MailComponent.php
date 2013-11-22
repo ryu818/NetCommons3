@@ -71,6 +71,20 @@ class MailComponent extends Component {
 	public $body = null;
 
 /**
+ * The send result text body of the email
+ *
+ * @var string
+ */
+	public $sendTextBody = null;
+
+/**
+ * The send result html body of the email
+ *
+ * @var string
+ */
+	public $sendHtmlBody = null;
+
+/**
  * Mailリスト
  *
  * @var array
@@ -78,11 +92,18 @@ class MailComponent extends Component {
 	public $mails = null;
 
 /**
- * subject,body変換文字列
+ * subject,body変換文字列の配列
  *
  * @var array
  */
 	public $assignedTags = array();
+
+/**
+ * $emailFormatがhtmlの場合のhtmlspecialcharsしなくてよい変換文字列の配列
+ *
+ * @var array
+ */
+	public $unEscapeTags = array();
 
 /**
  * Constructor
@@ -101,21 +122,27 @@ class MailComponent extends Component {
  *
  * @param string $emailFormat html or text or
  * 		auto($contentIdまたは、$roomId、$userIdの検索結果から送信する場合は、Config.htmlmail,Config.mobile_htmlmailの値から送信。$mails指定ならば、Config.htmlmail)
+ * @param boolean $isMobile default false
  * @return void
  * @throws SocketException
  */
-	public function send($emailFormat = 'auto') {
+	public function send($emailFormat = 'auto', $isMobile = false) {
 		App::uses('CakeEmail', 'Network/Email');
 		$Email = new CakeEmail('default');
 		$htmlmail = Configure::read(NC_CONFIG_KEY.'.'.'htmlmail');
 		$mobileHtmlmail = Configure::read(NC_CONFIG_KEY.'.'.'mobile_htmlmail');
 		if($emailFormat == 'auto') {
-			$emailFormat = ($htmlmail == _ON) ? 'html' : 'text';
+			if($isMobile) {
+				$emailFormat = ($mobileHtmlmail == _ON) ? 'html' : 'text';
+			} else {
+				$emailFormat = ($htmlmail == _ON) ? 'html' : 'text';
+			}
 		}
 
-		$this->_assignTags();
+		$subject = $this->replaceTags($this->subject, 'text');
 
-		$subject = $this->replaceTags($this->subject);
+		$this->sendTextBody = $this->replaceTags($this->body, 'text');
+		$this->sendHtmlBody = $this->replaceTags($this->body, 'html');
 
 		if(isset($this->mails)) {
 			$mails = $this->mails;
@@ -138,10 +165,15 @@ class MailComponent extends Component {
 				if($emailFormat == 'auto') {
 					$mobileEmailFormat = ($mobileHtmlmail == _ON) ? 'html' : 'text';
 				}
-				$Email->to($emailRes['mobileEmail'])
-					->emailFormat($mobileEmailFormat)
-					->subject($subject)
-					->send($this->replaceTags($this->body, $mobileEmailFormat));
+				try{
+					$body = ($mobileEmailFormat == 'html') ? $this->sendHtmlBody : $this->sendTextBody;
+					$Email->to($emailRes['mobileEmail'])
+						->emailFormat($mobileEmailFormat)
+						->subject($subject)
+						->send($body);
+				} catch(Exception $e){
+					return false;
+				}
 			}
 			if(count($emailRes['email']) > 0) {
 				$mails = $emailRes['email'];
@@ -150,11 +182,14 @@ class MailComponent extends Component {
 			}
 		}
 		try{
+			$body = ($emailFormat == 'html') ? $this->sendHtmlBody : $this->sendTextBody;
 			$Email->to($mails)
 				->emailFormat($emailFormat)
 				->subject($subject)
-				->send($this->replaceTags($this->body, $emailFormat));
+				->send($body);
+			return true;
 		}catch(Exception $e){
+			return false;
 		}
 	}
 
@@ -201,16 +236,22 @@ class MailComponent extends Component {
 		$this->subject = null;
 		$this->body = null;
 		$this->mails = null;
+		$this->sendTextBody = null;
+		$this->sendHtmlBody = null;
 		$this->assignedTags = array(
-			'{X-SITE_NAME}' => "",
-			'{X-ROOM}' => '',
-			'{X-PAGE}' => '',
-			'{X-CONTENT_NAME}' => '',
-			'{X-SUBJECT}' => '',
-			'{X-BODY}' => '',
-			'{X-USER}' => '',
-			'{X-TO_DATE}' => '',
-			'{X-URL}' => '',
+			'{X-SITE_NAME}' => null,
+			'{X-ROOM}' => null,
+			'{X-PAGE}' => null,
+			'{X-CONTENT_NAME}' => null,
+			'{X-SUBJECT}' => null,
+			'{X-BODY}' => null,
+			'{X-USER}' => null,
+			'{X-USER_NAME}' => null,
+			'{X-TO_DATE}' => null,
+			'{X-URL}' => null,
+		);
+		$this->unEscapeTags = array(
+			'{X-BODY}',
 		);
 	}
 
@@ -218,18 +259,37 @@ class MailComponent extends Component {
  * subject,body変換文字列をReplace
  *
  * @param  string $str
- * @param string $emailFormat html or text
+ * @param  string $emailFormat html or text
+ * @param  boolean $assignTags
  * @return string
  */
 	public function replaceTags($str, $emailFormat = 'html') {
+		$str = h($str);
 		foreach($this->assignedTags as $key => $assignedTag) {
-			if($emailFormat == 'text' && $key == '{X-BODY}') {
-				$assignedTag = $this->convertHtmlToText($assignedTag);
+			if(!preg_match('/'.preg_quote($key).'/', $str)) {
+				continue;
 			}
-			if($emailFormat == 'html') {
+			if(!isset($assignedTag)) {
+				$name = $this->_getAssignMethod($key);
+				if(isset($name)) {
+					$assignedTag = $this->assignedTags[$key] = $this->{$name}();
+				}
+			}
+
+			if($emailFormat == 'html' && !in_array($key, $this->unEscapeTags)) {
 				$assignedTag = h($assignedTag);
 			}
+
+			if($emailFormat == 'text' && in_array($key, $this->unEscapeTags)) {
+				$assignedTag = $this->convertHtmlToText($assignedTag);
+			}
 			$str = str_replace($key, $assignedTag, $str);
+		}
+
+		if($emailFormat == 'html') {
+			$str = str_replace("\r\n", "<br />", $str);
+			$str = str_replace("\r", "<br />", $str);
+			$str = str_replace("\n", "<br />", $str);
 		}
 
 		return $str;
@@ -386,79 +446,245 @@ class MailComponent extends Component {
 		//&gt;を>
 		$patterns[] = "/\&gt;/u";
 		$replacements[] = ">";
-
 		return preg_replace($patterns, $replacements, $str);
 	}
 
 /**
- * subject,body変換文字列セット
+ * Assignするメソッド名を取得
+ *
+ * @param string assignedTag {X-XXXXX}
+ * @return string method名
+ */
+	protected function _getAssignMethod($key) {
+		$name = null;
+		switch($key) {
+			case '{X-SITE_NAME}':
+				$name = 'Site';
+				break;
+			case '{X-ROOM}':
+				$name = 'Room';
+				break;
+			case '{X-PAGE}':
+				$name = 'Page';
+				break;
+			case '{X-CONTENT_NAME}':
+				$name = 'ContentName';
+				break;
+			case '{X-SUBJECT}':
+				$name = 'Subject';
+				break;
+			case '{X-BODY}':
+				$name = 'Body';
+				break;
+			case '{X-USER}':
+				$name = 'User';
+				break;
+			case '{X-USER_NAME}':
+				$name = 'UserName';
+				break;
+			case '{X-TO_DATE}':
+				$name = 'ToDate';
+				break;
+			case '{X-URL}':
+				$name = 'Url';
+				break;
+		}
+		if(isset($name)) {
+			$name = '_assign'.$name.'Tag';
+		}
+		return $name;
+	}
+
+/**
+ * サイト名
+ * subject,body変換文字列取得
  *
  * @param void
- * @return void
+ * @return string
  */
-	protected function _assignTags() {
-		if($this->assignedTags['{X-SITE_NAME}'] == '') {
-			$this->assignedTags['{X-SITE_NAME}'] = Configure::read(NC_CONFIG_KEY.'.'.'sitename');
-		}
+	protected function _assignSiteTag() {
+		return Configure::read(NC_CONFIG_KEY.'.'.'sitename');
+	}
+
+/**
+ * ルーム名
+ * subject,body変換文字列取得
+ *
+ * @param void
+ * @return string
+ */
+	protected function _assignRoomTag() {
 		if(isset($this->_controller->nc_page)) {
 			$page = $this->_controller->Page->setPageName($this->_controller->nc_page);
 		}
 
-		if($this->assignedTags['{X-ROOM}'] == '') {
-			// 権限を付与したショートカットの場合、権限元のルームではなく投稿があったルームをセット
-			$roomName = '';
-			if(isset($this->_controller->nc_page)) {
-				$roomName = isset($this->_controller->nc_page['CommunityLang']['community_name']) ? $this->_controller->nc_page['CommunityLang']['community_name'] :
-					(($page['Page']['id'] == $page['Page']['room_id']) ?
-					$page['Page']['page_name'] : null);
-				if(!isset($roomName)) {
-					$active_page = $this->_controller->Page->findIncludeComunityLang($this->_controller->nc_page['Page']['room_id']);
-					$active_page = $this->_controller->Page->setPageName($active_page);
-					$roomName = isset($active_page['CommunityLang']['community_name']) ? $active_page['CommunityLang']['community_name'] :
-						$active_page['Page']['page_name'];
+		// 権限を付与したショートカットの場合、権限元のルームではなく投稿があったルームをセット
+		$roomName = '';
+		if(isset($page)) {
+			$roomName = isset($this->_controller->nc_page['CommunityLang']['community_name']) ? $this->_controller->nc_page['CommunityLang']['community_name'] :
+				(($page['Page']['id'] == $page['Page']['room_id']) ? $page['Page']['page_name'] : null);
+			if(!isset($roomName)) {
+				$activePage = $this->_controller->Page->findIncludeComunityLang($this->_controller->nc_page['Page']['room_id']);
+				$activePage = $this->_controller->Page->setPageName($activePage);
+				if(!$activePage) {
+					// errorでも空文字を返している
+					return '';
 				}
+				$roomName = isset($activePage['CommunityLang']['community_name']) ? $activePage['CommunityLang']['community_name'] :
+					$activePage['Page']['page_name'];
 			}
-			$this->assignedTags['{X-ROOM}'] = $roomName;
+		}
+		return $roomName;
+	}
+
+/**
+ * ページ名
+ * subject,body変換文字列取得
+ *
+ * @param void
+ * @return string
+ */
+	protected function _assignPageTag() {
+		$pageName = '';
+		if(isset($this->_controller->nc_page)) {
+			$pageName = $this->_controller->nc_page['Page']['page_name'];
+		}
+		return $pageName;
+	}
+
+/**
+ * コンテンツ名
+ * subject,body変換文字列取得
+ *
+ * @param void
+ * @return string
+ */
+	protected function _assignContentNameTag() {
+		$contentName = '';
+		if(isset($this->_controller->nc_block)) {
+			$contentName = $this->_controller->nc_block['Content']['title'];
+		}
+		return $contentName;
+	}
+
+/**
+ * 件名 各Controllerでセットさせるため、対処しない
+ * subject,body変換文字列取得
+ *
+ * @param void
+ * @return string
+ */
+	protected function _assignSubjectTag() {
+		return '';
+	}
+
+/**
+ * 内容 各Controllerでセットさせるため、対処しない
+ * subject,body変換文字列取得
+ *
+ * @param void
+ * @return string
+ */
+	protected function _assignBodyTag() {
+		return '';
+	}
+
+/**
+ * ハンドル名
+ * subject,body変換文字列取得
+ *
+ * @param void
+ * @return string
+ */
+	protected function _assignUserTag() {
+		$userId = 0;
+		$handle = '';
+		if(isset($this->userId)) {
+			$userId = $this->userId;
+			$user = $this->_controller->User->findById($userId);
+			if(!$user) {
+				// errorでも空文字を返している
+				return '';
+			}
+			$handle = $user['User']['handle'];
+		} else {
+			$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
+			if(isset($loginUser['handle'])) {
+				$userId = $loginUser['id'];
+				$handle = $loginUser['handle'];
+			}
+		}
+		return $handle;
+	}
+
+/**
+ * 会員名
+ * subject,body変換文字列取得
+ *
+ * @param void
+ * @return string
+ */
+	protected function _assignUserNameTag() {
+		$userId = 0;
+		if(isset($this->userId)) {
+			$userId = $this->userId;
+			$user = $this->_controller->User->findById($userId);
+			if(!$user) {
+				// errorでも空文字を返している
+				return '';
+			}
+		} else {
+			$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
+			if(isset($loginUser['handle'])) {
+				$userId = $loginUser['id'];
+			}
 		}
 
-		if($this->assignedTags['{X-PAGE}'] == '') {
-			// 権限を付与したショートカットの場合、権限元のルームではなく投稿があったページをセット
-			$pageName = '';
-			if(isset($this->_controller->nc_page)) {
-				$pageName = $this->_controller->nc_page['Page']['page_name'];
+		$username = '';
+		if($userId > 0) {
+			// TODO:会員名称が、各自で公開可否を選択でき、非公開にしている場合、取得させないほうがよい。
+			$UserItemLink = ClassRegistry::init('UserItemLink');
+			$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
+			$userItemLink = $UserItemLink->find('first', array(
+				'fields' => array('content'),
+				'conditions' => array(
+					'user_id' => $userId,
+					'user_item_id' => NC_ITEM_ID_USERNAME,
+					'lang' => array('', $lang),
+				),
+				'order' => array('lang' => 'DESC'),
+			));
+			if($userItemLink) {
+				$username = $userItemLink['UserItemLink']['content'];
 			}
-			$this->assignedTags['{X-PAGE}'] = $pageName;
 		}
-
-		if($this->assignedTags['{X-CONTENT_NAME}'] == '') {
-			$contentName = '';
-			if(isset($this->_controller->nc_block)) {
-				$contentName = $this->_controller->nc_block['Content']['title'];
-			}
-			$this->assignedTags['{X-CONTENT_NAME}'] = $contentName;
+		if($username == '') {
+			// 会員名称が取得できなければHandleをセットする。
+			$username = $this->assignedTags['{X-USER}'];
 		}
+		return $username;
+	}
 
-		if($this->assignedTags['{X-USER}'] == '') {
-			$handle = '';
-			if(isset($this->userId)) {
-				$user = $this->_controller->User->findById($this->userId);
-				$handle = $user['User']['handle'];
-			} else {
-				$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
-				if(isset($loginUser['handle'])) {
-					$handle = $loginUser['handle'];
-				}
-			}
-			$this->assignedTags['{X-USER}'] = $handle;
-		}
+/**
+ * 投稿日付
+ * subject,body変換文字列取得
+ *
+ * @param void
+ * @return string
+ */
+	protected function _assignToDateTag() {
+		// 現在時刻をセット　DBの値と完全に一致しないが、おおよその値で問題ないためセット
+		return $this->_controller->Page->date($this->_controller->Page->nowDate(), __('Y-m-d H:i'));
+	}
 
- 		if($this->assignedTags['{X-TO_DATE}'] == '') {
- 			// 現在時刻をセット　DBの値と完全に一致しないが、おおよその値で問題ないためセット
- 			$this->assignedTags['{X-TO_DATE}'] = $this->_controller->Page->date($this->_controller->Page->nowDate(), __('Y-m-d H:i'));
- 		}
-
- 		if(is_array($this->assignedTags['{X-URL}'])) {
- 			$this->assignedTags['{X-URL}'] = Router::url($this->assignedTags['{X-URL}'], true);
- 		}
+/**
+ * URL
+ * subject,body変換文字列取得
+ *
+ * @param void
+ * @return string
+ */
+	protected function _assignUrlTag() {
+		return Router::url($this->assignedTags['{X-URL}'], true);
 	}
 }

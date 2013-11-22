@@ -55,3 +55,9 @@ define("PAGES_STYLE_ALIGN", 'left:Left align,center:Center align,right:Right ali
 // 最小の広さ、高さ
 define("PAGES_STYLE_WIDTH_SIZE", 'auto:Auto,100%:100%,by hand:By hand');
 define("PAGES_STYLE_HEIGHT_SIZE", 'auto:Auto,by hand:By hand');
+
+// 会員招待->会員選択実行時 検索結果会員数
+define("PAGES_INVITE_COMMUNITY_SELECT_MEMBERS_LIMIT", 28);
+
+// 会員招待有効期限 2週間 60s * 60min * 24h * 7d *2
+define("PAGES_INVITE_COMMUNITY_EXPIRES", 60 * 60 * 24 * 7 * 2);

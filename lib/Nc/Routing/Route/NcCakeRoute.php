@@ -257,6 +257,19 @@ class NcCakeRoute extends CakeRoute {
 			}
 		}
 
+		$activeColumn = Configure::read(NC_SYSTEM_KEY.'.nc_active_column');
+		if(isset($activeColumn)) {
+			$activeColumnKeys = array_keys($activeColumn);
+			if(($activeColumnKeys[0] == '0' && !isset($url['block_id'])) || (isset($url['block_id']) && $activeColumnKeys[0] == $url['block_id'])) {
+				// (permalink)/(column)/(block_type)/(block_id)/(plugin)/(controller)/(action)/で画面を表示後のActiveブロックにおける
+				// リンク先をすべて(column)にするため
+				if(!isset($url['permalink'])) {
+					$url['permalink'] = '';
+				}
+				$url['permalink'] .= $activeColumn[$activeColumnKeys[0]];
+			}
+		}
+
 		//if (isset($url['controller']) && isset($url['plugin']) && $url['plugin'] != $url['controller']) {
 		//	return false;
 		//}

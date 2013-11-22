@@ -16,8 +16,8 @@
 		'data-confirm-reset' => __d('page', 'You cancel applied setting now.? Are you sure to proceed?'),
 	));
 	echo $this->element('scope', array('languages' => $languages, 'model_name' => 'PageLayout', 'page_style' => $page_layout, 'page' => $page));
-	
-	
+
+
 	if(!isset($page_layout['PageLayout'])) {
 		$layouts = '1_1_1_1';
 	} else {
@@ -27,14 +27,14 @@
 ?>
 
 <fieldset class="form">
-	<ul id="<?php echo $id;?>-list" class="lists pages-menu-style-details pages-menu-backgrounds clearfix">
+	<ul id="<?php echo $id;?>-list" class="nc-lists pages-menu-style-details pages-menu-backgrounds clearfix">
 		<?php foreach($layoutFiles as $layoutFile):?>
 		<li>
-			<?php 
+			<?php
 			$src = $this->Html->url('/', true).'page/img/layouts/'.$layoutFile;
 			$title = $this->PageLayout->getTitle($layoutFile);
 			$fileNameArr = explode('.', $layoutFile);
-		
+
 			echo $this->Html->link('', empty($src) ? '#' : $src, array(
 				'title' => __d('page', $title),
 				'class' => 'pages-menu-layout',
@@ -42,7 +42,7 @@
 				'style' => "background-image: url('".$src."');",
 				'onclick' => '$.PageStyle.highlightLayout(false,\''.$fileNameArr[0].'\'); return false;',
 			));
-			
+
 			?>
 		</li>
 		<?php endforeach; ?>

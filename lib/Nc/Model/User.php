@@ -37,6 +37,7 @@ class User extends AppModel
 				'deleteOnUpdate' => true,
 			),
 		),
+		'Common',
 	);
 
 	public $validate = array();
@@ -47,7 +48,9 @@ class User extends AppModel
 
 /**
  * construct
- * @param   void
+ * @param integer|string|array $id Set this ID for this model on startup, can also be an array of options, see above.
+ * @param string $table Name of database table to use.
+ * @param string $ds DataSource connection name.
  * @return  void
  * @since   v 3.0.0.0
  */
@@ -435,9 +438,9 @@ class User extends AppModel
  *
  * @param   Model Page $page
  * @param   integer  $participantType
- * 						0:参加者のみ表示　
- * 						1:すべての会員表示（PageUserLinkにない会員は、default値と不参加のみ変更可）
- * 						2:すべての会員表示（すべての権限へ変更可）
+ * 						0(NC_DISPLAY_FLAG_ENTRY_USERS):参加者のみ表示　
+ * 						1(NC_PARTICIPANT_TYPE_DEFAULT_ENABLED):すべての会員表示（PageUserLinkにない会員は、default値と不参加のみ変更可）
+ * 						2(NC_PARTICIPANT_TYPE_ENABLED):すべての会員表示（すべての権限へ変更可）
  * 						null : 親ルームのデータを取得しない(会員参加登録時使用)
  * @param   array    $conditions
  * @param   array    $joins
@@ -705,8 +708,6 @@ class User extends AppModel
 		// TODO:現状Userテーブルのみから取得　今後UserItemLinkテーブルからも取得できるように修正予定
 		$Page = ClassRegistry::init('Page');
 		$UserItem = ClassRegistry::init('UserItem');
-		$UserItemLink = ClassRegistry::init('UserItemLink');
-
 		$loginUser = Configure::read(NC_SYSTEM_KEY.'.user');
 		$userId = $loginUser['id'];
 		$emailRes = array('email' => array(), 'mobileEmail' => array());
@@ -806,8 +807,6 @@ class User extends AppModel
 			'fields' => array('id', 'allow_email_reception_flag'),
 			'conditions' => array('tag_name' => array('email', 'mobile_email'))
 		));
-		$itemIds = array_keys($userItems);
-
 
 		foreach($users as $user) {
 			if(isset($user['PageAuthority']) && $user['PageUserLink']['authority_id'] === (string) NC_AUTH_OTHER_ID) {
@@ -820,20 +819,84 @@ class User extends AppModel
 				$user['PageAuthority']['hierarchy'] = $defaultEntryHierarchy;
 			}
 			if($moreThanHierarchy == null || (isset($user['PageAuthority']) && $user['PageAuthority']['hierarchy'] >= $moreThanHierarchy)) {
-				$userItemLinks = $UserItemLink->find('list', array(
-					'fields' => array('user_item_id', 'email_reception_flag'),
-					'conditions' => array('user_id' => $user['User']['id'],'user_item_id' => $itemIds)
-				));
-				if(!empty($user['User']['email']) && (empty($userItems[NC_ITEM_ID_EMAIL]) || $userItemLinks[NC_ITEM_ID_EMAIL] == _ON)) {
-					$emailRes['email'][$user['User']['email']] = $user['User']['email'] ;
-				}
-				if(!empty($user['User']['mobile_email']) && (empty($userItems[NC_ITEM_ID_MOBILE_EMAIL]) || $userItemLinks[NC_ITEM_ID_MOBILE_EMAIL] == _ON)) {
-					$emailRes['mobileEmail'][$user['User']['mobile_email']] = $user['User']['mobile_email'] ;
-				}
+				$this->_getEmailList($emailRes, $userItems, $user);
 			}
 		}
 
 		return $emailRes;
+	}
+
+/**
+ * UserIdからメール送信先email一覧取得
+ *
+ * @param array|integer				$userId
+ *
+ * @return  boolean|array ('email' => Array $email, 'mobileEmail' => Array $mobileEmail)|
+ * 		array('user_id' => array ('email' => Array $email, 'mobileEmail' => Array $mobileEmail))
+ * @since   v 3.0.0.0
+ */
+	public function getSendMailsByUserId($userId = null) {
+		// TODO:現状Userテーブルのみから取得　今後UserItemLinkテーブルからも取得できるように修正予定
+		$UserItem = ClassRegistry::init('UserItem');
+		$emailRes = array('email' => array(), 'mobileEmail' => array());
+
+		// メールを受信可否、受け取るかどうかの設定を取得
+		$userItems = $UserItem->find('list', array(
+			'fields' => array('id', 'allow_email_reception_flag'),
+			'conditions' => array('tag_name' => array('email', 'mobile_email'))
+		));
+
+		$params = array(
+			'fields' => array('User.id', 'User.email', 'User.mobile_email'),
+			'conditions' => array('User.id' => $userId),
+			'recursive' => -1
+		);
+		$users = $this->find('all', $params);
+		if(!$userItems || !$users) {
+			return false;
+		}
+
+		$emailReses = array();
+		if(is_array($userId)) {
+			foreach($users as $user) {
+				$bufEmailRes = $emailRes;
+				$this->_getEmailList($bufEmailRes, $userItems, $user);
+				$emailReses[$user['User']['id']] = $bufEmailRes;
+			}
+		} else {
+			$this->_getEmailList($emailRes, $userItems, $users[0]);
+			return $emailRes;
+		}
+
+		return $emailReses;
+	}
+
+/**
+* email、mobileEmail取得
+*
+* <pre>
+*  email_reception_flaがOFF、または、email_reception_flagがONのメールアドレスのみ取得
+* </pre>
+* @param   array ('email' => Array $email, 'mobileEmail' => Array $mobileEmail)
+* @param   Model UserItem $userItems email,mobile_emailのUserItem
+* @param   Model User $user
+* @return  void
+* @since   v 3.0.0.0
+*/
+	protected function _getEmailList(&$emailRes, $userItems, $user) {
+		$UserItemLink = ClassRegistry::init('UserItemLink');
+		$itemIds = array_keys($userItems);
+
+		$userItemLinks = $UserItemLink->find('list', array(
+			'fields' => array('user_item_id', 'email_reception_flag'),
+			'conditions' => array('user_id' => $user['User']['id'],'user_item_id' => $itemIds)
+		));
+		if(!empty($user['User']['email']) && (empty($userItems[NC_ITEM_ID_EMAIL]) || $userItemLinks[NC_ITEM_ID_EMAIL] == _ON)) {
+			$emailRes['email'][$user['User']['email']] = $user['User']['email'] ;
+		}
+		if(!empty($user['User']['mobile_email']) && (empty($userItems[NC_ITEM_ID_MOBILE_EMAIL]) || $userItemLinks[NC_ITEM_ID_MOBILE_EMAIL] == _ON)) {
+			$emailRes['mobileEmail'][$user['User']['mobile_email']] = $user['User']['mobile_email'] ;
+		}
 	}
 
 /*
@@ -896,10 +959,12 @@ class User extends AppModel
 
 			if(isset($request->data['User'])) {
 				foreach($request->data['User'] as $dataKey => $value) {
-					if($dataKey == 'communities') {
+					if(is_string($value)) {
+						$value = trim(mb_convert_kana( $value, "s"));
+					}
+					if($dataKey == 'communities' && $value !== '') {
 						// 参加コミュニティー
 						$roomId = intval($value);
-
 						if($roomId == 0) {
 							// コミュニティーに参加していない会員
 							// 自分のコミュニティーに参加している会員を取得
@@ -908,8 +973,8 @@ class User extends AppModel
 								continue;
 							}
 
-							// 公開コミュニティー「すべての会員をデフォルトで参加させる」があれば、PageUserLink.authority_id = NC_AUTH_OTHER_IDの会員が検索対象
-							// 公開コミュニティー「すべての会員をデフォルトで参加させる」がなければ、PageUserLink.authority_id がNULL OR NC_AUTH_OTHER_IDの会員すべて
+							// 公開コミュニティー「全会員を強制的に参加させる。」があれば、PageUserLink.authority_id = NC_AUTH_OTHER_IDの会員が検索対象
+							// 公開コミュニティー「全会員を強制的に参加させる。」がなければ、PageUserLink.authority_id がNULL OR NC_AUTH_OTHER_IDの会員すべて
 							$Community = ClassRegistry::init('Community');
 							$roomIds = $Community->find('list', array(
 								'fields' => array('Community.id', 'Community.room_id'),
@@ -1070,7 +1135,7 @@ class User extends AppModel
 							$itemsTypes[$itemId] == 'select') {
 							$conditions['User.'.$key] = $value;
 						} else {
-							$conditions['User.'.$key.' LIKE'] = '%'.$value.'%';
+							$conditions['User.'.$key.' LIKE'] = '%'.$this->escapeLikeString($value).'%';
 						}
 					}
 					if(isset($itemAuthorityLinks) && count($itemAuthorityLinks) > 0) {
@@ -1126,7 +1191,7 @@ class User extends AppModel
 							$set_content = array();
 							foreach($value as $v) {
 								$set_content['AND'][] = array(
-									$alias.".content LIKE" => '%'.$v.'|%'
+									$alias.".content LIKE" => '%'.$this->escapeLikeString($v).'|%'
 								);
 							}
 							$joins[$joinsCount] = array(
@@ -1146,7 +1211,7 @@ class User extends AppModel
 								$joinsValue = $value;
 							} else {
 								$joinsKey = $alias.".content LIKE";
-								$joinsValue = '%'.$value.'%';
+								$joinsValue = '%'.$this->escapeLikeString($value).'%';
 							}
 							$joins[$joinsCount] = array(
 								"type" => "INNER",
@@ -1249,5 +1314,46 @@ class User extends AppModel
 		}
 
 		return true;
+	}
+
+/**
+ * アバターの公開・非公開を取得し、データConvert
+ *
+ * @param   Model Users
+ * @return  Model Users
+ * @since   v 3.0.0.0
+ */
+	public function convertAvatarDisplay($users) {
+		$UserItem = ClassRegistry::init('UserItem');
+		$UserItemLink = ClassRegistry::init('UserItemLink');
+
+		$userItem = $UserItem->find('first', array(
+			'fields' => array('id', 'allow_public_flag'),
+			'conditions' => array('tag_name' => 'avatar', )
+		));
+
+		if($userItem['UserItem']['allow_public_flag'] == _OFF) {
+			return $users;
+		}
+
+		$userIds = array();
+		foreach($users as $user) {
+			$userIds[] = $user['User']['id'] ;
+		}
+
+		$userItemLinks = $UserItemLink->find('list', array(
+			'fields' => array('user_id', 'public_flag'),
+			'conditions' => array(
+				'user_id' => $userIds,
+				'user_item_id' => $userItem['UserItem']['id'],
+			)
+		));
+
+		foreach($users as $key => $user) {
+			if(isset($userItemLinks[$user['User']['id']]) && $userItemLinks[$user['User']['id']] == _OFF) {
+				$users[$key]['User']['avatar'] = '';
+			}
+		}
+		return $users;
 	}
 }

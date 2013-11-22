@@ -84,7 +84,7 @@
 		echo $this->Form->create('BlogComment', array('id' => 'Form'.$id.$mode,'url' => $formSubmitUrl, 'data-pjax' => '#'.$id));
 	?>
 		<fieldset class="form">
-			<ul class="lists">
+			<ul class="nc-lists">
 				<?php if (empty($nc_user['id'])):// ログインしてない場合は表示項目を追加する ?>
 					<li>
 						<dl>

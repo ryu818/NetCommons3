@@ -16,7 +16,7 @@
 	<legend>
 		<?php echo __d('system', 'System Configuration');?>
 	</legend>
-	<ul class="lists">
+	<ul class="nc-lists">
 		<?php
 			echo $this->element('item', array('item' => $configs['memory_limit']));
 			echo $this->element('item', array('item' => $configs['script_compress_gzip']));
@@ -27,7 +27,7 @@
 	<legend>
 		<?php echo __d('system', 'Session');?>
 	</legend>
-	<ul class="lists">
+	<ul class="nc-lists">
 		<?php
 			echo $this->element('item', array('item' => $configs['session_name']));
 			echo $this->element('item', array('item' => $configs['session_auto_regenerate']));
@@ -38,7 +38,7 @@
 	<legend>
 		<?php echo __d('system', 'Proxy server');?>
 	</legend>
-	<ul class="lists">
+	<ul class="nc-lists">
 		<?php
 			echo $this->element('item', array('item' => $configs['proxy_mode']));
 			echo $this->element('item', array('item' => $configs['proxy_host']));
@@ -52,7 +52,7 @@
 	<legend>
 		<?php echo __d('system', 'Security Communication');?>
 	</legend>
-	<ul class="lists">
+	<ul class="nc-lists">
 		<?php
 			echo $this->element('item', array('item' => $configs['use_ssl'], 'separator'=> true));
 		?>

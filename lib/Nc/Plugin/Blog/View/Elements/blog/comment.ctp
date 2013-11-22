@@ -9,7 +9,7 @@
 	<?php if (!empty($blog_comments_tree)): ?>
 		<h3 class="blog-comment-title"><?php echo __d('blog', 'Comment on %s', $blog_post['BlogPost']['title'])?></h3>
 		<?php echo($this->element('/common/paginator', array('options' => $queryOptions))); ?>
-		<ul class="lists">
+		<ul class="nc-lists">
 			<?php echo $this->element('blog/comment_detail', array('depth' => BLOG_COMMENTS_MAX_DEPTH, 'blog_post' => $blog_post)); ?>
 		</ul>
 		<?php echo($this->element('/common/paginator', array('options' => $queryOptions))); ?>

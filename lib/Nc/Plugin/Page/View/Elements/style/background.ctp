@@ -70,7 +70,7 @@ echo $this->element('style/filter');
 			));
 		?>
 		<fieldset class="form">
-			<ul class="lists pages-menu-background-original-ul">
+			<ul class="nc-lists pages-menu-background-original-ul">
 				<li>
 					<dl>
 						<dt>
@@ -125,7 +125,7 @@ echo $this->element('style/filter');
 				</li>
 			</ul>
 		</fieldset>
-		<ul class="lists pages-menu-background-original-type clear">
+		<ul class="nc-lists pages-menu-background-original-type clear">
 			<?php
 				$imageTypes = array(
 					"no-repeat" => "Normal",
@@ -156,7 +156,7 @@ echo $this->element('style/filter');
 		?>
 		<?php else: ?>
 		<fieldset class="form">
-			<ul class="lists pages-menu-style-details pages-menu-backgrounds clearfix">
+			<ul class="nc-lists pages-menu-style-details pages-menu-backgrounds clearfix">
 				<?php echo $this->element('style/background_items', array('backgrounds' => $backgrounds, 'type' => $itemKey)); ?>
 			</ul>
 		</fieldset>

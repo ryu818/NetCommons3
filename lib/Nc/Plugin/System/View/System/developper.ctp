@@ -13,7 +13,7 @@
 	echo $this->element('header');
 ?>
 <fieldset class="form system-fieldset">
-	<ul class="lists">
+	<ul class="nc-lists">
 		<?php
 			echo $this->element('item', array('item' => $configs['debug']));
 		?>

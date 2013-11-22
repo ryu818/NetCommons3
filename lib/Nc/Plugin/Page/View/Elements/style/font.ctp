@@ -56,7 +56,7 @@ echo $this->element('scope', array('languages' => $languages, 'model_name' => 'P
 	<div><a href="#"><?php echo(h($item['title'])); ?></a></div>
 	<div>
 		<fieldset class="form">
-			<ul class="lists pages-menu-style-details">
+			<ul class="nc-lists pages-menu-style-details">
 			<?php foreach ($item as $key => $value): ?>
 				<?php
 					// bodyのfont-sizeはYUI Font を使用しているため使用できない。代わりに#parent-containerを使用

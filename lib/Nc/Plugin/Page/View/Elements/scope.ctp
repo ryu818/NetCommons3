@@ -1,4 +1,4 @@
-<ul class="lists pages-menu-style-scopes">
+<ul class="nc-lists pages-menu-style-scopes">
 	<li>
 		<dl>
 			<dt>

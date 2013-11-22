@@ -1,8 +1,7 @@
 <?php
 	if(!isset($block_title)) {
 		// プラグイン上のテンプレートから呼ばれた場合
-		$nc_not_active = Configure::read(NC_SYSTEM_KEY.'.nc_not_active');
-		if(!isset($nc_not_active)) {
+		if(isset($isActive) && $isActive) {
 			Configure::write(NC_SYSTEM_KEY.'.nc_sub_title' , $title);
 		}
 	} else {

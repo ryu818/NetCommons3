@@ -45,7 +45,7 @@ foreach ($revisions as $revision) {
 	?>
 </h2>
 <?php if (!isset($diffText)): ?>
-<ul class="lists clearfix">
+<ul class="nc-lists clearfix">
 	<li>
 		<dl>
 			<dt>

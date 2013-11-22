@@ -21,7 +21,7 @@ if($announcement_edit['AnnouncementEdit']['approved_flag'] == _ON && $hierarchy 
 <div class="table widthmax ">
 <div class="table-cell">
 <fieldset class="form">
-	<ul class="lists">
+	<ul class="nc-lists">
 		<li>
 			<dl>
 				<dt>

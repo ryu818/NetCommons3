@@ -18,7 +18,7 @@ echo $this->Form->create('Upload', array('data-ajax' => '#'.$id, 'data-ajax-meth
 		<div class="table-cell upload-thumbnail">
 			<img src="<?php echo h($upload['Upload']['url']); ?>" alt="" />
 		</div>
-		<ul class="table-cell upload-fileinfo-base lists">
+		<ul class="table-cell upload-fileinfo-base nc-lists">
 			<li class="bold">
 				<?php echo h($upload['Upload']['file_name']); ?>
 			</li>
@@ -37,7 +37,7 @@ echo $this->Form->create('Upload', array('data-ajax' => '#'.$id, 'data-ajax-meth
 	</div>
 </fieldset>
 <fieldset class="form">
-	<ul class="lists">
+	<ul class="nc-lists">
 		<?php
 			$columnNames = array(
 				'basename' => __d('upload', 'File name'),

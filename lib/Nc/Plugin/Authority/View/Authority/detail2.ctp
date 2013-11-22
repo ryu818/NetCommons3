@@ -52,7 +52,7 @@
 
 
 	<fieldset class="form authority-detail">
-	<ul class="lists">
+	<ul class="nc-lists">
 		<li>
 			<dl>
 				<dt>
@@ -86,7 +86,7 @@
 						echo $this->Form->input('Authority.'.$columnName, $settings);
 					?>
 					<div class="note">
-						<ul class="lists authority-note-lists">
+						<ul class="nc-lists authority-note-lists">
 							<li>
 								<dl>
 									<dt>

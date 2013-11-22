@@ -227,6 +227,25 @@ app\\webroot\\theme\\assets下に圧縮したものと、そうでないもの�
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);
 
+	public $community_invitations = array(
+		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary', 'comment' => 'コミュニティー招待ID'),
+		'room_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'user_id' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'activate_key' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 40, 'collate' => 'utf8_general_ci', 'comment' => 'コミュニティー招待用承認用キー', 'charset' => 'utf8'),
+		'is_pending_approval_mail' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'comment' => '承認待ちメールかどうか'),
+		'expires' => array('type' => 'integer', 'null' => true, 'default' => null, 'comment' => '有効期限'),
+		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
+		'created_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
+		'created_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'modified' => array('type' => 'datetime', 'null' => true, 'default' => null),
+		'modified_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
+		'modified_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'indexes' => array(
+			'PRIMARY' => array('column' => 'id', 'unique' => 1)
+		),
+		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
+	);
+
 	public $community_langs = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary'),
 		'room_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'key' => 'index'),
@@ -849,6 +868,25 @@ UploadLinkの対応するレコードが１件もない場合は「0」となる
 		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);
 
+	public $user_invitations = array(
+		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary', 'comment' => '会員招待ID'),
+		'user_name' => array('type' => 'string', 'null' => false, 'default' => '', 'collate' => 'utf8_general_ci', 'comment' => '招待する会員名称', 'charset' => 'utf8'),
+		'email' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 100, 'collate' => 'utf8_general_ci', 'comment' => '招待する会員のeメール', 'charset' => 'utf8'),
+		'activate_key' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 40, 'collate' => 'utf8_general_ci', 'comment' => '会員招待用承認用キー', 'charset' => 'utf8'),
+		'is_pending_approval_mail' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'comment' => '承認待ちメールかどうか'),
+		'expires' => array('type' => 'integer', 'null' => true, 'default' => null, 'comment' => '有効期限'),
+		'created' => array('type' => 'datetime', 'null' => true, 'default' => null),
+		'created_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
+		'created_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'modified' => array('type' => 'datetime', 'null' => true, 'default' => null),
+		'modified_user_id' => array('type' => 'integer', 'null' => true, 'default' => null),
+		'modified_user_name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'charset' => 'utf8'),
+		'indexes' => array(
+			'PRIMARY' => array('column' => 'id', 'unique' => 1)
+		),
+		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
+	);
+
 	public $user_item_authority_links = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary', 'comment' => '会員項目のベース権限毎の編集・閲覧権限ID'),
 		'user_item_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'key' => 'index'),
@@ -973,7 +1011,7 @@ UploadLinkの対応するレコードが１件もない場合は「0」となる
 		'myportal_page_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'comment' => 'マイポータル直下のページID'),
 		'private_page_id' => array('type' => 'integer', 'null' => false, 'default' => '0', 'comment' => 'マイルーム直下のページID'),
 		'avatar' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 50, 'collate' => 'utf8_general_ci', 'comment' => 'アバターファイル名', 'charset' => 'utf8'),
-		'activate_key' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 8, 'collate' => 'utf8_general_ci', 'comment' => '自動登録用承認用キー', 'charset' => 'utf8'),
+		'activate_key' => array('type' => 'string', 'null' => true, 'default' => null, 'length' => 40, 'collate' => 'utf8_general_ci', 'comment' => '自動登録用承認用キー', 'charset' => 'utf8'),
 		'lang' => array('type' => 'string', 'null' => false, 'default' => 'ja', 'length' => 50, 'collate' => 'utf8_general_ci', 'comment' => 'ログイン後のデフォルト言語(ja,en等)　', 'charset' => 'utf8'),
 		'timezone_offset' => array('type' => 'integer', 'null' => false, 'default' => '9', 'comment' => 'ログイン後のデフォルトタイムゾーン'),
 		'email' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 100, 'collate' => 'utf8_general_ci', 'comment' => 'eメール', 'charset' => 'utf8'),

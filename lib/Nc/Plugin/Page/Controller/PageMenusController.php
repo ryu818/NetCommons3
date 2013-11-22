@@ -31,21 +31,35 @@ class PageMenusController extends PageAppController {
  * @var array
  */
 	public $uses = array('PageUserLink', 'Revision', 'Community', 'CommunityLang', 'CommunityTag', 'TempData',
-			'Page.PageBlock', 'Page.PageMenuUserLink', 'Page.PageMenuCommunity', 'Block.BlockOperation');
+		'CommunityInvitation', 'Page.PageBlock', 'Page.PageMenuUserLink', 'Page.PageMenuCommunity', 'Block.BlockOperation');
 
 /**
  * Component name
  *
  * @var array
  */
-	public $components = array('RevisionList', 'Security', 'Page.PageMenu');
+	public $components = array('RevisionList', 'Security', 'Page.PageMenu', 'Page.PageMailCommunity', 'Mail');
 
 /**
  * Helper name
  *
  * @var array
  */
-	public $helpers = array('Page.PageMenu');
+	public $helpers = array('Paginator', 'Page.PageMenu');
+
+/**
+ *会員招待->会員選択実行時のページ移動の設定
+ * @var array
+ */
+	public $paginate = array(
+		'fields' => array(
+			'User.id',
+			'User.handle',
+			'User.avatar',
+			'PageUserLink.id',
+		),
+		'conditions' => array(),
+	);
 
 /**
  * 表示前処理
@@ -58,6 +72,7 @@ class PageMenusController extends PageAppController {
  */
 	public function beforeFilter()
 	{
+		include_once dirname(dirname(__FILE__)).'/Config/defines.inc.php';
 		$activeLang = $this->Session->read(NC_SYSTEM_KEY.'.page_menu.activeLang');
 		if(isset($activeLang)) {
 			Configure::write(NC_CONFIG_KEY.'.'.'language', $activeLang);
@@ -67,10 +82,12 @@ class PageMenusController extends PageAppController {
 
 		// Token
 		$this->Security->validatePost = false;
-		$this->Security->csrfUseOnce = false;
-		if($this->request->is('post') && $this->action != 'edit' && $this->action != 'participant') {
+		if($this->action != 'invite_community' && $this->request->is('post')) {
+			$this->Security->csrfUseOnce = false;
+		}
+		if($this->request->is('post') && $this->action != 'edit' && $this->action != 'participant' && $this->action != 'select_member'
+			 && $this->action != 'invite_community') {
 			// 手動でTokenチェック
-			// TODO:edit,participantや、そのほかのActionでもTokenチェックされているか確認すること。
 			$this->Security->csrfCheck = false;
 			if($this->action == 'participant_detail' || $this->action == 'participant_cancel') {
 				// 参加者詳細、参加者修正画面 キャンセルボタンでは、登録していないため、チェックはしない。
@@ -254,6 +271,14 @@ class PageMenusController extends PageAppController {
 			throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'communities'));
 		}
 		list($community, $communityLang, $communityTag) = $ret;
+
+		$currentPage = $this->Page->findById($currentPageId);
+		if(!$currentPage) {
+			$this->response->statusCode('404');
+			$this->flash(__('Page not found.'), '');
+			return;
+		}
+
 		$isParticipate = $this->PageUserLink->isParticipate($currentPageId, $user['id']);
 		if($isParticipate) {
 			$authority = $this->Authority->findById($isParticipate);
@@ -268,7 +293,7 @@ class PageMenusController extends PageAppController {
 		$this->set('community_lang', $communityLang);
 		$this->set('community_tag', $communityTag);
 		$this->set('is_participate', $isParticipate);
-
+		$this->set('page', $currentPage);
 	}
 
 /**
@@ -279,12 +304,12 @@ class PageMenusController extends PageAppController {
  */
 	public function resign_community($currentPageId) {
 		$user = $this->Auth->user();
-		$centerPage = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');
 		$ret = $this->Community->getCommunityData($currentPageId);
 		if($ret === false) {
 			throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'communities'));
 		}
 		list($community, $communityLang, $communityTag) = $ret;
+		$communityName = $communityLang['CommunityLang']['community_name'];
 
 		if (empty($user['id']) || !$this->request->is('post') || $community['Community']['participate_flag'] == NC_PARTICIPATE_FLAG_ONLY_USER) {
 			$this->response->statusCode('403');
@@ -292,10 +317,22 @@ class PageMenusController extends PageAppController {
 			return;
 		}
 
+		$currentPage = $this->Page->findById($currentPageId);
+		if(!$currentPage) {
+			$this->response->statusCode('404');
+			$this->flash(__('Page not found.'), '');
+			return;
+		}
+
 		// 退会可能かどうか
 		if(!$this->PageUserLink->isResign($currentPageId, $user['id'])) {
 			$this->flash(__d('page', 'Because you are the only chief, membership removal of %s is not possible.<br />Please identify a different chief first before removing membership.', $communityLang['CommunityLang']['community_name']), '');
 			return;
+		}
+
+		$configs = $this->Config->findList('list', 0, NC_COMMUNITY_CATID);
+		if(!$configs) {
+			throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'configs'));
 		}
 
 		// 退会処理
@@ -307,16 +344,16 @@ class PageMenusController extends PageAppController {
 			throw new InternalErrorException(__('Failed to delete the database, (%s).', 'page_user_links'));
 		}
 
-		if($centerPage['Page']['root_id'] == $currentPageId) {
-			$redirectUrl =Router::url('/', true);
-			$this->flash(__d('page', 'You resigned.'), $redirectUrl);
-			return;
-		} else {
-			$this->Session->setFlash(__d('page', 'You resigned.'));
-			$this->render(false, 'ajax');
+		// 退会通知メール送信
+		if($community['Community']['is_resign_notice']) {
+			if(!$this->PageMailCommunity->sendNotification($currentPageId, $communityName, array('User' => $user),
+					$configs['community_mail_withdraw_subject'], $configs['community_mail_withdraw_body'], true)) {
+				return;
+			}
 		}
-
-		// TODO:メール通知機能未実装
+		$redirectUrl =Router::url('/', true);
+		$this->flash(__d('page', 'Remove membership of %s.', $communityName), $redirectUrl);
+		return;
 	}
 
 /**
@@ -326,11 +363,6 @@ class PageMenusController extends PageAppController {
  * @since   v 3.0.0.0
  */
 	public function participate_community($currentPageId) {
-
-		$currentPageId = 108;
-
-		$user = $this->Auth->user();
-		$centerPage = Configure::read(NC_SYSTEM_KEY.'.'.'center_page');
 		$ret = $this->Community->getCommunityData($currentPageId);
 		if($ret === false) {
 			throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'communities'));
@@ -339,36 +371,120 @@ class PageMenusController extends PageAppController {
 		list($community, $communityLang, $communityTag) = $ret;
 
 		$currentPage = $this->Page->findById($currentPageId);
+		if(!$currentPage) {
+			$this->response->statusCode('404');
+			$this->flash(__('Page not found.'), '');
+			return;
+		}
+		$communityName = $communityLang['CommunityLang']['community_name'];
 
-		if (!$currentPage || empty($user['id']) || !$this->request->is('post') || $community['Community']['participate_flag'] != NC_PARTICIPATE_FLAG_FREE) {
+		if(!$this->CommunityInvitation->gc()) {
+			throw new InternalErrorException(__('Failed to delete the database, (%s).', 'community_invitations'));
+		}
+
+		if(isset($this->request->named['activate_key'])) {
+			// 会員招待メールからの参加
+			$activateUser = $this->CommunityInvitation->findActivateUser($currentPageId, $this->request->named['activate_key']);
+			if (!$activateUser) {
+				$this->response->statusCode('403');
+				$this->flash(__d('page', 'The approval key is invalid, or it is expired.'), '');
+				return;
+			}
+			$user = $activateUser['User'];
+			$communityInvitationId = $activateUser['CommunityInvitation']['id'];
+			$isPendingApprovalMail = $activateUser['CommunityInvitation']['is_pending_approval_mail'];
+			$isCheck = (!$currentPage || empty($user['id']) || $community['Community']['participate_flag'] == NC_PARTICIPATE_FLAG_ONLY_USER);
+		} else {
+			$user = $this->Auth->user();
+			$activateUser = array('User' => $user);
+			$isCheck = (!$currentPage || empty($user['id']) || !$this->request->is('post')
+					|| ($community['Community']['participate_flag'] != NC_PARTICIPATE_FLAG_FREE && $community['Community']['participate_flag'] != NC_PARTICIPATE_FLAG_ACCEPT));
+		}
+
+		if ($isCheck) {
 			$this->response->statusCode('403');
 			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 			return;
 		}
 
 		// 既に参加中かどうかチェック
-		$redirectUrl =Router::url('/', true) . '/' . NC_SPACE_GROUP_PREFIX . '/'. $currentPage['Page']['permalink'];
+		$redirectUrl =Router::url('/', true) . NC_SPACE_GROUP_PREFIX . '/'. $currentPage['Page']['permalink'];
 		if($this->PageUserLink->isParticipate($currentPageId, $user['id'])) {
 			// 既に参加中
 			$this->flash(__d('page', 'Already participating.'), $redirectUrl);
 			return;
 		}
 
-		// 一般として参加
+		$configs = $this->Config->findList('list', 0, NC_COMMUNITY_CATID);
+		if(!$configs) {
+			throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'configs'));
+		}
+
+		// 承認メール送信
+		if((!isset($isPendingApprovalMail) || $isPendingApprovalMail == _OFF) && $community['Community']['participate_flag'] == NC_PARTICIPATE_FLAG_ACCEPT) {
+			if($this->CommunityInvitation->findAwaitingUser($currentPageId, $user['id'])) {
+				$this->flash(__d('page', 'It is awaiting approval already.Please wait until it is approved.'), '');
+				return;
+			}
+			// 参加受付制（主担の承認が必要）の場合、主担に承認メール送信 -> CommunityInvitation対象データ削除
+			if($this->PageMailCommunity->sendApproval($currentPageId, $communityName, $activateUser,
+					$configs['community_mail_confirm_approval_subject'], $configs['community_mail_confirm_approval_body'])) {
+				// 成功
+				if(isset($communityInvitationId) && !$this->CommunityInvitation->delete($communityInvitationId)) {
+					throw new InternalErrorException(__('Failed to delete the database, (%s).', 'community_invitations'));
+				}
+			} else {
+				// sendApprovalでflash
+				return;
+			}
+			// 承認待ちメール送信
+			if($this->PageMailCommunity->sendNotification($currentPageId, $communityName, $activateUser,
+				$configs['community_mail_wait_approval_subject'], $configs['community_mail_wait_approval_body'])) {
+				// 成功
+				$this->flash($this->Mail->sendTextBody, '');
+			}
+			return;
+		}
+
+		// ゲストOR一般として参加
 		// page_user_links Insert
+		list($minHierarchy, $maxHierarchy) = $this->Authority->getHierarchyByUserAuthorityId($user['authority_id']);
 		$insPageUserLink = array('PageUserLink' => array(
 			'room_id' => $currentPageId,
 			'user_id' => $user['id'],
-			'authority_id' => NC_AUTH_GENERAL_ID
+			'authority_id' => ($maxHierarchy == NC_AUTH_GUEST) ? NC_AUTH_GUEST_ID : NC_AUTH_GENERAL_ID
 		));
 		$this->PageUserLink->create();
 		if(!$this->PageUserLink->save($insPageUserLink)) {
 			throw new InternalErrorException(__('Failed to register the database, (%s).', 'page_user_links'));
 		}
 
-		$this->flash(__d('page', 'You participated.'), $redirectUrl);
+		// 参加通知メール送信
+		if($community['Community']['is_participate_notice']) {
+			if(!$this->PageMailCommunity->sendNotification($currentPageId, $communityName, $activateUser,
+					$configs['community_mail_participate_announce_subject'], $configs['community_mail_participate_announce_body'], true)) {
+				return;
+			}
+		}
 
-		// TODO:メール通知機能未実装
+		if(isset($isPendingApprovalMail) && $isPendingApprovalMail == _ON) {
+			if(!$this->CommunityInvitation->delete($communityInvitationId)) {
+				throw new InternalErrorException(__('Failed to delete the database, (%s).', 'community_invitations'));
+			}
+
+			// 参加完了通知メール送信
+			if(!$this->PageMailCommunity->sendNotification($currentPageId, $communityName, $activateUser,
+					$configs['community_mail_approved_subject'], $configs['community_mail_approved_body'])) {
+				return;
+			}
+
+			$this->flash(__d('page', '%1$s\'s participation for %2$s was approved.', $user['handle'], $communityName), $redirectUrl);
+			return;
+		} else {
+			$this->flash(__d('page', 'Has jointed %s.', $communityName), $redirectUrl);
+			return;
+		}
+
 		return;
 	}
 
@@ -386,6 +502,13 @@ class PageMenusController extends PageAppController {
 		}
 
 		list($community, $communityLang, $communityTag) = $ret;
+		$currentPage = $this->Page->findById($currentPageId);
+		if(!$currentPage) {
+			$this->response->statusCode('404');
+			$this->flash(__('Page not found.'), '');
+			return;
+		}
+		$communityName = $communityLang['CommunityLang']['community_name'];
 
 		if (empty($user['id']) || $community['Community']['participate_flag'] == NC_PARTICIPATE_FLAG_ONLY_USER) {
 			$this->response->statusCode('403');
@@ -411,9 +534,31 @@ class PageMenusController extends PageAppController {
 			$this->flash(__('Authority Error!  You do not have the privilege to access this page.'), '');
 			return;
 		}
+
 		if ($this->request->is('post')) {
-			// TODO:招待処理 未作成
+			// 招待メール送信処理
+			if($this->PageMailCommunity->sendInvite($currentPageId, $communityName, $this->request->data)) {
+				// 成功
+				$this->Session->setFlash(__d('page', 'Transmission processing of invitation mails has been started.'));
+			}
+			$configs['invite_members'] = $this->request->data['invite_members'];
+			$configs['community_mail_invite_subject'] = $this->request->data['invite_mail_subject'];
+			$configs['community_mail_invite_body'] = $this->request->data['invite_mail_body'];
+		} else {
+			// コミュニティーConfig関連取得
+			$configs = $this->Config->findList('list', 0, NC_COMMUNITY_CATID);
+			if(!$configs) {
+				throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'configs'));
+			}
+			$this->Mail->assignedTags['{X-SITE_NAME}'] = Configure::read(NC_CONFIG_KEY.'.'.'sitename');
+			$this->Mail->assignedTags['{X-ROOM}'] = $communityName;
+			$configs['community_mail_invite_subject'] = $this->Mail->replaceTags($configs['community_mail_invite_subject'], 'text');
+			$configs['community_mail_invite_body'] = $this->Mail->replaceTags($configs['community_mail_invite_body'], 'text');
 		}
+
+		$this->set('configs', $configs);
+		$this->set('community', $community);
+		$this->set('community_lang', $communityLang);
 	}
 
 /**
@@ -432,6 +577,9 @@ class PageMenusController extends PageAppController {
 		$errorFlag = _OFF;
 		$change_private = false;
 		$currentPage = $this->Page->findAuthById($page['Page']['id'], $userId);
+		if(!$currentPage) {
+			throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'pages'));
+		}
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		if($currentPage['Page']['thread_num'] == 1 && $currentPage['Page']['space_type'] == NC_SPACE_TYPE_GROUP) {
 			// コミュニティー
@@ -596,6 +744,16 @@ class PageMenusController extends PageAppController {
 					return;
 				}
 			}
+			// 以前の値が同じか、langがenならば、Page.page_nameを更新。
+			$params = array(
+				'fields' => array('page_name'),
+				'conditions' => array('id' => $page['Page']['id']),
+				'recursive' => -1,
+			);
+			$pageNamePage = $this->Page->find('first', $params);
+			if($pageNamePage['Page']['page_name'] != $communityLang['CommunityLang']['community_name'] && $lang != 'en') {
+				$insPage['Page']['page_name'] = $pageNamePage['Page']['page_name'];
+			}
 		}
 
 		// 編集ページ以下のページ取得
@@ -693,6 +851,9 @@ class PageMenusController extends PageAppController {
 	public function detail($pageId) {
 		$userId = $this->Auth->user('id');
 		$page = $this->Page->findAuthById($pageId, $userId);
+		if(!$page) {
+			throw new InternalErrorException(__('Failed to obtain the database, (%s).', 'pages'));
+		}
 
 		$parentPage = $this->Page->findAuthById($page['Page']['parent_id']);
 		if(!isset($parentPage['Page'])) {
@@ -1156,6 +1317,53 @@ class PageMenusController extends PageAppController {
 
 		$this->Session->setFlash(__('Has been successfully updated.'));
 		$this->_renderItem($page, $parentPage, false, false, $childPages);
+	}
+
+/**
+ * 会員招待->会員選択実行時
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function select_member($currentPageId) {
+		$user = $this->Auth->user();
+		$userId = $user['id'];
+		$currentPage = $this->Page->findAuthById($currentPageId, $userId);
+
+		$pageNum = empty($this->request->data['page']) ? 1 : intval($this->request->data['page']);
+		$limit = empty($this->request->data['limit']) ? PAGES_INVITE_COMMUNITY_SELECT_MEMBERS_LIMIT : intval($this->request->data['limit']);
+
+		// 権限チェック
+		if($currentPageId == 0 || !isset($currentPage['Page']) || $currentPage['Page']['thread_num'] != 1 ||
+			$currentPage['Page']['space_type'] != NC_SPACE_TYPE_GROUP ||
+			!$this->PageMenu->checkAuth($currentPage) || !$this->PageUserLink->isParticipate($currentPageId, $userId)) {
+			$this->response->statusCode('403');
+			$this->flash(__('Forbidden permission to access the page.'), '');
+			return;
+		}
+
+		// 会員絞り込み
+		$adminUserHierarchy = $this->ModuleSystemLink->findHierarchyByPluginName('User', $user['authority_id']);
+		list($conditions, $joins) = $this->User->getRefineSearch($this->request, $adminUserHierarchy);
+		$joins[] = array(
+			"type" => 'LEFT',
+			"table" => "page_user_links",
+			"alias" => "PageUserLink",
+			"conditions" => "`User`.`id`=`PageUserLink`.`user_id`".
+			" AND `PageUserLink`.`room_id` =".intval($currentPageId)
+		);
+		$conditions['is_active'] = NC_USER_IS_ACTIVE_ON;
+
+		$this->paginate['page'] = $pageNum;
+		$this->paginate['limit'] = $limit;
+		$this->paginate['conditions'] = $conditions;
+		$this->paginate['joins'] = $joins;
+		$this->paginate['order'] = array('User.handle' => 'asc');
+		$users = $this->paginate('User');
+		$users = $this->User->convertAvatarDisplay($users);
+
+		$this->set('users', $users);
+		$this->set('page', $currentPage);
 	}
 
 /**

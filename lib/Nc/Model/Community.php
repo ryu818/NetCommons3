@@ -96,12 +96,15 @@ class Community extends AppModel
 				//'deleteOnUpdate' => true,
 			),
 		),
+		'Common',
 	);
 	public $validate = array();
 
 /**
- * バリデート処理
- * @param   void
+ * construct
+ * @param integer|string|array $id Set this ID for this model on startup, can also be an array of options, see above.
+ * @param string $table Name of database table to use.
+ * @param string $ds DataSource connection name.
  * @return  void
  * @since   v 3.0.0.0
  */
@@ -433,5 +436,46 @@ class Community extends AppModel
 		$communities_tag['CommunityTag']['tag_value'] = $CommunityTag->findCommaDelimitedTags($room_id, $lang);
 
 		return array($community, $community_lang, $communities_tag);
+	}
+
+/**
+ * コミュニティー検索条件取得
+ * @param   array paginate配列
+ * @param   object $request
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function getSearchParams(&$paginate, $request) {
+		if(!isset($request->data['CommunitySearch']['text']) && isset($request->named['search_communities_text'])) {
+			$request->data['CommunitySearch']['text'] = $request->named['search_communities_text'];
+		}
+		if(!isset($request->data['CommunitySearch']['disclosed_communities']) && isset($request->named['disclosed_communities'])) {
+			$request->data['CommunitySearch']['disclosed_communities'] = $request->named['disclosed_communities'];
+		}
+
+		$requestData = $request->data;
+		if(isset($requestData['CommunitySearch']['text']) && $requestData['CommunitySearch']['text'] != '') {
+			// 現在表示中の言語、page_name内から検索している。
+			// researchmapでは、他の言語のものも検索対象にしているがここでは対処しない。
+			$requestData['CommunitySearch']['text'] = $this->escapeLikeString(trim(mb_convert_kana( $requestData['CommunitySearch']['text'], "s")));
+			$paginate['conditions']['or'] = array(
+				'Page.page_name LIKE' => '%' . $requestData['CommunitySearch']['text'] . '%',
+				'CommunityLang.community_name LIKE' => '%' . $requestData['CommunitySearch']['text'] . '%',
+				'CommunityLang.summary LIKE' => '%' . $requestData['CommunitySearch']['text'] . '%',
+				'Revision.content LIKE' => '%' . $requestData['CommunitySearch']['text'] . '%',
+			);
+			$paginate['joins'] = array(
+				"type" => "LEFT",
+				"table" => "revisions",
+				"alias" => "Revision",
+				"conditions" => array(
+					"`Revision`.`group_id`=`CommunityLang`.`revision_group_id`",
+					"Revision.pointer" => _ON,
+				)
+			);
+		}
+		if(!empty($requestData['CommunitySearch']['disclosed_communities'])) {
+			$paginate['conditions']['Community.publication_range_flag'] = array(NC_PUBLICATION_RANGE_FLAG_LOGIN_USER, NC_PUBLICATION_RANGE_FLAG_ALL);
+		}
 	}
 }
