@@ -34,7 +34,7 @@
 				);
 				echo $this->Html->link(__('Pending'), $approveUrl, array(
 					'title' => __('Pending'),
-					'class' => 'nc-button nc-button-red small',
+					'class' => 'nc-button nc-button-red nc-small',
 					'data-ajax' =>'#blog-posts-approve-'.$id,
 					'data-ajax-method' => 'inner',
 					'data-ajax-dialog' => true,
@@ -43,7 +43,7 @@
 				));
 			?>
 		<?php elseif($blog_post['BlogPost']['status'] != NC_STATUS_PUBLISH): ?>
-			<span class="temporary">
+			<span class="nc-temporary">
 				<?php echo __('Temporary...'); ?>
 			</span>
 		<?php endif; ?>
@@ -52,7 +52,7 @@
 			<?php // 短縮URLの取得
 				$url = array('permalink' => '', 'plugin' => 'blog', 'controller' => 'blog', '?' => array('p' => $blog_post['BlogPost']['id']));
 				echo $this->Html->link(__d('blog', 'Short URLs'), $this->html->url($url, true), array(
-					'title' => __d('blog', 'Get %s', __d('blog', 'Short URLs')), 'class' => 'nc-button small',
+					'title' => __d('blog', 'Get %s', __d('blog', 'Short URLs')), 'class' => 'nc-button nc-small',
 					'onclick' => "prompt('" .__d('blog', 'Short URLs'). ':'. "'  ,$(this).attr('href')); return false;"
 				));
 			?>
@@ -60,7 +60,7 @@
 				if($blog['Blog']['trackback_receive_flag']  == _ON) :
 					$url = array('plugin' => 'blog', 'controller' => 'blog', 'action' => 'trackback', '?' => array('p' => $blog_post['BlogPost']['id']));
 					echo $this->Html->link(__d('blog', 'TrackBack URLs'), $this->html->url($url, true), array(
-							'title' => __d('blog', 'Get %s', __d('blog', 'TrackBack URLs')), 'class' => 'nc-button small',
+							'title' => __d('blog', 'Get %s', __d('blog', 'TrackBack URLs')), 'class' => 'nc-button nc-small',
 							'onclick' => "prompt('" .__d('blog', 'TrackBack URLs'). ':'. "'  ,$(this).attr('href')); return false;"
 					));
 				endif;

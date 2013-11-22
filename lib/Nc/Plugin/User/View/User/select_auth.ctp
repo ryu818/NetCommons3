@@ -24,7 +24,7 @@
 	<h3 class="bold display-inline">
 		<?php echo __d('user', 'Set authority'); ?>
 	</h3>
-	<div class="top-description">
+	<div class="nc-top-description">
 		<?php echo __d('user', 'Set the role of this member in each grouproom, and press [%1$s]to proceed.<br/>Remember, this member is a <span class=\'bold\'>%2$s.</span><br/>By pressing [%3$s], you can set the role of this member all at once.', __('Ok'), $user_authority_name,  __('Select All'));?>
 	</div>
 
@@ -63,9 +63,9 @@
 
 	<?php
 		echo $this->Html->div('submit align-right',
-			$this->Form->button(__('&lt;&lt;Back'), array('name' => 'back', 'class' => 'common-btn', 'type' => 'button', 'data-ajax' => '#'.$id, 'data-ajax-url' => $this->Html->url(array('action' => 'select_group', $user_id)), 'data-ajax-type' => 'post', 'data-ajax-serialize' => true)).
-			$this->Form->button(__('Ok'), array('name' => 'next', 'class' => 'common-btn', 'type' => 'submit')).
-			$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button', 'onclick' => '$.User.memberQuit('.$user_id.'); return false;'))
+			$this->Form->button(__('&lt;&lt;Back'), array('name' => 'back', 'class' => 'nc-common-btn', 'type' => 'button', 'data-ajax' => '#'.$id, 'data-ajax-url' => $this->Html->url(array('action' => 'select_group', $user_id)), 'data-ajax-type' => 'post', 'data-ajax-serialize' => true)).
+			$this->Form->button(__('Ok'), array('name' => 'next', 'class' => 'nc-common-btn', 'type' => 'submit')).
+			$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'nc-common-btn', 'type' => 'button', 'onclick' => '$.User.memberQuit('.$user_id.'); return false;'))
 		);
 		echo $this->Form->hidden('submit' , array('name' => 'submit', 'value' => _ON));
 		echo $this->Form->end();

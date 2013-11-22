@@ -50,7 +50,7 @@ $this->Form->inputDefaults(array(
 		</li>
 	</ul>
 	<p class="align-right">
-		<?php echo $this->Form->button(__('Sign in'), array('name' => 'login', 'class' => 'common-btn')); ?>
+		<?php echo $this->Form->button(__('Sign in'), array('name' => 'login', 'class' => 'nc-common-btn')); ?>
 	</p>
 </fieldset>
 <?php echo $this->Form->end();?>

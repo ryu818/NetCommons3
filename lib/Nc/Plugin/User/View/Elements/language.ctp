@@ -1,5 +1,5 @@
 <?php if(!empty($languages) && count($languages) > 1): ?>
-	<div class="language-outer">
+	<div class="nc-language-outer">
 		<?php
 			$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 			$user_id = empty($user_id) ? null : $user_id;
@@ -10,7 +10,7 @@
 			}
 			$settings = array(
 				'id' => "user-language".$id,
-				'class' => "language",
+				'class' => "nc-language",
 				'name' => "language",
 				'value' => $langUrl,
 				'label' => false,

@@ -1,5 +1,5 @@
 <div>
-	<div class="top-description">
+	<div class="nc-top-description">
 		<?php
 			echo __d('content', 'Blocks list in <span class=\'bold\'>[%1$s]</span> content. By clicking on the block name, and then navigate to the destination.', $content['Content']['title']);
 	 	?>
@@ -8,8 +8,8 @@
 	</table>
 
 	<?php
-		echo $this->Html->div('btn-bottom',
-			$this->Form->button(__('Close'), array('name' => 'close', 'class' => 'common-btn', 'type' => 'button',
+		echo $this->Html->div('nc-btn-bottom',
+			$this->Form->button(__('Close'), array('name' => 'close', 'class' => 'nc-common-btn', 'type' => 'button',
 				'onclick' => '$(\'#nc-content-block-list-'.$id.'-'.$content['Content']['id'].'\').dialog(\'close\'); return false;'))
 		);
 	?>

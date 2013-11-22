@@ -5,12 +5,12 @@
 }
 
 /* highlight */
-.th-default-green .highlight{
+.th-default-green .nc-highlight{
 	background-color:#f2ffef;
 	color:#91c830;
 }
 
-.th-default-green a.hover-highlight:hover {
+.th-default-green a.nc-hover-highlight:hover {
 	background-color:#f2ffef;
 	color:#91c830;
 }

@@ -55,11 +55,11 @@
 /* TODO:「承認しない」->承認しない理由を記入者にメールでお知らせするほうが望ましい。未対応。 */
 	if($isChief) {
 		$approve = $this->Form->button(__('Approve'), array(
-			'class' => 'nc-button nc-button-blue common-btn',
+			'class' => 'nc-button nc-button-blue nc-common-btn',
 			'type' => 'submit',
 		));
 		$unapprove = $this->Form->button(__('Unapprove'), array(
-			'class' => 'nc-button nc-button-red common-btn',
+			'class' => 'nc-button nc-button-red nc-common-btn',
 			'type' => 'button',
 			'onclick' => "$('#RevisionIsApprove".$id."').val(0);$(this.form).submit();"
 		));
@@ -67,12 +67,12 @@
 		$approve = '';
 		$unapprove = '';
 	}
-	echo $this->Html->div('btn-bottom',
+	echo $this->Html->div('nc-btn-bottom',
 		$approve.
 		$unapprove.
 		$this->Form->button(__('Close'),
 			array(
-				'name' => 'close', 'class' => 'common-btn', 'type' => 'button',
+				'name' => 'close', 'class' => 'nc-common-btn', 'type' => 'button',
 				'onclick' => '$(\'#'.$dialog_id.'\').dialog(\'close\'); return false;'
 			)
 		)

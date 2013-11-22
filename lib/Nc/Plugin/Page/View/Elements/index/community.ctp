@@ -172,7 +172,7 @@ if($community_params['community']['Community']['participate_flag'] == NC_PARTICI
 									<?php echo $this->Form->button(__('Select file'), array(
 										'name' => 'select_file',
 										'type' => 'button',
-										'class' => 'common-btn pages-menu-select-file-btn',
+										'class' => 'nc-common-btn pages-menu-select-file-btn',
 										'onclick' => "$.Common.showUploadDialog('dialog-".$id."', {'el' : this, 'action' : 'library', 'callback' : function(fileName, url, libraryUrl){\$.PageMenu.selectCommunityFile(".$page['Page']['id'].", 1, fileName , url, libraryUrl);}});"
 									));?>
 								</div>
@@ -302,13 +302,13 @@ if($community_params['community']['Community']['participate_flag'] == NC_PARTICI
 			?>
 		</div>
 	</div>
-	<div class="btn-bottom">
+	<div class="nc-btn-bottom">
 		<?php
 			echo $this->Form->hidden('is_participant' , array('id' => 'pages-menu-is-participant-'.$page['Page']['id'], 'name' => 'is_participant', 'value' => _OFF));
 		?>
-		<input onclick="$('#pages-menu-is-participant-<?php echo $page['Page']['id'];?>').val(0);" type="submit" class="common-btn" name="ok" value="<?php echo( __('Ok')); ?>" />
-		<input type="button" class="common-btn" name="cancel" value="<?php echo(__('Cancel')); ?>" onclick="$('#pages-menu-edit-detail-<?php echo($page['Page']['id']);?>').slideUp(300);" />
-		<input onclick="$('#pages-menu-is-participant-<?php echo $page['Page']['id'];?>').val(1);" type="submit" class="common-btn nc-button-blue" name="participant" value="<?php echo(__d('page','Edit members')); ?>" />
+		<input onclick="$('#pages-menu-is-participant-<?php echo $page['Page']['id'];?>').val(0);" type="submit" class="nc-common-btn" name="ok" value="<?php echo( __('Ok')); ?>" />
+		<input type="button" class="nc-common-btn" name="cancel" value="<?php echo(__('Cancel')); ?>" onclick="$('#pages-menu-edit-detail-<?php echo($page['Page']['id']);?>').slideUp(300);" />
+		<input onclick="$('#pages-menu-is-participant-<?php echo $page['Page']['id'];?>').val(1);" type="submit" class="nc-common-btn nc-button-blue" name="participant" value="<?php echo(__d('page','Edit members')); ?>" />
 	</div>
 </div>
 <?php

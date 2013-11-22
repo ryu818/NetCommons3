@@ -77,7 +77,7 @@
 		</div>
 		<div class="align-right">
 		<?php
-			echo $this->Form->button(__('Add'), array('name' => 'ok', 'class' => 'common-btn-min', 'type' => 'button', 'onclick' => "$.BlogPosts.addCategory(event, '".$id."');"));
+			echo $this->Form->button(__('Add'), array('name' => 'ok', 'class' => 'nc-common-btn-min', 'type' => 'button', 'onclick' => "$.BlogPosts.addCategory(event, '".$id."');"));
 		?>
 		</div>
 		<?php endif; ?>

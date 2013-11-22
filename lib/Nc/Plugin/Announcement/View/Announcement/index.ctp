@@ -28,7 +28,7 @@ if(!empty($announcement['Announcement']['id'])) {
 				$approveUrl['action'] = 'approve';
 				echo $this->Html->link(__('Pending'), $approveUrl, array(
 					'title' => __('Pending'),
-					'class' => 'nc-button nc-button-red small',
+					'class' => 'nc-button nc-button-red nc-small',
 					'data-ajax' =>'#announcement-approve-'.$id,
 					'data-ajax-method' =>'inner',
 					'data-ajax-dialog' => true,
@@ -37,7 +37,7 @@ if(!empty($announcement['Announcement']['id'])) {
 				));
 			?>
 		<?php elseif(!empty($announcement['Announcement']) && isset($announcement['Announcement']['id']) && $announcement['Announcement']['status'] != NC_STATUS_PUBLISH): ?>
-			<span class="temporary">
+			<span class="nc-temporary">
 				<?php echo __('Temporary...'); ?>
 			</span>
 		<?php endif; ?>

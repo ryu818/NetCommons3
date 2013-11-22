@@ -10,7 +10,7 @@
  */
 ?>
 <?php if (!$on_regist): ?>
-<div data-width="660" class="outer">
+<div data-width="660" class="nc-outer">
 <?php
 	echo $this->Html->css(array('Authority.index/', 'plugins/flexigrid'));
 	echo $this->Html->script(array('Authority.index/', 'plugins/flexigrid'));
@@ -18,14 +18,14 @@
 <?php endif; ?>
 <div id="authority-list">
 	<?php echo $this->element('language'); ?>
-	<div class="top-description">
+	<div class="nc-top-description">
 		<?php echo __d('authority', 'You can add, edit and delete authority in your NetCommons.');?>
 	</div>
-	<div class="add-btn-link-outer">
+	<div class="nc-add-btn-link-outer">
 		<?php
 			echo $this->Html->link(__d('authority', 'Add new authority'), array('action' => 'edit', 'language' => $language), array(
 				'title' => __d('authority', 'Add new authority'),
-				'class' => 'add-btn-link',
+				'class' => 'nc-add-btn-link',
 				'data-ajax' =>'#authority-list',
 			));
 		?>
@@ -84,8 +84,8 @@
 </div>
 <?php if (!$on_regist): ?>
 <?php
-	echo $this->Html->div('btn-bottom',
-		$this->Form->button(__('Close'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
+	echo $this->Html->div('nc-btn-bottom',
+		$this->Form->button(__('Close'), array('name' => 'cancel', 'class' => 'nc-common-btn', 'type' => 'button',
 		'onclick' => '$(\'#'.$id.'\').dialog(\'close\'); return false;'))
 	);
 ?>

@@ -15,7 +15,7 @@ if($prefix == 'Myportal') {
 	$title = __('Private room');
 }
 ?>
-<div class="top-description">
+<div class="nc-top-description">
 	<?php echo __d('authority', 'Please select the modules using in the %s, <br />then click [Next].', $title); ?>
 </div>
 <table summary="<?php echo __('Select form'); ?>">
@@ -25,11 +25,11 @@ if($prefix == 'Myportal') {
 		</th>
 		<td rowspan="2" class="authority-selectlist-arrow-btn-area nowrap align-center">
 			<?php /* 追加 */ ?>
-			<input class="common-btn-min" type="button" value="<?php echo __('Add&gt;&gt;'); ?>" onclick="$.Common.frmTransValue($('#NoEnrollModuleLinkModuleId<?php echo $id?>'),$('#ModuleLinkModuleId<?php echo $id?>'));" />
+			<input class="nc-common-btn-min" type="button" value="<?php echo __('Add&gt;&gt;'); ?>" onclick="$.Common.frmTransValue($('#NoEnrollModuleLinkModuleId<?php echo $id?>'),$('#ModuleLinkModuleId<?php echo $id?>'));" />
 			<br />
 			<br />
 			<?php /* 削除 */ ?>
-			<input class="common-btn-min" type="button" value="<?php echo __('&lt;&lt;Delete'); ?>" onclick="$.Common.frmTransValue($('#ModuleLinkModuleId<?php echo $id?>'),$('#NoEnrollModuleLinkModuleId<?php echo $id?>'));" />
+			<input class="nc-common-btn-min" type="button" value="<?php echo __('&lt;&lt;Delete'); ?>" onclick="$.Common.frmTransValue($('#ModuleLinkModuleId<?php echo $id?>'),$('#NoEnrollModuleLinkModuleId<?php echo $id?>'));" />
 		</td>
 		<th class="nowrap align-center" scope="col">
 			<?php echo __d('authority', 'Modules allowed to use now');?>
@@ -38,8 +38,8 @@ if($prefix == 'Myportal') {
 	<tr>
 		<td class="authority-selectlist nowrap align-center top">
 			<div>
-				<input class="common-btn-min" type="button" value="<?php echo __('Select All'); ?>" onclick="$.Common.frmAllSelectList($('#NoEnrollModuleLinkModuleId<?php echo $id?>'));" />
-				<input class="common-btn-min" type="button" value="<?php echo __('Release All'); ?>" onclick="$.Common.frmAllReleaseList($('#NoEnrollModuleLinkModuleId<?php echo $id?>'));" />
+				<input class="nc-common-btn-min" type="button" value="<?php echo __('Select All'); ?>" onclick="$.Common.frmAllSelectList($('#NoEnrollModuleLinkModuleId<?php echo $id?>'));" />
+				<input class="nc-common-btn-min" type="button" value="<?php echo __('Release All'); ?>" onclick="$.Common.frmAllReleaseList($('#NoEnrollModuleLinkModuleId<?php echo $id?>'));" />
 			</div>
 			<?php
 				$settings = array(
@@ -59,8 +59,8 @@ if($prefix == 'Myportal') {
 		</td>
 		<td class="authority-selectlist nowrap align-center top">
 			<div>
-				<input class="common-btn-min" type="button" value="<?php echo __('Select All'); ?>" onclick="$.Common.frmAllSelectList($('#ModuleLinkModuleId<?php echo $id?>'));" />
-				<input class="common-btn-min" type="button" value="<?php echo __('Release All'); ?>" onclick="$.Common.frmAllReleaseList($('#ModuleLinkModuleId<?php echo $id?>'));" />
+				<input class="nc-common-btn-min" type="button" value="<?php echo __('Select All'); ?>" onclick="$.Common.frmAllSelectList($('#ModuleLinkModuleId<?php echo $id?>'));" />
+				<input class="nc-common-btn-min" type="button" value="<?php echo __('Release All'); ?>" onclick="$.Common.frmAllReleaseList($('#ModuleLinkModuleId<?php echo $id?>'));" />
 			</div>
 			<?php
 				$settings = array(

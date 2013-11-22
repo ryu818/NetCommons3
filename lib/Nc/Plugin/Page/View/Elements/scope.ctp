@@ -73,7 +73,7 @@
 						'value' => isset($page_style[$model_name]['lang']) ? $page_style[$model_name]['lang'] : '',
 						'label' => false,
 						'div' => false,
-						'class' => 'language',
+						'class' => 'nc-language',
 					);
 					echo $this->Form->input($model_name.'.lang', $settings);
 				?>

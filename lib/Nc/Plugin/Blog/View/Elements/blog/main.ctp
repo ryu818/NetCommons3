@@ -105,8 +105,8 @@ $queryOptions = array('url' => array('#' => $id), 'data-pjax' => '#'.$id);
 		$backUrl['limit'] = isset($this->request->query['back_limit']) ? $this->request->query['back_limit'] : null;
 		$backUrl['page'] = isset($this->request->query['back_page']) ? $this->request->query['back_page'] : null;
 
-		echo $this->Html->div('link-bottom', $this->Html->link(__('To list'), $backUrl,
-			array('title' => __('To list'),'data-pjax' => '#'.$id, 'class' => 'link-back',
+		echo $this->Html->div('nc-link-bottom', $this->Html->link(__('To list'), $backUrl,
+			array('title' => __('To list'),'data-pjax' => '#'.$id, 'class' => 'nc-link-back',
 			'rel' => 'prev'))
 		);
 	?>

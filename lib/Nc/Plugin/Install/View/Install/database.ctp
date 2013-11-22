@@ -118,7 +118,7 @@ $this->assign('title', __d('install', 'General configuration'));
 			<?php endforeach; ?>
 		</ul>
 		<input type="hidden" name="setting_db" value="<?php echo(_ON); ?>" />
-		<div class="btn-bottom align-right clear">
+		<div class="nc-btn-bottom align-right clear">
 			<input type="button" value="<?php echo(__('&lt;&lt;Back')); ?>" name="back" class="btn" onclick="location.href='<?php echo $this->Html->url(array('plugin' => 'install','controller' => 'install','action' => 'check')); ?>';" />
 			<input type="submit" value="<?php echo(__('Next&gt;&gt;')); ?>" name="next" class="btn" />
 		</div>

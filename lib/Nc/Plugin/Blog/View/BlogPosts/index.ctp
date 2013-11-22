@@ -28,12 +28,12 @@ if($blog['Blog']['approved_flag'] == _ON && $hierarchy  <= NC_AUTH_MODERATE) {
 						echo $this->Form->label('BlogPost.post_date', __('Date-time'));
 					?>
 					<?php if(!empty($blog_post['BlogPost']['id']) && $blog_post['BlogPost']['status'] != NC_STATUS_PUBLISH): ?>
-						<span class="temporary">
+						<span class="nc-temporary">
 							<?php echo __('Temporary...'); ?>
 						</span>
 					<?php endif; ?>
 					<?php if($isApprovalSystem): ?>
-						<span class="temporary">
+						<span class="nc-temporary">
 							<?php echo __('Approval system'); ?>
 						</span>
 					<?php endif; ?>
@@ -169,10 +169,10 @@ if($blog['Blog']['approved_flag'] == _ON && $hierarchy  <= NC_AUTH_MODERATE) {
 
 	echo $this->Form->hidden('AutoRegist.status' , array('value' => NC_STATUS_PUBLISH));
 	echo $this->Html->div('submit',
-		$this->Form->button(__('Save temporally'), array('name' => 'temporally', 'class' => 'common-btn',
+		$this->Form->button(__('Save temporally'), array('name' => 'temporally', 'class' => 'nc-common-btn',
 			'type' => 'button', 'onclick' => "$('#AutoRegistStatus".$id."').val(".NC_STATUS_TEMPORARY.");$(this.form).submit();")).
-		$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'common-btn', 'type' => 'submit')).
-		$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
+		$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'nc-common-btn', 'type' => 'submit')).
+		$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'nc-common-btn', 'type' => 'button',
 			'data-pjax' => '#'.$id, 'data-ajax-url' =>  $this->Html->url($backUrl)))
 );
 ?>
@@ -239,7 +239,7 @@ if($blog['Blog']['approved_flag'] == _ON && $hierarchy  <= NC_AUTH_MODERATE) {
 			</div>
 			<div class="blog-posts-tag-button-outer align-right">
 			<?php
-				echo $this->Form->button(__('Add'), array('name' => 'ok', 'class' => 'common-btn-min', 'type' => 'button', 'onclick' => "$.BlogPosts.addTags(event, '".$id."');"));
+				echo $this->Form->button(__('Add'), array('name' => 'ok', 'class' => 'nc-common-btn-min', 'type' => 'button', 'onclick' => "$.BlogPosts.addTags(event, '".$id."');"));
 			?>
 			</div>
 		</div>
@@ -257,7 +257,7 @@ if($blog['Blog']['approved_flag'] == _ON && $hierarchy  <= NC_AUTH_MODERATE) {
 				echo $this->element('/common/revisions', array('url' => array($blog_post['BlogPost']['id'])));
 			?>
 			<?php endif; ?>
-			<div class="small outer">
+			<div class="nc-small nc-outer">
 			<?php
 				if($isApprovalSystem) {
 					$disabled = true;
@@ -282,7 +282,7 @@ if($blog['Blog']['approved_flag'] == _ON && $hierarchy  <= NC_AUTH_MODERATE) {
 				);
 				echo $this->Form->input('BlogPost.pre_change_flag', $settings);
 			?>
-			<div class="note indent"<?php if(!$this->Form->isFieldError('BlogPost.pre_change_date') && empty($blog_post['BlogPost']['pre_change_flag'])): ?> style="display:none;"<?php endif; ?>>
+			<div class="note nc-indent"<?php if(!$this->Form->isFieldError('BlogPost.pre_change_date') && empty($blog_post['BlogPost']['pre_change_flag'])): ?> style="display:none;"<?php endif; ?>>
 				<?php
 					if($this->request->is('post') && !empty($blog_post['BlogPost']['pre_change_date'])) {
 						if($this->Form->isFieldError('BlogPost.pre_change_date')) {
@@ -304,7 +304,7 @@ if($blog['Blog']['approved_flag'] == _ON && $hierarchy  <= NC_AUTH_MODERATE) {
 						'div' => false,
 						'maxlength' => 16,
 						'size' => 15,
-						'class' => 'nc-datetime text normal-text',
+						'class' => 'nc-datetime text nc-normal-text',
 						'error' => array('attributes' => array(
 							'selector' => true
 						)),

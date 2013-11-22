@@ -140,8 +140,8 @@
 	/* background: #ddd; */
 	background-color: #ddd;
 }
-// add
-.dd-drag-item .highlight {
+/* Add for NetCommons Extentions By Ryuji.M --START */
+.dd-drag-item .nc-highlight {
 	background: -webkit-linear-gradient(top, #fafafa 0%, #b6d4f6 100%);
     background:    -moz-linear-gradient(top, #fafafa 0%, #b6d4f6 100%);
     background:         linear-gradient(top, #fafafa 0%, #b6d4f6 100%);
@@ -181,4 +181,4 @@
 	height: 25px;
 }
 
-// add end
+/* Add for NetCommons Extentions By Ryuji.M --E N D */

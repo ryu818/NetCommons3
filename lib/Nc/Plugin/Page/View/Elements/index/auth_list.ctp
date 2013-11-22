@@ -72,7 +72,7 @@ if(!empty($all_selected) && $all_selected) {
 }
 
 if($radio) {
-	$html = sprintf("<label ".(($select_after_html == '') ? "class=\"pages-menu-auth-listbox-lbl".($disablStr != '' ? ' disable-lbl' : '')."\"" : '')." for=\"%s\">".
+	$html = sprintf("<label ".(($select_after_html == '') ? "class=\"pages-menu-auth-listbox-lbl".($disablStr != '' ? ' nc-disable-lbl' : '')."\"" : '')." for=\"%s\">".
 					"<input id=\"%s\" class=\"pages-menu-auth-listbox-name-".$def_authority_id."\" type=\"radio\" name=\"%s\" value=\"%d\" %s />&nbsp;&nbsp;%s</label>%s", $id, $id, $name, $value, $checked.$disablStr, $select_html, $select_after_html).
 					$hidden_detail_html;
 } else {

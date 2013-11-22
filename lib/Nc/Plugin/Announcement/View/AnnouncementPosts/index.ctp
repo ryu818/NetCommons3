@@ -17,7 +17,7 @@ if($announcement_edit['AnnouncementEdit']['approved_flag'] == _ON && $hierarchy 
 	$isApprovalSystem = false;
 }
 ?>
-<div class="top-outer">
+<div class="nc-top-outer">
 <div class="table widthmax ">
 <div class="table-cell">
 <fieldset class="form">
@@ -29,12 +29,12 @@ if($announcement_edit['AnnouncementEdit']['approved_flag'] == _ON && $hierarchy 
 						echo $this->Form->label('Content.title', __d('announcement', 'Announcement name'));
 					?>
 					<?php if(!empty($announcement['Announcement']['id']) && $announcement['Announcement']['status'] != NC_STATUS_PUBLISH): ?>
-						<span class="temporary">
+						<span class="nc-temporary">
 							<?php echo __('Temporary...'); ?>
 						</span>
 					<?php endif; ?>
 					<?php if($isApprovalSystem): ?>
-						<span class="temporary">
+						<span class="nc-temporary">
 							<?php echo __('Approval system'); ?>
 						</span>
 					<?php endif; ?>
@@ -69,10 +69,10 @@ if($announcement_edit['AnnouncementEdit']['approved_flag'] == _ON && $hierarchy 
 <?php
 	echo $this->Form->hidden('AutoRegist.status' , array('value' => NC_STATUS_PUBLISH));
 	echo $this->Html->div('submit',
-		$this->Form->button(__('Save temporally'), array('name' => 'temporally', 'class' => 'common-btn',
+		$this->Form->button(__('Save temporally'), array('name' => 'temporally', 'class' => 'nc-common-btn',
 			'type' => 'button', 'onclick' => "$('#AutoRegistStatus".$id."').val(".NC_STATUS_TEMPORARY.");$(this.form).submit();")).
-		$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'common-btn', 'type' => 'submit')).
-		$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
+		$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'nc-common-btn', 'type' => 'submit')).
+		$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'nc-common-btn', 'type' => 'button',
 			'data-pjax' => '#'.$id, 'data-ajax-url' =>  $this->Html->url(array('controller' => 'announcement', '#' => $id))))
 	);
 ?>
@@ -93,7 +93,7 @@ if($announcement_edit['AnnouncementEdit']['approved_flag'] == _ON && $hierarchy 
 				?>
 				<?php endif; ?>
 				<?php /* 変更前のコンテンツを表示する */ ?>
-				<div class="small outer">
+				<div class="nc-small nc-outer">
 				<?php
 					if($isApprovalSystem) {
 						$disabled = true;
@@ -118,7 +118,7 @@ if($announcement_edit['AnnouncementEdit']['approved_flag'] == _ON && $hierarchy 
 					);
 					echo $this->Form->input('Announcement.pre_change_flag', $settings);
 				?>
-				<div class="note indent"<?php if(!$this->Form->isFieldError('Announcement.pre_change_date') && empty($announcement['Announcement']['pre_change_flag'])): ?> style="display:none;"<?php endif; ?>>
+				<div class="note nc-indent"<?php if(!$this->Form->isFieldError('Announcement.pre_change_date') && empty($announcement['Announcement']['pre_change_flag'])): ?> style="display:none;"<?php endif; ?>>
 					<?php
 						if($this->request->is('post') && !empty($announcement['Announcement']['pre_change_date'])) {
 							if($this->Form->isFieldError('Announcement.pre_change_date')) {
@@ -140,7 +140,7 @@ if($announcement_edit['AnnouncementEdit']['approved_flag'] == _ON && $hierarchy 
 							'div' => false,
 							'maxlength' => 16,
 							'size' => 15,
-							'class' => 'nc-datetime text normal-text',
+							'class' => 'nc-datetime text nc-normal-text',
 							'error' => array('attributes' => array(
 								'selector' => true
 							)),

@@ -27,7 +27,7 @@ if(isset($is_edit) && $is_edit == _ON){
 	<?php echo(__d('page', 'Pages menu')); ?>
 	<?php if(!empty($languages) && count($languages) > 1): ?>
 	<div class="pages-menu-language-outer">
-		<select id="pages-menu-language" class="language">
+		<select id="pages-menu-language" class="nc-language">
 		<?php
 			foreach($languages as $key => $value) {
 				$selected = ($key == $lang) ? ' selected="selected"' : '';
@@ -158,7 +158,7 @@ if(isset($is_edit) && $is_edit == _ON){
 			));
 			echo $this->Form->button(__('Search'), array(
 				'type' => 'submit',
-				'class' => 'common-btn-min',
+				'class' => 'nc-common-btn-min',
 			));
 			/* 公開コミュニティーから検索 */
 			echo $this->Form->input('disclosed_communities',array(

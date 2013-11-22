@@ -96,8 +96,8 @@ if(isset($success_mes) && count($success_mes) > 0) {
 	</div>
 </div>
 <?php
-	echo $this->Html->div('btn-bottom',
-		$this->Form->button(__('Close'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
+	echo $this->Html->div('nc-btn-bottom',
+		$this->Form->button(__('Close'), array('name' => 'cancel', 'class' => 'nc-common-btn', 'type' => 'button',
 			'onclick' => '$(\'#'.$id.'\').dialog(\'close\'); return false;'))
 	);
 	echo $this->Html->css(array('Module.index/', 'plugins/flexigrid'));

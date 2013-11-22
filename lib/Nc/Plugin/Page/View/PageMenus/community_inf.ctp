@@ -16,7 +16,7 @@ $ncUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 		if(isset($ncUser) && $is_participate && $community['Community']['participate_flag'] != NC_PARTICIPATE_FLAG_ONLY_USER) {
 			echo $this->Form->button(__d('page', 'Resign from community'), array(
 				'name' => 'resign',
-				'class' => 'common-btn-min nc-button-red',
+				'class' => 'nc-common-btn-min nc-button-red',
 				'type' => 'button',
 				'data-ajax-confirm' => __d('page', 'Do you resign from "%s" community?', $community_lang['CommunityLang']['community_name']),
 				'data-ajax-type' => 'post',
@@ -31,7 +31,7 @@ $ncUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 			$community['Community']['participate_flag'] == NC_PARTICIPATE_FLAG_ACCEPT)) {
 			echo $this->Form->button(__d('page', 'Participate community'), array(
 				'name' => 'participate',
-				'class' => 'common-btn-min nc-button-blue',
+				'class' => 'nc-common-btn-min nc-button-blue',
 				'type' => 'button',
 				'data-ajax-confirm' => __d('page', 'Join the "%s", are you sure?', $community_lang['CommunityLang']['community_name']),
 				'data-ajax-type' => 'post',
@@ -49,7 +49,7 @@ $ncUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 			}
 			echo $this->Form->button(__d('page', 'Invite to this community'), array(
 				'name' => 'invite',
-				'class' => 'common-btn-min nc-button-blue',
+				'class' => 'nc-common-btn-min nc-button-blue',
 				'type' => 'button',
 				'data-ajax' => '#pages-menu-community-inf',
 				'data-ajax-dialog' => 'true',
@@ -242,8 +242,8 @@ $ncUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 	<?php endif; ?>
 	<?php
 		if($this->request->is('ajax')) {
-			echo $this->Html->div('btn-bottom',
-				$this->Form->button(__('Close'), array('name' => 'close', 'class' => 'common-btn', 'type' => 'button',
+			echo $this->Html->div('nc-btn-bottom',
+				$this->Form->button(__('Close'), array('name' => 'close', 'class' => 'nc-common-btn', 'type' => 'button',
 					'onclick' => '$(\'#pages-menu-community-inf'.'\').dialog(\'close\'); return false;'))
 			);
 		}

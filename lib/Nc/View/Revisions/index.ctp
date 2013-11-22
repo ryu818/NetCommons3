@@ -204,14 +204,14 @@ foreach ($revisions as $revision) {
 </table>
 <?php endif; ?>
 <?php
-	echo $this->Html->div('btn-bottom',
+	echo $this->Html->div('nc-btn-bottom',
 		$this->Form->button(__('Compare Revisions'), array(
-			'name' => 'compare', 'class' => 'common-btn',
+			'name' => 'compare', 'class' => 'nc-common-btn',
 			'onclick' => "$.Revision.compare(event, '".$id."');",
 		)).
 		$this->Form->button(__('Cancel'),
 			array(
-				'name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
+				'name' => 'cancel', 'class' => 'nc-common-btn', 'type' => 'button',
 				'data-pjax' => '#'.$id, 'data-ajax-url' =>  $this->Html->url($cancel_url)
 			)
 		)

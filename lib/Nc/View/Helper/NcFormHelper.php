@@ -241,7 +241,7 @@ class NcFormHelper extends FormHelper {
 				unset($text['attributes']);
 			}
 		}
-		$defaults = array('wrap' => true, 'class' => 'error-message', 'escape' => true, 'popup' => false, 'selector' => '', 'close' => true);
+		$defaults = array('wrap' => true, 'class' => 'nc-error-message', 'escape' => true, 'popup' => false, 'selector' => '', 'close' => true);
 		$options = array_merge($defaults, $options);
 		$close = $options['close'];
 		$popup = $options['popup'];
@@ -272,11 +272,11 @@ class NcFormHelper extends FormHelper {
 
 		if($close == true) {
 			if($popup == true) {
-				$class = 'popup-message';
+				$class = 'nc-popup-message';
 			} else {
 				$class = $class;
 			}
-			$str = '<div class="display-inline">'.$str. '</div><a href="#" class="message-close" role="button" onclick="$(this).parents(\'.'.$class.':first\').remove(); return false;"><span class="ui-icon ui-icon-closethick">close</span></a>' ;
+			$str = '<div class="display-inline">'.$str. '</div><a href="#" class="nc-message-close" role="button" onclick="$(this).parents(\'.'.$class.':first\').remove(); return false;"><span class="ui-icon ui-icon-closethick">close</span></a>' ;
 		}
 		if($buf_wrap !== false) {
 			$tag = is_string($buf_wrap) ? $buf_wrap : 'div';
@@ -286,7 +286,7 @@ class NcFormHelper extends FormHelper {
 		}
 
 		if($popup == true) {
-			$str = $this->Html->div('popup-message', $str, $popup_options);
+			$str = $this->Html->div('nc-popup-message', $str, $popup_options);
 		}
 		if($selector) {
 			if($selector === true) {
@@ -326,7 +326,7 @@ class NcFormHelper extends FormHelper {
 // 		if($rooms === false || count($rooms) == 0) {
 // 			return '';
 // 		}
-		$attributes = array_merge( array('escape' => false, 'empty' => false, 'class' => 'select_rooms'), $attributes);
+		$attributes = array_merge( array('escape' => false, 'empty' => false, 'class' => 'nc-select-rooms'), $attributes);
 		if($rooms !== false && count($rooms) > 0) {
 			foreach($rooms as $key => $room) {
 				if(is_array($room)) {

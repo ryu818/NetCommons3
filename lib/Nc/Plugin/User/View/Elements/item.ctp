@@ -227,18 +227,18 @@ if(!$isEdit && ($item['UserItem']['type'] == 'file' || $item['UserItem']['tag_na
 					'value' => $value
 				));
 				echo '<div class="user-avatar-btn">';
-					echo '<span class="common-btn-min upload-btn user-upload-btn">';
+					echo '<span class="nc-common-btn-min nc-upload-btn user-upload-btn">';
 						echo '<span>'.__('Select file').'</span>';
 						echo $this->Form->input($name.'.file', array(
 							'type' => 'file',
-							'class' => 'upload-btn-inputfile',
+							'class' => 'nc-upload-btn-inputfile',
 							'label' => false,
 							'div' => false,
 						));
 					echo '</span>';
 					echo $this->Form->button(__('Delete'), array(
 						'name' => 'avatar-delete',
-						'class' => 'common-btn-min middle',
+						'class' => 'nc-common-btn-min middle',
 						'type' => 'button',
 						'onclick' => "$.User.deleteAvatar('".$id."');return false;"
 					));

@@ -130,7 +130,7 @@ if($canShowPageSetting && !empty($this->params['active_plugin']) && $this->param
 			<?php endif; ?>
 			<li class="nc-hmenu-li">
 				<?php /*言語切替 */ ?>
-				<select id="nc-languages" class="language">
+				<select id="nc-languages" class="nc-language">
 				<?php
 					$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 					$languages = Configure::read(NC_CONFIG_KEY.'.'.'languages');

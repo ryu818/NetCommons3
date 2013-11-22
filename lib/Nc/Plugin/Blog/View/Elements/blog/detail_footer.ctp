@@ -22,11 +22,11 @@
 		$trackbackCount = intval($blog_post['BlogPost']['trackback_count']);
 
 		if($blog_post['BlogPost']['approved_comment_count'] != $blog_post['BlogPost']['comment_count']) {
-			$commentLinkOptions = array_merge($commentLinkOptions, array('class'=> 'temporary-style'));
+			$commentLinkOptions = array_merge($commentLinkOptions, array('class'=> 'nc-temporary-style'));
 			$commentLinkOptions['title'] = $commentLinkOptions['title'].'['.__('There is a waiting for approval').']';
 		}
 		if($blog_post['BlogPost']['approved_trackback_count'] != $blog_post['BlogPost']['trackback_count']) {
-			$trackbackLinkOptions = array_merge($trackbackLinkOptions, array('class'=> 'temporary-style'));
+			$trackbackLinkOptions = array_merge($trackbackLinkOptions, array('class'=> 'nc-temporary-style'));
 			$trackbackLinkOptions['title'] = $trackbackLinkOptions['title'].'['.__('There is a waiting for approval').']';
 		}
 	} else {

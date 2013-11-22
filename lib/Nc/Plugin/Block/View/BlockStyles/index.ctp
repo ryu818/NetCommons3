@@ -314,11 +314,11 @@
 		<?php
 			echo $this->Form->hidden('is_apply' , array('name' => 'is_apply', 'id' => "nc-block-styles-apply-".$block_id, 'value' => _ON));
 			echo $this->Html->div('submit',
-				$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'common-btn', 'type' => 'button',
+				$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'nc-common-btn', 'type' => 'button',
 					'onclick' => '$.BlockStyles.clickSubmit(this, \''.'#nc-block-styles-apply-'.$block_id.'\'); $(this.form).submit();')).
-				$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
+				$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'nc-common-btn', 'type' => 'button',
 					'onclick' => '$(\'#nc-block-styles-dialog'.$block_id.'\').dialog(\'close\'); return false;')).
-				$this->Form->button(__('Apply'), array('name' => 'apply', 'class' => 'common-btn',
+				$this->Form->button(__('Apply'), array('name' => 'apply', 'class' => 'nc-common-btn',
 					'onclick' => '$.BlockStyles.clickSubmit(this, \''.'#nc-block-styles-apply-'.$block_id.'\');'))
 			);
 			echo $this->Form->end();
@@ -330,7 +330,7 @@
 			echo $this->Form->create('BlockStyle', array('id' => 'BlockIndexFormTheme'.$block_id, 'data-ajax' => '#nc-block-styles'.$block_id));
 			$act_category_cnt = -1
 		?>
-		<div class="nc-block-styles-theme-selected highlight">
+		<div class="nc-block-styles-theme-selected nc-highlight">
 			<?php
 				$settings = array(
 					'id' => "nc-block-styles-page-theme-selected-".$block_id,
@@ -359,7 +359,7 @@
 									$theme_dir_name = $theme_arr[0];
 								?>
 								<div class="float-left">
-									<a href="#" onclick="$.BlockStyles.clickTheme(event, $('#BlockIndexFormTheme<?php echo($block_id); ?>'), '<?php echo($theme_key); ?>', '#nc-block-styles-theme-name-<?php echo($block_id); ?>'); " class="display-block hover-highlight<?php if ($block['Block']['theme_name'] == $theme_key): ?> highlight<?php $act_category_cnt = $category_cnt; ?><?php endif; ?>">
+									<a href="#" onclick="$.BlockStyles.clickTheme(event, $('#BlockIndexFormTheme<?php echo($block_id); ?>'), '<?php echo($theme_key); ?>', '#nc-block-styles-theme-name-<?php echo($block_id); ?>'); " class="display-block nc-hover-highlight<?php if ($block['Block']['theme_name'] == $theme_key): ?> nc-highlight<?php $act_category_cnt = $category_cnt; ?><?php endif; ?>">
 										<img class="nc-block-styles-theme-img nc-tooltip" title="<?php echo($theme_name); ?>" alt="<?php echo($theme_name); ?>" src="<?php echo($this->webroot); ?>frame/<?php echo(Inflector::underscore($theme_dir_name)); ?>/img/<?php echo($image_path[$theme_key]); ?>" />
 									</a>
 								</div>
@@ -374,8 +374,8 @@
 			echo $this->Form->hidden('Block.theme_name' , array('id' => "nc-block-styles-theme-name-".$block_id, 'value' => $block['Block']['theme_name']));
 			echo $this->Form->hidden('is_apply' , array('name' => 'is_apply', 'value' => _ON));
 			echo $this->Form->hidden('is_theme' , array('name' => 'is_theme', 'value' => _ON));
-			echo $this->Html->div('btn-bottom',
-				$this->Form->button(__('Close'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
+			echo $this->Html->div('nc-btn-bottom',
+				$this->Form->button(__('Close'), array('name' => 'cancel', 'class' => 'nc-common-btn', 'type' => 'button',
 					'onclick' => '$(\'#nc-block-styles-dialog'.$block_id.'\').remove(); return false;'))
 			);
 			echo $this->Form->end();

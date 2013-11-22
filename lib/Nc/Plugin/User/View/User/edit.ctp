@@ -22,7 +22,7 @@
 		}
 	?>
 	<?php echo $this->element('language'); ?>
-	<div class="top-description">
+	<div class="nc-top-description">
 		<?php echo __d('user', "Input the user data, and press [%s] button.<br />Required items are marked by <span class='require'>*</span>.", __('Ok'));?>
 	</div>
 	<div class="user-edit">
@@ -59,17 +59,17 @@
 	<?php
 		$emailNotificationBtn = "";
 		if(!empty($user_id) && $this->fetch('isEmail') == '1') {
-			$emailNotificationBtn = $this->Form->button(__d('user', 'Email notification'), array('name' => 'email_notification', 'class' => 'common-btn', 'type' => 'button'));
+			$emailNotificationBtn = $this->Form->button(__d('user', 'Email notification'), array('name' => 'email_notification', 'class' => 'nc-common-btn', 'type' => 'button'));
 		}
 		if(!empty($user_id)) {
-			$selectGroup = $this->Form->button(__d('user', 'Select Groups to join'), array('name' => 'select_groups', 'class' => 'common-btn', 'type' => 'button', 'data-ajax' => '#'.$id, 'data-ajax-url' => $this->Html->url(array('action' => 'select_group', $user['User']['id'])), 'data-ajax-type' => 'post', 'data-ajax-serialize' => true));
-			$cancelBtn = $this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button', 'onclick' => '$.User.memberQuit('.$user_id.'); return false;'));
+			$selectGroup = $this->Form->button(__d('user', 'Select Groups to join'), array('name' => 'select_groups', 'class' => 'nc-common-btn', 'type' => 'button', 'data-ajax' => '#'.$id, 'data-ajax-url' => $this->Html->url(array('action' => 'select_group', $user['User']['id'])), 'data-ajax-type' => 'post', 'data-ajax-serialize' => true));
+			$cancelBtn = $this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'nc-common-btn', 'type' => 'button', 'onclick' => '$.User.memberQuit('.$user_id.'); return false;'));
 		} else {
 			$selectGroup = '';
-			$cancelBtn = $this->Form->button(__('Reset'), array('name' => 'reset', 'class' => 'common-btn', 'type' => 'reset'));
+			$cancelBtn = $this->Form->button(__('Reset'), array('name' => 'reset', 'class' => 'nc-common-btn', 'type' => 'reset'));
 		}
 		echo $this->Html->div('submit',
-			$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'common-btn', 'type' => 'submit')).
+			$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'nc-common-btn', 'type' => 'submit')).
 			$selectGroup.
 			$emailNotificationBtn.
 			$cancelBtn

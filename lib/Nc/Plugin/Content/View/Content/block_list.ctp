@@ -5,7 +5,7 @@
 	foreach($blocks as $key => $val) {
 		$activeClassColor = '';
 		if($block_id == $val['Block']['id']) {
-			$activeClassColor = "highlight";
+			$activeClassColor = "nc-highlight";
 		}
 
 		$titlePostfix = '';

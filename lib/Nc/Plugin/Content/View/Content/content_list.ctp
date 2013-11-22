@@ -27,7 +27,7 @@
 
 		if(!empty($val['ActiveContent']['id'])) {
 			$activeId = $val['ActiveContent']['id'];
-			$activeClass = ' class="nc-content-title nc-tooltip highlight '.$activeClassColor.'"';
+			$activeClass = ' class="nc-content-title nc-tooltip nc-highlight '.$activeClassColor.'"';
 		} else {
 			$activeId = 0;
 			$activeClass = ' class="nc-content-title nc-tooltip '.$activeClassColor.'"';

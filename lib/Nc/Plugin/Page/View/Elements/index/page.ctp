@@ -26,9 +26,9 @@
 			$next_thread_num = $page['Page']['thread_num']+1;
 
 			if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_OFF) {
-				$class .= ' nonpublic';
+				$class .= ' nc-nonpublic';
 			} else if(!empty($page['Page']['display_to_date']) && $page['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
-    			$class .= ' to-nonpublic';
+    			$class .= ' nc-to-nonpublic';
 			}
 			$tooltip_title = '';
 			if($page['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
@@ -44,7 +44,7 @@
 			}
 		?>
 		<li id="pages-menu-item-<?php echo(h($page['Page']['id'])); ?>" class="dd-item<?php if($tooltip_title != ''): ?> nc-tooltip<?php endif; ?>" data-id="<?php echo(h($page['Page']['id'])); ?>"<?php echo($tooltip_title); ?>>
-			<div class="pages-menu-handle <?php echo($class); ?><?php if($page['Page']['id'] == $page_id): ?> highlight<?php endif; ?><?php if($page['Page']['thread_num'] == 1): ?> pages-menu-handle-top<?php endif; ?>">
+			<div class="pages-menu-handle <?php echo($class); ?><?php if($page['Page']['id'] == $page_id): ?> nc-highlight<?php endif; ?><?php if($page['Page']['thread_num'] == 1): ?> pages-menu-handle-top<?php endif; ?>">
 			<?php if($class == 'pages-menu-handle-community-light' || $class == 'pages-menu-handle-community-light pages-menu-handle-community-light-topnode'): ?>
 			<?php
 				$communityInfParams = array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'community_inf', $page['Page']['root_id']);
@@ -56,7 +56,7 @@
 				<?php echo(h($page['Page']['page_name'])); ?>
 			</a>
 			<?php if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_OFF): ?>
-				<span class="nonpublic-lbl"><?php echo(__('(Private)')); ?></span>
+				<span class="nc-nonpublic-lbl"><?php echo(__('(Private)')); ?></span>
 			<?php endif; ?>
 			</div>
 			<?php if(!empty($pages[$space_type][$next_thread_num][$page['Page']['id']])): ?>

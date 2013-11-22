@@ -15,7 +15,7 @@
 			echo $this->Form->button(__d('upload', 'Delete all'), array(
 				'name' => 'delete',
 				'id' => $id . '-delete-all',
-				'class' => 'common-btn-min nc-button-red',
+				'class' => 'nc-common-btn-min nc-button-red',
 				'type' => 'button',
 				'data-ajax-confirm' => __d('upload', 'Deleting the select file. <br />Are you sure to proceed?'),
 				'data-ajax-type' => 'post',
@@ -26,7 +26,7 @@
 			));
 			echo $this->Form->button(__('Clear'), array(
 				'name' => 'clear',
-				'class' => 'common-btn-min nc-button',
+				'class' => 'nc-common-btn-min nc-button',
 				'type' => 'button',
 				'onclick' => '$.Upload.clearSelection();'
 			));

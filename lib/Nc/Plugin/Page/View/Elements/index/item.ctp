@@ -138,9 +138,9 @@ $is_operate_chief = true;
 
 	$class_link = '';
 	if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_OFF) {
-		$class_link .= ' nonpublic';
+		$class_link .= ' nc-nonpublic';
 	} else if(!empty($page['Page']['display_to_date']) && $is_parent_chief) {
-    	$class_link .= ' to-nonpublic';
+    	$class_link .= ' nc-to-nonpublic';
 	}
 	$tooltip_title = '';
 	if($page['PageAuthority']['hierarchy'] >= NC_AUTH_MIN_CHIEF) {
@@ -163,22 +163,22 @@ $is_operate_chief = true;
 	echo $this->Form->create(null, array('url' => array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'edit'), 'id' => 'PagesMenuForm-'.$page['Page']['id'], 'class' => 'pages-menu-edit-form','data-ajax' => '#pages-menu-edit-item-'.$page['Page']['id']));
 	?>
 	<input type="hidden" name="data[Page][id]" value="<?php echo(intval($page['Page']['id'])); ?>" />
-	<div class="dd-drag-content pages-menu-edit-content clearfix<?php if(!$is_chief): ?> disable-area<?php endif; ?>">
+	<div class="dd-drag-content pages-menu-edit-content clearfix<?php if(!$is_chief): ?> nc-disable-area<?php endif; ?>">
 		<?php if($is_display): ?>
 			<?php if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_ON): ?>
 				<a class="pages-menu-display-flag" href="#" title="<?php echo(__('To private')); ?>">
-					<img class="icon" alt="<?php echo(__('To private')); ?>" src="<?php echo($this->webroot); ?>img/icons/base/on.gif" data-alt="<?php echo(__('To public')); ?>" />
+					<img class="nc-icon" alt="<?php echo(__('To private')); ?>" src="<?php echo($this->webroot); ?>img/icons/base/on.gif" data-alt="<?php echo(__('To public')); ?>" />
 				</a>
 			<?php else: ?>
 				<a class="pages-menu-display-flag"  href="#" title="<?php echo(__('To public')); ?>">
-					<img class="icon" alt="<?php echo(__('To public')); ?>" src="<?php echo($this->webroot); ?>img/icons/base/off.gif" data-alt="<?php echo(__('To private')); ?>" />
+					<img class="nc-icon" alt="<?php echo(__('To public')); ?>" src="<?php echo($this->webroot); ?>img/icons/base/off.gif" data-alt="<?php echo(__('To private')); ?>" />
 				</a>
 			<?php endif; ?>
 		<?php else: ?>
 			<?php if($page['Page']['display_flag'] == NC_DISPLAY_FLAG_ON): ?>
-				<img class="icon disable-lbl" alt="<?php echo(__('To private')); ?>" src="<?php echo($this->webroot); ?>img/icons/base/on.gif" />
+				<img class="nc-icon nc-disable-lbl" alt="<?php echo(__('To private')); ?>" src="<?php echo($this->webroot); ?>img/icons/base/on.gif" />
 			<?php else: ?>
-				<img class="icon disable-lbl" alt="<?php echo(__('To public')); ?>" src="<?php echo($this->webroot); ?>img/icons/base/off.gif" />
+				<img class="nc-icon nc-disable-lbl" alt="<?php echo(__('To public')); ?>" src="<?php echo($this->webroot); ?>img/icons/base/off.gif" />
 			<?php endif; ?>
 		<?php endif; ?>
 		<input type="hidden" name="data[Page][display_flag]" value="<?php echo(intval($page['Page']['display_flag'])); ?>" />
@@ -256,7 +256,7 @@ $is_operate_chief = true;
 				'data-page-edit-id' => $page['Page']['id']));
 		} else {
 			echo $this->Html->link('', '#',
-				array('title' => __('Edit'), 'class' => 'pages-menu-edit-icon disable-lbl',
+				array('title' => __('Edit'), 'class' => 'pages-menu-edit-icon nc-disable-lbl',
 				'onclick' => '$(\'.pages-menu-edit-content:first\',$(\'#pages-menu-edit-item-'.$page['Page']['id'].'\')).click();return false;'));
 		}
 		if($is_chief || $is_sel_modules || $is_sel_members) {
@@ -279,7 +279,7 @@ $is_operate_chief = true;
 
 		} else {
 			echo $this->Html->link('', '#',
-				array('title' => __d('page', 'Other operations'), 'class' => 'pages-menu-other-icon disable-lbl',
+				array('title' => __d('page', 'Other operations'), 'class' => 'pages-menu-other-icon nc-disable-lbl',
 				'onclick' => 'return false;'));
 		}
 		if($is_delete) {
@@ -288,7 +288,7 @@ $is_operate_chief = true;
 				'data-ajax' => '#pages-menu-edit-item-'.$page['Page']['id'], 'data-ajax-type' => 'POST', 'data-ajax-data' => '#pages-menu-edit-item-' . $page['Page']['id']));
 		} else {
 			echo $this->Html->link('', '#',
-				array('title' => ($page['Page']['id'] == $page['Page']['room_id']) ? __d('page', 'Delete room') : __d('page', 'Delete page'), 'class' => 'pages-menu-delete-icon disable-lbl',
+				array('title' => ($page['Page']['id'] == $page['Page']['room_id']) ? __d('page', 'Delete room') : __d('page', 'Delete page'), 'class' => 'pages-menu-delete-icon nc-disable-lbl',
 				'onclick' => 'return false;'));
 		}
 	?>

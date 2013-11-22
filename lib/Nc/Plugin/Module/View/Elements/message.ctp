@@ -1,3 +1,3 @@
-<div class="<?php if($success):?>info-message<?php else:?>error-message<?php endif; ?>">
+<div class="<?php if($success):?>nc-info-message<?php else:?>nc-error-message<?php endif; ?>">
 	<?php echo($message); ?>
 </div>

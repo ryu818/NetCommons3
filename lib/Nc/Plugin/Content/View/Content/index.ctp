@@ -2,7 +2,7 @@
 	<?php
 		echo $this->Form->create('Content', array('url' => array(isset($active_room_id) ? $active_room_id : null),'type' => 'post', 'id' => 'FormContent'.$id, 'data-ajax' => '#nc-content-top'.$id));
 	?>
-	<div class="top-description">
+	<div class="nc-top-description">
 		<?php
 			echo __d('content', 'Contents list in <span class=\'bold\'>[%1$s]</span>. Switching the content to display from the radio button, you can edit the content, or delete.', $room_name);
 	 	?>
@@ -21,19 +21,19 @@
 	</table>
 	<?php
 		/*
-		echo $this->Html->div('btn-bottom align-right',
-			$this->Form->button(__('Delete'), array('name' => 'delete', 'class' => 'common-btn', 'type' => 'button',
+		echo $this->Html->div('nc-btn-bottom align-right',
+			$this->Form->button(__('Delete'), array('name' => 'delete', 'class' => 'nc-common-btn', 'type' => 'button',
 				'onclick' => 'return false;'))
 		);
 		*/
 	?>
 	<?php
 
-		echo $this->Html->div('btn-bottom',
-			$this->Form->button(__('Close'), array('name' => 'close', 'class' => 'common-btn', 'type' => 'button',
+		echo $this->Html->div('nc-btn-bottom',
+			$this->Form->button(__('Close'), array('name' => 'close', 'class' => 'nc-common-btn', 'type' => 'button',
 				'onclick' => '$(\'#nc-block-contents-list-dialog'.$block_id.'\').dialog(\'close\'); return false;'))
 		);
-		//$all_checked = $this->Form->button(__('Select All'), array('name' => 'all_checked', 'class' => 'common-btn-min', 'type' => 'button', 'onclick' => ""));
+		//$all_checked = $this->Form->button(__('Select All'), array('name' => 'all_checked', 'class' => 'nc-common-btn-min', 'type' => 'button', 'onclick' => ""));
 
 		echo $this->Form->end();
 	?>

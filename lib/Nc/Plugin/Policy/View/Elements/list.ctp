@@ -22,7 +22,7 @@
 		'data-confirm-reset' => __d('policy', 'Cancelling the action. OK?'),
 	));
 ?>
-<div class="top-description">
+<div class="nc-top-description">
 	<?php echo __d('policy', 'You can set the way to access information security policy in %s. Please change the slide bar member of any authority or to allow viewing and editing.', '<span class="policy-desc-title">'.__($authorityName).'</span>');?>
 	<?php echo '<div class="require">'.__d('policy', 'Missetting may cause unwanted information leak.  Be careful when you make any change.').'</div>'; ?>
 </div>
@@ -101,8 +101,8 @@
 									<dd>
 										<?php
 											$NotAllowedFunction = 'if(ui.value == 0) {return false;} ';
-											$otherLabel = "<span class='disable-lbl'>".__d('policy', 'Not allowed to edit')."</span>";
-											$otherShowLabel = "<span class='disable-lbl'>".__d('policy', 'Not allowed to view')."</span>";
+											$otherLabel = "<span class='nc-disable-lbl'>".__d('policy', 'Not allowed to edit')."</span>";
+											$otherShowLabel = "<span class='nc-disable-lbl'>".__d('policy', 'Not allowed to view')."</span>";
 											if($item['UserItem']['tag_name'] == 'authority_id') {
 												$minAuthorityId = NC_AUTH_ADMIN_ID;
 											} else if($user_authority_id <= NC_AUTH_ADMIN_ID) {
@@ -125,7 +125,7 @@
 											$sliderOptions = array();
 											if($item['UserItem']['type'] == 'label') {
 												$sliderOptions['disabled'] = true;
-												$addClass .= ' disable-lbl';
+												$addClass .= ' nc-disable-lbl';
 											}
 											$sliderOptions['slide'] = 'function( event, ui ) {' .$NotAllowedFunction. sprintf($LinkageFunction, $showId, '>') .'}';
 											$adminLabel = __('Administrator').__(' - ').__('Clerk');
@@ -142,7 +142,7 @@
 											$sliderOptions['slide'] = 'function( event, ui ) {' .$NotAllowedFunction. sprintf($LinkageFunction, $editId, '<') .'}';
 											if($item['UserItem']['tag_name'] == 'handle') {
 												$sliderOptions['disabled'] = true;
-												$addClass .= ' disable-lbl';
+												$addClass .= ' nc-disable-lbl';
 											}
 											echo '<div class="policy-edit-subtitle">'.__d('policy', 'Range that allows viewing').':</div>';
 											echo '<div class="policy-edit-blue'.$addClass.'">'. $this->Form->authoritySlider($showId,
@@ -169,8 +169,8 @@
 <?php
 	echo $this->Form->hidden('type' , array('id' => 'policy-type-'.$id, 'name' => 'type', 'value' => 'submit'));
 	echo $this->Html->div('submit',
-		$this->Form->button(__('Ok'), array('name' => 'regist', 'class' => 'common-btn', 'type' => 'submit', 'onclick' => "$.Policy.setConfirm('".$id."', 'submit');")).
-		$this->Form->button(__('Reset'), array('name' => 'reset', 'class' => 'common-btn', 'type' => 'submit', 'onclick' => "$.Policy.setConfirm('".$id."', 'reset');"))
+		$this->Form->button(__('Ok'), array('name' => 'regist', 'class' => 'nc-common-btn', 'type' => 'submit', 'onclick' => "$.Policy.setConfirm('".$id."', 'submit');")).
+		$this->Form->button(__('Reset'), array('name' => 'reset', 'class' => 'nc-common-btn', 'type' => 'submit', 'onclick' => "$.Policy.setConfirm('".$id."', 'reset');"))
 	);
 	echo $this->Form->end();
 ?>

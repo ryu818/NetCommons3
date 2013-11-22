@@ -23,11 +23,11 @@
 		echo $this->Html->div('submit',
 			$this->Form->button($btnName, array(
 				'name' => 'ok',
-				'class' => 'common-btn',
+				'class' => 'nc-common-btn',
 				'type' => 'button',
 				'onclick' => $onclick
 			)).
-			$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
+			$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'nc-common-btn', 'type' => 'button',
 				'onclick' => '$.Upload.closeDialog(event); return false;'))
 		);
 	?>

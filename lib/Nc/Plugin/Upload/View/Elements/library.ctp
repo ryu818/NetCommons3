@@ -46,13 +46,13 @@
 		if($is_callback || $is_wysiwyg) {
 			$registBtn = $this->Form->button($btnName, array(
 				'name' => 'ok',
-				'class' => 'common-btn',
+				'class' => 'nc-common-btn',
 				'type' => 'button',
 				'onclick' => $onclick
 			));
 		}
 		echo $registBtn;
-		echo $this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
+		echo $this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'nc-common-btn', 'type' => 'button',
 			'onclick' => '$.Upload.closeDialog(event); return false;'));
 		?>
 	</div>

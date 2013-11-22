@@ -129,10 +129,10 @@
 	<?php
 		if(isset($this->request->named['is_center'])) {
 			// コミュニティー情報センター表示時
-			$cancel = $this->Form->button(__('Close'), array('name' => 'close', 'class' => 'common-btn', 'type' => 'button',
+			$cancel = $this->Form->button(__('Close'), array('name' => 'close', 'class' => 'nc-common-btn', 'type' => 'button',
 				'data-ajax-effect' => 'fold', 'onclick' => '$(\'#pages-menu-community-inf'.'\').dialog(\'close\'); return false;'));
 		} else {
-			$cancel = $this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
+			$cancel = $this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'nc-common-btn', 'type' => 'button',
 				'data-ajax-url' =>  $this->Html->url(array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'community_inf', $community['Community']['room_id'])),
 				'data-ajax' => '#pages-menu-community-inf',
 				'data-ajax-dialog' => 'true',
@@ -141,7 +141,7 @@
 			));
 		}
 		echo $this->Html->div('submit',
-			$this->Form->button(__d('page', 'Invite'), array('name' => 'ok', 'class' => 'common-btn', 'type' => 'submit')).
+			$this->Form->button(__d('page', 'Invite'), array('name' => 'ok', 'class' => 'nc-common-btn', 'type' => 'submit')).
 			$cancel
 		);
 		echo $this->Form->end();

@@ -21,7 +21,7 @@ echo $this->Form->create('UploadConfirm', array(
 	'data-ajax-callback' => '$.Upload.deleteSuccess(res, \''.$bufUploadId.'\'); $(\'#\' + $.Upload.libraryId + \'-confirm-dialog\').remove();',
 ));
 ?>
-<div class="top-description upload-delete-confirm-description">
+<div class="nc-top-description upload-delete-confirm-description">
 	<?php echo(__d('upload', 'The following files are in use. You will not be content that you are using the file, to access the link if you delete. Are you sure to deleted?'));?>
 </div>
 <table id="<?php echo $id; ?>-confirm-grid" class="upload-delete-confirm-grid">
@@ -53,13 +53,13 @@ echo $this->Form->create('UploadConfirm', array(
 </table>
 
 <?php
-echo $this->Html->div('btn-bottom',
+echo $this->Html->div('nc-btn-bottom',
 	$this->Form->button(__('Delete'), array(
 		'name' => 'ok',
-		'class' => 'common-btn',
+		'class' => 'nc-common-btn',
 		'type' => 'submit',
 	)).
-	$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
+	$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'nc-common-btn', 'type' => 'button',
 		'onclick' => '$(\'#\' + $.Upload.libraryId + \'-confirm-dialog\').remove(); return false;'))
 );
 echo $this->Form->hidden('confirmed' , array('name' => 'confirmed','value' => _ON));

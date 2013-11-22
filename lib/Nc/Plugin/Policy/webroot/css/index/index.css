@@ -37,14 +37,18 @@
 .policy-edit-blue .ui-slider-range { background: #72b2f5; }
 .policy-edit-blue .ui-slider-handle { border-color: #72b2f5; }
 
-.policy-edit-orange .ui-slider, .policy-edit-orange .authority-slider-line {
+.policy-edit-orange .ui-slider, .policy-edit-orange .nc-authority-slider-line {
 	border-color:#ffce4a;
 }
 
-.policy-edit-blue .ui-slider, .policy-edit-blue .authority-slider-line {
+.policy-edit-blue .ui-slider, .policy-edit-blue .nc-authority-slider-line {
 	border-color:#72b2f5;
 }
 
-.policy-edit-orange .authority-slider-label, .policy-edit-blue .authority-slider-label {
+.policy-edit-orange .nc-authority-slider-label, .policy-edit-blue .nc-authority-slider-label {
 	font-size: 90%;
+}
+
+.policy-edit-list ul li dl dd {
+	padding: 15px;
 }

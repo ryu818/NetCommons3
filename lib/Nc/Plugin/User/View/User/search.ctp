@@ -127,7 +127,7 @@
 			}
 		}
 	?>
-	<div class="top-description">
+	<div class="nc-top-description">
 		<?php echo __d('user', "You can search for members by specifying search condition.");?>
 	</div>
 	<div class="user-edit">
@@ -162,8 +162,8 @@
 	</div>
 	<?php
 		echo $this->Html->div('submit',
-			$this->Form->button(__('Search'), array('name' => 'search', 'class' => 'common-btn', 'type' => 'submit')).
-			$this->Form->button(__('Close'), array('name' => 'close', 'class' => 'common-btn', 'type' => 'button', 'onclick' => "$('#user-search-".$id."').parent().dialog('close');return false;"))
+			$this->Form->button(__('Search'), array('name' => 'search', 'class' => 'nc-common-btn', 'type' => 'submit')).
+			$this->Form->button(__('Close'), array('name' => 'close', 'class' => 'nc-common-btn', 'type' => 'button', 'onclick' => "$('#user-search-".$id."').parent().dialog('close');return false;"))
 		);
 		echo $this->Form->hidden('isSearch' , array('name' => "isSearch", 'value' => _ON));
 		echo $this->Form->end();
@@ -184,8 +184,8 @@
 		</div>
 		<div id="user-search-result-main-<?php echo $id;?>"></div>
 		<?php
-			echo $this->Html->div('btn-bottom',
-				$this->Form->button(__('Close'), array('name' => 'close', 'class' => 'common-btn', 'type' => 'button', 'onclick' => "$('#user-search-".$id."').parent().dialog('close');return false;"))
+			echo $this->Html->div('nc-btn-bottom',
+				$this->Form->button(__('Close'), array('name' => 'close', 'class' => 'nc-common-btn', 'type' => 'button', 'onclick' => "$('#user-search-".$id."').parent().dialog('close');return false;"))
 			);
 		?>
 	</div>

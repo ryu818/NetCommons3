@@ -448,12 +448,12 @@ textarea.pages-menu-community-description {
     padding: 5px;
 }
 
-.pages-menu-edit-item .error-message {
+.pages-menu-edit-item .nc-error-message {
 	width:170px;
 }
-.pages-menu-edit-participant .error-message {
+.pages-menu-edit-participant .nc-error-message {
 	width: 785px;
 }
-.pages-menu-community-lists .error-message {
+.pages-menu-community-lists .nc-error-message {
 	width:auto;
 }

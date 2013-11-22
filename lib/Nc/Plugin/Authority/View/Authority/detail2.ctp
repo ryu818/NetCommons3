@@ -46,7 +46,7 @@
 	<h3 class="bold display-inline">
 		<?php echo __d('authority', 'Detail setting (Part 2)'); ?>
 	</h3>
-	<div class="top-description">
+	<div class="nc-top-description">
 		<?php echo __d('authority', 'Make sure your change, and press [Next].'); ?>
 	</div>
 
@@ -262,12 +262,12 @@
 	</fieldset>
 	</fieldset>
 	<?php
-		$bufBackAttr = array('name' => 'back', 'class' => 'common-btn', 'type' => 'button', 'data-ajax-url' => $this->Html->url($backUrl));
+		$bufBackAttr = array('name' => 'back', 'class' => 'nc-common-btn', 'type' => 'button', 'data-ajax-url' => $this->Html->url($backUrl));
 		$backAttr = array_merge($backAttr, $bufBackAttr);
 		echo $this->Html->div('submit align-right',
 			$this->Form->button(__('&lt;&lt;Back'), $backAttr).
-			$this->Form->button(__('Next&gt;&gt;'), array('name' => 'next', 'class' => 'common-btn', 'type' => 'submit')).
-			$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
+			$this->Form->button(__('Next&gt;&gt;'), array('name' => 'next', 'class' => 'nc-common-btn', 'type' => 'submit')).
+			$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'nc-common-btn', 'type' => 'button',
 				'data-ajax' => '#'.$id, 'data-ajax-method' => 'inner', 'data-ajax-url' =>  $this->Html->url(array('action' => 'index', 'language' => $language))))
 		);
 		echo $this->element('hidden');

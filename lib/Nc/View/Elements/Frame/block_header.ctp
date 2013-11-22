@@ -100,14 +100,14 @@ if($page_hierarchy >= NC_AUTH_MIN_CHIEF) {
 			<?php
 				/* TODO:lock_authority_idが入力されているロックされたブロックはコピー不可とする */
 								echo $this->Html->link(__('Copy'), array('plugin' => 'block', 'controller' => 'operations', 'action' => 'copy', 'block_id' => $block['Block']['id']),
-								array('title' => __('Copy'), 'id' => 'nc-block-header-copy'.$id, 'class' => 'link hover-highlight','data-ajax' => '', 'data-ajax-type' => 'post'));
+								array('title' => __('Copy'), 'id' => 'nc-block-header-copy'.$id, 'class' => 'link nc-hover-highlight','data-ajax' => '', 'data-ajax-type' => 'post'));
 							?>
 		</li>
 		<?php if($page_hierarchy >= NC_AUTH_MIN_CHIEF): ?>
 		<li>
 			<?php
 				echo $this->Html->link(__('Block style'), array('plugin' => 'block', 'controller' => 'styles', 'action' => 'index', 'block_id' => $block['Block']['id']),
-						array('title' => __('Block style'), 'id' => 'nc-block-styles-link'.$id, 'class' => 'link hover-highlight','data-ajax' => '', 'data-block-styles-dialog-id' => 'nc-block-styles-dialog'.$block['Block']['id']));
+						array('title' => __('Block style'), 'id' => 'nc-block-styles-link'.$id, 'class' => 'link nc-hover-highlight','data-ajax' => '', 'data-block-styles-dialog-id' => 'nc-block-styles-dialog'.$block['Block']['id']));
 			?>
 		</li>
 		<?php endif; ?>
@@ -118,7 +118,7 @@ if($page_hierarchy >= NC_AUTH_MIN_CHIEF) {
 				$params['block_id'] = $block_id;
 
 				echo $this->Html->link(__('Display style'), $params,
-						array('title' => __('Display style'), 'id' => 'nc-block-display-styles-link'.$id, 'class' => 'link hover-highlight','data-ajax' => '', 'data-block-display-styles-dialog-id' => 'nc-block-display-styles-dialog'.$block['Block']['id']));
+						array('title' => __('Display style'), 'id' => 'nc-block-display-styles-link'.$id, 'class' => 'link nc-hover-highlight','data-ajax' => '', 'data-block-display-styles-dialog-id' => 'nc-block-display-styles-dialog'.$block['Block']['id']));
 			?>
 		</li>
 		<?php endif; ?>
@@ -140,7 +140,7 @@ if($page_hierarchy >= NC_AUTH_MIN_CHIEF) {
 		<li>
 			<?php
 				echo $this->Html->link(__('Contents list'), array('plugin' => 'content', 'controller' => 'content', 'action' => 'index', 'block_id' => $block['Block']['id'], $page['Page']['room_id']),
-						array('title' => __('Contents list'), 'id' => 'nc-block-contents-list-link'.$id, 'class' => 'link hover-highlight','data-ajax' => '', 'data-block-contents-list-dialog-id' => 'nc-block-contents-list-dialog'.$block['Block']['id']));
+						array('title' => __('Contents list'), 'id' => 'nc-block-contents-list-link'.$id, 'class' => 'link nc-hover-highlight','data-ajax' => '', 'data-block-contents-list-dialog-id' => 'nc-block-contents-list-dialog'.$block['Block']['id']));
 			?>
 		</li>
 		<?php endif; ?>

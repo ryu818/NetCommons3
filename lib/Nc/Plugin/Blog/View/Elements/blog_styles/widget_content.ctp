@@ -6,8 +6,8 @@
 	echo $this->Form->hidden('BlogStyle.widget_type' , array('id' => false, 'value' => $blog_style['BlogStyle']['widget_type']));
 
 	echo $this->Html->div('submit',
-		$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'common-btn', 'type' => 'submit')).
-		$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
+		$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'nc-common-btn', 'type' => 'submit')).
+		$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'nc-common-btn', 'type' => 'button',
 			'onclick' => '$.BlogStyles.clickWidgetChancel(event, this);'))
 	);
 	echo $this->Form->end();

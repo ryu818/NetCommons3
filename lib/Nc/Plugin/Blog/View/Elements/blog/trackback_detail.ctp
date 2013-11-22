@@ -45,7 +45,7 @@
 				<span>
 					<?php echo $titleHtml;?>
 					<?php if(!$trackback['BlogComment']['is_approved']): ?>
-						<span class="temporary">
+						<span class="nc-temporary">
 							<?php echo __('Pending'); ?>
 						</span>
 					<?php endif; ?>

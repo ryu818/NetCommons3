@@ -164,9 +164,9 @@
 	<?php endif; ?>
 	</ul>
 	<?php if(!isset($is_community) || !$is_community): ?>
-	<div class="btn-bottom">
-		<input type="submit" class="common-btn" name="ok" value="<?php echo( __('Ok')); ?>" />
-		<input type="button" class="common-btn" name="cancel" value="<?php echo(__('Cancel')); ?>" onclick="$('#pages-menu-edit-detail-<?php echo($page['Page']['id']);?>').slideUp(300);" />
+	<div class="nc-btn-bottom">
+		<input type="submit" class="nc-common-btn" name="ok" value="<?php echo( __('Ok')); ?>" />
+		<input type="button" class="nc-common-btn" name="cancel" value="<?php echo(__('Cancel')); ?>" onclick="$('#pages-menu-edit-detail-<?php echo($page['Page']['id']);?>').slideUp(300);" />
 	</div>
 	<?php endif; ?>
 </fieldset>

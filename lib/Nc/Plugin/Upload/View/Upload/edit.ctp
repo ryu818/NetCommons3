@@ -98,8 +98,8 @@ echo $this->Form->create('Upload', array('data-ajax' => '#'.$id, 'data-ajax-meth
 <?php
 	echo $this->Form->hidden('extension', array('value' => $upload['Upload']['extension']));
 	echo $this->Html->div('submit',
-		$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'common-btn', 'type' => 'submit')).
-		$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
+		$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'nc-common-btn', 'type' => 'submit')).
+		$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'nc-common-btn', 'type' => 'button',
 			'onclick' => "$('#".$id."').dialog('close');"))
 	);
 ?>

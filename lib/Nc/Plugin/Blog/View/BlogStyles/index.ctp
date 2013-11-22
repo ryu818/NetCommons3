@@ -1,5 +1,5 @@
 <div data-width="850">
-	<div class="top-description">
+	<div class="nc-top-description">
 		<?php echo(__d('blog', 'You drag & drop the title bar to where you want to place the sidebar / main area. In addition, you can edit widget, click on their title bars to expand them.')); ?>
 	</div>
 	<div id="blog-style-widget-area<?php echo($id); ?>" class="table-row" data-ajax-url="<?php echo($this->Html->url()); ?>">
@@ -36,8 +36,8 @@
 	</div>
 	<?php
 		echo $this->Form->hidden('token' , array('id' => "blog-style-widget-area-token".$id, 'value' => $this->params['_Token']['key']));
-		echo $this->Html->div('btn-bottom',
-		$this->Form->button(__('Close'), array('name' => 'close', 'class' => 'common-btn', 'type' => 'button',
+		echo $this->Html->div('nc-btn-bottom',
+		$this->Form->button(__('Close'), array('name' => 'close', 'class' => 'nc-common-btn', 'type' => 'button',
 			'onclick' => '$(\'#nc-block-display-styles-dialog'.$block_id.'\').dialog(\'close\'); return false;'))
 		);
 	?>

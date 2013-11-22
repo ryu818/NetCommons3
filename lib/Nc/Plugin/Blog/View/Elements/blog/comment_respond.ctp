@@ -62,9 +62,9 @@
 		'value' => $comment['BlogComment']['comment']));
 
 	// 編集か返信の場合にキャンセルボタンを表示する
-	$viewBtn = $this->Form->button(__('Submit a comment'), array('name' => 'ok', 'class' => 'common-btn blog-comment-btn', 'type' => 'submit'));
+	$viewBtn = $this->Form->button(__('Submit a comment'), array('name' => 'ok', 'class' => 'nc-common-btn blog-comment-btn', 'type' => 'submit'));
 	if($mode == 'edit'){
-		$viewBtn .= $this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn blog-comment-btn', 'type' => 'button',
+		$viewBtn .= $this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'nc-common-btn blog-comment-btn', 'type' => 'button',
 		'onclick' => '$.Blog.clkCommentCancel(\'' .$id. '\');'));
 	}
 

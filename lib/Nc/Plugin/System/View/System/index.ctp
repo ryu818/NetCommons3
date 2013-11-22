@@ -34,8 +34,8 @@
 	?>
 	</div>
 <?php
-	echo $this->Html->div('btn-bottom',
-		$this->Form->button(__('Close'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
+	echo $this->Html->div('nc-btn-bottom',
+		$this->Form->button(__('Close'), array('name' => 'cancel', 'class' => 'nc-common-btn', 'type' => 'button',
 			'onclick' => '$(\'#'.$dialog_id.'\').dialog(\'close\'); return false;'))
 	);
 ?>

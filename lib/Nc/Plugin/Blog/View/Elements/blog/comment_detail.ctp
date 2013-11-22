@@ -76,7 +76,7 @@
 								<?php endif; ?>
 							</cite>
 							<?php if(!$blogComments['BlogComment']['is_approved']): ?>
-								<span class="temporary">
+								<span class="nc-temporary">
 									<?php echo __('Pending'); ?>
 								</span>
 							<?php endif; ?>

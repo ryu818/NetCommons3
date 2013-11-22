@@ -7,12 +7,12 @@
 	));
 ?>
 <?php echo $this->element('language', array('id' => "user-init-tab-list")); ?>
-<div class="top-description">
+<div class="nc-top-description">
 	<?php echo __d('user', 'Click the link [%1$s] to edit the user data. Select a row and push [%2$s] to delete the user(s).', __('Edit'), __('Delete'));?>
 </div>
 <div class="users-search-outer">
 	<?php
-		echo $this->Form->button(__('Search for the members'), array('name' => 'search', 'class' => 'common-btn',
+		echo $this->Form->button(__('Search for the members'), array('name' => 'search', 'class' => 'nc-common-btn',
 			'type' => 'button',
 			'data-ajax' => "#user-init-tab-list-search",
 			'data-ajax-dialog' => true,
@@ -27,7 +27,7 @@
 <?php
 	if($hierarchy >= NC_AUTH_MIN_CHIEF) {
 		echo $this->Html->div('submit align-right',
-			$this->Form->button(__('Delete'), array('name' => 'delete', 'class' => 'common-btn', 'type' => 'submit'))
+			$this->Form->button(__('Delete'), array('name' => 'delete', 'class' => 'nc-common-btn', 'type' => 'submit'))
 		);
 	}
 	echo $this->Form->hiddenVars('User', array(), false);

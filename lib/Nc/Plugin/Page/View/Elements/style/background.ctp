@@ -65,7 +65,7 @@ echo $this->element('style/filter');
 			echo $this->Form->button(__('Select file'), array(
 				'name' => 'select_file',
 				'type' => 'button',
-				'class' => 'common-btn pages-menu-select-file-btn',
+				'class' => 'nc-common-btn pages-menu-select-file-btn',
 				'onclick' => "$.Common.showUploadDialog('dialog-".$id."', {'el' : this, 'action' : 'library', 'callback' : function(fileName, url, libraryUrl){\$.PageStyle.selectBackgroundFile(fileName, url, libraryUrl);}});"
 			));
 		?>
@@ -174,8 +174,8 @@ echo $this->element('style/filter');
 	echo $this->Form->hidden('PageStyle.style.#parent-container.background-image' , array('id' => $id. '-patterns-hidden', 'value' => ''));
 	echo $this->Form->hidden('PageStyle.style.body.background-color' , array('id' => $id. '-color-hidden', 'value' => ''));
 	echo $this->Html->div('submit',
-		$this->Form->button(__('Ok'), array('name' => 'regist', 'class' => 'common-btn', 'type' => 'submit', 'onclick' => "$.PageStyle.setConfirm('".$id."', 'submit');")).
-		$this->Form->button(__('Reset'), array('name' => 'reset', 'class' => 'common-btn', 'type' => 'submit', 'onclick' => "$.PageStyle.setConfirm('".$id."', 'reset');"))
+		$this->Form->button(__('Ok'), array('name' => 'regist', 'class' => 'nc-common-btn', 'type' => 'submit', 'onclick' => "$.PageStyle.setConfirm('".$id."', 'submit');")).
+		$this->Form->button(__('Reset'), array('name' => 'reset', 'class' => 'nc-common-btn', 'type' => 'submit', 'onclick' => "$.PageStyle.setConfirm('".$id."', 'reset');"))
 	);
 	echo $this->Form->end();
 ?>

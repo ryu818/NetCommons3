@@ -5,7 +5,7 @@ $this->assign('title', __d('install', 'Admin user setting'));
 	<form method="post" action="<?php echo $this->Html->url(array('plugin' => 'install','controller' => 'install','action' => 'admin_setting')); ?>">
 		<?php echo($this->element('hidden')); ?>
 		<h1><?php echo $this->fetch('title'); ?></h1>
-		<div class="top-description">
+		<div class="nc-top-description">
 			<?php __d('install', 'Please choose your site admin&acute;s name and password.'); ?>
 		</div>
 		<?php
@@ -68,7 +68,7 @@ $this->assign('title', __d('install', 'Admin user setting'));
 			<?php endforeach; ?>
 		</ul>
 
-		<div class="btn-bottom align-right">
+		<div class="nc-btn-bottom align-right">
 			<input type="submit" value="<?php echo(__('Next&gt;&gt;')); ?>" name="next" class="btn" />
 		</div>
 	</form>

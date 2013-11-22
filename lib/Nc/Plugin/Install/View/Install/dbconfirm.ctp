@@ -73,14 +73,14 @@ $this->assign('title', __d('install', 'Confirm database settings'));
 
 				// Exists database
 				if ($exists_database) {
-					echo '<p class="success message">' . __d('install', 'Database %s exists and connectable.', $config['database']) . '</p>';
+					echo '<p class="success nc-message">' . __d('install', 'Database %s exists and connectable.', $config['database']) . '</p>';
 				} else {
 					$check = false;
-					echo '<p class="error message">' . __d('install', 'Database %s does not exists.', $config['database']) . '</p>';
+					echo '<p class="error nc-message">' . __d('install', 'Database %s does not exists.', $config['database']) . '</p>';
 				}
 
 				if ($exists_table) {
-					echo '<p class="error message">' . __d('install', 'Tables for NetCommons already exist in your database.') . '</p>';
+					echo '<p class="error nc-message">' . __d('install', 'Tables for NetCommons already exist in your database.') . '</p>';
 				}
 
 			?>
@@ -88,7 +88,7 @@ $this->assign('title', __d('install', 'Confirm database settings'));
 		<?php if(!$check): ?>
 		<div>
 			<?php if($failure_database): ?>
-				<?php echo '<p class="error message">' . __d('install', 'Could not create database. Contact the server administrator for details.') . '</p>'; ?>
+				<?php echo '<p class="error nc-message">' . __d('install', 'Could not create database. Contact the server administrator for details.') . '</p>'; ?>
 			<?php else: ?>
 			<div class="install-create-db">
 				<?php echo(__d('install', 'The following database was not found on the server:')); ?><span class="bold"><?php echo(h($config['database'])); ?></span>
@@ -104,7 +104,7 @@ $this->assign('title', __d('install', 'Confirm database settings'));
 		</div>
 		<?php endif; ?>
 
-		<div class="btn-bottom align-right">
+		<div class="nc-btn-bottom align-right">
 			<input type="button" value="<?php echo(__d('install', 'Reload')); ?>" name="reload" class="btn" onclick="location.href='<?php echo $this->Html->url(array('plugin' => 'install','controller' => 'install','action' => 'dbconfirm')); ?>';" />
 			<input type="button" value="<?php echo(__('&lt;&lt;Back')); ?>" name="back" class="btn" onclick="location.href='<?php echo $this->Html->url(array('plugin' => 'install','controller' => 'install','action' => 'database')); ?>';" />
 			<input type="button" value="<?php echo(__('Next&gt;&gt;')); ?>" name="next" <?php if(!$check || $exists_table): ?>disabled="disabled" class="btn disabled"<?php else: ?>class="btn"<?php endif; ?> onclick="location.href='<?php echo $this->Html->url(array('plugin' => 'install','controller' => 'install','action' => 'data')); ?>';" />

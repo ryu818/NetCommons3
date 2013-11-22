@@ -74,9 +74,9 @@ if($pos !== false) {
 }
 $block['Block']['theme_name'] = 'th-' . str_replace('.', '-', Inflector::underscore($block['Block']['theme_name']));	// th-(frame_name)-(color_dir)
 if($block['Block']['display_flag'] == NC_DISPLAY_FLAG_OFF || (isset($block['Content']['display_flag']) && $block['Content']['display_flag'] == NC_DISPLAY_FLAG_OFF)) {
-	$class_name .= ' nonpublic';
+	$class_name .= ' nc-nonpublic';
 } else if(!empty($block['Block']['display_to_date']) && $ncMode == NC_BLOCK_MODE) {
-	$class_name .= ' to-nonpublic';
+	$class_name .= ' nc-to-nonpublic';
 }
 $hasOperationAuth = false;
 if ($ncMode == NC_BLOCK_MODE && $page_hierarchy >= NC_AUTH_MIN_CHIEF) {

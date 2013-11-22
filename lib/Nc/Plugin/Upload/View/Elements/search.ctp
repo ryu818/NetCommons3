@@ -179,7 +179,7 @@
 				));
 				echo $this->Form->button(__('Search'), array(
 					'type' => 'submit',
-					'class' => 'common-btn-min'
+					'class' => 'nc-common-btn-min'
 				));
 			?>
 			<?php if ($is_admin): ?>

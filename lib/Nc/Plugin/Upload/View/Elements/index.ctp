@@ -38,12 +38,12 @@ if ($this->request->query['popup_type'] == 'image') {
 	));
 }
 ?>
-<div class="common-btn upload-btn">
+<div class="nc-common-btn upload-btn">
 	<span><?php echo(__('Select file'));?></span>
 <?php
 echo $this->Form->input('UploadLibrary.file_name', array(
 	'type' => 'file',
-	'class' => 'nc-upload-inputfile upload-btn-inputfile',
+	'class' => 'nc-upload-inputfile nc-upload-btn-inputfile',
 	'label' => false,
 	'div' => false,
 	'multiple' => true,
@@ -65,15 +65,15 @@ $registBtn = '';
 if($is_callback || $is_wysiwyg) {
 	$registBtn = $this->Form->button($btnName, array(
 		'name' => 'ok',
-		'class' => 'common-btn',
+		'class' => 'nc-common-btn',
 		'type' => 'button',
 		'onclick' => $onclick.'return false;'
 	));
 }
 
-echo $this->Html->div('btn-bottom',
+echo $this->Html->div('nc-btn-bottom',
 	$registBtn.
-	$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
+	$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'nc-common-btn', 'type' => 'button',
 		'onclick' => '$.Upload.closeDialog(event); return false;'))
 );
 ?>

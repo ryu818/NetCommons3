@@ -14,14 +14,14 @@
 // ・プレビュー機能
 ?>
 <div id="user-display-setting">
-	<div class="top-description">
+	<div class="nc-top-description">
 		<?php echo __d('user', 'You can add, edit, delete and change the display order of items of user profile.<br />The items to be displayed to other members are controled at Information Policy module.');?>
 	</div>
-	<div class="add-btn-link-outer">
+	<div class="nc-add-btn-link-outer">
 		<?php
 			echo $this->Html->link(__d('user', 'Add Item'), array('action' => 'add_item'), array(
 				'title' => __d('user', 'Add Item'),
-				'class' => 'add-btn-link',
+				'class' => 'nc-add-btn-link',
 				'data-ajax' =>'#user-add-item'.$id,
 				'data-ajax-method' =>'inner',
 				'data-ajax-dialog' => true,
@@ -59,11 +59,11 @@
 								<div class="user-display-setting-area-title nc-title-color">
 									<?php if($item['UserItem']['display_flag'] == NC_DISPLAY_FLAG_ON): ?>
 										<a class="user-display-setting-area-display-flag" href="#" title="<?php echo(__('To private')); ?>" onclick="$.User.display(event, '<?php echo($id); ?>', this, '<?php echo($this->Js->escape($this->Html->url(array('action' => 'display')))); ?>');">
-											<img class="icon" alt="<?php echo(__('To private')); ?>" src="<?php echo($this->webroot); ?>img/icons/base/on.gif" data-alt="<?php echo(__('To public')); ?>" />
+											<img class="nc-icon" alt="<?php echo(__('To private')); ?>" src="<?php echo($this->webroot); ?>img/icons/base/on.gif" data-alt="<?php echo(__('To public')); ?>" />
 										</a>
 									<?php else: ?>
 										<a class="user-display-setting-area-display-flag"  href="#" title="<?php echo(__('To public')); ?>" onclick="$.User.display(event, '<?php echo($id); ?>', this, '<?php echo($this->Js->escape($this->Html->url(array('action' => 'display')))); ?>');">
-											<img class="icon" alt="<?php echo(__('To public')); ?>" src="<?php echo($this->webroot); ?>img/icons/base/off.gif" data-alt="<?php echo(__('To private')); ?>" />
+											<img class="nc-icon" alt="<?php echo(__('To public')); ?>" src="<?php echo($this->webroot); ?>img/icons/base/off.gif" data-alt="<?php echo(__('To private')); ?>" />
 										</a>
 									<?php endif; ?>
 									<h4>
@@ -103,8 +103,8 @@
 	</div>
 	<?php
 		echo $this->Html->div('submit',
-			$this->Form->button(__('Edit display sequence'), array('name' => 'ok', 'class' => 'common-btn', 'type' => 'submit'))
-			/* $this->Form->button(__('Reset'), array('name' => 'reset', 'class' => 'common-btn', 'type' => 'reset')) */
+			$this->Form->button(__('Edit display sequence'), array('name' => 'ok', 'class' => 'nc-common-btn', 'type' => 'submit'))
+			/* $this->Form->button(__('Reset'), array('name' => 'reset', 'class' => 'nc-common-btn', 'type' => 'reset')) */
 		);
 		echo $this->Form->end();
 	?>

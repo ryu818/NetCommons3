@@ -23,13 +23,13 @@
 			}
 		?>
 	</div>
-	<div class="top-description">
+	<div class="nc-top-description">
 		<?php echo(__d('page', 'Set the roles of the room members, and press [Ok] button. To set the roles all at once, press [Select All] button.'));?>
 	</div>
 
 	<div class="pages-menu-search-outer">
 	<?php
-		echo $this->Form->button(__('Search for the members'), array('name' => 'search', 'class' => 'common-btn',
+		echo $this->Form->button(__('Search for the members'), array('name' => 'search', 'class' => 'nc-common-btn',
 			'type' => 'button',
 			'data-ajax' => "#pages-menu-user-search",
 			'data-ajax-dialog' => true,
@@ -45,7 +45,7 @@
 	</table>
 	<?php
 		if($page['Page']['id'] == $page['Page']['room_id'] && $page['Page']['thread_num'] > 1) {
-			$deallocation = $this->Form->button(__d('page', 'Unassign members'), array('name' => 'deallocation', 'class' => 'common-btn nc-button-blue', 'type' => 'button',
+			$deallocation = $this->Form->button(__d('page', 'Unassign members'), array('name' => 'deallocation', 'class' => 'nc-common-btn nc-button-blue', 'type' => 'button',
 				'data-ajax-url' => $this->Html->url(array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'deallocation', $page['Page']['id'])),
 				'data-ajax' => '#pages-menu-edit-item-'.$page['Page']['id'],
 				'data-ajax-data' => h('{"token": "'.$this->params['_Token']['key'].'"}'),	// JSONのエラーとなるためh関数を用いてエスケープ
@@ -55,8 +55,8 @@
 			$deallocation = '';
 		}
 		echo $this->Html->div('submit',
-			$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'common-btn')).
-			$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'common-btn', 'type' => 'button',
+			$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'nc-common-btn')).
+			$this->Form->button(__('Cancel'), array('name' => 'cancel', 'class' => 'nc-common-btn', 'type' => 'button',
 				'onclick' => "$.PageMenu.hideDetail(".$page['Page']['id'].");", 'data-ajax-url' => $this->Html->url(array('plugin' => 'page', 'controller' => 'page_menus', 'action' => 'participant_cancel', $page['Page']['id'])),
 				'data-ajax' => '#pages-menu-edit-participant-tmp', 'data-ajax-method' => 'inner', 'data-ajax-callback' => 'return false;')).$deallocation
 		);

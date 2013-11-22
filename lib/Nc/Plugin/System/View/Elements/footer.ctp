@@ -11,8 +11,8 @@
 ?>
 	<?php
 		echo $this->Html->div('submit',
-			$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'common-btn', 'type' => 'submit')).
-			$this->Form->button(__('Reset'), array('name' => 'reset', 'class' => 'common-btn', 'type' => 'reset'))
+			$this->Form->button(__('Ok'), array('name' => 'ok', 'class' => 'nc-common-btn', 'type' => 'submit')).
+			$this->Form->button(__('Reset'), array('name' => 'reset', 'class' => 'nc-common-btn', 'type' => 'reset'))
 		);
 		echo $this->Form->end();
 	?>
