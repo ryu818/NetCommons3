@@ -17,7 +17,8 @@ class NcPageTest extends CakeTestCase {
 		'NcPageUserLink',
 		'NcUser',
 		'NcCommunity',
-		'NcCommunityLang'
+		'NcCommunityLang',
+		'NcSession'
 	);
 
 
