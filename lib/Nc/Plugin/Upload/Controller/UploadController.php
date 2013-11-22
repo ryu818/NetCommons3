@@ -37,7 +37,7 @@ class UploadController extends UploadAppController
  */
 	public function beforeFilter() {
 		parent::beforeFilter();
-		if ($this->action == 'index') {
+		if ($this->request->is('post') && $this->action == 'index') {
 			$this->Security->csrfUseOnce = false;	// 複数ファイルアップロードする際、Tokenが同一のため
 		} elseif ($this->action == 'delete') {
 			$this->Security->validatePost = false;
