@@ -33,5 +33,10 @@ class NcPageTreeTest extends CakeTestCase {
 		parent::tearDown();
 	}
 
+	public function testHoge()
+	{
+		$this->assertEqual(true , true);
+	}
+
 
 }
