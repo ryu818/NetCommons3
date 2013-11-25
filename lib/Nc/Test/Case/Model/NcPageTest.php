@@ -463,7 +463,7 @@ class NcPageTest extends CakeTestCase {
 					'parent_id' => '4',
 					'thread_num' => '1',
 					'display_sequence' => '1',
-					'page_name' => 'Community-1',
+					'page_name' => 'UnitTest-A',
 					'permalink' => 'community-1',
 					'position_flag' => '1',
 					'lang' => '',
@@ -510,10 +510,13 @@ class NcPageTest extends CakeTestCase {
 				),
 				'CommunityLang' =>
 				array (
+					'community_name' => 'UnitTest-A',
+					'summary' => 'UnitTest-A UnitTest-A UnitTest-A',
 				),
 			),
 		);
 		$ck = $this->Page->findViewable('all' , 'all');
+		//var_export($ck);
 		$this->assertEqual($result , $ck);
 
 		$ck = $this->Page->findViewable('all' , 1);
@@ -669,7 +672,7 @@ class NcPageTest extends CakeTestCase {
 					'parent_id' => '4',
 					'thread_num' => '1',
 					'display_sequence' => '1',
-					'page_name' => 'Community-1',
+					'page_name' => 'UnitTest-A',
 					'permalink' => 'community-1',
 					'position_flag' => '1',
 					'lang' => '',
@@ -716,6 +719,8 @@ class NcPageTest extends CakeTestCase {
 				),
 				'CommunityLang' =>
 				array (
+					'community_name' => 'UnitTest-A',
+					'summary' => 'UnitTest-A UnitTest-A UnitTest-A',
 				),
 				'Authority' =>
 				array (
@@ -730,6 +735,7 @@ class NcPageTest extends CakeTestCase {
 				),
 			),
 		);
+		//var_export($ck);
 		$this->assertEqual($result , $ck);
 
 		//存在しないUser.idに対しての挙動が未考慮
@@ -1721,7 +1727,7 @@ class NcPageTest extends CakeTestCase {
 								'parent_id' => '4',
 								'thread_num' => '1',
 								'display_sequence' => '1',
-								'page_name' => 'Community-1',
+								'page_name' => 'UnitTest-A',
 								'permalink' => 'community/community-1/',
 								'position_flag' => '1',
 								'lang' => '',
@@ -1769,6 +1775,8 @@ class NcPageTest extends CakeTestCase {
 							),
 							'CommunityLang' =>
 							array (
+								'community_name' => 'UnitTest-A',
+								'summary' => 'UnitTest-A UnitTest-A UnitTest-A',
 							),
 							'Authority' =>
 							array (
@@ -1786,6 +1794,7 @@ class NcPageTest extends CakeTestCase {
 				),
 			),
 		);
+
 		$this->assertEqual($result , $ck);
 
 		//menu
@@ -1951,7 +1960,7 @@ class NcPageTest extends CakeTestCase {
 								'parent_id' => '4',
 								'thread_num' => '1',
 								'display_sequence' => '1',
-								'page_name' => 'Community-1',
+								'page_name' => 'UnitTest-A',
 								'permalink' => 'community/community-1/',
 								'position_flag' => '1',
 								'lang' => '',
@@ -1999,6 +2008,8 @@ class NcPageTest extends CakeTestCase {
 							),
 							'CommunityLang' =>
 							array (
+								'community_name' => 'UnitTest-A',
+								'summary' => 'UnitTest-A UnitTest-A UnitTest-A',
 							),
 						),
 					),
@@ -2197,7 +2208,7 @@ class NcPageTest extends CakeTestCase {
 								'parent_id' => '4',
 								'thread_num' => '1',
 								'display_sequence' => '1',
-								'page_name' => 'Community-1',
+								'page_name' => 'UnitTest-A',
 								'permalink' => 'community/community-1/',
 								'position_flag' => '1',
 								'lang' => '',
@@ -2247,6 +2258,8 @@ class NcPageTest extends CakeTestCase {
 							),
 							'CommunityLang' =>
 							array (
+								'community_name' => 'UnitTest-A',
+								'summary' => 'UnitTest-A UnitTest-A UnitTest-A',
 							),
 							'Authority' =>
 							array (
@@ -2602,7 +2615,7 @@ class NcPageTest extends CakeTestCase {
 					'parent_id' => '4',
 					'thread_num' => '1',
 					'display_sequence' => '1',
-					'page_name' => 'Community-1',
+					'page_name' => 'UnitTest-A',
 					'permalink' => 'community-1',
 					'position_flag' => '1',
 					'lang' => '',
@@ -2649,6 +2662,8 @@ class NcPageTest extends CakeTestCase {
 				),
 				'CommunityLang' =>
 				array (
+					'community_name' => 'UnitTest-A',
+					'summary' => 'UnitTest-A UnitTest-A UnitTest-A',
 				),
 				'Authority' =>
 				array (
@@ -2663,6 +2678,7 @@ class NcPageTest extends CakeTestCase {
 				),
 			),
 		);
+		//var_export($ck);
 		$this->assertEqual($result , $ck);
 
 		$ck = $this->Page->findViewable('all' , 1 , array() , array('isShowAllCommunity'=>true));
@@ -2818,7 +2834,7 @@ class NcPageTest extends CakeTestCase {
 					'parent_id' => '4',
 					'thread_num' => '1',
 					'display_sequence' => '1',
-					'page_name' => 'Community-1',
+					'page_name' => 'UnitTest-A',
 					'permalink' => 'community-1',
 					'position_flag' => '1',
 					'lang' => '',
@@ -2865,6 +2881,8 @@ class NcPageTest extends CakeTestCase {
 				),
 				'CommunityLang' =>
 				array (
+					'community_name' => 'UnitTest-A',
+					'summary' => 'UnitTest-A UnitTest-A UnitTest-A',
 				),
 				'Authority' =>
 				array (
@@ -3617,6 +3635,57 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testFindIncludeComunityLang() {
+
+		$pageId = 1;
+		$ans = array('Page' =>
+			array (
+			  'id' => '1',
+			  'root_id' => '0',
+			  'parent_id' => '0',
+			  'thread_num' => '0',
+			  'display_sequence' => '1',
+			  'page_name' => 'Public room',
+			  'permalink' => '',
+			  'position_flag' => '1',
+			  'lang' => '',
+			  'is_page_meta_node' => '0',
+			  'is_page_style_node' => '0',
+			  'is_page_layout_node' => '0',
+			  'is_page_theme_node' => '0',
+			  'is_page_column_node' => '0',
+			  'room_id' => '0',
+			  'space_type' => '1',
+			  'show_count' => '0',
+			  'display_flag' => '1',
+			  'display_from_date' => NULL,
+			  'display_to_date' => NULL,
+			  'display_apply_subpage' => '1',
+			  'display_reverse_permalink' => NULL,
+			  'is_approved' => '1',
+			  'lock_authority_id' => '0',
+			  'created' => NULL,
+			  'created_user_id' => '0',
+			  'created_user_name' => '',
+			  'modified' => NULL,
+			  'modified_user_id' => '0',
+			  'modified_user_name' => '',
+		  ),
+	  'CommunityLang' =>
+		  array (
+			  'community_name' => NULL,
+		  )
+		);
+		$ck = $this->Page->findIncludeComunityLang($pageId);
+		//var_export($ck);
+		$this->assertEqual($ck , $ans);
+
+		//$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
+		//var_dump($lang);
+		$pageId = 16;
+		$ck = $this->Page->findIncludeComunityLang($pageId);
+
+		//var_export($ck);
+		//$this->assertEqual($ck , $ans);
 	}
 
 /**

@@ -540,7 +540,7 @@ class NcPageFixture extends CakeTestFixture {
 			'room_id'           => 16 ,
 			'space_type'        => 4,
 			'show_count'        => 0 ,
-			'display_flag'      => 1,//仕様不可
+			'display_flag'      => 1,
 			'display_from_date' =>NULL,
 			'display_to_date'   =>NULL,
 			'display_apply_subpage'=> 1,

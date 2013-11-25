@@ -41,6 +41,21 @@ class NcCommunityLangFixture extends CakeTestFixture {
 			'modified'=>'2013-11-20 05:41:20',
 			'modified_user_id'=>1,
 			'modified_user_name'=>'admin'
+		),
+		array(
+			'id'=>2,
+			'room_id'=> 16,
+			'lang'=>'eng',
+			'community_name'=>'UnitTest-A',
+			'summary'=>'UnitTest-A UnitTest-A UnitTest-A',
+			'revision_group_id'=>0,
+			'created'=>'2013-11-20 05:41:20',
+			'created_user_id'=>1,
+			'created_user_name'=>'admin',
+			'modified'=>'2013-11-20 05:41:20',
+			'modified_user_id'=>1,
+			'modified_user_name'=>'admin'
 		)
 	);
+
 }
