@@ -3178,7 +3178,436 @@ class NcPageTest extends CakeTestCase {
 	}
 
 
+	public function test_format_findViewable_options() {
+		$base= array(
+			'isShowAllCommunity' => false,
+			'isMyPortalCurrent' => false,
+			'ativePageId' => null,
+			'autoLang' => true,
+			'isRoom' => false
+		);
 
+		$result = $base;
+		$ck = $this->Page->_format_findViewable_options();
+		$this->assertEqual($ck , $result);
+
+		$array = array(
+			'isShowAllCommunity' => true,
+		);
+
+		$result = $base;
+		$result['isShowAllCommunity'] = true;
+		$ck = $this->Page->_format_findViewable_options($array);
+		$this->assertEqual($ck , $result);
+
+		$array = array(
+			'isShowAllCommunity' => true,
+			'hogehoge'=>false
+		);
+		$result = $base;
+		$result['isShowAllCommunity'] = true;
+		$result['hogehoge'] = false;
+		$ck = $this->Page->_format_findViewable_options($array);
+		$this->assertEqual($ck , $result);
+
+		$result = $base;
+		$ck = $this->Page->_format_findViewable_options('AAAAAAAA');
+		$this->assertEqual($ck , $result);
+
+		$result = $base;
+		$ck = $this->Page->_format_findViewable_options(12345);
+		$this->assertEqual($ck , $result);
+	}
+
+	public function test_format_findViewable_currentMyPortal() {
+		$array = array();
+		$ck = $this->Page->_format_findViewable_currentMyPortal(array());
+		$this->assertEqual($ck , null);
+
+		$ck = $this->Page->_format_findViewable_currentMyPortal('AAAAAAAA');
+		$this->assertEqual($ck , null);
+
+		$ck = $this->Page->_format_findViewable_currentMyPortal('');
+		$this->assertEqual($ck , null);
+
+		$ck = $this->Page->_format_findViewable_currentMyPortal(1);
+		$this->assertEqual($ck , null);
+
+		$array['User'] = array(
+			'id'=>"2",
+			'login_id'=>'admin_2' ,
+			'password'=>'' ,
+			'handle'=>'admin',
+			'authority_id'=>"1",
+			'is_active'=>"1",
+			'permalink'=>'admin',
+			'myportal_page_id'=>"10",
+			'private_page_id'=>"11",
+			'avatar'=>NULL,
+			'activate_key'=>NULL,
+			'lang'=>'ja',
+			'timezone_offset'=>"9",
+			'email'=>'',
+			'mobile_email'=>'',
+			'password_regist'=>NULL ,
+			'last_login'=>'2013-09-27 00:42:44',
+			'previous_login'=>'2013-07-22 08:20:15',
+			'created'=>'2013-10-31 04:09:21',
+			'created_user_id'=>"1",
+			'created_user_name'=>'admin',
+			'modified'=>'2013-10-31 09:52:46',
+			'modified_user_id'=>'0',
+			'modified_user_name'=>''
+		);
+		$ans = $array['User']['myportal_page_id'];
+		$ck = $this->Page->_format_findViewable_currentMyPortal($array);
+		$this->assertEqual($ans , $ck);
+
+		$ck = $this->Page->_format_findViewable_currentMyPortal($array['User']);
+		$this->assertEqual(null , $ck);
+	}
+
+	public function test_format_findViewable_currentPrivate() {
+		$array = array();
+		$ck = $this->Page->_format_findViewable_currentPrivate(array());
+		$this->assertEqual($ck , null);
+
+		$ck = $this->Page->_format_findViewable_currentPrivate('AAAAAAAA');
+		$this->assertEqual($ck , null);
+
+		$ck = $this->Page->_format_findViewable_currentPrivate('');
+		$this->assertEqual($ck , null);
+
+		$ck = $this->Page->_format_findViewable_currentPrivate(1);
+		$this->assertEqual($ck , null);
+
+		$array['User'] = array(
+			'id'=>"2",
+			'login_id'=>'admin_2' ,
+			'password'=>'' ,
+			'handle'=>'admin',
+			'authority_id'=>"1",
+			'is_active'=>"1",
+			'permalink'=>'admin',
+			'myportal_page_id'=>"10",
+			'private_page_id'=>"11",
+			'avatar'=>NULL,
+			'activate_key'=>NULL,
+			'lang'=>'ja',
+			'timezone_offset'=>"9",
+			'email'=>'',
+			'mobile_email'=>'',
+			'password_regist'=>NULL ,
+			'last_login'=>'2013-09-27 00:42:44',
+			'previous_login'=>'2013-07-22 08:20:15',
+			'created'=>'2013-10-31 04:09:21',
+			'created_user_id'=>"1",
+			'created_user_name'=>'admin',
+			'modified'=>'2013-10-31 09:52:46',
+			'modified_user_id'=>'0',
+			'modified_user_name'=>''
+		);
+		$ans = $array['User']['private_page_id'];
+		$ck = $this->Page->_format_findViewable_currentPrivate($array);
+		$this->assertEqual($ans , $ck);
+
+		$ck = $this->Page->_format_findViewable_currentPrivate($array['User']);
+		$this->assertEqual(null , $ck);
+
+	}
+
+	public function test_format_findViewable_conditions() {
+		//言語取得
+		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
+
+		//conditionsのベース
+		$base = array(
+			'Page.position_flag' => _ON,
+			'Page.display_flag !=' => NC_DISPLAY_FLAG_DISABLE,
+			'Page.thread_num !=' => 0,
+		);
+
+		$ck = $this->Page->_format_findViewable_conditions(array());
+		$this->assertEqual($ck , $base);
+
+		$options = array();
+		$options['autoLang'] = true;
+		$ans = $base;
+		$ans['Page.lang'] = array('', $lang);
+		$ck = $this->Page->_format_findViewable_conditions($options);
+		$this->assertEqual($ck , $ans);
+
+		$options = array();
+		$options['isRoom'] = true;
+		$ans = $base;
+		$ans[] = "`Page`.`id`=`Page`.`room_id`";
+		$ck = $this->Page->_format_findViewable_conditions($options);
+		$this->assertEqual($ck , $ans);
+
+		$options = array();
+		$options['isRoom'] = true;
+		$options['autoLang'] = true;
+		$ans = $base;
+		$ans['Page.lang'] = array('', $lang);
+		$ans[] = "`Page`.`id`=`Page`.`room_id`";
+		$ck = $this->Page->_format_findViewable_conditions($options);
+		$this->assertEqual($ck , $ans);
+	}
+
+	function test_format_findViewable_currents_by_centerPage()
+	{
+		$loginUser  = array(
+			'id'=>"1",
+			'login_id'=>'admin' ,
+			'password'=>'hogehoge' ,
+			'handle'=>'admin',
+			'authority_id'=>"1",
+			'is_active'=>"1",
+			'permalink'=>'admin',
+			'myportal_page_id'=>"1",
+			'private_page_id'=>"2",
+			'avatar'=>NULL,
+			'activate_key'=>NULL,
+			'lang'=>'ja',
+			'timezone_offset'=>"9",
+			'email'=>'',
+			'mobile_email'=>'',
+			'password_regist'=>NULL ,
+			'last_login'=>'2013-09-27 00:42:44',
+			'previous_login'=>'2013-07-22 08:20:15',
+			'created'=>'2013-10-31 04:09:21',
+			'created_user_id'=>"1",
+			'created_user_name'=>'admin',
+			'modified'=>'2013-10-31 09:52:46',
+			'modified_user_id'=>'1',
+			'modified_user_name'=>''
+		);
+		$centerPage['Page'] = array(
+			'id'=> 1,
+			'root_id'=>1 ,
+			'parent_id'=> 0 ,
+			'thread_num'=> 0 ,
+			'display_sequence'=> 1 ,
+			'page_name'=> 'Public room',
+			'permalink'=> '',
+			'position_flag'=> 1 ,
+			'lang'=> '',
+			'is_page_meta_node'=> 0,
+			'is_page_style_node'=> 0,
+			'is_page_layout_node'=> 0,
+			'is_page_theme_node'=> 0,
+			'is_page_column_node'=> 0,
+			'room_id'=> 0,
+			'space_type'=> 1,
+			'show_count'=> 0,
+			'display_flag'=> 1,
+			'display_from_date'=> NULL,
+			'display_to_date'=> NULL,
+			'display_apply_subpage'=> 1,
+			'display_reverse_permalink'=> NULL,
+			'is_approved'=> 1,
+			'lock_authority_id'=> 0,
+			'created'=> NULL,
+			'created_user_id'=> 0,
+			'created_user_name'=> '',
+			'modified'=> NULL,
+			'modified_user_id'=> 0,
+			'modified_user_name'=>''
+		);
+
+		$ans = array(1 , 2);
+		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage , $loginUser);
+		$this->assertEqual($ans , $ck);
+
+		$loginUser  = array(
+			'id'=>1,
+			'login_id'=>'admin' ,
+			'password'=>'hogehoge' ,
+			'handle'=>'admin',
+			'authority_id'=>"1",
+			'is_active'=>"1",
+			'permalink'=>'admin',
+			'myportal_page_id'=>50,
+			'private_page_id'=>2,
+			'avatar'=>NULL,
+			'activate_key'=>NULL,
+			'lang'=>'ja',
+			'timezone_offset'=>"9",
+			'email'=>'',
+			'mobile_email'=>'',
+			'password_regist'=>NULL ,
+			'last_login'=>'2013-09-27 00:42:44',
+			'previous_login'=>'2013-07-22 08:20:15',
+			'created'=>'2013-10-31 04:09:21',
+			'created_user_id'=>"1",
+			'created_user_name'=>'admin',
+			'modified'=>'2013-10-31 09:52:46',
+			'modified_user_id'=>'1',
+			'modified_user_name'=>''
+		);
+		$centerPage['Page'] = array(
+			'id'=> 2,
+			'root_id'=>1 ,
+			'parent_id'=> 1 ,
+			'thread_num'=> 0 ,
+			'display_sequence'=> 1 ,
+			'page_name'=> 'Public room',
+			'permalink'=> '/2/',
+			'position_flag'=> 1 ,
+			'lang'=> '',
+			'is_page_meta_node'=> 0,
+			'is_page_style_node'=> 0,
+			'is_page_layout_node'=> 0,
+			'is_page_theme_node'=> 0,
+			'is_page_column_node'=> 0,
+			'room_id'=> 100,
+			'space_type'=> NC_SPACE_TYPE_MYPORTAL,
+			'show_count'=> 0,
+			'display_flag'=> 1,
+			'display_from_date'=> NULL,
+			'display_to_date'=> NULL,
+			'display_apply_subpage'=> 1,
+			'display_reverse_permalink'=> NULL,
+			'is_approved'=> 1,
+			'lock_authority_id'=> 0,
+			'created'=> NULL,
+			'created_user_id'=> 1,
+			'created_user_name'=> 'admin',
+			'modified'=> NULL,
+			'modified_user_id'=> 0,
+			'modified_user_name'=>''
+		);
+		Configure::write(NC_SYSTEM_KEY.'.user' , $loginUser);
+		$ans = array(100, 2);
+		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage , $loginUser);
+		$this->assertEqual($ans , $ck);
+
+		//例外系
+		$centerPage = null;
+		$loginUser  = null;
+		$ans = array(null , null);
+		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage , $loginUser);
+		$this->assertEqual($ans , $ck);
+
+		$centerPage = array();
+		$loginUser  = array();
+		$ans = array(null , null);
+		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage , $loginUser);
+		$this->assertEqual($ans , $ck);
+
+		$centerPage = array(1,2,3,4,5);
+		$loginUser  = array();
+		$ans = array(null , null);
+		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage , $loginUser);
+		$this->assertEqual($ans , $ck);
+
+		$loginUser  = array(
+			'id'=>1,
+			'login_id'=>'admin' ,
+			'password'=>'hogehoge' ,
+			'handle'=>'admin',
+			'authority_id'=>"1",
+			'is_active'=>"1",
+			'permalink'=>'admin',
+			'myportal_page_id'=>50,
+			'private_page_id'=>2,
+			'avatar'=>NULL,
+			'activate_key'=>NULL,
+			'lang'=>'ja',
+			'timezone_offset'=>"9",
+			'email'=>'',
+			'mobile_email'=>'',
+			'password_regist'=>NULL ,
+			'last_login'=>'2013-09-27 00:42:44',
+			'previous_login'=>'2013-07-22 08:20:15',
+			'created'=>'2013-10-31 04:09:21',
+			'created_user_id'=>"1",
+			'created_user_name'=>'admin',
+			'modified'=>'2013-10-31 09:52:46',
+			'modified_user_id'=>'1',
+			'modified_user_name'=>''
+		);
+		$centerPage['Page'] = array();
+
+		$ans = array(50 , 2);
+		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage , $loginUser);
+		$this->assertEqual($ans , $ck);
+
+		$loginUser = array();
+		$centerPage['Page'] = array();
+
+		$ans = array(null , null);
+		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage , $loginUser);
+		$this->assertEqual($ans , $ck);
+
+		//room_idが戻るパターン
+		//$currentUser = $User->currentUser($centerPage, $loginUser);
+		//$currentUserが戻ってくるタイプ。
+		$loginUser  = array(
+			'id'=>1,
+			'login_id'=>'admin' ,
+			'password'=>'hogehoge' ,
+			'handle'=>'admin',
+			'authority_id'=>"1",
+			'is_active'=>"1",
+			'permalink'=>'2',
+			'myportal_page_id'=>50,
+			'private_page_id'=>2,
+			'avatar'=>NULL,
+			'activate_key'=>NULL,
+			'lang'=>'ja',
+			'timezone_offset'=>"9",
+			'email'=>'',
+			'mobile_email'=>'',
+			'password_regist'=>NULL ,
+			'last_login'=>'2013-09-27 00:42:44',
+			'previous_login'=>'2013-07-22 08:20:15',
+			'created'=>'2013-10-31 04:09:21',
+			'created_user_id'=>"1",
+			'created_user_name'=>'admin',
+			'modified'=>'2013-10-31 09:52:46',
+			'modified_user_id'=>'1',
+			'modified_user_name'=>''
+		);
+		$centerPage['Page'] = array(
+			'id'=> 1,
+			'root_id'=>1 ,
+			'parent_id'=> 1 ,
+			'thread_num'=> 0 ,
+			'display_sequence'=> 1 ,
+			'page_name'=> 'Public room',
+			'permalink'=> '/7/',
+			'position_flag'=> 1 ,
+			'lang'=> '',
+			'is_page_meta_node'=> 0,
+			'is_page_style_node'=> 0,
+			'is_page_layout_node'=> 0,
+			'is_page_theme_node'=> 0,
+			'is_page_column_node'=> 0,
+			'room_id'=> 100,
+			'space_type'=> NC_SPACE_TYPE_MYPORTAL,
+			'show_count'=> 0,
+			'display_flag'=> 1,
+			'display_from_date'=> NULL,
+			'display_to_date'=> NULL,
+			'display_apply_subpage'=> 1,
+			'display_reverse_permalink'=> NULL,
+			'is_approved'=> 1,
+			'lock_authority_id'=> 0,
+			'created'=> NULL,
+			'created_user_id'=> 1,
+			'created_user_name'=> 'admin',
+			'modified'=> NULL,
+			'modified_user_id'=> 0,
+			'modified_user_name'=>''
+		);
+
+		$ans = array(100, 2);
+		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage , $loginUser);
+		//var_export($ck);
+		$this->assertEqual($ans , $ck);
+
+	}
 
 
 

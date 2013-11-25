@@ -13,9 +13,12 @@ class NcPageTreeFixture extends CakeTestFixture {
 		'parent_id'     =>array( 'type' => 'integer','null'=>false ,'default' => 0 , 'comment'=>'先祖のpage_id'),
 		'children_id'   =>array( 'type' => 'integer','null'=>false ,'default' => 0 , 'comment'=>'子孫のpage_id'),
 		'stratum_num'   =>array('type' => 'integer','null'=>false ,'default' => 0 , 'comment'=>'先祖からみた子孫の階層'),
-		'created'       =>array('timestamp'),
-		'modified'      =>array('timestamp'),
-		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB', 'comment'=>'hoge')
+		'created'       =>array('type' => 'datetime', 'null' => true, 'default' => null),
+		'modified'      =>array('type' => 'datetime', 'null' => true, 'default' => null),
+		'indexes' => array(
+			'PRIMARY' => array('column' => 'id', 'unique' => 1)
+		),
+		'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_general_ci', 'engine' => 'InnoDB')
 	);
 
 	public $records = array(

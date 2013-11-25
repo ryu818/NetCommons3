@@ -93,7 +93,7 @@ class NcUserFixture extends CakeTestFixture {
 			'handle'=>'admin',
 			'authority_id'=>"1",
 			'is_active'=>"1",
-			'permalink'=>'admin',
+			'permalink'=>'',
 			'myportal_page_id'=>"10",
 			'private_page_id'=>"11",
 			'avatar'=>NULL,

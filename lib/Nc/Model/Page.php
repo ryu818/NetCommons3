@@ -961,11 +961,9 @@ class Page extends AppModel
 		$currentMyPortal = $this->_format_findViewable_currentMyPortal(array('User'=>$loginUser));
 		$currentPrivate  = $this->_format_findViewable_currentPrivate(array('User'=>$loginUser));
 		//$centerPageに情報がなければ、通常データを格納する。
-		if(!$centerPage || !isset($centerPage['Page']) || ! $centerPage['Page'])
-		{
+		if(!$centerPage || !isset($centerPage['Page']) || ! $centerPage['Page']) {
 			return array($currentMyPortal , $currentPrivate);
 		}
-
 
 		if((
 				isset($centerPage['Page']['room_id'])
@@ -982,7 +980,6 @@ class Page extends AppModel
 				// TODO:マイポータルに子グループを作成できる仕様にすると動作しない。
 				$User        = $this->User;
 				$currentUser = $User->currentUser($centerPage, $loginUser);
-
 				// allow_myportal_viewing_hierarchyは、会員権限の上下でみせるべきかいなか
 				// 決定するため、$loginUser['hierarchy']でチェック
 				if(isset($currentUser['Authority']) && (
@@ -1000,8 +997,12 @@ class Page extends AppModel
 	 *  findViewableのoptionの情報を整える
 	 *  self::findViewable()から呼び出されることしか想定していない。
 	 *  TODO:テストがかけたらpublicをやめる。
+	 *
+	 * @param array $options
+	 * @return array
+	 * @since   v 3.0.0.0
 	 */
-	public function _format_findViewable_options($options=array())
+	public  function _format_findViewable_options($options=array())
 	{
 		//ベース
 		$base = array(
@@ -1022,19 +1023,19 @@ class Page extends AppModel
 	 * $currentUser配列からmyportal_page_idを抽出しかえす。
 	 * Model/Userにあっていい機能。
 	 * TODO : Model/Userへの移動検討
-	 * @param array or null $currentUser
+	 * TODO : private に変更検討
+	 * @param array or null $currentUser Userの1レコード分のarrayを想定している。
 	 * @return int or null
+	 * @since   v 3.0.0.0
 	 */
 	public function _format_findViewable_currentMyPortal($currentUser) {
 		if(! $currentUser
 			|| (! isset($currentUser['User']) || !$currentUser['User'])
-		)
-		{
+		) {
 			return null;
 		}
 
-		if(isset($currentUser['User']['myportal_page_id']))
-		{
+		if(isset($currentUser['User']['myportal_page_id'])) {
 			return $currentUser['User']['myportal_page_id'];
 		}
 		return null;
@@ -1044,9 +1045,10 @@ class Page extends AppModel
 	 * $currentUser配列からcurrentPrivate'を抽出しかえす。
 	 * Model/Userにあっていい機能。
 	 * TODO : Model/Userへの移動検討
-	 * TODO:テストがかけたらpublicをやめる。
+	 * TODO: Privateへの変更検討
 	 * @param array or null $currentUser $currentUser
 	 * @return int or null
+	 * @since   v 3.0.0.0
 	 */
 	public function _format_findViewable_currentPrivate($currentUser){
 		if(! $currentUser || (! isset($currentUser['User']) || !$currentUser['User'])) {
@@ -1059,13 +1061,14 @@ class Page extends AppModel
 		return null;
 	}
 
-
-
 	/**
-	 * _format_findViewable_optionsを利用し、検索条件を作成する
+	 * 検索条件を作成する
+	 * format_findViewable_optionsを利用し$optionが調整されていることを前提としている。
+	 * @param array $options  self::findViewable()の引数
+	 * @return array
+	 * @since   v 3.0.0.0
 	 */
-	public function _format_findViewable_conditions($options)
-	{
+	public function _format_findViewable_conditions($options) {
 		//言語取得
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 
@@ -1085,9 +1088,6 @@ class Page extends AppModel
 		}
 		return $conditions;
 	}
-
-
-
 
 	/**
  * CommunityLang.community_nameを含むページ情報取得
