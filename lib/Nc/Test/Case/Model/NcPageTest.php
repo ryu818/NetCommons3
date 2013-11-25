@@ -3683,9 +3683,56 @@ class NcPageTest extends CakeTestCase {
 		//var_dump($lang);
 		$pageId = 16;
 		$ck = $this->Page->findIncludeComunityLang($pageId);
+		$ans = array (
+			'Page' =>
+			array (
+				'id' => '16',
+				'root_id' => '16',
+				'parent_id' => '4',
+				'thread_num' => '1',
+				'display_sequence' => '1',
+				'page_name' => 'Community-1',
+				'permalink' => 'community-1',
+				'position_flag' => '1',
+				'lang' => '',
+				'is_page_meta_node' => '0',
+				'is_page_style_node' => '0',
+				'is_page_layout_node' => '0',
+				'is_page_theme_node' => '0',
+				'is_page_column_node' => '0',
+				'room_id' => '16',
+				'space_type' => '4',
+				'show_count' => '0',
+				'display_flag' => '1',
+				'display_from_date' => NULL,
+				'display_to_date' => NULL,
+				'display_apply_subpage' => '1',
+				'display_reverse_permalink' => NULL,
+				'is_approved' => '1',
+				'lock_authority_id' => '0',
+				'created' => '2013-06-24 06:59:37',
+				'created_user_id' => '1',
+				'created_user_name' => 'admin',
+				'modified' => '2013-06-24 06:59:37',
+				'modified_user_id' => '1',
+				'modified_user_name' => 'admin',
+			),
+			'CommunityLang' =>
+			array (
+				'community_name' => 'UnitTest-A',
+			),
+		);
+		$this->assertEqual($ck , $ans);
 
-		//var_export($ck);
-		//$this->assertEqual($ck , $ans);
+		//存在しない場合
+		$pageId = 99999999999;
+		$ck = $this->Page->findIncludeComunityLang($pageId);
+		$this->assertEqual($ck , array());
+
+		//パラメータのフォーマットエラーの場合。
+		$pageId = 'AAAAAA';
+		$ck = $this->Page->findIncludeComunityLang($pageId);
+		$this->assertEqual($ck , array());
 	}
 
 /**
@@ -3694,6 +3741,179 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testFindChilds() {
+
+		//第一引数はまったく使われていない。
+		//とりあえず現状の動きをトレース。
+
+		$page['Page'] = array(
+			'id'                => 9,
+			'root_id'           => 9 ,
+			'parent_id'         => 1 ,
+			'thread_num'        => 1 ,
+			'display_sequence'  => 0,
+			'page_name'         => 'Public room',
+			'permalink'         => '',
+			'position_flag'     => 1 ,
+			'lang'              => '',
+			'is_page_meta_node'  => 0,
+			'is_page_style_node' => 0,
+			'is_page_layout_node'=> 0,
+			'is_page_theme_node' => 0,
+			'is_page_column_node'=> 0,
+			'room_id'           => 9,
+			'space_type'        => 1,
+			'show_count'        => 0,
+			'display_flag'      => 1,
+			'display_from_date' => NULL,
+			'display_to_date'   => NULL,
+			'display_apply_subpage'=> 1,
+			'display_reverse_permalink'=> NULL,
+			'is_approved'       => 1,
+			'lock_authority_id' => 0,
+			'created'           => NULL,
+			'created_user_id'   => 0,
+			'created_user_name' => '',
+			'modified'          => NULL,
+			'modified_user_id'  => 1,
+			'modified_user_name'=>''
+		);
+
+		$ck = $this->Page->findChilds('all' , $page);
+		$ans = array (
+			0 =>
+			array (
+				'Page' =>
+				array (
+					'id' => '12',
+					'root_id' => '9',
+					'parent_id' => '9',
+					'thread_num' => '2',
+					'display_sequence' => '1',
+					'page_name' => '??????',
+					'permalink' => '',
+					'position_flag' => '1',
+					'lang' => 'ja',
+					'is_page_meta_node' => '0',
+					'is_page_style_node' => '0',
+					'is_page_layout_node' => '0',
+					'is_page_theme_node' => '0',
+					'is_page_column_node' => '0',
+					'room_id' => '9',
+					'space_type' => '1',
+					'show_count' => '110',
+					'display_flag' => '1',
+					'display_from_date' => NULL,
+					'display_to_date' => NULL,
+					'display_apply_subpage' => '1',
+					'display_reverse_permalink' => NULL,
+					'is_approved' => '1',
+					'lock_authority_id' => '0',
+					'created' => NULL,
+					'created_user_id' => '0',
+					'created_user_name' => '',
+					'modified' => '2013-07-12 07:13:42',
+					'modified_user_id' => '1',
+					'modified_user_name' => 'admin',
+				),
+				'PageUserLink' =>
+				array (
+					'authority_id' => NULL,
+				),
+				'PageAuthority' =>
+				array (
+					'id' => NULL,
+					'myportal_use_flag' => NULL,
+					'private_use_flag' => NULL,
+					'hierarchy' => NULL,
+				),
+			),
+		);
+		// id:12が1件取得できる
+		$this->assertEqual($ck , $ans);
+
+		//空データ。$currentPage['Page']['lang']が存在しないためnotice errorでテストが実行できない。
+		//TODO:対応
+		//$page['Page'] = array();
+		//$ck = $this->Page->findChilds('all' , $page);
+		$page = array();
+		$page['Page'] = array(
+			'id'                => 4,
+			'root_id'           => 0 ,
+			'parent_id'         => 0 ,
+			'thread_num'        => 0 ,
+			'display_sequence'  => 4,
+			'page_name'         => 'Community',
+			'permalink'         => '',
+			'position_flag'     => 1 ,
+			'lang'              => '',
+			'is_page_meta_node'  => 0,
+			'is_page_style_node' => 0,
+			'is_page_layout_node'=> 0,
+			'is_page_theme_node' => 0,
+			'is_page_column_node'=> 0,
+			'room_id'           => 0,
+			'space_type'        => 4,
+			'show_count'        => 0,
+			'display_flag'      => 1,
+			'display_from_date' => NULL,
+			'display_to_date'   => NULL,
+			'display_apply_subpage'=> 1,
+			'display_reverse_permalink'=> NULL,
+			'is_approved'       => 1,
+			'lock_authority_id' => 0,
+			'created'           => NULL,
+			'created_user_id'   => 0,
+			'created_user_name' => '',
+			'modified'          => NULL,
+			'modified_user_id'  => 0,
+			'modified_user_name'=>''
+		);
+		$ck = $this->Page->findChilds('all' , $page);
+		$this->assertEqual($ck , array());
+
+
+		//id:14 , 15の2件分が戻る。
+		$page = array();
+		$page['Page'] = array(
+			'id'                => 11,
+			'root_id'           => 11 ,
+			'parent_id'         => 3 ,
+			'thread_num'        => 1 ,
+			'display_sequence'  => 0,
+			'page_name'         => 'Private room',
+			'permalink'         => 'Admin',
+			'position_flag'     => 1 ,
+			'lang'              => '',
+			'is_page_meta_node'  => 0,
+			'is_page_style_node' => 0,
+			'is_page_layout_node'=> 0,
+			'is_page_theme_node' => 0,
+			'is_page_column_node'=> 0,
+			'room_id'           => 11,
+			'space_type'        => 3,
+			'show_count'        => 0,
+			'display_flag'      => 1,
+			'display_from_date' => NULL,
+			'display_to_date'   => NULL,
+			'display_apply_subpage'=> 1,
+			'display_reverse_permalink'=> NULL,
+			'is_approved'       => 1,
+			'lock_authority_id' => 0,
+			'created'           => NULL,
+			'created_user_id'   => 0,
+			'created_user_name' => '',
+			'modified'          => NULL,
+			'modified_user_id'  => 1,
+			'modified_user_name'=>''
+		);
+		$ck = $this->Page->findChilds('all' , $page);
+		$this->assertEqual(2 , count($ck));
+		//vdisplay_flagが変更されるデータのため、
+		//順番もかわるため、Page.idから想定される情報が取得できているかどうかを判定するようにした。
+		//Page.id 15が１４の値が戻る。
+		$this->assertEqual(true , ($ck[0]['Page']['id'] ==15 || $ck[0]['Page']['id'] ==14 ));
+		$this->assertEqual(true , ($ck[1]['Page']['id'] ==15 || $ck[1]['Page']['id'] ==14 ));
+
 	}
 
 /**
