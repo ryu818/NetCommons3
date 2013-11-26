@@ -3777,7 +3777,6 @@ class NcPageTest extends CakeTestCase {
 			'modified_user_id'  => 1,
 			'modified_user_name'=>''
 		);
-
 		$ck = $this->Page->findChilds('all' , $page);
 		$ans = array (
 			0 =>
@@ -3832,9 +3831,11 @@ class NcPageTest extends CakeTestCase {
 		$this->assertEqual($ck , $ans);
 
 		//空データ。$currentPage['Page']['lang']が存在しないためnotice errorでテストが実行できない。
-		//TODO:対応
+		//TODO:パラメータのフォーマット異常時の対応を行う。
 		//$page['Page'] = array();
 		//$ck = $this->Page->findChilds('all' , $page);
+
+		//子孫のいないデータで、子孫を探す。array()が戻る。
 		$page = array();
 		$page['Page'] = array(
 			'id'                => 4,
@@ -3871,6 +3872,11 @@ class NcPageTest extends CakeTestCase {
 		$ck = $this->Page->findChilds('all' , $page);
 		$this->assertEqual($ck , array());
 
+		$ck = $this->Page->findChilds('all' , $page , null , 1);
+		$this->assertEqual($ck , array());
+
+		$ck = $this->Page->findChilds('all' , $page , null , 2);
+		$this->assertEqual($ck , array());
 
 		//id:14 , 15の2件分が戻る。
 		$page = array();
@@ -3908,11 +3914,101 @@ class NcPageTest extends CakeTestCase {
 		);
 		$ck = $this->Page->findChilds('all' , $page);
 		$this->assertEqual(2 , count($ck));
-		//vdisplay_flagが変更されるデータのため、
+		//display_flagが変更されるデータのため、
 		//順番もかわるため、Page.idから想定される情報が取得できているかどうかを判定するようにした。
 		//Page.id 15が１４の値が戻る。
 		$this->assertEqual(true , ($ck[0]['Page']['id'] ==15 || $ck[0]['Page']['id'] ==14 ));
 		$this->assertEqual(true , ($ck[1]['Page']['id'] ==15 || $ck[1]['Page']['id'] ==14 ));
+
+		//
+		$ck = $this->Page->findChilds('all' , $page , null , 4);
+		$this->assertEqual(true , ($ck[0]['Page']['id'] ==15 || $ck[0]['Page']['id'] ==14 ));
+		$this->assertEqual(true , ($ck[1]['Page']['id'] ==15 || $ck[1]['Page']['id'] ==14 ));
+
+		//言語を指定
+		$ck = $this->Page->findChilds('all' , $page , 'eng' , 4);
+		$this->assertEqual($ck , array());
+
+		$ck = $this->Page->findChilds('all' , $page , 'ja' , 4);
+		$this->assertEqual(true , ($ck[0]['Page']['id'] ==15 || $ck[0]['Page']['id'] ==14 ));
+		$this->assertEqual(true , ($ck[1]['Page']['id'] ==15 || $ck[1]['Page']['id'] ==14 ));
+
+		$ck = $this->Page->findChilds('all' , $page , 'ja' , 1);
+		$this->assertEqual(true , ($ck[0]['Page']['id'] ==15 || $ck[0]['Page']['id'] ==14 ));
+		$this->assertEqual(true , ($ck[1]['Page']['id'] ==15 || $ck[1]['Page']['id'] ==14 ));
+
+		//$ck = $this->Page->findChilds('all' , $page , 'ja' , 7);
+		//var_export($ck);
+
+		//2階層目を保存してみる
+		$new_page['Page'] = array(
+			'root_id'           => 11 ,
+			'parent_id'         => 15 ,
+			'thread_num'        => 2 ,
+			'display_sequence'  => 3,
+			'page_name'         => 'Community',
+			'permalink'         => '',
+			'position_flag'     => 1 ,
+			'lang'              => '',
+			'is_page_meta_node'  => 0,
+			'is_page_style_node' => 0,
+			'is_page_layout_node'=> 0,
+			'is_page_theme_node' => 0,
+			'is_page_column_node'=> 0,
+			'room_id'           => 0,
+			'space_type'        => 4,
+			'show_count'        => 0,
+			'display_flag'      => 1,
+			'display_from_date' => NULL,
+			'display_to_date'   => NULL,
+			'display_apply_subpage'=> 1,
+			'display_reverse_permalink'=> NULL,
+			'is_approved'       => 1,
+			'lock_authority_id' => 0,
+		);
+
+		//2階層目を保存してみる
+		$new_page_2['Page'] = array(
+			'root_id'           => 11 ,
+			'parent_id'         => 17 ,
+			'thread_num'        => 3 ,
+			'display_sequence'  => 3,
+			'page_name'         => 'Community',
+			'permalink'         => '',
+			'position_flag'     => 1 ,
+			'lang'              => '',
+			'is_page_meta_node'  => 0,
+			'is_page_style_node' => 0,
+			'is_page_layout_node'=> 0,
+			'is_page_theme_node' => 0,
+			'is_page_column_node'=> 0,
+			'room_id'           => 0,
+			'space_type'        => 4,
+			'show_count'        => 0,
+			'display_flag'      => 1,
+			'display_from_date' => NULL,
+			'display_to_date'   => NULL,
+			'display_apply_subpage'=> 1,
+			'display_reverse_permalink'=> NULL,
+			'is_approved'       => 1,
+			'lock_authority_id' => 0,
+		);
+
+
+		$User = ClassRegistry::init("User");
+		$user = $User->find("first" , array('conditions'=>array('User.id'=>1),) );
+		Configure::write(NC_SYSTEM_KEY.'.user' , $user['User']);
+
+		//id:17 , 18で11の子孫情報を保存
+		$this->Page->create();
+		$ck = $this->Page->save($new_page , false , false);
+		$this->Page->create();
+		$ck = $this->Page->save($new_page_2 , false , false);
+
+		//id 14,15,17,18が取得できていないといけないがとれない。
+		//TODO：ちゃんと子孫情報がとれるように修正する
+		//$ck = $this->Page->findChilds('all' , $page);
+		//var_export($ck);
 
 	}
 
