@@ -1284,14 +1284,10 @@ class Page extends AppModel
  */
 	public function getJoinsArray($userId, $type = 'LEFT', $spaceType = null) {
 
-		//$typeはLEFTもしくはINNERのみを許可する。
-		//それ以外が指定された場合はLEFTとする。
-		if($type != 'LEFT' && $type != 'INNER')
-		{
+		//$typeはLEFTもしくはINNERのみを許可する。それ以外が指定された場合はLEFTとする。
+		if($type != 'LEFT' && $type != 'INNER') {
 			$type = 'LEFT';
 		}
-
-
 		$ret = array(
 			array(
 				"type" => $type,
