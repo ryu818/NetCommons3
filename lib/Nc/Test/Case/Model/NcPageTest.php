@@ -4210,6 +4210,229 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testGetJoinsArray() {
+		//$userIdを指定、$type , $spaceType未指定
+		$ck = $this->Page->getJoinsArray(1);
+		$ans = array (
+			0 =>
+			array (
+				'type' => 'LEFT',
+				'table' => 'page_user_links',
+				'alias' => 'PageUserLink',
+				'conditions' => '`Page`.`room_id`=`PageUserLink`.`room_id` AND `PageUserLink`.`user_id` =1',
+			),
+			1 =>
+			array (
+				'type' => 'LEFT',
+				'table' => 'authorities',
+				'alias' => 'PageAuthority',
+				'conditions' => '`PageAuthority`.`id`=`PageUserLink`.`authority_id`',
+			),
+			2 =>
+			array (
+				'type' => 'LEFT',
+				'table' => 'communities',
+				'alias' => 'Community',
+				'conditions' => '`Page`.`root_id`=`Community`.`room_id`',
+			),
+			3 =>
+			array (
+				'type' => 'LEFT',
+				'table' => 'community_langs',
+				'alias' => 'CommunityLang',
+				'conditions' => '`Page`.`root_id`=`CommunityLang`.`room_id` AND `CommunityLang`.`lang` =\'eng\'',
+			)
+		);
+		$this->assertEqual($ck , $ans);
+
+		//$userIdがブランクの場合
+		$ck = $this->Page->getJoinsArray('');
+		$ans = array (
+			0 =>
+			array (
+				'type' => 'LEFT',
+				'table' => 'page_user_links',
+				'alias' => 'PageUserLink',
+				'conditions' => '`Page`.`room_id`=`PageUserLink`.`room_id` AND `PageUserLink`.`user_id` =0',
+			),
+			1 =>
+			array (
+				'type' => 'LEFT',
+				'table' => 'authorities',
+				'alias' => 'PageAuthority',
+				'conditions' => '`PageAuthority`.`id`=`PageUserLink`.`authority_id`',
+			),
+			2 =>
+			array (
+				'type' => 'LEFT',
+				'table' => 'communities',
+				'alias' => 'Community',
+				'conditions' => '`Page`.`root_id`=`Community`.`room_id`',
+			),
+			3 =>
+			array (
+				'type' => 'LEFT',
+				'table' => 'community_langs',
+				'alias' => 'CommunityLang',
+				'conditions' => '`Page`.`root_id`=`CommunityLang`.`room_id` AND `CommunityLang`.`lang` =\'eng\'',
+			),
+		);
+		$this->assertEqual($ck , $ans);
+
+		//$userIdが文字列の場合（例外）
+		$ck  = $this->Page->getJoinsArray('AAAAA');
+		$ans = array (
+			0 =>
+			array (
+				'type' => 'LEFT',
+				'table' => 'page_user_links',
+				'alias' => 'PageUserLink',
+				'conditions' => '`Page`.`room_id`=`PageUserLink`.`room_id` AND `PageUserLink`.`user_id` =0',
+			),
+			1 =>
+			array (
+				'type' => 'LEFT',
+				'table' => 'authorities',
+				'alias' => 'PageAuthority',
+				'conditions' => '`PageAuthority`.`id`=`PageUserLink`.`authority_id`',
+			),
+			2 =>
+			array (
+				'type' => 'LEFT',
+				'table' => 'communities',
+				'alias' => 'Community',
+				'conditions' => '`Page`.`root_id`=`Community`.`room_id`',
+			),
+			3 =>
+			array (
+				'type' => 'LEFT',
+				'table' => 'community_langs',
+				'alias' => 'CommunityLang',
+				'conditions' => '`Page`.`root_id`=`CommunityLang`.`room_id` AND `CommunityLang`.`lang` =\'eng\'',
+			),
+		);
+		$this->assertEqual($ck , $ans);
+
+		//$userIdが指定されていて、$typeが RIGHT
+		$ck  = $this->Page->getJoinsArray(1 , 'RIGHT');
+		$ans = array (
+			0 =>
+			array (
+				'type' => 'RIGHT',
+				'table' => 'page_user_links',
+				'alias' => 'PageUserLink',
+				'conditions' => '`Page`.`room_id`=`PageUserLink`.`room_id` AND `PageUserLink`.`user_id` =1',
+			),
+			1 =>
+			array (
+				'type' => 'LEFT',
+				'table' => 'authorities',
+				'alias' => 'PageAuthority',
+				'conditions' => '`PageAuthority`.`id`=`PageUserLink`.`authority_id`',
+			),
+			2 =>
+			array (
+				'type' => 'LEFT',
+				'table' => 'communities',
+				'alias' => 'Community',
+				'conditions' => '`Page`.`root_id`=`Community`.`room_id`',
+			),
+			3 =>
+			array (
+				'type' => 'LEFT',
+				'table' => 'community_langs',
+				'alias' => 'CommunityLang',
+				'conditions' => '`Page`.`root_id`=`CommunityLang`.`room_id` AND `CommunityLang`.`lang` =\'eng\'',
+			),
+		);
+		$this->assertEqual($ck , $ans);
+
+		//$userIdが指定されていて、$typeが RIGHT
+		$ck  = $this->Page->getJoinsArray(1 , 'INNER');
+		$ans = array (
+			0 =>
+			array (
+				'type' => 'INNER',
+				'table' => 'page_user_links',
+				'alias' => 'PageUserLink',
+				'conditions' => '`Page`.`room_id`=`PageUserLink`.`room_id` AND `PageUserLink`.`user_id` =1',
+			),
+			1 =>
+			array (
+				'type' => 'LEFT',
+				'table' => 'authorities',
+				'alias' => 'PageAuthority',
+				'conditions' => '`PageAuthority`.`id`=`PageUserLink`.`authority_id`',
+			),
+			2 =>
+			array (
+				'type' => 'LEFT',
+				'table' => 'communities',
+				'alias' => 'Community',
+				'conditions' => '`Page`.`root_id`=`Community`.`room_id`',
+			),
+			3 =>
+			array (
+				'type' => 'LEFT',
+				'table' => 'community_langs',
+				'alias' => 'CommunityLang',
+				'conditions' => '`Page`.`root_id`=`CommunityLang`.`room_id` AND `CommunityLang`.`lang` =\'eng\'',
+			),
+		);
+		$this->assertEqual($ck , $ans);
+
+		//$userIdがしていされていて、$type無指定　$spaceTypeを NC_SPACE_TYPE_GROUPが指定されている場合
+		$ck  = $this->Page->getJoinsArray(1 , null , NC_SPACE_TYPE_GROUP);
+		$ans = array (
+			0 =>
+			array (
+				'type' => NULL,
+				'table' => 'page_user_links',
+				'alias' => 'PageUserLink',
+				'conditions' => '`Page`.`room_id`=`PageUserLink`.`room_id` AND `PageUserLink`.`user_id` =1',
+			),
+			1 =>
+			array (
+				'type' => 'LEFT',
+				'table' => 'authorities',
+				'alias' => 'PageAuthority',
+				'conditions' => '`PageAuthority`.`id`=`PageUserLink`.`authority_id`',
+			),
+			2 =>
+			array (
+				'type' => 'LEFT',
+				'table' => 'communities',
+				'alias' => 'Community',
+				'conditions' => '`Page`.`root_id`=`Community`.`room_id`',
+			),
+			3 =>
+			array (
+				'type' => 'LEFT',
+				'table' => 'community_langs',
+				'alias' => 'CommunityLang',
+				'conditions' => '`Page`.`root_id`=`CommunityLang`.`room_id` AND `CommunityLang`.`lang` =\'eng\'',
+			),
+		);
+		$this->assertEqual($ck , $ans);
+		//$userIdがしていされていて、$type無指定　$spaceTypeを NC_SPACE_TYPE_GROUP以外が指定されている場合
+		//TODO : $typeは、指定できるものをチェックしてそれ以外のものが指定された場合にどうすべきか確認後対応
+		$ck = $this->Page->getJoinsArray(1 , null , 'AAAA');
+		$ans = array (
+			0 =>
+			array (
+				'type' => NULL,
+				'table' => 'page_user_links',
+				'alias' => 'PageUserLink',
+				'conditions' => '`Page`.`room_id`=`PageUserLink`.`room_id` AND `PageUserLink`.`user_id` =1',
+			),
+			1 =>
+			array (
+				'type' => 'LEFT',
+				'table' => 'authorities',
+				'alias' => 'PageAuthority',
+				'conditions' => '`PageAuthority`.`id`=`PageUserLink`.`authority_id`',
+			),
+		);
+		$this->assertEqual($ck , $ans);
 	}
 
 /**
