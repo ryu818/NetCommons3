@@ -4018,6 +4018,47 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testFindCommunityCount() {
+
+		//存在するアカウントの場合
+		$ck = $this->Page->findCommunityCount(1);
+		$this->assertEqual(1 , $ck);
+
+		//存在するアカウントの場合
+		//なぜ2はPage.id:2のデータを見れない？
+		$ck = $this->Page->findCommunityCount(2);
+		$this->assertEqual(0 , $ck);
+
+		//存在しないアカウントの場合
+		$ck = $this->Page->findCommunityCount(99999999999);
+		$this->assertEqual(0 , $ck);
+
+		$ck = $this->Page->findCommunityCount('all');
+		$this->assertEqual(1 , $ck);
+
+		//ログインユーザ
+		$User = ClassRegistry::init('User');
+		$loginUser = $User->find("first" , array('conditions'=>array('User.id'=>1)) );
+		Configure::write(NC_SYSTEM_KEY.'.user' , $loginUser['User']);
+
+		$ck = $this->Page->findCommunityCount();
+		$this->assertEqual(1 , $ck);
+
+		$loginUser = $User->find("first" , array('conditions'=>array('User.id'=>2)) );
+		Configure::write(NC_SYSTEM_KEY.'.user' , $loginUser['User']);
+
+		$ck = $this->Page->findCommunityCount();
+		$this->assertEqual(0 , $ck);
+
+		//未ログイン noticeエラー
+		//TODO:未ログイン時の考慮と対応
+		//Configure::write(NC_SYSTEM_KEY.'.user' , array());
+		//$ck = $this->Page->findCommunityCount();
+		//$this->assertEqual(0 , $ck);
+
+		//第2引数$params , 第3引数$optionsはself::findViewable()へ条件を渡しているだけなので一旦省略
+		//array_mergeで条件を上書きしている。
+		// Page.space_typeやPage.thread_numを上書きされた場合についても今回は一旦省略
+
 	}
 
 /**
