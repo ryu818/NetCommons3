@@ -266,7 +266,7 @@ class ModuleAdmin extends AppModel {
 
 		$successMes = array();
 		$errorMes = array();
-		$module = $this->_getModule($dirName, $errorMes);
+		$module = $preModule = $this->_getModule($dirName, $errorMes);
 		if($module === false) {
 			return array($successMes, $errorMes);
 		}
@@ -375,6 +375,16 @@ class ModuleAdmin extends AppModel {
 			'temp_name',
 			'content_has_one',
 		);
+		// disabledだったならば、更新対象にする
+		if($preModule[$this->alias]['copy_operation'] == 'disabled') {
+			$fieldList[] = 'copy_operation';
+		}
+		if($preModule[$this->alias]['shortcut_operation'] == 'disabled') {
+			$fieldList[] = 'shortcut_operation';
+		}
+		if($preModule[$this->alias]['move_operation'] == 'disabled') {
+			$fieldList[] = 'move_operation';
+		}
 		if(!$this->save($module, true, $fieldList)) {
 			if(count($this->validationErrors) == 0) {
 				$errorMes[] = $prefix.__('Failed to update the database, (%s).','modules');
