@@ -797,6 +797,401 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testFindBreadcrumb() {
+
+		//パンくずリスト用の配列をつくる
+		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>1)));
+		$ck = $this->Page->findBreadcrumb($page);
+		$ans = array (
+			0 =>
+			array (
+				'Page' =>
+				array (
+					'id' => '1',
+					'root_id' => '0',
+					'parent_id' => '0',
+					'thread_num' => '0',
+					'display_sequence' => '1',
+					'page_name' => 'Public room',
+					'permalink' => '',
+					'position_flag' => '1',
+					'lang' => '',
+					'is_page_meta_node' => '0',
+					'is_page_style_node' => '0',
+					'is_page_layout_node' => '0',
+					'is_page_theme_node' => '0',
+					'is_page_column_node' => '0',
+					'room_id' => '0',
+					'space_type' => '1',
+					'show_count' => '0',
+					'display_flag' => '1',
+					'display_from_date' => NULL,
+					'display_to_date' => NULL,
+					'display_apply_subpage' => '1',
+					'display_reverse_permalink' => NULL,
+					'is_approved' => '1',
+					'lock_authority_id' => '0',
+					'created' => NULL,
+					'created_user_id' => '0',
+					'created_user_name' => '',
+					'modified' => NULL,
+					'modified_user_id' => '0',
+					'modified_user_name' => '',
+				),
+				'PageAuthority' =>
+				array (
+					'hierarchy' => NULL,
+				),
+			),
+		);
+		$this->assertEqual($ck , $ans);
+
+		//User.idはnull
+		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>1)));
+		$ck = $this->Page->findBreadcrumb($page , null);
+		$ans = array (
+			0 =>
+			array (
+				'Page' =>
+				array (
+					'id' => '1',
+					'root_id' => '0',
+					'parent_id' => '0',
+					'thread_num' => '0',
+					'display_sequence' => '1',
+					'page_name' => 'Public room',
+					'permalink' => '',
+					'position_flag' => '1',
+					'lang' => '',
+					'is_page_meta_node' => '0',
+					'is_page_style_node' => '0',
+					'is_page_layout_node' => '0',
+					'is_page_theme_node' => '0',
+					'is_page_column_node' => '0',
+					'room_id' => '0',
+					'space_type' => '1',
+					'show_count' => '0',
+					'display_flag' => '1',
+					'display_from_date' => NULL,
+					'display_to_date' => NULL,
+					'display_apply_subpage' => '1',
+					'display_reverse_permalink' => NULL,
+					'is_approved' => '1',
+					'lock_authority_id' => '0',
+					'created' => NULL,
+					'created_user_id' => '0',
+					'created_user_name' => '',
+					'modified' => NULL,
+					'modified_user_id' => '0',
+					'modified_user_name' => '',
+				),
+				'PageAuthority' =>
+				array (
+					'hierarchy' => NULL,
+				),
+			),
+		);
+		$this->assertEqual($ck , $ans);
+
+		//コミュニティだった場合
+		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>16)));
+		$ck = $this->Page->findBreadcrumb($page);
+		$ans = array (
+			0 =>
+			array (
+				'Page' =>
+				array (
+					'id' => '16',
+					'root_id' => '16',
+					'parent_id' => '4',
+					'thread_num' => '1',
+					'display_sequence' => '1',
+					'page_name' => 'Community-1',
+					'permalink' => 'community/community-1/',
+					'position_flag' => '1',
+					'lang' => '',
+					'is_page_meta_node' => '0',
+					'is_page_style_node' => '0',
+					'is_page_layout_node' => '0',
+					'is_page_theme_node' => '0',
+					'is_page_column_node' => '0',
+					'room_id' => '16',
+					'space_type' => '4',
+					'show_count' => '0',
+					'display_flag' => '1',
+					'display_from_date' => NULL,
+					'display_to_date' => NULL,
+					'display_apply_subpage' => '1',
+					'display_reverse_permalink' => NULL,
+					'is_approved' => '1',
+					'lock_authority_id' => '0',
+					'created' => '2013-06-24 06:59:37',
+					'created_user_id' => '1',
+					'created_user_name' => 'admin',
+					'modified' => '2013-06-24 06:59:37',
+					'modified_user_id' => '1',
+					'modified_user_name' => 'admin',
+				),
+				'PageAuthority' =>
+				array (
+					'hierarchy' => NULL,
+				),
+				'CommunityLang' =>
+				array (
+					'CommunityLang' =>
+					array (
+						'id' => '2',
+						'room_id' => '16',
+						'lang' => 'eng',
+						'community_name' => 'UnitTest-A',
+						'summary' => 'UnitTest-A UnitTest-A UnitTest-A',
+						'revision_group_id' => '0',
+						'created' => '2013-11-20 05:41:20',
+						'created_user_id' => '1',
+						'created_user_name' => 'admin',
+						'modified' => '2013-11-20 05:41:20',
+						'modified_user_id' => '1',
+						'modified_user_name' => 'admin',
+					),
+					'Revision' =>
+					array (
+						'id' => NULL,
+						'group_id' => NULL,
+						'content' => NULL,
+						'revision_name' => NULL,
+						'is_approved_pointer' => NULL,
+						'created' => NULL,
+						'created_user_id' => NULL,
+						'created_user_name' => NULL,
+					),
+				),
+			),
+		);
+		$this->assertEqual($ck , $ans);
+
+		//コミュニティだった場合
+		$page   = $this->Page->find('first' , array('conditions'=>array('Page.id'=>16)));
+		$userId = 2;
+		$ck = $this->Page->findBreadcrumb($page , $userId);
+		$ans = array (
+			0 =>
+			array (
+				'Page' =>
+				array (
+					'id' => '16',
+					'root_id' => '16',
+					'parent_id' => '4',
+					'thread_num' => '1',
+					'display_sequence' => '1',
+					'page_name' => 'Community-1',
+					'permalink' => 'community/community-1/',
+					'position_flag' => '1',
+					'lang' => '',
+					'is_page_meta_node' => '0',
+					'is_page_style_node' => '0',
+					'is_page_layout_node' => '0',
+					'is_page_theme_node' => '0',
+					'is_page_column_node' => '0',
+					'room_id' => '16',
+					'space_type' => '4',
+					'show_count' => '0',
+					'display_flag' => '1',
+					'display_from_date' => NULL,
+					'display_to_date' => NULL,
+					'display_apply_subpage' => '1',
+					'display_reverse_permalink' => NULL,
+					'is_approved' => '1',
+					'lock_authority_id' => '0',
+					'created' => '2013-06-24 06:59:37',
+					'created_user_id' => '1',
+					'created_user_name' => 'admin',
+					'modified' => '2013-06-24 06:59:37',
+					'modified_user_id' => '1',
+					'modified_user_name' => 'admin',
+				),
+				'PageAuthority' =>
+				array (
+					'hierarchy' => NULL,
+				),
+				'CommunityLang' =>
+				array (
+					'CommunityLang' =>
+					array (
+						'id' => '2',
+						'room_id' => '16',
+						'lang' => 'eng',
+						'community_name' => 'UnitTest-A',
+						'summary' => 'UnitTest-A UnitTest-A UnitTest-A',
+						'revision_group_id' => '0',
+						'created' => '2013-11-20 05:41:20',
+						'created_user_id' => '1',
+						'created_user_name' => 'admin',
+						'modified' => '2013-11-20 05:41:20',
+						'modified_user_id' => '1',
+						'modified_user_name' => 'admin',
+					),
+					'Revision' =>
+					array (
+						'id' => NULL,
+						'group_id' => NULL,
+						'content' => NULL,
+						'revision_name' => NULL,
+						'is_approved_pointer' => NULL,
+						'created' => NULL,
+						'created_user_id' => NULL,
+						'created_user_name' => NULL,
+					),
+				),
+			),
+		);
+		$this->assertEqual($ck , $ans);
+
+		$page   = $this->Page->find('first' , array('conditions'=>array('Page.id'=>11)));
+		$userId = 2;
+		$ck = $this->Page->findBreadcrumb($page , $userId);
+		$ans = array (
+			0 =>
+			array (
+				'Page' =>
+				array (
+					'id' => '11',
+					'root_id' => '11',
+					'parent_id' => '3',
+					'thread_num' => '1',
+					'display_sequence' => '0',
+					'page_name' => 'Private room of admin',
+					'permalink' => 'private/Admin/',
+					'position_flag' => '1',
+					'lang' => '',
+					'is_page_meta_node' => '0',
+					'is_page_style_node' => '0',
+					'is_page_layout_node' => '0',
+					'is_page_theme_node' => '0',
+					'is_page_column_node' => '0',
+					'room_id' => '11',
+					'space_type' => '3',
+					'show_count' => '0',
+					'display_flag' => '1',
+					'display_from_date' => NULL,
+					'display_to_date' => NULL,
+					'display_apply_subpage' => '1',
+					'display_reverse_permalink' => NULL,
+					'is_approved' => '1',
+					'lock_authority_id' => '0',
+					'created' => NULL,
+					'created_user_id' => '0',
+					'created_user_name' => '',
+					'modified' => NULL,
+					'modified_user_id' => '1',
+					'modified_user_name' => '',
+				),
+				'PageAuthority' =>
+				array (
+					'hierarchy' => NULL,
+				),
+			),
+		);
+		$this->assertEqual($ck , $ans);
+
+		//存在しないuserId
+		$page   = $this->Page->find('first' , array('conditions'=>array('Page.id'=>11)));
+		$userId = 999999999999;
+		$ck = $this->Page->findBreadcrumb($page , $userId);
+		$ans = array (
+			0 =>
+			array (
+				'Page' =>
+				array (
+					'id' => '11',
+					'root_id' => '11',
+					'parent_id' => '3',
+					'thread_num' => '1',
+					'display_sequence' => '0',
+					'page_name' => 'Private room of admin',
+					'permalink' => 'private/Admin/',
+					'position_flag' => '1',
+					'lang' => '',
+					'is_page_meta_node' => '0',
+					'is_page_style_node' => '0',
+					'is_page_layout_node' => '0',
+					'is_page_theme_node' => '0',
+					'is_page_column_node' => '0',
+					'room_id' => '11',
+					'space_type' => '3',
+					'show_count' => '0',
+					'display_flag' => '1',
+					'display_from_date' => NULL,
+					'display_to_date' => NULL,
+					'display_apply_subpage' => '1',
+					'display_reverse_permalink' => NULL,
+					'is_approved' => '1',
+					'lock_authority_id' => '0',
+					'created' => NULL,
+					'created_user_id' => '0',
+					'created_user_name' => '',
+					'modified' => NULL,
+					'modified_user_id' => '1',
+					'modified_user_name' => '',
+				),
+				'PageAuthority' =>
+				array (
+					'hierarchy' => NULL,
+				),
+			),
+		);
+		$this->assertEqual($ck , $ans);
+
+		//$userIdが文字列（パラメータ異常系）省略した場合と同じ値が戻る
+		$page   = $this->Page->find('first' , array('conditions'=>array('Page.id'=>11)));
+		$userId = 'AAAAAAA';
+		$ck = $this->Page->findBreadcrumb($page , $userId);
+		$ans = array (
+			0 =>
+			array (
+				'Page' =>
+				array (
+					'id' => '11',
+					'root_id' => '11',
+					'parent_id' => '3',
+					'thread_num' => '1',
+					'display_sequence' => '0',
+					'page_name' => 'Private room of admin',
+					'permalink' => 'private/Admin/',
+					'position_flag' => '1',
+					'lang' => '',
+					'is_page_meta_node' => '0',
+					'is_page_style_node' => '0',
+					'is_page_layout_node' => '0',
+					'is_page_theme_node' => '0',
+					'is_page_column_node' => '0',
+					'room_id' => '11',
+					'space_type' => '3',
+					'show_count' => '0',
+					'display_flag' => '1',
+					'display_from_date' => NULL,
+					'display_to_date' => NULL,
+					'display_apply_subpage' => '1',
+					'display_reverse_permalink' => NULL,
+					'is_approved' => '1',
+					'lock_authority_id' => '0',
+					'created' => NULL,
+					'created_user_id' => '0',
+					'created_user_name' => '',
+					'modified' => NULL,
+					'modified_user_id' => '1',
+					'modified_user_name' => '',
+				),
+				'PageAuthority' =>
+				array (
+					'hierarchy' => NULL,
+				),
+			),
+		);
+		$this->assertEqual($ck , $ans);
+
+		//Pageの1レコード分の配列が格納されていなかった場合が未考慮 Notice Error
+		//TODO : パラメータ異常系の考慮
+		//$ck = $this->Page->findBreadcrumb(array('Page'=>array()));
+		//var_export($ck);
 	}
 
 /**
