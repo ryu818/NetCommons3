@@ -168,6 +168,619 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testFindAuthById() {
+
+		//Page.idを指定しなかった場合
+		//falseよりもnullが適切な気もする。
+		$pageIdArr = array();
+		$ck = $this->Page->findAuthById($pageIdArr);
+		$this->assertEqual($ck , false);
+
+		$pageIdArr = array(1);
+		$ck = $this->Page->findAuthById($pageIdArr);
+		$ans = array (
+			1 =>
+			array (
+				'Page' =>
+				array (
+					'id' => '1',
+					'root_id' => '0',
+					'parent_id' => '0',
+					'thread_num' => '0',
+					'display_sequence' => '1',
+					'page_name' => 'Public room',
+					'permalink' => '',
+					'position_flag' => '1',
+					'lang' => '',
+					'is_page_meta_node' => '0',
+					'is_page_style_node' => '0',
+					'is_page_layout_node' => '0',
+					'is_page_theme_node' => '0',
+					'is_page_column_node' => '0',
+					'room_id' => '0',
+					'space_type' => '1',
+					'show_count' => '0',
+					'display_flag' => '1',
+					'display_from_date' => NULL,
+					'display_to_date' => NULL,
+					'display_apply_subpage' => '1',
+					'display_reverse_permalink' => NULL,
+					'is_approved' => '1',
+					'lock_authority_id' => '0',
+					'created' => NULL,
+					'created_user_id' => '0',
+					'created_user_name' => '',
+					'modified' => NULL,
+					'modified_user_id' => '0',
+					'modified_user_name' => '',
+				),
+				'Community' =>
+				array (
+					'publication_range_flag' => NULL,
+					'participate_force_all_users' => NULL,
+					'participate_flag' => NULL,
+					'is_upload' => NULL,
+					'photo' => NULL,
+				),
+				'CommunityLang' =>
+				array (
+					'community_name' => NULL,
+					'summary' => NULL,
+				),
+				'PageAuthority' =>
+				array (
+					'id' => NULL,
+					'hierarchy' => NULL,
+				),
+			),
+		);
+		$this->assertEqual($ck , $ans);
+
+		//存在しないページ
+		$pageIdArr = array(99999999999);
+		$ck = $this->Page->findAuthById($pageIdArr);
+		$this->assertEqual($ck , false);
+
+
+		//$userIdを指定し存在するページを指定した
+		$pageIdArr = array(16);
+		$userId = 1;
+		$ck = $this->Page->findAuthById($pageIdArr , $userId);
+		$ans = array (
+			16 =>
+			array (
+				'Page' =>
+				array (
+					'id' => '16',
+					'root_id' => '16',
+					'parent_id' => '4',
+					'thread_num' => '1',
+					'display_sequence' => '1',
+					'page_name' => 'UnitTest-A',
+					'permalink' => 'community-1',
+					'position_flag' => '1',
+					'lang' => '',
+					'is_page_meta_node' => '0',
+					'is_page_style_node' => '0',
+					'is_page_layout_node' => '0',
+					'is_page_theme_node' => '0',
+					'is_page_column_node' => '0',
+					'room_id' => '16',
+					'space_type' => '4',
+					'show_count' => '0',
+					'display_flag' => '1',
+					'display_from_date' => NULL,
+					'display_to_date' => NULL,
+					'display_apply_subpage' => '1',
+					'display_reverse_permalink' => NULL,
+					'is_approved' => '1',
+					'lock_authority_id' => '0',
+					'created' => '2013-06-24 06:59:37',
+					'created_user_id' => '1',
+					'created_user_name' => 'admin',
+					'modified' => '2013-06-24 06:59:37',
+					'modified_user_id' => '1',
+					'modified_user_name' => 'admin',
+				),
+				'PageUserLink' =>
+				array (
+					'authority_id' => '2',
+				),
+				'PageAuthority' =>
+				array (
+					'id' => '2',
+					'myportal_use_flag' => '0',
+					'private_use_flag' => '1',
+					'hierarchy' => '350',
+				),
+				'Community' =>
+				array (
+					'publication_range_flag' => '11',
+					'participate_force_all_users' => true,
+					'participate_flag' => '1',
+					'is_upload' => true,
+					'photo' => 'study.gif',
+				),
+				'CommunityLang' =>
+				array (
+					'community_name' => 'UnitTest-A',
+					'summary' => 'UnitTest-A UnitTest-A UnitTest-A',
+				),
+				'Authority' =>
+				array (
+					'id' => '1',
+					'hierarchy' => '500',
+					'allow_creating_community' => '4',
+					'allow_new_participant' => true,
+					'myportal_use_flag' => '1',
+					'allow_myportal_viewing_hierarchy' => '1',
+					'private_use_flag' => '1',
+					'display_participants_editing' => true,
+				),
+			),
+		);
+		$this->assertEqual($ck , $ans);
+
+		//存在しない$userIdを指定し、存在するページを指定した
+		//TODO : 存在しないUser.idを指定した場合の処理が未考慮。Noticeエラーが発生してしまう。調査し考慮した実相に変更する。
+		//$pageIdArr = array(16);
+		//$userId = 99999999999;
+		//$ck = $this->Page->findAuthById($pageIdArr , $userId);
+
+		$pageIdArr = array(16);
+		$userId = 1;
+		$spaceType = NC_SPACE_TYPE_PUBLIC;
+		//$spaceType = NC_SPACE_TYPE_GROUP;
+		$ck = $this->Page->findAuthById($pageIdArr , $userId , $spaceType);
+		$ans = array();
+		$ans[16] = array (
+			'Page' =>
+			array (
+				'id' => '16',
+				'root_id' => '16',
+				'parent_id' => '4',
+				'thread_num' => '1',
+				'display_sequence' => '1',
+				'page_name' => 'Community-1',
+				'permalink' => 'community-1',
+				'position_flag' => '1',
+				'lang' => '',
+				'is_page_meta_node' => '0',
+				'is_page_style_node' => '0',
+				'is_page_layout_node' => '0',
+				'is_page_theme_node' => '0',
+				'is_page_column_node' => '0',
+				'room_id' => '16',
+				'space_type' => '4',
+				'show_count' => '0',
+				'display_flag' => '1',
+				'display_from_date' => NULL,
+				'display_to_date' => NULL,
+				'display_apply_subpage' => '1',
+				'display_reverse_permalink' => NULL,
+				'is_approved' => '1',
+				'lock_authority_id' => '0',
+				'created' => '2013-06-24 06:59:37',
+				'created_user_id' => '1',
+				'created_user_name' => 'admin',
+				'modified' => '2013-06-24 06:59:37',
+				'modified_user_id' => '1',
+				'modified_user_name' => 'admin',
+			),
+			'PageUserLink' =>
+			array (
+				'authority_id' => '2',
+			),
+			'PageAuthority' =>
+			array (
+				'id' => '2',
+				'myportal_use_flag' => '0',
+				'private_use_flag' => '1',
+				'hierarchy' => '350',
+			),
+			'CommunityLang' =>
+			array (
+				'CommunityLang' =>
+				array (
+					'id' => '2',
+					'room_id' => '16',
+					'lang' => 'eng',
+					'community_name' => 'UnitTest-A',
+					'summary' => 'UnitTest-A UnitTest-A UnitTest-A',
+					'revision_group_id' => '0',
+					'created' => '2013-11-20 05:41:20',
+					'created_user_id' => '1',
+					'created_user_name' => 'admin',
+					'modified' => '2013-11-20 05:41:20',
+					'modified_user_id' => '1',
+					'modified_user_name' => 'admin',
+				),
+				'Revision' =>
+				array (
+					'id' => NULL,
+					'group_id' => NULL,
+					'content' => NULL,
+					'revision_name' => NULL,
+					'is_approved_pointer' => NULL,
+					'created' => NULL,
+					'created_user_id' => NULL,
+					'created_user_name' => NULL,
+				),
+			),
+			'Authority' =>
+			array (
+				'id' => '1',
+				'hierarchy' => '500',
+				'allow_creating_community' => '4',
+				'allow_new_participant' => true,
+				'myportal_use_flag' => '1',
+				'allow_myportal_viewing_hierarchy' => '1',
+				'private_use_flag' => '1',
+				'display_participants_editing' => true,
+			),
+		);
+		$this->assertEqual($ck , $ans);
+
+		//$pageIdArrがarrayではなかった場合 $type:NC_SPACE_TYPE_PUBLIC
+		$pageIdArr = 16;
+		$userId = 1;
+		$spaceType = NC_SPACE_TYPE_PUBLIC;
+		$ck = $this->Page->findAuthById($pageIdArr , $userId , $spaceType);
+		$ans = array();
+		$ans = array (
+			'Page' =>
+			array (
+				'id' => '16',
+				'root_id' => '16',
+				'parent_id' => '4',
+				'thread_num' => '1',
+				'display_sequence' => '1',
+				'page_name' => 'Community-1',
+				'permalink' => 'community-1',
+				'position_flag' => '1',
+				'lang' => '',
+				'is_page_meta_node' => '0',
+				'is_page_style_node' => '0',
+				'is_page_layout_node' => '0',
+				'is_page_theme_node' => '0',
+				'is_page_column_node' => '0',
+				'room_id' => '16',
+				'space_type' => '4',
+				'show_count' => '0',
+				'display_flag' => '1',
+				'display_from_date' => NULL,
+				'display_to_date' => NULL,
+				'display_apply_subpage' => '1',
+				'display_reverse_permalink' => NULL,
+				'is_approved' => '1',
+				'lock_authority_id' => '0',
+				'created' => '2013-06-24 06:59:37',
+				'created_user_id' => '1',
+				'created_user_name' => 'admin',
+				'modified' => '2013-06-24 06:59:37',
+				'modified_user_id' => '1',
+				'modified_user_name' => 'admin',
+			),
+			'PageUserLink' =>
+			array (
+				'authority_id' => '2',
+			),
+			'PageAuthority' =>
+			array (
+				'id' => '2',
+				'myportal_use_flag' => '0',
+				'private_use_flag' => '1',
+				'hierarchy' => '350',
+			),
+			'CommunityLang' =>
+			array (
+				'CommunityLang' =>
+				array (
+					'id' => '2',
+					'room_id' => '16',
+					'lang' => 'eng',
+					'community_name' => 'UnitTest-A',
+					'summary' => 'UnitTest-A UnitTest-A UnitTest-A',
+					'revision_group_id' => '0',
+					'created' => '2013-11-20 05:41:20',
+					'created_user_id' => '1',
+					'created_user_name' => 'admin',
+					'modified' => '2013-11-20 05:41:20',
+					'modified_user_id' => '1',
+					'modified_user_name' => 'admin',
+				),
+				'Revision' =>
+				array (
+					'id' => NULL,
+					'group_id' => NULL,
+					'content' => NULL,
+					'revision_name' => NULL,
+					'is_approved_pointer' => NULL,
+					'created' => NULL,
+					'created_user_id' => NULL,
+					'created_user_name' => NULL,
+				),
+			),
+			'Authority' =>
+			array (
+				'id' => '1',
+				'hierarchy' => '500',
+				'allow_creating_community' => '4',
+				'allow_new_participant' => true,
+				'myportal_use_flag' => '1',
+				'allow_myportal_viewing_hierarchy' => '1',
+				'private_use_flag' => '1',
+				'display_participants_editing' => true,
+			),
+		);
+		$this->assertEqual($ck , $ans);
+
+		//$pageIdArrがarrayではなかった場合 $type :NC_SPACE_TYPE_MYPORTAL
+		$pageIdArr = 16;
+		$userId = 1;
+		$spaceType = NC_SPACE_TYPE_MYPORTAL;
+		$ck = $this->Page->findAuthById($pageIdArr , $userId , $spaceType);
+		$ans = array();
+		$ans = array (
+			'Page' =>
+			array (
+				'id' => '16',
+				'root_id' => '16',
+				'parent_id' => '4',
+				'thread_num' => '1',
+				'display_sequence' => '1',
+				'page_name' => 'Community-1',
+				'permalink' => 'community-1',
+				'position_flag' => '1',
+				'lang' => '',
+				'is_page_meta_node' => '0',
+				'is_page_style_node' => '0',
+				'is_page_layout_node' => '0',
+				'is_page_theme_node' => '0',
+				'is_page_column_node' => '0',
+				'room_id' => '16',
+				'space_type' => '4',
+				'show_count' => '0',
+				'display_flag' => '1',
+				'display_from_date' => NULL,
+				'display_to_date' => NULL,
+				'display_apply_subpage' => '1',
+				'display_reverse_permalink' => NULL,
+				'is_approved' => '1',
+				'lock_authority_id' => '0',
+				'created' => '2013-06-24 06:59:37',
+				'created_user_id' => '1',
+				'created_user_name' => 'admin',
+				'modified' => '2013-06-24 06:59:37',
+				'modified_user_id' => '1',
+				'modified_user_name' => 'admin',
+			),
+			'PageUserLink' =>
+			array (
+				'authority_id' => '2',
+			),
+			'PageAuthority' =>
+			array (
+				'id' => '2',
+				'myportal_use_flag' => '0',
+				'private_use_flag' => '1',
+				'hierarchy' => '350',
+			),
+			'CommunityLang' =>
+			array (
+				'CommunityLang' =>
+				array (
+					'id' => '2',
+					'room_id' => '16',
+					'lang' => 'eng',
+					'community_name' => 'UnitTest-A',
+					'summary' => 'UnitTest-A UnitTest-A UnitTest-A',
+					'revision_group_id' => '0',
+					'created' => '2013-11-20 05:41:20',
+					'created_user_id' => '1',
+					'created_user_name' => 'admin',
+					'modified' => '2013-11-20 05:41:20',
+					'modified_user_id' => '1',
+					'modified_user_name' => 'admin',
+				),
+				'Revision' =>
+				array (
+					'id' => NULL,
+					'group_id' => NULL,
+					'content' => NULL,
+					'revision_name' => NULL,
+					'is_approved_pointer' => NULL,
+					'created' => NULL,
+					'created_user_id' => NULL,
+					'created_user_name' => NULL,
+				),
+			),
+			'Authority' =>
+			array (
+				'id' => '1',
+				'hierarchy' => '500',
+				'allow_creating_community' => '4',
+				'allow_new_participant' => true,
+				'myportal_use_flag' => '1',
+				'allow_myportal_viewing_hierarchy' => '1',
+				'private_use_flag' => '1',
+				'display_participants_editing' => true,
+			),
+		);
+		$this->assertEqual($ck , $ans);
+
+		//$pageIdArrがarrayではなかった場合 $type :NC_SPACE_TYPE_PRIVATE
+		$pageIdArr = 16;
+		$userId = 1;
+		$spaceType = NC_SPACE_TYPE_PRIVATE;
+		$ck = $this->Page->findAuthById($pageIdArr , $userId , $spaceType);
+		$ans = array();
+		$ans = array (
+			'Page' =>
+			array (
+				'id' => '16',
+				'root_id' => '16',
+				'parent_id' => '4',
+				'thread_num' => '1',
+				'display_sequence' => '1',
+				'page_name' => 'Community-1',
+				'permalink' => 'community-1',
+				'position_flag' => '1',
+				'lang' => '',
+				'is_page_meta_node' => '0',
+				'is_page_style_node' => '0',
+				'is_page_layout_node' => '0',
+				'is_page_theme_node' => '0',
+				'is_page_column_node' => '0',
+				'room_id' => '16',
+				'space_type' => '4',
+				'show_count' => '0',
+				'display_flag' => '1',
+				'display_from_date' => NULL,
+				'display_to_date' => NULL,
+				'display_apply_subpage' => '1',
+				'display_reverse_permalink' => NULL,
+				'is_approved' => '1',
+				'lock_authority_id' => '0',
+				'created' => '2013-06-24 06:59:37',
+				'created_user_id' => '1',
+				'created_user_name' => 'admin',
+				'modified' => '2013-06-24 06:59:37',
+				'modified_user_id' => '1',
+				'modified_user_name' => 'admin',
+			),
+			'PageUserLink' =>
+			array (
+				'authority_id' => '2',
+			),
+			'PageAuthority' =>
+			array (
+				'id' => '2',
+				'myportal_use_flag' => '0',
+				'private_use_flag' => '1',
+				'hierarchy' => '350',
+			),
+			'CommunityLang' =>
+			array (
+				'CommunityLang' =>
+				array (
+					'id' => '2',
+					'room_id' => '16',
+					'lang' => 'eng',
+					'community_name' => 'UnitTest-A',
+					'summary' => 'UnitTest-A UnitTest-A UnitTest-A',
+					'revision_group_id' => '0',
+					'created' => '2013-11-20 05:41:20',
+					'created_user_id' => '1',
+					'created_user_name' => 'admin',
+					'modified' => '2013-11-20 05:41:20',
+					'modified_user_id' => '1',
+					'modified_user_name' => 'admin',
+				),
+				'Revision' =>
+				array (
+					'id' => NULL,
+					'group_id' => NULL,
+					'content' => NULL,
+					'revision_name' => NULL,
+					'is_approved_pointer' => NULL,
+					'created' => NULL,
+					'created_user_id' => NULL,
+					'created_user_name' => NULL,
+				),
+			),
+			'Authority' =>
+			array (
+				'id' => '1',
+				'hierarchy' => '500',
+				'allow_creating_community' => '4',
+				'allow_new_participant' => true,
+				'myportal_use_flag' => '1',
+				'allow_myportal_viewing_hierarchy' => '1',
+				'private_use_flag' => '1',
+				'display_participants_editing' => true,
+			),
+		);
+		$this->assertEqual($ck , $ans);
+
+		//$pageIdArrがarrayではなかった場合 $type :NC_SPACE_TYPE_GROUP コミュニティの情報が充実する。
+		//$space_typeの差では、NC_SPACE_TYPE_GROUPとそれ以外でデータの内容が異なる。
+		//同じPageなのに配列の構造は異なる状態になっている。
+		$pageIdArr = 16;
+		$userId = 1;
+		$spaceType = NC_SPACE_TYPE_GROUP;
+		$ck = $this->Page->findAuthById($pageIdArr , $userId , $spaceType);
+		$ans = array();
+		$ans = array (
+			'Page' =>
+			array (
+				'id' => '16',
+				'root_id' => '16',
+				'parent_id' => '4',
+				'thread_num' => '1',
+				'display_sequence' => '1',
+				'page_name' => 'UnitTest-A',
+				'permalink' => 'community-1',
+				'position_flag' => '1',
+				'lang' => '',
+				'is_page_meta_node' => '0',
+				'is_page_style_node' => '0',
+				'is_page_layout_node' => '0',
+				'is_page_theme_node' => '0',
+				'is_page_column_node' => '0',
+				'room_id' => '16',
+				'space_type' => '4',
+				'show_count' => '0',
+				'display_flag' => '1',
+				'display_from_date' => NULL,
+				'display_to_date' => NULL,
+				'display_apply_subpage' => '1',
+				'display_reverse_permalink' => NULL,
+				'is_approved' => '1',
+				'lock_authority_id' => '0',
+				'created' => '2013-06-24 06:59:37',
+				'created_user_id' => '1',
+				'created_user_name' => 'admin',
+				'modified' => '2013-06-24 06:59:37',
+				'modified_user_id' => '1',
+				'modified_user_name' => 'admin',
+			),
+			'PageUserLink' =>
+			array (
+				'authority_id' => '2',
+			),
+			'PageAuthority' =>
+			array (
+				'id' => '2',
+				'myportal_use_flag' => '0',
+				'private_use_flag' => '1',
+				'hierarchy' => '350',
+			),
+			'Community' =>
+			array (
+				'publication_range_flag' => '11',
+				'participate_force_all_users' => true,
+				'participate_flag' => '1',
+				'is_upload' => true,
+				'photo' => 'study.gif',
+			),
+			'CommunityLang' =>
+			array (
+				'community_name' => 'UnitTest-A',
+				'summary' => 'UnitTest-A UnitTest-A UnitTest-A',
+			),
+			'Authority' =>
+			array (
+				'id' => '1',
+				'hierarchy' => '500',
+				'allow_creating_community' => '4',
+				'allow_new_participant' => true,
+				'myportal_use_flag' => '1',
+				'allow_myportal_viewing_hierarchy' => '1',
+				'private_use_flag' => '1',
+				'display_participants_editing' => true,
+			),
+		);
+		$this->assertEqual($ck , $ans);
 	}
 
 /**
