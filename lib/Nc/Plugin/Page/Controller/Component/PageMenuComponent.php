@@ -1520,7 +1520,7 @@ class PageMenuComponent extends Component {
 				//	$pre_page_id = $block['Block']['page_id'];
 				//	$current++;
 				//}
-				if($block['Block']['title'] == "{X-CONTENT}") {
+				if($block['Block']['title'] == NC_DEFAULT_BLOCK_TITLE) {
 					$title = $content['Content']['title'];
 				} else {
 					$title = $block['Block']['title'];

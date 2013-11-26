@@ -17,7 +17,7 @@
 		}
 
 		// ブロック名称
-		if($val['Block']['title'] == "{X-CONTENT}") {
+		if($val['Block']['title'] == NC_DEFAULT_BLOCK_TITLE) {
 			$val['Block']['title'] = $val['Content']['title'];
 		}
 

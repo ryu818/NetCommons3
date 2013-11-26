@@ -96,13 +96,16 @@ if($page_hierarchy >= NC_AUTH_MIN_CHIEF) {
 </div>
 <div id="nc-block-header-operation<?php echo($id); ?>" class="nc-drop-down">
 	<ul>
+		<?php if($block['Module']['copy_operation'] == 'enabled' || $block['Module']['shortcut_operation'] == 'enabled' ||
+			$block['Module']['move_operation'] == 'enabled'): ?>
 		<li class="nc-drop-down-border">
 			<?php
 				/* TODO:lock_authority_idが入力されているロックされたブロックはコピー不可とする */
-								echo $this->Html->link(__('Copy'), array('plugin' => 'block', 'controller' => 'operations', 'action' => 'copy', 'block_id' => $block['Block']['id']),
-								array('title' => __('Copy'), 'id' => 'nc-block-header-copy'.$id, 'class' => 'link nc-hover-highlight','data-ajax' => '', 'data-ajax-type' => 'post'));
-							?>
+				echo $this->Html->link(__('Copy'), array('plugin' => 'block', 'controller' => 'operations', 'action' => 'copy', 'block_id' => $block['Block']['id']),
+				array('title' => __('Copy'), 'id' => 'nc-block-header-copy'.$id, 'class' => 'link nc-hover-highlight','data-ajax' => '', 'data-ajax-type' => 'post'));
+			?>
 		</li>
+		<?php endif; ?>
 		<?php if($page_hierarchy >= NC_AUTH_MIN_CHIEF): ?>
 		<li>
 			<?php

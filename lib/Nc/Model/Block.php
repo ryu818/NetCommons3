@@ -302,11 +302,12 @@ class Block extends AppModel
 		$val['Block']['dir_name'] = $val['Module']['dir_name'];
 		$val['Block']['edit_controller_action'] = $val['Module']['edit_controller_action'];
 		$val['Block']['style_controller_action'] = $val['Module']['style_controller_action'];
+		$val['Block']['display_content_title'] = _OFF;
 
 		if($val['Block']['title'] != '') {
 			if($val['Block']['title'] == "{X-CONTENT}") {
 				$val['Block']['title'] = $val['Content']['title'];
-				$val['Block']['block_only'] = _ON;
+				$val['Block']['display_content_title'] = _ON;
 			}
 		}
 
@@ -469,6 +470,7 @@ class Block extends AppModel
 			'BlockPage.thread_num','BlockPage.room_id','BlockPage.root_id','BlockPage.space_type',
 			'Content.id','Content.module_id','Content.title','Content.shortcut_type','Content.master_id','Content.room_id','Content.display_flag','Content.is_approved','Content.url',
 			'Module.id','Module.controller_action','Module.edit_controller_action','Module.style_controller_action','Module.dir_name','Module.content_has_one',
+			'Module.copy_operation','Module.shortcut_operation','Module.move_operation',
 			'ContentAuthority.id','ContentAuthority.hierarchy','PageAuthority.id','PageAuthority.hierarchy',
 
 		);

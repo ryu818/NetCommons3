@@ -8,9 +8,9 @@
 		<?php if(!empty($trackback_is_max)): ?>
 			<div class="blog-trackback-all">
 				<?php
-					echo $this->Html->link(__('Show All'),
+					echo $this->Html->link(__('Show all'),
 						array('controller' => 'blog', 'action' => 'moreTrackback', $blog_post['BlogPost']['id']),
-						array('title' =>__('Show All'), 'data-ajax' => '#' . $id. '-trackbacks',  'data-ajax-type' => 'get'
+						array('title' =>__('Show all'), 'data-ajax' => '#' . $id. '-trackbacks',  'data-ajax-type' => 'get'
 					));
 				?>
 			</div>

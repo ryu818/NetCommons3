@@ -34,7 +34,7 @@
 			'?' => array('comment_back_page' => $this->Paginator->current())
 		);
 		$deleteHtml =  $this->Html->link(__('Delete'), $deleteUrl,
-			array('title' =>__('Delete Comment'), 'data-ajax-confirm' => __('Deleting %s. <br />Are you sure to proceed?',__('Comment')),
+			array('title' =>__('Delete comment'), 'data-ajax-confirm' => __('Deleting %s. <br />Are you sure to proceed?',__('Comment')),
 				'data-pjax' => '#'.$id, 'data-ajax-type' => 'post', 'data-ajax-data' => '{"data[_Token][key]": "'.$this->params['_Token']['key'].'"}'
 			));
 		// 返信

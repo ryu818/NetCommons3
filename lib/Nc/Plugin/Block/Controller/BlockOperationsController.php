@@ -13,7 +13,12 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 class BlockOperationsController extends BlockAppController {
-
+/**
+ * Model name
+ *
+ * @var array
+ */
+	public $uses = array('Block.BlockOperation');
 /**
  * Component name
  *
@@ -260,6 +265,9 @@ class BlockOperationsController extends BlockAppController {
 	protected function validatorRequest($request, $page, $module) {
 		$dir_name = $module['Module']['dir_name'];
 		if (!isset($request->data) || !isset($request->data['show_count']) || !isset($request->data['page_id'])) {
+			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
+		}
+		if(!$this->BlockOperation->canModuleOperation($this->action, $module)) {
 			throw new BadRequestException(__('Unauthorized request.<br />Please reload the page.'));
 		}
 

@@ -83,7 +83,7 @@ class BlockOperation extends AppModel {
 	public function defaultBlock($ins_block) {
 		// TODO:固定 test
 		unset($ins_block['Block']['id']);
-		$ins_block['Block']['title'] = '{X-CONTENT}';
+		$ins_block['Block']['title'] = NC_DEFAULT_BLOCK_TITLE;
 		$ins_block['Block']['module_id'] = 0;
 		$ins_block['Block']['content_id'] = 0;
 		$ins_block['Block']['show_title'] = _ON;
@@ -413,5 +413,34 @@ class BlockOperation extends AppModel {
 		}
 
 		return array(true, $ins_block, $insContent);
+	}
+
+
+/**
+ * ブロック操作ができるかどうかのチェック
+ * TODO:Authority.allow_XXXXX_operation、allow_operation_of_shortcutのチェックは未実装(同じルーム内での操作は許す必要あり)
+ * @param  string        $action paste or shortcut or move
+ * @param  Model Module  $module
+ * @return boolean
+ * @since  v 3.0.0.0
+ */
+	public function canModuleOperation($action, $module) {
+		switch($action) {
+			case 'paste':
+				$columnName = 'copy_operation';
+				break;
+			case 'shortcut':
+				$columnName = 'shortcut_operation';
+				break;
+			case 'move':
+				$columnName = 'move_operation';
+				break;
+			default:
+				return false;
+		}
+		if($module['Module'][$columnName] != 'enabled') {
+			return false;
+		}
+		return true;
 	}
 }
