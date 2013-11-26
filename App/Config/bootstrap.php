@@ -84,6 +84,8 @@ try {
 	die('Unable to load Config/app.php. Create it by copying Config/app.php.default to Config/app.php.');
 }
 
+Plugin::load('NC', array('bootstrap' => true));
+
 /**
  * Configure an autoloader for the App namespace.
  *
@@ -135,7 +137,7 @@ if (!Configure::read('App.fullBaseUrl')) {
 }
 
 Cache::config(Configure::consume('Cache'));
-ConnectionManager::config(Configure::consume('Datasources'));
+ConnectionManager::config(Configure::read('Datasources'));
 Email::configTransport(Configure::consume('EmailTransport'));
 Email::config(Configure::consume('Email'));
 Log::config(Configure::consume('Log'));
@@ -159,4 +161,6 @@ Log::config(Configure::consume('Log'));
  * Plugin::load('DebugKit'); //Loads a single plugin named DebugKit
  *
  */
-Plugin::loadAll();
+foreach (['Migrations', 'DebugKit'] as $plugin) {
+	Plugin::load($plugin);
+}

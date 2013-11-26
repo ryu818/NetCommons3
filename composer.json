@@ -18,8 +18,6 @@
     "minimum-stability": "dev",
     "require": {
         "php": ">=5.4",
-        "ext-mcrypt": "*",
-        "ext-mbstring": "*",
         "cakephp/cakephp": "3.0.*-dev",
         "cakephp/debug_kit": "2.2.*",
         "cakedc/migrations": "dev-master"

@@ -1,0 +1,5 @@
+<?php
+use Cake\Core\Configure;
+
+Configure::write('Security.salt', '{default_salt}');
+Configure::write('Security.cipherSeed', '{default_cipherSeed}');

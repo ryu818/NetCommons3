@@ -42,7 +42,6 @@ $config = [
 		'dir'           => 'App',
 		'webroot'       => 'webroot',
 		'www_root'      => WWW_ROOT,
-		// 'baseUrl'    => env('SCRIPT_NAME'),
 		'fullBaseUrl'   => false,
 		'imageBaseUrl'  => 'img/',
 		'cssBaseUrl'    => 'css/',
@@ -50,16 +49,13 @@ $config = [
 		'paths'         => [
 			'plugins' => [
 				ROOT . DS . 'Plugin' . DS,
-				/* ROOT . DS . 'app' . DS . 'Plugin' . DS, */
-				/* NC . 'Plugin' . DS */
+				ROOT . DS . 'App' . DS . 'Plugin' . DS,
 			],
 			'views'   => [
 				APP . 'View' . DS,
-				/* NC . 'View' . DS */
 			],
 			'vendors' => [
 				APP . 'Vendor' . DS,
-				/* NC . 'Vendor' . DS, */
 			],
 		],
 	],
@@ -227,7 +223,7 @@ $config = [
 			'login' => 'root',
 			'password' => '',
 			'database' => '',
-			'prefix' => 'nc3_',
+			'prefix' => '',
 			'encoding' => 'utf8',
 		],
 
