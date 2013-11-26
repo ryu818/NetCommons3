@@ -4317,7 +4317,7 @@ class NcPageTest extends CakeTestCase {
 		$ans = array (
 			0 =>
 			array (
-				'type' => 'RIGHT',
+				'type' => 'LEFT',
 				'table' => 'page_user_links',
 				'alias' => 'PageUserLink',
 				'conditions' => '`Page`.`room_id`=`PageUserLink`.`room_id` AND `PageUserLink`.`user_id` =1',
@@ -4385,7 +4385,7 @@ class NcPageTest extends CakeTestCase {
 		$ans = array (
 			0 =>
 			array (
-				'type' => NULL,
+				'type' => 'LEFT',
 				'table' => 'page_user_links',
 				'alias' => 'PageUserLink',
 				'conditions' => '`Page`.`room_id`=`PageUserLink`.`room_id` AND `PageUserLink`.`user_id` =1',
@@ -4414,12 +4414,11 @@ class NcPageTest extends CakeTestCase {
 		);
 		$this->assertEqual($ck , $ans);
 		//$userIdがしていされていて、$type無指定　$spaceTypeを NC_SPACE_TYPE_GROUP以外が指定されている場合
-		//TODO : $typeは、指定できるものをチェックしてそれ以外のものが指定された場合にどうすべきか確認後対応
 		$ck = $this->Page->getJoinsArray(1 , null , 'AAAA');
 		$ans = array (
 			0 =>
 			array (
-				'type' => NULL,
+				'type' => 'LEFT',
 				'table' => 'page_user_links',
 				'alias' => 'PageUserLink',
 				'conditions' => '`Page`.`room_id`=`PageUserLink`.`room_id` AND `PageUserLink`.`user_id` =1',
