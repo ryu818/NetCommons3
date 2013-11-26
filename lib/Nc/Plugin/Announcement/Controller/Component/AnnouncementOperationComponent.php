@@ -24,11 +24,11 @@ class AnnouncementOperationComponent extends Component {
 /**
  * 初期処理
  *
- * @param   void
+ * @param   Controller $controller Controller with components to startup
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function startup() {
+	public function startup(Controller $controller) {
 		$this->Content = ClassRegistry::init('Content');
 		$this->Revision = ClassRegistry::init('Revision');
 		$this->Archive = ClassRegistry::init('Archive');
