@@ -4067,6 +4067,15 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testPaginate() {
+
+		//orderが必須になっているのに使われていない。
+		//ちょっと後回し....
+		//$conditions = array('Page.id'=>16);
+		//$fields= array('Page.id');
+		//$order = array();
+		//$limit = 10;
+		//$ck = $this->Page->Paginate($conditions , $fields, $order, $limit);
+		//var_dump($ck);
 	}
 
 /**
@@ -4083,6 +4092,116 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testGetFieldsArray() {
+
+		//$userIdがしていされていて、$spaceTypeが指定されていない場合
+		$ck = $this->Page->getFieldsArray(1);
+		$ans = array (
+			0 => 'Page.*',
+			1 => 'PageUserLink.authority_id',
+			2 => 'PageAuthority.id',
+			3 => 'PageAuthority.myportal_use_flag',
+			4 => 'PageAuthority.private_use_flag',
+			5 => 'PageAuthority.hierarchy',
+			6 => 'Community.publication_range_flag',
+			7 => 'Community.participate_force_all_users',
+			8 => 'Community.participate_flag',
+			9 => 'Community.is_upload',
+			10 => 'Community.photo',
+			11 => 'CommunityLang.community_name',
+			12 => 'CommunityLang.summary',
+		);
+		$this->assertEqual($ck , $ans);
+
+		//$userIdが空、$spaceTypeが指定されていない場合
+		$ck = $this->Page->getFieldsArray('');
+		$ans = array (
+			0 => 'Page.*',
+			1 => 'Community.publication_range_flag',
+			2 => 'Community.participate_force_all_users',
+			3 => 'Community.participate_flag',
+			4 => 'Community.is_upload',
+			5 => 'Community.photo',
+			6 => 'CommunityLang.community_name',
+			7 => 'CommunityLang.summary',
+		);
+		$this->assertEqual($ck , $ans);
+
+		//$userIdが指定されていて、$spaceTypeに arrayでNC_SPACE_TYPE_GROUPが指定されている状態
+		$ck = $this->Page->getFieldsArray(1 , array(NC_SPACE_TYPE_GROUP));
+		$ans = array (
+			0 => 'Page.*',
+			1 => 'PageUserLink.authority_id',
+			2 => 'PageAuthority.id',
+			3 => 'PageAuthority.myportal_use_flag',
+			4 => 'PageAuthority.private_use_flag',
+			5 => 'PageAuthority.hierarchy',
+			6 => 'Community.publication_range_flag',
+			7 => 'Community.participate_force_all_users',
+			8 => 'Community.participate_flag',
+			9 => 'Community.is_upload',
+			10 => 'Community.photo',
+			11 => 'CommunityLang.community_name',
+			12 => 'CommunityLang.summary',
+		);
+		$this->assertEqual($ck , $ans);
+
+		//$userIdが指定されていて、$spaceTypeに NC_SPACE_TYPE_GROUPが指定されている状態
+		$ck = $this->Page->getFieldsArray(1 , NC_SPACE_TYPE_GROUP);
+		$ans = array (
+			0 => 'Page.*',
+			1 => 'PageUserLink.authority_id',
+			2 => 'PageAuthority.id',
+			3 => 'PageAuthority.myportal_use_flag',
+			4 => 'PageAuthority.private_use_flag',
+			5 => 'PageAuthority.hierarchy',
+			6 => 'Community.publication_range_flag',
+			7 => 'Community.participate_force_all_users',
+			8 => 'Community.participate_flag',
+			9 => 'Community.is_upload',
+			10 => 'Community.photo',
+			11 => 'CommunityLang.community_name',
+			12 => 'CommunityLang.summary',
+		);
+		$this->assertEqual($ck , $ans);
+
+		//$userIdが指定されていて、$spaceTypeに文字列が指定された場合（例外）
+		$ck = $this->Page->getFieldsArray(1 , 'AAAAA');
+		$ans = array (
+			0 => 'Page.*',
+			1 => 'PageUserLink.authority_id',
+			2 => 'PageAuthority.id',
+			3 => 'PageAuthority.myportal_use_flag',
+			4 => 'PageAuthority.private_use_flag',
+			5 => 'PageAuthority.hierarchy',
+		);
+		$this->assertEqual($ck , $ans);
+
+		//$userIdが指定されておらず、$spaceTypeに NC_SPACE_TYPE_GROUPが指定されている状態
+		$ck = $this->Page->getFieldsArray(null , NC_SPACE_TYPE_GROUP);
+		$ans = array (
+			0 => 'Page.*',
+			1 => 'Community.publication_range_flag',
+			2 => 'Community.participate_force_all_users',
+			3 => 'Community.participate_flag',
+			4 => 'Community.is_upload',
+			5 => 'Community.photo',
+			6 => 'CommunityLang.community_name',
+			7 => 'CommunityLang.summary',
+		);
+		$this->assertEqual($ck , $ans);
+		//$userIdが指定されておらず、$spaceTypeに arrayでNC_SPACE_TYPE_GROUPが指定されている状態
+		$ck = $this->Page->getFieldsArray(null , array(NC_SPACE_TYPE_GROUP));
+		$ans = array (
+			0 => 'Page.*',
+			1 => 'Community.publication_range_flag',
+			2 => 'Community.participate_force_all_users',
+			3 => 'Community.participate_flag',
+			4 => 'Community.is_upload',
+			5 => 'Community.photo',
+			6 => 'CommunityLang.community_name',
+			7 => 'CommunityLang.summary',
+		);
+		$this->assertEqual($ck , $ans);
 	}
 
 /**
