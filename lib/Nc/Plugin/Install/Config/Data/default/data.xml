@@ -2937,7 +2937,7 @@ We recommend that you change your password after login.</column>
             <column name="title">Default how to participate</column>
             <column name="value">1</column>
             <column name="description"></column>
-            <column name="options">a:4:{i:3;s:37:&quot;Free(All login user can participate.)&quot;;i:2;s:49:&quot;Free(Require the approval of room manager.)&quot;;i:1;s:45:&quot;Invitation(Only Invite user can participate.)&quot;;i:0;s:21:&quot;Only participant user&quot;;}</column>
+            <column name="options">a:4:{i:3;s:37:&quot;Free(All login user can participate.)&quot;;i:2;s:43:&quot;Free(Require the approval of room manager.)&quot;;i:1;s:45:&quot;Invitation(Only Invite user can participate.)&quot;;i:0;s:21:&quot;Only participant user&quot;;}</column>
             <column name="domain">system</column>
             <column name="attribute">style=&quot;width:360px;&quot;</column>
             <column name="required">1</column>
