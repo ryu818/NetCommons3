@@ -784,14 +784,6 @@ class NcPageTest extends CakeTestCase {
 	}
 
 /**
- * testAfterFindIds method
- *
- * @return void
- */
-	public function testAfterFindIds() {
-	}
-
-/**
  * testFindBreadcrumb method
  *
  * @return void
@@ -1323,14 +1315,6 @@ class NcPageTest extends CakeTestCase {
 		);
 		//TODO 先に testFindViewableのテストをしてから書く。
 
-	}
-
-/**
- * testFindViewableRoom method
- *
- * @return void
- */
-	public function testFindViewableRoom() {
 	}
 
 /**
@@ -4203,7 +4187,6 @@ class NcPageTest extends CakeTestCase {
 
 	}
 
-
 	public function test_format_findViewable_options() {
 		$base= array(
 			'isShowAllCommunity' => false,
@@ -4380,8 +4363,7 @@ class NcPageTest extends CakeTestCase {
 		$this->assertEqual($ck , $ans);
 	}
 
-	function test_format_findViewable_currents_by_centerPage()
-	{
+	function test_format_findViewable_currents_by_centerPage() {
 		$loginUser  = array(
 			'id'=>"1",
 			'login_id'=>'admin' ,
@@ -4634,8 +4616,6 @@ class NcPageTest extends CakeTestCase {
 		$this->assertEqual($ans , $ck);
 
 	}
-
-
 
 /**
  * testFindIncludeComunityLang method
@@ -5070,31 +5050,6 @@ class NcPageTest extends CakeTestCase {
 	}
 
 /**
- * testPaginate method
- *
- * @return void
- */
-	public function testPaginate() {
-
-		//orderが必須になっているのに使われていない。
-		//ちょっと後回し....
-		//$conditions = array('Page.id'=>16);
-		//$fields= array('Page.id');
-		//$order = array();
-		//$limit = 10;
-		//$ck = $this->Page->Paginate($conditions , $fields, $order, $limit);
-		//var_dump($ck);
-	}
-
-/**
- * testPaginateCount method
- *
- * @return void
- */
-	public function testPaginateCount() {
-	}
-
-/**
  * testGetFieldsArray method
  *
  * @return void
@@ -5440,6 +5395,47 @@ class NcPageTest extends CakeTestCase {
 			),
 		);
 		$this->assertEqual($ck , $ans);
+	}
+
+/**
+ * testAfterFindIds method
+ *
+ * @return void
+ */
+	public function testAfterFindIds() {
+	}
+
+/**
+ * testFindViewableRoom method
+ *
+ * @return void
+ */
+	public function testFindViewableRoom() {
+	}
+
+/**
+ * testPaginate method
+ *
+ * @return void
+ */
+	public function testPaginate() {
+
+		//orderが必須になっているのに使われていない。
+		//ちょっと後回し....
+		//$conditions = array('Page.id'=>16);
+		//$fields= array('Page.id');
+		//$order = array();
+		//$limit = 10;
+		//$ck = $this->Page->Paginate($conditions , $fields, $order, $limit);
+		//var_dump($ck);
+	}
+
+/**
+ * testPaginateCount method
+ *
+ * @return void
+ */
+	public function testPaginateCount() {
 	}
 
 /**
