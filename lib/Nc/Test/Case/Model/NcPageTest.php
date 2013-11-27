@@ -20,7 +20,7 @@ class NcPageTest extends CakeTestCase {
 		'NcCommunityLang',
 		'NcSession',
 		'NcConfig',
-		'NcRevision'
+		'NcRevision',
 	);
 
 
@@ -5460,6 +5460,39 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testIncrementDisplaySeq() {
+
+		$page = $this->Page->find('first' , array('conditions' => array('Page.id' => 15)));
+		$ck = $this->Page->incrementDisplaySeq($page);
+		$this->assertEqual(true , $ck);
+
+		$ck = $this->Page->incrementDisplaySeq($page , 5);
+		$this->assertEqual(true , $ck);
+
+		//第二引数を文字列 //パラメータ不正
+		//TODO: パラメータの型チェックが不足　SQLエラーが発生する。対応する。
+		//$ck = $this->Page->incrementDisplaySeq($page , 'AAAA');
+		//$this->assertEqual(true , $ck);
+
+		$ck = $this->Page->incrementDisplaySeq($page , -5000);
+		$this->assertEqual(true , $ck);
+
+		//idが抜けていた場合。
+		$page2 = $page;
+		unset($page2['Page']['id']);
+		$ck = $this->Page->incrementDisplaySeq($page2 , -5000);
+		$this->assertEqual(true , $ck);
+
+		//何をしても基本的にはtrueが戻ってきているが何も更新されていないようにも見える。
+		//var_dump($this->Page->find('all'));
+		$page = $this->Page->find('first' , array('conditions' => array('Page.id' => 11)));
+		$ck = $this->Page->incrementDisplaySeq($page , 1 ,  array('Page.id' => 11));
+		$this->assertEqual(true , $ck);
+
+		//第三引数が不正
+		//SQLエラーが発生する。
+		//TODO:引数で設定される値が不正だった場合の対応をどうするか検討する。不要？
+		//$ck = $this->Page->incrementDisplaySeq($page , 1 ,  array('Page.idddddddddd' => 11));
+		//$this->assertEqual(true , $ck);
 	}
 
 /**
