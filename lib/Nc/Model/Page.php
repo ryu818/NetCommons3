@@ -1557,6 +1557,15 @@ class Page extends AppModel
 		return $this->_operationDisplaySeq($page, $display_sequence, $conditions);
 	}
 
+	/**
+	 * Page.display_sequenceを更新する機能
+	 *
+	 * @param null or array $page Pageの1レコード分の配列。
+	 * @param int $display_sequence
+	 * @param array $conditions
+	 * @return bool
+	 * @since   v 3.0.0.0
+	 */
 	protected function _operationDisplaySeq($page = null,$display_sequence = 1, $conditions = array()) {
 		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		$fields = array('Page.display_sequence'=>'Page.display_sequence+('.$display_sequence.')');
