@@ -1627,7 +1627,6 @@ class Page extends AppModel
 			return false;
 		}
 
-
 		$myportalPageId = $this->insTopRoom(NC_SPACE_TYPE_MYPORTAL, $user['User']['id'], $user['User']['permalink'], $authority);
 		$privatePageId  = $this->insTopRoom(NC_SPACE_TYPE_PRIVATE,  $user['User']['id'], $user['User']['permalink'], $authority);
 
@@ -1641,15 +1640,16 @@ class Page extends AppModel
 /**
  *　　　　　　 マイページ、マイポータルinsert
  *
- * @param integer   $spaceType
+ * @param integer   $spaceType NC_SPACE_TYPE_MYPORTAL,NC_SPACE_TYPE_PRIVATEのみ
  * @param integer   $userId
  * @param string    $permalink
  * @param array     $authority
- * @param array     $nodePage		編集の場合セット
  * @return mixed    false|integer $newRoomId
  * @since   v 3.0.0.0
  */
-	public function insTopRoom($spaceType, $userId, $permalink, $authority = null, $nodePage = null) {
+	public function insTopRoom($spaceType, $userId, $permalink, $authority = null) {
+		//TODO : 会員登録系処理でまとめる予定。(トランザクション含）
+		//TODO : 会員登録処理時の1回だけ実行されるべき機能なのでprivate にしたい
 		if($spaceType == NC_SPACE_TYPE_MYPORTAL) {
 			$useFlag = "myportal_use_flag";
 			$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
@@ -1659,8 +1659,8 @@ class Page extends AppModel
 			$lang = '';
 			$pageName = 'Private Top';
 		} else {
-			$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
-			$pageName = '';
+			//NC_SPACE_TYPE_MYPORTAL,NC_SPACE_TYPE_PRIVATE以外がセットされていた場合はfalse
+			return false;
 		}
 
 		$insPage = $this->getDefaultData($spaceType);
@@ -1669,21 +1669,11 @@ class Page extends AppModel
 		} else {
 			$insPage['Page']['display_flag'] = NC_DISPLAY_FLAG_DISABLE;
 		}
-		if(isset($nodePage)) {
-			$insPage['Page'] = array_merge($insPage['Page'], $nodePage['Page']);
-		}
 
-		/*
-		 * Node Insert
-		 */
+		// Node Insert
 		$insPage['Page']['permalink'] = $permalink;
 		$nodePage = $insPage;
-		//$nodePage['Page']['thread_num'] = 1;
-		//$nodePage['Page']['display_sequence'] = 0;
-		//	$nodePage['Page']['permalink'] = '';
-		//if(isset($default_page_name)) {
-		//	$nodePage['Page']['page_name'] = $default_page_name;
-		//}
+
 		$this->create();
 		$this->set($nodePage);
 		$ret = $this->save($nodePage);
@@ -1705,34 +1695,12 @@ class Page extends AppModel
 			}
 		}
 
-		/*
-		 * Page Insert
-		 */
+		//Page Insert
 		$fields = null;
-		/*if(isset($insPage['Page']['id'])) {
-			// トップページを求める
-			$conditions = array(
-				'Page.parent_id' => $newRoomId,
-				'Page.display_sequence' => 1
-			);
-			$params = array(
-				'fields' => array(
-					'Page.id'
-				),
-				'conditions' => $conditions
-			);
-			$topPage = $this->find('first', $params);
-			$insPage['Page']['id'] = $topPage['Page']['id'];
-			if($spaceType != NC_SPACE_TYPE_GROUP) {
-				unset($insPage['Page']['page_name']);
-				$fields = array('permalink', 'thread_num', 'display_sequence', 'root_id', 'room_id', 'parent_id', 'lang');
-			}
-		}*/
-
 		$insPage['Page']['thread_num'] = 2;
 		$insPage['Page']['display_sequence'] = 1;
-		$insPage['Page']['root_id'] = $newRoomId;
-		$insPage['Page']['room_id'] = $newRoomId;
+		$insPage['Page']['root_id']   = $newRoomId;
+		$insPage['Page']['room_id']   = $newRoomId;
 		$insPage['Page']['parent_id'] = $newRoomId;
 		$insPage['Page']['page_name'] = $pageName;
 		//TODO:後に削除 0固定にしておき、その上のノードをみてテーマを判断するのをデフォルトにするため
@@ -1747,13 +1715,11 @@ class Page extends AppModel
 			return false;
 		}
 
-		/*
-		 * page_user_links Insert
-		 */
+		// page_user_links Insert
 		$PageUserLink = $this->PageUserLink;
 		$pageUserLink = array('PageUserLink');
-		$pageUserLink['PageUserLink']['room_id'] = $newRoomId;
-		$pageUserLink['PageUserLink']['user_id'] = $userId;
+		$pageUserLink['PageUserLink']['room_id']      = $newRoomId;
+		$pageUserLink['PageUserLink']['user_id']      = $userId;
 		$pageUserLink['PageUserLink']['authority_id'] = NC_AUTH_CHIEF_ID;
 		$PageUserLink->create();
 		$PageUserLink->set($pageUserLink);
