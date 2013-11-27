@@ -1588,9 +1588,9 @@ class Page extends AppModel
 /**
  * 移動後固定リンク取得
  *
- * @param  Model Page     $page
- * @param  Model Page     $parent_page 移動先親Page
- * @return boolean true or false
+ * @param  array  $page Pageの1レコード分の配列
+ * @param  array  $parent_page 移動先親Page Pageの1レコード分の配列
+ * @return string or null
  * @since   v 3.0.0.0
  */
 	public function getMovePermalink($page, $parent_page) {

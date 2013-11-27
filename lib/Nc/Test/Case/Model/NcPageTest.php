@@ -5501,6 +5501,22 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testGetMovePermalink() {
+
+		//$page['Page']['permalink']を元に、URLを作っている。
+
+		$page = $this->Page->find('first' , array('conditions' => array('Page.id' => 16)));
+		$parent_page = $this->Page->find('first' , array('conditions' => array('Page.id' => 4)));
+		$ck = $this->Page->getMovePermalink($page , $parent_page);
+		$this->assertEqual($ck , 'community-1');
+
+		$page = $this->Page->find('first' , array('conditions' => array('Page.id' => 16)));
+		$parent_page = $this->Page->find('first' , array('conditions' => array('Page.id' => 15)));
+		$ck = $this->Page->getMovePermalink($page , $parent_page);
+		$this->assertEqual($ck , 'admin/community-1');
+
+		//必要な項目が配列で含まれていない場合は正常に動作しない
+		//TODO : パラメータのチェック
+		//$ck = $this->Page->getMovePermalink("" , "");
 	}
 
 /**
