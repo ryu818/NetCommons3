@@ -237,7 +237,7 @@ $config = [
 			'login' => 'root',
 			'password' => '',
 			'database' => 'test',
-			'prefix' => 'nc3_',
+			'prefix' => '',
 			'encoding' => 'utf8',
 		],
 	],
