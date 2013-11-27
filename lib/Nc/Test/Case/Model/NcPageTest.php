@@ -5503,7 +5503,6 @@ class NcPageTest extends CakeTestCase {
 	public function testGetMovePermalink() {
 
 		//$page['Page']['permalink']を元に、URLを作っている。
-
 		$page = $this->Page->find('first' , array('conditions' => array('Page.id' => 16)));
 		$parent_page = $this->Page->find('first' , array('conditions' => array('Page.id' => 4)));
 		$ck = $this->Page->getMovePermalink($page , $parent_page);
@@ -5587,6 +5586,54 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testInsTopRoom() {
+
+		$User = ClassRegistry::init('User');
+		$user_data = $User->find('first' , array('conditions' => array('User.id' => 1)));
+
+		//2レコード作られる。 name : Private room と Private Top
+		//id:17と18が作られて、18は17の子になる。
+		$spaceType = NC_SPACE_TYPE_PRIVATE;
+		$userId = 1;
+		$permalink = $user_data['User']['permalink'];
+		$ck = $this->Page->insTopRoom($spaceType, $userId, $permalink);
+		$this->assertEqual($ck , 17);
+
+		//2レコード作られる。 name : Myportal と Myportal Top
+		//Page.id 19と20が作られて、20は19の子になる。
+		$spaceType = NC_SPACE_TYPE_MYPORTAL;
+		$userId = 1;
+		$permalink = $user_data['User']['permalink'];
+		$ck = $this->Page->insTopRoom($spaceType, $userId, $permalink);
+		$this->assertEqual($ck , 19);
+
+		//2レコード作られる。 name : Myportal と Myportal Top
+		//Page.id 19と20が作られて、21は22の子になる。
+		$Authority = ClassRegistry::init('Authority');
+		$authority = $Authority->find('first', array(
+			'fields' => array('myportal_use_flag', 'private_use_flag'),
+			'conditions' => array($Authority->primaryKey => $user_data['User']['authority_id']),
+			'recursive' => -1
+		));
+		$spaceType = NC_SPACE_TYPE_MYPORTAL;
+		$userId = 1;
+		$permalink = $user_data['User']['permalink'];
+		$ck = $this->Page->insTopRoom($spaceType, $userId, $permalink , $authority);
+		$this->assertEqual($ck , 21);
+
+		//NC_SPACE_TYPE_PUBLICの場合は作られず、falseが戻る。
+		$spaceType = NC_SPACE_TYPE_PUBLIC;
+		$userId = 1;
+		$permalink = $user_data['User']['permalink'];
+		$ck = $this->Page->insTopRoom($spaceType, $userId, $permalink , $authority);
+		$this->assertEqual($ck , false);
+
+		//NC_SPACE_TYPE_GROUPの場合は作られずfalseがもどる
+		$spaceType = NC_SPACE_TYPE_GROUP;
+		$userId = 1;
+		$permalink = $user_data['User']['permalink'];
+		$ck = $this->Page->insTopRoom($spaceType, $userId, $permalink , $authority);
+		$this->assertEqual($ck , false);
+
 	}
 
 /**
