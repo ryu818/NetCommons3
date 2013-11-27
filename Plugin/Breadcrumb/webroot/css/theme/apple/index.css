@@ -1,0 +1,126 @@
+/**
+ * パンくずリスト画面 Css(apple風)
+ *
+ * @copyright     Copyright 2012, NetCommons Project
+ * @package       Plugin.Announcement.webroot.js
+ * @author        Noriko Arai,Ryuji Masukawa
+ * @since         v 3.0.0.0
+ * @license       http://www.netcommons.org/license.txt  NetCommons License
+ */
+/*
+	TODO:IE8以下では表示がかわるが対応しない。
+*/
+.breadcrumb-apple-ol {
+    background: none repeat scroll 0 0 #f6f6f6;
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    font-weight:600;
+    list-style: none outside none;
+    overflow: hidden;
+    text-shadow: 0 1px 0 #fff;
+
+    margin: 0;
+    outline: 0 none;
+    padding: 0;
+    vertical-align: baseline;
+}
+.breadcrumb-apple-ol li {
+    float: left;
+
+    background: none repeat scroll 0 0 transparent;
+    border: 0 none;
+    font-size: 100%;
+    margin: 0;
+    outline: 0 none;
+    padding: 0;
+    vertical-align: baseline;
+}
+.breadcrumb-apple-ol li.breadcrumb-apple-first a {
+	padding: 5px 0 5px 10px;
+}
+.breadcrumb-apple-ol li a {
+    background: none repeat scroll 0 0 #cfcfcf;
+    color: #555555;
+    display: block;
+    float: left;
+    padding: 5px 0 5px 30px;
+    position: relative;
+    text-decoration: none;
+}
+.breadcrumb-apple-ol li span {
+    display: block;
+    float: left;
+    padding: 5px 15px 5px 25px;
+    position: relative;
+    text-decoration: none;
+}
+.breadcrumb-apple-ol li a:after {
+    border-bottom: 40px solid transparent;
+    border-left: 20px solid #cfcfcf;
+    border-top: 40px solid transparent;
+    content: " ";
+    display: block;
+    height: 0;
+    left: 100%;
+    margin-top: -40px;
+    position: absolute;
+    top: 50%;
+    width: 0;
+    z-index: 2;
+}
+.breadcrumb-apple-ol li a:before {
+    border-bottom: 40px solid transparent;
+    border-left: 20px solid #bbb;
+    border-top: 40px solid transparent;
+    content: " ";
+    display: block;
+    height: 0;
+    left: 100%;
+    margin-left: 1px;
+    margin-top: -40px;
+    position: absolute;
+    top: 50%;
+    width: 0;
+    z-index: 1;
+}
+
+.breadcrumb-apple-ol li a:hover {
+    color: #000000;
+}
+
+.breadcrumb-apple-ol li:first-child a {
+    padding-left: 10px;
+}
+.breadcrumb-apple-ol li:nth-child(2) a {
+    background: none repeat scroll 0 0 #d6d6d6;
+}
+.breadcrumb-apple-ol li:nth-child(2) a:after {
+    border-left-color: #d6d6d6;
+}
+.breadcrumb-apple-ol li:nth-child(3) a {
+    background: none repeat scroll 0 0 #dfdfdf;
+}
+.breadcrumb-apple-ol li:nth-child(3) a:after {
+    border-left-color: #dfdfdf;
+}
+.breadcrumb-apple-ol li:nth-child(4) a {
+    background: none repeat scroll 0 0 #e6e6e6;
+}
+.breadcrumb-apple-ol li:nth-child(4) a:after {
+    border-left-color: #e6e6e6;
+}
+.breadcrumb-apple-ol li:nth-child(5) a {
+    background: none repeat scroll 0 0 #efefef;
+}
+.breadcrumb-apple-ol li:nth-child(5) a:after {
+    border-left-color: #efefef;
+}
+.breadcrumb-apple-ol li:last-child a {
+    background: none repeat scroll 0 0 transparent !important;
+    color: black;
+    cursor: default;
+    pointer-events: none;
+}
+.breadcrumb-apple-ol li:last-child a:before, .breadcrumb-apple-ol li:last-child a:after {
+    border: 0 none;
+}

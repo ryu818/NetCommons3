@@ -5,12 +5,33 @@
         {
             "type": "pear",
             "url": "http://pear.cakephp.org"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/topaz2/migrations"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/topaz2/cakephp"
         }
     ],
+    "minimum-stability": "dev",
     "require": {
-        "pear-cakephp/cakephp": "2.4.1"
+        "php": ">=5.4",
+        "cakephp/cakephp": "3.0.*-dev",
+        "cakephp/debug_kit": "2.2.*",
+        "cakedc/migrations": "dev-master"
     },
-    "config": {
-        "vendor-dir": "lib/Nc/Vendor/"
+    "suggest": {
+        "phpunit/phpunit": "Allows automated tests to be run without system-wide install."
+    },
+    "autoload": {
+        "psr-0": {
+            "App\\": ".",
+            "": "./Plugin"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": "App\\Console\\Installer::postInstall"
     }
 }

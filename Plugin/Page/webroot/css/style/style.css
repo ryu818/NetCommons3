@@ -1,0 +1,202 @@
+ul.pages-menu-style-scopes {
+	margin: 10px;
+}
+ul.pages-menu-style-scopes li dl dt {
+	padding: 5px 2px;
+}
+ul.pages-menu-style-scopes li dl dd {
+	padding: 2px;
+}
+
+#pages-menu-style-accordion .ui-accordion-content,#pages-menu-background-accordion .ui-accordion-content {
+	padding: 3px;
+}
+
+#pages-menu-style-init-tab {
+	min-width:364px;
+}
+
+.pages-menu-style-scope {
+	width:200px;
+}
+
+ul.pages-menu-background-original-ul li dl dt,ul.pages-menu-background-original-ul li dl dd {
+	padding: 2px 5px;
+}
+ul.pages-menu-background-original-ul li dl dt {
+	width: 130px;
+}
+
+.pages-menu-background-original-type a {
+	width: 64px;
+	height: 64px;
+	display:block;
+}
+.pages-menu-background-original-no-repeat {
+	background: #fff url('../../page/img/style/background/normal_image.png') no-repeat left top;
+}
+.pages-menu-background-original-full {
+	background: #fff url('../../page/img/style/background/full_image.png') no-repeat left top;
+}
+.pages-menu-background-original-repeat {
+	background: #fff url('../../page/img/style/background/repeat_image.png') no-repeat left top;
+}
+.pages-menu-background-original-repeat-x {
+	background: #fff url('../../page/img/style/background/repeat_x_image.png') no-repeat left top;
+}
+.pages-menu-background-original-repeat-y {
+	background: #fff url('../../page/img/style/background/repeat_y_image.png') no-repeat left top;
+}
+.pages-menu-background-highlight .pages-menu-background-original-no-repeat {
+	background: #fff url('../../page/img/style/background/normal_image_select.png') no-repeat left top;
+}
+.pages-menu-background-highlight .pages-menu-background-original-full {
+	background: #fff url('../../page/img/style/background/full_image_select.png') no-repeat left top;
+}
+.pages-menu-background-highlight .pages-menu-background-original-repeat {
+	background: #fff url('../../page/img/style/background/repeat_image_select.png') no-repeat left top;
+}
+.pages-menu-background-highlight .pages-menu-background-original-repeat-x {
+	background: #fff url('../../page/img/style/background/repeat_x_image_select.png') no-repeat left top;
+}
+.pages-menu-background-highlight .pages-menu-background-original-repeat-y {
+	background: #fff url('../../page/img/style/background/repeat_y_image_select.png') no-repeat left top;
+}
+
+ul.pages-menu-style-details {
+	margin: 10px;
+}
+ul.pages-menu-style-details li dl dt {
+	padding: 5px 2px;
+}
+ul.pages-menu-style-details li dl dd {
+	padding: 2px;
+}
+
+.pages-menu-style-colorpicker {
+	width: 70px;
+}
+
+.pages-menu-style-font {
+	width: 160px;
+}
+.pages-menu-style-font-size, .pages-menu-style-line-height {
+	width: 150px;;
+}
+.pages-menu-style-border-style {
+	width: 140px;
+}
+
+/* 背景絞り込み */
+.pages-menu-backgrounds-filter {
+	text-align:right;
+	padding:2px;
+}
+.pages-menu-backgrounds-filter div {
+	text-align:left;
+	margin:0 2px;
+}
+
+.pages-menu-picker {
+	height:180px;
+}
+
+.pages-menu-backgrounds {
+	width:350px;
+	height:350px;
+	overflow:auto;
+}
+
+ul.pages-menu-backgrounds li, #pages-menu-background-original-outer, ul.pages-menu-background-original-type li {
+	padding:5px;
+	float:left;
+	clear:none;
+	border: 1px solid #cdcdcd;
+    border-radius: 4px 4px 4px 4px;
+    margin: 4px;
+    padding: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+ul.pages-menu-background-original-type li {
+	height:64px;
+}
+.pages-menu-backgrounds li .pages-menu-background, .pages-menu-backgrounds li .pages-menu-layout {
+	width: 64px;
+	height: 64px;
+	background-repeat: repeat;
+	display:block;
+	border: 1px solid #efefef;
+}
+
+#pages-menu-background-original {
+	padding: 10px !important;
+}
+
+.pages-menu-background-original-btn {
+	margin:5px;
+}
+
+#pages-menu-background-original-outer a.pages-menu-background-original-inner {
+	width: 120px;
+	height: 120px;
+	background-repeat: repeat;
+	display:block;
+	border: 1px solid #efefef;
+}
+
+.pages-menu-style-size {
+	width: 70px;
+	margin: 0 0 0 5px;
+}
+
+.pages-menu-style-px {
+	padding: 5px;
+}
+
+.pages-menu-style-margin {
+	padding: 2px;
+}
+
+/* レイアウト */
+.pages-menu-layout {
+	background-color:#f9f9f9;
+}
+
+#pages-menu-background-accordion {
+	width:380px;
+}
+
+/* カラー選択 */
+.pages-menu-background-color ul {
+	list-style: none outside none;
+	width:170px;
+	height:145px;
+	overflow:auto;
+}
+.pages-menu-background-color ul li {
+	list-style: none outside none;
+	padding:5px;
+	float:left;
+	clear:none;
+	border: 1px solid #cdcdcd;
+    border-radius: 4px 4px 4px 4px;
+    margin: 4px;
+    padding: 3px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.pages-menu-background-color ul li a {
+	width: 21px;
+	height: 21px;
+	background-repeat: repeat;
+	display:block;
+	border: 1px solid #efefef;
+}
+
+.pages-menu-background-highlight {
+	background-color: #589fe0;
+}
+
+#pages-menu-edit-css-textarea {
+	width:330px;
+	height:500px;
+}
