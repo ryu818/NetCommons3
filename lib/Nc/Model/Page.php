@@ -1755,7 +1755,7 @@ class Page extends AppModel
 /**
  * is_page_XXX_nodeが指定されているNodeのリストを取得
  *
- * @param Model Page  $page
+ * @param array $page  Page 1レコード分の配列
  * @param array $rets
  * @return array
  * @since   v 3.0.0.0
