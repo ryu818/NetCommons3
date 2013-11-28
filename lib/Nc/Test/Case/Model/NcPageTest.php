@@ -5642,6 +5642,19 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testUpdPermalinks() {
+
+		//root_idがこれのものについて、permalinkの最初の階層が書き換わる機能。
+		//現在この機能にトランザクションはかかっていない
+		$ans = 'NcPageTest_updPermalinks_1';
+		$ck = $this->Page->updPermalinks(11 , $ans);
+		$this->assertEqual($ck , true);
+		//指定されたPageId
+		$ck = $this->Page->find('first' , array('conditions'=>array('Page.id'=>11)));
+		$this->assertEqual($ck['Page']['permalink'] , $ans);
+		//子孫でpermalinkに/が入っていないデータだった場合
+		$ck = $this->Page->find('first' , array('conditions'=>array('Page.id'=>15)));
+		$this->assertEqual($ck['Page']['permalink'] , $ans);
+
 	}
 
 /**
