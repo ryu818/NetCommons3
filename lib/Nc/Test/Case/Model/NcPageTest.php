@@ -5743,14 +5743,136 @@ class NcPageTest extends CakeTestCase {
  */
 	public function testPaginate() {
 
+		//現状使われていないみたいなので、使われてないなら削除したい。
 		//orderが必須になっているのに使われていない。
-		//ちょっと後回し....
-		//$conditions = array('Page.id'=>16);
-		//$fields= array('Page.id');
-		//$order = array();
-		//$limit = 10;
-		//$ck = $this->Page->Paginate($conditions , $fields, $order, $limit);
-		//var_dump($ck);
+		$conditions = array('Page.id'=>16);
+		$fields= array('Page.id' , 'Page.page_name');
+		$order = array();
+		$limit = 10;
+		$ck = $this->Page->Paginate($conditions , $fields, $order, $limit);
+		$ans = array (
+			16 => 'UnitTest-A',
+		);
+		$this->assertEqual($ck , $ans);
+
+		$conditions = array('Page.id'=>13);
+		$fields= array('Page.id' , 'Page.page_name');
+		$order = array();
+		$limit = 10;
+		$ck = $this->Page->Paginate($conditions , $fields, $order, $limit);
+		$this->assertEqual($ck , false);
+
+		$conditions = array('Page.id'=>11);
+		$fields= array('Page.id' , 'Page.page_name');
+		$order = array();
+		$limit = 10;
+		$extra = array(
+			'user_id'=>1
+		);
+		$ck = $this->Page->Paginate($conditions , $fields, $order, $limit , 1 , null , $extra);
+		$this->assertEqual($ck , false);
+
+		$conditions = array('Page.id'=>16);
+		$fields= array('Page.id' , 'Page.page_name');
+		$order = array();
+		$limit = 10;
+		$extra = array(
+			'user_id'=>1
+		);
+		$ck = $this->Page->Paginate($conditions , $fields, $order, $limit , 1 , null , $extra);
+		$ans = array (
+			16 => 'UnitTest-A',
+		);
+		$this->assertEqual($ck , $ans);
+
+		$conditions = array('Page.id'=>16);
+		$fields= array('Page.id' , 'Page.page_name');
+		$order = array();
+		$limit = 'AAA'; //パラメータ異常
+		$extra = array(
+			'user_id'=>1
+		);
+		$ck = $this->Page->Paginate($conditions , $fields, $order, $limit , 1 , null , $extra);
+		$this->assertEqual($ck , false);
+
+		$conditions = array('Page.id'=>16);
+		$fields= array('Page.id' , 'Page.page_name');
+		$order = array();
+		$limit = 0;
+		$extra = array(
+			'user_id'=>1
+		);
+		$ck = $this->Page->Paginate($conditions , $fields, $order, $limit , 1 , null , $extra);
+		$ans = array (
+			16 => 'UnitTest-A',
+		);
+		$this->assertEqual($ck , $ans);
+
+		$conditions = array('Page.id'=>16);
+		$fields= array('Page.id' , 'Page.page_name');
+		$order = array();
+		$limit = 0;
+		$extra = array(
+			'user_id'=>999999999999 //存在しないユーザー
+		);
+		$ck = $this->Page->Paginate($conditions , $fields, $order, $limit , 1 , null , $extra);
+		$this->assertEqual($ck , false);
+
+		//2階層目を保存してみる
+		$User = ClassRegistry::init("User");
+		$user = $User->find("first" , array('conditions'=>array('User.id'=>1),) );
+		Configure::write(NC_SYSTEM_KEY.'.user' , $user['User']);
+
+		$new_page = array (
+			'Page' =>
+			array (
+				'root_id' => '4',
+				'parent_id' => '16',
+				'thread_num' => '2',
+				'display_sequence' => '1',
+				'page_name' => 'Private Top',
+				'permalink' => 'admin',
+				'position_flag' => '1',
+				'is_page_meta_node' => '0',
+				'is_page_style_node' => '0',
+				'is_page_layout_node' => '0',
+				'is_page_theme_node' => '0',
+				'is_page_column_node' => '0',
+				'room_id' => '16',
+				'space_type' => '4',
+				'show_count' => '130',
+				'display_flag' => '0',
+				'display_from_date' => NULL,
+				'display_to_date' => NULL,
+				'display_apply_subpage' => '1',
+				'display_reverse_permalink' => NULL,
+				'is_approved' => '1',
+				'lock_authority_id' => '0'
+			),
+		);
+
+
+		//id16の子孫を3件作成
+		$this->Page->create();
+		$this->Page->save($new_page);
+
+		$this->Page->create();
+		$this->Page->save($new_page);
+
+		$conditions = array('Page.parent_id'=>16);
+		$fields= array('Page.id' , 'Page.page_name');
+		$order = array();
+		$limit = 100;
+		$extra = array(
+			'user_id'=>1
+		);
+
+		$ck = $this->Page->Paginate($conditions , $fields, $order, $limit , 1 , null , $extra);
+		$ans = array (
+			18 => 'Private Top',
+			17 => 'Private Top',
+		);
+		$this->assertEqual($ck , $ans);
 	}
 
 /**
@@ -5767,6 +5889,8 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testDeletePage() {
+		//まだ未実装部分があるため一旦後回し。
+		//トランザクションの必要がある。
 	}
 
 /**
