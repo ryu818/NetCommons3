@@ -5411,6 +5411,7 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testFindViewableRoom() {
+		//findVieable()の条件にisRoomを足しただけの機能なので一旦あとまわし
 	}
 
 /**
@@ -5452,6 +5453,12 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testDecrementDisplaySeq() {
+		$page = $this->Page->find('first' , array('conditions' => array('Page.id' => 15)));
+		$ck = $this->Page->decrementDisplaySeq($page);
+		$this->assertEqual(true , $ck);
+
+		$ck = $this->Page->decrementDisplaySeq($page , 5);
+		$this->assertEqual(true , $ck);
 	}
 
 /**
