@@ -5403,6 +5403,328 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testAfterFindIds() {
+
+		//resultがない場合
+		$ck = $this->Page->afterFindIds(array() , 1 );
+		$this->assertEqual(false , $ck);
+
+		$results = array (
+			0 =>
+			array (
+				'Page' =>
+				array (
+					'id' => '9',
+					'root_id' => '9',
+					'parent_id' => '1',
+					'thread_num' => '1',
+					'display_sequence' => '0',
+					'page_name' => 'Public room',
+					'permalink' => '',
+					'position_flag' => '1',
+					'lang' => '',
+					'is_page_meta_node' => '0',
+					'is_page_style_node' => '0',
+					'is_page_layout_node' => '0',
+					'is_page_theme_node' => '0',
+					'is_page_column_node' => '0',
+					'room_id' => '9',
+					'space_type' => '1',
+					'show_count' => '0',
+					'display_flag' => '1',
+					'display_from_date' => NULL,
+					'display_to_date' => NULL,
+					'display_apply_subpage' => '1',
+					'display_reverse_permalink' => NULL,
+					'is_approved' => '1',
+					'lock_authority_id' => '0',
+					'created' => NULL,
+					'created_user_id' => '0',
+					'created_user_name' => '',
+					'modified' => NULL,
+					'modified_user_id' => '1',
+					'modified_user_name' => '',
+				),
+				'PageUserLink' =>
+				array (
+					'authority_id' => NULL,
+				),
+				'PageAuthority' =>
+				array (
+					'id' => NULL,
+					'myportal_use_flag' => NULL,
+					'private_use_flag' => NULL,
+					'hierarchy' => NULL,
+				),
+				'Community' =>
+				array (
+					'publication_range_flag' => NULL,
+					'participate_force_all_users' => NULL,
+					'participate_flag' => NULL,
+					'is_upload' => NULL,
+					'photo' => NULL,
+				),
+				'CommunityLang' =>
+				array (
+					'community_name' => NULL,
+					'summary' => NULL,
+				),
+			),
+			1 =>
+			array (
+				'Page' =>
+				array (
+					'id' => '11',
+					'root_id' => '11',
+					'parent_id' => '3',
+					'thread_num' => '1',
+					'display_sequence' => '0',
+					'page_name' => 'Private room',
+					'permalink' => 'Admin',
+					'position_flag' => '1',
+					'lang' => '',
+					'is_page_meta_node' => '0',
+					'is_page_style_node' => '0',
+					'is_page_layout_node' => '0',
+					'is_page_theme_node' => '0',
+					'is_page_column_node' => '0',
+					'room_id' => '11',
+					'space_type' => '3',
+					'show_count' => '0',
+					'display_flag' => '1',
+					'display_from_date' => NULL,
+					'display_to_date' => NULL,
+					'display_apply_subpage' => '1',
+					'display_reverse_permalink' => NULL,
+					'is_approved' => '1',
+					'lock_authority_id' => '0',
+					'created' => NULL,
+					'created_user_id' => '0',
+					'created_user_name' => '',
+					'modified' => NULL,
+					'modified_user_id' => '1',
+					'modified_user_name' => '',
+				),
+				'PageUserLink' =>
+				array (
+					'authority_id' => NULL,
+				),
+				'PageAuthority' =>
+				array (
+					'id' => NULL,
+					'myportal_use_flag' => NULL,
+					'private_use_flag' => NULL,
+					'hierarchy' => NULL,
+				),
+				'Community' =>
+				array (
+					'publication_range_flag' => NULL,
+					'participate_force_all_users' => NULL,
+					'participate_flag' => NULL,
+					'is_upload' => NULL,
+					'photo' => NULL,
+				),
+				'CommunityLang' =>
+				array (
+					'community_name' => NULL,
+					'summary' => NULL,
+				),
+			),
+		);
+
+		//$type:countにした場合の挙動がおかしい。
+		//配列のkeyをidにする機能が実装されている。
+
+		//パラメータエラー countは許可されていない
+		$ck = $this->Page->afterFindIds(10 , 'all' , 'count' );
+		$this->assertEqual($ck , false);
+
+		//パラメータエラー countは許可されていない...がarrayが戻ってきている。
+		//TODO : パラメータエラー系処理の追加
+		//$ck = $this->Page->afterFindIds($results , 'all' , 'count' );
+		//$this->assertEqual($ck , false);
+
+		$ck = $this->Page->afterFindIds($results , 'all' , 'menu' );
+		$ans = array (
+			1 =>
+			array (
+				1 =>
+				array (
+					1 =>
+					array (
+						0 =>
+						array (
+							'Page' =>
+							array (
+								'id' => '9',
+								'root_id' => '9',
+								'parent_id' => '1',
+								'thread_num' => '1',
+								'display_sequence' => '0',
+								'page_name' => 'Public room',
+								'permalink' => '',
+								'position_flag' => '1',
+								'lang' => '',
+								'is_page_meta_node' => '0',
+								'is_page_style_node' => '0',
+								'is_page_layout_node' => '0',
+								'is_page_theme_node' => '0',
+								'is_page_column_node' => '0',
+								'room_id' => '9',
+								'space_type' => '1',
+								'show_count' => '0',
+								'display_flag' => '1',
+								'display_from_date' => NULL,
+								'display_to_date' => NULL,
+								'display_apply_subpage' => '1',
+								'display_reverse_permalink' => NULL,
+								'is_approved' => '1',
+								'lock_authority_id' => '0',
+								'created' => NULL,
+								'created_user_id' => '0',
+								'created_user_name' => '',
+								'modified' => NULL,
+								'modified_user_id' => '1',
+								'modified_user_name' => '',
+								'visibility_flag' => 1,
+							),
+							'PageUserLink' =>
+							array (
+								'authority_id' => NULL,
+							),
+							'PageAuthority' =>
+							array (
+								'id' => NULL,
+								'myportal_use_flag' => NULL,
+								'private_use_flag' => NULL,
+								'hierarchy' => NULL,
+							),
+							'Community' =>
+							array (
+								'publication_range_flag' => NULL,
+								'participate_force_all_users' => NULL,
+								'participate_flag' => NULL,
+								'is_upload' => NULL,
+								'photo' => NULL,
+							),
+							'CommunityLang' =>
+							array (
+								'community_name' => NULL,
+								'summary' => NULL,
+							),
+						),
+					),
+				),
+			),
+			3 =>
+			array (
+				1 =>
+				array (
+					3 =>
+					array (
+						0 =>
+						array (
+							'Page' =>
+							array (
+								'id' => '11',
+								'root_id' => '11',
+								'parent_id' => '3',
+								'thread_num' => '1',
+								'display_sequence' => '0',
+								'page_name' => 'Private room of admin',
+								'permalink' => 'private/Admin/',
+								'position_flag' => '1',
+								'lang' => '',
+								'is_page_meta_node' => '0',
+								'is_page_style_node' => '0',
+								'is_page_layout_node' => '0',
+								'is_page_theme_node' => '0',
+								'is_page_column_node' => '0',
+								'room_id' => '11',
+								'space_type' => '3',
+								'show_count' => '0',
+								'display_flag' => '1',
+								'display_from_date' => NULL,
+								'display_to_date' => NULL,
+								'display_apply_subpage' => '1',
+								'display_reverse_permalink' => NULL,
+								'is_approved' => '1',
+								'lock_authority_id' => '0',
+								'created' => NULL,
+								'created_user_id' => '0',
+								'created_user_name' => '',
+								'modified' => NULL,
+								'modified_user_id' => '1',
+								'modified_user_name' => '',
+								'visibility_flag' => 1,
+							),
+							'PageUserLink' =>
+							array (
+								'authority_id' => NULL,
+							),
+							'PageAuthority' =>
+							array (
+								'id' => NULL,
+								'myportal_use_flag' => NULL,
+								'private_use_flag' => NULL,
+								'hierarchy' => NULL,
+							),
+							'Community' =>
+							array (
+								'publication_range_flag' => NULL,
+								'participate_force_all_users' => NULL,
+								'participate_flag' => NULL,
+								'is_upload' => NULL,
+								'photo' => NULL,
+							),
+							'CommunityLang' =>
+							array (
+								'community_name' => NULL,
+								'summary' => NULL,
+							),
+						),
+					),
+				),
+			),
+		);
+		$this->assertEqual($ck , $ans);
+
+		//list でfieldsの指定なし
+		$ck = $this->Page->afterFindIds($results , 'all' , 'list' );
+		$ans = array (
+		   9 => '9',
+		   11 => '11',
+	   );
+		$this->assertEqual($ck , $ans);
+
+		//listで$fieldsの指定あり
+		$fields = array(
+			'Page.id',
+			'Page.page_name',
+			'Page.root_id'
+		);
+		$ck = $this->Page->afterFindIds($results , 'all' , 'list' , $fields );
+		$ans = array (
+			9 =>
+			array (
+				9 => 'Public room',
+			),
+			11 =>
+			array (
+				11 => 'Private room of admin',
+			),
+		);
+		$this->assertEqual($ck , $ans);
+
+		$fields = array(
+			'Page.id',
+			'Page.page_name',
+		);
+		$ck = $this->Page->afterFindIds($results , 'all' , 'list' , $fields );
+		$ans = array (
+			9  => 'Public room',
+			11 => 'Private room of admin',
+		);
+		$this->assertEqual($ck , $ans);
 	}
 
 /**
