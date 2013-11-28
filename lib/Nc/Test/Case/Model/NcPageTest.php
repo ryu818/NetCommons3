@@ -5663,6 +5663,138 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testFindNodeFlag() {
+
+		//Aが親Pageで、その子供にB、その子供にCがあった場合
+		//Cのページを表示されたときに、どこのページで設定されたスタイル、あるいは、レイアウト（ヘッダーカラムの表示有無など）を
+		//適用されているか判断するメソッド
+		//画面でいうとページ設定のページスタイル、ページレイアウトの上部の適用範囲で
+		//現在のノード、現在のページを選択した場合に設定される
+
+		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>9)));
+		$ck = $this->Page->findNodeFlag($page);
+		$ans = array (
+			'is_page_meta_node' => 0,
+			'is_page_style_node' => 0,
+			'is_page_layout_node' => 0,
+			'is_page_theme_node' => 0,
+			'is_page_column_node' => 0,
+		);
+		$this->assertEqual($ck , $ans);
+		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>10)));
+		$ck = $this->Page->findNodeFlag($page);
+		$ans = array (
+			'is_page_meta_node' => 0,
+			'is_page_style_node' => 0,
+			'is_page_layout_node' => 0,
+			'is_page_theme_node' => 0,
+			'is_page_column_node' => 0,
+		);
+		$this->assertEqual($ck , $ans);
+		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>16)));
+		$ck = $this->Page->findNodeFlag($page);
+		$ans = array (
+			'is_page_meta_node' => 0,
+			'is_page_style_node' => 0,
+			'is_page_layout_node' => 0,
+			'is_page_theme_node' => 0,
+			'is_page_column_node' => 0,
+		);
+		$this->assertEqual($ck , $ans);
+		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>4)));
+		$ck = $this->Page->findNodeFlag($page , array( 'is_page_meta_node'=>0 ));
+		$ans = array (
+			'is_page_meta_node' => 0,
+		);
+		$this->assertEqual($ck , $ans);
+		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>4)));
+		$ck = $this->Page->findNodeFlag($page , array( 'is_page_meta_node'=>5 ));
+		$ans = array (
+			'is_page_meta_node' => 5,
+		);
+		$this->assertEqual($ck , $ans);
+
+		//想定されていないkeyがしていされると、Noticeエラーが発生する。
+		//$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>4)));
+		//$ck = $this->Page->findNodeFlag($page , array( 'is_page_meta_node_hogehoge'=>5 ));
+
+		//第二引数がstring(パラメータ異常） メソッド内foreach文でエラーが発生する。
+		//$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>4)));
+		//$ck = $this->Page->findNodeFlag($page , 'is_page_meta_node');
+
+		$spaceType = NC_SPACE_TYPE_MYPORTAL;
+		$userId = 1;
+		$permalink = 'Admin';
+		$id = $this->Page->insTopRoom($spaceType, $userId, $permalink);
+		//$idには($id+1)の子孫が存在する。
+
+		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>($id+1))));
+		$ck = $this->Page->findNodeFlag($page);
+		$ans = array (
+			'is_page_meta_node' => 0,
+			'is_page_style_node' => 0,
+			'is_page_layout_node' => 0,
+			'is_page_theme_node' => 0,
+			'is_page_column_node' => 0,
+		);
+		$this->assertEqual($ck , $ans);
+
+		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>($id))));
+		$ck = $this->Page->findNodeFlag($page);
+		$ans = array (
+			'is_page_meta_node' => 0,
+			'is_page_style_node' => 0,
+			'is_page_layout_node' => 0,
+			'is_page_theme_node' => 0,
+			'is_page_column_node' => 0,
+		);
+		$this->assertEqual($ck , $ans);
+
+		//$idに($id+2)の子孫を作成する
+		$sample = $this->Page->getDefaultData(NC_SPACE_TYPE_MYPORTAL);
+		$sample['Page']['thread_num']                  = 2;
+		$sample['Page']['root_id']                     = $id;
+		$sample['Page']['is_page_meta_node']           = 1;
+		$sample['Page']['Page.is_page_style_node']     = 2;
+		$sample['Page']['is_page_layout_node']         = 3;
+		$sample['Page']['is_page_theme_node']          = 4;
+		$sample['Page']['Page.is_page_column_node']    = 5;
+		$this->Page->create();
+		$this->Page->save($sample);
+
+		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>($id+2))));
+		$ck = $this->Page->findNodeFlag($page);
+		$ans = array (
+			'is_page_meta_node' => '19',
+			'is_page_style_node' => 0,
+			'is_page_layout_node' => '19',
+			'is_page_theme_node' => '19',
+			'is_page_column_node' => 0,
+		);
+		$this->assertEqual($ck , $ans);
+
+		//$idに($id+3)の子孫を作成する
+		$sample = $this->Page->getDefaultData(NC_SPACE_TYPE_MYPORTAL);
+		$sample['Page']['thread_num']                  = 2;
+		$sample['Page']['root_id']                     = $id;
+		$sample['Page']['is_page_meta_node']           = 1;
+		$sample['Page']['Page.is_page_style_node']     = 2;
+		$sample['Page']['is_page_layout_node']         = 3;
+		$sample['Page']['is_page_theme_node']          = 4;
+		$sample['Page']['Page.is_page_column_node']    = 5;
+		$this->Page->create();
+		$this->Page->save($sample);
+
+		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>($id+3))));
+		$ck = $this->Page->findNodeFlag($page);
+		$ans = array (
+			'is_page_meta_node' => '20',
+			'is_page_style_node' => 0,
+			'is_page_layout_node' => '20',
+			'is_page_theme_node' => '20',
+			'is_page_column_node' => 0,
+		);
+		$this->assertEqual($ck , $ans);
+
 	}
 
 }
