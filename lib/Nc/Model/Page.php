@@ -1200,11 +1200,14 @@ class Page extends AppModel
 			'Page.space_type' => NC_SPACE_TYPE_GROUP
 		), $conditions);
 
-		if(isset($extra['is_all']) && $extra['is_all']) {
+		if((isset($extra['is_all']) && $extra['is_all']) //allが指定されている
+			|| ! isset($extra['user_id']) //user_idが指定されていない。
+		) {
 			$is_all = true;
 		} else {
 			$is_all = false;
 		}
+
 
 		$addParams = array(
 			'fields' => $fields,
