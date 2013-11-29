@@ -4,10 +4,6 @@
 
 /app/tmp
 /app/webroot/theme
-/lib/Nc/Vendor/bin
-/lib/Nc/Vendor/composer
-/lib/Nc/Vendor/pear-pear.cakephp.org
-/lib/Nc/Vendor/autoload.php
 /plugins
 /uploads
 /vendors
