@@ -394,6 +394,17 @@ class PageController extends PageAppController {
 	}
 
 /**
+ * ページカラム変更表示・登録
+ * @param   void
+ * @return  void
+ * @since   v 3.0.0.0
+ */
+	public function column() {
+		$this->Session->write(NC_SYSTEM_KEY.'.page_menu.action', $this->action);
+		$this->render('index');
+	}
+
+/**
  * Style initialize処理
  * 	権限チェック、言語設定
  * @param   void
@@ -472,6 +483,11 @@ class PageController extends PageAppController {
 				break;
 			case 'layout':
 				if(!$loginUser['allow_layout_flag']) {
+					$ret = false;
+				}
+				break;
+			case 'column':
+				if(!$loginUser['allow_column_flag']) {
 					$ret = false;
 				}
 				break;

@@ -163,6 +163,7 @@ class AuthorityCommonComponent extends Component {
 		$disabledAllowThemeFlagArr = explode('|', AUTHORITY_ALLOW_THEME_FLAG_DISABLED);
 		$disabledAllowStyleFlagArr = explode('|', AUTHORITY_ALLOW_STYLE_FLAG_DISABLED);
 		$disabledAllowLayoutFlagArr = explode('|', AUTHORITY_ALLOW_LAYOUT_FLAG_DISABLED);
+		$disabledAllowColumnFlagArr = explode('|', AUTHORITY_ALLOW_COLUMN_FLAG_DISABLED);
 		$disabledAllowAttachmentArr = explode('|', AUTHORITY_ALLOW_ATTACHMENT_DISABLED);
 		$disabledAllowVideoArr = explode('|', AUTHORITY_ALLOW_VIDEO_DISABLED);
 		$disabledChangeLeftcolumnFlagArr = explode('|', AUTHORITY_CHANGE_LEFTCOLUMN_FLAG_DISABLED);
@@ -191,6 +192,7 @@ class AuthorityCommonComponent extends Component {
 				'allow_theme_flag' => $disabledAllowThemeFlagArr[$index],
 				'allow_style_flag' => $disabledAllowStyleFlagArr[$index],
 				'allow_layout_flag' => $disabledAllowLayoutFlagArr[$index],
+				'allow_column_flag' => $disabledAllowColumnFlagArr[$index],
 				'allow_attachment' => $disabledAllowAttachmentArr[$index],
 				'allow_video' => $disabledAllowVideoArr[$index],
 				'change_leftcolumn_flag' => $disabledChangeLeftcolumnFlagArr[$index],

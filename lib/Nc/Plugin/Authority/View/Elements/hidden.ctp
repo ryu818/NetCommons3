@@ -16,6 +16,7 @@ $detailColumns = array(
 	'allow_theme_flag',
 	'allow_style_flag',
 	'allow_layout_flag',
+	'allow_column_flag',
 	'allow_attachment',
 	'allow_video',
 	'max_size',

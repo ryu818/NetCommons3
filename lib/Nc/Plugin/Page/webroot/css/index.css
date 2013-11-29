@@ -108,6 +108,9 @@
 .nc-page-uploads-icon:hover, .nc-page-uploads-icon-on {
 	background: url(../../page/img/page_uploads_on.png) no-repeat center center;
 }
+.nc-page-columns-icon:hover, .nc-page-columns-icon-on {
+	background: url(../../page/img/page_columns_on.png) no-repeat center center;
+}
 .nc-pages-menu-icon {
 	background: url(../../page/img/pages_menu.png) no-repeat center center;
 }
@@ -128,4 +131,7 @@
 }
 .nc-page-uploads-icon {
 	background: url(../../page/img/page_uploads.png) no-repeat center center;
+}
+.nc-page-columns-icon {
+	background: url(../../page/img/page_columns.png) no-repeat center center;
 }

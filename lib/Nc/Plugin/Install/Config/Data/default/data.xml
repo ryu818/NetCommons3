@@ -58,6 +58,7 @@
             <column name="allow_theme_flag">1</column>
             <column name="allow_style_flag">2</column>
             <column name="allow_layout_flag">1</column>
+            <column name="allow_column_flag">1</column>
             <column name="allow_attachment">2</column>
             <column name="allow_video">1</column>
             <column name="max_size">1073741824</column>
@@ -96,6 +97,7 @@
             <column name="allow_theme_flag">1</column>
             <column name="allow_style_flag">1</column>
             <column name="allow_layout_flag">1</column>
+            <column name="allow_column_flag">1</column>
             <column name="allow_attachment">2</column>
             <column name="allow_video">1</column>
             <column name="max_size">104857600</column>
@@ -134,6 +136,7 @@
             <column name="allow_theme_flag">1</column>
             <column name="allow_style_flag">0</column>
             <column name="allow_layout_flag">0</column>
+            <column name="allow_column_flag">0</column>
             <column name="allow_attachment">2</column>
             <column name="allow_video">0</column>
             <column name="max_size">52428800</column>
@@ -172,6 +175,7 @@
             <column name="allow_theme_flag">1</column>
             <column name="allow_style_flag">0</column>
             <column name="allow_layout_flag">0</column>
+            <column name="allow_column_flag">0</column>
             <column name="allow_attachment">1</column>
             <column name="allow_video">0</column>
             <column name="max_size">10485760</column>
@@ -210,6 +214,7 @@
             <column name="allow_theme_flag">1</column>
             <column name="allow_style_flag">0</column>
             <column name="allow_layout_flag">0</column>
+            <column name="allow_column_flag">0</column>
             <column name="allow_attachment">0</column>
             <column name="allow_video">0</column>
             <column name="max_size">10485760</column>
@@ -248,6 +253,7 @@
             <column name="allow_theme_flag">1</column>
             <column name="allow_style_flag">1</column>
             <column name="allow_layout_flag">1</column>
+            <column name="allow_column_flag">1</column>
             <column name="allow_attachment">2</column>
             <column name="allow_video">1</column>
             <column name="max_size">104857600</column>

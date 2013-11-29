@@ -47,6 +47,12 @@ $ncUser = $this->Session->read(NC_AUTH_KEY.'.'.'User');
 				array('title' => __d('page', 'Page layout'), 'class' => 'nc-page-layouts-icon' . $postfix . ' nc-tooltip',
 					'data-tooltip-desc' => __d('page', 'I can switch the display and non-display of up, down, left, or right column.'), 'data-ajax' => '#nc-pages-setting-dialog'));
 			}
+			if($ncUser['allow_column_flag']) {
+				$postfix = ($this->action == 'column') ? '-on' : '';
+				echo $this->Html->link('', array('plugin' => 'page', 'controller' => 'page', 'action' => 'column'),
+				array('title' => __d('page', 'Page column'), 'class' => 'nc-page-columns-icon' . $postfix . ' nc-tooltip',
+					'data-tooltip-desc' => __d('page', 'I can change the page of the left, right, header, and footer column.'), 'data-ajax' => '#nc-pages-setting-dialog'));
+			}
 		}
 		$postfix = ($this->action == 'uploads') ? '-on' : '';
 		echo $this->Html->link('', '#',

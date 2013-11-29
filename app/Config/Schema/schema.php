@@ -91,6 +91,7 @@ app\\webroot\\theme\\assets下に圧縮したものと、そうでないもの�
 1：許可する。
 2：CSSの編集まで許可する。'),
 		'allow_layout_flag' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'comment' => 'ページレイアウトの変更を許すかどうか。'),
+		'allow_column_flag' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'comment' => 'ページカラムの変更を許すかどうか。'),
 		'allow_attachment' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3, 'comment' => '編集画面からのファイルアップロードを行うかどうか。
 0:許可しない。
 1:画像のみ。

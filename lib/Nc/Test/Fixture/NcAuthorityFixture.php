@@ -41,6 +41,7 @@ class NcAuthorityFixture extends CakeTestFixture {
 	1：許可する。
 	2：CSSの編集まで許可する。'),
 		'allow_layout_flag' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'comment' => 'ページレイアウトの変更を許すかどうか。'),
+		'allow_column_flag' => array('type' => 'boolean', 'null' => false, 'default' => '0', 'comment' => 'ページカラムの変更を許すかどうか。'),
 		'allow_attachment' => array('type' => 'integer', 'null' => false, 'default' => '0', 'length' => 3, 'comment' => '編集画面からのファイルアップロードを行うかどうか。
 	0:許可しない。
 	1:画像のみ。
@@ -88,6 +89,7 @@ class NcAuthorityFixture extends CakeTestFixture {
 			'allow_theme_flag' => true,
 			'allow_style_flag' => '2',
 			'allow_layout_flag' => true,
+			'allow_column_flag' => true,
 			'allow_attachment' => '2',
 			'allow_video' => true,
 			'max_size' => '1073741824',
@@ -126,6 +128,7 @@ class NcAuthorityFixture extends CakeTestFixture {
 			'allow_theme_flag' => true,
 			'allow_style_flag' => '1',
 			'allow_layout_flag' => true,
+			'allow_column_flag' => true,
 			'allow_attachment' => '2',
 			'allow_video' => true,
 			'max_size' => '104857600',
@@ -164,6 +167,7 @@ class NcAuthorityFixture extends CakeTestFixture {
 			'allow_theme_flag' => true,
 			'allow_style_flag' => '0',
 			'allow_layout_flag' => false,
+			'allow_column_flag' => false,
 			'allow_attachment' => '2',
 			'allow_video' => false,
 			'max_size' => '52428800',
@@ -202,6 +206,7 @@ class NcAuthorityFixture extends CakeTestFixture {
 			'allow_theme_flag' => true,
 			'allow_style_flag' => '0',
 			'allow_layout_flag' => false,
+			'allow_column_flag' => false,
 			'allow_attachment' => '1',
 			'allow_video' => false,
 			'max_size' => '10485760',
@@ -240,6 +245,7 @@ class NcAuthorityFixture extends CakeTestFixture {
 			'allow_theme_flag' => true,
 			'allow_style_flag' => '0',
 			'allow_layout_flag' => false,
+			'allow_column_flag' => false,
 			'allow_attachment' => '0',
 			'allow_video' => false,
 			'max_size' => '10485760',
@@ -278,6 +284,7 @@ class NcAuthorityFixture extends CakeTestFixture {
 				'allow_theme_flag' => true,
 				'allow_style_flag' => '1',
 				'allow_layout_flag' => true,
+				'allow_column_flag' => true,
 				'allow_attachment' => '2',
 				'allow_video' => true,
 				'max_size' => '104857600',

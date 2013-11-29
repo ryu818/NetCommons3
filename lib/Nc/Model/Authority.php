@@ -206,6 +206,16 @@ class Authority extends AppModel
 				)
 			),
 
+			'allow_column_flag' => array(
+				'boolean'  => array(
+					'rule' => array('boolean'),
+					'last' => true,
+					'required' => true,
+					'allowEmpty' => false,
+					'message' => __('The input must be a boolean.')
+				)
+			),
+
 			'allow_attachment' => array(
 				'numeric' => array(
 					'rule' => 'numeric',
@@ -418,6 +428,7 @@ class Authority extends AppModel
 		$allowThemeFlagArr = explode('|', AUTHORITY_ALLOW_THEME_FLAG_LIST);
 		$allowStyleFlagArr = explode('|', AUTHORITY_ALLOW_STYLE_FLAG_LIST);
 		$allowLayoutFlagArr = explode('|', AUTHORITY_ALLOW_LAYOUT_FLAG_LIST);
+		$allowColumnFlagArr = explode('|', AUTHORITY_ALLOW_COLUMN_FLAG_LIST);
 		$allowAttachmentArr = explode('|', AUTHORITY_ALLOW_ATTACHMENT);
 		$allowVideoArr = explode('|', AUTHORITY_ALLOW_VIDEO);
 		$maxSizeArr = explode('|', AUTHORITY_MAX_SIZE);
@@ -450,6 +461,7 @@ class Authority extends AppModel
 				'allow_theme_flag' => $allowThemeFlagArr[$index],
 				'allow_style_flag' => $allowStyleFlagArr[$index],
 				'allow_layout_flag' => $allowLayoutFlagArr[$index],
+				'allow_column_flag' => $allowColumnFlagArr[$index],
 				'allow_attachment' => $allowAttachmentArr[$index],
 				'allow_video' => $allowVideoArr[$index],
 				'max_size' => $maxSizeArr[$index],

@@ -256,6 +256,30 @@
 			<dl>
 				<dt>
 					<?php
+						$columnName = 'allow_column_flag';
+						echo $this->Form->label('Authority.'.$columnName,  __d('authority', 'Allow to change page column?'));
+					?>
+					<span class="require"><?php echo __('*'); ?></span>
+				</dt>
+				<dd>
+					<?php
+						$settings = array(
+							'type' => 'radio',
+							'options' => array(_ON => __d('authority', 'Allowed'), _OFF => __d('authority', 'Not allowed')),
+							'value' => $authority['Authority'][$columnName],
+							'div' => false,
+							'legend' => false,
+							'disabled' => $authorityDisabled['Authority'][$columnName],
+						);
+						echo $this->Form->input('Authority.'.$columnName, $settings);
+					?>
+				</dd>
+			</dl>
+		</li>
+		<li>
+			<dl>
+				<dt>
+					<?php
 						$columnName = 'allow_attachment';
 						echo $this->Form->label('Authority.'.$columnName, __d('authority', 'Allow to uploads files?'));
 					?>

@@ -321,6 +321,25 @@
 			<dl>
 				<dt>
 					<?php
+						echo __d('authority', 'Allow to change page column?');
+					?>
+				</dt>
+				<dd>
+					<?php
+						if($authority['Authority']['allow_column_flag'] == _ON) {
+							$value = __d('authority', 'Allowed');
+						} else {
+							$value = __d('authority', 'Not allowed');
+						}
+						echo $value;
+					?>
+				</dd>
+			</dl>
+		</li>
+		<li>
+			<dl>
+				<dt>
+					<?php
 						echo __d('authority', 'Allow to uploads files?');
 					?>
 				</dt>
