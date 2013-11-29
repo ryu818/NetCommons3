@@ -50,20 +50,20 @@ class BlogOperationComponent extends Component {
 /**
  * ブロック削除実行時に呼ばれる関数
  *
- * @param   Model Block   削除ブロック
- * @param   Model Content 削除コンテンツ
- * @param   Model Page    削除先ページ
+ * @param   array Model Block   削除ブロック
+ * @param   array Model Content 削除コンテンツ
+ * @param   array Model Page    削除先ページ
  * @return  boolean
  * @since   v 3.0.0.0
  */
-// 	public function delete_block($block, $content, $to_page) {
+// 	public function delete_block($block, $content, $toPage) {
 // 		return true;
 // 	}
 
 /**
  * コンテンツ削除時に呼ばれる関数
  *
- * @param   Model Content 削除コンテンツ $content
+ * @param   array Model Content 削除コンテンツ $content
  * @return  boolean
  * @since   v 3.0.0.0
  */
@@ -74,23 +74,23 @@ class BlogOperationComponent extends Component {
 /**
  * ショートカット実行時に呼ばれる関数
  *
- * @param   Model Block   移動元ブロック
- * @param   Model Block   移動先ブロック
- * @param   Model Content 移動元コンテンツ
- * @param   Model Content 移動先コンテンツ
- * @param   Model Page    移動元ページ
- * @param   Model Page    移動先ページ
+ * @param   array Model Block   移動元ブロック
+ * @param   array Model Block   移動先ブロック
+ * @param   array Model Content 移動元コンテンツ
+ * @param   array Model Content 移動先コンテンツ
+ * @param   array Model Page    移動元ページ
+ * @param   array Model Page    移動先ページ
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	public function shortcut($from_block, $to_block, $from_content, $to_content, $from_page, $to_page) {
-		$condition = array('block_id' => $from_block['Block']['id']);
+	public function shortcut($fromBlock, $toBlock, $fromContent, $toContent, $fromPage, $toPage) {
+		$condition = array('block_id' => $fromBlock['Block']['id']);
 		$blog_styles = $this->BlogStyle->find('all', array('conditions' => $condition));
 		if(isset($blog_styles[0])) {
 			$this->BlogStyle->initInsert = true;
 			foreach($blog_styles as $blog_style) {
 				unset($blog_style['BlogStyle']['id']);
-				$blog_style['BlogStyle']['block_id'] = $to_block['Block']['id'];
+				$blog_style['BlogStyle']['block_id'] = $toBlock['Block']['id'];
 				$this->BlogStyle->create();
 				if(!$this->BlogStyle->save($blog_style)) {
 					return false;
@@ -104,17 +104,17 @@ class BlogOperationComponent extends Component {
 /**
  * コピー(ペースト)実行時に呼ばれる関数
  *
- * @param   Model Block   移動元ブロック
- * @param   Model Block   移動先ブロック
- * @param   Model Content 移動元コンテンツ
- * @param   Model Content 移動先コンテンツ
- * @param   Model Page    移動元ページ
- * @param   Model Page    移動先ページ
+ * @param   array Model Block   移動元ブロック
+ * @param   array Model Block   移動先ブロック
+ * @param   array Model Content 移動元コンテンツ
+ * @param   array Model Content 移動先コンテンツ
+ * @param   array Model Page    移動元ページ
+ * @param   array Model Page    移動先ページ
  * @return  boolean
  * @since   v 3.0.0.0
  */
-	public function paste($from_block, $to_block, $from_content, $to_content, $from_page, $to_page) {
-		if(!$this->shortcut($from_block, $to_block, $from_content, $to_content, $from_page, $to_page)) {
+	public function paste($fromBlock, $toBlock, $fromContent, $toContent, $fromPage, $toPage) {
+		if(!$this->shortcut($fromBlock, $toBlock, $fromContent, $toContent, $fromPage, $toPage)) {
 			return false;
 		}
 		// lftとrghtの自動設定をやめるためにTreeBehaviorを無効化
@@ -128,7 +128,7 @@ class BlogOperationComponent extends Component {
 		$groupId = $newGroupId = 0;
 		$tables = array('Revision', 'Blog', 'BlogPost', 'BlogComment', 'BlogTerm', 'BlogTermLink', 'Archive');
 		foreach($tables as $table) {
-			$condition = array($table.'.content_id' => $from_content['Content']['master_id']);
+			$condition = array($table.'.content_id' => $fromContent['Content']['master_id']);
 			$datas = $this->{$table}->find('all', array(
 				'recursive' => -1,
 				'conditions' => $condition,
@@ -163,7 +163,7 @@ class BlogOperationComponent extends Component {
 				}
 
 				unset($data[$table]['id']);
-				$data[$table]['content_id'] = $to_content['Content']['id'];
+				$data[$table]['content_id'] = $toContent['Content']['id'];
 				$this->{$table}->create();
 				if(!$this->{$table}->save($data)) {
 					return false;
@@ -184,29 +184,29 @@ class BlogOperationComponent extends Component {
 /**
  * ブロック追加実行時に呼ばれる関数
  *
- * @param   Model Block   追加ブロック
- * @param   Model Content 追加コンテンツ
- * @param   Model Page    追加先ページ
+ * @param   array Model Block   追加ブロック
+ * @param   array Model Content 追加コンテンツ
+ * @param   array Model Page    追加先ページ
  * @return  boolean
  * @since   v 3.0.0.0
  */
-//	public function add_block($block, $content, $to_page) {
+//	public function add_block($block, $content, $toPage) {
 //		return true;
 //	}
 
 /**
  * 別ルームに移動実行時に呼ばれる関数
  *
- * @param   Model Block   移動元ブロック
- * @param   Model Block   移動先ブロック
- * @param   Model Content 移動元コンテンツ
- * @param   Model Content 移動先コンテンツ
- * @param   Model Page    移動元ページ
- * @param   Model Page    移動先ページ
+ * @param   array Model Block   移動元ブロック
+ * @param   array Model Block   移動先ブロック
+ * @param   array Model Content 移動元コンテンツ
+ * @param   array Model Content 移動先コンテンツ
+ * @param   array Model Page    移動元ページ
+ * @param   array Model Page    移動先ページ
  * @return  boolean
  * @since   v 3.0.0.0
  */
-//	public function move($from_block, $to_block, $from_content, $to_content, $from_page, $to_page) {
+//	public function move($fromBlock, $toBlock, $fromContent, $toContent, $fromPage, $toPage) {
 //		return true;
 //	}
 }
