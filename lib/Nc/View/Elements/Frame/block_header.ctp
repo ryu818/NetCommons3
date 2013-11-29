@@ -9,16 +9,6 @@ if($page['Page']['room_id'] != $block['Content']['room_id'] || $block['Content']
 	(isset($block['Content']['display_flag']) && $block['Content']['display_flag'] == NC_DISPLAY_FLAG_DISABLE)) {
 	$allDelete = _OFF;	// ショートカット
 } else {
-	/* TODO:後にコメント部分を削除 削除アクションがあるかどうか：削除アクションがなくてもContentテーブルを削除するだけで完全に削除を許す。 */
-	/*App::uses($block['Module']['dir_name'].'OperationComponent', 'Plugin/'.$block['Module']['dir_name'].'/Controller/Component');
-	$operation_class_name = $block['Module']['dir_name'].'OperationComponent';
-	if(class_exists($operation_class_name) && method_exists($operation_class_name, 'delete')) {
-		// ブロック削除アクション
-		$allDelete = _ON;
-	} else {
-		$allDelete = _OFF;
-	}
-	*/
 	$allDelete = _ON;
 	// ブロック追加し、削除するときにContentが存在しなければ「完全に削除する。」非表示
 	if(!isset($block['Content'])) {
