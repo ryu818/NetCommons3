@@ -1,6 +1,6 @@
 <?php
 /**
- * BlogPost Fixture
+ * CommynityTag Fixture
  * Last update 2013.12.02
  */
 class NcCommunityTagFixture extends CakeTestFixture {

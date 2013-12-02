@@ -1,6 +1,6 @@
 <?php
 /**
- * BlogPost Fixture
+ * CommynityLang Fixture
  * Last update 2013.11.20
  */
 class NcCommunityLangFixture extends CakeTestFixture {
