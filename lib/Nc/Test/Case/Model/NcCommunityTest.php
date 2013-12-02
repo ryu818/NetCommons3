@@ -14,6 +14,7 @@ class NcCommunityTest extends CakeTestCase {
 	public $fixtures = array(
 		'NcCommunity',
 		'NcConfig',
+		'NcConfigLang',
 		'NcCommunityLang',
 		'NcRevision',
 		'NcAuthority',
@@ -29,7 +30,7 @@ class NcCommunityTest extends CakeTestCase {
  */
 	public function setUp() {
 		parent::setUp();
-		$ck = $this->Community = ClassRegistry::init('Community');
+		$this->Community = ClassRegistry::init('Community');
 	}
 
 /**
