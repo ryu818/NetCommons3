@@ -21,6 +21,7 @@ class NcCommunityTest extends CakeTestCase {
 		'NcAuthority',
 		'NcUser',
 		'NcUserItem',
+		'NcUserItemLang',
 		'NcPageUserLink',
 		'NcPage'
 	);
