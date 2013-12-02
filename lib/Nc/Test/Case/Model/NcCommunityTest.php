@@ -16,6 +16,10 @@ class NcCommunityTest extends CakeTestCase {
 		'NcConfig',
 		'NcCommunityLang',
 		'NcRevision',
+		'NcAuthority',
+		'NcUser',
+		'NcPageUserLink',
+		'NcPage'
 	);
 
 /**
@@ -151,6 +155,167 @@ class NcCommunityTest extends CakeTestCase {
 	public function testGetSearchParams() {
 
 		//$ck = $this->Community->getSearchParams(&$paginate, $request);
+	}
+
+	/**
+	 * test_checkParticipateForceAllUsers
+	 * @return void
+	 */
+	public function test_checkParticipateForceAllUsers() {
+
+		//未ログイン状態
+		$check = array('Page'=>array('id'=>16));
+		$ck = $this->Community->_checkParticipateForceAllUsers($check);
+		$this->assertEqual($ck , false);
+
+		//存在しないid
+		$check = array('Page'=>array('id'=>99999999999));
+		$ck = $this->Community->_checkParticipateForceAllUsers($check);
+		$this->assertEqual($ck , false);
+
+
+		//login状態を作成
+		$User = ClassRegistry::init('User');
+		$login_user = $User->find('first' , array('conditions'=>array('User.id'=>1)));
+		Configure::write(NC_SYSTEM_KEY.'.user' , $login_user['User']);
+
+		//Page
+		$check = array('Page'=>array(
+			'id'              =>16 ,
+			'participate_flag'=>1
+		));
+		$ck = $this->Community->_checkParticipateForceAllUsers($check);
+		$this->assertEqual($ck , true);
+
+		$check = array('Page'=>array(
+			'id'              =>16 ,
+			'participate_flag'=>0
+		));
+		$ck = $this->Community->_checkParticipateForceAllUsers($check);
+		$this->assertEqual($ck , true);
+
+		//存在しないページ
+		$check = array('Page'=>array(
+			'id'              =>9999999999 ,
+			'participate_flag'=>1
+		));
+		$ck = $this->Community->_checkParticipateForceAllUsers($check);
+		$this->assertEqual($ck , true);
+
+		//権限をGESTな状態でログイン状態にする----
+		$login_user['User']['authority_id'] = 5;
+		$User->save($login_user);
+		Configure::write(NC_SYSTEM_KEY.'.user' , $login_user['User']);
+		//------------------------------------
+
+		$check = array('Page'=>array(
+			'id'              =>16 ,
+			'participate_flag'=>1
+		));
+		$ck = $this->Community->_checkParticipateForceAllUsers($check);
+		$this->assertEqual($ck , false);
+
+		$check = array('Page'=>array(
+			'id'              =>16 ,
+			'participate_flag'=>0
+		));
+		$ck = $this->Community->_checkParticipateForceAllUsers($check);
+		$this->assertEqual($ck , false);
+
+		//存在しないページ
+		$check = array('Page'=>array(
+			'id'              =>9999999999 ,
+			'participate_flag'=>1
+		));
+		$ck = $this->Community->_checkParticipateForceAllUsers($check);
+		$this->assertEqual($ck , false);
+
+		//
+		//権限4　Common Userな状態でログイン状態にする----
+		$login_user['User']['authority_id'] = 4;
+		$User->save($login_user);
+		Configure::write(NC_SYSTEM_KEY.'.user' , $login_user['User']);
+		//------------------------------------4
+
+		$check = array('Page'=>array(
+			'id'              =>16 ,
+			'participate_flag'=>1
+		));
+		$ck = $this->Community->_checkParticipateForceAllUsers($check);
+		$this->assertEqual($ck , false);
+
+		$check = array('Page'=>array(
+			'id'              =>16 ,
+			'participate_flag'=>0
+		));
+		$ck = $this->Community->_checkParticipateForceAllUsers($check);
+		$this->assertEqual($ck , false);
+
+		//存在しないページ
+		$check = array('Page'=>array(
+			'id'              =>9999999999 ,
+			'participate_flag'=>1
+		));
+		$ck = $this->Community->_checkParticipateForceAllUsers($check);
+		$this->assertEqual($ck , false);
+
+		//権限3　Moderatorな状態でログイン状態にする----
+		$login_user['User']['authority_id'] = 3;
+		$User->save($login_user);
+		Configure::write(NC_SYSTEM_KEY.'.user' , $login_user['User']);
+		//------------------------------------4
+
+		$check = array('Page'=>array(
+			'id'              =>16 ,
+			'participate_flag'=>1
+		));
+		$ck = $this->Community->_checkParticipateForceAllUsers($check);
+		$this->assertEqual($ck , false);
+
+		$check = array('Page'=>array(
+			'id'              =>16 ,
+			'participate_flag'=>0
+		));
+		$ck = $this->Community->_checkParticipateForceAllUsers($check);
+		$this->assertEqual($ck , false);
+
+		//存在しないページ
+		$check = array('Page'=>array(
+			'id'              =>9999999999 ,
+			'participate_flag'=>1
+		));
+		$ck = $this->Community->_checkParticipateForceAllUsers($check);
+		$this->assertEqual($ck , false);
+
+		//権限2　Room Managerな状態でログイン状態にする----
+		$login_user['User']['authority_id'] = 2;
+		$User->save($login_user);
+		Configure::write(NC_SYSTEM_KEY.'.user' , $login_user['User']);
+		//------------------------------------4
+
+		$check = array('Page'=>array(
+			'id'              =>16 ,
+			'participate_flag'=>1
+		));
+		$ck = $this->Community->_checkParticipateForceAllUsers($check);
+		$this->assertEqual($ck , true);
+
+		$check = array('Page'=>array(
+			'id'              =>16 ,
+			'participate_flag'=>0
+		));
+		$ck = $this->Community->_checkParticipateForceAllUsers($check);
+		$this->assertEqual($ck , true);
+
+
+		//存在しないページ
+		$check = array('Page'=>array(
+			'id'              =>9999999999 ,
+			'participate_flag'=>1
+		));
+		$ck = $this->Community->_checkParticipateForceAllUsers($check);
+		$this->assertEqual($ck , true);
+
 	}
 
 }
