@@ -16,6 +16,7 @@ class NcCommunityTest extends CakeTestCase {
 		'NcConfig',
 		'NcConfigLang',
 		'NcCommunityLang',
+		'NcCommunityTag',
 		'NcRevision',
 		'NcAuthority',
 		'NcUser',
