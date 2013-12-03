@@ -13,6 +13,8 @@ class NcUserTest extends CakeTestCase {
 	 */
 	public $fixtures = array(
 		'NcUser',
+		'NcUserItem',
+		'NcUserItemLang',
 		'NcAuthority'
 	);
 
@@ -47,7 +49,7 @@ class NcUserTest extends CakeTestCase {
 	public function testDuplicate() {
 		//User.idと同じ 1件以上あるので、false;
 		//idは設定されていない状態
-		unset($this->User->data['User']['id']);
+		if(isset($this->User->data['User']['id'])) unset($this->User->data['User']['id']);
 		$data = array('User.login_id'=>'admin');
 		$ck = $this->User->duplicate($data);
 		$this->assertEqual($ck , false);
@@ -84,6 +86,83 @@ class NcUserTest extends CakeTestCase {
 	 * @return void
 	 */
 	public function testDuplicateEmail() {
+		//idは設定されていない状態
+		if(isset($this->User->data['User']['id'])) unset($this->User->data['User']['id']);
+
+		//重複データはない
+		$data = array(
+			0=>'hoge',
+		);
+		$ck = $this->User->duplicateEmail($data);
+		$this->assertEqual($ck , true);
+
+		//User.id:7を更新
+		$new_data = array('User'=>array(
+			'id'=>"7",
+			'authority_id'=>"1",
+			'is_active'=>"1",
+			'permalink'=>'',
+			'myportal_page_id'=>"10",
+			'private_page_id'=>"11",
+			'avatar'=>NULL,
+			'activate_key'=>NULL,
+			'lang'=>'ja',
+			'timezone_offset'=>"9",
+			'email'=>'hoge',
+			'mobile_email'=>'',
+			'password_regist'=>NULL ,
+			'last_login'=>'2013-09-27 00:42:44',
+			'previous_login'=>'2013-07-22 08:20:15',
+		));
+		$this->User->save($new_data);
+
+		//重複データありの状態　arrayで使われるのは1件目だけ。
+		$data = array(
+			0=>'hoge',
+			1=>'fuga'
+		);
+		$ck = $this->User->duplicateEmail($data);
+		$this->assertEqual($ck , false);
+
+		//重複データなしの状態
+		$data = array(
+			0=>'fuga',
+			1=>'hoge'
+		);
+		$ck = $this->User->duplicateEmail($data);
+		$this->assertEqual($ck , true);
+
+
+		//重複データありの状態  id同じの場合 true
+		$this->User->data['User']['id'] = 7;
+		$data = array(
+			0=>'hoge',
+			1=>'fuga'
+		);
+		$ck = $this->User->duplicateEmail($data);
+		$this->assertEqual($ck , true);
+
+		$this->User->data['User']['id'] = 6;
+		$data = array(
+			0=>'',
+		);
+		$ck = $this->User->duplicateEmail($data);
+		$this->assertEqual($ck , false);
+
+		//空array
+		$data = array();
+		$ck = $this->User->duplicateEmail($data);
+		$this->assertEqual($ck , false);
+
+		//文字列
+		$data = 'fuga';
+		$ck = $this->User->duplicateEmail($data);
+		$this->assertEqual($ck , true);
+
+		//文字列　重複あり
+		$data = 'hoge';
+		$ck = $this->User->duplicateEmail($data);
+		$this->assertEqual($ck ,false);
 	}
 
 	/**

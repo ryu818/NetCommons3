@@ -308,6 +308,16 @@ class User extends AppModel
  * @since   v 3.0.0.0
  */
 	public function duplicateEmail($data) {
+
+		//値があり、配列でなかった場合
+		if($data && ! is_array($data)) {
+			$data = array($data);
+		}
+		//配列ではない、もしくは空
+		if(! is_array($data) || ! $data) {
+			return false;
+		}
+
 		$values = array_values($data);
 
 		$conditions['or'] = array(
