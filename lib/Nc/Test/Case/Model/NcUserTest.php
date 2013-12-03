@@ -45,6 +45,37 @@ class NcUserTest extends CakeTestCase {
 	 * @return void
 	 */
 	public function testDuplicate() {
+		//User.idと同じ 1件以上あるので、false;
+		//idは設定されていない状態
+		unset($this->User->data['User']['id']);
+		$data = array('User.login_id'=>'admin');
+		$ck = $this->User->duplicate($data);
+		$this->assertEqual($ck , false);
+
+		//User.idと同じ 1件以上あるので、false;
+		$this->User->data['User']['id'] = 16;
+		$data = array('User.login_id'=>'admin');
+		$ck = $this->User->duplicate($data);
+		$this->assertEqual($ck , false);
+
+		//User.idと同じ 同じidなのでOK
+		$this->User->data['User']['id'] = 1;
+		$data = array('User.login_id'=>'admin');
+		$ck = $this->User->duplicate($data);
+		$this->assertEqual($ck , true);
+
+		//存在しない
+		$this->User->data['User']['id'] = 1;
+		$data = array('User.login_id'=>'adminadminadminadminadminadminadminadmin');
+		$ck = $this->User->duplicate($data);
+		$this->assertEqual($ck , true);
+
+		//検索条件がおかしい
+		//SQLErrorでエラーが発生する。
+		//$this->User->data['User']['id'] = 1;
+		//$data = array('User.login_id22222'=>'admin');
+		//$ck = $this->User->duplicate($data);
+
 	}
 
 	/**
