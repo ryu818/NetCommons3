@@ -408,6 +408,16 @@ class User extends AppModel
  * @since   v 3.0.0.0
  */
 	public function currentUser($page, $loginUser = null) {
+
+		//必須な項目が設定されていない。
+		if(! isset($page['Page'])
+			|| ! isset($page['Page']['space_type'])
+			|| ! isset($page['Page']['permalink'])
+		) {
+			//異常系はfalseでかえす。
+			return false;
+		}
+
 		$user = array();
 		if($page['Page']['space_type'] != NC_SPACE_TYPE_MYPORTAL && $page['Page']['space_type'] != NC_SPACE_TYPE_PRIVATE) {
 			return '';
@@ -419,10 +429,6 @@ class User extends AppModel
 			$user = $this->find( 'first', array(
 				'conditions' => $conditions
 			) );
-			if(isset($user['Authority'])) {
-				// 権限関連をAdd
-				$user['User'] = array_merge($user['User'], $user['Authority']);
-			}
 		} else {
 			$user['User'] = $loginUser;
 		}

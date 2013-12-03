@@ -23,7 +23,10 @@ class NcUserTest extends CakeTestCase {
 	 */
 	public function setUp() {
 		parent::setUp();
+		//ログアウト状態
+		Configure::clear(NC_SYSTEM_KEY.'.user');
 		$this->User = ClassRegistry::init('User');
+
 	}
 
 	/**
@@ -33,7 +36,6 @@ class NcUserTest extends CakeTestCase {
 	 */
 	public function tearDown() {
 		unset($this->User);
-
 		parent::tearDown();
 	}
 
@@ -75,15 +77,214 @@ class NcUserTest extends CakeTestCase {
 	 * @return void
 	 */
 	public function testCurrentUser() {
-		$centerPage = array();
-		$centerPage['Page'] = array(
+
+	   //マイポータル、マイルーム以外ならば''
+		$centerPage = array(
+			'Page'=>array(
+				'id'                => 9,
+				'root_id'           => 9 ,
+				'parent_id'         => 1 ,
+				'thread_num'        => 1 ,
+				'display_sequence'  => 0,
+				'page_name'         => 'Public room',
+				'permalink'         => '',
+				'position_flag'     => 1 ,
+				'lang'              => '',
+				'is_page_meta_node'  => 0,
+				'is_page_style_node' => 0,
+				'is_page_layout_node'=> 0,
+				'is_page_theme_node' => 0,
+				'is_page_column_node'=> 0,
+				'room_id'           => 9,
+				'space_type'        => NC_SPACE_TYPE_GROUP,
+				'show_count'        => 0,
+				'display_flag'      => 1,
+				'display_from_date' => NULL,
+				'display_to_date'   => NULL,
+				'display_apply_subpage'=> 1,
+				'display_reverse_permalink'=> NULL,
+				'is_approved'       => 1,
+				'lock_authority_id' => 0,
+				'created'           => NULL,
+				'created_user_id'   => 1,
+				'created_user_name' => '',
+				'modified'          => NULL,
+				'modified_user_id'  => 1,
+				'modified_user_name'=>''
+			)
+		);
+		$ck = $this->User->currentUser($centerPage);
+		$this->assertEqual('' , $ck);
+
+
+		//マイポータルの場合
+		//User.permalinkとPage.permarinkが同じデータがあった場合
+		$centerPage = array(
+			'Page'=>array(
+				'id'                => 9,
+				'root_id'           => 9 ,
+				'parent_id'         => 1 ,
+				'thread_num'        => 1 ,
+				'display_sequence'  => 0,
+				'page_name'         => 'my portal',
+				'permalink'         => 'admin',
+				'position_flag'     => 1 ,
+				'lang'              => '',
+				'is_page_meta_node'  => 0,
+				'is_page_style_node' => 0,
+				'is_page_layout_node'=> 0,
+				'is_page_theme_node' => 0,
+				'is_page_column_node'=> 0,
+				'room_id'           => 9,
+				'space_type'        => NC_SPACE_TYPE_MYPORTAL,
+				'show_count'        => 0,
+				'display_flag'      => 1,
+				'display_from_date' => NULL,
+				'display_to_date'   => NULL,
+				'display_apply_subpage'=> 1,
+				'display_reverse_permalink'=> NULL,
+				'is_approved'       => 1,
+				'lock_authority_id' => 0,
+				'created'           => NULL,
+				'created_user_id'   => 1,
+				'created_user_name' => '',
+				'modified'          => NULL,
+				'modified_user_id'  => 1,
+				'modified_user_name'=>''
+			)
+		);
+		$ck = $this->User->currentUser($centerPage);
+		$ans = array (
+			'User' =>
+			array (
+				'id' => '1',
+				'login_id' => 'admin',
+				'password' => '1a9faaae0428d9f50245c1fb77cad74a25fd917a',
+				'handle' => 'admin',
+				'authority_id' => '1',
+				'is_active' => '1',
+				'permalink' => 'admin',
+				'myportal_page_id' => '10',
+				'private_page_id' => '11',
+				'avatar' => NULL,
+				'activate_key' => NULL,
+				'lang' => 'ja',
+				'timezone_offset' => '9',
+				'email' => '',
+				'mobile_email' => '',
+				'password_regist' => NULL,
+				'last_login' => '2013-09-27 00:42:44',
+				'previous_login' => '2013-07-22 08:20:15',
+				'created' => '2013-10-31 04:09:21',
+				'created_user_id' => '1',
+				'created_user_name' => 'admin',
+				'modified' => '2013-10-31 09:52:46',
+				'modified_user_id' => '1',
+				'modified_user_name' => '',
+			),
+			'Authority' =>
+			array (
+				'id' => '1',
+				'hierarchy' => '500',
+				'allow_creating_community' => '4',
+				'allow_new_participant' => true,
+				'myportal_use_flag' => '1',
+				'allow_myportal_viewing_hierarchy' => '1',
+				'private_use_flag' => '1',
+				'display_participants_editing' => true,
+			),
+		);
+		$this->assertEqual($ck , $ans);
+
+		//マイポータルの場合
+		//User.permalinkとPage.permarinkが同じデータがあった場合
+		//permalinkの/区切りの最初の部分が合致している
+		$centerPage = array(
+			'Page'=>array(
+				'id'                => 9,
+				'root_id'           => 9 ,
+				'parent_id'         => 1 ,
+				'thread_num'        => 3 ,
+				'display_sequence'  => 0,
+				'page_name'         => 'my portal',
+				'permalink'         => 'admin/hoge/hoge',
+				'position_flag'     => 1 ,
+				'lang'              => '',
+				'is_page_meta_node'  => 0,
+				'is_page_style_node' => 0,
+				'is_page_layout_node'=> 0,
+				'is_page_theme_node' => 0,
+				'is_page_column_node'=> 0,
+				'room_id'           => 9,
+				'space_type'        => NC_SPACE_TYPE_MYPORTAL,
+				'show_count'        => 0,
+				'display_flag'      => 1,
+				'display_from_date' => NULL,
+				'display_to_date'   => NULL,
+				'display_apply_subpage'=> 1,
+				'display_reverse_permalink'=> NULL,
+				'is_approved'       => 1,
+				'lock_authority_id' => 0,
+				'created'           => NULL,
+				'created_user_id'   => 1,
+				'created_user_name' => '',
+				'modified'          => NULL,
+				'modified_user_id'  => 1,
+				'modified_user_name'=>''
+			)
+		);
+		$ck = $this->User->currentUser($centerPage);
+		$ans = array (
+			'User' =>
+			array (
+				'id' => '1',
+				'login_id' => 'admin',
+				'password' => '1a9faaae0428d9f50245c1fb77cad74a25fd917a',
+				'handle' => 'admin',
+				'authority_id' => '1',
+				'is_active' => '1',
+				'permalink' => 'admin',
+				'myportal_page_id' => '10',
+				'private_page_id' => '11',
+				'avatar' => NULL,
+				'activate_key' => NULL,
+				'lang' => 'ja',
+				'timezone_offset' => '9',
+				'email' => '',
+				'mobile_email' => '',
+				'password_regist' => NULL,
+				'last_login' => '2013-09-27 00:42:44',
+				'previous_login' => '2013-07-22 08:20:15',
+				'created' => '2013-10-31 04:09:21',
+				'created_user_id' => '1',
+				'created_user_name' => 'admin',
+				'modified' => '2013-10-31 09:52:46',
+				'modified_user_id' => '1',
+				'modified_user_name' => '',
+			),
+			'Authority' =>
+			array (
+				'id' => '1',
+				'hierarchy' => '500',
+				'allow_creating_community' => '4',
+				'allow_new_participant' => true,
+				'myportal_use_flag' => '1',
+				'allow_myportal_viewing_hierarchy' => '1',
+				'private_use_flag' => '1',
+				'display_participants_editing' => true,
+			),
+		);
+		$this->assertEqual($ck , $ans);
+
+		//　/からなので、permalinkの1つめはブランクが格納されている状態になっている。
+		$centerPage= array('Page'=>array(
 			'id'=> 1,
 			'root_id'=>1 ,
 			'parent_id'=> 1 ,
-			'thread_num'=> 0 ,
+			'thread_num'=> 1 ,
 			'display_sequence'=> 1 ,
 			'page_name'=> 'Public room',
-			'permalink'=> '/7/',
+			'permalink'=> '/',  // /だけが登録される場合はない。データ不整合な状態。
 			'position_flag'=> 1 ,
 			'lang'=> '',
 			'is_page_meta_node'=> 0,
@@ -102,16 +303,69 @@ class NcUserTest extends CakeTestCase {
 			'is_approved'=> 1,
 			'lock_authority_id'=> 0,
 			'created'=> NULL,
-			'created_user_id'=> 7,
+			'created_user_id'=> 1,
 			'created_user_name'=> 'admin',
 			'modified'=> NULL,
 			'modified_user_id'=> 0,
 			'modified_user_name'=>''
+		));
+		$ck = $this->User->currentUser($centerPage);;
+		$ans = array (
+			'User' =>
+			array (
+				'id' => '7',
+				'login_id' => 'admin_7',
+				'password' => '1a9faaae0428d9f50245c1fb77cad74a25fd917a',
+				'handle' => 'admin',
+				'authority_id' => '1',
+				'is_active' => '1',
+				'permalink' => '',
+				'myportal_page_id' => '10',
+				'private_page_id' => '11',
+				'avatar' => NULL,
+				'activate_key' => NULL,
+				'lang' => 'ja',
+				'timezone_offset' => '9',
+				'email' => '',
+				'mobile_email' => '',
+				'password_regist' => NULL,
+				'last_login' => '2013-09-27 00:42:44',
+				'previous_login' => '2013-07-22 08:20:15',
+				'created' => '2013-10-31 04:09:21',
+				'created_user_id' => '1',
+				'created_user_name' => 'admin',
+				'modified' => '2013-10-31 09:52:46',
+				'modified_user_id' => '0',
+				'modified_user_name' => '',
+			),
+			'Authority' =>
+			array (
+				'id' => '1',
+				'hierarchy' => '500',
+				'allow_creating_community' => '4',
+				'allow_new_participant' => true,
+				'myportal_use_flag' => '1',
+				'allow_myportal_viewing_hierarchy' => '1',
+				'private_use_flag' => '1',
+				'display_participants_editing' => true,
+			),
 		);
+		$this->assertEqual($ck , $ans);
+
+		//空array （パラメータ異常）
+		$centerPage = array();
 		$ck = $this->User->currentUser($centerPage);
-		//$ckで戻る値はUserの1レコード分の情報
-		//idは1っぽいけど、本来戻ってこないといけない情報と違う気がする。
-		//id:7のレコードと混ざった結果になってる？？？
+		$this->assertEqual(false , $ck);
+
+		//文字列  （パラメータ異常）
+		$centerPage = 'hogefuga';
+		$ck = $this->User->currentUser($centerPage);
+		$this->assertEqual(false , $ck);
+
+		//blank  （パラメータ異常）
+		$centerPage = '';
+		$ck = $this->User->currentUser($centerPage);
+		$this->assertEqual(false , $ck);
 	}
 
 	/**
