@@ -7,6 +7,7 @@
 /lib/Nc/Vendor/bin
 /lib/Nc/Vendor/composer
 /lib/Nc/Vendor/pear-pear.cakephp.org
+/lib/Nc/Vendor/ezyang
 /lib/Nc/Vendor/autoload.php
 /plugins
 /uploads
