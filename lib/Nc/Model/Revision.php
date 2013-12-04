@@ -15,7 +15,15 @@ class Revision extends AppModel
 {
 	public $validate = array();
 
-	public $actsAs = array('TimeZone');
+	public $actsAs = array(
+		'TimeZone',
+		'HtmlPurifier.HtmlPurifier' => array(
+			'config' => 'Auto',
+			'fields' => array(
+				'content'
+			)
+		),
+	);
 
 	public $order = array('Revision.created' => 'DESC', 'Revision.id' => 'DESC');
 
