@@ -411,6 +411,15 @@ class User extends AppModel
  * @since   v 3.0.0.0
  */
 	public function updateLastLogin($user) {
+
+		//パラメータ異常系 必須項目がない。
+		if(! is_array($user)
+			|| ! isset($user[$this->alias])
+			|| ! isset($user[$this->alias]['last_login'])
+		) {
+			return false;
+		}
+
 		$this->create();
 		$this->id = $user[$this->alias]['id'];
 		$user[$this->alias]['previous_login'] = $user[$this->alias]['last_login'];

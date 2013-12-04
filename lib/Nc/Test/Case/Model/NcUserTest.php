@@ -402,6 +402,47 @@ class NcUserTest extends CakeTestCase {
 	 * @return void
 	 */
 	public function testUpdateLastLogin() {
+
+		//既存ユーザ
+		$user = $this->User->findById(1);
+		$ck = $this->User->updateLastLogin($user);
+		$this->assertEqual($ck , true);
+
+		//既存ユーザ
+		$user = $this->User->findById(7);
+		$ck = $this->User->updateLastLogin($user);
+		$this->assertEqual($ck , true);
+
+		//パラメータ異常
+		$user = array();
+		$ck = $this->User->updateLastLogin($user);
+		$this->assertEqual($ck , false);
+
+		//パラメータ異常　必須項目がない状態。
+		$user = $this->User->findById(7);
+		unset( $user['User']['last_login']); //必須項目
+		$ck = $this->User->updateLastLogin($user);
+		$this->assertEqual($ck , false);
+
+		//$userが文字列（パラメータ異常）
+		$ck = $this->User->updateLastLogin('AAAA');
+		$this->assertEqual($ck , false);
+
+		//$userが空array（パラメータ異常）
+		$ck = $this->User->updateLastLogin(array());
+		$this->assertEqual($ck , false);
+
+		//$userが数字（パラメータ異常）
+		$ck = $this->User->updateLastLogin(1);
+		$this->assertEqual($ck , false);
+
+		//$userがブランク（パラメータ異常）
+		$ck = $this->User->updateLastLogin("");
+		$this->assertEqual($ck , false);
+
+		//$userがNULL（パラメータ異常）
+		$ck = $this->User->updateLastLogin(null);
+		$this->assertEqual($ck , false);
 	}
 
 	/**
