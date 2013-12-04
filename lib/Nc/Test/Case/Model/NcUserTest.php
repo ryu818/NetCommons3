@@ -15,7 +15,11 @@ class NcUserTest extends CakeTestCase {
 		'NcUser',
 		'NcUserItem',
 		'NcUserItemLang',
-		'NcAuthority'
+		'NcAuthority',
+		'NcPage',
+		'NcPageUserLink',
+		'NcCommunity',
+		'NcCommunityLang',
 	);
 
 	/**
@@ -748,6 +752,319 @@ class NcUserTest extends CakeTestCase {
 	 * @return void
 	 */
 	public function testFindParticipant() {
+
+		//TODO 一旦後回し。
+
+		//このメソッドは本当にModel/Userが適切？
+
+		$Page = ClassRegistry::init('Page');
+
+		//Page.id:9のデータで取得
+		$page = $Page->findById(9);
+		$participantType    = NC_PARTICIPANT_TYPE_DEFAULT_ENABLED;
+		$conditions         = array();
+		$joins              = array();
+		$startPage          = 1;
+		$limit              = 30;
+		$sortname           = 'chief';
+		$sortorder          = 'DESC';
+
+		$ck = $this->User->findParticipant(
+			$page,
+			$participantType,
+			$conditions,
+			$joins,
+			$startPage,
+			$limit,
+			$sortname,
+			$sortorder
+		);
+
+		$ans = array (
+			0 => 3,
+			1 =>
+			array (
+				0 =>
+				array (
+					'PageUserLink' =>
+					array (
+						'id' => '1',
+						'user_id' => '1',
+						'authority_id' => '2',
+					),
+					'Page' =>
+					array (
+						'space_type' => '1',
+						'root_id' => '9',
+					),
+					'User' =>
+					array (
+						'id' => '1',
+						'handle' => 'admin',
+						'authority_id' => '1',
+					),
+					'PageAuthority' =>
+					array (
+						'id' => '2',
+						'hierarchy' => '350',
+					),
+					'Authority' =>
+					array (
+						'id' => '1',
+						'display_participants_editing' => true,
+						'hierarchy' => '500',
+					),
+					'Community' =>
+					array (
+						'publication_range_flag' => NULL,
+						'participate_force_all_users' => NULL,
+						'participate_flag' => NULL,
+					),
+					'AuthorityParent' =>
+					array (
+						'id' => NULL,
+						'hierarchy' => NULL,
+					),
+				),
+				1 =>
+				array (
+					'PageUserLink' =>
+					array (
+						'id' => NULL,
+						'user_id' => NULL,
+						'authority_id' => NULL,
+					),
+					'Page' =>
+					array (
+						'space_type' => NULL,
+						'root_id' => NULL,
+					),
+					'User' =>
+					array (
+						'id' => '2',
+						'handle' => 'admin',
+						'authority_id' => '1',
+					),
+					'PageAuthority' =>
+					array (
+						'id' => NULL,
+						'hierarchy' => NULL,
+					),
+					'Authority' =>
+					array (
+						'id' => '1',
+						'display_participants_editing' => true,
+						'hierarchy' => '500',
+					),
+					'Community' =>
+					array (
+						'publication_range_flag' => NULL,
+						'participate_force_all_users' => NULL,
+						'participate_flag' => NULL,
+					),
+					'AuthorityParent' =>
+					array (
+						'id' => NULL,
+						'hierarchy' => NULL,
+					),
+				),
+				2 =>
+				array (
+					'PageUserLink' =>
+					array (
+						'id' => NULL,
+						'user_id' => NULL,
+						'authority_id' => NULL,
+					),
+					'Page' =>
+					array (
+						'space_type' => NULL,
+						'root_id' => NULL,
+					),
+					'User' =>
+					array (
+						'id' => '7',
+						'handle' => 'admin',
+						'authority_id' => '1',
+					),
+					'PageAuthority' =>
+					array (
+						'id' => NULL,
+						'hierarchy' => NULL,
+					),
+					'Authority' =>
+					array (
+						'id' => '1',
+						'display_participants_editing' => true,
+						'hierarchy' => '500',
+					),
+					'Community' =>
+					array (
+						'publication_range_flag' => NULL,
+						'participate_force_all_users' => NULL,
+						'participate_flag' => NULL,
+					),
+					'AuthorityParent' =>
+					array (
+						'id' => NULL,
+						'hierarchy' => NULL,
+					),
+				),
+			),
+		);
+		$this->assertEqual($ck , $ans);
+
+		//$page 以外はoptionなので同じ値になる。
+		$ck = $this->User->findParticipant($page);
+		$ans = array (
+			0 => 3,
+			1 =>
+			array (
+				0 =>
+				array (
+					'PageUserLink' =>
+					array (
+						'id' => '1',
+						'user_id' => '1',
+						'authority_id' => '2',
+					),
+					'Page' =>
+					array (
+						'space_type' => '1',
+						'root_id' => '9',
+					),
+					'User' =>
+					array (
+						'id' => '1',
+						'handle' => 'admin',
+						'authority_id' => '1',
+					),
+					'PageAuthority' =>
+					array (
+						'id' => '2',
+						'hierarchy' => '350',
+					),
+					'Authority' =>
+					array (
+						'id' => '1',
+						'display_participants_editing' => true,
+						'hierarchy' => '500',
+					),
+					'Community' =>
+					array (
+						'publication_range_flag' => NULL,
+						'participate_force_all_users' => NULL,
+						'participate_flag' => NULL,
+					),
+					'AuthorityParent' =>
+					array (
+						'id' => NULL,
+						'hierarchy' => NULL,
+					),
+				),
+				1 =>
+				array (
+					'PageUserLink' =>
+					array (
+						'id' => NULL,
+						'user_id' => NULL,
+						'authority_id' => NULL,
+					),
+					'Page' =>
+					array (
+						'space_type' => NULL,
+						'root_id' => NULL,
+					),
+					'User' =>
+					array (
+						'id' => '2',
+						'handle' => 'admin',
+						'authority_id' => '1',
+					),
+					'PageAuthority' =>
+					array (
+						'id' => NULL,
+						'hierarchy' => NULL,
+					),
+					'Authority' =>
+					array (
+						'id' => '1',
+						'display_participants_editing' => true,
+						'hierarchy' => '500',
+					),
+					'Community' =>
+					array (
+						'publication_range_flag' => NULL,
+						'participate_force_all_users' => NULL,
+						'participate_flag' => NULL,
+					),
+					'AuthorityParent' =>
+					array (
+						'id' => NULL,
+						'hierarchy' => NULL,
+					),
+				),
+				2 =>
+				array (
+					'PageUserLink' =>
+					array (
+						'id' => NULL,
+						'user_id' => NULL,
+						'authority_id' => NULL,
+					),
+					'Page' =>
+					array (
+						'space_type' => NULL,
+						'root_id' => NULL,
+					),
+					'User' =>
+					array (
+						'id' => '7',
+						'handle' => 'admin',
+						'authority_id' => '1',
+					),
+					'PageAuthority' =>
+					array (
+						'id' => NULL,
+						'hierarchy' => NULL,
+					),
+					'Authority' =>
+					array (
+						'id' => '1',
+						'display_participants_editing' => true,
+						'hierarchy' => '500',
+					),
+					'Community' =>
+					array (
+						'publication_range_flag' => NULL,
+						'participate_force_all_users' => NULL,
+						'participate_flag' => NULL,
+					),
+					'AuthorityParent' =>
+					array (
+						'id' => NULL,
+						'hierarchy' => NULL,
+					),
+				),
+			),
+		);
+		$this->assertEqual($ck , $ans);
+
+		//TODO : $participantType の値別の値の調査
+		$page = $Page->findById(16);
+		$participantType = 0; //参加者のみ表示
+		$ck = $this->User->findParticipant(
+			$page,
+			$participantType,
+			$conditions,
+			$joins,
+			$startPage,
+			$limit,
+			$sortname,
+			$sortorder
+		);
+		//var_export($ck);
+		//TODO Noticeエラー対応
 	}
 
 	/**
