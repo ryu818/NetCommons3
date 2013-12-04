@@ -20,6 +20,9 @@ class NcUserTest extends CakeTestCase {
 		'NcPageUserLink',
 		'NcCommunity',
 		'NcCommunityLang',
+		'NcConfig',
+		'NcConfigLang',
+		'NcUpload'
 	);
 
 	/**
@@ -1073,6 +1076,16 @@ class NcUserTest extends CakeTestCase {
 	 * @return void
 	 */
 	public function testGetSendMails() {
+
+		//指定なし（すべてoption）
+		$ck = $this->User->getSendMails();
+		$this->assertEqual(false , $ck);
+
+		//TODO テストデータの積み上げと解析
+		//$Content = ClassRegistry::init("Content");
+		//$contentId = $Content->findById(17);
+		//$ck = $this->User->getSendMails(18);
+		//var_export($ck);
 	}
 
 	/**
@@ -1105,6 +1118,28 @@ class NcUserTest extends CakeTestCase {
 	 * @return void
 	 */
 	public function testDeleteUser() {
+		//TODO : 実装検討
+		//既存ユーザ
+		//$ck = $this->User->deleteUser(1);
+		//$this->assertEqual($ck , true);
+
+		//既存ユーザ false?　なぜ？
+		//$ck = $this->User->deleteUser(7);
+		//$this->assertEqual($ck , true);
+
+		//存在しないユーザ
+		//$ck = $this->User->deleteUser(999999999999);
+		//$this->assertEqual($ck , true);
+
+		//文字列
+		//$ck = $this->User->deleteUser("AAAAAAAAAA");
+		//$this->assertEqual($ck , true);
+
+		//空配列
+		//$ck = $this->User->deleteUser(array());
+		//$this->assertEqual($ck , true);
+
+		//var_export($ck);
 	}
 
 	/**
@@ -1113,6 +1148,8 @@ class NcUserTest extends CakeTestCase {
 	 * @return void
 	 */
 	public function testConvertAvatarDisplay() {
+
+
 	}
 
 }
