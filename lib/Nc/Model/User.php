@@ -356,10 +356,27 @@ class User extends AppModel
  * @since   v 3.0.0.0
  */
 	public function invalidPermalink($data) {
-		if($data['permalink'] == '') {
+
+		$permalink = "";
+		//文字列でもなく数字でもなく配列でもないデータは、そもそもチェックできないのでfalse
+		if(! is_string($data) && ! is_array($data) && ! is_int($data)) {
+			return false;
+		}
+
+		if(! is_array($data)) {
+			$permalink = $data;
+		}
+		elseif(count($data) > 0) {
+			//空arrayの場合は、$permalinkはブランク　ある場合はkeyを無視
+			$permalink_array = array_values($data);
+			$permalink = $permalink_array[0];
+		}
+
+		//空なら、true
+		if(empty($permalink)) {
 			return true;
 		}
-		$permalink = $data['permalink'];
+
 		if(preg_match(NC_PERMALINK_PROHIBITION, $permalink)) {
 			return false;
 		}

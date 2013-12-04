@@ -171,6 +171,229 @@ class NcUserTest extends CakeTestCase {
 	 * @return void
 	 */
 	public function testInvalidPermalink() {
+		//文字列
+		$data['permalink'] = 'hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , true);
+
+		//文字列  %禁止
+		$data['permalink'] = 'hoge%hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列  スペース禁止
+		$data['permalink'] = 'hoge hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列  #禁止
+		$data['permalink'] = 'hoge&hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列  <禁止
+		$data['permalink'] = 'hoge<hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列  >禁止
+		$data['permalink'] = 'hoge>hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列  \禁止
+		$data['permalink'] = 'hoge\hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列  +禁止
+		$data['permalink'] = 'hoge+hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列  "禁止
+		$data['permalink'] = 'hoge"hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列  '禁止
+		$data['permalink'] = "hoge'hoge";
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列  &は禁止
+		$data['permalink'] = 'hoge&hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+
+		//文字列  ?は禁止
+		$data['permalink'] = 'hoge?hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列  .で終わるの禁止
+		$data['permalink'] = 'hogehoge.';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列  =禁止
+		$data['permalink'] = 'hoge=hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列  /禁止
+		$data['permalink'] = 'hoge/hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列  ~禁止
+		$data['permalink'] = 'hoge~hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列  :禁止
+		$data['permalink'] = 'hoge:hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列  ;禁止
+		$data['permalink'] = 'hoge;hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列 ,禁止
+		$data['permalink'] = 'hoge,hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列 $禁止
+		$data['permalink'] = 'hoge$hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列 @禁止
+		$data['permalink'] = 'hoge@hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列 .から始まるの禁止
+		$data['permalink'] = '.hogehoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列 |禁止
+		$data['permalink'] = 'hoge|hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列 .]禁止
+		$data['permalink'] = 'hoge]hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列 .[禁止
+		$data['permalink'] = 'hoge[hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列 .!禁止
+		$data['permalink'] = 'hoge!hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列 (禁止
+		$data['permalink'] = 'hoge(hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列 (禁止
+		$data['permalink'] = 'hoge(hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列 )禁止
+		$data['permalink'] = 'hoge)hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列 *禁止
+		$data['permalink'] = 'hoge*hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//文字列 *禁止
+		$data['permalink'] = 'hoge*hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//ブランク
+		$data['permalink'] = '';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , true);
+
+		//文字列  .はOK
+		$data['permalink'] = 'hoge.hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , true);
+
+		//文字列  日本語はOK
+		$data['permalink'] = '日本語';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , true);
+
+		//文字列 _OK
+		$data['permalink'] = 'hoge_hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , true);
+
+		//文字列 - OK
+		$data['permalink'] = 'hoge-hoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , true);
+
+		//文字列 大文字小文字OK
+		$data['permalink'] = 'hogeHoge';
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , true);
+
+		//文字列 数字OK
+		$data['permalink'] = 12345678910;
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , true);
+
+		$data = 12345678910;
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , true);
+
+		//空arrayだった場合はブランクと同じ扱い、true
+		$data = array();
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , true);
+
+		//文字列も許可 OK
+		$data = "AAAAAA";
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , true);
+
+		//NULL もダメ
+		$data = null;
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//boolだめ。
+		$data = false;
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		$data = true;
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
+
+		//class objectダメ
+		$data = $this->User;
+		$ck = $this->User->invalidPermalink($data) ;
+		$this->assertEqual($ck , false);
 	}
 
 	/**
