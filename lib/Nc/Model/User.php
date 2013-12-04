@@ -1368,21 +1368,21 @@ class User extends AppModel
 	public function convertAvatarDisplay($users) {
 		$UserItem = ClassRegistry::init('UserItem');
 		$UserItemLink = ClassRegistry::init('UserItemLink');
-
+		//UserItemkから、アバターの設定を取得
 		$userItem = $UserItem->find('first', array(
 			'fields' => array('id', 'allow_public_flag'),
 			'conditions' => array('tag_name' => 'avatar', )
 		));
-
+		//アバターの設定が、そもそも外部公開がOFFだったなら、処理せずデータをそのまま返す。
 		if($userItem['UserItem']['allow_public_flag'] == _OFF) {
 			return $users;
 		}
-
+		//User.idだけの配列を作成
 		$userIds = array();
 		foreach($users as $user) {
 			$userIds[] = $user['User']['id'] ;
 		}
-
+		//会員の設定情報をUserItemLinkから取得 (User.idを配列にしたものを使用する
 		$userItemLinks = $UserItemLink->find('list', array(
 			'fields' => array('user_id', 'public_flag'),
 			'conditions' => array(
@@ -1390,7 +1390,7 @@ class User extends AppModel
 				'user_item_id' => $userItem['UserItem']['id'],
 			)
 		));
-
+		//各ユーザのアバターを使うかどうかの設定を確認し、OFFだった場合にはアバターの情報をブランクに変更して情報を返却する。
 		foreach($users as $key => $user) {
 			if(isset($userItemLinks[$user['User']['id']]) && $userItemLinks[$user['User']['id']] == _OFF) {
 				$users[$key]['User']['avatar'] = '';
