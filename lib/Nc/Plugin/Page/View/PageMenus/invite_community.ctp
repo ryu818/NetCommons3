@@ -111,7 +111,6 @@
 							$settings = array(
 								'name' => $name,
 								'type' => 'textarea',
-								'escape' => false,
 								'value' => $configs['community_mail_invite_body'],
 								'label' => false,
 								'error' => array('attributes' => array(

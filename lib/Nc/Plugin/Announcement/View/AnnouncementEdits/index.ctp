@@ -89,7 +89,6 @@ $this->extend('/Frame/block');
 						echo $this->Form->input('AnnouncementEdit.approved_mail_subject', $settings);
 						$settings = array(
 							'type' => 'textarea',
-							'escape' => false,
 							'value' => $announcement_edit['AnnouncementEdit']['approved_mail_body'],
 							'label' => __('Message：'),
 							'error' => array('attributes' => array(

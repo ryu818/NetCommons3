@@ -196,7 +196,6 @@ if(!$isEdit && ($item['UserItem']['type'] == 'file' || $item['UserItem']['tag_na
 			} else if($item['UserItem']['type'] == 'textarea') {
 				if($isEdit) {
 					$settings = array(
-						'escape' => false,
 						'value' => $value,
 						//'error' => array('attributes' => array(
 						//	'selector' => true

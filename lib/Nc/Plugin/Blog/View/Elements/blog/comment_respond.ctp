@@ -58,7 +58,6 @@
 		'id' => $commentAreaId,
 		'cols' => 22,
 		'type' => 'textarea',
-		'escape' => false,
 		'value' => $comment['BlogComment']['comment']));
 
 	// 編集か返信の場合にキャンセルボタンを表示する

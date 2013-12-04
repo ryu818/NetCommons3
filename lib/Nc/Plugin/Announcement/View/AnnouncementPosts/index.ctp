@@ -61,7 +61,7 @@ if($announcement_edit['AnnouncementEdit']['approved_flag'] == _ON && $hierarchy 
 		<li>
 			<?php
 				echo($this->Form->error('Revision.content'));
-				echo $this->Form->textarea('Revision.content', array('escape' => false, 'required' => false, 'class' => 'nc-wysiwyg', 'value' => $announcement['Revision']['content']));
+				echo $this->Form->textarea('Revision.content', array('required' => false, 'class' => 'nc-wysiwyg', 'value' => $announcement['Revision']['content']));
 			?>
 		</li>
 	</ul>

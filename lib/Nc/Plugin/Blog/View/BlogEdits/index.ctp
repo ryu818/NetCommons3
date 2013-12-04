@@ -171,7 +171,6 @@ $this->extend('/Frame/block');
 									echo $this->Form->input('Blog.mail_subject', $settings);
 									$settings = array(
 										'type' => 'textarea',
-										'escape' => false,
 										'value' => $blog['Blog']['mail_body'],
 										'label' => __('Message：'),
 										'error' => array('attributes' => array(
@@ -271,7 +270,6 @@ $this->extend('/Frame/block');
 									echo $this->Form->input('Blog.comment_mail_subject', $settings);
 									$settings = array(
 										'type' => 'textarea',
-										'escape' => false,
 										'value' => $blog['Blog']['comment_mail_body'],
 										'label' => __('Message：'),
 										'error' => array('attributes' => array(
@@ -406,7 +404,6 @@ $this->extend('/Frame/block');
 									echo $this->Form->input('Blog.approved_mail_subject', $settings);
 									$settings = array(
 										'type' => 'textarea',
-										'escape' => false,
 										'value' => $blog['Blog']['approved_mail_body'],
 										'label' => __('Message：'),
 										'error' => array('attributes' => array(
@@ -491,7 +488,6 @@ $this->extend('/Frame/block');
 									echo $this->Form->input('Blog.comment_approved_mail_subject', $settings);
 									$settings = array(
 										'type' => 'textarea',
-										'escape' => false,
 										'value' => $blog['Blog']['comment_approved_mail_body'],
 										'label' => __('Message：'),
 										'error' => array('attributes' => array(

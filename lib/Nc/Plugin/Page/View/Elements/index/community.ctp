@@ -222,7 +222,7 @@ if($community_params['community']['Community']['participate_flag'] == NC_PARTICI
 							<dd class="pages-menu-community-description">
 								<?php
 									echo $this->Form->error('Revision.content');
-									echo $this->Form->textarea('Revision.content', array('id' => "pages-menu-community-description-". $page['Page']['id'], 'escape' => false, 'required' => false, 'class' => 'nc-wysiwyg pages-menu-community-description', 'value' => $community_params['community_lang']['Revision']['content']));
+									echo $this->Form->textarea('Revision.content', array('id' => "pages-menu-community-description-". $page['Page']['id'], 'required' => false, 'class' => 'nc-wysiwyg pages-menu-community-description', 'value' => $community_params['community_lang']['Revision']['content']));
 								?>
 							</dd>
 						</dl>
