@@ -121,9 +121,9 @@ before_script:
     }" > app/Config/database.php
 
 script:
-  - cd app/; ./Console/cake test app NcAll --stderr
-  - phpcs -p --extensions=php --standard=CakePHP .
+  - cd app/; ./Console/cake test app NcAll --stderr; cd -
   - pwd
+  - phpcs -p --extensions=php --standard=CakePHP .
   - phpmd . text ./ruleset/phpmd.xml --exclude=lib/Nc/Vendor
   - phpcpd --exclude Test --exclude Config --exclude Vendor .
 
