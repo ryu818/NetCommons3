@@ -3889,10 +3889,6 @@ e-mail：{X-EMAIL}
             <column name="modified_user_id">1</column>
             <column name="modified_user_name">admin</column>
         </table>
-        <!-- テーブル htmlarea_video_urls -->
-        <table name="htmlarea_video_urls">
-            <column name="url">http://www.youtube.com/</column>
-        </table>
         <!-- テーブル languages -->
         <table name="languages">
             <column name="language">en</column>

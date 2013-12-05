@@ -100,7 +100,7 @@ if($blog['Blog']['approved_flag'] == _ON && $hierarchy  <= NC_AUTH_MODERATE) {
 		<li>
 			<?php
 				echo($this->Form->error('Revision.content'));
-				echo $this->Form->textarea('Revision.content', array('escape' => false, 'required' => false, 'class' => 'nc-wysiwyg', 'value' => $blog_post['Revision']['content']));
+				echo $this->Form->textarea('Revision.content', array('required' => false, 'class' => 'nc-wysiwyg', 'value' => $blog_post['Revision']['content']));
 			?>
 		</li>
 		<?php if($blog['Blog']['trackback_transmit_flag'] == _ON): ?>

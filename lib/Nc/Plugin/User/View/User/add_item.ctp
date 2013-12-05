@@ -144,7 +144,6 @@ echo $this->Form->create('UserItem', array('data-pjax' => '#'.$id));
 					<?php
 						$settings = array(
 							'type' => 'textarea',
-							'escape' => false,
 							'value' => $item['UserItemLang']['description'],
 							'label' => false,
 							'div' => false,

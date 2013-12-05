@@ -205,6 +205,10 @@ class AppController extends Controller {
 				ini_set('session.cookie_secure', 0);
 			}
 		}
+
+		// Nc用Html Purifierロード処理
+		App::uses('Purifier', 'Lib');
+		Purifier::setNcConfig();
 	}
 
 /**

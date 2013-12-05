@@ -22,7 +22,6 @@ $name = 'PageStyle.css';
 $settings = array(
 	'type' => 'textarea',
 	'id' => 'pages-menu-edit-css-textarea',
-	'escape' => false,
 	'value' => $page_style['PageStyle']['content'],
 	'label' => false,
 	'error' => array('attributes' => array(

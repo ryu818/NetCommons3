@@ -70,7 +70,6 @@
 						);
 						if($item['type'] == 'textarea') {
 							$settings['type'] = 'textarea';
-							$settings['escape'] = false;
 						}
 				}
 				if($item['type'] == 'pages') {
