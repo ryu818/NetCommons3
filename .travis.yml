@@ -8,6 +8,14 @@ env:
   - DB=pgsql
   - DB=sqlite
 
+matrix:
+  include:
+    - php: 5.4
+      env:
+        - PHPCS=1
+        - PHPMD=1
+        - PHPCPD=1
+
 before_script:
   - curl -s http://getcomposer.org/installer | php
   - php composer.phar install
@@ -23,6 +31,8 @@ before_script:
     server.listen(80, 'localhost');
     console.log('TCP server listening on port 80 at localhost.');" > app/tmp/socket.js
   - sudo node ./app/tmp/socket.js &
+  - pear config-set auto_discover 1
+  - pear install pear.phpqatools.org/phpqatools
   - set +H
   - echo "<?php
     class DATABASE_CONFIG {
@@ -106,6 +116,13 @@ before_script:
 
 script:
   - cd app/; ./Console/cake test app NcAll --stderr
+  - sh -c "if [ '$PHPCS' = '1' ]; then phpcs -p --extensions=php --standard=CakePHP .; fi"
+  - sh -c "if [ '$PHPMD' = '1' ]; then phpmd . text ruleset/phpmd.xml --exclude=lib/NC/Vendor; fi"
+  - sh -c "if [ '$PHPCPD' = '1' ]; then phpcpd --exclude Test --exclude Config --exclude Vendor .; fi"
 
 notifications:
-  email: false
+  email:
+    recipients:
+      - nii@m0n0m0n0.com
+    on_success: never  # default: change
+    on_failure: always # default: always
