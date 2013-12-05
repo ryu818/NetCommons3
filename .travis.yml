@@ -31,8 +31,14 @@ before_script:
     server.listen(80, 'localhost');
     console.log('TCP server listening on port 80 at localhost.');" > app/tmp/socket.js
   - sudo node ./app/tmp/socket.js &
+  - pear channel-discover pear.cakephp.org
+  - pear install --alldeps cakephp/CakePHP_CodeSniffer
+  - pear channel-discover pear.phpmd.org
+  - pear channel-discover pear.pdepend.org
+  - pear install --alldeps phpmd/PHP_PMD
   - pear config-set auto_discover 1
-  - pear install pear.phpqatools.org/phpqatools
+  - pear install pear.phpunit.de/phpcpd
+  - phpenv rehash
   - set +H
   - echo "<?php
     class DATABASE_CONFIG {
