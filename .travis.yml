@@ -116,9 +116,9 @@ before_script:
 
 script:
   - cd app/; ./Console/cake test app NcAll --stderr
-  - sh -c "if [ '$PHPCS' = '1' ]; then phpcs -p --extensions=php --standard=CakePHP .; fi"
-  - sh -c "if [ '$PHPMD' = '1' ]; then phpmd . text ruleset/phpmd.xml --exclude=lib/NC/Vendor; fi"
-  - sh -c "if [ '$PHPCPD' = '1' ]; then phpcpd --exclude Test --exclude Config --exclude Vendor .; fi"
+  - if [ '$PHPCS' = '1' ]; then phpcs -p --extensions=php --standard=CakePHP .; fi
+  - if [ '$PHPMD' = '1' ]; then phpmd . text ruleset/phpmd.xml --exclude=lib/NC/Vendor; fi
+  - if [ '$PHPCPD' = '1' ]; then phpcpd --exclude Test --exclude Config --exclude Vendor .; fi
 
 notifications:
   email:
