@@ -14,9 +14,15 @@ end
   end
 end
 
+# Add extra repos
 execute "add latest php5 repository" do
-  command "apt-get remove php5*; add-apt-repository ppa:ondrej/php5; apt-get update"
+  command "apt-get remove php5*; add-apt-repository -y ppa:ondrej/php5; apt-get update"
   not_if { ::File.exists?("/etc/apt/sources.list.d/ondrej-php5-#{node[:lsb][:codename]}.list")}
+end
+
+execute "add latest emacs repository" do
+  command "apt-get remove emacs*; add-apt-repository -y ppa:cassou/emacs; apt-get update"
+  not_if { ::File.exists?("/etc/apt/sources.list.d/cassou-emacs-#{node[:lsb][:codename]}.list")}
 end
 
 # Install packages necessary for this project
@@ -25,8 +31,10 @@ packages = %w{
   git subversion nginx
   mysql-server postgresql curl imagemagick
   lv zsh tree axel expect
-  emacs emacs-goodies-el debian-el gettext-el global w3m w3m-el w3m-img magit
+  global w3m aspell exuberant-ctags wamerican-huge stunnel4 npm
+  emacs24 emacs-goodies-el debian-el gettext-el
   iftop iotop iperf nethogs sysstat
+  ruby ruby-dev libnotify-bin
 }
 
 packages.each do |pkg|

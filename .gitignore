@@ -52,3 +52,6 @@ GPATH
 GRTAGS
 GSYMS
 GTAGS
+TAGS
+.kitchen/
+.kitchen.local.yml
