@@ -30,20 +30,30 @@ packages = %w{
   php5 php5-mysql php5-pgsql php5-curl php5-cli php5-fpm php5-imagick php5-xdebug php5-mcrypt php-pear
   git subversion nginx
   mysql-server postgresql curl imagemagick
-  lv zsh tree axel expect
+  lv zsh tree axel expect make
   global w3m aspell exuberant-ctags wamerican-huge stunnel4 npm
   emacs24 emacs-goodies-el debian-el gettext-el
   iftop iotop iperf nethogs sysstat
-  ruby ruby-dev libnotify-bin
+  ruby1.9.1 ruby1.9.1-dev libnotify-bin
 }
 
 packages.each do |pkg|
   package pkg do
     action [:install, :upgrade]
-    if node.default[:versions][pkg].kind_of? String
-      version node.default[:versions][pkg]
-    end
+    version node.default[:versions][pkg] if node.default[:versions][pkg].kind_of? String
   end
+end
+
+execute "install bundler" do
+  command "gem i bundler"
+end
+
+execute "install gem packages" do
+  command "cd /vagrant_data; bundle install"
+end
+
+execute "install npm packages" do
+  command "npm -g install jshint"
 end
 
 execute "install phpunit" do
