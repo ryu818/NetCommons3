@@ -7,7 +7,9 @@ group :development, :test do
   gem 'guard-phpmd'
   gem 'guard-phpunit'
   gem 'guard-kitchen'
+  gem 'guard-shell'
   gem 'libnotify'
   gem 'kitchen-vagrant'
+  gem 'ruby-prof'
   gem 'test-kitchen'
 end

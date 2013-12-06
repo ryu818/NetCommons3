@@ -56,11 +56,28 @@ execute "install npm packages" do
   command "npm -g install jshint"
 end
 
+# Install pear packages
 execute "install phpunit" do
   command "pear config-set auto_discover 1; pear install pear.phpunit.de/PHPUnit"
   not_if { ::File.exists?("/usr/bin/phpunit")}
 end
 
+execute "install phpcs" do
+  command "pear channel-discover pear.cakephp.org; pear install --alldeps cakephp/CakePHP_CodeSniffer"
+  not_if { ::File.exists?("/usr/bin/phpcs")}
+end
+
+execute "install phpmd" do
+  command "pear channel-discover pear.phpmd.org; pear channel-discover pear.pdepend.org; pear install phpmd/PHP_PMD"
+  not_if { ::File.exists?("/usr/bin/phpmd")}
+end
+
+execute "install phpcpd" do
+  command "pear install pear.phpunit.de/phpcpd"
+  not_if { ::File.exists?("/usr/bin/phpcpd")}
+end
+
+# Install composer
 execute "install composer" do
   command "cd /vagrant_data; curl -sS https://getcomposer.org/installer | php; php composer.phar install; mv composer.phar /usr/local/bin/composer"
   not_if { ::File.exists?("/usr/local/bin/composer")}

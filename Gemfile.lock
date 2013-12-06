@@ -19,6 +19,8 @@ GEM
       guard (>= 0.8.8)
     guard-phpunit (0.1.4)
       guard (~> 1.1)
+    guard-shell (0.5.2)
+      guard (>= 1.1.0)
     kitchen-vagrant (0.13.0)
       test-kitchen (~> 1.0)
     libnotify (0.8.2)
@@ -42,6 +44,7 @@ GEM
       ffi (>= 0.5.0)
     rb-kqueue (0.2.0)
       ffi (>= 0.5.0)
+    ruby-prof (0.13.0)
     safe_yaml (0.9.7)
     slop (3.4.7)
     test-kitchen (1.1.0)
@@ -61,6 +64,8 @@ DEPENDENCIES
   guard-phpcs
   guard-phpmd
   guard-phpunit
+  guard-shell
   kitchen-vagrant
   libnotify
+  ruby-prof
   test-kitchen
