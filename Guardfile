@@ -14,13 +14,13 @@ guard :shell do
     `mysql -uroot -proot -e 'CREATE DATABASE cakephp_test3;'`
     `cp app/Config/database.php app/Config/database.php.orig`
     `cp app/Config/database.php.test app/Config/database.php`
-    `rm -f app/Config/database.php.orig`
 
     # Invoke tests
     target = m[0].gsub /lib\/Nc\/Test\/Case\/([\w\/]+)Test\.php$/, '\1'
     n "app/Console/cake test app #{target} --stderr"
     `app/Console/cake test app #{target} --stderr`
     `cp app/Config/database.php.orig app/Config/database.php`
+    `rm -f app/Config/database.php.orig`
   end
 end
 
