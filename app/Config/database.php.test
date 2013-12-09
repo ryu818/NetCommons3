@@ -5,7 +5,7 @@ class DATABASE_CONFIG {
 					'datasource' => 'Database/Mysql',
 					'host' => '127.0.0.1',
 					'login' => 'root',
-					'password' => '',
+					'password' => 'root',
 			),
 			'pgsql' => array(
 					'datasource' => 'Database/Postgres',
