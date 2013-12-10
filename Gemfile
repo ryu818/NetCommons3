@@ -1,15 +1,20 @@
 source "https://rubygems.org"
 
 group :development, :test do
-  # guard-phpunit is not compatible with 2.x
-  gem 'guard', '~>1.8.3'
+  gem 'guard'
+  gem 'guard-bundler'
+  gem 'guard-jshint-node'
+  gem 'guard-kitchen'
+  gem 'guard-livereload'
+  # Still not uploaded to rubygems.org
+  # gem 'guard-minify'
   gem 'guard-phpcs'
   gem 'guard-phpmd'
-  gem 'guard-phpunit'
-  gem 'guard-kitchen'
+  gem 'guard-phpunit2'
   gem 'guard-shell'
   gem 'libnotify'
   gem 'kitchen-vagrant'
+  gem 'rcodetools'
   gem 'ruby-prof'
   gem 'test-kitchen'
 end

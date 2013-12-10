@@ -75,7 +75,7 @@ class DATABASE_CONFIG {
 		'persistent' => false,
 		'host' => "localhost",
 		'login' => "root",
-		'password' => "",
+		'password' => "root",
 		'database' => "netcommons3_test",
 		'prefix' => "nc3_",
 		'encoding' => "utf8",
