@@ -466,6 +466,13 @@ class User extends AppModel
 				'conditions' => $conditions
 			) );
 		} else {
+			if(isset($this->belongsTo['Authority']['fields'])) {
+				$user['Authority'] = array();
+				foreach($this->belongsTo['Authority']['fields'] as $field) {
+					$user['Authority'][$field] = $loginUser[$field];
+					unset($loginUser[$field]);
+				}
+			}
 			$user['User'] = $loginUser;
 		}
 		if(!isset($user['User']))

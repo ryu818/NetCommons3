@@ -189,18 +189,18 @@ class CheckAuthComponent extends Component {
 					$controller->hierarchy = NC_AUTH_OTHER;
 				} else {
 					if($page['Page']['space_type'] == NC_SPACE_TYPE_MYPORTAL) {
-						if($currentUser['User']['myportal_use_flag'] == NC_MYPORTAL_USE_ALL) {
+						if($currentUser['Authority']['myportal_use_flag'] == NC_MYPORTAL_USE_ALL) {
 							// 使用
 							$this->allowAuth = NC_AUTH_OTHER;
 						} else {
 							// 未使用
 							$controller->hierarchy = NC_AUTH_OTHER;
 						}
-						if($currentUser['User']['myportal_use_flag'] == NC_MYPORTAL_MEMBERS) {
-							$this->allowUserAuth = $currentUser['User']['allow_myportal_viewing_hierarchy'];
+						if($currentUser['Authority']['myportal_use_flag'] == NC_MYPORTAL_MEMBERS) {
+							$this->allowUserAuth = $currentUser['Authority']['allow_myportal_viewing_hierarchy'];
 						}
 					} else {
-						if($currentUser['User']['private_use_flag'] == _ON) {
+						if($currentUser['Authority']['private_use_flag'] == _ON) {
 							// 使用
 							$this->allowAuth = NC_AUTH_CHIEF;
 						} else {
