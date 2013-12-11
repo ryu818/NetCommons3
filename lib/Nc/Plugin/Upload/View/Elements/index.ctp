@@ -38,7 +38,7 @@ if ($this->request->query['popup_type'] == 'image') {
 	));
 }
 ?>
-<div class="nc-common-btn upload-btn">
+<div class="nc-common-btn nc-upload-btn">
 	<span><?php echo(__('Select file'));?></span>
 <?php
 echo $this->Form->input('UploadLibrary.file_name', array(
