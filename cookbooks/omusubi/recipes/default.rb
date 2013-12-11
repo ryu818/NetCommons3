@@ -30,7 +30,7 @@ packages = %w{
   php5 php5-mysql php5-pgsql php5-curl php5-cli php5-fpm php5-imagick php5-xdebug php5-mcrypt php-pear
   git subversion nginx
   mysql-server postgresql curl imagemagick
-  lv zsh tree axel expect make
+  lv zsh tree axel expect make g++
   global w3m aspell exuberant-ctags wamerican-huge stunnel4 npm
   emacs24 emacs-goodies-el debian-el gettext-el
   iftop iotop iperf nethogs sysstat
@@ -110,8 +110,10 @@ end
     end
 end
 
-group "www-data" do
-  action :modify
-  members "vagrant"
-  append true
+%w{www-data}.each do |group|
+  group group do
+    action :modify
+    members "vagrant"
+    append true
+  end
 end
