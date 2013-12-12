@@ -73,8 +73,9 @@ class AppModel extends Model {
 		$id = isset($user['id']) ? $user['id'] : _OFF;
 		$usename = isset($user['handle']) ? $user['handle'] : '';
 
-		if ($this->hasField('created_user_id') && empty($this->data[$this->alias][$this->primaryKey])
-			 && (!in_array('created_user_id', $fields) || !isset($this->data[$this->alias]['created_user_id']))) {
+		if ($this->hasField('created_user_id') && empty($this->data[$this->alias][$this->primaryKey]) &&
+			 empty($this->id) &&
+			 (!in_array('created_user_id', $fields) || !isset($this->data[$this->alias]['created_user_id']))) {
 			if(count($fieldList) > 0)
 				$fieldList[] = 'created_user_id';
 			$this->data[$this->alias]['created_user_id'] = $id;
@@ -85,8 +86,9 @@ class AppModel extends Model {
 			$this->data[$this->alias]['modified_user_id'] = $id;
 		}
 
-		if ($this->hasField('created_user_name') && empty($this->data[$this->alias][$this->primaryKey])
-			&&(!in_array('created_user_name', $fields) || !isset($this->data[$this->alias]['created_user_name']))) {
+		if ($this->hasField('created_user_name') && empty($this->data[$this->alias][$this->primaryKey]) &&
+			empty($this->id) &&
+			(!in_array('created_user_name', $fields) || !isset($this->data[$this->alias]['created_user_name']))) {
 			if(count($fieldList) > 0)
 				$fieldList[] = 'created_user_name';
 			$this->data[$this->alias]['created_user_name'] = $usename;
