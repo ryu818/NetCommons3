@@ -218,19 +218,6 @@ class NcPageTreeTest extends CakeTestCase {
 		//var_export($ck);
 	}
 
-	public function test_idsArray()
-	{
-		//$ck = $this->PageTree->getChildAll(11);
-		//$array = $this->PageTree->_idsArray($ck);
-		//$anc = array (
-		//	0 => '14',
-		//	1 => '21',
-		//	2 => '24',
-		//	3 => '27',
-		//);
-		//$this->assertEqual($array , $anc);
-	}
-
 	public function testDeletePage() {
 		//11を削除
 		$ck = $this->PageTree->deletePage(11);
@@ -258,8 +245,7 @@ class NcPageTreeTest extends CakeTestCase {
 		$this->assertEqual(array() , $ck);
 	}
 
-	public function testMoveNode()
-	{
+	public function testMoveNode() {
 		//11の子供たちに、子を追加する。
 		$this->PageTree->addPage(200 , 14);
 		$this->PageTree->addPage(210 , 14);
@@ -330,8 +316,6 @@ class NcPageTreeTest extends CakeTestCase {
 			)
 		);
 		$this->assertEqual(1 , count($ck));
-
-
 	}
 
 }
