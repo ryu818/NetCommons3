@@ -7,7 +7,7 @@ execute "apt-get update" do
   command "apt-get update"
 end
 
-# Install packages necessary for installation
+# Install packages necessary before installation
 %w{python-software-properties}.each do |pkg|
   package pkg do
     action [:install, :upgrade]
@@ -49,7 +49,7 @@ execute "install bundler" do
 end
 
 execute "install gem packages" do
-  command "cd /vagrant_data; bundle install"
+  command "cd /vagrant_data; bundle"
 end
 
 execute "install npm packages" do
@@ -83,6 +83,16 @@ execute "install composer" do
   not_if { ::File.exists?("/usr/local/bin/composer")}
 end
 
+# Update composer packages
+execute "self-update composer" do
+  command "composer self-update"
+end
+
+execute "composer update" do
+  command "cd /vagrant_data; composer update"
+end
+
+# Deploy configuration files
 template "/etc/nginx/conf.d/php-fpm.conf" do
   mode 0644
   source "php-fpm.conf.erb"
@@ -105,9 +115,9 @@ service 'apache2' do
 end
 
 %w{mysql postgresql php5-fpm nginx}.each do |service_name|
-    service service_name do
-      action [:start, :restart]
-    end
+  service service_name do
+    action [:start, :restart]
+  end
 end
 
 %w{www-data}.each do |group|
