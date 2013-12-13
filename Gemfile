@@ -1,5 +1,8 @@
 source "https://rubygems.org"
 
+gem 'bundler'
+gem 'berkshelf'
+
 group :development, :test do
   gem 'guard'
   gem 'guard-bundler'
