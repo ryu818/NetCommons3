@@ -3,8 +3,125 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "3348cfc5465930ef5eec0cb6723a609e",
+    "hash": "58b7482f91bc04564b56e8fe22b050e1",
     "packages": [
+        {
+            "name": "chronon/mobile_detect",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/chronon/CakePHP-MobileDetectComponent-Plugin.git",
+                "reference": "d5cd7456c5a08a728c43ee4e8b784ec7ff189cad"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/chronon/CakePHP-MobileDetectComponent-Plugin/zipball/d5cd7456c5a08a728c43ee4e8b784ec7ff189cad",
+                "reference": "d5cd7456c5a08a728c43ee4e8b784ec7ff189cad",
+                "shasum": ""
+            },
+            "require": {
+                "composer/installers": "*",
+                "mobiledetect/mobiledetectlib": "2.6.0",
+                "php": ">=5.3.0"
+            },
+            "type": "cakephp-plugin",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Gregory Gaskill",
+                    "email": "one@chronon.com",
+                    "homepage": "http://technokracy.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A CakePHP plugin component for identifying mobile devices using the Mobile_Detect project.",
+            "homepage": "https://github.com/chronon/CakePHP-MobileDetectComponent-Plugin",
+            "keywords": [
+                "cakephp",
+                "component",
+                "mobile",
+                "mobile detect",
+                "plugin"
+            ],
+            "time": "2013-04-21 23:04:35"
+        },
+        {
+            "name": "composer/installers",
+            "version": "v1.0.7",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/composer/installers.git",
+                "reference": "d792632d27e1980d921cbbba12eab7b888338d4c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/composer/installers/zipball/d792632d27e1980d921cbbba12eab7b888338d4c",
+                "reference": "d792632d27e1980d921cbbba12eab7b888338d4c",
+                "shasum": ""
+            },
+            "replace": {
+                "shama/baton": "*"
+            },
+            "require-dev": {
+                "composer/composer": "1.0.*@dev",
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "composer-installer",
+            "extra": {
+                "class": "Composer\\Installers\\Installer",
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Composer\\Installers\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kyle Robinson Young",
+                    "email": "kyle@dontkry.com",
+                    "homepage": "https://github.com/shama",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A multi-framework Composer library installer",
+            "homepage": "http://composer.github.com/installers/",
+            "keywords": [
+                "TYPO3 CMS",
+                "TYPO3 Flow",
+                "TYPO3 Neos",
+                "agl",
+                "cakephp",
+                "codeigniter",
+                "concrete5",
+                "drupal",
+                "fuelphp",
+                "installer",
+                "joomla",
+                "kohana",
+                "laravel",
+                "li3",
+                "lithium",
+                "mako",
+                "modulework",
+                "phpbb",
+                "ppi",
+                "silverstripe",
+                "symfony",
+                "wordpress",
+                "zend"
+            ],
+            "time": "2013-10-24 16:13:49"
+        },
         {
             "name": "ezyang/htmlpurifier",
             "version": "v4.6.0",
@@ -49,6 +166,52 @@
                 "html"
             ],
             "time": "2013-11-30 08:25:19"
+        },
+        {
+            "name": "mobiledetect/mobiledetectlib",
+            "version": "2.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/serbanghita/Mobile-Detect.git",
+                "reference": "426411a9b1be3f28ef79647bf165e94d63bef7fc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/serbanghita/Mobile-Detect/zipball/426411a9b1be3f28ef79647bf165e94d63bef7fc",
+                "reference": "426411a9b1be3f28ef79647bf165e94d63bef7fc",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.0.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "Mobile_Detect.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Serban Ghita",
+                    "email": "serbanghita@gmail.com",
+                    "homepage": "http://mobiledetect.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Mobile_Detect is a lightweight PHP class for detecting mobile devices. It uses the User-Agent string combined with specific HTTP headers to detect the mobile environment.",
+            "homepage": "https://github.com/serbanghita/Mobile-Detect",
+            "keywords": [
+                "detect mobile devices",
+                "mobile",
+                "mobile detect",
+                "mobile detector",
+                "php mobile detect"
+            ],
+            "time": "2013-04-14 22:27:11"
         },
         {
             "name": "pear-pear.cakephp.org/CakePHP",
