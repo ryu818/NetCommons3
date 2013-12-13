@@ -38,7 +38,8 @@ sudo aptitude install zlib1g-dev ruby ruby-dev lsb-core
 <pre>
 cd NetCommons3
 vagrant plugin install vagrant-berkshelf
-sudo gem i berkshelf
+vagrant plugin install vagrant-vbguest
+bundle
 </pre>
 
 ## 起動
