@@ -70,7 +70,7 @@ App::build(array(
 	//'Lib'                       => array('/path/to/libs', '/next/path/to/libs'),
 	'Locale'                    => array(APP . 'Locale' . DS, NC . 'Locale' . DS),
 	'Vendor'                    => array(APP . 'Vendor' . DS, NC . 'Vendor' . DS),
-	'Plugin'                    => array(APP . 'Plugin' . DS, NC . 'Plugin' . DS),
+	'Plugin'                    => array(APP . 'Plugin' . DS, ROOT . DS . 'Plugin' . DS, NC . 'Plugin' . DS),
 ));
 // ブロック用テーマ - webroot
 App::build(array(
@@ -79,6 +79,7 @@ App::build(array(
 ), App::RESET);
 
 CakePlugin::loadAll(array(array('routes' => true)));	// Loads all plugins at once		// array(array('routes' => true))     'Blog' => array('routes' => true)
+CakePlugin::load('MobileDetect');
 
 // 同一ドメインに複数インストールしてあっても、他のサイトのクッキーを送信しないようにするため、
 // cookie_pathを変更。
@@ -117,6 +118,5 @@ require VENDORS . 'autoload.php';
 // https://github.com/composer/composer/commit/c80cb76b9b5082ecc3e5b53b1050f76bb27b127b を参照
 spl_autoload_unregister(array('App', 'load'));
 spl_autoload_register(array('App', 'load'), true, true);
-
 
 unset($path, $baseDir, $bufPath);
