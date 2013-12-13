@@ -1027,7 +1027,7 @@ UploadLinkの対応するレコードが１件もない場合は「0」となる
 	public $page_trees = array(
 		'id'            =>array( 'type' => 'integer','null' => false, 'default' => null, 'key' => 'primary'),
 		'parent_id'     =>array( 'type' => 'integer','null'=>false ,'default' => 0 , 'comment'=>'先祖のpage_id'),
-		'children_id'   =>array( 'type' => 'integer','null'=>false ,'default' => 0 , 'comment'=>'子孫のpage_id'),
+		'child_id'   =>array( 'type' => 'integer','null'=>false ,'default' => 0 , 'comment'=>'子孫のpage_id'),
 		'stratum_num'   =>array('type' => 'integer','null'=>false ,'default' => 0 , 'comment'=>'先祖からみた子孫の階層'),
 		'created'       =>array('type' => 'datetime', 'null' => true, 'default' => null),
 		'modified'      =>array('type' => 'datetime', 'null' => true, 'default' => null),
