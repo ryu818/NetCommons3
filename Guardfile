@@ -13,7 +13,7 @@ guard 'shell' do
     `cp app/Config/database.php.test app/Config/database.php`
 
     # Invoke tests
-    target = m[0].gsub /lib\/Nc\/Test\/Case\/([\w\/]+)Test\.php$/, '\1'
+    target = m[0].gsub(/lib\/Nc\/Test\/Case\/([\w\/]+)Test\.php$/, '\1')
     n "app/Console/cake test app #{target} --stderr"
     `app/Console/cake test app #{target} --stderr`
     `cp app/Config/database.php.orig app/Config/database.php`
@@ -33,7 +33,7 @@ end
 
 # Installed by guard-jshint-node
 guard 'jshint-node', :config => 'jshint-config.json' do
- 	watch(%r{.*\.js$})
+  watch(%r{.*\.js$})
 end
 
 guard 'livereload' do
