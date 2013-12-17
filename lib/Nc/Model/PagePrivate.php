@@ -78,7 +78,6 @@ class PagePrivate extends AppModel {
 	 */
 	public function setUserId($userId) {
 		// TODO : 分離するModel/Pageで共通の処理にしたい。
-		// TODO : 何度もDBにアクセスするであろうそれをどこかの段階で辞めたい。
 
 		// パラメータエラー
 		if(! is_numeric($userId))

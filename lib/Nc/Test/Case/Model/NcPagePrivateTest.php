@@ -128,11 +128,14 @@ class NcPagePrivateTest extends CakeTestCase {
 		$this->assertEqual($ck['PagePrivate']['id'] , $ck['PagePrivate']['room_id']);
 		$this->assertEqual($ck['PagePrivate']['parent_id'] , NC_TOP_PRIVATE_ID);
 
+		$ck = $this->PagePrivate->addTopRoom(99999999);
+		$this->assertEqual(false , $ck);
 
+		$ck = $this->PagePrivate->addTopRoom('AAAAAAA');
+		$this->assertEqual(false , $ck);
 
-
-
-
+		$ck = $this->PagePrivate->addTopRoom(array());
+		$this->assertEqual(false , $ck);
 	}
 
 
