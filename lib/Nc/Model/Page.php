@@ -378,6 +378,12 @@ class Page extends AppModel
 	public function getDefaultData($spaceType) {
 		$data = array();
 
+		if($spaceType == NC_SPACE_TYPE_PRIVATE) {
+			$PagePrivate = ClassRegistry::init('PagePrivate');
+			$data[$this->alias] = $PagePrivate->getDefault();
+			return $data;
+		}
+
 		$data['Page']['root_id'] = 0;
 		$data['Page']['parent_id'] = 0;
 		$data['Page']['thread_num'] = 1;
@@ -1629,6 +1635,7 @@ class Page extends AppModel
 	public function createDefaultEntry($user) {
 
 		$Authority = $this->Authority;
+		$PagePrivate = ClassRegistry::init('PagePrivate');
 
 		$authority = $Authority->find('first', array(
 			'fields' => array('myportal_use_flag', 'private_use_flag'),
@@ -1640,7 +1647,7 @@ class Page extends AppModel
 		}
 
 		$myportalPageId = $this->insTopRoom(NC_SPACE_TYPE_MYPORTAL, $user['User']['id'], $user['User']['permalink'], $authority);
-		$privatePageId  = $this->insTopRoom(NC_SPACE_TYPE_PRIVATE,  $user['User']['id'], $user['User']['permalink'], $authority);
+		$privatePageId  = $PagePrivate->addTopRoom($user['User']['id']);
 
 		if(!$myportalPageId || !$privatePageId) {
 			return false;
@@ -1697,7 +1704,7 @@ class Page extends AppModel
 		} else {
 			$newRoomId = $this->id;
 			$updNodePage = array();
-			$updNodePage['Page']['id'] = $newRoomId;
+			$updNodePage['Page']['id']      = $newRoomId;
 			$updNodePage['Page']['root_id'] = $newRoomId;
 			$updNodePage['Page']['room_id'] = $newRoomId;
 			$this->create();

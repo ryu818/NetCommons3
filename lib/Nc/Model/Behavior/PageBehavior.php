@@ -214,4 +214,28 @@ class PageBehavior extends ModelBehavior {
 		//それ以外の場合そのまま。
 		return $val;
 	}
+
+
+	/**
+	 * findした結果のarrayのkeyをidに変換する。
+	 * @param $array
+	 * @return array
+	 */
+	public function arrayKeyChangeId(Model $Model , $array)
+	{
+		//パラメータエラー
+		if(! $array ||!  is_array($array))
+		{
+			//何も処理せず返す
+			return $array;
+		}
+
+		$result = array();
+		$i = $Model->alias;
+		foreach($array as $key=>$item)
+		{
+			$result[$item[$i]['id']] = $item;
+		}
+		return $result;
+	}
 }
