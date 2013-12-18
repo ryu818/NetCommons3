@@ -22,7 +22,7 @@ require 'defines.inc.php';
  * ));
  */
 Configure::write('Dispatcher.filters', array(
-	'NcAssetDispatcher',
+	'AssetDispatcher',
 	'CacheDispatcher'
 ));
 Configure::write('Exception', array(

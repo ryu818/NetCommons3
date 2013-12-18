@@ -100,8 +100,6 @@ if(isset($success_mes) && count($success_mes) > 0) {
 		$this->Form->button(__('Close'), array('name' => 'cancel', 'class' => 'nc-common-btn', 'type' => 'button',
 			'onclick' => '$(\'#'.$id.'\').dialog(\'close\'); return false;'))
 	);
-	echo $this->Html->css(array('Module.index/', 'plugins/flexigrid'));
-	echo $this->Html->script(array('Module.index/', 'plugins/flexigrid'));
 ?>
 <script>
 $(function(){

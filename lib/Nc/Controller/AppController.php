@@ -51,6 +51,7 @@ class AppController extends Controller {
 	public $isChief = null;
 
 	public $components = array(
+		'DebugKit.Toolbar' => array('history' => 10),
 		'Init', 'SetConfig', 'Session', 'Common', 'CheckAuth', 'Auth', 'Cookie'
 	);
 	// 'DebugKit.Toolbar','Cookie', 'RequestHandler'
@@ -63,9 +64,6 @@ class AppController extends Controller {
         'Session',
         'Form' => array(
             'className' => 'NcForm'
-        ),
-        'Html' => array(
-            'className' => 'NcHtml'
         ),
 		'Text',
 		'Js',

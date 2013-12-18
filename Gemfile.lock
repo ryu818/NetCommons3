@@ -39,6 +39,7 @@ GEM
       activesupport (>= 3.2.0)
       hashie (>= 2.0.2)
       multi_json (>= 1.3.0)
+    cmdparse (2.0.5)
     coderay (1.1.0)
     em-websocket (0.5.0)
       eventmachine (>= 0.12.9)
@@ -86,6 +87,10 @@ GEM
       rack
     i18n (0.6.9)
     json (1.8.1)
+    juicer (1.1.1)
+      cmdparse
+      nokogiri (>= 1.5.0)
+      rubyzip (= 0.9.9)
     kitchen-vagrant (0.13.0)
       test-kitchen (~> 1.0)
     libnotify (0.8.2)
@@ -151,6 +156,7 @@ GEM
       winrm (~> 1.1.0)
     ruby-prof (0.13.0)
     rubyntlm (0.1.1)
+    rubyzip (0.9.9)
     safe_yaml (0.9.7)
     savon (0.9.5)
       akami (~> 1.0)
@@ -200,6 +206,7 @@ DEPENDENCIES
   guard-phpmd
   guard-phpunit2
   guard-shell
+  juicer
   kitchen-vagrant
   libnotify
   rcodetools

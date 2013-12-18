@@ -1,5 +1,4 @@
 <?php
-echo ($this->Html->css('controls/index/'));
 echo ($this->element('Dialogs/hmenu'));
 ?>
 <div class="controls-panel-outer">

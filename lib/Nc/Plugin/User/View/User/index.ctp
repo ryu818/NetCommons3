@@ -8,10 +8,6 @@
 		<li><a href="<?php echo $this->Html->url(array('action' => 'import'));?>"><?php echo(__d('user', 'Import'));?></a></li>
 		<?php endif; ?>
 	</ul>
-	<?php
-		echo $this->Html->css(array('User.index/', 'plugins/flexigrid'));
-		echo $this->Html->script(array('User.index/', 'plugins/flexigrid'));
-	?>
 	<div id="user-init-tab-list">
 	<?php
 		echo $this->element('list');

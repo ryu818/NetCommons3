@@ -39,10 +39,6 @@
 			'onclick' => '$(\'#'.$dialog_id.'\').dialog(\'close\'); return false;'))
 	);
 ?>
-<?php
-	echo $this->Html->css(array('System.index/'));
-	echo $this->Html->script(array('System.index/'));
-?>
 <script>
 $(function(){
 	$('#system-init-tab').System('<?php echo($dialog_id);?>');

@@ -1,8 +1,4 @@
 <div data-width="1100">
-	<?php
-		echo $this->Html->css(array('Policy.index/'));
-		echo $this->Html->script(array('Policy.index/'));
-	?>
 	<div id="policy-init-tab">
 		<ul id="policy-init-tab-ul">
 			<li><a href="#policy-init-tab-admin"><?php echo __('Administrator');?></a></li>

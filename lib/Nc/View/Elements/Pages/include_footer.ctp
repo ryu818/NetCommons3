@@ -8,27 +8,6 @@
  * @since         v 3.0.0.0
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
-	$nc_user = $this->Session->read(NC_AUTH_KEY.'.'.'User');
-	$ncMode = intval($this->Session->read(NC_SYSTEM_KEY.'.'.'mode'));
-
-	$common_js = array(
-			'plugins/fileupload/jquery.fileupload',				// fileuploadを複数includeすると
-			'plugins/fileupload/jquery.iframe-transport',		// javascriptで「too much recursion」エラーになるため、親でinclude
-			'plugins/select2',
-			'plugins/jquery.tmpl',
-			'plugins/jquery.cj-object-scaler',
-	);
-	if($this->params['controller'] == 'pages') {
-		$common_js[] = 'pages/common/';
-	}
-	if($ncMode == NC_BLOCK_MODE) {
-		$common_js[] = 'pages/block/';
-		//$common_js[] = 'pages/style/';
-	}
-	if ($nc_user != '0') {
-		$common_js[] = 'pages/main/';
-	}
-	echo "\n".$this->Html->script($common_js, array('inline' => true));
 ?>
 <script>
 	$(function () {

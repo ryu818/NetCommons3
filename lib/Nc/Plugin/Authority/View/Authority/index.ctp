@@ -11,10 +11,6 @@
 ?>
 <?php if (!$on_regist): ?>
 <div data-width="660" class="nc-outer">
-<?php
-	echo $this->Html->css(array('Authority.index/', 'plugins/flexigrid'));
-	echo $this->Html->script(array('Authority.index/', 'plugins/flexigrid'));
-?>
 <?php endif; ?>
 <div id="authority-list">
 	<?php echo $this->element('language'); ?>

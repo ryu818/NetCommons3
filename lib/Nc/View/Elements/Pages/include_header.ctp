@@ -17,11 +17,11 @@
 if (!empty($page_style['file'])) {
 	echo '<link href="theme/page_styles/'.$page_style['file'].'" rel="stylesheet "type="text/css">';
 }
-//$this->Html->css(array('Default.page', 'Default.gray/page'), null, array('frame' => true));
 
 	echo "\n".$this->fetch('meta');
-	echo "\n".$this->Html->script(array('jquery/', 'common/'), array('inline' => true, 'data-title' => 'jquery'));
-	echo '<!--[if IE]>'."\n".$this->Html->script('html5/', array('inline' => true, 'data-title' => 'IE')).'<![endif]-->';
+	echo $this->Html->script('master.min');
+	echo $this->fetch('script');
+	echo '<!--[if IE]>'."\n".$this->Html->script('html5/html5', array('inline' => true, 'data-title' => 'IE')).'<![endif]-->';
 ?>
 <script>(function($) {
 <?php
@@ -36,7 +36,6 @@ if($this->params['plugin'] == '' && $this->params['controller'] == 'pages') {
 echo '	$._nc = Array();'."\n";
 echo '	$._mode = '.$ncMode.";\n";
 echo '	$._debug = '.intval(Configure::read('debug')).";\n";
-echo '	$._lang = new Object();'."\n";
 echo '	$._display_header_menu = '.intval(Configure::read(NC_CONFIG_KEY.'.'.'display_header_menu')).";\n";
 echo '	$._base_url = \''.$this->Html->url('/').'\';'."\n";
 echo '	$._full_base_url = \''.$this->Html->url('/', true).'\';'."\n";
@@ -72,24 +71,10 @@ $.Common.pjaxPrevUrl = location.href;
 		$locale = 'jpn';
 	}
 	if($locale) {
-		echo $this->Html->script(array('locale/'.$locale.'/lang.js', 'locale/'.$locale.'/jquery/ui/jquery.ui.datepicker.js'), array('inline' => true));
+		echo $this->Html->script('master.lang.min');
 	}
-	$common_css = array(
-		'common/vendors/',
-		'common/main/',
-		'jquery/base/',
-		'common/editable/common',
-		'plugins/select2.css'
-	);
-	//if($this->params['controller'] == 'pages') {	// TODO:system_flagがOFFの場合にincludeするように後に修正。
-		$common_css[] = 'pages/common/';
-	//}
-	if($ncMode == NC_BLOCK_MODE) {
-		$common_css[] = 'pages/block/';
-	}
-	echo $this->Html->css($common_css, null, array('inline' => true));
-	
-	$this->Html->css(array('Default.page', 'Default.gray/page'), null, array('frame' => true));	//TODO:test 固定
+
+	echo $this->Html->css('master.min');
 	echo $this->fetch('css');
 
 	// PageStyle

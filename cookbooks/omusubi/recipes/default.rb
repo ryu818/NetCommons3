@@ -28,6 +28,7 @@ end
 # Install packages necessary for this project
 packages = %w{
   php5 php5-mysql php5-pgsql php5-curl php5-cli php5-fpm php5-imagick php5-xdebug php5-mcrypt php-pear
+  openjdk-7-jdk nodejs
   git subversion nginx
   mysql-server postgresql curl imagemagick
   lv zsh tree axel expect make g++
@@ -50,6 +51,12 @@ end
 
 execute "install gem packages" do
   command "cd /vagrant_data; bundle"
+end
+
+%w{yui_compressor jslint closure_compiler}.each do |package|
+  execute "juicer install #{package}" do
+    command "juicer install #{package}"
+  end
 end
 
 execute "install npm packages" do

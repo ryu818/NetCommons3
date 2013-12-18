@@ -1,3 +1,28 @@
+# Minify js
+guard 'shell' do
+  ignore /(min|dev)\.js$/
+  watch(%r{.*\.js$}) do |m|
+    n "#{m[0]} Changed"
+
+    `juicer -q merge -f app/webroot/js/master.js -o app/webroot/js/master.min.js`
+    `juicer -q merge -f app/webroot/js/master.lang.js -o app/webroot/js/master.lang.min.js`
+    `juicer -q merge -m none -f -s app/webroot/js/master.js -o app/webroot/js/master.dev.js`
+    `juicer -q merge -m none -f -s app/webroot/js/master.lang.js -o app/webroot/js/master.lang.dev.js`
+  end
+end
+
+# Minify css
+guard 'shell' do
+  ignore /(min|dev)\.css$/
+  watch(%r{.*\.css$}) do |m|
+    n "#{m[0]} Changed"
+
+    `juicer -q merge -f app/webroot/css/master.css -o app/webroot/css/master.min.css -d app/webroot/`
+    `juicer -q merge -m none -f app/webroot/css/master.css -o app/webroot/css/master.dev.css -d app/webroot/`
+  end
+end
+
+# Run tests
 guard 'shell' do
   watch(%r{^.+Test\.php$}) do |m|
     n "#{m[0]} Changed"
@@ -32,9 +57,9 @@ guard 'phpmd', :rules => 'ruleset/phpmd.xml' do
 end
 
 # Installed by guard-jshint-node
-guard 'jshint-node', :config => 'jshint-config.json' do
-  watch(%r{.*\.js$})
-end
+# guard 'jshint-node', :config => 'jshint-config.json' do
+#   watch(%r{.*\.js$})
+# end
 
 guard 'livereload' do
   watch(%r{.*\.(ctp)$})
