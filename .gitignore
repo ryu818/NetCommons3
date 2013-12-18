@@ -55,3 +55,4 @@ GTAGS
 TAGS
 .kitchen/
 .kitchen.local.yml
+/app/webroot/js/master.min.js

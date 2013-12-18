@@ -1,6 +1,6 @@
 # Minify js
 guard 'shell' do
-  ignore /(min|dev)\.js$/
+  ignore(/(min|dev)\.js$/)
   watch(%r{.*\.js$}) do |m|
     n "#{m[0]} Changed"
 
@@ -13,7 +13,7 @@ end
 
 # Minify css
 guard 'shell' do
-  ignore /(min|dev)\.css$/
+  ignore(/(min|dev)\.css$/)
   watch(%r{.*\.css$}) do |m|
     n "#{m[0]} Changed"
 
