@@ -6050,6 +6050,15 @@ class NcPageTest extends CakeTestCase {
 		$permalink = $user_data['User']['permalink'];
 		$ck = $this->Page->insTopRoom($spaceType, $userId, $permalink);
 		$this->assertEqual($ck , 17);
+		$id = $ck;
+		$ck = $this->Page->findById($id );
+		$ck2 = $this->Page->findById($id + 1);
+		$key = 'Page';
+
+		$this->assertEqual($ck[$key]['room_id'] , $id);
+		$this->assertEqual($ck[$key]['page_name'] , 'Private room');
+		$this->assertEqual($ck2[$key]['page_name'] , 'Private Top');
+		$this->assertEqual($ck2[$key]['root_id'] , $id);
 
 		//2レコード作られる。 name : Myportal と Myportal Top
 		//Page.id 19と20が作られて、20は19の子になる。
@@ -6058,6 +6067,15 @@ class NcPageTest extends CakeTestCase {
 		$permalink = $user_data['User']['permalink'];
 		$ck = $this->Page->insTopRoom($spaceType, $userId, $permalink);
 		$this->assertEqual($ck , 19);
+
+		$ck = $this->Page->findById(19);
+		$ck2 = $this->Page->findById(20);
+		$key = 'Page';
+		$id = 19;
+		$this->assertEqual($ck[$key]['room_id'] , $id);
+		$this->assertEqual($ck[$key]['page_name'] , 'Myportal');
+		$this->assertEqual($ck2[$key]['page_name'] , 'Myportal Top');
+		$this->assertEqual($ck2[$key]['root_id'] , $id);
 
 		//2レコード作られる。 name : Myportal と Myportal Top
 		//Page.id 19と20が作られて、21は22の子になる。

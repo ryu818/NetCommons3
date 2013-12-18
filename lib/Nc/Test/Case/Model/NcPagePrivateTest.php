@@ -128,6 +128,22 @@ class NcPagePrivateTest extends CakeTestCase {
 		$this->assertEqual($ck['PagePrivate']['id'] , $ck['PagePrivate']['room_id']);
 		$this->assertEqual($ck['PagePrivate']['parent_id'] , NC_TOP_PRIVATE_ID);
 
+		//roomにPageUserLinkが紐付いたかどうか確認する。
+		$PageUserLink = ClassRegistry::init("PageUserLink");
+		$key    = $PageUserLink->alias;
+		$ck     = $PageUserLink->find(
+			'count',
+			array(
+				'conditions'=>array(
+					"{$key}.room_id"=>$id,
+					"{$key}.user_id"=>2
+				)
+			)
+		);
+		//1件
+		$this->assertEqual($ck , 1);
+
+
 		$ck = $this->PagePrivate->addTopRoom(99999999);
 		$this->assertEqual(false , $ck);
 

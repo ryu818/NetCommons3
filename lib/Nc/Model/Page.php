@@ -377,10 +377,17 @@ class Page extends AppModel
  */
 	public function getDefaultData($spaceType) {
 		$data = array();
-
+		//private
 		if($spaceType == NC_SPACE_TYPE_PRIVATE) {
 			$PagePrivate = ClassRegistry::init('PagePrivate');
 			$data[$this->alias] = $PagePrivate->getDefault();
+			return $data;
+		}
+		//my portal
+		if($spaceType == NC_SPACE_TYPE_MYPORTAL)
+		{
+			$pageMyPortal = ClassRegistry::init('PageMyPortal');
+			$data[$this->alias] = $pageMyPortal->getDefault();
 			return $data;
 		}
 
@@ -1634,26 +1641,17 @@ class Page extends AppModel
  */
 	public function createDefaultEntry($user) {
 
-		$Authority = $this->Authority;
-		$PagePrivate = ClassRegistry::init('PagePrivate');
-
-		$authority = $Authority->find('first', array(
-			'fields' => array('myportal_use_flag', 'private_use_flag'),
-			'conditions' => array($Authority->primaryKey => $user['User']['authority_id']),
-			'recursive' => -1
-		));
-		if(!isset($authority['Authority'])) {
-			return false;
-		}
-
-		$myportalPageId = $this->insTopRoom(NC_SPACE_TYPE_MYPORTAL, $user['User']['id'], $user['User']['permalink'], $authority);
+		$PagePrivate    = ClassRegistry::init('PagePrivate');
+		$PageMyPortal   = ClassRegistry::init('PageMyPortal');
+		//MyPortalとPrivateを作る。
+		$myPortalPageId = $PageMyPortal->addTopRoom($user['User']['id']); //$this->insTopRoom(NC_SPACE_TYPE_MYPORTAL, $user['User']['id'], $user['User']['permalink'], $authority);
 		$privatePageId  = $PagePrivate->addTopRoom($user['User']['id']);
 
-		if(!$myportalPageId || !$privatePageId) {
+		if( ! $myPortalPageId || ! $privatePageId ) {
 			return false;
 		}
-
-		return array($myportalPageId, $privatePageId);
+		//MyPortal.idとPage.idを返す。
+		return array( $myPortalPageId, $privatePageId );
 	}
 
 /**
@@ -1667,86 +1665,18 @@ class Page extends AppModel
  * @since   v 3.0.0.0
  */
 	public function insTopRoom($spaceType, $userId, $permalink, $authority = null) {
-		//TODO : 会員登録系処理でまとめる予定。(トランザクション含）
-		//TODO : 会員登録処理時の1回だけ実行されるべき機能なのでprivate にしたい
+		//TODO インターフェイスを揃えるため現状残してあるが、Userの新規登録部分の改善ができ次第このメソッドは削除予定。
 		if($spaceType == NC_SPACE_TYPE_MYPORTAL) {
-			$useFlag = "myportal_use_flag";
-			$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
-			$pageName = 'Myportal Top';
+			//my portal を作成する。
+			$pageMyPortal = ClassRegistry::init('PageMyPortal');
+			return  $pageMyPortal->addTopRoom($userId);
 		} else if($spaceType == NC_SPACE_TYPE_PRIVATE) {
-			$useFlag = "private_use_flag";
-			$lang = '';
-			$pageName = 'Private Top';
-		} else {
-			//NC_SPACE_TYPE_MYPORTAL,NC_SPACE_TYPE_PRIVATE以外がセットされていた場合はfalse
-			return false;
+			//private roomを作成する
+			$pagePrivate = ClassRegistry::init('PagePrivate');
+			return  $pagePrivate->addTopRoom($userId);
 		}
-
-		$insPage = $this->getDefaultData($spaceType);
-		if(!isset($useFlag) || $authority['Authority'][$useFlag]) {
-			$insPage['Page']['display_flag'] = NC_DISPLAY_FLAG_ON;
-		} else {
-			$insPage['Page']['display_flag'] = NC_DISPLAY_FLAG_DISABLE;
-		}
-
-		// Node Insert
-		$insPage['Page']['permalink'] = $permalink;
-		$nodePage = $insPage;
-
-		$this->create();
-		$this->set($nodePage);
-		$ret = $this->save($nodePage);
-		if(!$ret) {
-			return false;
-		}
-		if(!empty($nodePage['Page']['id'])) {
-			$newRoomId = $nodePage['Page']['id'];
-		} else {
-			$newRoomId = $this->id;
-			$updNodePage = array();
-			$updNodePage['Page']['id']      = $newRoomId;
-			$updNodePage['Page']['root_id'] = $newRoomId;
-			$updNodePage['Page']['room_id'] = $newRoomId;
-			$this->create();
-			$this->set($updNodePage);
-			if(!$this->save($updNodePage, false, array('root_id', 'room_id'))) {
-				return false;
-			}
-		}
-
-		//Page Insert
-		$fields = null;
-		$insPage['Page']['thread_num'] = 2;
-		$insPage['Page']['display_sequence'] = 1;
-		$insPage['Page']['root_id']   = $newRoomId;
-		$insPage['Page']['room_id']   = $newRoomId;
-		$insPage['Page']['parent_id'] = $newRoomId;
-		$insPage['Page']['page_name'] = $pageName;
-		//TODO:後に削除 0固定にしておき、その上のノードをみてテーマを判断するのをデフォルトにするため
-		// 現状未作成 後にコメントをはずす
-		// $insPage['Page']['page_style_id'] = 0;
-		$insPage['Page']['lang'] = $lang;
-
-		$this->create();
-		$this->set($insPage);
-		$ret = $this->save($insPage, true, $fields);
-		if(!$ret) {
-			return false;
-		}
-
-		// page_user_links Insert
-		$PageUserLink = $this->PageUserLink;
-		$pageUserLink = array('PageUserLink');
-		$pageUserLink['PageUserLink']['room_id']      = $newRoomId;
-		$pageUserLink['PageUserLink']['user_id']      = $userId;
-		$pageUserLink['PageUserLink']['authority_id'] = NC_AUTH_CHIEF_ID;
-		$PageUserLink->create();
-		$PageUserLink->set($pageUserLink);
-		if(!$PageUserLink->save($pageUserLink)) {
-			return false;
-		}
-
-		return $newRoomId;
+		//my portal と private room以外は想定されていないのでfalse
+		return false;
 	}
 
 /**
