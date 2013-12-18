@@ -4,7 +4,7 @@ guard 'shell' do
   watch(%r{.*\.js$}) do |m|
     n "#{m[0]} Changed"
 
-    `juicer -q merge -f app/webroot/js/master.js -o app/webroot/js/master.min.js`
+    `juicer -q merge -f -s app/webroot/js/master.js -o app/webroot/js/master.min.js`
     `juicer -q merge -f app/webroot/js/master.lang.js -o app/webroot/js/master.lang.min.js`
     `juicer -q merge -m none -f -s app/webroot/js/master.js -o app/webroot/js/master.dev.js`
     `juicer -q merge -m none -f -s app/webroot/js/master.lang.js -o app/webroot/js/master.lang.dev.js`
