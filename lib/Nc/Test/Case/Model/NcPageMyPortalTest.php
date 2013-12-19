@@ -46,8 +46,7 @@ class NcPageMyPortalTest extends CakeTestCase {
 		Configure::clear(NC_SYSTEM_KEY.'.user');
 	}
 
-	function testGetDefault()
-	{
+	public function testGetDefault() {
 		$ans = array (
 				'root_id' => 0,
 				'parent_id' => 2,
@@ -92,8 +91,7 @@ class NcPageMyPortalTest extends CakeTestCase {
 
 	}
 
-
-	function testGetRoomList() {
+	public function testGetRoomList() {
 		$ck = $this->PageMyPortal->getRoomList(1);
 		$this->assertEqual(count($ck) , 1);
 		$this->assertEqual(10 , $ck[10]['PageMyPortal']['id']);
@@ -109,7 +107,7 @@ class NcPageMyPortalTest extends CakeTestCase {
 	}
 
 
-	function testAddTopRoom() {
+	public function testAddTopRoom() {
 		$startCount = $this->PageMyPortal->find('count');
 		$ck = $this->PageMyPortal->addTopRoom(1);
 		$id = $ck; //MyPortalのpageのid
@@ -141,7 +139,13 @@ class NcPageMyPortalTest extends CakeTestCase {
 		$this->assertEqual($ck , 1);
 	}
 
-
+	public function testArrayKeyChangeId(){
+		//他の分割したModel/Pageでも使う予定のコードなので、Page Behaviorへ移動した。
+		$ck = $this->PageMyPortal->find('all');
+		$this->assertEqual(true , isset($ck[0]));
+		$ck = $this->PageMyPortal->arrayKeyChangeId($ck);
+		$this->assertEqual(false , isset($ck[0]));
+	}
 
 
 }

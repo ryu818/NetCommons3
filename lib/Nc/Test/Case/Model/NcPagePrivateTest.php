@@ -73,12 +73,10 @@ class NcPagePrivateTest extends CakeTestCase {
 
 	}
 
-	public function testArrayKeyChangeId()
-	{
+	public function testArrayKeyChangeId(){
 		//他の分割したModel/Pageでも使う予定のコードなので、Page Behaviorへ移動した。
 		$ck = $this->PagePrivate->find('all');
 		$this->assertEqual(true , isset($ck[0]));
-
 		$ck = $this->PagePrivate->arrayKeyChangeId($ck);
 		$this->assertEqual(false , isset($ck[0]));
 	}

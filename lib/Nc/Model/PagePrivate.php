@@ -31,13 +31,9 @@ class PagePrivate extends AppModel {
 	private $loginUserId    = null;
 	private $loginUserData  = array();
 
-	//言語
-
 	//Class Object
 	private $User = null;
 	private $PageTree = null;
-
-
 
 	/**
 	 * construct

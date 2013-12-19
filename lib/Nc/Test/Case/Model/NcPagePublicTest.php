@@ -70,4 +70,33 @@ class NcPagePublicTest extends CakeTestCase {
 		$ck = $this->PagePublic->getDefault();
 		$this->assertEqual($ck , $ans);
 	}
+
+	public function testSetUserId() {
+		//存在するユーザをセットする。
+		$ck=$this->PagePublic->setUserId(1);
+		$this->assertEqual(true , $ck);
+
+		//存在しないユーザをセットする
+		$ck = $this->PagePublic->setUserId(999999999999);
+		$this->assertEqual(false , $ck);
+
+		//文字列をセットする（パラメータエラー）
+		$ck = $this->PagePublic->setUserId('AAAAAAAA');
+		$this->assertEqual(false , $ck);
+
+		//配列をセットする（パラメータエラー
+		$ck = $this->PagePublic->setUserId(array(1,2,3));
+		$this->assertEqual(false , $ck);
+
+	}
+
+	public function testArrayKeyChangeId() {
+		//Page Behaviorで共通化されている
+		$ck = $this->PagePublic->find('all');
+		$this->assertEqual(true , isset($ck[0]));
+		$ck = $this->PagePublic->arrayKeyChangeId($ck);
+		$this->assertEqual(false , isset($ck[0]));
+	}
+
+
 }

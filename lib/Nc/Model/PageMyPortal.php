@@ -27,11 +27,10 @@ class PageMyPortal extends AppModel {
 	//ユーザの情報
 	private $userId         = null;
 	private $userData       = array();
+
 	//ログインしているユーザの情報
 	private $loginUserId    = null;
 	private $loginUserData  = array();
-
-	//言語
 
 	//Class Object
 	private $User       = null;
@@ -65,7 +64,6 @@ class PageMyPortal extends AppModel {
 			$this->loginUserId = $this->userId;
 			$this->loginUserData = $this->userData;
 		}
-
 	}
 
 	/**
@@ -76,10 +74,8 @@ class PageMyPortal extends AppModel {
 	 */
 	public function setUserId($userId) {
 		// TODO : 分離するModel/Pageで共通の処理にしたい。
-
 		// パラメータエラー
-		if(! is_numeric($userId))
-		{
+		if(! is_numeric($userId)) {
 			$this->userId = null;
 			$this->userData = array();
 			return false;
@@ -144,8 +140,7 @@ class PageMyPortal extends AppModel {
 			$userId = $this->userId;
 		}
 
-		if(! $userId || ! is_numeric($userId))
-		{
+		if(! $userId || ! is_numeric($userId)) {
 			//パラメータエラー
 			return array();
 		}
@@ -183,7 +178,7 @@ class PageMyPortal extends AppModel {
 		if(! $this->setUserId($userId)) {
 			return false;
 		}
-		//privateルームを作成する権限があるか確認する。
+		//作成する権限があるか確認する。 TODO:privateで切り出す。
 		if(! isset($this->userData['Authority'])
 			|| !  isset($this->userData['Authority']['myportal_use_flag'])
 			|| !  $this->userData['Authority']['myportal_use_flag']
@@ -191,8 +186,6 @@ class PageMyPortal extends AppModel {
 			//作成権限がない
 			return false;
 		}
-		//言語
-
 		//権限OKの状態
 		//insert用データの調整
 		$insPage[$this->alias]                  = $this->getDefault();
@@ -209,7 +202,6 @@ class PageMyPortal extends AppModel {
 		}
 		//insert idがとれている。
 		if(! $this->id) {
-			//insert idが取得できなかった場合。
 			return false;
 		}
 		$newRoomId = $this->id;

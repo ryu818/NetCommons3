@@ -46,8 +46,7 @@ class NcPageCommunityTest extends CakeTestCase {
 		Configure::clear(NC_SYSTEM_KEY.'.user');
 	}
 
-	public function testGetDefault()
-	{
+	public function testGetDefault() {
 		$ans = array (
 			'root_id' => 0,
 			'parent_id' => 4,
@@ -70,5 +69,31 @@ class NcPageCommunityTest extends CakeTestCase {
 		);
 		$ck = $this->PageCommunity->getDefault();
 		$this->assertEqual($ck , $ans);
+	}
+
+	public function testSetUserId() {
+		//存在するユーザをセットする。
+		$ck=$this->PageCommunity->setUserId(1);
+		$this->assertEqual(true , $ck);
+
+		//存在しないユーザをセットする
+		$ck = $this->PageCommunity->setUserId(999999999999);
+		$this->assertEqual(false , $ck);
+
+		//文字列をセットする（パラメータエラー）
+		$ck = $this->PageCommunity->setUserId('AAAAAAAA');
+		$this->assertEqual(false , $ck);
+
+		//配列をセットする（パラメータエラー
+		$ck = $this->PageCommunity->setUserId(array(1,2,3));
+		$this->assertEqual(false , $ck);
+	}
+
+	public function testArrayKeyChangeId() {
+		//Page Behaviorで共通化されている
+		$ck = $this->PageCommunity->find('all');
+		$this->assertEqual(true , isset($ck[0]));
+		$ck = $this->PageCommunity->arrayKeyChangeId($ck);
+		$this->assertEqual(false , isset($ck[0]));
 	}
 }

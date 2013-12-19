@@ -15,10 +15,25 @@
 
 class PageCommunity extends AppModel
 {
+	//table
 	public $name = 'Page';
+
+	//behavior
+	public $actsAs = array('Page');
 
 	//バリデーション設定
 	public $validate = array();
+
+	//ユーザの情報
+	private $userId         = null;
+	private $userData       = array();
+	//ログインしているユーザの情報
+	private $loginUserId    = null;
+	private $loginUserData  = array();
+
+	//Class Object
+	private $User       = null;
+	private $PageTree   = null;
 
 	/**
 	 * construct
@@ -30,7 +45,54 @@ class PageCommunity extends AppModel
 	 */
 	public function __construct($id = false, $table = null, $ds = null) {
 		parent::__construct($id, $table, $ds);
+		$this->_setLoginUser();
+		$this->PageTree = ClassRegistry::init('PageTree');
 	}
+
+	/**
+	 * ログインユーザのセット
+	 * @since   v 3.0.0.0
+	 */
+	private function _setLoginUser() {
+		//ログイン情報のセット
+		$loginUser= Configure::read(NC_SYSTEM_KEY.'.user');
+		if(isset($loginUser['id']) && $loginUser['id']) {
+			$userId = $loginUser['id'];
+			$this->setUserId($userId);
+			$this->loginUserId = $this->userId;
+			$this->loginUserData = $this->userData;
+		}
+	}
+
+	/**
+	 * userIdをセットする。
+	 * 存在しないユーザだった場合はnullが格納される。
+	 * @param int $userId
+	 * @return bool
+	 */
+	public function setUserId($userId) {
+		// TODO : 分離するModel/Pageで共通の処理にしたい。
+		// パラメータエラー
+		if(! is_numeric($userId))
+		{
+			$this->userId = null;
+			$this->userData = array();
+			return false;
+		}
+		//Class Object
+		if(! $this->User) {
+			$this->User = ClassRegistry::init('User');
+		}
+		//レコードを取得。取得できなければnull格納
+		$this->userData = $this->User->findById($userId);
+		if(! $this->userData) {
+			$this->userId = null;
+			return false;
+		}
+		$this->userId = $userId;
+		return true;
+	}
+
 
 	/**
 	 * 初期値設定
@@ -41,7 +103,6 @@ class PageCommunity extends AppModel
 	 * @since   v 3.0.0.0
 	 */
 	public function getDefault() {
-
 		$data = array();
 		$data['root_id']                = 0;
 		$data['parent_id']              = NC_TOP_GROUP_ID;
