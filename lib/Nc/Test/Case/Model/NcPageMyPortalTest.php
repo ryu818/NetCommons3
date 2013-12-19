@@ -31,9 +31,6 @@ class NcPageMyPortalTest extends CakeTestCase {
 	 */
 	public function setUp() {
 		parent::setUp();
-
-
-
 		$this->PageMyPortal = ClassRegistry::init('PageMyPortal');
 
 	}
@@ -44,7 +41,7 @@ class NcPageMyPortalTest extends CakeTestCase {
 	 * @return void
 	 */
 	public function tearDown() {
-		unset($this->Page);
+		unset($this->PageMyPortal);
 		parent::tearDown();
 		Configure::clear(NC_SYSTEM_KEY.'.user');
 	}

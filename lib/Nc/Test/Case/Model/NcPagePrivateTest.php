@@ -47,7 +47,7 @@ class NcPagePrivateTest extends CakeTestCase {
 	 * @return void
 	 */
 	public function tearDown() {
-		unset($this->Page);
+		unset($this->PagePrivate);
 		parent::tearDown();
 		Configure::clear(NC_SYSTEM_KEY.'.user');
 	}

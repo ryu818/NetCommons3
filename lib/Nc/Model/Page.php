@@ -370,7 +370,6 @@ class Page extends AppModel
 /**
  * 初期値設定
  * 新規でページを作る際の初期データの作成を助ける。
- *
  * @param   integer $spaceType
  * @return  Model Page
  * @since   v 3.0.0.0
@@ -384,46 +383,24 @@ class Page extends AppModel
 			return $data;
 		}
 		//my portal
-		if($spaceType == NC_SPACE_TYPE_MYPORTAL)
-		{
+		if($spaceType == NC_SPACE_TYPE_MYPORTAL) {
 			$pageMyPortal = ClassRegistry::init('PageMyPortal');
 			$data[$this->alias] = $pageMyPortal->getDefault();
 			return $data;
 		}
-
-		$data['Page']['root_id'] = 0;
-		$data['Page']['parent_id'] = 0;
-		$data['Page']['thread_num'] = 1;
-		$data['Page']['display_sequence'] = 0;
-		$data['Page']['position_flag'] = _ON;
-		$data['Page']['lang'] = '';
-		$data['Page']['is_page_meta_node'] = _OFF;
-		$data['Page']['is_page_style_node'] = _OFF;
-		$data['Page']['is_page_layout_node'] = _OFF;
-		$data['Page']['is_page_theme_node'] = _OFF;
-		$data['Page']['is_page_column_node'] = _OFF;
-		$data['Page']['space_type'] = $spaceType;
-		$data['Page']['show_count'] = 0;
-		$data['Page']['display_flag'] = NC_DISPLAY_FLAG_ON;
-
-		$data['Page']['display_apply_subpage'] = _ON;
-		$data['Page']['is_approved'] = NC_APPROVED_FLAG_ON;
-		$data['Page']['lock_authority_id'] = NC_AUTH_OTHER_ID;
-
-		if($spaceType == NC_SPACE_TYPE_PUBLIC) {
-			$data['Page']['parent_id'] = NC_TOP_PUBLIC_ID;
-			$data['Page']['page_name'] = "Public room";
-		} else if($spaceType == NC_SPACE_TYPE_MYPORTAL) {
-			$data['Page']['parent_id'] = NC_TOP_MYPORTAL_ID;
-			$data['Page']['page_name'] = "Myportal";
-		} else if($spaceType == NC_SPACE_TYPE_PRIVATE) {
-			$data['Page']['parent_id'] = NC_TOP_PRIVATE_ID;
-			$data['Page']['page_name'] = "Private room";
-		} else {
-			$data['Page']['parent_id'] = NC_TOP_GROUP_ID;
-			$data['Page']['page_name'] = "Community";
+		//community
+		if($spaceType == NC_SPACE_TYPE_GROUP) {
+			$pageCommunity = ClassRegistry::init('PageCommunity');
+			$data[$this->alias] = $pageCommunity->getDefault();
+			return $data;
 		}
-
+		//public
+		if($spaceType == NC_SPACE_TYPE_PUBLIC) {
+			$pagePublic = ClassRegistry::init('PagePublic');
+			$data[$this->alias] = $pagePublic->getDefault();
+			return $data;
+		}
+		//その他 空array
 		return $data;
 	}
 
@@ -1644,7 +1621,7 @@ class Page extends AppModel
 		$PagePrivate    = ClassRegistry::init('PagePrivate');
 		$PageMyPortal   = ClassRegistry::init('PageMyPortal');
 		//MyPortalとPrivateを作る。
-		$myPortalPageId = $PageMyPortal->addTopRoom($user['User']['id']); //$this->insTopRoom(NC_SPACE_TYPE_MYPORTAL, $user['User']['id'], $user['User']['permalink'], $authority);
+		$myPortalPageId = $PageMyPortal->addTopRoom($user['User']['id']);
 		$privatePageId  = $PagePrivate->addTopRoom($user['User']['id']);
 
 		if( ! $myPortalPageId || ! $privatePageId ) {
