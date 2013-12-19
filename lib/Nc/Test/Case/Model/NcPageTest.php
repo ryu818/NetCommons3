@@ -425,7 +425,6 @@ class NcPageTest extends CakeTestCase {
 		$userId = 1;
 		$spaceType = NC_SPACE_TYPE_PUBLIC;
 		$ck = $this->Page->findAuthById($pageIdArr , $userId , $spaceType);
-		$ans = array();
 		$ans = array (
 			'Page' =>
 			array (
@@ -519,7 +518,6 @@ class NcPageTest extends CakeTestCase {
 		$userId = 1;
 		$spaceType = NC_SPACE_TYPE_MYPORTAL;
 		$ck = $this->Page->findAuthById($pageIdArr , $userId , $spaceType);
-		$ans = array();
 		$ans = array (
 			'Page' =>
 			array (
@@ -613,7 +611,6 @@ class NcPageTest extends CakeTestCase {
 		$userId = 1;
 		$spaceType = NC_SPACE_TYPE_PRIVATE;
 		$ck = $this->Page->findAuthById($pageIdArr , $userId , $spaceType);
-		$ans = array();
 		$ans = array (
 			'Page' =>
 			array (
@@ -709,7 +706,6 @@ class NcPageTest extends CakeTestCase {
 		$userId = 1;
 		$spaceType = NC_SPACE_TYPE_GROUP;
 		$ck = $this->Page->findAuthById($pageIdArr , $userId , $spaceType);
-		$ans = array();
 		$ans = array (
 			'Page' =>
 			array (

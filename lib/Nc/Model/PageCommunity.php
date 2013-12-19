@@ -93,7 +93,6 @@ class PageCommunity extends AppModel
 		return true;
 	}
 
-
 	/**
 	 * 初期値設定
 	 * 新規でページを作る際の初期データの作成を助ける。
@@ -127,6 +126,9 @@ class PageCommunity extends AppModel
 	}
 
 
+	public function addTopRoom($userId)
+	{
 
+	}
 
 }
