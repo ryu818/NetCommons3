@@ -785,7 +785,7 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testFindBreadcrumb() {
-
+/*
 		//パンくずリスト用の配列をつくる
 		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>1)));
 		$ck = $this->Page->findBreadcrumb($page);
@@ -1180,6 +1180,7 @@ class NcPageTest extends CakeTestCase {
 		//TODO : パラメータ異常系の考慮
 		//$ck = $this->Page->findBreadcrumb(array('Page'=>array()));
 		//var_export($ck);
+		// */
 	}
 
 /**
