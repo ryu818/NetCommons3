@@ -16,10 +16,20 @@ class NcCommonHelperTest extends CakeTestCase {
  */
 	public function setUp() {
 		parent::setUp();
-		Configure::write('App' , array(
-			'defaults' => 'php',
-			'baseUrl' => ''
-		));
+		Configure::write('App' ,
+			array (
+				'imageBaseUrl' => 'img/',
+				'cssBaseUrl' => 'css/',
+				'jsBaseUrl' => 'js/',
+				'base' => false,
+				'baseUrl' => false,
+				'dir' => 'app',
+				'webroot' => 'webroot',
+				'www_root' => '/vagrant_data/app/webroot/',
+				'encoding' => 'UTF-8',
+				'fullBaseUrl' => 'http://localhost',
+			)
+		);
 		$View = new View();
 		$this->Common = new CommonHelper($View);
 	}
