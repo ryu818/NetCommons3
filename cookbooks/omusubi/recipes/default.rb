@@ -3,23 +3,24 @@ execute "update sources.list" do
   command "sed -i 's/us.archive/ja.archive/g' /etc/apt/sources.list"
 end
 
+execute "add prebuilt hhvm repository" do
+  command "echo deb http://dl.hhvm.com/ubuntu precise main | sudo tee /etc/apt/sources.list.d/hhvm.list"
+  not_if { ::File.exists?("/etc/apt/sources.list.d/hhvm.list")}
+end
+
+# Update apt packages
 execute "apt-get update" do
   command "apt-get update"
 end
 
 # Install packages necessary before installation
-%w{python-software-properties}.each do |pkg|
+%w{ python-software-properties }.each do |pkg|
   package pkg do
-    action [:install, :upgrade]
+    action [:install]
   end
 end
 
 # Add extra repos
-execute "add latest php5 repository" do
-  command "apt-get remove php5*; add-apt-repository -y ppa:ondrej/php5; apt-get update"
-  not_if { ::File.exists?("/etc/apt/sources.list.d/ondrej-php5-#{node[:lsb][:codename]}.list")}
-end
-
 execute "add latest emacs repository" do
   command "apt-get remove emacs*; add-apt-repository -y ppa:cassou/emacs; apt-get update"
   not_if { ::File.exists?("/etc/apt/sources.list.d/cassou-emacs-#{node[:lsb][:codename]}.list")}
@@ -29,7 +30,7 @@ end
 packages = %w{
   php5 php5-mysql php5-pgsql php5-curl php5-cli php5-fpm php5-imagick php5-xdebug php5-mcrypt php-pear
   openjdk-7-jdk nodejs
-  git subversion nginx
+  git subversion nginx apache2-utils apache2.2-bin apache2.2-common apache2-mpm-prefork libapache2-mod-php5
   mysql-server postgresql curl imagemagick
   lv zsh tree axel expect make g++
   global w3m aspell exuberant-ctags wamerican-huge stunnel4 npm
@@ -37,13 +38,34 @@ packages = %w{
   iftop iotop iperf nethogs sysstat
   ruby1.9.1 ruby1.9.1-dev libnotify-bin
 }
+dependencies = []
 
 packages.each do |pkg|
-  package pkg do
-    action [:install, :upgrade]
-    version node.default[:versions][pkg] if node.default[:versions][pkg].kind_of? String
+  if node.default[:versions][pkg].kind_of? String
+    dependencies << [pkg, node.default[:versions][pkg]].join('=')
+  else
+    dependencies << pkg
   end
 end
+
+execute "apt-get install" do
+  command "apt-get -q -y install #{dependencies.join(' ')}"
+end
+
+# Install hhvm seperately since it's yet authenticated
+execute "install hhvm" do
+  command "apt-get -q -y --force-yes install hhvm"
+  not_if { ::File.exists?("/usr/bin/hhvm")}
+end
+
+# Disabled default package resource because it cannot pass
+# multiple package at once to apt command, which leads to huge performance kill.
+# packages.each do |pkg|
+#   package pkg do
+#     action [:install, :upgrade]
+#     version node.default[:versions][pkg] if node.default[:versions][pkg].kind_of? String
+#   end
+# end
 
 execute "install bundler" do
   command "gem i bundler"
@@ -53,9 +75,10 @@ execute "install gem packages" do
   command "cd /vagrant_data; bundle"
 end
 
-%w{yui_compressor jslint closure_compiler}.each do |package|
+%w{ yui_compressor jslint closure_compiler }.each do |package|
   execute "juicer install #{package}" do
     command "juicer install #{package}"
+    not_if { ::File.exists?("#{ENV['HOME']}/.juicer/lib/#{package}")}
   end
 end
 
@@ -84,19 +107,9 @@ execute "install phpcpd" do
   not_if { ::File.exists?("/usr/bin/phpcpd")}
 end
 
-# Install composer
-execute "install composer" do
-  command "cd /vagrant_data; curl -sS https://getcomposer.org/installer | php; php composer.phar install; mv composer.phar /usr/local/bin/composer"
-  not_if { ::File.exists?("/usr/local/bin/composer")}
-end
-
-# Update composer packages
-execute "self-update composer" do
-  command "composer self-update"
-end
-
-execute "composer update" do
-  command "cd /vagrant_data; composer update"
+# Install or update composer packages
+composer "/vagrant_data" do
+  action [:install, :update]
 end
 
 # Deploy configuration files
@@ -117,17 +130,27 @@ template "/etc/php5/cli/php.ini" do
   variables(:directives => node[:php][:directives])
 end
 
-service 'apache2' do
-  action :stop
+# Setup apache
+include_recipe "apache2"
+
+apache_site "000-default" do
+  enable false
 end
 
-%w{mysql postgresql php5-fpm nginx}.each do |service_name|
-  service service_name do
-    action [:start, :restart]
-  end
+template "#{node[:apache][:dir]}/sites-available/netcommons.conf" do
+  source "netcommons.conf.erb"
+  notifies :restart, 'service[apache2]'
 end
 
-%w{www-data}.each do |group|
+apache_module "rewrite" do
+  enable true
+end
+
+apache_site "netcommons.conf" do
+  enable true
+end
+
+%w{ www-data }.each do |group|
   group group do
     action :modify
     members "vagrant"
