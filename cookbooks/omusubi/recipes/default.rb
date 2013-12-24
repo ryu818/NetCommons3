@@ -28,9 +28,9 @@ end
 
 # Install packages necessary for this project
 packages = %w{
-  php5 php5-mysql php5-pgsql php5-curl php5-cli php5-fpm php5-imagick php5-xdebug php5-mcrypt php-pear
+  php5 php5-mysql php5-pgsql php5-curl php5-cli php5-imagick php5-xdebug php5-mcrypt php-pear
   openjdk-7-jdk nodejs
-  git subversion nginx apache2-utils apache2.2-bin apache2.2-common apache2-mpm-prefork libapache2-mod-php5
+  git subversion apache2-utils apache2.2-bin apache2.2-common apache2-mpm-prefork libapache2-mod-php5
   mysql-server postgresql curl imagemagick
   lv zsh tree axel expect make g++
   global w3m aspell exuberant-ctags wamerican-huge stunnel4 npm
@@ -113,24 +113,14 @@ composer "/vagrant_data" do
 end
 
 # Deploy configuration files
-template "/etc/nginx/conf.d/php-fpm.conf" do
-  mode 0644
-  source "php-fpm.conf.erb"
-end
-
-template "/etc/php5/fpm/php.ini" do
-  source "php.ini.erb"
-  mode 0644
-  variables(:directives => node[:php][:directives])
-end
-
+## Setup php
 template "/etc/php5/cli/php.ini" do
   source "php.ini.erb"
   mode 0644
   variables(:directives => node[:php][:directives])
 end
 
-# Setup apache
+## Setup apache
 include_recipe "apache2"
 
 apache_site "000-default" do
@@ -150,6 +140,7 @@ apache_site "netcommons.conf" do
   enable true
 end
 
+# Add custom permissions
 %w{ www-data }.each do |group|
   group group do
     action :modify
