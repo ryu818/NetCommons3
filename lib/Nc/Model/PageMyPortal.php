@@ -1,9 +1,9 @@
 <?php
 /**
- * PagePrivateモデル
+ * PageMyPortalモデル
  *
  * <pre>
- *  プライベートページにかかわる処理
+ *  Myポータルページにかかわる処理
  * </pre>
  *
  * @copyright     Copyright 2012, NetCommons Project
@@ -13,7 +13,7 @@
  * @license       http://www.netcommons.org/license.txt  NetCommons License
  */
 
-class PagePrivate extends AppModel {
+class PageMyPortal extends AppModel {
 
 	//table
 	public $name = 'Page';
@@ -27,13 +27,14 @@ class PagePrivate extends AppModel {
 	//ユーザの情報
 	private $userId         = null;
 	private $userData       = array();
+
 	//ログインしているユーザの情報
 	private $loginUserId    = null;
 	private $loginUserData  = array();
 
 	//Class Object
-	private $User = null;
-	private $PageTree = null;
+	private $User       = null;
+	private $PageTree   = null;
 
 	/**
 	 * construct
@@ -63,7 +64,6 @@ class PagePrivate extends AppModel {
 			$this->loginUserId = $this->userId;
 			$this->loginUserData = $this->userData;
 		}
-
 	}
 
 	/**
@@ -74,18 +74,16 @@ class PagePrivate extends AppModel {
 	 */
 	public function setUserId($userId) {
 		// TODO : 分離するModel/Pageで共通の処理にしたい。
-
 		// パラメータエラー
-		if(! is_numeric($userId))
-		{
+		if(! is_numeric($userId)) {
 			$this->userId = null;
 			$this->userData = array();
 			return false;
 		}
 		//Class Object
 		if(! $this->User) {
-			 $this->User = ClassRegistry::init('User');
-		 }
+			$this->User = ClassRegistry::init('User');
+		}
 		//レコードを取得。取得できなければnull格納
 		$this->userData = $this->User->findById($userId);
 		if(! $this->userData) {
@@ -105,10 +103,9 @@ class PagePrivate extends AppModel {
 	 * @since   v 3.0.0.0
 	 */
 	public function getDefault() {
-
 		$data = array();
 		$data['root_id']                = 0;
-		$data['parent_id']              = NC_TOP_PRIVATE_ID;
+		$data['parent_id']              = NC_TOP_MYPORTAL_ID;
 		$data['thread_num']             = 1;
 		$data['display_sequence']       = 0;
 		$data['position_flag']          = _ON;
@@ -118,20 +115,20 @@ class PagePrivate extends AppModel {
 		$data['is_page_layout_node']    = _OFF;
 		$data['is_page_theme_node']     = _OFF;
 		$data['is_page_column_node']    = _OFF;
-		$data['space_type']             = NC_SPACE_TYPE_PRIVATE;
+		$data['space_type']             = NC_SPACE_TYPE_MYPORTAL;
 		$data['show_count']             = 0;
 		$data['display_flag']           = NC_DISPLAY_FLAG_ON;
 		$data['display_apply_subpage']  = _ON;
 		$data['is_approved']            = NC_APPROVED_FLAG_ON;
 		$data['lock_authority_id']      = NC_AUTH_OTHER_ID;
-		$data['page_name']              = "Private room";
+		$data['page_name']              = "Myportal";
 
 		return $data;
 	}
 
 	/**
-	 * プライベートルームの一覧を取得する。
-	 * （1ユーザに対して1つのみ作成可能な仕様）
+	 * マイポータルの一覧を取得する。
+	 *
 	 * @param   string $userId
 	 * @return  array
 	 * @since   v 3.0.0.0
@@ -143,8 +140,7 @@ class PagePrivate extends AppModel {
 			$userId = $this->userId;
 		}
 
-		if(! $userId || ! is_numeric($userId))
-		{
+		if(! $userId || ! is_numeric($userId)) {
 			//パラメータエラー
 			return array();
 		}
@@ -161,9 +157,9 @@ class PagePrivate extends AppModel {
 			'all' ,
 			array(
 				'conditions'=>array(
-					$this->alias.'.space_type'=>NC_SPACE_TYPE_PRIVATE,
+					$this->alias.'.space_type'=>NC_SPACE_TYPE_MYPORTAL,
 					$this->alias.'.room_id = '.$this->alias.'.id',
-					),
+				),
 				'joins'=>array($join)
 			)
 		);
@@ -171,31 +167,31 @@ class PagePrivate extends AppModel {
 	}
 
 	/**
-	 * Userの最初のプライベートルームの作成機能
+	 * Userのためのマイポータルルームを作成する。
 	 *
 	 * @param $userId
-	 * @return int or false
+	 * @return false or int
+	 * @since   v 3.0.0.0
 	 */
 	public function addTopRoom($userId) {
 		//userIdを確認＆格納
 		if(! $this->setUserId($userId)) {
 			return false;
 		}
-		//privateルームを作成する権限があるか確認する。
+		//作成する権限があるか確認する。 TODO:privateで切り出す。
 		if(! isset($this->userData['Authority'])
-			|| !  isset($this->userData['Authority']['private_use_flag'])
-			|| !  $this->userData['Authority']['private_use_flag']
+			|| !  isset($this->userData['Authority']['myportal_use_flag'])
+			|| !  $this->userData['Authority']['myportal_use_flag']
 		) {
 			//作成権限がない
-			 return false;
+			return false;
 		}
-		//TODO : 1ユーザに1プライベートルームチェック
-
 		//権限OKの状態
 		//insert用データの調整
 		$insPage[$this->alias]                  = $this->getDefault();
 		$insPage[$this->alias]['display_flag']  = NC_DISPLAY_FLAG_ON;
 		$insPage[$this->alias]['permalink']     = $this->userData['User']['permalink'];
+
 		$nodePage = $insPage;
 		//roomの作成
 		$this->create();
@@ -206,13 +202,12 @@ class PagePrivate extends AppModel {
 		}
 		//insert idがとれている。
 		if(! $this->id) {
-			//insert idが取得できなかった場合。
 			return false;
 		}
 		$newRoomId = $this->id;
 
 		//treeの登録
-		if(! $this->PageTree->addPage($newRoomId , NC_SPACE_TYPE_PRIVATE))
+		if(! $this->PageTree->addPage($newRoomId , NC_SPACE_TYPE_MYPORTAL))
 		{
 			return false;
 		}
@@ -244,8 +239,8 @@ class PagePrivate extends AppModel {
 	}
 
 	/**
-	 * PageUserLinkにプライベートルームとの紐付き保存。
-	 * self::addTopRoom()内で使われることを想定
+	 * PageUserLinkにマイポータルとの紐付き保存。
+	 * self::addTopRoom()で使われることを想定しています。
 	 * @param   $roomId
 	 * @param   $userId
 	 * @return  bool
@@ -267,22 +262,23 @@ class PagePrivate extends AppModel {
 	}
 
 	/**
-	 * roomの最初のページを作る。
-	 * self::addTopRoom()内で使われることを想定
+	 * roomの最初のページをinsertする
+	 * self::addTopRoom()で使われることを想定しています。
 	 * @param   $roomId
 	 * @param   $insPage
 	 * @since   v 3.0.0.0
 	 */
 	private function _addTopPage($roomId , $insPage) {
-		//TopRoomが作られた際に作成されるtopページの作成
+
+		//topページの作成つまり2レコード作られる。
 		$insPage[$this->alias]['thread_num']        = 2;
 		$insPage[$this->alias]['display_sequence']  = 1;
 		$insPage[$this->alias]['root_id']           = $roomId;
 		$insPage[$this->alias]['room_id']           = $roomId;
 		$insPage[$this->alias]['parent_id']         = $roomId;
-		$insPage[$this->alias]['page_name']         = 'Private Top';
+		$insPage[$this->alias]['page_name']         = 'Myportal Top';
 		$insPage[$this->alias]['page_style_id']     = 0;
-		$insPage[$this->alias]['lang']              = '';
+		$insPage[$this->alias]['lang']              = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		$this->create();
 		$this->set($insPage);
 		$ret = $this->save($insPage, true, null);
@@ -291,12 +287,6 @@ class PagePrivate extends AppModel {
 		}
 		return true;
 	}
-
-
-
-
-
-
 
 
 }

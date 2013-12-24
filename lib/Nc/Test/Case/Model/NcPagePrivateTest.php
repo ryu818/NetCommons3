@@ -47,7 +47,7 @@ class NcPagePrivateTest extends CakeTestCase {
 	 * @return void
 	 */
 	public function tearDown() {
-		unset($this->Page);
+		unset($this->PagePrivate);
 		parent::tearDown();
 		Configure::clear(NC_SYSTEM_KEY.'.user');
 	}
@@ -73,12 +73,10 @@ class NcPagePrivateTest extends CakeTestCase {
 
 	}
 
-	public function testArrayKeyChangeId()
-	{
+	public function testArrayKeyChangeId(){
 		//他の分割したModel/Pageでも使う予定のコードなので、Page Behaviorへ移動した。
 		$ck = $this->PagePrivate->find('all');
 		$this->assertEqual(true , isset($ck[0]));
-
 		$ck = $this->PagePrivate->arrayKeyChangeId($ck);
 		$this->assertEqual(false , isset($ck[0]));
 	}
@@ -127,6 +125,22 @@ class NcPagePrivateTest extends CakeTestCase {
 		$ck = $this->PagePrivate->findById($id);
 		$this->assertEqual($ck['PagePrivate']['id'] , $ck['PagePrivate']['room_id']);
 		$this->assertEqual($ck['PagePrivate']['parent_id'] , NC_TOP_PRIVATE_ID);
+
+		//roomにPageUserLinkが紐付いたかどうか確認する。
+		$PageUserLink = ClassRegistry::init("PageUserLink");
+		$key    = $PageUserLink->alias;
+		$ck     = $PageUserLink->find(
+			'count',
+			array(
+				'conditions'=>array(
+					"{$key}.room_id"=>$id,
+					"{$key}.user_id"=>2
+				)
+			)
+		);
+		//1件
+		$this->assertEqual($ck , 1);
+
 
 		$ck = $this->PagePrivate->addTopRoom(99999999);
 		$this->assertEqual(false , $ck);

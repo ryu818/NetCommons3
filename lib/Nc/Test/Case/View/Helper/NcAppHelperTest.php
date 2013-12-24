@@ -14,6 +14,21 @@ App::uses('Helper', 'View/AppHelper');
 class NcAppHelperTest extends CakeTestCase {
 	public function setUp() {
 		parent::setUp();
+		//var_export(Configure::read('App'));
+		Configure::write('App' ,
+			array (
+				'imageBaseUrl' => 'img/',
+				'cssBaseUrl' => 'css/',
+				'jsBaseUrl' => 'js/',
+				'base' => false,
+				'baseUrl' => false,
+				'dir' => 'app',
+				'webroot' => 'webroot',
+				'www_root' => '/vagrant_data/app/webroot/',
+				'encoding' => 'UTF-8',
+				'fullBaseUrl' => 'http://localhost',
+			)
+		);
 		$Controller = new Controller();
 		$View = new View($Controller);
 		$this->app = new AppHelper($View);
