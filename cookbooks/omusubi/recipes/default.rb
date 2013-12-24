@@ -22,8 +22,13 @@ end
 
 # Add extra repos
 execute "add latest emacs repository" do
-  command "apt-get remove emacs*; add-apt-repository -y ppa:cassou/emacs; apt-get update"
+  command "add-apt-repository -y ppa:cassou/emacs; apt-get update"
   not_if { ::File.exists?("/etc/apt/sources.list.d/cassou-emacs-#{node[:lsb][:codename]}.list")}
+end
+
+execute "add latest nodejs repository" do
+  command "add-apt-repository -y ppa:chris-lea/node.js; apt-get update"
+  not_if { ::File.exists?("/etc/apt/sources.list.d/chris-lea-node_js-#{node[:lsb][:codename]}.list")}
 end
 
 # Install packages necessary for this project
@@ -33,7 +38,7 @@ packages = %w{
   git subversion apache2-utils apache2.2-bin apache2.2-common apache2-mpm-prefork libapache2-mod-php5
   mysql-server postgresql curl imagemagick
   lv zsh tree axel expect make g++
-  global w3m aspell exuberant-ctags wamerican-huge stunnel4 npm
+  global w3m aspell exuberant-ctags wamerican-huge stunnel4
   emacs24 emacs-goodies-el debian-el gettext-el
   iftop iotop iperf nethogs sysstat
   ruby1.9.1 ruby1.9.1-dev libnotify-bin
@@ -83,7 +88,7 @@ end
 end
 
 execute "install npm packages" do
-  command "npm -g install jshint"
+  command "npm -g install jshint grunt-cli"
 end
 
 # Install pear packages

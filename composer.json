@@ -10,7 +10,8 @@
     "require": {
         "pear-cakephp/cakephp": "2.4.1",
         "ezyang/htmlpurifier": "v4.6.0",
-        "chronon/mobile_detect": "*"
+        "chronon/mobile_detect": "*",
+        "todc/todc-bootstrap": "~3.0.0"
     },
     "config": {
         "vendor-dir": "lib/Nc/Vendor/"

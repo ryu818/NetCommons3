@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "58b7482f91bc04564b56e8fe22b050e1",
+    "hash": "06d7f8418e0b2076ac32512d38c1c360",
     "packages": [
         {
             "name": "chronon/mobile_detect",
@@ -238,6 +238,46 @@
                 "/"
             ],
             "description": "CakePHP is an application development framework for PHP 5.2+"
+        },
+        {
+            "name": "todc/todc-bootstrap",
+            "version": "v3.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/todc/todc-bootstrap.git",
+                "reference": "6ee8d7f23d04509f79332b3b5e4d025b49ea2cad"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/todc/todc-bootstrap/zipball/6ee8d7f23d04509f79332b3b5e4d025b49ea2cad",
+                "reference": "6ee8d7f23d04509f79332b3b5e4d025b49ea2cad",
+                "shasum": ""
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0.x-dev"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Tim O'Donnell",
+                    "homepage": "https://github.com/todc/"
+                }
+            ],
+            "description": "Google-styled theme for Bootstrap.",
+            "homepage": "http://todc.github.io/todc-bootstrap/",
+            "keywords": [
+                "bootstrap",
+                "css",
+                "google",
+                "theme"
+            ],
+            "time": "2013-11-06 23:16:08"
         }
     ],
     "packages-dev": [
