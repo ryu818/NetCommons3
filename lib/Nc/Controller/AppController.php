@@ -32,6 +32,7 @@ App::uses('Controller', 'Controller');
  * @link http://book.cakephp.org/2.0/en/controllers.html#the-app-controller
  */
 class AppController extends Controller {
+
 /**
  * theme
  *
@@ -54,31 +55,34 @@ class AppController extends Controller {
 		'DebugKit.Toolbar' => array('history' => 10),
 		'Init', 'SetConfig', 'Session', 'Common', 'CheckAuth', 'Auth', 'Cookie'
 	);
-	// 'DebugKit.Toolbar','Cookie', 'RequestHandler'
+
 /**
  * Helper name
  *
  * @var array
  */
 	public $helpers = array(
-        'Session',
-        'Form' => array(
-            'className' => 'NcForm'
-        ),
+				'Session',
+				'Form' => array(
+						'className' => 'NcForm'
+				),
 		'Text',
 		'Js',
 		'TimeZone',
 		'Common',
-    );
+		);
 
-    public $uses = array('Page', 'Block', 'Content', 'Module', 'Language', 'Config', 'Authority',
-    		'User', 'Passport', 'PageStyle', 'PageLayout', 'PageColumn', 'PageTheme', 'PageMeta', 'ModuleLink', 'ModuleSystemLink', 'Community', 'Asset', 'Archive');
-    // , 'SumPageView'
+	public $uses = array(
+		'Page', 'Block', 'Content', 'Module', 'Language', 'Config', 'Authority',
+		'User', 'Passport', 'PageStyle', 'PageLayout', 'PageColumn', 'PageTheme', 'PageMeta',
+		'ModuleLink', 'ModuleSystemLink', 'Community', 'Asset', 'Archive',
+	);
+
 /**
  * 初期処理
- * @param   void
- * @return  void
- * @since   v 3.0.0.0
+ * @param	 void
+ * @return	void
+ * @since	 v 3.0.0.0
  */
 	public function constructClasses() {
 		$this->_setExecuteTimes();
@@ -94,8 +98,8 @@ class AppController extends Controller {
 		/*
 		 * 同じ処理を何度も実行させないため
 		 */
-		$configLanguage = Configure::read(NC_CONFIG_KEY.'.'.'config_language');
-		if(isset($configLanguage)) {
+		$configLanguage = Configure::read(NC_CONFIG_KEY . '.' . 'config_language');
+		if (isset($configLanguage)) {
 			return;
 		}
 
@@ -121,17 +125,17 @@ class AppController extends Controller {
 		);
 		$configs = $this->Config->find('all', $params);
 
-		Configure::write(NC_CONFIG_KEY.'.'.'config_language', $configs['language']);
+		Configure::write(NC_CONFIG_KEY . '.' . 'config_language', $configs['language']);
 		Configure::write('Session.cookieTimeout', 0);
 		Configure::write('Session.timeout', intval($configs['session_timeout']));
-		if(intval($configs['session_auto_regenerate']) == _ON) {
+		if (intval($configs['session_auto_regenerate']) == _ON) {
 			// 10(CakeSession::$requestCountdown)回でSessionを再作成。
 			Configure::write('Session.autoRegenerate', true);
 		}
 
 		$this->Cookie->name = $configs['autologin_cookie_name'];
 		if ($this->Cookie->read('logged_in') == _ON && !$this->request->is('ssl')) {
-			Configure::write('Session.cookie', $configs['session_name'].'_once');
+			Configure::write('Session.cookie', $configs['session_name'] . '_once');
 		} else {
 			Configure::write('Session.cookie', $configs['session_name']);
 		}
@@ -145,8 +149,7 @@ class AppController extends Controller {
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function beforeFilter()
-	{
+	public function beforeFilter() {
 		parent::beforeFilter();
 
 		$controllerName = $this->request->params['controller'];
@@ -161,11 +164,11 @@ class AppController extends Controller {
 			// iframeでsubmitの場合、パラメータを追加し、このパラメータならばajaxでの処理と同等に扱う。
 			$pluginName = isset($this->request->params['plugin']) ? $this->request->params['plugin'] :
 			(isset($this->request->params['active_plugin']) ? $this->request->params['active_plugin'] : '');
-			if($pluginName != '') {
+			if ($pluginName != '') {
 				// ajaxの場合、blocksのリンクが含まれていれば、active-blocksに置換する。
 				$replaceUrl = preg_replace('/(.*)\/blocks\/([0-9]*)/i', '$1/active-blocks/$2', $this->request->here);
-				if($replaceUrl != $this->request->here) {
-					$replaceUrl = preg_replace('%^'.$this->request->webroot.'%i', '', $replaceUrl);
+				if ($replaceUrl != $this->request->here) {
+					$replaceUrl = preg_replace('%^' . $this->request->webroot . '%i', '', $replaceUrl);
 					echo $this->requestAction($replaceUrl, array('return', 'bare' => 0, 'requested' => 0,
 						'pass' => $this->request->params['pass'], 'named' => $this->request->params['named']));
 					$this->_stop();
@@ -177,8 +180,8 @@ class AppController extends Controller {
 			$this->SetConfig->set();
 
 			// クローズドサイト設定
-			$isClosedSite = Configure::read(NC_CONFIG_KEY.'.'.'is_closed_site');
-			if(!$isClosedSite) {
+			$isClosedSite = Configure::read(NC_CONFIG_KEY . '.' . 'is_closed_site');
+			if (!$isClosedSite) {
 				$this->Auth->allow();
 			}
 
@@ -188,15 +191,15 @@ class AppController extends Controller {
 
 		// Security Token
 		if ($this->Components->enabled('Security')) {
-			$sessionTimeout = Configure::read(NC_CONFIG_KEY.'.'.'session_timeout');
-			$this->Security->csrfExpires = '+'.$sessionTimeout.' minutes';		// Tokenの有効期限　Session.timeoutと同じとする。
+			$sessionTimeout = Configure::read(NC_CONFIG_KEY . '.' . 'session_timeout');
+			$this->Security->csrfExpires = '+' . $sessionTimeout . ' minutes';		// Tokenの有効期限　Session.timeoutと同じとする。
 			$this->Security->blackHoleCallback = 'errorToken';
 		}
 
 		if ($this->Components->enabled('Cookie')) {
 			// ログイン後に作成されるCookieのsecureを0にするため
-			$configUseSsl = Configure::read(NC_CONFIG_KEY.'.'.'use_ssl');
-			if($configUseSsl == NC_USE_SSL_NO_USE
+			$configUseSsl = Configure::read(NC_CONFIG_KEY . '.' . 'use_ssl');
+			if ($configUseSsl == NC_USE_SSL_NO_USE
 				|| ($configUseSsl == NC_USE_SSL_FOR_LOGIN
 						&& $controllerName == 'users'
 						&& $this->request->params['action'] != 'logout')) {
@@ -215,8 +218,7 @@ class AppController extends Controller {
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function beforeRender()
-	{
+	public function beforeRender() {
 		parent::beforeRender();
 
 		$this->set('hierarchy', $this->hierarchy);
@@ -228,8 +230,7 @@ class AppController extends Controller {
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function afterFilter()
-	{
+	public function afterFilter() {
 		parent::afterFilter();
 
 		$this->_setExecuteTimes('nc_execute_end_times');
@@ -248,10 +249,10 @@ class AppController extends Controller {
 	public function flash($message, $url, $pause = 2, $layout = 'flash', $exit = true) {
 		$this->autoRender = false;
 
-		if(!isset($url) || $url === '') {
+		if (!isset($url) || $url === '') {
 			// 空ならばリファラから自動リダイレクト
 			$url = $this->request->referer();
-			if($url == Router::url('/', true).'users/login' && $this->Auth->user('id')) {
+			if ($url == Router::url('/', true) . 'users/login' && $this->Auth->user('id')) {
 				$url = '/';
 			}
 		}
@@ -267,7 +268,7 @@ class AppController extends Controller {
 		}
 		$this->set('sub_message', __('The page will be automatically reloaded.If otherwise, please click <a href="%s">here</a>.'));
 
-		if($exit) {
+		if ($exit) {
 			$this->autoLayout = true;
 			$this->render(false, $layout);
 			$this->response->send();
@@ -301,7 +302,6 @@ class AppController extends Controller {
 			extract($status, EXTR_OVERWRITE);
 		}
 		$event = new CakeEvent('Controller.beforeRedirect', $this, array($url, $status, $exit));
-		//TODO: Remove the following line when the events are fully migrated to the CakeEventManager
 		list($event->break, $event->breakOn, $event->collectReturn) = array(true, false, true);
 		$this->getEventManager()->dispatch($event);
 
@@ -312,41 +312,41 @@ class AppController extends Controller {
 		extract($this->_parseBeforeRedirect($response, $url, $status, $exit), EXTR_OVERWRITE);
 
 		if ($url !== null) {
-// Modify for NetCommons Extentions By Ryuji.M --START
-			if($this->request->header('X-PJAX')) {
+			// Modify for NetCommons Extentions By Ryuji.M --START
+			if ($this->request->header('X-PJAX')) {
 				if (!$status) {
 					// IEの場合、statusコードが30Xで返すとjquery.getResponseHeaderが取得できなくなるため。
 					$userAgent = $_SERVER['HTTP_USER_AGENT'];
-					if(!preg_match('/MSIE/', $userAgent)) {
+					if (!preg_match('/MSIE/', $userAgent)) {
 						$this->response->statusCode('303');
 					}
 				}
 				$this->response->header('X-PJAX-Location', Router::url($url, true));
 			} else {
-				if(Configure::read('debug') != 0) {
-					$globalCount = Configure::read(NC_SYSTEM_KEY.'.global_count');
-					$currentUrls = Configure::read(NC_SYSTEM_KEY.'.current_urls');
-					$formGetValues = Configure::read(NC_SYSTEM_KEY.'.form_get_values');
-					$formPostValues = Configure::read(NC_SYSTEM_KEY.'.form_post_values');
-					$this->Session->write(NC_SYSTEM_KEY.'.debug.global_count', $globalCount);
-					$this->Session->write(NC_SYSTEM_KEY.'.debug.current_urls', $currentUrls);
-					$this->Session->write(NC_SYSTEM_KEY.'.debug.form_get_values', $formGetValues);
-					$this->Session->write(NC_SYSTEM_KEY.'.debug.form_post_values', $formPostValues);
-					if($this->request->is('post')) {
-						$this->Session->write(NC_SYSTEM_KEY.'.debug.method_type', 'post');
+				if (Configure::read('debug') != 0) {
+					$globalCount = Configure::read(NC_SYSTEM_KEY . '.global_count');
+					$currentUrls = Configure::read(NC_SYSTEM_KEY . '.current_urls');
+					$formGetValues = Configure::read(NC_SYSTEM_KEY . '.form_get_values');
+					$formPostValues = Configure::read(NC_SYSTEM_KEY . '.form_post_values');
+					$this->Session->write(NC_SYSTEM_KEY . '.debug.global_count', $globalCount);
+					$this->Session->write(NC_SYSTEM_KEY . '.debug.current_urls', $currentUrls);
+					$this->Session->write(NC_SYSTEM_KEY . '.debug.form_get_values', $formGetValues);
+					$this->Session->write(NC_SYSTEM_KEY . '.debug.form_post_values', $formPostValues);
+					if ($this->request->is('post')) {
+						$this->Session->write(NC_SYSTEM_KEY . '.debug.method_type', 'post');
 					}
 					$sources = ConnectionManager::sourceList();
 					$logs = array();
-					foreach($sources as $source) {
+					foreach ($sources as $source) {
 						$db = ConnectionManager::getDataSource($source);
 						$logs[$source] = $db->getLog();
 					}
-					$this->Session->write(NC_SYSTEM_KEY.'.debug.sqls', $logs);
+					$this->Session->write(NC_SYSTEM_KEY . '.debug.sqls', $logs);
 				}
 				$this->response->header('Location', Router::url($url, true));
 			}
 			// $this->response->header('Location', Router::url($url, true));
-// Modify for NetCommons Extentions By Ryuji.M --E N D
+			// Modify for NetCommons Extentions By Ryuji.M --E N D
 		}
 
 		if (is_string($status)) {
@@ -361,11 +361,11 @@ class AppController extends Controller {
 		}
 
 		if ($exit) {
-// Add for NetCommons Extentions By Ryuji.M --START
+			// Add for NetCommons Extentions By Ryuji.M --START
 			if ($this->request->header('X-PJAX') && Configure::read('debug') != 0) {
 				$this->render(false, 'redirect');
 			}
-// Add for NetCommons Extentions By Ryuji.M --E N D
+			// Add for NetCommons Extentions By Ryuji.M --E N D
 			$this->response->send();
 			$this->_stop();
 		}
@@ -377,14 +377,14 @@ class AppController extends Controller {
  * @return void
  */
 	protected function _setExecuteTimes($name = 'nc_execute_start_times') {
-		if(Configure::read('debug') != _OFF && isset($this->request->params['requested'])) {
-			$ncExecuteTimes = Configure::read(NC_SYSTEM_KEY. '.'. $name);
-			if(!isset($ncExecuteTimes)) {
+		if (Configure::read('debug') != _OFF && isset($this->request->params['requested'])) {
+			$ncExecuteTimes = Configure::read(NC_SYSTEM_KEY . '.' . $name);
+			if (!isset($ncExecuteTimes)) {
 				$ncExecuteTimes = array(microtime(true));
 			} else {
 				$ncExecuteTimes[] = microtime(true);
 			}
-			Configure::write(NC_SYSTEM_KEY. '.'. $name, $ncExecuteTimes);
+			Configure::write(NC_SYSTEM_KEY . '.' . $name, $ncExecuteTimes);
 		}
 	}
 
@@ -393,9 +393,9 @@ class AppController extends Controller {
  * @param   void
  * @return  void
  * @since   v 3.0.0.0
+ * @throws  BadRequestException
  */
-	public function errorToken()
-	{
+	public function errorToken() {
 		throw new BadRequestException(__('The request has been disabled by the security check.'));
 	}
 
@@ -405,11 +405,10 @@ class AppController extends Controller {
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function autoRegistBeforeFilter()
-	{
-		if($this->action == 'index') {
+	public function autoRegistBeforeFilter() {
+		if ($this->action == 'index') {
 			$this->autoRegistSecurity();
-		} else if($this->action == 'revision' || $this->action == 'approve') {
+		} elseif ($this->action == 'revision' || $this->action == 'approve') {
 			// 改ざんチェックを行わない。
 			$this->Security->validatePost = false;
 		}
@@ -421,9 +420,8 @@ class AppController extends Controller {
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function autoRegistSecurity()
-	{
-		if(isset($this->request->data['AutoRegist']['on']) && $this->request->data['AutoRegist']['on']) {
+	public function autoRegistSecurity() {
+		if (isset($this->request->data['AutoRegist']['on']) && $this->request->data['AutoRegist']['on']) {
 			// 自動保存時
 			$this->Security->csrfUseOnce = false;
 		}
@@ -439,8 +437,7 @@ class AppController extends Controller {
  * @return  void
  * @since   v 3.0.0.0
  */
-	public function forceSsl($useSsl, $autologinCookieName)
-	{
+	public function forceSsl($useSsl, $autologinCookieName) {
 		// SSLを有効にする設定でhttp://でリクエストされた場合はhttps://にリダイレクト
 		$isUseSslAction = false;
 		if ($this->request->params['controller'] == 'users'
@@ -452,7 +449,7 @@ class AppController extends Controller {
 			|| ($useSsl == NC_USE_SSL_AFTER_LOGIN && ($this->Cookie->read('logged_in') == _ON || $isUseSslAction))
 			|| ($useSsl == NC_USE_SSL_FOR_LOGIN && $isUseSslAction)) {
 			if (!$this->request->is('ssl')) {
-				$this->redirect('https://'.env('SERVER_NAME').$this->here);
+				$this->redirect('https://' . env('SERVER_NAME') . $this->here);
 			}
 		}
 	}
