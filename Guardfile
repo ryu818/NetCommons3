@@ -62,5 +62,5 @@ end
 # end
 
 guard 'livereload' do
-  watch(%r{.*\.(ctp)$})
+  watch(%r{.*\.(php|ctp)$})
 end
