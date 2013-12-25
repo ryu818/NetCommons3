@@ -444,13 +444,6 @@ class Page extends AppModel
  */
 	public function afterFindIds($results, $userId, $type = "all", $fields = null, $ativePageId = null) {
 
-		//$typeについての例外処理 all , list , menu以外の処理を許可しない。
-		if( $type != 'all'
-			&& $type != 'list'
-			&& $type != 'menu'
-		) {
-			return false;
-		}
 
 		$listKeyAlias = $this->alias;
 		$listValueAlias = $this->alias;
