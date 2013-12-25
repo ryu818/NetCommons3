@@ -23,6 +23,7 @@ class NcPagePublicTest extends CakeTestCase {
 	);
 
 	private $PagePublic = null;
+	private $Page = null;
 
 	/**
 	 * setUp method
@@ -32,6 +33,7 @@ class NcPagePublicTest extends CakeTestCase {
 	public function setUp() {
 		parent::setUp();
 		$this->PagePublic = ClassRegistry::init('PagePublic');
+		$this->Page = ClassRegistry::init('Page');
 
 	}
 
@@ -42,6 +44,7 @@ class NcPagePublicTest extends CakeTestCase {
 	 */
 	public function tearDown() {
 		unset($this->PagePublic);
+		unset($this->Page);
 		parent::tearDown();
 		Configure::clear(NC_SYSTEM_KEY.'.user');
 	}
@@ -97,6 +100,8 @@ class NcPagePublicTest extends CakeTestCase {
 		$ck = $this->PagePublic->arrayKeyChangeId($ck);
 		$this->assertEqual(false , isset($ck[0]));
 	}
+
+
 
 
 }

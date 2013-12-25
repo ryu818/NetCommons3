@@ -125,10 +125,58 @@ class PageCommunity extends AppModel
 		return $data;
 	}
 
-
-	public function addTopRoom($userId)
+	/**
+	 *ページの追加
+	 * @param $parent_id
+	 * @return int or null
+	 */
+	public function addPage($parent_id)
 	{
+		//parent_idの情報取得
+		$parentData = $this->findById($parent_id);
+		if(! $parentData)
+		{
+			//親ページが取得できない。
+			return null;
+		}
 
+		//ページの作成権限の確認
+		if(! $this->checkAuthAddPage()) {
+			return null;
+		}
+
+		//ページの追加権限の確認
+		$ins = $this->getDefault();
+		$ins['parent_id']   = $parent_id;
+		$ins['room_id']     = $parentData[$this->alias]['room_id'];
+		$ins['thread_num']  = $parentData['thread_num'] + 1;
+		$ins['root_id']     = $parentData['root_id'];
+
+		$this->create();
+		if(! $id = $this->save($ins)) {
+			return null;
+		}
+
+		//PageTreeへ保存
+		$PageTree = ClassRegistry::init('PageTree');
+		if(! $PageTree->addPage($id , $parent_id)) {
+			return null;
+		}
+
+		return $id;
+	}
+
+
+	/**
+	 * ページの作成権限の確認
+	 * TODO このメソッドを呼び出す先のModelでチェックされるなら、この処理は省略したい。
+	 * //Community->addPage($parentId); として、Model/Communityの中で権限をチェックするのでもよいな。
+	 * @return bool
+	 */
+	public function checkAuthAddPage()
+	{
+		//TODO:実装
+		return true;
 	}
 
 }
