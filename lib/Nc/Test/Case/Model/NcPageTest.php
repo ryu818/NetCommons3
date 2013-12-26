@@ -6266,4 +6266,71 @@ class NcPageTest extends CakeTestCase {
 		);
 		$this->assertEqual($ck , $ans);
 	}
+
+	function testAfterFindIds2list()
+	{
+		$results = $this->Page->find(
+			'all',
+			array(
+				'limit'=>16
+			)
+		);
+		$userId = 1;
+		$fields = array('Page.id', 'Page.page_name');
+		$ck = $this->Page->afterFindIds($results , $userId , 'list' , $fields);
+		$ans = array (
+			1 => 'Public room',
+			2 => 'Myportal',
+			3 => 'Private room',
+			4 => 'Community',
+			5 => 'Headercolumn',
+			6 => 'Leftcolumn',
+			7 => 'Rightcolumn',
+			8 => 'Footercolumn',
+			9 => 'Public room',
+			10 => 'Myportal of admin',
+			11 => 'Private room of admin',
+			12 => '??????',
+			13 => 'Myportal Top',
+			14 => 'Private Top',
+			15 => 'Private Top',
+			16 => 'Community-1',
+		);
+		$this->assertEqual($ck , $ans);
+
+		$ck2 = $this->Page->_afterFIndIdsTypeList($results , $userId ,  $fields);
+		$this->assertEqual($ck , $ck2);
+		//var_export($ck);
+
+		//filedが指定されていない場合
+		$ck = $this->Page->afterFindIds($results , $userId , 'list');
+		$ans = array (
+			1 => '1',
+			2 => '2',
+			3 => '3',
+			4 => '4',
+			5 => '5',
+			6 => '6',
+			7 => '7',
+			8 => '8',
+			9 => '9',
+			10 => '10',
+			11 => '11',
+			12 => '12',
+			13 => '13',
+			14 => '14',
+			15 => '15',
+			16 => '16',
+		);
+		$this->assertEqual($ck , $ans);
+		$ck2 = $this->Page->_afterFIndIdsTypeList($results , $userId);
+		$this->assertEqual($ck , $ck2);
+
+		$results = array();
+		$ck = $this->Page->afterFindIds($results , $userId , 'list');
+		$ck2 = $this->Page->_afterFIndIdsTypeList($results , $userId);
+		var_export($ck);
+		var_export($ck2);
+
+	}
 }
