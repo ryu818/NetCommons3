@@ -18,20 +18,20 @@
 ?>
 <!DOCTYPE html>
 <html>
-<head>
-<?php echo $this->Html->charset(); ?>
-<?php echo($this->element('Pages/title')); ?>
-<?php echo($this->element('Pages/include_header')); ?>
-</head>
-<body>
-<div id="parent-container">
-	<?php echo $this->fetch('content'); ?>
-	<?php
-	if(!$this->request->query('_iframe_upload')) {
-		echo($this->element('Pages/include_footer'));
-	}
-	?>
-	<?php echo $this->element('flash_mes'); ?>
-</div>
-</body>
+	<head>
+		<?php echo $this->Html->charset(); ?>
+		<?php echo($this->element('Pages/title')); ?>
+		<?php echo($this->element('Pages/include_header')); ?>
+	</head>
+	<body>
+		<div id="parent-container">
+			<?php echo $this->fetch('content'); ?>
+			<?php
+				if(!$this->request->query('_iframe_upload')) {
+					echo($this->element('Pages/include_footer'));
+				}
+			?>
+			<?php echo $this->element('flash_mes'); ?>
+		</div>
+	</body>
 </html>
