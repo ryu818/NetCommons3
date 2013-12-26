@@ -32,7 +32,6 @@
 	}
 	?>
 	<?php echo $this->element('flash_mes'); ?>
-	<?php echo $this->element('sql_dump'); ?>
 </div>
 </body>
 </html>
