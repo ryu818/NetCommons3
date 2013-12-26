@@ -1,3 +1,8 @@
+# Update bundle
+guard :bundler do
+  watch('Gemfile')
+end
+
 # Minify js
 guard 'shell' do
   ignore(/(min|dev)\.js$/)
@@ -62,5 +67,5 @@ end
 # end
 
 guard 'livereload' do
-  watch(%r{.*\.(php|ctp)$})
+  watch(%r{.*\.(php|ctp|css|js)$})
 end
