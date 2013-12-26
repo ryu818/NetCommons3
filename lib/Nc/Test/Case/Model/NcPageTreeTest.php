@@ -4,37 +4,41 @@
  *
  */
 class NcPageTreeTest extends CakeTestCase {
-	/**
-	 * Fixtures
-	 *
-	 * @var array
-	 */
+
+/**
+ * Fixtures
+ *
+ * @var array
+ */
 	public $fixtures = array(
 		'NcPageTree',
 	);
 
-	/**
-	 * setUp method
-	 *
-	 * @return void
-	 */
+/**
+ * setUp method
+ *
+ * @return void
+ */
 	public function setUp() {
 		parent::setUp();
 		$this->PageTree = ClassRegistry::init('PageTree');
 	}
 
-	/**
-	 * tearDown method
-	 *
-	 * @return void
-	 */
+/**
+ * tearDown method
+ *
+ * @return void
+ */
 	public function tearDown() {
 		unset($this->PageTree);
 		parent::tearDown();
 	}
 
-	public function testGetParent()
-	{
+/**
+ * testGetParent
+ * @return void
+ */
+	public function testGetParent() {
 		$ck = $this->PageTree->getParentAll(12);
 		$ans = array (
 			0 =>
@@ -74,11 +78,11 @@ class NcPageTreeTest extends CakeTestCase {
 				),
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 		//存在しないレコード
 		$ck = $this->PageTree->getParentAll(99999999);
 		$ans = array();
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 		//子孫のいないページ  //自身のレコードだけがとれる。 stratum_num:0のデータ
 		$ck = $this->PageTree->getParentAll(1);
 		$ans = array (
@@ -95,31 +99,37 @@ class NcPageTreeTest extends CakeTestCase {
 				),
 			),
 		);
-		$this->assertEqual($ans , $ck);
+		$this->assertEqual($ans, $ck);
 	}
 
-	//ページの追加
+/**
+ * testAddPage
+ * @return void
+ */
 	public function testAddPage() {
 		$count = $this->PageTree->find('count');
-		$ck = $this->PageTree->addPage(20 , 12);
-		$this->assertEqual($ck , true);
+		$ck = $this->PageTree->addPage(20, 12);
+		$this->assertEqual($ck, true);
 		//レコードが増えてる。
-		$this->assertNotEqual($count , $this->PageTree->find('count')) ;
-		$this->assertEqual(true , ($count < $this->PageTree->find('count')));
+		$this->assertNotEqual($count, $this->PageTree->find('count'));
+		$this->assertEqual(true, ($count < $this->PageTree->find('count')));
 		//12の1番めの子孫が20のレコードが存在する。
 		$ck = $this->PageTree->find(
-			'all' ,
-			array('conditions'=>array(
-				'PageTree.parent_id'=>12,
-				'PageTree.child_id'=>20 )
+			'all',
+			array('conditions' => array(
+				'PageTree.parent_id' => 12,
+				'PageTree.child_id' => 20 )
 			)
 		);
 		//1件
-		$this->assertEqual(1 , count($ck));
+		$this->assertEqual(1, count($ck));
 	}
 
-	public function testGetChild()
-	{
+/**
+ * testGetChild
+ * @return void
+ */
+	public function testGetChild() {
 		//1の子孫　publicページ
 		$ck = $this->PageTree->getChildAll(1);
 		$ans = array (
@@ -160,19 +170,19 @@ class NcPageTreeTest extends CakeTestCase {
 				),
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//存在しないページ
 		$ck = $this->PageTree->getChildAll(999999999999);
-		$this->assertEqual($ck , array());
+		$this->assertEqual($ck, array());
 
 		//文字列
 		$ck = $this->PageTree->getChildAll('AAAAAAAA');
-		$this->assertEqual($ck , array());
+		$this->assertEqual($ck, array());
 
 		//0
 		$ck = $this->PageTree->getChildAll(0);
-		$this->assertEqual($ck , array());
+		$this->assertEqual($ck, array());
 
 		//2の子孫
 		$ck = $this->PageTree->getChildAll(2);
@@ -214,53 +224,65 @@ class NcPageTreeTest extends CakeTestCase {
 				),
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 		//var_export($ck);
 	}
 
+/**
+ * testDeletePage
+ * @return void
+ */
 	public function testDeletePage() {
 		//11を削除
 		$ck = $this->PageTree->deletePage(11);
-		$this->assertEqual(true , $ck);
+		$this->assertEqual(true, $ck);
 
 		//11の親を取得
 		$ck = $this->PageTree->getParentAll(11);
-		$this->assertEqual(array() , $ck);
+		$this->assertEqual(array(), $ck);
 
 		//11の子を取得
 		$ck = $this->PageTree->getChildAll(11);
-		$this->assertEqual(array() , $ck);
+		$this->assertEqual(array(), $ck);
 	}
 
+/**
+ * testDelteNode
+ * @return void
+ */
 	public function testDeleteNode() {
 		$ck = $this->PageTree->getChildAll(11);
 		//var_export($ck);
 		//$ck = $this->PageTree->getChildAll(14);
 		//var_export($ck);
 		$ck = $this->PageTree->deleteNode(11);
-		$this->assertEqual(true , $ck);
+		$this->assertEqual(true, $ck);
 		$ck = $this->PageTree->getChildAll(11);
-		$this->assertEqual(array() , $ck);
+		$this->assertEqual(array(), $ck);
 		$ck = $this->PageTree->getChildAll(14);
-		$this->assertEqual(array() , $ck);
+		$this->assertEqual(array(), $ck);
 	}
 
+/**
+ * testMoveNode
+ * @return void
+ */
 	public function testMoveNode() {
 		//11の子供たちに、子を追加する。
-		$this->PageTree->addPage(200 , 14);
-		$this->PageTree->addPage(210 , 14);
-		$this->PageTree->addPage(220 , 14);
-		$this->PageTree->addPage(300 , 200);
-		$this->PageTree->addPage(310 , 200);
-		$this->PageTree->addPage(320 , 200);
+		$this->PageTree->addPage(200, 14);
+		$this->PageTree->addPage(210, 14);
+		$this->PageTree->addPage(220, 14);
+		$this->PageTree->addPage(300, 200);
+		$this->PageTree->addPage(310, 200);
+		$this->PageTree->addPage(320, 200);
 
 		//親が11で子が220をさがしても見つかる
 		$ck = $this->PageTree->find(
-			'all' ,
+			'all',
 			array(
-				'conditions'=>array(
-					'PageTree.parent_id'=>11,
-					'PageTree.child_id'=>220
+				'conditions' => array(
+					'PageTree.parent_id' => 11,
+					'PageTree.child_id' => 220
 				)
 			)
 		);
@@ -268,54 +290,53 @@ class NcPageTreeTest extends CakeTestCase {
 
 		//14の先祖は11
 		//14の親11から9に移動する。
-		$ck = $this->PageTree->moveNode( 14 , 9 );
-		$this->assertEqual(true , $ck);
+		$ck = $this->PageTree->moveNode( 14, 9 );
+		$this->assertEqual(true, $ck);
 
 		//親が11で子が9をさがしても見つからない
 		$ck = $this->PageTree->find(
-			'all' ,
+			'all',
 			array(
-				'conditions'=>array(
-					'PageTree.parent_id'=>11,
-					'PageTree.child_id'=>14
+				'conditions' => array(
+					'PageTree.parent_id' => 11,
+					'PageTree.child_id' => 14
 				)
 			)
 		);
 
 		//親が11で子が220をさがしても見つからない
 		$ck = $this->PageTree->find(
-			'all' ,
+			'all',
 			array(
-				'conditions'=>array(
-					'PageTree.parent_id'=>11,
-					'PageTree.child_id'=>220
+				'conditions' => array(
+					'PageTree.parent_id' => 11,
+					'PageTree.child_id' => 220
 				)
 			)
 		);
 
 		//親が9で子が14をさがしても見つかる
 		$ck = $this->PageTree->find(
-			'all' ,
+			'all',
 			array(
-				'conditions'=>array(
-					'PageTree.parent_id'=>9,
-					'PageTree.child_id'=>14
+				'conditions' => array(
+					'PageTree.parent_id' => 9,
+					'PageTree.child_id' => 14
 				)
 			)
 		);
-		$this->assertEqual(1 , count($ck));
+		$this->assertEqual(1, count($ck));
 
 		//親が9で子が14をさがしても見つかる
 		$ck = $this->PageTree->find(
-			'all' ,
+			'all',
 			array(
-				'conditions'=>array(
-					'PageTree.parent_id'=>9,
-					'PageTree.child_id'=>220
+				'conditions' => array(
+					'PageTree.parent_id' => 9,
+					'PageTree.child_id' => 220
 				)
 			)
 		);
-		$this->assertEqual(1 , count($ck));
+		$this->assertEqual(1, count($ck));
 	}
-
 }
