@@ -781,7 +781,6 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testFindBreadcrumb() {
-
 		//パンくずリスト用の配列をつくる
 		$page = $this->Page->find('first', array('conditions' => array('Page.id' => 1)));
 		$ck = $this->Page->findBreadcrumb($page);
@@ -3437,11 +3436,10 @@ class NcPageTest extends CakeTestCase {
 
 		//User.id 1がログインしている状態をつくる。
 		$User = ClassRegistry::init("User");
-		$user = $User->find("first", array('conditions' => array('User.id' => 1),) );
-		Configure::write(NC_SYSTEM_KEY.'.user', $user['User']);
-
-		$page = $this->Page->find('first', array('conditions' => array('Page.id' => 1)) );
-		Configure::write(NC_SYSTEM_KEY.'.'.'center_page', $page);
+		$user = $User->find("first", array('conditions' => array('User.id' => 1)));
+		Configure::write(NC_SYSTEM_KEY. '.user', $user['User']);
+		$page = $this->Page->find('first', array('conditions' => array('Page.id' => 1)));
+		Configure::write(NC_SYSTEM_KEY. '.'. 'center_page', $page);
 		$ck = $this->Page->findViewable('all', 'all');
 		$result = array (
 			9 =>
@@ -4022,10 +4020,9 @@ class NcPageTest extends CakeTestCase {
 					'private_use_flag' => '1',
 					'display_participants_editing' => true,
 				),
-			),
+			)
 		);
 		$this->assertEqual($ck, $result);
-
 		$ck = $this->Page->findViewable('all', 2, array(), array('isShowAllCommunity' => true, 'isRoom' => true));
 		$result = array (
 			9 =>
@@ -4172,11 +4169,14 @@ class NcPageTest extends CakeTestCase {
 			),
 		);
 		$this->assertEqual($ck, $result);
-
 	}
 
-	public function test_format_findViewable_options() {
-		$base= array(
+/**
+ * testFormatFindViewableOptions
+ * @return void
+ */
+	public function testFormatFindViewableOptions() {
+		$base = array(
 			'isShowAllCommunity' => false,
 			'isMyPortalCurrent' => false,
 			'ativePageId' => null,
@@ -4187,16 +4187,13 @@ class NcPageTest extends CakeTestCase {
 		$result = $base;
 		$ck = $this->Page->_format_findViewable_options();
 		$this->assertEqual($ck, $result);
-
 		$array = array(
 			'isShowAllCommunity' => true,
 		);
-
 		$result = $base;
 		$result['isShowAllCommunity'] = true;
 		$ck = $this->Page->_format_findViewable_options($array);
 		$this->assertEqual($ck, $result);
-
 		$array = array(
 			'isShowAllCommunity' => true,
 			'hogehoge' => false
@@ -4206,17 +4203,18 @@ class NcPageTest extends CakeTestCase {
 		$result['hogehoge'] = false;
 		$ck = $this->Page->_format_findViewable_options($array);
 		$this->assertEqual($ck, $result);
-
 		$result = $base;
 		$ck = $this->Page->_format_findViewable_options('AAAAAAAA');
 		$this->assertEqual($ck, $result);
-
 		$result = $base;
 		$ck = $this->Page->_format_findViewable_options(12345);
 		$this->assertEqual($ck, $result);
 	}
-
-	public function test_format_findViewable_currentMyPortal() {
+/**
+ * testFormatFindViewableCurrentMyPortal
+ * @return void
+ */
+	public function testFormatFindViewableCurrentMyPortal() {
 		$array = array();
 		$ck = $this->Page->_format_findViewable_currentMyPortal(array());
 		$this->assertEqual($ck, null);
@@ -4264,7 +4262,7 @@ class NcPageTest extends CakeTestCase {
 		$this->assertEqual(null, $ck);
 	}
 
-	public function test_format_findViewable_currentPrivate() {
+	public function testFormatFindViewableCurrentPrivate() {
 		$array = array();
 		$ck = $this->Page->_format_findViewable_currentPrivate(array());
 		$this->assertEqual($ck, null);
@@ -4310,30 +4308,29 @@ class NcPageTest extends CakeTestCase {
 
 		$ck = $this->Page->_format_findViewable_currentPrivate($array['User']);
 		$this->assertEqual(null, $ck);
-
 	}
 
-	public function test_format_findViewable_conditions() {
+/**
+ * testFormatFindViewableConditions
+ * @return void
+ */
+	public function testFormatFindViewableConditions() {
 		//言語取得
-		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
-
+		$lang = Configure::read(NC_CONFIG_KEY. '.'. 'language');
 		//conditionsのベース
 		$base = array(
 			'Page.position_flag' => _ON,
 			'Page.display_flag !=' => NC_DISPLAY_FLAG_DISABLE,
 			'Page.thread_num !=' => 0,
 		);
-
 		$ck = $this->Page->_format_findViewable_conditions(array());
 		$this->assertEqual($ck, $base);
-
 		$options = array();
 		$options['autoLang'] = true;
 		$ans = $base;
 		$ans['Page.lang'] = array('', $lang);
 		$ck = $this->Page->_format_findViewable_conditions($options);
 		$this->assertEqual($ck, $ans);
-
 		$options = array();
 		$options['isRoom'] = true;
 		$ans = $base;
@@ -4350,8 +4347,11 @@ class NcPageTest extends CakeTestCase {
 		$ck = $this->Page->_format_findViewable_conditions($options);
 		$this->assertEqual($ck, $ans);
 	}
-
-	function test_format_findViewable_currents_by_centerPage() {
+/**
+ * testFormatFindViewableCurrentsByCenterPage
+ * @return void
+ */
+	function testFormatFindViewableCurrentsByCenterPage() {
 		$loginUser = array(
 			'id' => "1",
 			'login_id' => 'admin',
@@ -4473,7 +4473,7 @@ class NcPageTest extends CakeTestCase {
 			'modified_user_id' => 0,
 			'modified_user_name' => ''
 		);
-		Configure::write(NC_SYSTEM_KEY.'.user', $loginUser);
+		Configure::write(NC_SYSTEM_KEY. '.user', $loginUser);
 		$ans = array(100, 2);
 		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage, $loginUser);
 		$this->assertEqual($ans, $ck);
@@ -4490,13 +4490,11 @@ class NcPageTest extends CakeTestCase {
 		$ans = array(null, null);
 		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage, $loginUser);
 		$this->assertEqual($ans, $ck);
-
-		$centerPage = array(1,2,3,4,5);
+		$centerPage = array(1, 2, 3, 4, 5);
 		$loginUser = array();
 		$ans = array(null, null);
 		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage, $loginUser);
 		$this->assertEqual($ans, $ck);
-
 		$loginUser = array(
 			'id' => 1,
 			'login_id' => 'admin',
@@ -4602,7 +4600,6 @@ class NcPageTest extends CakeTestCase {
 		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage, $loginUser);
 		//var_export($ck);
 		$this->assertEqual($ans, $ck);
-
 	}
 
 /**
@@ -4611,46 +4608,44 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testFindIncludeComunityLang() {
-
 		$pageId = 1;
-		$ans = array('Page' =>
-			array (
-			 'id' => '1',
-			 'root_id' => '0',
-			 'parent_id' => '0',
-			 'thread_num' => '0',
-			 'display_sequence' => '1',
-			 'page_name' => 'Public room',
-			 'permalink' => '',
-			 'position_flag' => '1',
-			 'lang' => '',
-			 'is_page_meta_node' => '0',
-			 'is_page_style_node' => '0',
-			 'is_page_layout_node' => '0',
-			 'is_page_theme_node' => '0',
-			 
+		$ans = array(
+			'Page' => array (
+			'id' => '1',
+			'root_id' => '0',
+			'parent_id' => '0',
+			'thread_num' => '0',
+			'display_sequence' => '1',
+			'page_name' => 'Public room',
+			'permalink' => '',
+			'position_flag' => '1',
+			'lang' => '',
+			'is_page_meta_node' => '0',
+			'is_page_style_node' => '0',
+			'is_page_layout_node' => '0',
+			'is_page_theme_node' => '0',
 			'is_page_column_node' => '0',
-			 'room_id' => '0',
-			 'space_type' => '1',
-			 'show_count' => '0',
-			 'display_flag' => '1',
-			 'display_from_date' => null,
-			 'display_to_date' => null,
-			 'display_apply_subpage' => '1',
-			 'display_reverse_permalink' => null,
-			 'is_approved' => '1',
-			 'lock_authority_id' => '0',
-			 'created' => null,
-			 'created_user_id' => '0',
-			 'created_user_name' => '',
-			 'modified' => null,
-			 'modified_user_id' => '0',
-			 'modified_user_name' => '',
-		 ),
-	 'CommunityLang' =>
-		 array (
-			 'community_name' => null,
-		 )
+			'room_id' => '0',
+			'space_type' => '1',
+			'show_count' => '0',
+			'display_flag' => '1',
+			'display_from_date' => null,
+			'display_to_date' => null,
+			'display_apply_subpage' => '1',
+			'display_reverse_permalink' => null,
+			'is_approved' => '1',
+			'lock_authority_id' => '0',
+			'created' => null,
+			'created_user_id' => '0',
+			'created_user_name' => '',
+			'modified' => null,
+			'modified_user_id' => '0',
+			'modified_user_name' => '',
+		),
+		'CommunityLang' =>
+			array (
+				'community_name' => null,
+			)
 		);
 		$ck = $this->Page->findIncludeComunityLang($pageId);
 		//var_export($ck);
@@ -4718,7 +4713,6 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testFindChilds() {
-
 		//第一引数はまったく使われていない。
 		//とりあえず現状の動きをトレース。
 
@@ -4913,12 +4907,10 @@ class NcPageTest extends CakeTestCase {
 		$ck = $this->Page->findChilds('all', $page, 'ja', 1);
 		$this->assertEqual(true, ($ck[0]['Page']['id'] == 15 || $ck[0]['Page']['id'] == 14 ));
 		$this->assertEqual(true, ($ck[1]['Page']['id'] == 15 || $ck[1]['Page']['id'] == 14 ));
-
 		//$ck = $this->Page->findChilds('all', $page, 'ja', 7);
 		//var_export($ck);
-
 		//2階層目を保存してみる
-		$new_page['Page'] = array(
+		$newPage['Page'] = array(
 			'root_id'  => 11,
 			'parent_id' => 15,
 			'thread_num' => 2,
@@ -4945,7 +4937,7 @@ class NcPageTest extends CakeTestCase {
 		);
 
 		//2階層目を保存してみる
-		$new_page_2['Page'] = array(
+		$newPage2['Page'] = array(
 			'root_id' => 11,
 			'parent_id' => 17,
 			'thread_num' => 3,
@@ -4970,23 +4962,23 @@ class NcPageTest extends CakeTestCase {
 			'is_approved' => 1,
 			'lock_authority_id' => 0,
 		);
-
-
 		$User = ClassRegistry::init("User");
 		$user = $User->find("first", array('conditions' => array('User.id' => 1),) );
-		Configure::write(NC_SYSTEM_KEY.'.user', $user['User']);
+		Configure::write(NC_SYSTEM_KEY.
+				'.user',
+				$user['User']
+		);
 
 		//id:17, 18で11の子孫情報を保存
 		$this->Page->create();
-		$ck = $this->Page->save($new_page, false, false);
+		$ck = $this->Page->save($newPage, false, false);
 		$this->Page->create();
-		$ck = $this->Page->save($new_page_2, false, false);
+		$ck = $this->Page->save($newPage2, false, false);
 
 		//id 14,15,17,18が取得できていないといけないがとれない。
 		//TODO：ちゃんと子孫情報がとれるように修正する
 		//$ck = $this->Page->findChilds('all', $page);
 		//var_export($ck);
-
 	}
 
 /**
@@ -4995,7 +4987,6 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testFindCommunityCount() {
-
 		//存在するアカウントの場合
 		$ck = $this->Page->findCommunityCount(1);
 		$this->assertEqual(1, $ck);
@@ -5014,28 +5005,27 @@ class NcPageTest extends CakeTestCase {
 
 		//ログインユーザ
 		$User = ClassRegistry::init('User');
-		$loginUser = $User->find("first", array('conditions' => array('User.id' => 1)) );
-		Configure::write(NC_SYSTEM_KEY. '.user', $loginUser['User']);
+		$loginUser = $User->find("first", array('conditions' => array('User.id' => 1)));
+		Configure::write(NC_SYSTEM_KEY.
+			'.user',
+			$loginUser['User']
+		);
 
 		$ck = $this->Page->findCommunityCount();
 		$this->assertEqual(1, $ck);
 
-		$loginUser = $User->find("first", array('conditions' => array('User.id' => 2)) );
+		$loginUser = $User->find("first", array('conditions' => array('User.id' => 2)));
 		Configure::write(NC_SYSTEM_KEY. '.user', $loginUser['User']);
-
 		$ck = $this->Page->findCommunityCount();
 		$this->assertEqual(0, $ck);
-
 		//未ログイン noticeエラー
 		//TODO:未ログイン時の考慮と対応
 		//Configure::write(NC_SYSTEM_KEY. '.user', array());
 		//$ck = $this->Page->findCommunityCount();
 		//$this->assertEqual(0, $ck);
-
 		//第2引数$params, 第3引数$optionsはself::findViewable()へ条件を渡しているだけなので一旦省略
 		//array_mergeで条件を上書きしている。
 		// Page.space_typeやPage.thread_numを上書きされた場合についても今回は一旦省略
-
 	}
 
 /**
@@ -5044,7 +5034,6 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testGetFieldsArray() {
-
 		//$userIdがしていされていて、$spaceTypeが指定されていない場合
 		$ck = $this->Page->getFieldsArray(1);
 		$ans = array (
@@ -5392,7 +5381,6 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testAfterFindIds() {
-
 		//resultがない場合
 		$ck = $this->Page->afterFindIds(array(), 1 );
 		$this->assertEqual(false, $ck);
@@ -5678,11 +5666,8 @@ class NcPageTest extends CakeTestCase {
 		$this->assertEqual($ck, $ans);
 
 		//list でfieldsの指定なし
-		$ck = $this->Page->afterFindIds($results, 'all', 'list' );
-		$ans = array (
-		  9 => '9',
-		  11 => '11',
-		 );
+		$ck = $this->Page->afterFindIds($results, 'all', 'list');
+		$ans = array (9 => '9', 11 => '11');
 		$this->assertEqual($ck, $ans);
 
 		//listで$fieldsの指定あり
@@ -5706,12 +5691,12 @@ class NcPageTest extends CakeTestCase {
 
 		$fields = array(
 			'Page.id',
-			'Page.page_name',
+			'Page.page_name'
 		);
 		$ck = $this->Page->afterFindIds($results, 'all', 'list', $fields );
 		$ans = array (
 			9 => 'Public room',
-			11 => 'Private room of admin',
+			11 => 'Private room of admin'
 		);
 		$this->assertEqual($ck, $ans);
 	}
@@ -5731,11 +5716,10 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testPaginate() {
-
 		//現状使われていないみたいなので、使われてないなら削除したい。
 		//orderが必須になっているのに使われていない。
 		$conditions = array('Page.id' => 16);
-		$fields= array('Page.id', 'Page.page_name');
+		$fields = array('Page.id', 'Page.page_name');
 		$order = array();
 		$limit = 10;
 		$ck = $this->Page->Paginate($conditions, $fields, $order, $limit);
@@ -5745,14 +5729,14 @@ class NcPageTest extends CakeTestCase {
 		$this->assertEqual($ck, $ans);
 
 		$conditions = array('Page.id' => 13);
-		$fields= array('Page.id', 'Page.page_name');
+		$fields = array('Page.id', 'Page.page_name');
 		$order = array();
 		$limit = 10;
 		$ck = $this->Page->Paginate($conditions, $fields, $order, $limit);
 		$this->assertEqual($ck, false);
 
 		$conditions = array('Page.id' => 11);
-		$fields= array('Page.id', 'Page.page_name');
+		$fields = array('Page.id', 'Page.page_name');
 		$order = array();
 		$limit = 10;
 		$extra = array(
@@ -5762,7 +5746,7 @@ class NcPageTest extends CakeTestCase {
 		$this->assertEqual($ck, false);
 
 		$conditions = array('Page.id' => 16);
-		$fields= array('Page.id', 'Page.page_name');
+		$fields = array('Page.id', 'Page.page_name');
 		$order = array();
 		$limit = 10;
 		$extra = array(
@@ -5775,7 +5759,7 @@ class NcPageTest extends CakeTestCase {
 		$this->assertEqual($ck, $ans);
 
 		$conditions = array('Page.id' => 16);
-		$fields= array('Page.id', 'Page.page_name');
+		$fields = array('Page.id', 'Page.page_name');
 		$order = array();
 		$limit = 'AAA'; //パラメータ異常
 		$extra = array(
@@ -5785,7 +5769,7 @@ class NcPageTest extends CakeTestCase {
 		$this->assertEqual($ck, false);
 
 		$conditions = array('Page.id' => 16);
-		$fields= array('Page.id', 'Page.page_name');
+		$fields = array('Page.id', 'Page.page_name');
 		$order = array();
 		$limit = 0;
 		$extra = array(
@@ -5798,7 +5782,7 @@ class NcPageTest extends CakeTestCase {
 		$this->assertEqual($ck, $ans);
 
 		$conditions = array('Page.id' => 16);
-		$fields= array('Page.id', 'Page.page_name');
+		$fields = array('Page.id', 'Page.page_name');
 		$order = array();
 		$limit = 0;
 		$extra = array(
@@ -5809,12 +5793,10 @@ class NcPageTest extends CakeTestCase {
 
 		//2階層目を保存してみる
 		$User = ClassRegistry::init("User");
-		$user = $User->find("first", array('conditions' => array('User.id' => 1),) );
+		$user = $User->find("first", array('conditions' => array('User.id' => 1)));
 		Configure::write(NC_SYSTEM_KEY. '.user', $user['User']);
-
-		$new_page = array (
-			'Page' =>
-			array (
+		$newPage = array (
+				'Page' => array (
 				'root_id' => '4',
 				'parent_id' => '16',
 				'thread_num' => '2',
@@ -5841,23 +5823,20 @@ class NcPageTest extends CakeTestCase {
 		);
 		//id16の子孫を3件作成
 		$this->Page->create();
-		$this->Page->save($new_page);
-
+		$this->Page->save($newPage);
 		$this->Page->create();
-		$this->Page->save($new_page);
-
+		$this->Page->save($newPage);
 		$conditions = array('Page.parent_id' => 16);
-		$fields= array('Page.id', 'Page.page_name');
+		$fields = array('Page.id', 'Page.page_name');
 		$order = array();
 		$limit = 100;
 		$extra = array(
 			'user_id' => 1
 		);
-
 		$ck = $this->Page->Paginate($conditions, $fields, $order, $limit, 1, null, $extra);
 		$ans = array (
 			18 => 'Private Top',
-			17 => 'Private Top',
+			17 => 'Private Top'
 		);
 		$this->assertEqual($ck, $ans);
 	}
@@ -5899,11 +5878,9 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testIncrementDisplaySeq() {
-
 		$page = $this->Page->find('first', array('conditions' => array('Page.id' => 15)));
 		$ck = $this->Page->incrementDisplaySeq($page);
 		$this->assertEqual(true, $ck);
-
 		$ck = $this->Page->incrementDisplaySeq($page, 5);
 		$this->assertEqual(true, $ck);
 
@@ -5940,7 +5917,6 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testGetMovePermalink() {
-
 		//$page['Page']['permalink']を元に、URLを作っている。
 		$page = $this->Page->find('first', array('conditions' => array('Page.id' => 16)));
 		$parentPage = $this->Page->find('first', array('conditions' => array('Page.id' => 4)));
@@ -5959,9 +5935,8 @@ class NcPageTest extends CakeTestCase {
  * testCreateDefaultEntry method
  *
  * @return void
-*/
+ */
 	public function testCreateDefaultEntry() {
-
 		//マイポータル作成, マイルーム作成, ルーム参加
 		$user = array();
 		$user['User'] = array(
@@ -6020,7 +5995,6 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testInsTopRoom() {
-
 		$User = ClassRegistry::init('User');
 		$userData = $User->find('first', array('conditions' => array('User.id' => 1)));
 
@@ -6244,13 +6218,12 @@ class NcPageTest extends CakeTestCase {
 		$this->assertEqual($ck, $ans);
 	}
 
-	/**
-	 * afterFindIdtoList
-	 *
-	 * @return void
-	 */
+/**
+ * afterFindIdToList
+ *
+ * @return void
+ */
 	public function testAfterFindIdsToList() {
-
 		$results = $this->Page->find('all', array('limit' => 16));
 		$userId = 1;
 		$fields = array('Page.id', 'Page.page_name');
