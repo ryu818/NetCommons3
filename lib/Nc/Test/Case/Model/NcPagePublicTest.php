@@ -4,11 +4,11 @@
  *
  */
 class NcPagePublicTest extends CakeTestCase {
-	/**
-	 * Fixtures
-	 *
-	 * @var array
-	 */
+
+/**
+ * Fixtures
+ *
+ */
 	public $fixtures = array(
 		'NcPage',
 		'NcAuthority',
@@ -22,33 +22,38 @@ class NcPagePublicTest extends CakeTestCase {
 		'NcRevision',
 	);
 
-	private $PagePublic = null;
-	private $Page = null;
+	public $PagePublic = null;
 
-	/**
-	 * setUp method
-	 *
-	 * @return void
-	 */
+	public $Page = null;
+
+/**
+ * setUp method
+ *
+ * @return void
+ */
 	public function setUp() {
 		parent::setUp();
 		$this->PagePublic = ClassRegistry::init('PagePublic');
 		$this->Page = ClassRegistry::init('Page');
-
 	}
 
-	/**
-	 * tearDown method
-	 *
-	 * @return void
-	 */
+/**
+ * tearDown method
+ *
+ * @return void
+ */
 	public function tearDown() {
 		unset($this->PagePublic);
 		unset($this->Page);
 		parent::tearDown();
-		Configure::clear(NC_SYSTEM_KEY.'.user');
+		Configure::clear("{NC_SYSTEM_KEY}.user");
 	}
 
+/**
+ * testGetDefault
+ *
+ * @return void
+ */
 	public function testGetDefault() {
 		$ans = array (
 			'root_id' => 0,
@@ -71,37 +76,41 @@ class NcPagePublicTest extends CakeTestCase {
 			'page_name' => 'Public room',
 		);
 		$ck = $this->PagePublic->getDefault();
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 	}
 
+/**
+ * testSetUserId
+ *
+ * @return void
+ */
 	public function testSetUserId() {
 		//存在するユーザをセットする。
-		$ck=$this->PagePublic->setUserId(1);
-		$this->assertEqual(true , $ck);
+		$ck = $this->PagePublic->setUserId(1);
+		$this->assertEqual(true, $ck);
 
 		//存在しないユーザをセットする
 		$ck = $this->PagePublic->setUserId(999999999999);
-		$this->assertEqual(false , $ck);
+		$this->assertEqual(false, $ck);
 
 		//文字列をセットする（パラメータエラー）
 		$ck = $this->PagePublic->setUserId('AAAAAAAA');
-		$this->assertEqual(false , $ck);
+		$this->assertEqual(false, $ck);
 
 		//配列をセットする（パラメータエラー
-		$ck = $this->PagePublic->setUserId(array(1,2,3));
-		$this->assertEqual(false , $ck);
-
+		$ck = $this->PagePublic->setUserId(array(1, 2, 3));
+		$this->assertEqual(false, $ck);
 	}
 
+/**
+ * testArrayKeyChangeId
+ *
+ * @return void
+ */
 	public function testArrayKeyChangeId() {
-		//Page Behaviorで共通化されている
 		$ck = $this->PagePublic->find('all');
-		$this->assertEqual(true , isset($ck[0]));
+		$this->assertEqual(true, isset($ck[0]));
 		$ck = $this->PagePublic->arrayKeyChangeId($ck);
-		$this->assertEqual(false , isset($ck[0]));
+		$this->assertEqual(false, isset($ck[0]));
 	}
-
-
-
-
 }
