@@ -4,11 +4,11 @@
  *
  */
 class NcPageMyPortalTest extends CakeTestCase {
-	/**
-	 * Fixtures
-	 *
-	 * @var array
-	 */
+
+/**
+ * Fixtures
+ *
+ */
 	public $fixtures = array(
 		'NcPage',
 		'NcAuthority',
@@ -22,28 +22,27 @@ class NcPageMyPortalTest extends CakeTestCase {
 		'NcRevision',
 	);
 
-	private $PageMyPortal = null;
+	public $PageMyPortal = null;
 
-	/**
-	 * setUp method
-	 *
-	 * @return void
-	 */
+/**
+ * setUp method
+ *
+ * @return void
+ */
 	public function setUp() {
 		parent::setUp();
 		$this->PageMyPortal = ClassRegistry::init('PageMyPortal');
-
 	}
 
-	/**
-	 * tearDown method
-	 *
-	 * @return void
-	 */
+/**
+ * tearDown method
+ *
+ * @return void
+ */
 	public function tearDown() {
 		unset($this->PageMyPortal);
 		parent::tearDown();
-		Configure::clear(NC_SYSTEM_KEY.'.user');
+		Configure::clear("{NC_SYSTEM_KEY}.user");
 	}
 
 	public function testGetDefault() {
@@ -68,84 +67,95 @@ class NcPageMyPortalTest extends CakeTestCase {
 				'page_name' => 'Myportal',
 		);
 		$ck = $this->PageMyPortal->getDefault();
-		$this->assertEqual($ck , $ans);
-
+		$this->assertEqual($ck, $ans);
 	}
 
+/**
+ * testSetUserId
+ * @return void
+ */
 	public function testSetUserId() {
 		//存在するユーザをセットする。
-		$ck=$this->PageMyPortal->setUserId(1);
-		$this->assertEqual(true , $ck);
+		$ck = $this->PageMyPortal->setUserId(1);
+		$this->assertEqual(true, $ck);
 
 		//存在しないユーザをセットする
 		$ck = $this->PageMyPortal->setUserId(999999999999);
-		$this->assertEqual(false , $ck);
+		$this->assertEqual(false, $ck);
 
 		//文字列をセットする（パラメータエラー）
 		$ck = $this->PageMyPortal->setUserId('AAAAAAAA');
-		$this->assertEqual(false , $ck);
+		$this->assertEqual(false, $ck);
 
 		//配列をセットする（パラメータエラー
-		$ck = $this->PageMyPortal->setUserId(array(1,2,3));
-		$this->assertEqual(false , $ck);
-
+		$ck = $this->PageMyPortal->setUserId(array(1, 2, 3));
+		$this->assertEqual(false, $ck);
 	}
 
+/**
+ * testGetRoomList
+ * @return void
+ */
 	public function testGetRoomList() {
 		$ck = $this->PageMyPortal->getRoomList(1);
-		$this->assertEqual(count($ck) , 1);
-		$this->assertEqual(10 , $ck[10]['PageMyPortal']['id']);
-		$this->assertEqual(10 , $ck[10]['PageMyPortal']['room_id']);
+		$this->assertEqual(count($ck), 1);
+		$this->assertEqual(10, $ck[10]['PageMyPortal']['id']);
+		$this->assertEqual(10, $ck[10]['PageMyPortal']['room_id']);
 
 		$ck = $this->PageMyPortal->getRoomList(999999999);
-		$this->assertEqual($ck , array()) ;
+		$this->assertEqual($ck, array());
 
 		$ck = $this->PageMyPortal->getRoomList('AAAAAAAA');
-		$this->assertEqual($ck , array()) ;
-		$ck = $this->PageMyPortal->getRoomList(array(1,2,3));
-		$this->assertEqual($ck , array()) ;
+		$this->assertEqual($ck, array());
+		$ck = $this->PageMyPortal->getRoomList(array(1, 2, 3));
+		$this->assertEqual($ck, array());
 	}
 
-
+/**
+ * testAddTopRoom
+ * @return void
+ */
 	public function testAddTopRoom() {
 		$startCount = $this->PageMyPortal->find('count');
 		$ck = $this->PageMyPortal->addTopRoom(1);
 		$id = $ck; //MyPortalのpageのid
 		$endCount = $this->PageMyPortal->find('count');
-		$this->assertEqual(true , is_numeric($ck));
-		$this->assertEqual($startCount + 2 , $endCount);
+		$this->assertEqual(true, is_numeric($ck));
+		$this->assertEqual($startCount + 2, $endCount);
 
 		$ck = $this->PageMyPortal->findById($id);
-		$ck2 = $this->PageMyPortal->findById($id+1);
+		$ck2 = $this->PageMyPortal->findById($id + 1);
 		$key = 'PageMyPortal';
-		$this->assertEqual($ck[$key]['room_id'] , $id);
-		$this->assertEqual($ck[$key]['page_name'] , 'Myportal');
-		$this->assertEqual($ck2[$key]['page_name'] , 'Myportal Top');
-		$this->assertEqual($ck2[$key]['root_id'] , $id);
+		$this->assertEqual($ck[$key]['room_id'], $id);
+		$this->assertEqual($ck[$key]['page_name'], 'Myportal');
+		$this->assertEqual($ck2[$key]['page_name'], 'Myportal Top');
+		$this->assertEqual($ck2[$key]['root_id'], $id);
 
 		//roomにPageUserLinkが紐付いたかどうか確認する。
 		$PageUserLink = ClassRegistry::init("PageUserLink");
-		$key    = $PageUserLink->alias;
-		$ck     = $PageUserLink->find(
+		$key = $PageUserLink->alias;
+		$ck = $PageUserLink->find(
 			'count',
 			array(
-				'conditions'=>array(
-					"{$key}.room_id"=>$id,
-					"{$key}.user_id"=>1
+				'conditions' => array(
+					"{$key}.room_id" => $id,
+					"{$key}.user_id" => 1
 				)
 			)
 		);
 		//1件
-		$this->assertEqual($ck , 1);
+		$this->assertEqual($ck, 1);
 	}
 
-	public function testArrayKeyChangeId(){
+/**
+ * testArrayKeyCangeId
+ * @return void
+ */
+	public function testArrayKeyChangeId() {
 		//他の分割したModel/Pageでも使う予定のコードなので、Page Behaviorへ移動した。
 		$ck = $this->PageMyPortal->find('all');
-		$this->assertEqual(true , isset($ck[0]));
+		$this->assertEqual(true, isset($ck[0]));
 		$ck = $this->PageMyPortal->arrayKeyChangeId($ck);
-		$this->assertEqual(false , isset($ck[0]));
+		$this->assertEqual(false, isset($ck[0]));
 	}
-
-
 }
