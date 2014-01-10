@@ -67,6 +67,10 @@ class PagesController extends AppController {
  * @since   v 3.0.0.0
  */
 	public function index() {
+		if ($this->device === self::DEVICE_TYPE_SMARTPHONE) {
+			/* $this->redirect('/whatsnew/index'); */
+			/* return; */
+		}
 		$mode = $this->Session->read(NC_SYSTEM_KEY.'.mode');
 		$user = $this->Auth->user();
 		$user_id = $user['id'];

@@ -25,6 +25,7 @@
 	</head>
 	<body>
 		<div id="parent-container">
+			<?php echo $this->element('smartphone/header'); ?>
 			<?php echo $this->fetch('content'); ?>
 			<?php
 				if(!$this->request->query('_iframe_upload')) {

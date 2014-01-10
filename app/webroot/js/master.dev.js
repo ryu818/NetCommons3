@@ -48838,7 +48838,7 @@ the specific language governing permissions and limitations under the Apache Lic
 			var params = {
 				'top': top,
 				'left': pos.left + offset_left - $(window).scrollLeft(),
-				'z-index': $.Common.zIndex++,
+				'z-index': $.Common.zIndex++
 			}
 
 			list.attr('data-id', pageId).css(params).toggle();
@@ -50334,7 +50334,7 @@ the specific language governing permissions and limitations under the Apache Lic
  */
 		initRefUrlTab: function(id) {
 			var $img = $.Upload.setting.img ? $($.Upload.setting.img) : null;
-			var float, fileInfo, options, imgObject, rateWidth, rateHeight;
+			var position, fileInfo, options, imgObject, rateWidth, rateHeight;
 			var uploadId = 0;	// uploadId=0固定
 			$.template( "uploadRefUrl", $('#' + id + '-ref-url-template').html());
 			id = id + '-ref_url';
@@ -50354,11 +50354,11 @@ the specific language governing permissions and limitations under the Apache Lic
 			}
 
 			// 編集
-			float = $img.css("float");
-			if(float != 'left' && float != 'right') {
-				float = '';
+			position = $img.css("float");
+			if(position != 'left' && position != 'right') {
+				position = '';
 				if($img.hasClass('block-center')) {
-					float = 'center';
+					position = 'center';
 				}
 			}
 
@@ -50369,7 +50369,7 @@ the specific language governing permissions and limitations under the Apache Lic
 				'alt': $img.attr('alt'),
 				'width': $img.width(),
 				'height': $img.height(),
-				'float': float,
+				'float': position,
 				'margin_top_bottom': ($img.css("marginTop") == "auto") ? "0" : parseInt($img.css("marginTop") || 0),
 				'margin_left_right': ($img.css("marginLeft") == "auto") ? "0" : parseInt($img.css("marginLeft") || 0),
 				'border_width': $img.css("borderTopWidth") ? parseInt($img.css("borderTopWidth") || 0) : 0,
@@ -51708,7 +51708,7 @@ the specific language governing permissions and limitations under the Apache Lic
  */
 		initObjectScaler: function(el) {
 			el.cjObjectScaler({
-				method: 'fit',
+				method: 'fit'
 			}, function() {
 				el.css('visibility', '');
 			});

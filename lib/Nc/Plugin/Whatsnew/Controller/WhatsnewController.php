@@ -15,6 +15,12 @@
 class WhatsnewController extends WhatsnewAppController {
 
 	public function index() {
+		$this->set('whatsnews', array(array('Archive' => array(
+			'content' => 'content content',
+			'title' => 'title title',
+			'url' => 'http://example.com/',
+		))));
+		return;
 		include_once dirname(dirname(__FILE__)).'/Config/defines.inc.php';
 		// ($type = 'all', $addConditions = array(), $userId = null, $roomIdArr = null, $moduleIdArr = null, $lang = null, $isDisplayComment = true, $isPublicCommunity = true, $isDisplayAllMyportal = false)
 		$whatsnews = $this->Archive->findList('all', array(), null, null, null, null, true, true, false);

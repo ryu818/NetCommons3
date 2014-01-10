@@ -196,7 +196,7 @@ if ($plugins = CakePlugin::loaded()) {
 		'/:block_type/:plugin/:controller/:action/*',
 		array(),
 		array(
-			'block_type' => 'active-controls'
+			'block_type' => 'active-controls|modules'
 		) + $pluginParams
 	);
 
@@ -204,7 +204,7 @@ if ($plugins = CakePlugin::loaded()) {
 		'/:block_type/:plugin/:controller',
 		array(),
 		array(
-			'block_type' => 'active-controls'
+			'block_type' => 'active-controls|modules'
 		) + $pluginParams
 	);
 
@@ -212,7 +212,7 @@ if ($plugins = CakePlugin::loaded()) {
 		'/:block_type/:plugin',
 		array(),
 		array(
-			'block_type' => 'active-controls'
+			'block_type' => 'active-controls|modules'
 		) + $pluginParams
 	);
 }

@@ -47,6 +47,8 @@ class AppController extends Controller {
  */
 	public $theme = '';
 
+	public $device = self::DEVICE_TYPE_PC;
+
 	public $hierarchy = null;
 
 	public $isChief = null;
@@ -62,21 +64,26 @@ class AppController extends Controller {
  * @var array
  */
 	public $helpers = array(
-				'Session',
-				'Form' => array(
-						'className' => 'NcForm'
-				),
+		'Session',
+		'Form' => array(
+			'className' => 'NcForm'
+		),
 		'Text',
 		'Js',
 		'TimeZone',
 		'Common',
-		);
+	);
 
 	public $uses = array(
 		'Page', 'Block', 'Content', 'Module', 'Language', 'Config', 'Authority',
 		'User', 'Passport', 'PageStyle', 'PageLayout', 'PageColumn', 'PageTheme', 'PageMeta',
 		'ModuleLink', 'ModuleSystemLink', 'Community', 'Asset', 'Archive',
 	);
+
+	const
+		DEVICE_TYPE_PC					= 1,
+		DEVICE_TYPE_SMARTPHONE	= 2,
+		DEVICE_TYPE_TABLET			= 3;
 
 /**
  * 初期処理
@@ -186,7 +193,7 @@ class AppController extends Controller {
 			}
 
 			// 権限チェック
-			$this->CheckAuth->check();
+//			$this->CheckAuth->check();
 		}
 
 		// Security Token
@@ -210,6 +217,19 @@ class AppController extends Controller {
 		// Nc用Html Purifierロード処理
 		App::uses('Purifier', 'Lib');
 		Purifier::setNcConfig();
+
+		// Check if the request is 'mobile', includes phones, tablets, etc.
+		$this->MobileDetect = $this->Components->load('MobileDetect.MobileDetect');
+		if ($this->request->is('mobile') ||
+				(isset($this->request->query['mobile']) && $this->request->query['mobile'])) {
+			if ($this->MobileDetect->detect('isTablet')) {
+				$this->setTable(true);
+			} else {
+				// If the request is mobile, but not a tablet, activate the mobile layout
+				$this->setSmartphone(true);
+				$this->layout = 'smartphone';
+			}
+		}
 	}
 
 /**
@@ -386,6 +406,26 @@ class AppController extends Controller {
 			}
 			Configure::write(NC_SYSTEM_KEY . '.' . $name, $ncExecuteTimes);
 		}
+	}
+
+	public function setSmartphone($v) {
+		if ($v) {
+			$this->device = self::DEVICE_TYPE_SMARTPHONE;
+		}
+	}
+
+	public function setTablet($v) {
+		if ($v) {
+			$this->device = self::DEVICE_TYPE_TABLET;
+		}
+	}
+
+	public function isTablet() {
+		return $this->device = self::DEVICE_TYPE_TABLET;
+	}
+
+	public function isSmartphone() {
+		return $this->device = self::DEVICE_TYPE_SMARTPHONE;
 	}
 
 /**
