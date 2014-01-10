@@ -35,6 +35,7 @@ guard 管理下におかれているコード、テスト、ドキュメント�
 Host::
 
   $ vagrant up
+  $ vagrant hostmanager
   $ bundle exec guard
 
 Livereload を利用する場合には普段使っているブラウザ用の拡張を別途インストールすること。
