@@ -36,6 +36,7 @@ packages = %w{
   php5 php5-mysql php5-pgsql php5-curl php5-cli php5-imagick php5-xdebug php5-mcrypt php-pear
   openjdk-7-jdk nodejs
   git subversion apache2-utils apache2.2-bin apache2.2-common apache2-mpm-prefork libapache2-mod-php5
+  libxml2-dev libxslt-dev
   mysql-server postgresql curl imagemagick
   lv zsh tree axel expect make g++
   global w3m aspell exuberant-ctags wamerican-huge stunnel4
