@@ -89,7 +89,11 @@ end
 end
 
 execute "install npm packages" do
-  command "npm -g install jshint grunt-cli"
+  command "npm -g install jshint grunt-cli gfms"
+end
+
+execute "install easy_install packages" do
+  command "easy_install -U sphinx sphinxcontrib-phpdomain"
 end
 
 # Install pear packages
