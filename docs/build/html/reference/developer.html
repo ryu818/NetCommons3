@@ -52,23 +52,9 @@
   <div class="section" id="id1">
 <h1>デベロッパー向けマニュアル<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="id2">
-<h2>インストール<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
-<p>Host:</p>
-<div class="highlight-python"><pre>$ vagrant up
-$ bundle exec guard</pre>
-</div>
-<p>Livereload を利用する場合には普段使っているブラウザ用の拡張を別途インストールすること。</p>
-<ul class="simple">
-<li>Firefox<ul>
-<li><a class="reference external" href="https://addons.mozilla.org/en-US/firefox/addon/livereload/">https://addons.mozilla.org/en-US/firefox/addon/livereload/</a></li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="section" id="id3">
-<h2>概要<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
-<p>guard 管理下におかれているコード、テスト、ドキュメントに変更があると必要に応じてビルドが走るので、エラーが発生していないことを必ず確認すること。
-その上でローカルで十分動作確認が済んだものを push するものとする。</p>
+<h2>概要<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<p>guard 管理下におかれているコード、テスト、ドキュメントに変更があると必要に応じてローカルでビルドが走るよう設定してあるので、エラーが発生していないことを必ず確認すること。
+その上で十分動作確認が済んだものを push するものとする。</p>
 <p>現時点で guard 管理している代表的なものは以下の通り。</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -100,6 +86,41 @@ $ bundle exec guard</pre>
 </tbody>
 </table>
 </div>
+<div class="section" id="id3">
+<h2>インストール<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<p>Host:</p>
+<div class="highlight-python"><pre>$ vagrant up
+$ bundle exec guard</pre>
+</div>
+<p>Livereload を利用する場合には普段使っているブラウザ用の拡張を別途インストールすること。</p>
+<ul class="simple">
+<li>Firefox<ul>
+<li><a class="reference external" href="https://addons.mozilla.org/en-US/firefox/addon/livereload/">https://addons.mozilla.org/en-US/firefox/addon/livereload/</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="vhosts">
+<h2>vhosts<a class="headerlink" href="#vhosts" title="Permalink to this headline">¶</a></h2>
+<p>vm 起動後、guest には下記 vhosts が作成され、動作の確認ができます。</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="46%" />
+<col width="54%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>url</td>
+<td>用途</td>
+</tr>
+<tr class="row-even"><td><a class="reference external" href="http://www.netcommons.local:8080">http://www.netcommons.local:8080</a></td>
+<td>netcommons 本体</td>
+</tr>
+<tr class="row-odd"><td><a class="reference external" href="http://docs.netcommons.local:8080">http://docs.netcommons.local:8080</a></td>
+<td>ドキュメント管理</td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 
 
@@ -111,8 +132,9 @@ $ bundle exec guard</pre>
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">デベロッパー向けマニュアル</a><ul>
-<li><a class="reference internal" href="#id2">インストール</a></li>
-<li><a class="reference internal" href="#id3">概要</a></li>
+<li><a class="reference internal" href="#id2">概要</a></li>
+<li><a class="reference internal" href="#id3">インストール</a></li>
+<li><a class="reference internal" href="#vhosts">vhosts</a></li>
 </ul>
 </li>
 </ul>
