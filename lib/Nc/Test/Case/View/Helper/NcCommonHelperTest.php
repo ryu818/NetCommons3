@@ -16,7 +16,7 @@ class NcCommonHelperTest extends CakeTestCase {
  */
 	public function setUp() {
 		parent::setUp();
-		Configure::write('App' ,
+		Configure::write('App',
 			array (
 				'imageBaseUrl' => 'img/',
 				'cssBaseUrl' => 'css/',
@@ -47,7 +47,7 @@ class NcCommonHelperTest extends CakeTestCase {
 
 /**
  * testExplodeControllerAction method
- *
+ * 
  * @return void
  */
 	public function testExplodeControllerAction() {

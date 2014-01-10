@@ -20,9 +20,8 @@ class NcPageTest extends CakeTestCase {
 		'NcCommunityLang',
 		'NcSession',
 		'NcConfig',
-		'NcRevision',
-	);
-
+		'NcRevision'
+		);
 
 /**
  * setUp method
@@ -30,12 +29,13 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function setUp() {
-		parent::setUp();;
+		parent::setUp();
 		$this->Page = ClassRegistry::init('Page');
-		Configure::write('Session', array(
-			'defaults' => 'php'
-		));
-
+		Configure::write('Session',
+			array(
+				'defaults' => 'php'
+			)
+		);
 	}
 
 /**
@@ -54,7 +54,6 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testGetDefaultData() {
-
 		//パブリックスペースのページを作るとき用の基本データ
 		$result = array (
 			'Page' =>
@@ -81,7 +80,7 @@ class NcPageTest extends CakeTestCase {
 		);
 
 		$ck = $this->Page->getDefaultData(NC_SPACE_TYPE_PUBLIC);
-		$this->assertEqual($result , $ck);
+		$this->assertEqual($result, $ck);
 
 		//マイポータルのページを作るとき用の基本データ
 		$result = array (
@@ -108,7 +107,7 @@ class NcPageTest extends CakeTestCase {
 			)
 		);
 		$ck = $this->Page->getDefaultData(NC_SPACE_TYPE_MYPORTAL);
-		$this->assertEqual($result , $ck);
+		$this->assertEqual($result, $ck);
 
 		//プライベートスペース（マイルーム）
 		$result = array (
@@ -135,7 +134,7 @@ class NcPageTest extends CakeTestCase {
 			),
 		);
 		$ck = $this->Page->getDefaultData(NC_SPACE_TYPE_PRIVATE );
-		$this->assertEqual($result , $ck);
+		$this->assertEqual($result, $ck);
 
 		//コミュニティー
 		$result = array (
@@ -162,8 +161,7 @@ class NcPageTest extends CakeTestCase {
 			),
 		);
 		$ck = $this->Page->getDefaultData(NC_SPACE_TYPE_GROUP);
-		$this->assertEqual($result , $ck);
-
+		$this->assertEqual($result, $ck);
 	}
 
 /**
@@ -172,12 +170,11 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testFindAuthById() {
-
 		//Page.idを指定しなかった場合
 		//falseよりもnullが適切な気もする。
 		$pageIdArr = array();
 		$ck = $this->Page->findAuthById($pageIdArr);
-		$this->assertEqual($ck , false);
+		$this->assertEqual($ck, false);
 
 		$pageIdArr = array(1);
 		$ck = $this->Page->findAuthById($pageIdArr);
@@ -204,51 +201,50 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '1',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '0',
 					'modified_user_name' => '',
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 				'PageAuthority' =>
 				array (
-					'id' => NULL,
-					'hierarchy' => NULL,
+					'id' => null,
+					'hierarchy' => null,
 				),
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//存在しないページ
 		$pageIdArr = array(99999999999);
 		$ck = $this->Page->findAuthById($pageIdArr);
-		$this->assertEqual($ck , false);
-
+		$this->assertEqual($ck, false);
 
 		//$userIdを指定し存在するページを指定した
 		$pageIdArr = array(16);
 		$userId = 1;
-		$ck = $this->Page->findAuthById($pageIdArr , $userId);
+		$ck = $this->Page->findAuthById($pageIdArr, $userId);
 		$ans = array (
 			16 =>
 			array (
@@ -272,10 +268,10 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '4',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
 					'created' => '2013-06-24 06:59:37',
@@ -322,23 +318,21 @@ class NcPageTest extends CakeTestCase {
 				),
 			),
 		);
-		$this->assertEqual($ck , $ans);
-
+		$this->assertEqual($ck, $ans);
 		//存在しない$userIdを指定し、存在するページを指定した
 		//TODO : 存在しないUser.idを指定した場合の処理が未考慮。Noticeエラーが発生してしまう。調査し考慮した実相に変更する。
 		//$pageIdArr = array(16);
 		//$userId = 99999999999;
-		//$ck = $this->Page->findAuthById($pageIdArr , $userId);
+		//$ck = $this->Page->findAuthById($pageIdArr, $userId);
 
 		$pageIdArr = array(16);
 		$userId = 1;
 		$spaceType = NC_SPACE_TYPE_PUBLIC;
 		//$spaceType = NC_SPACE_TYPE_GROUP;
-		$ck = $this->Page->findAuthById($pageIdArr , $userId , $spaceType);
+		$ck = $this->Page->findAuthById($pageIdArr, $userId, $spaceType);
 		$ans = array();
 		$ans[16] = array (
-			'Page' =>
-			array (
+			'Page' => array (
 				'id' => '16',
 				'root_id' => '16',
 				'parent_id' => '4',
@@ -357,10 +351,10 @@ class NcPageTest extends CakeTestCase {
 				'space_type' => '4',
 				'show_count' => '0',
 				'display_flag' => '1',
-				'display_from_date' => NULL,
-				'display_to_date' => NULL,
+				'display_from_date' => null,
+				'display_to_date' => null,
 				'display_apply_subpage' => '1',
-				'display_reverse_permalink' => NULL,
+				'display_reverse_permalink' => null,
 				'is_approved' => '1',
 				'lock_authority_id' => '0',
 				'created' => '2013-06-24 06:59:37',
@@ -400,14 +394,14 @@ class NcPageTest extends CakeTestCase {
 				),
 				'Revision' =>
 				array (
-					'id' => NULL,
-					'group_id' => NULL,
-					'content' => NULL,
-					'revision_name' => NULL,
-					'is_approved_pointer' => NULL,
-					'created' => NULL,
-					'created_user_id' => NULL,
-					'created_user_name' => NULL,
+					'id' => null,
+					'group_id' => null,
+					'content' => null,
+					'revision_name' => null,
+					'is_approved_pointer' => null,
+					'created' => null,
+					'created_user_id' => null,
+					'created_user_name' => null,
 				),
 			),
 			'Authority' =>
@@ -422,16 +416,14 @@ class NcPageTest extends CakeTestCase {
 				'display_participants_editing' => true,
 			),
 		);
-		$this->assertEqual($ck , $ans);
-
+		$this->assertEqual($ck, $ans);
 		//$pageIdArrがarrayではなかった場合 $type:NC_SPACE_TYPE_PUBLIC
 		$pageIdArr = 16;
 		$userId = 1;
 		$spaceType = NC_SPACE_TYPE_PUBLIC;
-		$ck = $this->Page->findAuthById($pageIdArr , $userId , $spaceType);
+		$ck = $this->Page->findAuthById($pageIdArr, $userId, $spaceType);
 		$ans = array (
-			'Page' =>
-			array (
+			'Page' => array (
 				'id' => '16',
 				'root_id' => '16',
 				'parent_id' => '4',
@@ -450,10 +442,10 @@ class NcPageTest extends CakeTestCase {
 				'space_type' => '4',
 				'show_count' => '0',
 				'display_flag' => '1',
-				'display_from_date' => NULL,
-				'display_to_date' => NULL,
+				'display_from_date' => null,
+				'display_to_date' => null,
 				'display_apply_subpage' => '1',
-				'display_reverse_permalink' => NULL,
+				'display_reverse_permalink' => null,
 				'is_approved' => '1',
 				'lock_authority_id' => '0',
 				'created' => '2013-06-24 06:59:37',
@@ -493,14 +485,14 @@ class NcPageTest extends CakeTestCase {
 				),
 				'Revision' =>
 				array (
-					'id' => NULL,
-					'group_id' => NULL,
-					'content' => NULL,
-					'revision_name' => NULL,
-					'is_approved_pointer' => NULL,
-					'created' => NULL,
-					'created_user_id' => NULL,
-					'created_user_name' => NULL,
+					'id' => null,
+					'group_id' => null,
+					'content' => null,
+					'revision_name' => null,
+					'is_approved_pointer' => null,
+					'created' => null,
+					'created_user_id' => null,
+					'created_user_name' => null,
 				),
 			),
 			'Authority' =>
@@ -515,13 +507,13 @@ class NcPageTest extends CakeTestCase {
 				'display_participants_editing' => true,
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//$pageIdArrがarrayではなかった場合 $type :NC_SPACE_TYPE_MYPORTAL
 		$pageIdArr = 16;
 		$userId = 1;
 		$spaceType = NC_SPACE_TYPE_MYPORTAL;
-		$ck = $this->Page->findAuthById($pageIdArr , $userId , $spaceType);
+		$ck = $this->Page->findAuthById($pageIdArr, $userId, $spaceType);
 		$ans = array (
 			'Page' =>
 			array (
@@ -543,10 +535,10 @@ class NcPageTest extends CakeTestCase {
 				'space_type' => '4',
 				'show_count' => '0',
 				'display_flag' => '1',
-				'display_from_date' => NULL,
-				'display_to_date' => NULL,
+				'display_from_date' => null,
+				'display_to_date' => null,
 				'display_apply_subpage' => '1',
-				'display_reverse_permalink' => NULL,
+				'display_reverse_permalink' => null,
 				'is_approved' => '1',
 				'lock_authority_id' => '0',
 				'created' => '2013-06-24 06:59:37',
@@ -586,14 +578,14 @@ class NcPageTest extends CakeTestCase {
 				),
 				'Revision' =>
 				array (
-					'id' => NULL,
-					'group_id' => NULL,
-					'content' => NULL,
-					'revision_name' => NULL,
-					'is_approved_pointer' => NULL,
-					'created' => NULL,
-					'created_user_id' => NULL,
-					'created_user_name' => NULL,
+					'id' => null,
+					'group_id' => null,
+					'content' => null,
+					'revision_name' => null,
+					'is_approved_pointer' => null,
+					'created' => null,
+					'created_user_id' => null,
+					'created_user_name' => null,
 				),
 			),
 			'Authority' =>
@@ -608,13 +600,13 @@ class NcPageTest extends CakeTestCase {
 				'display_participants_editing' => true,
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//$pageIdArrがarrayではなかった場合 $type :NC_SPACE_TYPE_PRIVATE
 		$pageIdArr = 16;
 		$userId = 1;
 		$spaceType = NC_SPACE_TYPE_PRIVATE;
-		$ck = $this->Page->findAuthById($pageIdArr , $userId , $spaceType);
+		$ck = $this->Page->findAuthById($pageIdArr, $userId, $spaceType);
 		$ans = array (
 			'Page' =>
 			array (
@@ -636,10 +628,10 @@ class NcPageTest extends CakeTestCase {
 				'space_type' => '4',
 				'show_count' => '0',
 				'display_flag' => '1',
-				'display_from_date' => NULL,
-				'display_to_date' => NULL,
+				'display_from_date' => null,
+				'display_to_date' => null,
 				'display_apply_subpage' => '1',
-				'display_reverse_permalink' => NULL,
+				'display_reverse_permalink' => null,
 				'is_approved' => '1',
 				'lock_authority_id' => '0',
 				'created' => '2013-06-24 06:59:37',
@@ -679,14 +671,14 @@ class NcPageTest extends CakeTestCase {
 				),
 				'Revision' =>
 				array (
-					'id' => NULL,
-					'group_id' => NULL,
-					'content' => NULL,
-					'revision_name' => NULL,
-					'is_approved_pointer' => NULL,
-					'created' => NULL,
-					'created_user_id' => NULL,
-					'created_user_name' => NULL,
+					'id' => null,
+					'group_id' => null,
+					'content' => null,
+					'revision_name' => null,
+					'is_approved_pointer' => null,
+					'created' => null,
+					'created_user_id' => null,
+					'created_user_name' => null,
 				),
 			),
 			'Authority' =>
@@ -701,7 +693,7 @@ class NcPageTest extends CakeTestCase {
 				'display_participants_editing' => true,
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//$pageIdArrがarrayではなかった場合 $type :NC_SPACE_TYPE_GROUP コミュニティの情報が充実する。
 		//$space_typeの差では、NC_SPACE_TYPE_GROUPとそれ以外でデータの内容が異なる。
@@ -709,7 +701,7 @@ class NcPageTest extends CakeTestCase {
 		$pageIdArr = 16;
 		$userId = 1;
 		$spaceType = NC_SPACE_TYPE_GROUP;
-		$ck = $this->Page->findAuthById($pageIdArr , $userId , $spaceType);
+		$ck = $this->Page->findAuthById($pageIdArr, $userId, $spaceType);
 		$ans = array (
 			'Page' =>
 			array (
@@ -731,10 +723,10 @@ class NcPageTest extends CakeTestCase {
 				'space_type' => '4',
 				'show_count' => '0',
 				'display_flag' => '1',
-				'display_from_date' => NULL,
-				'display_to_date' => NULL,
+				'display_from_date' => null,
+				'display_to_date' => null,
 				'display_apply_subpage' => '1',
-				'display_reverse_permalink' => NULL,
+				'display_reverse_permalink' => null,
 				'is_approved' => '1',
 				'lock_authority_id' => '0',
 				'created' => '2013-06-24 06:59:37',
@@ -780,7 +772,7 @@ class NcPageTest extends CakeTestCase {
 				'display_participants_editing' => true,
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 	}
 
 /**
@@ -789,9 +781,8 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testFindBreadcrumb() {
-
 		//パンくずリスト用の配列をつくる
-		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>1)));
+		$page = $this->Page->find('first', array('conditions' => array('Page.id' => 1)));
 		$ck = $this->Page->findBreadcrumb($page);
 		$ans = array (
 			0 =>
@@ -816,30 +807,30 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '1',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '0',
 					'modified_user_name' => '',
 				),
 				'PageAuthority' =>
 				array (
-					'hierarchy' => NULL,
+					'hierarchy' => null,
 				),
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//User.idはnull
-		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>1)));
-		$ck = $this->Page->findBreadcrumb($page , null);
+		$page = $this->Page->find('first', array('conditions' => array('Page.id' => 1)));
+		$ck = $this->Page->findBreadcrumb($page, null);
 		$ans = array (
 			0 =>
 			array (
@@ -863,29 +854,29 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '1',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '0',
 					'modified_user_name' => '',
 				),
 				'PageAuthority' =>
 				array (
-					'hierarchy' => NULL,
+					'hierarchy' => null,
 				),
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//コミュニティだった場合
-		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>16)));
+		$page = $this->Page->find('first', array('conditions' => array('Page.id' => 16)));
 		$ck = $this->Page->findBreadcrumb($page);
 		$ans = array (
 			0 =>
@@ -910,10 +901,10 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '4',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
 					'created' => '2013-06-24 06:59:37',
@@ -925,7 +916,7 @@ class NcPageTest extends CakeTestCase {
 				),
 				'PageAuthority' =>
 				array (
-					'hierarchy' => NULL,
+					'hierarchy' => null,
 				),
 				'CommunityLang' =>
 				array (
@@ -946,24 +937,24 @@ class NcPageTest extends CakeTestCase {
 					),
 					'Revision' =>
 					array (
-						'id' => NULL,
-						'group_id' => NULL,
-						'content' => NULL,
-						'revision_name' => NULL,
-						'is_approved_pointer' => NULL,
-						'created' => NULL,
-						'created_user_id' => NULL,
-						'created_user_name' => NULL,
+						'id' => null,
+						'group_id' => null,
+						'content' => null,
+						'revision_name' => null,
+						'is_approved_pointer' => null,
+						'created' => null,
+						'created_user_id' => null,
+						'created_user_name' => null,
 					),
 				),
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//コミュニティだった場合
-		$page   = $this->Page->find('first' , array('conditions'=>array('Page.id'=>16)));
+		$page = $this->Page->find('first', array('conditions' => array('Page.id' => 16)));
 		$userId = 2;
-		$ck = $this->Page->findBreadcrumb($page , $userId);
+		$ck = $this->Page->findBreadcrumb($page, $userId);
 		$ans = array (
 			0 =>
 			array (
@@ -987,10 +978,10 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '4',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
 					'created' => '2013-06-24 06:59:37',
@@ -1002,7 +993,7 @@ class NcPageTest extends CakeTestCase {
 				),
 				'PageAuthority' =>
 				array (
-					'hierarchy' => NULL,
+					'hierarchy' => null,
 				),
 				'CommunityLang' =>
 				array (
@@ -1023,23 +1014,23 @@ class NcPageTest extends CakeTestCase {
 					),
 					'Revision' =>
 					array (
-						'id' => NULL,
-						'group_id' => NULL,
-						'content' => NULL,
-						'revision_name' => NULL,
-						'is_approved_pointer' => NULL,
-						'created' => NULL,
-						'created_user_id' => NULL,
-						'created_user_name' => NULL,
+						'id' => null,
+						'group_id' => null,
+						'content' => null,
+						'revision_name' => null,
+						'is_approved_pointer' => null,
+						'created' => null,
+						'created_user_id' => null,
+						'created_user_name' => null,
 					),
 				),
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
-		$page   = $this->Page->find('first' , array('conditions'=>array('Page.id'=>11)));
+		$page = $this->Page->find('first', array('conditions' => array('Page.id' => 11)));
 		$userId = 2;
-		$ck = $this->Page->findBreadcrumb($page , $userId);
+		$ck = $this->Page->findBreadcrumb($page, $userId);
 		$ans = array (
 			0 =>
 			array (
@@ -1063,31 +1054,31 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '3',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
 				'PageAuthority' =>
 				array (
-					'hierarchy' => NULL,
+					'hierarchy' => null,
 				),
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//存在しないuserId
-		$page   = $this->Page->find('first' , array('conditions'=>array('Page.id'=>11)));
+		$page = $this->Page->find('first', array('conditions' => array('Page.id' => 11)));
 		$userId = 999999999999;
-		$ck = $this->Page->findBreadcrumb($page , $userId);
+		$ck = $this->Page->findBreadcrumb($page, $userId);
 		$ans = array (
 			0 =>
 			array (
@@ -1111,31 +1102,31 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '3',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
 				'PageAuthority' =>
 				array (
-					'hierarchy' => NULL,
+					'hierarchy' => null,
 				),
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//$userIdが文字列（パラメータ異常系）省略した場合と同じ値が戻る
-		$page   = $this->Page->find('first' , array('conditions'=>array('Page.id'=>11)));
+		$page = $this->Page->find('first', array('conditions' => array('Page.id' => 11)));
 		$userId = 'AAAAAAA';
-		$ck = $this->Page->findBreadcrumb($page , $userId);
+		$ck = $this->Page->findBreadcrumb($page, $userId);
 		$ans = array (
 			0 =>
 			array (
@@ -1159,30 +1150,30 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '3',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
 				'PageAuthority' =>
 				array (
-					'hierarchy' => NULL,
+					'hierarchy' => null,
 				),
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//Pageの1レコード分の配列が格納されていなかった場合が未考慮 Notice Error
 		//TODO : パラメータ異常系の考慮
-		//$ck = $this->Page->findBreadcrumb(array('Page'=>array()));
+		//$ck = $this->Page->findBreadcrumb(array('Page' => array()));
 		//var_export($ck);
 	}
 
@@ -1215,42 +1206,42 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '1',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
 				'PageUserLink' =>
 				array (
-					'authority_id' => NULL,
+					'authority_id' => null,
 				),
 				'PageAuthority' =>
 				array (
-					'id' => NULL,
-					'myportal_use_flag' => NULL,
-					'private_use_flag' => NULL,
-					'hierarchy' => NULL,
+					'id' => null,
+					'myportal_use_flag' => null,
+					'private_use_flag' => null,
+					'hierarchy' => null,
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 			),
 			11 =>
@@ -1274,47 +1265,46 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '3',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
 				'PageUserLink' =>
 				array (
-					'authority_id' => NULL,
+					'authority_id' => null,
 				),
 				'PageAuthority' =>
 				array (
-					'id' => NULL,
-					'myportal_use_flag' => NULL,
-					'private_use_flag' => NULL,
-					'hierarchy' => NULL,
+					'id' => null,
+					'myportal_use_flag' => null,
+					'private_use_flag' => null,
+					'hierarchy' => null,
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 			),
 		);
 		//TODO 先に testFindViewableのテストをしてから書く。
-
 	}
 
 /**
@@ -1323,8 +1313,6 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testFindViewable() {
-
-
 		$result = array (
 			9 =>
 			array (
@@ -1348,42 +1336,42 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '1',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
 				'PageUserLink' =>
 				array (
-					'authority_id' => NULL,
+					'authority_id' => null,
 				),
 				'PageAuthority' =>
 				array (
-					'id' => NULL,
-					'myportal_use_flag' => NULL,
-					'private_use_flag' => NULL,
-					'hierarchy' => NULL,
+					'id' => null,
+					'myportal_use_flag' => null,
+					'private_use_flag' => null,
+					'hierarchy' => null,
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 			),
 			11 =>
@@ -1408,42 +1396,42 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '3',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
 				'PageUserLink' =>
 				array (
-					'authority_id' => NULL,
+					'authority_id' => null,
 				),
 				'PageAuthority' =>
 				array (
-					'id' => NULL,
-					'myportal_use_flag' => NULL,
-					'private_use_flag' => NULL,
-					'hierarchy' => NULL,
+					'id' => null,
+					'myportal_use_flag' => null,
+					'private_use_flag' => null,
+					'hierarchy' => null,
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 			),
 			16 =>
@@ -1468,10 +1456,10 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '4',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
 					'created' => '2013-06-24 06:59:37',
@@ -1483,14 +1471,14 @@ class NcPageTest extends CakeTestCase {
 				),
 				'PageUserLink' =>
 				array (
-					'authority_id' => NULL,
+					'authority_id' => null,
 				),
 				'PageAuthority' =>
 				array (
-					'id' => NULL,
-					'myportal_use_flag' => NULL,
-					'private_use_flag' => NULL,
-					'hierarchy' => NULL,
+					'id' => null,
+					'myportal_use_flag' => null,
+					'private_use_flag' => null,
+					'hierarchy' => null,
 				),
 				'Community' =>
 				array (
@@ -1507,11 +1495,11 @@ class NcPageTest extends CakeTestCase {
 				),
 			),
 		);
-		$ck = $this->Page->findViewable('all' , 'all');
+		$ck = $this->Page->findViewable('all', 'all');
 		//var_export($ck);
-		$this->assertEqual($result , $ck);
+		$this->assertEqual($result, $ck);
 
-		$ck = $this->Page->findViewable('all' , 1);
+		$ck = $this->Page->findViewable('all', 1);
 		$result = array (
 			9 =>
 			array (
@@ -1535,16 +1523,16 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '1',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
@@ -1561,16 +1549,16 @@ class NcPageTest extends CakeTestCase {
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 				'Authority' =>
 				array (
@@ -1606,16 +1594,16 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '3',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
@@ -1632,16 +1620,16 @@ class NcPageTest extends CakeTestCase {
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 				'Authority' =>
 				array (
@@ -1677,10 +1665,10 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '4',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
 					'created' => '2013-06-24 06:59:37',
@@ -1728,12 +1716,12 @@ class NcPageTest extends CakeTestCase {
 			),
 		);
 		//var_export($ck);
-		$this->assertEqual($result , $ck);
+		$this->assertEqual($result, $ck);
 
 		//存在しないUser.idに対しての挙動が未考慮
 		//TODO:仕様検討
 		/*
-		$ck = $this->Page->findViewable('all' , 200);
+		$ck = $this->Page->findViewable('all', 200);
 		$result = array (
 			9 =>
 			array (
@@ -1757,42 +1745,42 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '1',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
 				'PageUserLink' =>
 				array (
-					'authority_id' => NULL,
+					'authority_id' => null,
 				),
 				'PageAuthority' =>
 				array (
-					'id' => NULL,
-					'myportal_use_flag' => NULL,
-					'private_use_flag' => NULL,
-					'hierarchy' => NULL,
+					'id' => null,
+					'myportal_use_flag' => null,
+					'private_use_flag' => null,
+					'hierarchy' => null,
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 				'Authority' =>
 				array (
@@ -1828,42 +1816,42 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '3',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
 				'PageUserLink' =>
 				array (
-					'authority_id' => NULL,
+					'authority_id' => null,
 				),
 				'PageAuthority' =>
 				array (
-					'id' => NULL,
-					'myportal_use_flag' => NULL,
-					'private_use_flag' => NULL,
-					'hierarchy' => NULL,
+					'id' => null,
+					'myportal_use_flag' => null,
+					'private_use_flag' => null,
+					'hierarchy' => null,
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 				'Authority' =>
 				array (
@@ -1878,15 +1866,15 @@ class NcPageTest extends CakeTestCase {
 				),
 			),
 		);
-		$this->assertEqual($result , $ck);
+		$this->assertEqual($result, $ck);
         */
 
 		$ck = $this->Page->findViewable(
-			'all' ,
-			2 ,
+			'all',
+			2,
 			array(
-				'conditions'=>array('Page.id'=>9)
-			) ,
+				'conditions' => array('Page.id' => 9)
+			),
 			array()
 		);
 		$result = array (
@@ -1912,42 +1900,42 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '1',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
 				'PageUserLink' =>
 				array (
-					'authority_id' => NULL,
+					'authority_id' => null,
 				),
 				'PageAuthority' =>
 				array (
-					'id' => NULL,
-					'myportal_use_flag' => NULL,
-					'private_use_flag' => NULL,
-					'hierarchy' => NULL,
+					'id' => null,
+					'myportal_use_flag' => null,
+					'private_use_flag' => null,
+					'hierarchy' => null,
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 				'Authority' =>
 				array (
@@ -1962,17 +1950,17 @@ class NcPageTest extends CakeTestCase {
 				),
 			),
 		);
-		$this->assertEqual($result , $ck);
+		$this->assertEqual($result, $ck);
 
 		//第1引数がallの場合は、第3引数の'fields'で指定した条件は無視される。
 		//'conditions'はそのまま有効
 		$ck = $this->Page->findViewable(
-			'all' ,
-			2 ,
+			'all',
+			2,
 			array(
-				'conditions'=>array('Page.id'=>9),
-				'fields' => array('Page.id' , 'Page.thread_num')
-			) ,
+				'conditions' => array('Page.id' => 9),
+				'fields' => array('Page.id', 'Page.thread_num')
+			),
 			array()
 		);
 		$result = array (
@@ -1998,42 +1986,42 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '1',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
 				'PageUserLink' =>
 				array (
-					'authority_id' => NULL,
+					'authority_id' => null,
 				),
 				'PageAuthority' =>
 				array (
-					'id' => NULL,
-					'myportal_use_flag' => NULL,
-					'private_use_flag' => NULL,
-					'hierarchy' => NULL,
+					'id' => null,
+					'myportal_use_flag' => null,
+					'private_use_flag' => null,
+					'hierarchy' => null,
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 				'Authority' =>
 				array (
@@ -2048,15 +2036,15 @@ class NcPageTest extends CakeTestCase {
 				),
 			),
 		);
-		$this->assertEqual($result , $ck);
+		$this->assertEqual($result, $ck);
 
 		$ck = $this->Page->findViewable(
-			'all' ,
-			2 ,
-			array() ,
+			'all',
+			2,
+			array(),
 			array(
-				'isShowAllCommunity'=>true
-			)  //公開コミュニティーを含む閲覧可能なすべてのコミュニティー
+				'isShowAllCommunity' => true
+			) //公開コミュニティーを含む閲覧可能なすべてのコミュニティー
 		);
 		$result = array (
 			9 =>
@@ -2081,42 +2069,42 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '1',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
 				'PageUserLink' =>
 				array (
-					'authority_id' => NULL,
+					'authority_id' => null,
 				),
 				'PageAuthority' =>
 				array (
-					'id' => NULL,
-					'myportal_use_flag' => NULL,
-					'private_use_flag' => NULL,
-					'hierarchy' => NULL,
+					'id' => null,
+					'myportal_use_flag' => null,
+					'private_use_flag' => null,
+					'hierarchy' => null,
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 				'Authority' =>
 				array (
@@ -2152,42 +2140,42 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '3',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
 				'PageUserLink' =>
 				array (
-					'authority_id' => NULL,
+					'authority_id' => null,
 				),
 				'PageAuthority' =>
 				array (
-					'id' => NULL,
-					'myportal_use_flag' => NULL,
-					'private_use_flag' => NULL,
-					'hierarchy' => NULL,
+					'id' => null,
+					'myportal_use_flag' => null,
+					'private_use_flag' => null,
+					'hierarchy' => null,
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 				'Authority' =>
 				array (
@@ -2202,14 +2190,14 @@ class NcPageTest extends CakeTestCase {
 				),
 			),
 		);
-		$this->assertEqual($result , $ck);
+		$this->assertEqual($result, $ck);
 
 		$ck = $this->Page->findViewable(
-			'all' ,
-			2 ,
-			array() ,
+			'all',
+			2,
+			array(),
 			array(
-				'isShowAllCommunity'=>false  //参加コミュニティーのみ
+				'isShowAllCommunity' => false //参加コミュニティーのみ
 			)
 		);
 		//var_export($ck);
@@ -2236,42 +2224,42 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '1',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
 				'PageUserLink' =>
 				array (
-					'authority_id' => NULL,
+					'authority_id' => null,
 				),
 				'PageAuthority' =>
 				array (
-					'id' => NULL,
-					'myportal_use_flag' => NULL,
-					'private_use_flag' => NULL,
-					'hierarchy' => NULL,
+					'id' => null,
+					'myportal_use_flag' => null,
+					'private_use_flag' => null,
+					'hierarchy' => null,
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 				'Authority' =>
 				array (
@@ -2307,42 +2295,42 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '3',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
 				'PageUserLink' =>
 				array (
-					'authority_id' => NULL,
+					'authority_id' => null,
 				),
 				'PageAuthority' =>
 				array (
-					'id' => NULL,
-					'myportal_use_flag' => NULL,
-					'private_use_flag' => NULL,
-					'hierarchy' => NULL,
+					'id' => null,
+					'myportal_use_flag' => null,
+					'private_use_flag' => null,
+					'hierarchy' => null,
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 				'Authority' =>
 				array (
@@ -2357,15 +2345,15 @@ class NcPageTest extends CakeTestCase {
 				),
 			),
 		);
-		$this->assertEqual($result , $ck);
+		$this->assertEqual($result, $ck);
 
 		//isRoom
 		$ck = $this->Page->findViewable(
-			'all' ,
-			2 ,
-			array() ,
+			'all',
+			2,
+			array(),
 			array(
-				'isRoom'=>true  //ルームのみ取得するかどうか。default false
+				'isRoom' => true //ルームのみ取得するかどうか。default false
 			)
 		);
 		$result = array (
@@ -2391,42 +2379,42 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '1',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
 				'PageUserLink' =>
 				array (
-					'authority_id' => NULL,
+					'authority_id' => null,
 				),
 				'PageAuthority' =>
 				array (
-					'id' => NULL,
-					'myportal_use_flag' => NULL,
-					'private_use_flag' => NULL,
-					'hierarchy' => NULL,
+					'id' => null,
+					'myportal_use_flag' => null,
+					'private_use_flag' => null,
+					'hierarchy' => null,
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 				'Authority' =>
 				array (
@@ -2462,42 +2450,42 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '3',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
 				'PageUserLink' =>
 				array (
-					'authority_id' => NULL,
+					'authority_id' => null,
 				),
 				'PageAuthority' =>
 				array (
-					'id' => NULL,
-					'myportal_use_flag' => NULL,
-					'private_use_flag' => NULL,
-					'hierarchy' => NULL,
+					'id' => null,
+					'myportal_use_flag' => null,
+					'private_use_flag' => null,
+					'hierarchy' => null,
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 				'Authority' =>
 				array (
@@ -2512,33 +2500,32 @@ class NcPageTest extends CakeTestCase {
 				),
 			),
 		);
-		$this->assertEqual($result , $ck);
-
+		$this->assertEqual($result, $ck);
 
 		//listは配列をつくる。
 		//'fields'で指定された材料で配列をつくる
 		$ck = $this->Page->findViewable(
-			'list' ,
-			2 ,
+			'list',
+			2,
 			array(
 				'fields' => array(
-					'Page.id' ,
+					'Page.id',
 					'Page.page_name'
 				)
-			) ,
+			),
 			array()
 		);
 		$result = array (
 			9 => 'Public room',
 			11 => 'Private room of admin',
 		);
-		$this->assertEqual($result , $ck);
+		$this->assertEqual($result, $ck);
 
 		//menu
 		$ck = $this->Page->findViewable(
-			'menu' ,
-			1 ,
-			array() ,
+			'menu',
+			1,
+			array(),
 			array()
 		);
 		$result = array (
@@ -2570,16 +2557,16 @@ class NcPageTest extends CakeTestCase {
 								'space_type' => '1',
 								'show_count' => '0',
 								'display_flag' => '1',
-								'display_from_date' => NULL,
-								'display_to_date' => NULL,
+								'display_from_date' => null,
+								'display_to_date' => null,
 								'display_apply_subpage' => '1',
-								'display_reverse_permalink' => NULL,
+								'display_reverse_permalink' => null,
 								'is_approved' => '1',
 								'lock_authority_id' => '0',
-								'created' => NULL,
+								'created' => null,
 								'created_user_id' => '0',
 								'created_user_name' => '',
-								'modified' => NULL,
+								'modified' => null,
 								'modified_user_id' => '1',
 								'modified_user_name' => '',
 								'visibility_flag' => 1,
@@ -2597,16 +2584,16 @@ class NcPageTest extends CakeTestCase {
 							),
 							'Community' =>
 							array (
-								'publication_range_flag' => NULL,
-								'participate_force_all_users' => NULL,
-								'participate_flag' => NULL,
-								'is_upload' => NULL,
-								'photo' => NULL,
+								'publication_range_flag' => null,
+								'participate_force_all_users' => null,
+								'participate_flag' => null,
+								'is_upload' => null,
+								'photo' => null,
 							),
 							'CommunityLang' =>
 							array (
-								'community_name' => NULL,
-								'summary' => NULL,
+								'community_name' => null,
+								'summary' => null,
 							),
 							'Authority' =>
 							array (
@@ -2651,16 +2638,16 @@ class NcPageTest extends CakeTestCase {
 								'space_type' => '3',
 								'show_count' => '0',
 								'display_flag' => '1',
-								'display_from_date' => NULL,
-								'display_to_date' => NULL,
+								'display_from_date' => null,
+								'display_to_date' => null,
 								'display_apply_subpage' => '1',
-								'display_reverse_permalink' => NULL,
+								'display_reverse_permalink' => null,
 								'is_approved' => '1',
 								'lock_authority_id' => '0',
-								'created' => NULL,
+								'created' => null,
 								'created_user_id' => '0',
 								'created_user_name' => '',
-								'modified' => NULL,
+								'modified' => null,
 								'modified_user_id' => '1',
 								'modified_user_name' => '',
 								'visibility_flag' => 1,
@@ -2678,16 +2665,16 @@ class NcPageTest extends CakeTestCase {
 							),
 							'Community' =>
 							array (
-								'publication_range_flag' => NULL,
-								'participate_force_all_users' => NULL,
-								'participate_flag' => NULL,
-								'is_upload' => NULL,
-								'photo' => NULL,
+								'publication_range_flag' => null,
+								'participate_force_all_users' => null,
+								'participate_flag' => null,
+								'is_upload' => null,
+								'photo' => null,
 							),
 							'CommunityLang' =>
 							array (
-								'community_name' => NULL,
-								'summary' => NULL,
+								'community_name' => null,
+								'summary' => null,
 							),
 							'Authority' =>
 							array (
@@ -2732,10 +2719,10 @@ class NcPageTest extends CakeTestCase {
 								'space_type' => '4',
 								'show_count' => '0',
 								'display_flag' => '1',
-								'display_from_date' => NULL,
-								'display_to_date' => NULL,
+								'display_from_date' => null,
+								'display_to_date' => null,
 								'display_apply_subpage' => '1',
-								'display_reverse_permalink' => NULL,
+								'display_reverse_permalink' => null,
 								'is_approved' => '1',
 								'lock_authority_id' => '0',
 								'created' => '2013-06-24 06:59:37',
@@ -2787,13 +2774,13 @@ class NcPageTest extends CakeTestCase {
 			),
 		);
 
-		$this->assertEqual($result , $ck);
+		$this->assertEqual($result, $ck);
 
 		//menu
 		$ck = $this->Page->findViewable(
-			'menu' ,
-			'all' ,
-			array() ,
+			'menu',
+			'all',
+			array(),
 			array()
 		);
 		$result = array (
@@ -2825,43 +2812,43 @@ class NcPageTest extends CakeTestCase {
 								'space_type' => '1',
 								'show_count' => '0',
 								'display_flag' => '1',
-								'display_from_date' => NULL,
-								'display_to_date' => NULL,
+								'display_from_date' => null,
+								'display_to_date' => null,
 								'display_apply_subpage' => '1',
-								'display_reverse_permalink' => NULL,
+								'display_reverse_permalink' => null,
 								'is_approved' => '1',
 								'lock_authority_id' => '0',
-								'created' => NULL,
+								'created' => null,
 								'created_user_id' => '0',
 								'created_user_name' => '',
-								'modified' => NULL,
+								'modified' => null,
 								'modified_user_id' => '1',
 								'modified_user_name' => '',
 								'visibility_flag' => 1,
 							),
 							'PageUserLink' =>
 							array (
-								'authority_id' => NULL,
+								'authority_id' => null,
 							),
 							'PageAuthority' =>
 							array (
-								'id' => NULL,
-								'myportal_use_flag' => NULL,
-								'private_use_flag' => NULL,
-								'hierarchy' => NULL,
+								'id' => null,
+								'myportal_use_flag' => null,
+								'private_use_flag' => null,
+								'hierarchy' => null,
 							),
 							'Community' =>
 							array (
-								'publication_range_flag' => NULL,
-								'participate_force_all_users' => NULL,
-								'participate_flag' => NULL,
-								'is_upload' => NULL,
-								'photo' => NULL,
+								'publication_range_flag' => null,
+								'participate_force_all_users' => null,
+								'participate_flag' => null,
+								'is_upload' => null,
+								'photo' => null,
 							),
 							'CommunityLang' =>
 							array (
-								'community_name' => NULL,
-								'summary' => NULL,
+								'community_name' => null,
+								'summary' => null,
 							),
 						),
 					),
@@ -2895,43 +2882,43 @@ class NcPageTest extends CakeTestCase {
 								'space_type' => '3',
 								'show_count' => '0',
 								'display_flag' => '1',
-								'display_from_date' => NULL,
-								'display_to_date' => NULL,
+								'display_from_date' => null,
+								'display_to_date' => null,
 								'display_apply_subpage' => '1',
-								'display_reverse_permalink' => NULL,
+								'display_reverse_permalink' => null,
 								'is_approved' => '1',
 								'lock_authority_id' => '0',
-								'created' => NULL,
+								'created' => null,
 								'created_user_id' => '0',
 								'created_user_name' => '',
-								'modified' => NULL,
+								'modified' => null,
 								'modified_user_id' => '1',
 								'modified_user_name' => '',
 								'visibility_flag' => 1,
 							),
 							'PageUserLink' =>
 							array (
-								'authority_id' => NULL,
+								'authority_id' => null,
 							),
 							'PageAuthority' =>
 							array (
-								'id' => NULL,
-								'myportal_use_flag' => NULL,
-								'private_use_flag' => NULL,
-								'hierarchy' => NULL,
+								'id' => null,
+								'myportal_use_flag' => null,
+								'private_use_flag' => null,
+								'hierarchy' => null,
 							),
 							'Community' =>
 							array (
-								'publication_range_flag' => NULL,
-								'participate_force_all_users' => NULL,
-								'participate_flag' => NULL,
-								'is_upload' => NULL,
-								'photo' => NULL,
+								'publication_range_flag' => null,
+								'participate_force_all_users' => null,
+								'participate_flag' => null,
+								'is_upload' => null,
+								'photo' => null,
 							),
 							'CommunityLang' =>
 							array (
-								'community_name' => NULL,
-								'summary' => NULL,
+								'community_name' => null,
+								'summary' => null,
 							),
 						),
 					),
@@ -2965,10 +2952,10 @@ class NcPageTest extends CakeTestCase {
 								'space_type' => '4',
 								'show_count' => '0',
 								'display_flag' => '1',
-								'display_from_date' => NULL,
-								'display_to_date' => NULL,
+								'display_from_date' => null,
+								'display_to_date' => null,
 								'display_apply_subpage' => '1',
-								'display_reverse_permalink' => NULL,
+								'display_reverse_permalink' => null,
 								'is_approved' => '1',
 								'lock_authority_id' => '0',
 								'created' => '2013-06-24 06:59:37',
@@ -2981,14 +2968,14 @@ class NcPageTest extends CakeTestCase {
 							),
 							'PageUserLink' =>
 							array (
-								'authority_id' => NULL,
+								'authority_id' => null,
 							),
 							'PageAuthority' =>
 							array (
-								'id' => NULL,
-								'myportal_use_flag' => NULL,
-								'private_use_flag' => NULL,
-								'hierarchy' => NULL,
+								'id' => null,
+								'myportal_use_flag' => null,
+								'private_use_flag' => null,
+								'hierarchy' => null,
 							),
 							'Community' =>
 							array (
@@ -3008,14 +2995,14 @@ class NcPageTest extends CakeTestCase {
 				),
 			),
 		);
-		$this->assertEqual($result , $ck);
+		$this->assertEqual($result, $ck);
 
 		//menu option
 		$ck = $this->Page->findViewable(
-			'menu' ,
-			1 ,
-			array() ,
-			array('ativePageId'=>16) //'ativePageId': $type='menu'時に使用。アクティブなページIDを指定default null
+			'menu',
+			1,
+			array(),
+			array('ativePageId' => 16) //'ativePageId': $type='menu'時に使用。アクティブなページIDを指定default null
 		);
 
 		$result = array (
@@ -3047,16 +3034,16 @@ class NcPageTest extends CakeTestCase {
 								'space_type' => '1',
 								'show_count' => '0',
 								'display_flag' => '1',
-								'display_from_date' => NULL,
-								'display_to_date' => NULL,
+								'display_from_date' => null,
+								'display_to_date' => null,
 								'display_apply_subpage' => '1',
-								'display_reverse_permalink' => NULL,
+								'display_reverse_permalink' => null,
 								'is_approved' => '1',
 								'lock_authority_id' => '0',
-								'created' => NULL,
+								'created' => null,
 								'created_user_id' => '0',
 								'created_user_name' => '',
-								'modified' => NULL,
+								'modified' => null,
 								'modified_user_id' => '1',
 								'modified_user_name' => '',
 								'active' => false,
@@ -3076,16 +3063,16 @@ class NcPageTest extends CakeTestCase {
 							),
 							'Community' =>
 							array (
-								'publication_range_flag' => NULL,
-								'participate_force_all_users' => NULL,
-								'participate_flag' => NULL,
-								'is_upload' => NULL,
-								'photo' => NULL,
+								'publication_range_flag' => null,
+								'participate_force_all_users' => null,
+								'participate_flag' => null,
+								'is_upload' => null,
+								'photo' => null,
 							),
 							'CommunityLang' =>
 							array (
-								'community_name' => NULL,
-								'summary' => NULL,
+								'community_name' => null,
+								'summary' => null,
 							),
 							'Authority' =>
 							array (
@@ -3130,16 +3117,16 @@ class NcPageTest extends CakeTestCase {
 								'space_type' => '3',
 								'show_count' => '0',
 								'display_flag' => '1',
-								'display_from_date' => NULL,
-								'display_to_date' => NULL,
+								'display_from_date' => null,
+								'display_to_date' => null,
 								'display_apply_subpage' => '1',
-								'display_reverse_permalink' => NULL,
+								'display_reverse_permalink' => null,
 								'is_approved' => '1',
 								'lock_authority_id' => '0',
-								'created' => NULL,
+								'created' => null,
 								'created_user_id' => '0',
 								'created_user_name' => '',
-								'modified' => NULL,
+								'modified' => null,
 								'modified_user_id' => '1',
 								'modified_user_name' => '',
 								'active' => false,
@@ -3159,16 +3146,16 @@ class NcPageTest extends CakeTestCase {
 							),
 							'Community' =>
 							array (
-								'publication_range_flag' => NULL,
-								'participate_force_all_users' => NULL,
-								'participate_flag' => NULL,
-								'is_upload' => NULL,
-								'photo' => NULL,
+								'publication_range_flag' => null,
+								'participate_force_all_users' => null,
+								'participate_flag' => null,
+								'is_upload' => null,
+								'photo' => null,
 							),
 							'CommunityLang' =>
 							array (
-								'community_name' => NULL,
-								'summary' => NULL,
+								'community_name' => null,
+								'summary' => null,
 							),
 							'Authority' =>
 							array (
@@ -3213,10 +3200,10 @@ class NcPageTest extends CakeTestCase {
 								'space_type' => '4',
 								'show_count' => '0',
 								'display_flag' => '1',
-								'display_from_date' => NULL,
-								'display_to_date' => NULL,
+								'display_from_date' => null,
+								'display_to_date' => null,
 								'display_apply_subpage' => '1',
-								'display_reverse_permalink' => NULL,
+								'display_reverse_permalink' => null,
 								'is_approved' => '1',
 								'lock_authority_id' => '0',
 								'created' => '2013-06-24 06:59:37',
@@ -3269,13 +3256,13 @@ class NcPageTest extends CakeTestCase {
 				),
 			),
 		);
-		$this->assertEqual($result , $ck);
+		$this->assertEqual($result, $ck);
 
 		$ck = $this->Page->findViewable(
-			'menu' ,
-			2 ,
-			array() ,
-			array('ativePageId'=>16) //'ativePageId': $type='menu'時に使用。アクティブなページIDを指定default null
+			'menu',
+			2,
+			array(),
+			array('ativePageId' => 16) //'ativePageId': $type='menu'時に使用。アクティブなページIDを指定default null
 		);
 		$result = array (
 			1 =>
@@ -3306,16 +3293,16 @@ class NcPageTest extends CakeTestCase {
 								'space_type' => '1',
 								'show_count' => '0',
 								'display_flag' => '1',
-								'display_from_date' => NULL,
-								'display_to_date' => NULL,
+								'display_from_date' => null,
+								'display_to_date' => null,
 								'display_apply_subpage' => '1',
-								'display_reverse_permalink' => NULL,
+								'display_reverse_permalink' => null,
 								'is_approved' => '1',
 								'lock_authority_id' => '0',
-								'created' => NULL,
+								'created' => null,
 								'created_user_id' => '0',
 								'created_user_name' => '',
-								'modified' => NULL,
+								'modified' => null,
 								'modified_user_id' => '1',
 								'modified_user_name' => '',
 								'active' => false,
@@ -3324,27 +3311,27 @@ class NcPageTest extends CakeTestCase {
 							),
 							'PageUserLink' =>
 							array (
-								'authority_id' => NULL,
+								'authority_id' => null,
 							),
 							'PageAuthority' =>
 							array (
-								'id' => NULL,
-								'myportal_use_flag' => NULL,
-								'private_use_flag' => NULL,
-								'hierarchy' => NULL,
+								'id' => null,
+								'myportal_use_flag' => null,
+								'private_use_flag' => null,
+								'hierarchy' => null,
 							),
 							'Community' =>
 							array (
-								'publication_range_flag' => NULL,
-								'participate_force_all_users' => NULL,
-								'participate_flag' => NULL,
-								'is_upload' => NULL,
-								'photo' => NULL,
+								'publication_range_flag' => null,
+								'participate_force_all_users' => null,
+								'participate_flag' => null,
+								'is_upload' => null,
+								'photo' => null,
 							),
 							'CommunityLang' =>
 							array (
-								'community_name' => NULL,
-								'summary' => NULL,
+								'community_name' => null,
+								'summary' => null,
 							),
 							'Authority' =>
 							array (
@@ -3389,16 +3376,16 @@ class NcPageTest extends CakeTestCase {
 								'space_type' => '3',
 								'show_count' => '0',
 								'display_flag' => '1',
-								'display_from_date' => NULL,
-								'display_to_date' => NULL,
+								'display_from_date' => null,
+								'display_to_date' => null,
 								'display_apply_subpage' => '1',
-								'display_reverse_permalink' => NULL,
+								'display_reverse_permalink' => null,
 								'is_approved' => '1',
 								'lock_authority_id' => '0',
-								'created' => NULL,
+								'created' => null,
 								'created_user_id' => '0',
 								'created_user_name' => '',
-								'modified' => NULL,
+								'modified' => null,
 								'modified_user_id' => '1',
 								'modified_user_name' => '',
 								'active' => false,
@@ -3407,27 +3394,27 @@ class NcPageTest extends CakeTestCase {
 							),
 							'PageUserLink' =>
 							array (
-								'authority_id' => NULL,
+								'authority_id' => null,
 							),
 							'PageAuthority' =>
 							array (
-								'id' => NULL,
-								'myportal_use_flag' => NULL,
-								'private_use_flag' => NULL,
-								'hierarchy' => NULL,
+								'id' => null,
+								'myportal_use_flag' => null,
+								'private_use_flag' => null,
+								'hierarchy' => null,
 							),
 							'Community' =>
 							array (
-								'publication_range_flag' => NULL,
-								'participate_force_all_users' => NULL,
-								'participate_flag' => NULL,
-								'is_upload' => NULL,
-								'photo' => NULL,
+								'publication_range_flag' => null,
+								'participate_force_all_users' => null,
+								'participate_flag' => null,
+								'is_upload' => null,
+								'photo' => null,
 							),
 							'CommunityLang' =>
 							array (
-								'community_name' => NULL,
-								'summary' => NULL,
+								'community_name' => null,
+								'summary' => null,
 							),
 							'Authority' =>
 							array (
@@ -3445,16 +3432,15 @@ class NcPageTest extends CakeTestCase {
 				),
 			),
 		);
-		$this->assertEqual($result , $ck);
+		$this->assertEqual($result, $ck);
 
 		//User.id 1がログインしている状態をつくる。
 		$User = ClassRegistry::init("User");
-		$user = $User->find("first" , array('conditions'=>array('User.id'=>1),) );
-		Configure::write(NC_SYSTEM_KEY.'.user' , $user['User']);
-
-		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>1)) );
-		Configure::write(NC_SYSTEM_KEY.'.'.'center_page' , $page);
-		$ck = $this->Page->findViewable('all' , 'all');
+		$user = $User->find("first", array('conditions' => array('User.id' => 1)));
+		Configure::write(NC_SYSTEM_KEY. '.user', $user['User']);
+		$page = $this->Page->find('first', array('conditions' => array('Page.id' => 1)));
+		Configure::write(NC_SYSTEM_KEY. '.'. 'center_page', $page);
+		$ck = $this->Page->findViewable('all', 'all');
 		$result = array (
 			9 =>
 			array (
@@ -3478,16 +3464,16 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '1',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
@@ -3504,16 +3490,16 @@ class NcPageTest extends CakeTestCase {
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 				'Authority' =>
 				array (
@@ -3549,16 +3535,16 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '3',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
@@ -3575,16 +3561,16 @@ class NcPageTest extends CakeTestCase {
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 				'Authority' =>
 				array (
@@ -3620,10 +3606,10 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '4',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
 					'created' => '2013-06-24 06:59:37',
@@ -3671,9 +3657,9 @@ class NcPageTest extends CakeTestCase {
 			),
 		);
 		//var_export($ck);
-		$this->assertEqual($result , $ck);
+		$this->assertEqual($result, $ck);
 
-		$ck = $this->Page->findViewable('all' , 1 , array() , array('isShowAllCommunity'=>true));
+		$ck = $this->Page->findViewable('all', 1, array(), array('isShowAllCommunity' => true));
 		$result = array (
 			9 =>
 			array (
@@ -3697,16 +3683,16 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '1',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
@@ -3723,16 +3709,16 @@ class NcPageTest extends CakeTestCase {
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 				'Authority' =>
 				array (
@@ -3768,16 +3754,16 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '3',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
@@ -3794,16 +3780,16 @@ class NcPageTest extends CakeTestCase {
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 				'Authority' =>
 				array (
@@ -3839,10 +3825,10 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '4',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
 					'created' => '2013-06-24 06:59:37',
@@ -3889,9 +3875,9 @@ class NcPageTest extends CakeTestCase {
 				),
 			),
 		);
-		$this->assertEqual($ck , $result);
+		$this->assertEqual($ck, $result);
 
-		$ck = $this->Page->findViewable('all' , 2 , array() , array('isRoom'=>true));
+		$ck = $this->Page->findViewable('all', 2, array(), array('isRoom' => true));
 		$result = array (
 			9 =>
 			array (
@@ -3915,42 +3901,42 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '1',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
 				'PageUserLink' =>
 				array (
-					'authority_id' => NULL,
+					'authority_id' => null,
 				),
 				'PageAuthority' =>
 				array (
-					'id' => NULL,
-					'myportal_use_flag' => NULL,
-					'private_use_flag' => NULL,
-					'hierarchy' => NULL,
+					'id' => null,
+					'myportal_use_flag' => null,
+					'private_use_flag' => null,
+					'hierarchy' => null,
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 				'Authority' =>
 				array (
@@ -3986,42 +3972,42 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '3',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
 				'PageUserLink' =>
 				array (
-					'authority_id' => NULL,
+					'authority_id' => null,
 				),
 				'PageAuthority' =>
 				array (
-					'id' => NULL,
-					'myportal_use_flag' => NULL,
-					'private_use_flag' => NULL,
-					'hierarchy' => NULL,
+					'id' => null,
+					'myportal_use_flag' => null,
+					'private_use_flag' => null,
+					'hierarchy' => null,
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 				'Authority' =>
 				array (
@@ -4034,11 +4020,10 @@ class NcPageTest extends CakeTestCase {
 					'private_use_flag' => '1',
 					'display_participants_editing' => true,
 				),
-			),
+			)
 		);
-		$this->assertEqual($ck , $result);
-
-		$ck = $this->Page->findViewable('all' , 2 , array() , array('isShowAllCommunity'=>true , 'isRoom'=>true));
+		$this->assertEqual($ck, $result);
+		$ck = $this->Page->findViewable('all', 2, array(), array('isShowAllCommunity' => true, 'isRoom' => true));
 		$result = array (
 			9 =>
 			array (
@@ -4062,42 +4047,42 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '1',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
 				'PageUserLink' =>
 				array (
-					'authority_id' => NULL,
+					'authority_id' => null,
 				),
 				'PageAuthority' =>
 				array (
-					'id' => NULL,
-					'myportal_use_flag' => NULL,
-					'private_use_flag' => NULL,
-					'hierarchy' => NULL,
+					'id' => null,
+					'myportal_use_flag' => null,
+					'private_use_flag' => null,
+					'hierarchy' => null,
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 				'Authority' =>
 				array (
@@ -4133,42 +4118,42 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '3',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
 				'PageUserLink' =>
 				array (
-					'authority_id' => NULL,
+					'authority_id' => null,
 				),
 				'PageAuthority' =>
 				array (
-					'id' => NULL,
-					'myportal_use_flag' => NULL,
-					'private_use_flag' => NULL,
-					'hierarchy' => NULL,
+					'id' => null,
+					'myportal_use_flag' => null,
+					'private_use_flag' => null,
+					'hierarchy' => null,
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 				'Authority' =>
 				array (
@@ -4183,12 +4168,15 @@ class NcPageTest extends CakeTestCase {
 				),
 			),
 		);
-		$this->assertEqual($ck , $result);
-
+		$this->assertEqual($ck, $result);
 	}
 
-	public function test_format_findViewable_options() {
-		$base= array(
+/**
+ * testFormatFindViewableOptions
+ * @return void
+ */
+	public function testFormatFindViewableOptions() {
+		$base = array(
 			'isShowAllCommunity' => false,
 			'isMyPortalCurrent' => false,
 			'ativePageId' => null,
@@ -4198,160 +4186,157 @@ class NcPageTest extends CakeTestCase {
 
 		$result = $base;
 		$ck = $this->Page->_format_findViewable_options();
-		$this->assertEqual($ck , $result);
-
+		$this->assertEqual($ck, $result);
 		$array = array(
 			'isShowAllCommunity' => true,
 		);
-
 		$result = $base;
 		$result['isShowAllCommunity'] = true;
 		$ck = $this->Page->_format_findViewable_options($array);
-		$this->assertEqual($ck , $result);
-
+		$this->assertEqual($ck, $result);
 		$array = array(
 			'isShowAllCommunity' => true,
-			'hogehoge'=>false
+			'hogehoge' => false
 		);
 		$result = $base;
 		$result['isShowAllCommunity'] = true;
 		$result['hogehoge'] = false;
 		$ck = $this->Page->_format_findViewable_options($array);
-		$this->assertEqual($ck , $result);
-
+		$this->assertEqual($ck, $result);
 		$result = $base;
 		$ck = $this->Page->_format_findViewable_options('AAAAAAAA');
-		$this->assertEqual($ck , $result);
-
+		$this->assertEqual($ck, $result);
 		$result = $base;
 		$ck = $this->Page->_format_findViewable_options(12345);
-		$this->assertEqual($ck , $result);
+		$this->assertEqual($ck, $result);
 	}
-
-	public function test_format_findViewable_currentMyPortal() {
+/**
+ * testFormatFindViewableCurrentMyPortal
+ * @return void
+ */
+	public function testFormatFindViewableCurrentMyPortal() {
 		$array = array();
 		$ck = $this->Page->_format_findViewable_currentMyPortal(array());
-		$this->assertEqual($ck , null);
+		$this->assertEqual($ck, null);
 
 		$ck = $this->Page->_format_findViewable_currentMyPortal('AAAAAAAA');
-		$this->assertEqual($ck , null);
+		$this->assertEqual($ck, null);
 
 		$ck = $this->Page->_format_findViewable_currentMyPortal('');
-		$this->assertEqual($ck , null);
+		$this->assertEqual($ck, null);
 
 		$ck = $this->Page->_format_findViewable_currentMyPortal(1);
-		$this->assertEqual($ck , null);
+		$this->assertEqual($ck, null);
 
 		$array['User'] = array(
-			'id'=>"2",
-			'login_id'=>'admin_2' ,
-			'password'=>'' ,
-			'handle'=>'admin',
-			'authority_id'=>"1",
-			'is_active'=>"1",
-			'permalink'=>'admin',
-			'myportal_page_id'=>"10",
-			'private_page_id'=>"11",
-			'avatar'=>NULL,
-			'activate_key'=>NULL,
-			'lang'=>'ja',
-			'timezone_offset'=>"9",
-			'email'=>'',
-			'mobile_email'=>'',
-			'password_regist'=>NULL ,
-			'last_login'=>'2013-09-27 00:42:44',
-			'previous_login'=>'2013-07-22 08:20:15',
-			'created'=>'2013-10-31 04:09:21',
-			'created_user_id'=>"1",
-			'created_user_name'=>'admin',
-			'modified'=>'2013-10-31 09:52:46',
-			'modified_user_id'=>'0',
-			'modified_user_name'=>''
+			'id' => "2",
+			'login_id' => 'admin_2',
+			'password' => '',
+			'handle' => 'admin',
+			'authority_id' => "1",
+			'is_active' => "1",
+			'permalink' => 'admin',
+			'myportal_page_id' => "10",
+			'private_page_id' => "11",
+			'avatar' => null,
+			'activate_key' => null,
+			'lang' => 'ja',
+			'timezone_offset' => "9",
+			'email' => '',
+			'mobile_email' => '',
+			'password_regist' => null,
+			'last_login' => '2013-09-27 00:42:44',
+			'previous_login' => '2013-07-22 08:20:15',
+			'created' => '2013-10-31 04:09:21',
+			'created_user_id' => "1",
+			'created_user_name' => 'admin',
+			'modified' => '2013-10-31 09:52:46',
+			'modified_user_id' => '0',
+			'modified_user_name' => ''
 		);
 		$ans = $array['User']['myportal_page_id'];
 		$ck = $this->Page->_format_findViewable_currentMyPortal($array);
-		$this->assertEqual($ans , $ck);
+		$this->assertEqual($ans, $ck);
 
 		$ck = $this->Page->_format_findViewable_currentMyPortal($array['User']);
-		$this->assertEqual(null , $ck);
+		$this->assertEqual(null, $ck);
 	}
 
-	public function test_format_findViewable_currentPrivate() {
+	public function testFormatFindViewableCurrentPrivate() {
 		$array = array();
 		$ck = $this->Page->_format_findViewable_currentPrivate(array());
-		$this->assertEqual($ck , null);
+		$this->assertEqual($ck, null);
 
 		$ck = $this->Page->_format_findViewable_currentPrivate('AAAAAAAA');
-		$this->assertEqual($ck , null);
+		$this->assertEqual($ck, null);
 
 		$ck = $this->Page->_format_findViewable_currentPrivate('');
-		$this->assertEqual($ck , null);
+		$this->assertEqual($ck, null);
 
 		$ck = $this->Page->_format_findViewable_currentPrivate(1);
-		$this->assertEqual($ck , null);
+		$this->assertEqual($ck, null);
 
 		$array['User'] = array(
-			'id'=>"2",
-			'login_id'=>'admin_2' ,
-			'password'=>'' ,
-			'handle'=>'admin',
-			'authority_id'=>"1",
-			'is_active'=>"1",
-			'permalink'=>'admin',
-			'myportal_page_id'=>"10",
-			'private_page_id'=>"11",
-			'avatar'=>NULL,
-			'activate_key'=>NULL,
-			'lang'=>'ja',
-			'timezone_offset'=>"9",
-			'email'=>'',
-			'mobile_email'=>'',
-			'password_regist'=>NULL ,
-			'last_login'=>'2013-09-27 00:42:44',
-			'previous_login'=>'2013-07-22 08:20:15',
-			'created'=>'2013-10-31 04:09:21',
-			'created_user_id'=>"1",
-			'created_user_name'=>'admin',
-			'modified'=>'2013-10-31 09:52:46',
-			'modified_user_id'=>'0',
-			'modified_user_name'=>''
+			'id' => "2",
+			'login_id' => 'admin_2',
+			'password' => '',
+			'handle' => 'admin',
+			'authority_id' => "1",
+			'is_active' => "1",
+			'permalink' => 'admin',
+			'myportal_page_id' => "10",
+			'private_page_id' => "11",
+			'avatar' => null,
+			'activate_key' => null,
+			'lang' => 'ja',
+			'timezone_offset' => "9",
+			'email' => '',
+			'mobile_email' => '',
+			'password_regist' => null,
+			'last_login' => '2013-09-27 00:42:44',
+			'previous_login' => '2013-07-22 08:20:15',
+			'created' => '2013-10-31 04:09:21',
+			'created_user_id' => "1",
+			'created_user_name' => 'admin',
+			'modified' => '2013-10-31 09:52:46',
+			'modified_user_id' => '0',
+			'modified_user_name' => ''
 		);
 		$ans = $array['User']['private_page_id'];
 		$ck = $this->Page->_format_findViewable_currentPrivate($array);
-		$this->assertEqual($ans , $ck);
+		$this->assertEqual($ans, $ck);
 
 		$ck = $this->Page->_format_findViewable_currentPrivate($array['User']);
-		$this->assertEqual(null , $ck);
-
+		$this->assertEqual(null, $ck);
 	}
 
-	public function test_format_findViewable_conditions() {
+/**
+ * testFormatFindViewableConditions
+ * @return void
+ */
+	public function testFormatFindViewableConditions() {
 		//言語取得
-		$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
-
+		$lang = Configure::read(NC_CONFIG_KEY. '.'. 'language');
 		//conditionsのベース
 		$base = array(
 			'Page.position_flag' => _ON,
 			'Page.display_flag !=' => NC_DISPLAY_FLAG_DISABLE,
 			'Page.thread_num !=' => 0,
 		);
-
 		$ck = $this->Page->_format_findViewable_conditions(array());
-		$this->assertEqual($ck , $base);
-
+		$this->assertEqual($ck, $base);
 		$options = array();
 		$options['autoLang'] = true;
 		$ans = $base;
 		$ans['Page.lang'] = array('', $lang);
 		$ck = $this->Page->_format_findViewable_conditions($options);
-		$this->assertEqual($ck , $ans);
-
+		$this->assertEqual($ck, $ans);
 		$options = array();
 		$options['isRoom'] = true;
 		$ans = $base;
 		$ans[] = "`Page`.`id`=`Page`.`room_id`";
 		$ck = $this->Page->_format_findViewable_conditions($options);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		$options = array();
 		$options['isRoom'] = true;
@@ -4360,261 +4345,261 @@ class NcPageTest extends CakeTestCase {
 		$ans['Page.lang'] = array('', $lang);
 		$ans[] = "`Page`.`id`=`Page`.`room_id`";
 		$ck = $this->Page->_format_findViewable_conditions($options);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 	}
-
-	function test_format_findViewable_currents_by_centerPage() {
-		$loginUser  = array(
-			'id'=>"1",
-			'login_id'=>'admin' ,
-			'password'=>'hogehoge' ,
-			'handle'=>'admin',
-			'authority_id'=>"1",
-			'is_active'=>"1",
-			'permalink'=>'admin',
-			'myportal_page_id'=>"1",
-			'private_page_id'=>"2",
-			'avatar'=>NULL,
-			'activate_key'=>NULL,
-			'lang'=>'ja',
-			'timezone_offset'=>"9",
-			'email'=>'',
-			'mobile_email'=>'',
-			'password_regist'=>NULL ,
-			'last_login'=>'2013-09-27 00:42:44',
-			'previous_login'=>'2013-07-22 08:20:15',
-			'created'=>'2013-10-31 04:09:21',
-			'created_user_id'=>"1",
-			'created_user_name'=>'admin',
-			'modified'=>'2013-10-31 09:52:46',
-			'modified_user_id'=>'1',
-			'modified_user_name'=>''
+/**
+ * testFormatFindViewableCurrentsByCenterPage
+ * @return void
+ */
+	function testFormatFindViewableCurrentsByCenterPage() {
+		$loginUser = array(
+			'id' => "1",
+			'login_id' => 'admin',
+			'password' => 'hogehoge',
+			'handle' => 'admin',
+			'authority_id' => "1",
+			'is_active' => "1",
+			'permalink' => 'admin',
+			'myportal_page_id' => "1",
+			'private_page_id' => "2",
+			'avatar' => null,
+			'activate_key' => null,
+			'lang' => 'ja',
+			'timezone_offset' => "9",
+			'email' => '',
+			'mobile_email' => '',
+			'password_regist' => null,
+			'last_login' => '2013-09-27 00:42:44',
+			'previous_login' => '2013-07-22 08:20:15',
+			'created' => '2013-10-31 04:09:21',
+			'created_user_id' => "1",
+			'created_user_name' => 'admin',
+			'modified' => '2013-10-31 09:52:46',
+			'modified_user_id' => '1',
+			'modified_user_name' => ''
 		);
 		$centerPage['Page'] = array(
-			'id'=> 1,
-			'root_id'=>1 ,
-			'parent_id'=> 0 ,
-			'thread_num'=> 0 ,
-			'display_sequence'=> 1 ,
-			'page_name'=> 'Public room',
-			'permalink'=> '',
-			'position_flag'=> 1 ,
-			'lang'=> '',
-			'is_page_meta_node'=> 0,
-			'is_page_style_node'=> 0,
-			'is_page_layout_node'=> 0,
-			'is_page_theme_node'=> 0,
-			'is_page_column_node'=> 0,
-			'room_id'=> 0,
-			'space_type'=> 1,
-			'show_count'=> 0,
-			'display_flag'=> 1,
-			'display_from_date'=> NULL,
-			'display_to_date'=> NULL,
-			'display_apply_subpage'=> 1,
-			'display_reverse_permalink'=> NULL,
-			'is_approved'=> 1,
-			'lock_authority_id'=> 0,
-			'created'=> NULL,
-			'created_user_id'=> 0,
-			'created_user_name'=> '',
-			'modified'=> NULL,
-			'modified_user_id'=> 0,
-			'modified_user_name'=>''
+			'id' => 1,
+			'root_id' => 1,
+			'parent_id' => 0,
+			'thread_num' => 0,
+			'display_sequence' => 1,
+			'page_name' => 'Public room',
+			'permalink' => '',
+			'position_flag' => 1,
+			'lang' => '',
+			'is_page_meta_node' => 0,
+			'is_page_style_node' => 0,
+			'is_page_layout_node' => 0,
+			'is_page_theme_node' => 0,
+			'is_page_column_node' => 0,
+			'room_id' => 0,
+			'space_type' => 1,
+			'show_count' => 0,
+			'display_flag' => 1,
+			'display_from_date' => null,
+			'display_to_date' => null,
+			'display_apply_subpage' => 1,
+			'display_reverse_permalink' => null,
+			'is_approved' => 1,
+			'lock_authority_id' => 0,
+			'created' => null,
+			'created_user_id' => 0,
+			'created_user_name' => '',
+			'modified' => null,
+			'modified_user_id' => 0,
+			'modified_user_name' => ''
 		);
 
-		$ans = array(1 , 2);
-		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage , $loginUser);
-		$this->assertEqual($ans , $ck);
+		$ans = array(1, 2);
+		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage, $loginUser);
+		$this->assertEqual($ans, $ck);
 
-		$loginUser  = array(
-			'id'=>1,
-			'login_id'=>'admin' ,
-			'password'=>'hogehoge' ,
-			'handle'=>'admin',
-			'authority_id'=>"1",
-			'is_active'=>"1",
-			'permalink'=>'admin',
-			'myportal_page_id'=>50,
-			'private_page_id'=>2,
-			'avatar'=>NULL,
-			'activate_key'=>NULL,
-			'lang'=>'ja',
-			'timezone_offset'=>"9",
-			'email'=>'',
-			'mobile_email'=>'',
-			'password_regist'=>NULL ,
-			'last_login'=>'2013-09-27 00:42:44',
-			'previous_login'=>'2013-07-22 08:20:15',
-			'created'=>'2013-10-31 04:09:21',
-			'created_user_id'=>"1",
-			'created_user_name'=>'admin',
-			'modified'=>'2013-10-31 09:52:46',
-			'modified_user_id'=>'1',
-			'modified_user_name'=>''
+		$loginUser = array(
+			'id' => 1,
+			'login_id' => 'admin',
+			'password' => 'hogehoge',
+			'handle' => 'admin',
+			'authority_id' => "1",
+			'is_active' => "1",
+			'permalink' => 'admin',
+			'myportal_page_id' => 50,
+			'private_page_id' => 2,
+			'avatar' => null,
+			'activate_key' => null,
+			'lang' => 'ja',
+			'timezone_offset' => "9",
+			'email' => '',
+			'mobile_email' => '',
+			'password_regist' => null,
+			'last_login' => '2013-09-27 00:42:44',
+			'previous_login' => '2013-07-22 08:20:15',
+			'created' => '2013-10-31 04:09:21',
+			'created_user_id' => "1",
+			'created_user_name' => 'admin',
+			'modified' => '2013-10-31 09:52:46',
+			'modified_user_id' => '1',
+			'modified_user_name' => ''
 		);
 		$centerPage['Page'] = array(
-			'id'=> 2,
-			'root_id'=>1 ,
-			'parent_id'=> 1 ,
-			'thread_num'=> 0 ,
-			'display_sequence'=> 1 ,
-			'page_name'=> 'Public room',
-			'permalink'=> '/2/',
-			'position_flag'=> 1 ,
-			'lang'=> '',
-			'is_page_meta_node'=> 0,
-			'is_page_style_node'=> 0,
-			'is_page_layout_node'=> 0,
-			'is_page_theme_node'=> 0,
-			'is_page_column_node'=> 0,
-			'room_id'=> 100,
-			'space_type'=> NC_SPACE_TYPE_MYPORTAL,
-			'show_count'=> 0,
-			'display_flag'=> 1,
-			'display_from_date'=> NULL,
-			'display_to_date'=> NULL,
-			'display_apply_subpage'=> 1,
-			'display_reverse_permalink'=> NULL,
-			'is_approved'=> 1,
-			'lock_authority_id'=> 0,
-			'created'=> NULL,
-			'created_user_id'=> 1,
-			'created_user_name'=> 'admin',
-			'modified'=> NULL,
-			'modified_user_id'=> 0,
-			'modified_user_name'=>''
+			'id' => 2,
+			'root_id' => 1,
+			'parent_id' => 1,
+			'thread_num' => 0,
+			'display_sequence' => 1,
+			'page_name' => 'Public room',
+			'permalink' => '/2/',
+			'position_flag' => 1,
+			'lang' => '',
+			'is_page_meta_node' => 0,
+			'is_page_style_node' => 0,
+			'is_page_layout_node' => 0,
+			'is_page_theme_node' => 0,
+			'is_page_column_node' => 0,
+			'room_id' => 100,
+			'space_type' => NC_SPACE_TYPE_MYPORTAL,
+			'show_count' => 0,
+			'display_flag' => 1,
+			'display_from_date' => null,
+			'display_to_date' => null,
+			'display_apply_subpage' => 1,
+			'display_reverse_permalink' => null,
+			'is_approved' => 1,
+			'lock_authority_id' => 0,
+			'created' => null,
+			'created_user_id' => 1,
+			'created_user_name' => 'admin',
+			'modified' => null,
+			'modified_user_id' => 0,
+			'modified_user_name' => ''
 		);
-		Configure::write(NC_SYSTEM_KEY.'.user' , $loginUser);
+		Configure::write(NC_SYSTEM_KEY. '.user', $loginUser);
 		$ans = array(100, 2);
-		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage , $loginUser);
-		$this->assertEqual($ans , $ck);
+		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage, $loginUser);
+		$this->assertEqual($ans, $ck);
 
 		//例外系
 		$centerPage = null;
-		$loginUser  = null;
-		$ans = array(null , null);
-		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage , $loginUser);
-		$this->assertEqual($ans , $ck);
+		$loginUser = null;
+		$ans = array(null, null);
+		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage, $loginUser);
+		$this->assertEqual($ans, $ck);
 
 		$centerPage = array();
-		$loginUser  = array();
-		$ans = array(null , null);
-		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage , $loginUser);
-		$this->assertEqual($ans , $ck);
-
-		$centerPage = array(1,2,3,4,5);
-		$loginUser  = array();
-		$ans = array(null , null);
-		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage , $loginUser);
-		$this->assertEqual($ans , $ck);
-
-		$loginUser  = array(
-			'id'=>1,
-			'login_id'=>'admin' ,
-			'password'=>'hogehoge' ,
-			'handle'=>'admin',
-			'authority_id'=>"1",
-			'is_active'=>"1",
-			'permalink'=>'admin',
-			'myportal_page_id'=>50,
-			'private_page_id'=>2,
-			'avatar'=>NULL,
-			'activate_key'=>NULL,
-			'lang'=>'ja',
-			'timezone_offset'=>"9",
-			'email'=>'',
-			'mobile_email'=>'',
-			'password_regist'=>NULL ,
-			'last_login'=>'2013-09-27 00:42:44',
-			'previous_login'=>'2013-07-22 08:20:15',
-			'created'=>'2013-10-31 04:09:21',
-			'created_user_id'=>"1",
-			'created_user_name'=>'admin',
-			'modified'=>'2013-10-31 09:52:46',
-			'modified_user_id'=>'1',
-			'modified_user_name'=>''
+		$loginUser = array();
+		$ans = array(null, null);
+		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage, $loginUser);
+		$this->assertEqual($ans, $ck);
+		$centerPage = array(1, 2, 3, 4, 5);
+		$loginUser = array();
+		$ans = array(null, null);
+		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage, $loginUser);
+		$this->assertEqual($ans, $ck);
+		$loginUser = array(
+			'id' => 1,
+			'login_id' => 'admin',
+			'password' => 'hogehoge',
+			'handle' => 'admin',
+			'authority_id' => "1",
+			'is_active' => "1",
+			'permalink' => 'admin',
+			'myportal_page_id' => 50,
+			'private_page_id' => 2,
+			'avatar' => null,
+			'activate_key' => null,
+			'lang' => 'ja',
+			'timezone_offset' => "9",
+			'email' => '',
+			'mobile_email' => '',
+			'password_regist' => null,
+			'last_login' => '2013-09-27 00:42:44',
+			'previous_login' => '2013-07-22 08:20:15',
+			'created' => '2013-10-31 04:09:21',
+			'created_user_id' => "1",
+			'created_user_name' => 'admin',
+			'modified' => '2013-10-31 09:52:46',
+			'modified_user_id' => '1',
+			'modified_user_name' => ''
 		);
 		$centerPage['Page'] = array();
 
-		$ans = array(50 , 2);
-		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage , $loginUser);
-		$this->assertEqual($ans , $ck);
+		$ans = array(50, 2);
+		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage, $loginUser);
+		$this->assertEqual($ans, $ck);
 
 		$loginUser = array();
 		$centerPage['Page'] = array();
 
-		$ans = array(null , null);
-		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage , $loginUser);
-		$this->assertEqual($ans , $ck);
+		$ans = array(null, null);
+		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage, $loginUser);
+		$this->assertEqual($ans, $ck);
 
 		//room_idが戻るパターン
 		//$currentUser = $User->currentUser($centerPage, $loginUser);
 		//$currentUserが戻ってくるタイプ。
-		$loginUser  = array(
-			'id'=>1,
-			'login_id'=>'admin' ,
-			'password'=>'hogehoge' ,
-			'handle'=>'admin',
-			'authority_id'=>"1",
-			'is_active'=>"1",
-			'permalink'=>'2',
-			'myportal_page_id'=>50,
-			'private_page_id'=>2,
-			'avatar'=>NULL,
-			'activate_key'=>NULL,
-			'lang'=>'ja',
-			'timezone_offset'=>"9",
-			'email'=>'',
-			'mobile_email'=>'',
-			'password_regist'=>NULL ,
-			'last_login'=>'2013-09-27 00:42:44',
-			'previous_login'=>'2013-07-22 08:20:15',
-			'created'=>'2013-10-31 04:09:21',
-			'created_user_id'=>"1",
-			'created_user_name'=>'admin',
-			'modified'=>'2013-10-31 09:52:46',
-			'modified_user_id'=>'1',
-			'modified_user_name'=>''
+		$loginUser = array(
+			'id' => 1,
+			'login_id' => 'admin',
+			'password' => 'hogehoge',
+			'handle' => 'admin',
+			'authority_id' => "1",
+			'is_active' => "1",
+			'permalink' => '2',
+			'myportal_page_id' => 50,
+			'private_page_id' => 2,
+			'avatar' => null,
+			'activate_key' => null,
+			'lang' => 'ja',
+			'timezone_offset' => "9",
+			'email' => '',
+			'mobile_email' => '',
+			'password_regist' => null,
+			'last_login' => '2013-09-27 00:42:44',
+			'previous_login' => '2013-07-22 08:20:15',
+			'created' => '2013-10-31 04:09:21',
+			'created_user_id' => "1",
+			'created_user_name' => 'admin',
+			'modified' => '2013-10-31 09:52:46',
+			'modified_user_id' => '1',
+			'modified_user_name' => ''
 		);
 		$centerPage['Page'] = array(
-			'id'=> 1,
-			'root_id'=>1 ,
-			'parent_id'=> 1 ,
-			'thread_num'=> 0 ,
-			'display_sequence'=> 1 ,
-			'page_name'=> 'Public room',
-			'permalink'=> '/7/',
-			'position_flag'=> 1 ,
-			'lang'=> '',
-			'is_page_meta_node'=> 0,
-			'is_page_style_node'=> 0,
-			'is_page_layout_node'=> 0,
-			'is_page_theme_node'=> 0,
-			'is_page_column_node'=> 0,
-			'room_id'=> 100,
-			'space_type'=> NC_SPACE_TYPE_MYPORTAL,
-			'show_count'=> 0,
-			'display_flag'=> 1,
-			'display_from_date'=> NULL,
-			'display_to_date'=> NULL,
-			'display_apply_subpage'=> 1,
-			'display_reverse_permalink'=> NULL,
-			'is_approved'=> 1,
-			'lock_authority_id'=> 0,
-			'created'=> NULL,
-			'created_user_id'=> 1,
-			'created_user_name'=> 'admin',
-			'modified'=> NULL,
-			'modified_user_id'=> 0,
-			'modified_user_name'=>''
+			'id' => 1,
+			'root_id' => 1,
+			'parent_id' => 1,
+			'thread_num' => 0,
+			'display_sequence' => 1,
+			'page_name' => 'Public room',
+			'permalink' => '/7/',
+			'position_flag' => 1,
+			'lang' => '',
+			'is_page_meta_node' => 0,
+			'is_page_style_node' => 0,
+			'is_page_layout_node' => 0,
+			'is_page_theme_node' => 0,
+			'is_page_column_node' => 0,
+			'room_id' => 100,
+			'space_type' => NC_SPACE_TYPE_MYPORTAL,
+			'show_count' => 0,
+			'display_flag' => 1,
+			'display_from_date' => null,
+			'display_to_date' => null,
+			'display_apply_subpage' => 1,
+			'display_reverse_permalink' => null,
+			'is_approved' => 1,
+			'lock_authority_id' => 0,
+			'created' => null,
+			'created_user_id' => 1,
+			'created_user_name' => 'admin',
+			'modified' => null,
+			'modified_user_id' => 0,
+			'modified_user_name' => ''
 		);
 
 		$ans = array(100, 2);
-		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage , $loginUser);
+		$ck = $this->Page->_format_findViewable_currents_by_centerPage($centerPage, $loginUser);
 		//var_export($ck);
-		$this->assertEqual($ans , $ck);
-
+		$this->assertEqual($ans, $ck);
 	}
 
 /**
@@ -4623,49 +4608,48 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testFindIncludeComunityLang() {
-
 		$pageId = 1;
-		$ans = array('Page' =>
+		$ans = array(
+			'Page' => array (
+			'id' => '1',
+			'root_id' => '0',
+			'parent_id' => '0',
+			'thread_num' => '0',
+			'display_sequence' => '1',
+			'page_name' => 'Public room',
+			'permalink' => '',
+			'position_flag' => '1',
+			'lang' => '',
+			'is_page_meta_node' => '0',
+			'is_page_style_node' => '0',
+			'is_page_layout_node' => '0',
+			'is_page_theme_node' => '0',
+			'is_page_column_node' => '0',
+			'room_id' => '0',
+			'space_type' => '1',
+			'show_count' => '0',
+			'display_flag' => '1',
+			'display_from_date' => null,
+			'display_to_date' => null,
+			'display_apply_subpage' => '1',
+			'display_reverse_permalink' => null,
+			'is_approved' => '1',
+			'lock_authority_id' => '0',
+			'created' => null,
+			'created_user_id' => '0',
+			'created_user_name' => '',
+			'modified' => null,
+			'modified_user_id' => '0',
+			'modified_user_name' => '',
+		),
+		'CommunityLang' =>
 			array (
-			  'id' => '1',
-			  'root_id' => '0',
-			  'parent_id' => '0',
-			  'thread_num' => '0',
-			  'display_sequence' => '1',
-			  'page_name' => 'Public room',
-			  'permalink' => '',
-			  'position_flag' => '1',
-			  'lang' => '',
-			  'is_page_meta_node' => '0',
-			  'is_page_style_node' => '0',
-			  'is_page_layout_node' => '0',
-			  'is_page_theme_node' => '0',
-			  'is_page_column_node' => '0',
-			  'room_id' => '0',
-			  'space_type' => '1',
-			  'show_count' => '0',
-			  'display_flag' => '1',
-			  'display_from_date' => NULL,
-			  'display_to_date' => NULL,
-			  'display_apply_subpage' => '1',
-			  'display_reverse_permalink' => NULL,
-			  'is_approved' => '1',
-			  'lock_authority_id' => '0',
-			  'created' => NULL,
-			  'created_user_id' => '0',
-			  'created_user_name' => '',
-			  'modified' => NULL,
-			  'modified_user_id' => '0',
-			  'modified_user_name' => '',
-		  ),
-	  'CommunityLang' =>
-		  array (
-			  'community_name' => NULL,
-		  )
+				'community_name' => null,
+			)
 		);
 		$ck = $this->Page->findIncludeComunityLang($pageId);
 		//var_export($ck);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//$lang = Configure::read(NC_CONFIG_KEY.'.'.'language');
 		//var_dump($lang);
@@ -4692,10 +4676,10 @@ class NcPageTest extends CakeTestCase {
 				'space_type' => '4',
 				'show_count' => '0',
 				'display_flag' => '1',
-				'display_from_date' => NULL,
-				'display_to_date' => NULL,
+				'display_from_date' => null,
+				'display_to_date' => null,
 				'display_apply_subpage' => '1',
-				'display_reverse_permalink' => NULL,
+				'display_reverse_permalink' => null,
 				'is_approved' => '1',
 				'lock_authority_id' => '0',
 				'created' => '2013-06-24 06:59:37',
@@ -4710,17 +4694,17 @@ class NcPageTest extends CakeTestCase {
 				'community_name' => 'UnitTest-A',
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//存在しない場合
 		$pageId = 99999999999;
 		$ck = $this->Page->findIncludeComunityLang($pageId);
-		$this->assertEqual($ck , array());
+		$this->assertEqual($ck, array());
 
 		//パラメータのフォーマットエラーの場合。
 		$pageId = 'AAAAAA';
 		$ck = $this->Page->findIncludeComunityLang($pageId);
-		$this->assertEqual($ck , array());
+		$this->assertEqual($ck, array());
 	}
 
 /**
@@ -4729,43 +4713,42 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testFindChilds() {
-
 		//第一引数はまったく使われていない。
 		//とりあえず現状の動きをトレース。
 
 		$page['Page'] = array(
-			'id'                => 9,
-			'root_id'           => 9 ,
-			'parent_id'         => 1 ,
-			'thread_num'        => 1 ,
-			'display_sequence'  => 0,
-			'page_name'         => 'Public room',
-			'permalink'         => '',
-			'position_flag'     => 1 ,
-			'lang'              => '',
-			'is_page_meta_node'  => 0,
+			'id' => 9,
+			'root_id' => 9,
+			'parent_id' => 1,
+			'thread_num' => 1,
+			'display_sequence' => 0,
+			'page_name' => 'Public room',
+			'permalink' => '',
+			'position_flag' => 1,
+			'lang' => '',
+			'is_page_meta_node' => 0,
 			'is_page_style_node' => 0,
-			'is_page_layout_node'=> 0,
+			'is_page_layout_node' => 0,
 			'is_page_theme_node' => 0,
-			'is_page_column_node'=> 0,
-			'room_id'           => 9,
-			'space_type'        => 1,
-			'show_count'        => 0,
-			'display_flag'      => 1,
-			'display_from_date' => NULL,
-			'display_to_date'   => NULL,
-			'display_apply_subpage'=> 1,
-			'display_reverse_permalink'=> NULL,
-			'is_approved'       => 1,
+			'is_page_column_node' => 0,
+			'room_id' => 9,
+			'space_type' => 1,
+			'show_count' => 0,
+			'display_flag' => 1,
+			'display_from_date' => null,
+			'display_to_date' => null,
+			'display_apply_subpage' => 1,
+			'display_reverse_permalink' => null,
+			'is_approved' => 1,
 			'lock_authority_id' => 0,
-			'created'           => NULL,
-			'created_user_id'   => 0,
+			'created' => null,
+			'created_user_id' => 0,
 			'created_user_name' => '',
-			'modified'          => NULL,
-			'modified_user_id'  => 1,
-			'modified_user_name'=>''
+			'modified' => null,
+			'modified_user_id' => 1,
+			'modified_user_name' => ''
 		);
-		$ck = $this->Page->findChilds('all' , $page);
+		$ck = $this->Page->findChilds('all', $page);
 		$ans = array (
 			0 =>
 			array (
@@ -4789,13 +4772,13 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '1',
 					'show_count' => '110',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
 					'modified' => '2013-07-12 07:13:42',
@@ -4804,200 +4787,198 @@ class NcPageTest extends CakeTestCase {
 				),
 				'PageUserLink' =>
 				array (
-					'authority_id' => NULL,
+					'authority_id' => null,
 				),
 				'PageAuthority' =>
 				array (
-					'id' => NULL,
-					'myportal_use_flag' => NULL,
-					'private_use_flag' => NULL,
-					'hierarchy' => NULL,
+					'id' => null,
+					'myportal_use_flag' => null,
+					'private_use_flag' => null,
+					'hierarchy' => null,
 				),
 			),
 		);
 		// id:12が1件取得できる
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//空データ。$currentPage['Page']['lang']が存在しないためnotice errorでテストが実行できない。
 		//TODO:パラメータのフォーマット異常時の対応を行う。
 		//$page['Page'] = array();
-		//$ck = $this->Page->findChilds('all' , $page);
+		//$ck = $this->Page->findChilds('all', $page);
 
 		//子孫のいないデータで、子孫を探す。array()が戻る。
 		$page = array();
 		$page['Page'] = array(
-			'id'                => 4,
-			'root_id'           => 0 ,
-			'parent_id'         => 0 ,
-			'thread_num'        => 0 ,
-			'display_sequence'  => 4,
-			'page_name'         => 'Community',
-			'permalink'         => '',
-			'position_flag'     => 1 ,
-			'lang'              => '',
-			'is_page_meta_node'  => 0,
+			'id' => 4,
+			'root_id' => 0,
+			'parent_id' => 0,
+			'thread_num' => 0,
+			'display_sequence' => 4,
+			'page_name' => 'Community',
+			'permalink' => '',
+			'position_flag' => 1,
+			'lang' => '',
+			'is_page_meta_node' => 0,
 			'is_page_style_node' => 0,
-			'is_page_layout_node'=> 0,
+			'is_page_layout_node' => 0,
 			'is_page_theme_node' => 0,
-			'is_page_column_node'=> 0,
-			'room_id'           => 0,
-			'space_type'        => 4,
-			'show_count'        => 0,
-			'display_flag'      => 1,
-			'display_from_date' => NULL,
-			'display_to_date'   => NULL,
-			'display_apply_subpage'=> 1,
-			'display_reverse_permalink'=> NULL,
-			'is_approved'       => 1,
+			'is_page_column_node' => 0,
+			'room_id' => 0,
+			'space_type' => 4,
+			'show_count' => 0,
+			'display_flag' => 1,
+			'display_from_date' => null,
+			'display_to_date' => null,
+			'display_apply_subpage' => 1,
+			'display_reverse_permalink' => null,
+			'is_approved' => 1,
 			'lock_authority_id' => 0,
-			'created'           => NULL,
-			'created_user_id'   => 0,
+			'created' => null,
+			'created_user_id' => 0,
 			'created_user_name' => '',
-			'modified'          => NULL,
-			'modified_user_id'  => 0,
-			'modified_user_name'=>''
+			'modified' => null,
+			'modified_user_id' => 0,
+			'modified_user_name' => ''
 		);
-		$ck = $this->Page->findChilds('all' , $page);
-		$this->assertEqual($ck , array());
+		$ck = $this->Page->findChilds('all', $page);
+		$this->assertEqual($ck, array());
 
-		$ck = $this->Page->findChilds('all' , $page , null , 1);
-		$this->assertEqual($ck , array());
+		$ck = $this->Page->findChilds('all', $page, null, 1);
+		$this->assertEqual($ck, array());
 
-		$ck = $this->Page->findChilds('all' , $page , null , 2);
-		$this->assertEqual($ck , array());
+		$ck = $this->Page->findChilds('all', $page, null, 2);
+		$this->assertEqual($ck, array());
 
-		//id:14 , 15の2件分が戻る。
+		//id:14, 15の2件分が戻る。
 		$page = array();
 		$page['Page'] = array(
-			'id'                => 11,
-			'root_id'           => 11 ,
-			'parent_id'         => 3 ,
-			'thread_num'        => 1 ,
-			'display_sequence'  => 0,
-			'page_name'         => 'Private room',
-			'permalink'         => 'Admin',
-			'position_flag'     => 1 ,
-			'lang'              => '',
-			'is_page_meta_node'  => 0,
+			'id' => 11,
+			'root_id' => 11,
+			'parent_id' => 3,
+			'thread_num' => 1,
+			'display_sequence' => 0,
+			'page_name' => 'Private room',
+			'permalink' => 'Admin',
+			'position_flag' => 1,
+			'lang' => '',
+			'is_page_meta_node' => 0,
 			'is_page_style_node' => 0,
-			'is_page_layout_node'=> 0,
+			'is_page_layout_node' => 0,
 			'is_page_theme_node' => 0,
-			'is_page_column_node'=> 0,
-			'room_id'           => 11,
-			'space_type'        => 3,
-			'show_count'        => 0,
-			'display_flag'      => 1,
-			'display_from_date' => NULL,
-			'display_to_date'   => NULL,
-			'display_apply_subpage'=> 1,
-			'display_reverse_permalink'=> NULL,
-			'is_approved'       => 1,
+			'is_page_column_node' => 0,
+			'room_id' => 11,
+			'space_type' => 3,
+			'show_count' => 0,
+			'display_flag' => 1,
+			'display_from_date' => null,
+			'display_to_date' => null,
+			'display_apply_subpage' => 1,
+			'display_reverse_permalink' => null,
+			'is_approved' => 1,
 			'lock_authority_id' => 0,
-			'created'           => NULL,
-			'created_user_id'   => 0,
+			'created' => null,
+			'created_user_id' => 0,
 			'created_user_name' => '',
-			'modified'          => NULL,
-			'modified_user_id'  => 1,
-			'modified_user_name'=>''
+			'modified' => null,
+			'modified_user_id' => 1,
+			'modified_user_name' => ''
 		);
-		$ck = $this->Page->findChilds('all' , $page);
-		$this->assertEqual(2 , count($ck));
+		$ck = $this->Page->findChilds('all', $page);
+		$this->assertEqual(2, count($ck));
 		//display_flagが変更されるデータのため、
 		//順番もかわるため、Page.idから想定される情報が取得できているかどうかを判定するようにした。
 		//Page.id 15が１４の値が戻る。
-		$this->assertEqual(true , ($ck[0]['Page']['id'] ==15 || $ck[0]['Page']['id'] ==14 ));
-		$this->assertEqual(true , ($ck[1]['Page']['id'] ==15 || $ck[1]['Page']['id'] ==14 ));
+		$this->assertEqual(true, ($ck[0]['Page']['id'] == 15 || $ck[0]['Page']['id'] == 14 ));
+		$this->assertEqual(true, ($ck[1]['Page']['id'] == 15 || $ck[1]['Page']['id'] == 14 ));
 
 		//
-		$ck = $this->Page->findChilds('all' , $page , null , 4);
-		$this->assertEqual(true , ($ck[0]['Page']['id'] ==15 || $ck[0]['Page']['id'] ==14 ));
-		$this->assertEqual(true , ($ck[1]['Page']['id'] ==15 || $ck[1]['Page']['id'] ==14 ));
+		$ck = $this->Page->findChilds('all', $page, null, 4);
+		$this->assertEqual(true, ($ck[0]['Page']['id'] == 15 || $ck[0]['Page']['id'] == 14 ));
+		$this->assertEqual(true, ($ck[1]['Page']['id'] == 15 || $ck[1]['Page']['id'] == 14 ));
 
 		//言語を指定
-		$ck = $this->Page->findChilds('all' , $page , 'eng' , 4);
-		$this->assertEqual($ck , array());
+		$ck = $this->Page->findChilds('all', $page, 'eng', 4);
+		$this->assertEqual($ck, array());
 
-		$ck = $this->Page->findChilds('all' , $page , 'ja' , 4);
-		$this->assertEqual(true , ($ck[0]['Page']['id'] ==15 || $ck[0]['Page']['id'] ==14 ));
-		$this->assertEqual(true , ($ck[1]['Page']['id'] ==15 || $ck[1]['Page']['id'] ==14 ));
+		$ck = $this->Page->findChilds('all', $page, 'ja', 4);
+		$this->assertEqual(true, ($ck[0]['Page']['id'] == 15 || $ck[0]['Page']['id'] == 14 ));
+		$this->assertEqual(true, ($ck[1]['Page']['id'] == 15 || $ck[1]['Page']['id'] == 14 ));
 
-		$ck = $this->Page->findChilds('all' , $page , 'ja' , 1);
-		$this->assertEqual(true , ($ck[0]['Page']['id'] ==15 || $ck[0]['Page']['id'] ==14 ));
-		$this->assertEqual(true , ($ck[1]['Page']['id'] ==15 || $ck[1]['Page']['id'] ==14 ));
-
-		//$ck = $this->Page->findChilds('all' , $page , 'ja' , 7);
+		$ck = $this->Page->findChilds('all', $page, 'ja', 1);
+		$this->assertEqual(true, ($ck[0]['Page']['id'] == 15 || $ck[0]['Page']['id'] == 14 ));
+		$this->assertEqual(true, ($ck[1]['Page']['id'] == 15 || $ck[1]['Page']['id'] == 14 ));
+		//$ck = $this->Page->findChilds('all', $page, 'ja', 7);
 		//var_export($ck);
-
 		//2階層目を保存してみる
-		$new_page['Page'] = array(
-			'root_id'           => 11 ,
-			'parent_id'         => 15 ,
-			'thread_num'        => 2 ,
-			'display_sequence'  => 3,
-			'page_name'         => 'Community',
-			'permalink'         => '',
-			'position_flag'     => 1 ,
-			'lang'              => '',
-			'is_page_meta_node'  => 0,
+		$newPage['Page'] = array(
+			'root_id'  => 11,
+			'parent_id' => 15,
+			'thread_num' => 2,
+			'display_sequence' => 3,
+			'page_name' => 'Community',
+			'permalink' => '',
+			'position_flag' => 1,
+			'lang' => '',
+			'is_page_meta_node' => 0,
 			'is_page_style_node' => 0,
-			'is_page_layout_node'=> 0,
+			'is_page_layout_node' => 0,
 			'is_page_theme_node' => 0,
-			'is_page_column_node'=> 0,
-			'room_id'           => 0,
-			'space_type'        => 4,
-			'show_count'        => 0,
-			'display_flag'      => 1,
-			'display_from_date' => NULL,
-			'display_to_date'   => NULL,
-			'display_apply_subpage'=> 1,
-			'display_reverse_permalink'=> NULL,
-			'is_approved'       => 1,
+			'is_page_column_node' => 0,
+			'room_id' => 0,
+			'space_type' => 4,
+			'show_count' => 0,
+			'display_flag' => 1,
+			'display_from_date' => null,
+			'display_to_date' => null,
+			'display_apply_subpage' => 1,
+			'display_reverse_permalink' => null,
+			'is_approved' => 1,
 			'lock_authority_id' => 0,
 		);
 
 		//2階層目を保存してみる
-		$new_page_2['Page'] = array(
-			'root_id'           => 11 ,
-			'parent_id'         => 17 ,
-			'thread_num'        => 3 ,
-			'display_sequence'  => 3,
-			'page_name'         => 'Community',
-			'permalink'         => '',
-			'position_flag'     => 1 ,
-			'lang'              => '',
-			'is_page_meta_node'  => 0,
+		$newPage2['Page'] = array(
+			'root_id' => 11,
+			'parent_id' => 17,
+			'thread_num' => 3,
+			'display_sequence' => 3,
+			'page_name' => 'Community',
+			'permalink' => '',
+			'position_flag' => 1,
+			'lang' => '',
+			'is_page_meta_node' => 0,
 			'is_page_style_node' => 0,
-			'is_page_layout_node'=> 0,
+			'is_page_layout_node' => 0,
 			'is_page_theme_node' => 0,
-			'is_page_column_node'=> 0,
-			'room_id'           => 0,
-			'space_type'        => 4,
-			'show_count'        => 0,
-			'display_flag'      => 1,
-			'display_from_date' => NULL,
-			'display_to_date'   => NULL,
-			'display_apply_subpage'=> 1,
-			'display_reverse_permalink'=> NULL,
-			'is_approved'       => 1,
+			'is_page_column_node' => 0,
+			'room_id' => 0,
+			'space_type' => 4,
+			'show_count' => 0,
+			'display_flag' => 1,
+			'display_from_date' => null,
+			'display_to_date' => null,
+			'display_apply_subpage' => 1,
+			'display_reverse_permalink' => null,
+			'is_approved' => 1,
 			'lock_authority_id' => 0,
 		);
-
-
 		$User = ClassRegistry::init("User");
-		$user = $User->find("first" , array('conditions'=>array('User.id'=>1),) );
-		Configure::write(NC_SYSTEM_KEY.'.user' , $user['User']);
+		$user = $User->find("first", array('conditions' => array('User.id' => 1),) );
+		Configure::write(NC_SYSTEM_KEY.
+				'.user',
+				$user['User']
+		);
 
-		//id:17 , 18で11の子孫情報を保存
+		//id:17, 18で11の子孫情報を保存
 		$this->Page->create();
-		$ck = $this->Page->save($new_page , false , false);
+		$ck = $this->Page->save($newPage, false, false);
 		$this->Page->create();
-		$ck = $this->Page->save($new_page_2 , false , false);
+		$ck = $this->Page->save($newPage2, false, false);
 
 		//id 14,15,17,18が取得できていないといけないがとれない。
 		//TODO：ちゃんと子孫情報がとれるように修正する
-		//$ck = $this->Page->findChilds('all' , $page);
+		//$ck = $this->Page->findChilds('all', $page);
 		//var_export($ck);
-
 	}
 
 /**
@@ -5006,47 +4987,45 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testFindCommunityCount() {
-
 		//存在するアカウントの場合
 		$ck = $this->Page->findCommunityCount(1);
-		$this->assertEqual(1 , $ck);
+		$this->assertEqual(1, $ck);
 
 		//存在するアカウントの場合
 		//なぜ2はPage.id:2のデータを見れない？
 		$ck = $this->Page->findCommunityCount(2);
-		$this->assertEqual(0 , $ck);
+		$this->assertEqual(0, $ck);
 
 		//存在しないアカウントの場合
 		$ck = $this->Page->findCommunityCount(99999999999);
-		$this->assertEqual(0 , $ck);
+		$this->assertEqual(0, $ck);
 
 		$ck = $this->Page->findCommunityCount('all');
-		$this->assertEqual(1 , $ck);
+		$this->assertEqual(1, $ck);
 
 		//ログインユーザ
 		$User = ClassRegistry::init('User');
-		$loginUser = $User->find("first" , array('conditions'=>array('User.id'=>1)) );
-		Configure::write(NC_SYSTEM_KEY.'.user' , $loginUser['User']);
+		$loginUser = $User->find("first", array('conditions' => array('User.id' => 1)));
+		Configure::write(NC_SYSTEM_KEY.
+			'.user',
+			$loginUser['User']
+		);
 
 		$ck = $this->Page->findCommunityCount();
-		$this->assertEqual(1 , $ck);
+		$this->assertEqual(1, $ck);
 
-		$loginUser = $User->find("first" , array('conditions'=>array('User.id'=>2)) );
-		Configure::write(NC_SYSTEM_KEY.'.user' , $loginUser['User']);
-
+		$loginUser = $User->find("first", array('conditions' => array('User.id' => 2)));
+		Configure::write(NC_SYSTEM_KEY. '.user', $loginUser['User']);
 		$ck = $this->Page->findCommunityCount();
-		$this->assertEqual(0 , $ck);
-
+		$this->assertEqual(0, $ck);
 		//未ログイン noticeエラー
 		//TODO:未ログイン時の考慮と対応
-		//Configure::write(NC_SYSTEM_KEY.'.user' , array());
+		//Configure::write(NC_SYSTEM_KEY. '.user', array());
 		//$ck = $this->Page->findCommunityCount();
-		//$this->assertEqual(0 , $ck);
-
-		//第2引数$params , 第3引数$optionsはself::findViewable()へ条件を渡しているだけなので一旦省略
+		//$this->assertEqual(0, $ck);
+		//第2引数$params, 第3引数$optionsはself::findViewable()へ条件を渡しているだけなので一旦省略
 		//array_mergeで条件を上書きしている。
 		// Page.space_typeやPage.thread_numを上書きされた場合についても今回は一旦省略
-
 	}
 
 /**
@@ -5055,7 +5034,6 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testGetFieldsArray() {
-
 		//$userIdがしていされていて、$spaceTypeが指定されていない場合
 		$ck = $this->Page->getFieldsArray(1);
 		$ans = array (
@@ -5073,7 +5051,7 @@ class NcPageTest extends CakeTestCase {
 			11 => 'CommunityLang.community_name',
 			12 => 'CommunityLang.summary',
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//$userIdが空、$spaceTypeが指定されていない場合
 		$ck = $this->Page->getFieldsArray('');
@@ -5087,10 +5065,10 @@ class NcPageTest extends CakeTestCase {
 			6 => 'CommunityLang.community_name',
 			7 => 'CommunityLang.summary',
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//$userIdが指定されていて、$spaceTypeに arrayでNC_SPACE_TYPE_GROUPが指定されている状態
-		$ck = $this->Page->getFieldsArray(1 , array(NC_SPACE_TYPE_GROUP));
+		$ck = $this->Page->getFieldsArray(1, array(NC_SPACE_TYPE_GROUP));
 		$ans = array (
 			0 => 'Page.*',
 			1 => 'PageUserLink.authority_id',
@@ -5106,10 +5084,10 @@ class NcPageTest extends CakeTestCase {
 			11 => 'CommunityLang.community_name',
 			12 => 'CommunityLang.summary',
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//$userIdが指定されていて、$spaceTypeに NC_SPACE_TYPE_GROUPが指定されている状態
-		$ck = $this->Page->getFieldsArray(1 , NC_SPACE_TYPE_GROUP);
+		$ck = $this->Page->getFieldsArray(1, NC_SPACE_TYPE_GROUP);
 		$ans = array (
 			0 => 'Page.*',
 			1 => 'PageUserLink.authority_id',
@@ -5125,10 +5103,10 @@ class NcPageTest extends CakeTestCase {
 			11 => 'CommunityLang.community_name',
 			12 => 'CommunityLang.summary',
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//$userIdが指定されていて、$spaceTypeに文字列が指定された場合（例外）
-		$ck = $this->Page->getFieldsArray(1 , 'AAAAA');
+		$ck = $this->Page->getFieldsArray(1, 'AAAAA');
 		$ans = array (
 			0 => 'Page.*',
 			1 => 'PageUserLink.authority_id',
@@ -5137,10 +5115,10 @@ class NcPageTest extends CakeTestCase {
 			4 => 'PageAuthority.private_use_flag',
 			5 => 'PageAuthority.hierarchy',
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//$userIdが指定されておらず、$spaceTypeに NC_SPACE_TYPE_GROUPが指定されている状態
-		$ck = $this->Page->getFieldsArray(null , NC_SPACE_TYPE_GROUP);
+		$ck = $this->Page->getFieldsArray(null, NC_SPACE_TYPE_GROUP);
 		$ans = array (
 			0 => 'Page.*',
 			1 => 'Community.publication_range_flag',
@@ -5151,9 +5129,9 @@ class NcPageTest extends CakeTestCase {
 			6 => 'CommunityLang.community_name',
 			7 => 'CommunityLang.summary',
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 		//$userIdが指定されておらず、$spaceTypeに arrayでNC_SPACE_TYPE_GROUPが指定されている状態
-		$ck = $this->Page->getFieldsArray(null , array(NC_SPACE_TYPE_GROUP));
+		$ck = $this->Page->getFieldsArray(null, array(NC_SPACE_TYPE_GROUP));
 		$ans = array (
 			0 => 'Page.*',
 			1 => 'Community.publication_range_flag',
@@ -5164,7 +5142,7 @@ class NcPageTest extends CakeTestCase {
 			6 => 'CommunityLang.community_name',
 			7 => 'CommunityLang.summary',
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 	}
 
 /**
@@ -5173,7 +5151,7 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testGetJoinsArray() {
-		//$userIdを指定、$type , $spaceType未指定
+		//$userIdを指定、$type, $spaceType未指定
 		$ck = $this->Page->getJoinsArray(1);
 		$ans = array (
 			0 =>
@@ -5205,7 +5183,7 @@ class NcPageTest extends CakeTestCase {
 				'conditions' => '`Page`.`root_id`=`CommunityLang`.`room_id` AND `CommunityLang`.`lang` =\'eng\'',
 			)
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//$userIdがブランクの場合
 		$ck = $this->Page->getJoinsArray('');
@@ -5239,10 +5217,10 @@ class NcPageTest extends CakeTestCase {
 				'conditions' => '`Page`.`root_id`=`CommunityLang`.`room_id` AND `CommunityLang`.`lang` =\'eng\'',
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//$userIdが文字列の場合（例外）
-		$ck  = $this->Page->getJoinsArray('AAAAA');
+		$ck = $this->Page->getJoinsArray('AAAAA');
 		$ans = array (
 			0 =>
 			array (
@@ -5273,10 +5251,10 @@ class NcPageTest extends CakeTestCase {
 				'conditions' => '`Page`.`root_id`=`CommunityLang`.`room_id` AND `CommunityLang`.`lang` =\'eng\'',
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//$userIdが指定されていて、$typeが RIGHT
-		$ck  = $this->Page->getJoinsArray(1 , 'RIGHT');
+		$ck = $this->Page->getJoinsArray(1, 'RIGHT');
 		$ans = array (
 			0 =>
 			array (
@@ -5307,10 +5285,10 @@ class NcPageTest extends CakeTestCase {
 				'conditions' => '`Page`.`root_id`=`CommunityLang`.`room_id` AND `CommunityLang`.`lang` =\'eng\'',
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//$userIdが指定されていて、$typeが RIGHT
-		$ck  = $this->Page->getJoinsArray(1 , 'INNER');
+		$ck = $this->Page->getJoinsArray(1, 'INNER');
 		$ans = array (
 			0 =>
 			array (
@@ -5341,10 +5319,10 @@ class NcPageTest extends CakeTestCase {
 				'conditions' => '`Page`.`root_id`=`CommunityLang`.`room_id` AND `CommunityLang`.`lang` =\'eng\'',
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//$userIdがしていされていて、$type無指定　$spaceTypeを NC_SPACE_TYPE_GROUPが指定されている場合
-		$ck  = $this->Page->getJoinsArray(1 , null , NC_SPACE_TYPE_GROUP);
+		$ck = $this->Page->getJoinsArray(1, null, NC_SPACE_TYPE_GROUP);
 		$ans = array (
 			0 =>
 			array (
@@ -5375,9 +5353,9 @@ class NcPageTest extends CakeTestCase {
 				'conditions' => '`Page`.`root_id`=`CommunityLang`.`room_id` AND `CommunityLang`.`lang` =\'eng\'',
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 		//$userIdがしていされていて、$type無指定　$spaceTypeを NC_SPACE_TYPE_GROUP以外が指定されている場合
-		$ck = $this->Page->getJoinsArray(1 , null , 'AAAA');
+		$ck = $this->Page->getJoinsArray(1, null, 'AAAA');
 		$ans = array (
 			0 =>
 			array (
@@ -5394,7 +5372,7 @@ class NcPageTest extends CakeTestCase {
 				'conditions' => '`PageAuthority`.`id`=`PageUserLink`.`authority_id`',
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 	}
 
 /**
@@ -5403,10 +5381,9 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testAfterFindIds() {
-
 		//resultがない場合
-		$ck = $this->Page->afterFindIds(array() , 1 );
-		$this->assertEqual(false , $ck);
+		$ck = $this->Page->afterFindIds(array(), 1 );
+		$this->assertEqual(false, $ck);
 
 		$results = array (
 			0 =>
@@ -5431,42 +5408,42 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '1',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
 				'PageUserLink' =>
 				array (
-					'authority_id' => NULL,
+					'authority_id' => null,
 				),
 				'PageAuthority' =>
 				array (
-					'id' => NULL,
-					'myportal_use_flag' => NULL,
-					'private_use_flag' => NULL,
-					'hierarchy' => NULL,
+					'id' => null,
+					'myportal_use_flag' => null,
+					'private_use_flag' => null,
+					'hierarchy' => null,
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 			),
 			1 =>
@@ -5491,42 +5468,42 @@ class NcPageTest extends CakeTestCase {
 					'space_type' => '3',
 					'show_count' => '0',
 					'display_flag' => '1',
-					'display_from_date' => NULL,
-					'display_to_date' => NULL,
+					'display_from_date' => null,
+					'display_to_date' => null,
 					'display_apply_subpage' => '1',
-					'display_reverse_permalink' => NULL,
+					'display_reverse_permalink' => null,
 					'is_approved' => '1',
 					'lock_authority_id' => '0',
-					'created' => NULL,
+					'created' => null,
 					'created_user_id' => '0',
 					'created_user_name' => '',
-					'modified' => NULL,
+					'modified' => null,
 					'modified_user_id' => '1',
 					'modified_user_name' => '',
 				),
 				'PageUserLink' =>
 				array (
-					'authority_id' => NULL,
+					'authority_id' => null,
 				),
 				'PageAuthority' =>
 				array (
-					'id' => NULL,
-					'myportal_use_flag' => NULL,
-					'private_use_flag' => NULL,
-					'hierarchy' => NULL,
+					'id' => null,
+					'myportal_use_flag' => null,
+					'private_use_flag' => null,
+					'hierarchy' => null,
 				),
 				'Community' =>
 				array (
-					'publication_range_flag' => NULL,
-					'participate_force_all_users' => NULL,
-					'participate_flag' => NULL,
-					'is_upload' => NULL,
-					'photo' => NULL,
+					'publication_range_flag' => null,
+					'participate_force_all_users' => null,
+					'participate_flag' => null,
+					'is_upload' => null,
+					'photo' => null,
 				),
 				'CommunityLang' =>
 				array (
-					'community_name' => NULL,
-					'summary' => NULL,
+					'community_name' => null,
+					'summary' => null,
 				),
 			),
 		);
@@ -5535,15 +5512,15 @@ class NcPageTest extends CakeTestCase {
 		//配列のkeyをidにする機能が実装されている。
 
 		//パラメータエラー countは許可されていない
-		$ck = $this->Page->afterFindIds(10 , 'all' , 'count' );
-		$this->assertEqual($ck , false);
+		$ck = $this->Page->afterFindIds(10, 'all', 'count' );
+		$this->assertEqual($ck, false);
 
 		//パラメータエラー countは許可されていない...がarrayが戻ってきている。
 		//TODO : パラメータエラー系処理の追加
-		//$ck = $this->Page->afterFindIds($results , 'all' , 'count' );
-		//$this->assertEqual($ck , false);
+		//$ck = $this->Page->afterFindIds($results, 'all', 'count' );
+		//$this->assertEqual($ck, false);
 
-		$ck = $this->Page->afterFindIds($results , 'all' , 'menu' );
+		$ck = $this->Page->afterFindIds($results, 'all', 'menu' );
 		$ans = array (
 			1 =>
 			array (
@@ -5573,43 +5550,43 @@ class NcPageTest extends CakeTestCase {
 								'space_type' => '1',
 								'show_count' => '0',
 								'display_flag' => '1',
-								'display_from_date' => NULL,
-								'display_to_date' => NULL,
+								'display_from_date' => null,
+								'display_to_date' => null,
 								'display_apply_subpage' => '1',
-								'display_reverse_permalink' => NULL,
+								'display_reverse_permalink' => null,
 								'is_approved' => '1',
 								'lock_authority_id' => '0',
-								'created' => NULL,
+								'created' => null,
 								'created_user_id' => '0',
 								'created_user_name' => '',
-								'modified' => NULL,
+								'modified' => null,
 								'modified_user_id' => '1',
 								'modified_user_name' => '',
 								'visibility_flag' => 1,
 							),
 							'PageUserLink' =>
 							array (
-								'authority_id' => NULL,
+								'authority_id' => null,
 							),
 							'PageAuthority' =>
 							array (
-								'id' => NULL,
-								'myportal_use_flag' => NULL,
-								'private_use_flag' => NULL,
-								'hierarchy' => NULL,
+								'id' => null,
+								'myportal_use_flag' => null,
+								'private_use_flag' => null,
+								'hierarchy' => null,
 							),
 							'Community' =>
 							array (
-								'publication_range_flag' => NULL,
-								'participate_force_all_users' => NULL,
-								'participate_flag' => NULL,
-								'is_upload' => NULL,
-								'photo' => NULL,
+								'publication_range_flag' => null,
+								'participate_force_all_users' => null,
+								'participate_flag' => null,
+								'is_upload' => null,
+								'photo' => null,
 							),
 							'CommunityLang' =>
 							array (
-								'community_name' => NULL,
-								'summary' => NULL,
+								'community_name' => null,
+								'summary' => null,
 							),
 						),
 					),
@@ -5643,58 +5620,55 @@ class NcPageTest extends CakeTestCase {
 								'space_type' => '3',
 								'show_count' => '0',
 								'display_flag' => '1',
-								'display_from_date' => NULL,
-								'display_to_date' => NULL,
+								'display_from_date' => null,
+								'display_to_date' => null,
 								'display_apply_subpage' => '1',
-								'display_reverse_permalink' => NULL,
+								'display_reverse_permalink' => null,
 								'is_approved' => '1',
 								'lock_authority_id' => '0',
-								'created' => NULL,
+								'created' => null,
 								'created_user_id' => '0',
 								'created_user_name' => '',
-								'modified' => NULL,
+								'modified' => null,
 								'modified_user_id' => '1',
 								'modified_user_name' => '',
 								'visibility_flag' => 1,
 							),
 							'PageUserLink' =>
 							array (
-								'authority_id' => NULL,
+								'authority_id' => null,
 							),
 							'PageAuthority' =>
 							array (
-								'id' => NULL,
-								'myportal_use_flag' => NULL,
-								'private_use_flag' => NULL,
-								'hierarchy' => NULL,
+								'id' => null,
+								'myportal_use_flag' => null,
+								'private_use_flag' => null,
+								'hierarchy' => null,
 							),
 							'Community' =>
 							array (
-								'publication_range_flag' => NULL,
-								'participate_force_all_users' => NULL,
-								'participate_flag' => NULL,
-								'is_upload' => NULL,
-								'photo' => NULL,
+								'publication_range_flag' => null,
+								'participate_force_all_users' => null,
+								'participate_flag' => null,
+								'is_upload' => null,
+								'photo' => null,
 							),
 							'CommunityLang' =>
 							array (
-								'community_name' => NULL,
-								'summary' => NULL,
+								'community_name' => null,
+								'summary' => null,
 							),
 						),
 					),
 				),
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//list でfieldsの指定なし
-		$ck = $this->Page->afterFindIds($results , 'all' , 'list' );
-		$ans = array (
-		   9 => '9',
-		   11 => '11',
-	   );
-		$this->assertEqual($ck , $ans);
+		$ck = $this->Page->afterFindIds($results, 'all', 'list');
+		$ans = array (9 => '9', 11 => '11');
+		$this->assertEqual($ck, $ans);
 
 		//listで$fieldsの指定あり
 		$fields = array(
@@ -5702,7 +5676,7 @@ class NcPageTest extends CakeTestCase {
 			'Page.page_name',
 			'Page.root_id'
 		);
-		$ck = $this->Page->afterFindIds($results , 'all' , 'list' , $fields );
+		$ck = $this->Page->afterFindIds($results, 'all', 'list', $fields );
 		$ans = array (
 			9 =>
 			array (
@@ -5713,18 +5687,18 @@ class NcPageTest extends CakeTestCase {
 				11 => 'Private room of admin',
 			),
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		$fields = array(
 			'Page.id',
-			'Page.page_name',
+			'Page.page_name'
 		);
-		$ck = $this->Page->afterFindIds($results , 'all' , 'list' , $fields );
+		$ck = $this->Page->afterFindIds($results, 'all', 'list', $fields );
 		$ans = array (
-			9  => 'Public room',
-			11 => 'Private room of admin',
+			9 => 'Public room',
+			11 => 'Private room of admin'
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 	}
 
 /**
@@ -5742,90 +5716,87 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testPaginate() {
-
 		//現状使われていないみたいなので、使われてないなら削除したい。
 		//orderが必須になっているのに使われていない。
-		$conditions = array('Page.id'=>16);
-		$fields= array('Page.id' , 'Page.page_name');
+		$conditions = array('Page.id' => 16);
+		$fields = array('Page.id', 'Page.page_name');
 		$order = array();
 		$limit = 10;
-		$ck = $this->Page->Paginate($conditions , $fields, $order, $limit);
+		$ck = $this->Page->Paginate($conditions, $fields, $order, $limit);
 		$ans = array (
 			16 => 'UnitTest-A',
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
-		$conditions = array('Page.id'=>13);
-		$fields= array('Page.id' , 'Page.page_name');
+		$conditions = array('Page.id' => 13);
+		$fields = array('Page.id', 'Page.page_name');
 		$order = array();
 		$limit = 10;
-		$ck = $this->Page->Paginate($conditions , $fields, $order, $limit);
-		$this->assertEqual($ck , false);
+		$ck = $this->Page->Paginate($conditions, $fields, $order, $limit);
+		$this->assertEqual($ck, false);
 
-		$conditions = array('Page.id'=>11);
-		$fields= array('Page.id' , 'Page.page_name');
-		$order = array();
-		$limit = 10;
-		$extra = array(
-			'user_id'=>1
-		);
-		$ck = $this->Page->Paginate($conditions , $fields, $order, $limit , 1 , null , $extra);
-		$this->assertEqual($ck , false);
-
-		$conditions = array('Page.id'=>16);
-		$fields= array('Page.id' , 'Page.page_name');
+		$conditions = array('Page.id' => 11);
+		$fields = array('Page.id', 'Page.page_name');
 		$order = array();
 		$limit = 10;
 		$extra = array(
-			'user_id'=>1
+			'user_id' => 1
 		);
-		$ck = $this->Page->Paginate($conditions , $fields, $order, $limit , 1 , null , $extra);
+		$ck = $this->Page->Paginate($conditions, $fields, $order, $limit, 1, null, $extra);
+		$this->assertEqual($ck, false);
+
+		$conditions = array('Page.id' => 16);
+		$fields = array('Page.id', 'Page.page_name');
+		$order = array();
+		$limit = 10;
+		$extra = array(
+			'user_id' => 1
+		);
+		$ck = $this->Page->Paginate($conditions, $fields, $order, $limit, 1, null, $extra);
 		$ans = array (
 			16 => 'UnitTest-A',
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
-		$conditions = array('Page.id'=>16);
-		$fields= array('Page.id' , 'Page.page_name');
+		$conditions = array('Page.id' => 16);
+		$fields = array('Page.id', 'Page.page_name');
 		$order = array();
 		$limit = 'AAA'; //パラメータ異常
 		$extra = array(
-			'user_id'=>1
+			'user_id' => 1
 		);
-		$ck = $this->Page->Paginate($conditions , $fields, $order, $limit , 1 , null , $extra);
-		$this->assertEqual($ck , false);
+		$ck = $this->Page->Paginate($conditions, $fields, $order, $limit, 1, null, $extra);
+		$this->assertEqual($ck, false);
 
-		$conditions = array('Page.id'=>16);
-		$fields= array('Page.id' , 'Page.page_name');
+		$conditions = array('Page.id' => 16);
+		$fields = array('Page.id', 'Page.page_name');
 		$order = array();
 		$limit = 0;
 		$extra = array(
-			'user_id'=>1
+			'user_id' => 1
 		);
-		$ck = $this->Page->Paginate($conditions , $fields, $order, $limit , 1 , null , $extra);
+		$ck = $this->Page->Paginate($conditions, $fields, $order, $limit, 1, null, $extra);
 		$ans = array (
 			16 => 'UnitTest-A',
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
-		$conditions = array('Page.id'=>16);
-		$fields= array('Page.id' , 'Page.page_name');
+		$conditions = array('Page.id' => 16);
+		$fields = array('Page.id', 'Page.page_name');
 		$order = array();
 		$limit = 0;
 		$extra = array(
-			'user_id'=>999999999999 //存在しないユーザー
+			'user_id' => 999999999999 //存在しないユーザー
 		);
-		$ck = $this->Page->Paginate($conditions , $fields, $order, $limit , 1 , null , $extra);
-		$this->assertEqual($ck , false);
+		$ck = $this->Page->Paginate($conditions, $fields, $order, $limit, 1, null, $extra);
+		$this->assertEqual($ck, false);
 
 		//2階層目を保存してみる
 		$User = ClassRegistry::init("User");
-		$user = $User->find("first" , array('conditions'=>array('User.id'=>1),) );
-		Configure::write(NC_SYSTEM_KEY.'.user' , $user['User']);
-
-		$new_page = array (
-			'Page' =>
-			array (
+		$user = $User->find("first", array('conditions' => array('User.id' => 1)));
+		Configure::write(NC_SYSTEM_KEY. '.user', $user['User']);
+		$newPage = array (
+				'Page' => array (
 				'root_id' => '4',
 				'parent_id' => '16',
 				'thread_num' => '2',
@@ -5842,37 +5813,32 @@ class NcPageTest extends CakeTestCase {
 				'space_type' => '4',
 				'show_count' => '130',
 				'display_flag' => '0',
-				'display_from_date' => NULL,
-				'display_to_date' => NULL,
+				'display_from_date' => null,
+				'display_to_date' => null,
 				'display_apply_subpage' => '1',
-				'display_reverse_permalink' => NULL,
+				'display_reverse_permalink' => null,
 				'is_approved' => '1',
 				'lock_authority_id' => '0'
 			),
 		);
-
-
 		//id16の子孫を3件作成
 		$this->Page->create();
-		$this->Page->save($new_page);
-
+		$this->Page->save($newPage);
 		$this->Page->create();
-		$this->Page->save($new_page);
-
-		$conditions = array('Page.parent_id'=>16);
-		$fields= array('Page.id' , 'Page.page_name');
+		$this->Page->save($newPage);
+		$conditions = array('Page.parent_id' => 16);
+		$fields = array('Page.id', 'Page.page_name');
 		$order = array();
 		$limit = 100;
 		$extra = array(
-			'user_id'=>1
+			'user_id' => 1
 		);
-
-		$ck = $this->Page->Paginate($conditions , $fields, $order, $limit , 1 , null , $extra);
+		$ck = $this->Page->Paginate($conditions, $fields, $order, $limit, 1, null, $extra);
 		$ans = array (
 			18 => 'Private Top',
-			17 => 'Private Top',
+			17 => 'Private Top'
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 	}
 
 /**
@@ -5899,12 +5865,11 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testDecrementDisplaySeq() {
-		$page = $this->Page->find('first' , array('conditions' => array('Page.id' => 15)));
+		$page = $this->Page->find('first', array('conditions' => array('Page.id' => 15)));
 		$ck = $this->Page->decrementDisplaySeq($page);
-		$this->assertEqual(true , $ck);
-
-		$ck = $this->Page->decrementDisplaySeq($page , 5);
-		$this->assertEqual(true , $ck);
+		$this->assertEqual(true, $ck);
+		$ck = $this->Page->decrementDisplaySeq($page, 5);
+		$this->assertEqual(true, $ck);
 	}
 
 /**
@@ -5913,39 +5878,37 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testIncrementDisplaySeq() {
-
-		$page = $this->Page->find('first' , array('conditions' => array('Page.id' => 15)));
+		$page = $this->Page->find('first', array('conditions' => array('Page.id' => 15)));
 		$ck = $this->Page->incrementDisplaySeq($page);
-		$this->assertEqual(true , $ck);
-
-		$ck = $this->Page->incrementDisplaySeq($page , 5);
-		$this->assertEqual(true , $ck);
+		$this->assertEqual(true, $ck);
+		$ck = $this->Page->incrementDisplaySeq($page, 5);
+		$this->assertEqual(true, $ck);
 
 		//第二引数を文字列 //パラメータ不正
 		//TODO: パラメータの型チェックが不足　SQLエラーが発生する。対応する。
-		//$ck = $this->Page->incrementDisplaySeq($page , 'AAAA');
-		//$this->assertEqual(true , $ck);
+		//$ck = $this->Page->incrementDisplaySeq($page, 'AAAA');
+		//$this->assertEqual(true, $ck);
 
-		$ck = $this->Page->incrementDisplaySeq($page , -5000);
-		$this->assertEqual(true , $ck);
+		$ck = $this->Page->incrementDisplaySeq($page, -5000);
+		$this->assertEqual(true, $ck);
 
 		//idが抜けていた場合。
 		$page2 = $page;
 		unset($page2['Page']['id']);
-		$ck = $this->Page->incrementDisplaySeq($page2 , -5000);
-		$this->assertEqual(true , $ck);
+		$ck = $this->Page->incrementDisplaySeq($page2, -5000);
+		$this->assertEqual(true, $ck);
 
 		//何をしても基本的にはtrueが戻ってきているが何も更新されていないようにも見える。
 		//var_dump($this->Page->find('all'));
-		$page = $this->Page->find('first' , array('conditions' => array('Page.id' => 11)));
-		$ck = $this->Page->incrementDisplaySeq($page , 1 ,  array('Page.id' => 11));
-		$this->assertEqual(true , $ck);
+		$page = $this->Page->find('first', array('conditions' => array('Page.id' => 11)));
+		$ck = $this->Page->incrementDisplaySeq($page, 1, array('Page.id' => 11));
+		$this->assertEqual(true, $ck);
 
 		//第三引数が不正
 		//SQLエラーが発生する。
 		//TODO:引数で設定される値が不正だった場合の対応をどうするか検討する。不要？
-		//$ck = $this->Page->incrementDisplaySeq($page , 1 ,  array('Page.idddddddddd' => 11));
-		//$this->assertEqual(true , $ck);
+		//$ck = $this->Page->incrementDisplaySeq($page, 1, array('Page.idddddddddd' => 11));
+		//$this->assertEqual(true, $ck);
 	}
 
 /**
@@ -5954,57 +5917,53 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testGetMovePermalink() {
-
 		//$page['Page']['permalink']を元に、URLを作っている。
-		$page = $this->Page->find('first' , array('conditions' => array('Page.id' => 16)));
-		$parent_page = $this->Page->find('first' , array('conditions' => array('Page.id' => 4)));
-		$ck = $this->Page->getMovePermalink($page , $parent_page);
-		$this->assertEqual($ck , 'community-1');
-
-		$page = $this->Page->find('first' , array('conditions' => array('Page.id' => 16)));
-		$parent_page = $this->Page->find('first' , array('conditions' => array('Page.id' => 15)));
-		$ck = $this->Page->getMovePermalink($page , $parent_page);
-		$this->assertEqual($ck , 'admin/community-1');
-
+		$page = $this->Page->find('first', array('conditions' => array('Page.id' => 16)));
+		$parentPage = $this->Page->find('first', array('conditions' => array('Page.id' => 4)));
+		$ck = $this->Page->getMovePermalink($page, $parentPage);
+		$this->assertEqual($ck, 'community-1');
+		$page = $this->Page->find('first', array('conditions' => array('Page.id' => 16)));
+		$parentPage = $this->Page->find('first', array('conditions' => array('Page.id' => 15)));
+		$ck = $this->Page->getMovePermalink($page, $parentPage);
+		$this->assertEqual($ck, 'admin/community-1');
 		//必要な項目が配列で含まれていない場合は正常に動作しない
 		//TODO : パラメータのチェック
-		//$ck = $this->Page->getMovePermalink("" , "");
+		//$ck = $this->Page->getMovePermalink("", "");
 	}
 
 /**
  * testCreateDefaultEntry method
  *
  * @return void
-*/
+ */
 	public function testCreateDefaultEntry() {
-
 		//マイポータル作成, マイルーム作成, ルーム参加
 		$user = array();
 		$user['User'] = array(
-			'id'=>"7",
-			'login_id'=>'admin_7' ,
-			'password'=>'1a9faaae0428d9f50245c1fb77cad74a25fd917a' ,
-			'handle'=>'admin',
-			'authority_id'=>"2",
-			'is_active'=>"1",
-			'permalink'=>'admin_7',
-			'myportal_page_id'=>"10",
-			'private_page_id'=>"11",
-			'avatar'=>NULL,
-			'activate_key'=>NULL,
-			'lang'=>'ja',
-			'timezone_offset'=>"9",
-			'email'=>'',
-			'mobile_email'=>'',
-			'password_regist'=>NULL ,
-			'last_login'=>'2013-09-27 00:42:44',
-			'previous_login'=>'2013-07-22 08:20:15',
-			'created'=>'2013-10-31 04:09:21',
-			'created_user_id'=>"1",
-			'created_user_name'=>'admin',
-			'modified'=>'2013-10-31 09:52:46',
-			'modified_user_id'=>'0',
-			'modified_user_name'=>''
+			'id' => "7",
+			'login_id' => 'admin_7',
+			'password' => '1a9faaae0428d9f50245c1fb77cad74a25fd917a',
+			'handle' => 'admin',
+			'authority_id' => "2",
+			'is_active' => "1",
+			'permalink' => 'admin_7',
+			'myportal_page_id' => "10",
+			'private_page_id' => "11",
+			'avatar' => null,
+			'activate_key' => null,
+			'lang' => 'ja',
+			'timezone_offset' => "9",
+			'email' => '',
+			'mobile_email' => '',
+			'password_regist' => null,
+			'last_login' => '2013-09-27 00:42:44',
+			'previous_login' => '2013-07-22 08:20:15',
+			'created' => '2013-10-31 04:09:21',
+			'created_user_id' => "1",
+			'created_user_name' => 'admin',
+			'modified' => '2013-10-31 09:52:46',
+			'modified_user_id' => '0',
+			'modified_user_name' => ''
 		);
 
 		//return array($myportalPageId, $privatePageId);
@@ -6015,10 +5974,7 @@ class NcPageTest extends CakeTestCase {
 		);
 
 		$ck = $this->Page->createDefaultEntry($user);
-
-
-		$this->assertEqual($result , $ck);
-
+		$this->assertEqual($result, $ck);
 		//同じユーザの情報で再度実行しても作られる
 		//1アカウントに対し1回のみの実行となるようにする必要がある。
 		//とりあえず複数件登録されてしまうテストはコメントアウト
@@ -6028,8 +5984,8 @@ class NcPageTest extends CakeTestCase {
 			1 => '23',
 		);
 		$ck = $this->Page->createDefaultEntry($user);
-		$this->assertEqual($result , $ck);
-		$this->Page->find('list' , array());
+		$this->assertEqual($result, $ck);
+		$this->Page->find('list', array());
 		*/
 	}
 
@@ -6039,72 +5995,70 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testInsTopRoom() {
-
 		$User = ClassRegistry::init('User');
-		$user_data = $User->find('first' , array('conditions' => array('User.id' => 1)));
+		$userData = $User->find('first', array('conditions' => array('User.id' => 1)));
 
 		//2レコード作られる。 name : Private room と Private Top
 		//id:17と18が作られて、18は17の子になる。
 		$spaceType = NC_SPACE_TYPE_PRIVATE;
 		$userId = 1;
-		$permalink = $user_data['User']['permalink'];
+		$permalink = $userData['User']['permalink'];
 		$ck = $this->Page->insTopRoom($spaceType, $userId, $permalink);
-		$this->assertEqual($ck , 17);
+		$this->assertEqual($ck, 17);
 		$id = $ck;
 		$ck = $this->Page->findById($id );
 		$ck2 = $this->Page->findById($id + 1);
 		$key = 'Page';
 
-		$this->assertEqual($ck[$key]['room_id'] , $id);
-		$this->assertEqual($ck[$key]['page_name'] , 'Private room');
-		$this->assertEqual($ck2[$key]['page_name'] , 'Private Top');
-		$this->assertEqual($ck2[$key]['root_id'] , $id);
+		$this->assertEqual($ck[$key]['room_id'], $id);
+		$this->assertEqual($ck[$key]['page_name'], 'Private room');
+		$this->assertEqual($ck2[$key]['page_name'], 'Private Top');
+		$this->assertEqual($ck2[$key]['root_id'], $id);
 
 		//2レコード作られる。 name : Myportal と Myportal Top
 		//Page.id 19と20が作られて、20は19の子になる。
 		$spaceType = NC_SPACE_TYPE_MYPORTAL;
 		$userId = 1;
-		$permalink = $user_data['User']['permalink'];
+		$permalink = $userData['User']['permalink'];
 		$ck = $this->Page->insTopRoom($spaceType, $userId, $permalink);
-		$this->assertEqual($ck , 19);
+		$this->assertEqual($ck, 19);
 
 		$ck = $this->Page->findById(19);
 		$ck2 = $this->Page->findById(20);
 		$key = 'Page';
 		$id = 19;
-		$this->assertEqual($ck[$key]['room_id'] , $id);
-		$this->assertEqual($ck[$key]['page_name'] , 'Myportal');
-		$this->assertEqual($ck2[$key]['page_name'] , 'Myportal Top');
-		$this->assertEqual($ck2[$key]['root_id'] , $id);
+		$this->assertEqual($ck[$key]['room_id'], $id);
+		$this->assertEqual($ck[$key]['page_name'], 'Myportal');
+		$this->assertEqual($ck2[$key]['page_name'], 'Myportal Top');
+		$this->assertEqual($ck2[$key]['root_id'], $id);
 
 		//2レコード作られる。 name : Myportal と Myportal Top
 		//Page.id 19と20が作られて、21は22の子になる。
 		$Authority = ClassRegistry::init('Authority');
 		$authority = $Authority->find('first', array(
 			'fields' => array('myportal_use_flag', 'private_use_flag'),
-			'conditions' => array($Authority->primaryKey => $user_data['User']['authority_id']),
+			'conditions' => array($Authority->primaryKey => $userData['User']['authority_id']),
 			'recursive' => -1
 		));
 		$spaceType = NC_SPACE_TYPE_MYPORTAL;
 		$userId = 1;
-		$permalink = $user_data['User']['permalink'];
-		$ck = $this->Page->insTopRoom($spaceType, $userId, $permalink , $authority);
-		$this->assertEqual($ck , 21);
+		$permalink = $userData['User']['permalink'];
+		$ck = $this->Page->insTopRoom($spaceType, $userId, $permalink, $authority);
+		$this->assertEqual($ck, 21);
 
 		//NC_SPACE_TYPE_PUBLICの場合は作られず、falseが戻る。
 		$spaceType = NC_SPACE_TYPE_PUBLIC;
 		$userId = 1;
-		$permalink = $user_data['User']['permalink'];
-		$ck = $this->Page->insTopRoom($spaceType, $userId, $permalink , $authority);
-		$this->assertEqual($ck , false);
+		$permalink = $userData['User']['permalink'];
+		$ck = $this->Page->insTopRoom($spaceType, $userId, $permalink, $authority);
+		$this->assertEqual($ck, false);
 
 		//NC_SPACE_TYPE_GROUPの場合は作られずfalseがもどる
 		$spaceType = NC_SPACE_TYPE_GROUP;
 		$userId = 1;
-		$permalink = $user_data['User']['permalink'];
-		$ck = $this->Page->insTopRoom($spaceType, $userId, $permalink , $authority);
-		$this->assertEqual($ck , false);
-
+		$permalink = $userData['User']['permalink'];
+		$ck = $this->Page->insTopRoom($spaceType, $userId, $permalink, $authority);
+		$this->assertEqual($ck, false);
 	}
 
 /**
@@ -6113,19 +6067,17 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testUpdPermalinks() {
-
 		//root_idがこれのものについて、permalinkの最初の階層が書き換わる機能。
 		//現在この機能にトランザクションはかかっていない
 		$ans = 'NcPageTest_updPermalinks_1';
-		$ck = $this->Page->updPermalinks(11 , $ans);
-		$this->assertEqual($ck , true);
+		$ck = $this->Page->updPermalinks(11, $ans);
+		$this->assertEqual($ck, true);
 		//指定されたPageId
-		$ck = $this->Page->find('first' , array('conditions'=>array('Page.id'=>11)));
-		$this->assertEqual($ck['Page']['permalink'] , $ans);
+		$ck = $this->Page->find('first', array('conditions' => array('Page.id' => 11)));
+		$this->assertEqual($ck['Page']['permalink'], $ans);
 		//子孫でpermalinkに/が入っていないデータだった場合
-		$ck = $this->Page->find('first' , array('conditions'=>array('Page.id'=>15)));
-		$this->assertEqual($ck['Page']['permalink'] , $ans);
-
+		$ck = $this->Page->find('first', array('conditions' => array('Page.id' => 15)));
+		$this->assertEqual($ck['Page']['permalink'], $ans);
 	}
 
 /**
@@ -6134,14 +6086,13 @@ class NcPageTest extends CakeTestCase {
  * @return void
  */
 	public function testFindNodeFlag() {
-
 		//Aが親Pageで、その子供にB、その子供にCがあった場合
 		//Cのページを表示されたときに、どこのページで設定されたスタイル、あるいは、レイアウト（ヘッダーカラムの表示有無など）を
 		//適用されているか判断するメソッド
 		//画面でいうとページ設定のページスタイル、ページレイアウトの上部の適用範囲で
 		//現在のノード、現在のページを選択した場合に設定される
 
-		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>9)));
+		$page = $this->Page->find('first', array('conditions' => array('Page.id' => 9)));
 		$ck = $this->Page->findNodeFlag($page);
 		$ans = array (
 			'is_page_meta_node' => 0,
@@ -6150,8 +6101,8 @@ class NcPageTest extends CakeTestCase {
 			'is_page_theme_node' => 0,
 			'is_page_column_node' => 0,
 		);
-		$this->assertEqual($ck , $ans);
-		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>10)));
+		$this->assertEqual($ck, $ans);
+		$page = $this->Page->find('first', array('conditions' => array('Page.id' => 10)));
 		$ck = $this->Page->findNodeFlag($page);
 		$ans = array (
 			'is_page_meta_node' => 0,
@@ -6160,8 +6111,8 @@ class NcPageTest extends CakeTestCase {
 			'is_page_theme_node' => 0,
 			'is_page_column_node' => 0,
 		);
-		$this->assertEqual($ck , $ans);
-		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>16)));
+		$this->assertEqual($ck, $ans);
+		$page = $this->Page->find('first', array('conditions' => array('Page.id' => 16)));
 		$ck = $this->Page->findNodeFlag($page);
 		$ans = array (
 			'is_page_meta_node' => 0,
@@ -6170,27 +6121,27 @@ class NcPageTest extends CakeTestCase {
 			'is_page_theme_node' => 0,
 			'is_page_column_node' => 0,
 		);
-		$this->assertEqual($ck , $ans);
-		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>4)));
-		$ck = $this->Page->findNodeFlag($page , array( 'is_page_meta_node'=>0 ));
+		$this->assertEqual($ck, $ans);
+		$page = $this->Page->find('first', array('conditions' => array('Page.id' => 4)));
+		$ck = $this->Page->findNodeFlag($page, array( 'is_page_meta_node' => 0 ));
 		$ans = array (
 			'is_page_meta_node' => 0,
 		);
-		$this->assertEqual($ck , $ans);
-		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>4)));
-		$ck = $this->Page->findNodeFlag($page , array( 'is_page_meta_node'=>5 ));
+		$this->assertEqual($ck, $ans);
+		$page = $this->Page->find('first', array('conditions' => array('Page.id' => 4)));
+		$ck = $this->Page->findNodeFlag($page, array( 'is_page_meta_node' => 5 ));
 		$ans = array (
 			'is_page_meta_node' => 5,
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//想定されていないkeyがしていされると、Noticeエラーが発生する。
-		//$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>4)));
-		//$ck = $this->Page->findNodeFlag($page , array( 'is_page_meta_node_hogehoge'=>5 ));
+		//$page = $this->Page->find('first', array('conditions' => array('Page.id' => 4)));
+		//$ck = $this->Page->findNodeFlag($page, array( 'is_page_meta_node_hogehoge' => 5 ));
 
 		//第二引数がstring(パラメータ異常） メソッド内foreach文でエラーが発生する。
-		//$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>4)));
-		//$ck = $this->Page->findNodeFlag($page , 'is_page_meta_node');
+		//$page = $this->Page->find('first', array('conditions' => array('Page.id' => 4)));
+		//$ck = $this->Page->findNodeFlag($page, 'is_page_meta_node');
 
 		$spaceType = NC_SPACE_TYPE_MYPORTAL;
 		$userId = 1;
@@ -6198,7 +6149,7 @@ class NcPageTest extends CakeTestCase {
 		$id = $this->Page->insTopRoom($spaceType, $userId, $permalink);
 		//$idには($id+1)の子孫が存在する。
 
-		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>($id+1))));
+		$page = $this->Page->find('first', array('conditions' => array('Page.id' => ($id + 1))));
 		$ck = $this->Page->findNodeFlag($page);
 		$ans = array (
 			'is_page_meta_node' => 0,
@@ -6207,9 +6158,9 @@ class NcPageTest extends CakeTestCase {
 			'is_page_theme_node' => 0,
 			'is_page_column_node' => 0,
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
-		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>($id))));
+		$page = $this->Page->find('first', array('conditions' => array('Page.id' => ($id))));
 		$ck = $this->Page->findNodeFlag($page);
 		$ans = array (
 			'is_page_meta_node' => 0,
@@ -6218,21 +6169,21 @@ class NcPageTest extends CakeTestCase {
 			'is_page_theme_node' => 0,
 			'is_page_column_node' => 0,
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//$idに($id+2)の子孫を作成する
 		$sample = $this->Page->getDefaultData(NC_SPACE_TYPE_MYPORTAL);
-		$sample['Page']['thread_num']                  = 2;
-		$sample['Page']['root_id']                     = $id;
-		$sample['Page']['is_page_meta_node']           = 1;
-		$sample['Page']['Page.is_page_style_node']     = 2;
-		$sample['Page']['is_page_layout_node']         = 3;
-		$sample['Page']['is_page_theme_node']          = 4;
-		$sample['Page']['Page.is_page_column_node']    = 5;
+		$sample['Page']['thread_num'] = 2;
+		$sample['Page']['root_id'] = $id;
+		$sample['Page']['is_page_meta_node'] = 1;
+		$sample['Page']['Page.is_page_style_node'] = 2;
+		$sample['Page']['is_page_layout_node'] = 3;
+		$sample['Page']['is_page_theme_node'] = 4;
+		$sample['Page']['Page.is_page_column_node'] = 5;
 		$this->Page->create();
 		$this->Page->save($sample);
 
-		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>($id+2))));
+		$page = $this->Page->find('first', array('conditions' => array('Page.id' => ($id + 2))));
 		$ck = $this->Page->findNodeFlag($page);
 		$ans = array (
 			'is_page_meta_node' => '19',
@@ -6241,21 +6192,21 @@ class NcPageTest extends CakeTestCase {
 			'is_page_theme_node' => '19',
 			'is_page_column_node' => 0,
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
 
 		//$idに($id+3)の子孫を作成する
 		$sample = $this->Page->getDefaultData(NC_SPACE_TYPE_MYPORTAL);
-		$sample['Page']['thread_num']                  = 2;
-		$sample['Page']['root_id']                     = $id;
-		$sample['Page']['is_page_meta_node']           = 1;
-		$sample['Page']['Page.is_page_style_node']     = 2;
-		$sample['Page']['is_page_layout_node']         = 3;
-		$sample['Page']['is_page_theme_node']          = 4;
-		$sample['Page']['Page.is_page_column_node']    = 5;
+		$sample['Page']['thread_num'] = 2;
+		$sample['Page']['root_id'] = $id;
+		$sample['Page']['is_page_meta_node'] = 1;
+		$sample['Page']['Page.is_page_style_node'] = 2;
+		$sample['Page']['is_page_layout_node'] = 3;
+		$sample['Page']['is_page_theme_node'] = 4;
+		$sample['Page']['Page.is_page_column_node'] = 5;
 		$this->Page->create();
 		$this->Page->save($sample);
 
-		$page = $this->Page->find('first' , array('conditions'=>array('Page.id'=>($id+3))));
+		$page = $this->Page->find('first', array('conditions' => array('Page.id' => ($id + 3))));
 		$ck = $this->Page->findNodeFlag($page);
 		$ans = array (
 			'is_page_meta_node' => '20',
@@ -6264,6 +6215,68 @@ class NcPageTest extends CakeTestCase {
 			'is_page_theme_node' => '20',
 			'is_page_column_node' => 0,
 		);
-		$this->assertEqual($ck , $ans);
+		$this->assertEqual($ck, $ans);
+	}
+
+/**
+ * afterFindIdToList
+ *
+ * @return void
+ */
+	public function testAfterFindIdsToList() {
+		$results = $this->Page->find('all', array('limit' => 16));
+		$userId = 1;
+		$fields = array('Page.id', 'Page.page_name');
+		$ck = $this->Page->afterFindIds($results, $userId, 'list', $fields);
+		$ans = array (
+			1 => 'Public room',
+			2 => 'Myportal',
+			3 => 'Private room',
+			4 => 'Community',
+			5 => 'Headercolumn',
+			6 => 'Leftcolumn',
+			7 => 'Rightcolumn',
+			8 => 'Footercolumn',
+			9 => 'Public room',
+			10 => 'Myportal of admin',
+			11 => 'Private room of admin',
+			12 => '??????',
+			13 => 'Myportal Top',
+			14 => 'Private Top',
+			15 => 'Private Top',
+			16 => 'Community-1',
+		);
+		$this->assertEqual($ck, $ans);
+		$ck2 = $this->Page->_afterFIndIdsTypeList($results, $userId, $fields);
+		$this->assertEqual($ck, $ck2);
+		//var_export($ck);
+		//filedが指定されていない場合
+		$ck = $this->Page->afterFindIds($results, $userId, 'list');
+		$ans = array (
+			1 => '1',
+			2 => '2',
+			3 => '3',
+			4 => '4',
+			5 => '5',
+			6 => '6',
+			7 => '7',
+			8 => '8',
+			9 => '9',
+			10 => '10',
+			11 => '11',
+			12 => '12',
+			13 => '13',
+			14 => '14',
+			15 => '15',
+			16 => '16',
+		);
+		$this->assertEqual($ck, $ans);
+		$ck2 = $this->Page->_afterFIndIdsTypeList($results, $userId);
+		$this->assertEqual($ck, $ck2);
+		$results = array();
+		$ck = $this->Page->afterFindIds($results, $userId, 'list');
+		$ck2 = $this->Page->_afterFIndIdsTypeList($results, $userId);
+		//var_export($ck);
+		//var_export($ck2);
 	}
 }

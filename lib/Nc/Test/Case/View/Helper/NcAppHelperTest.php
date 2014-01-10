@@ -34,19 +34,23 @@ class NcAppHelperTest extends CakeTestCase {
 		$this->app = new AppHelper($View);
 	}
 
+/**
+ * testUrl  method
+ *
+ * @return void
+ */
 	public function testUrl() {
 		$text = "test";
 		$host = FULL_BASE_URL;
 
 		$this->assertEqual($host.'/test' , $this->app->url($text , true));
-		$this->assertEqual('/test' , $this->app->url($text));
-
+		$this->assertEqual('/test', $this->app->url($text));
 
 		$text = $host.'/test';
-		$this->assertEqual($text , $this->app->url($text , true));
-		$this->assertEqual($text , $this->app->url($text));
+		$this->assertEqual($text, $this->app->url($text , true));
+		$this->assertEqual($text, $this->app->url($text));
 
-		$this->assertEqual(null , $this->app->url());
-		$this->assertEqual(null , $this->app->url(null));
+		$this->assertEqual(null, $this->app->url());
+		$this->assertEqual(null, $this->app->url(null));
 	}
 }
