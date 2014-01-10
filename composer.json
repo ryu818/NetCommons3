@@ -9,6 +9,7 @@
     ],
     "require": {
         "pear-cakephp/cakephp": "2.4.1",
+        "cakephp/debug_kit": "2.2.*",
         "ezyang/htmlpurifier": "v4.6.0",
         "chronon/mobile_detect": "*",
         "todc/todc-bootstrap": "~3.0.0"

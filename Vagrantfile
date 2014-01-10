@@ -6,8 +6,14 @@ Vagrant.configure("2") do |config|
   config.vm.box_url = "http://files.vagrantup.com/precise64.box"
 
   config.vm.network :forwarded_port, guest: 80, host: 8080
+  config.hostmanager.enabled = true
+  config.hostmanager.manage_host = true
+  config.vm.define 'default' do |node|
+    node.vm.hostname = "www.netcommons.local"
+    node.hostmanager.aliases = %w(docs.netcommons.local)
+  end
 
-  config.vm.synced_folder "./", "/vagrant_data", :create => true, :owner=> 'www-data', :group=>'www-data', :mount_options => ['dmode=775','fmode=775']
+config.vm.synced_folder "./", "/vagrant_data", :create => true, :owner=> 'www-data', :group=>'www-data', :mount_options => ['dmode=775','fmode=775']
   doc_root = '/vagrant_data/app/webroot'
 
   config.berkshelf.enabled = true

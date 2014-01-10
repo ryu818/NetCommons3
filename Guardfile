@@ -1,3 +1,6 @@
+ignore(/(min|dev)\.(js|css)$/)
+ignore(%r{^docs/build/*/.*\.(js|css)$})
+
 # Update bundle
 guard :bundler do
   watch('Gemfile')
@@ -5,7 +8,6 @@ end
 
 # Minify js
 guard 'shell' do
-  ignore(/(min|dev)\.js$/)
   watch(%r{.*\.js$}) do |m|
     n "#{m[0]} Changed"
 
@@ -18,7 +20,6 @@ end
 
 # Minify css
 guard 'shell' do
-  ignore(/(min|dev)\.css$/)
   watch(%r{.*\.css$}) do |m|
     n "#{m[0]} Changed"
 
@@ -61,11 +62,18 @@ guard 'phpmd', :rules => 'ruleset/phpmd.xml' do
   watch(%r{.*\.php$})
 end
 
+# Generate docs
+guard 'shell' do
+  watch(%r{.*\.rst$}) do |m|
+    `cd docs; make html; cd -`
+  end
+end
+
 # Installed by guard-jshint-node
 # guard 'jshint-node', :config => 'jshint-config.json' do
 #   watch(%r{.*\.js$})
 # end
 
 guard 'livereload' do
-  watch(%r{.*\.(php|ctp|css|js)$})
+  watch(%r{.*\.(php|ctp|css|js|rst)$})
 end

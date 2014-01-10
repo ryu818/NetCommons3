@@ -1,7 +1,10 @@
 source "https://rubygems.org"
 
+gem 'activesupport'
 gem 'bundler'
 gem 'berkshelf'
+gem 'nokogiri'
+gem 'rake'
 
 group :development, :test do
   gem 'guard'
