@@ -43,6 +43,7 @@ packages = %w{
   emacs24 emacs-goodies-el debian-el gettext-el
   iftop iotop iperf nethogs sysstat
   ruby1.9.1 ruby1.9.1-dev libnotify-bin
+  python-setuptools
 }
 dependencies = []
 
