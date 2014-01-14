@@ -36,9 +36,18 @@ sudo npm install gfms -g
 sudo easy_install -U sphinx sphinxcontrib-phpdomain
 </pre>
 
+#### vagrant plugin
+<pre>
+cd NetCommons3
+vagrant plugin install vagrant-berkshelf
+vagrant plugin install vagrant-vbguest
+vagrant plugin install vagrant-hostmanager
+bundle
+</pre>
+
 ### Workaround
 #### Windows ホストの場合
-vagrant 1.4.x 利用時、下記エラーが発生します。
+vagrant 1.4.x 利用時、下記エラーが発生します。(1.4.3 で確認)
 ```
 [Berkshelf] Failed to download 'composer' from git: 'https://github.com/Morphodo
 /chef-composer.git' with branch: 'master'
@@ -62,15 +71,6 @@ emacs cookbooks/omusubi/recipes/default.rb
 ```
 
 変更後 composer が手動管理となります。
-
-#### vagrant plugin
-<pre>
-cd NetCommons3
-vagrant plugin install vagrant-berkshelf
-vagrant plugin install vagrant-vbguest
-vagrant plugin install vagrant-hostmanager
-bundle
-</pre>
 
 ## 起動
 
