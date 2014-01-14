@@ -56,7 +56,7 @@ packages.each do |pkg|
 end
 
 execute "apt-get install" do
-  command "apt-get -q -y install #{dependencies.join(' ')}"
+  command "DEBIAN_FRONTEND=noninteractive apt-get -q -y install #{dependencies.join(' ')}"
 end
 
 # Install hhvm seperately since it's yet authenticated
