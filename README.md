@@ -36,6 +36,33 @@ sudo npm install gfms -g
 sudo easy_install -U sphinx sphinxcontrib-phpdomain
 </pre>
 
+### Workaround
+#### Windows ホストの場合
+vagrant 1.4.x 利用時、下記エラーが発生します。
+```
+[Berkshelf] Failed to download 'composer' from git: 'https://github.com/Morphodo
+/chef-composer.git' with branch: 'master'
+```
+
+その場合下記2ファイルを以下の通り書き変える必要があります。
+```
+cd NetCommons3
+
+emacs Berksfile
+- cookbook 'composer', git: "https://github.com/Morphodo/chef-composer.git"
++ #cookbook 'composer', git: "https://github.com/Morphodo/chef-composer.git"
+
+emacs cookbooks/omusubi/recipes/default.rb
+- composer "/vagrant_data" do
+-   action [:install, :update]
+- end
++ #composer "/vagrant_data" do
++ #  action [:install, :update]
++ #end
+```
+
+変更後 composer が手動管理となります。
+
 #### vagrant plugin
 <pre>
 cd NetCommons3
