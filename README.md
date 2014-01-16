@@ -34,15 +34,15 @@ git clone https://github.com/ryu818/NetCommons3.git
 sudo aptitude install zlib1g-dev ruby ruby-dev lsb-core libxml2-dev libxslt-dev nodejs
 sudo npm install gfms -g
 sudo easy_install -U sphinx sphinxcontrib-phpdomain
+cd NetCommons3
+bundle
 </pre>
 
 #### vagrant plugin
 <pre>
-cd NetCommons3
 vagrant plugin install vagrant-berkshelf
 vagrant plugin install vagrant-vbguest
 vagrant plugin install vagrant-hostmanager
-bundle
 </pre>
 
 ### Workaround
